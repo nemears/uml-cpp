@@ -339,7 +339,7 @@ TEST_F(AssociationTest, reindexTypeIDTest) {
 
 TEST_F(AssociationTest, parseNavigableOwnedEndAndMemberEndTest) {
     UmlManager m;
-    Element* el;
+    Element* el = 0;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "associationTests/navigableEnd.yml").ptr());
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = el->as<Package>();
@@ -359,7 +359,8 @@ TEST_F(AssociationTest, parseNavigableOwnedEndAndMemberEndTest) {
     ASSERT_EQ(pckg.getPackagedElements().get("association").getElementType(), ElementType::ASSOCIATION);
     Association& ass = dynamic_cast<Association&>(pckg.getPackagedElements().get("association"));
     ASSERT_EQ(ass.getMemberEnds().size(), 2);
-    ASSERT_EQ(ass.getMemberEnds().back().getID(), p.getID());
+    ASSERT_TRUE(ass.getMemberEnds().contains(p));
+    // ASSERT_EQ(ass.getMemberEnds().back().getID(), p.getID());
     ASSERT_EQ(ass.getNavigableOwnedEnds().size(), 1);
     Property& ne = ass.getNavigableOwnedEnds().front();
     ASSERT_TRUE(ne.getType());
@@ -368,7 +369,7 @@ TEST_F(AssociationTest, parseNavigableOwnedEndAndMemberEndTest) {
 
 TEST_F(AssociationTest, parseOwnedEndAndMemberEndTest) {
     UmlManager m;
-    Element* el;
+    Element* el = 0;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "associationTests/ownedEnd.yml").ptr());
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.get(el->getID()).as<Package>();
@@ -515,9 +516,10 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     ASSERT_EQ(association2.getOwnedEnds().size(), 1);
     ASSERT_EQ(association2.getOwnedEnds().front(), aProp3);
     ASSERT_EQ(association2.getMemberEnds().size(), 2);
-    ASSERT_EQ(association2.getMemberEnds().front(), aProp3);
-    ASSERT_EQ(association2.getOwnedMembers().size(), 1);
-    ASSERT_EQ(association2.getOwnedMembers().front(), aProp3);
+    ASSERT_TRUE(association2.getMemberEnds().contains(aProp3));
+    // ASSERT_EQ(association2.getMemberEnds().front(), aProp3);
+    ASSERT_TRUE(association2.getOwnedMembers().contains(aProp3));
+    // ASSERT_EQ(association2.getOwnedMembers().front(), aProp3);
     ASSERT_EQ(association2.getMembers().size(), 2);
     ASSERT_TRUE(association2.getMembers().contains(aProp3));
     ASSERT_EQ(association2.getOwnedElements().size(), 1);
@@ -533,7 +535,8 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     ASSERT_TRUE(cProp2.getAssociation());
     ASSERT_EQ(*cProp2.getAssociation(), association2);
     ASSERT_EQ(association2.getMemberEnds().size(), 2);
-    ASSERT_EQ(association2.getMemberEnds().back(), cProp2);
+    ASSERT_TRUE(association2.getMemberEnds().contains(cProp2));
+    // ASSERT_EQ(association2.getMemberEnds().back(), cProp2);
     ASSERT_EQ(association2.getMembers().size(), 2);
     ASSERT_TRUE(association2.getMembers().contains(cProp2));
     ASSERT_EQ(association2.getEndTypes().size(), 2);
@@ -557,7 +560,7 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     ASSERT_TRUE(cProp3.getAssociation());
     ASSERT_EQ(*cProp3.getAssociation(), association3);
     ASSERT_EQ(association3.getMemberEnds().size(), 2);
-    ASSERT_EQ(association3.getMemberEnds().back(), cProp3);
+    ASSERT_TRUE(association3.getMemberEnds().contains(cProp3));
     ASSERT_EQ(association3.getMembers().size(), 2);
     ASSERT_TRUE(association3.getMembers().contains(cProp3));
     ASSERT_EQ(association3.getEndTypes().size(), 2);

@@ -236,6 +236,7 @@ template <class T = Element, class U = Element, class S = Set<T,U>>
 void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, U& owner, S& (U::*signature)()) {
     if (node[key]) {
         if (node[key].IsSequence()) {
+            (owner.*signature)().clear();
             for (size_t i = 0; i < node[key].size(); i++) {
                 if (node[key][i].IsScalar()) {
                     if (isValidID(node[key][i].as<std::string>())) {
@@ -319,6 +320,7 @@ template <class T = Element, class U = Element, class S = Set<T,U>>
 void parseSetDefinitions(YAML::Node node, ParserMetaData& data, string key, U& owner, S& (U::*sequenceSignature)(), T& (*parserSignature)(YAML::Node, ParserMetaData&)) {
     if (node[key]) {
         if (node[key].IsSequence()) {
+            (owner.*sequenceSignature)().clear();
             for (size_t i = 0; i < node[key].size(); i++) {
                 if (node[key][i].IsMap()) {
                     (owner.*sequenceSignature)().add((*parserSignature)(node[key][i], data));
@@ -423,25 +425,7 @@ ElementPtr parseYAML(YAML::Node node, ParserMetaData& data) {
     ElementPtr ret = parseNode(node, data);
     if (ret) {
         // restore references
-        for (auto refPair : (*ret).m_node->m_references) {
-            if (!data.m_manager->loaded(refPair.first)) {
-                continue;
-            }
-            if (refPair.second.node && refPair.second.node->m_managerElementMemory) {
-                ret->restoreReference(refPair.second.node->m_managerElementMemory);
-                if (!refPair.second.node->m_references.count(ret.id())) {
-                    refPair.second.node->m_managerElementMemory->setReference(ret.ptr());
-                }
-                refPair.second.node->m_managerElementMemory->restoreReference(ret.ptr());
-            } else {
-                Element& ref = data.m_manager->get(refPair.first);
-                ret->restoreReference(&ref);
-                if (!ref.m_node->m_references.count(ret.id())) {
-                    ref.m_node->m_managerElementMemory->setReference(ret.ptr());
-                }
-                ref.restoreReference(ret.ptr());
-            }
-        }
+        data.m_manager->forceRestore(ret, data);
         return ret;
     } else {
         throw UmlParserException("could not parse string representing an element!", "", node);
@@ -3609,9 +3593,9 @@ void emitTemplateParameterSubstitution(YAML::Emitter& emitter, TemplateParameter
 
 void parseAssociation(YAML::Node node, Association& association, ParserMetaData& data) {
     parseClassifier(node, association, data);
-    parseSetDefinitions(node, data, "navigableOwnedEnds", association, &Association::getNavigableOwnedEnds, determineAndParseOwnedAttribute);
-    parseSetDefinitions(node, data, "ownedEnds", association, &Association::getOwnedEnds, determineAndParseOwnedAttribute);
     parseSetReferences<Property, Association>(node, data, "memberEnds", association, &Association::getMemberEnds);
+    parseSetDefinitions(node, data, "ownedEnds", association, &Association::getOwnedEnds, determineAndParseOwnedAttribute);
+    parseSetDefinitions(node, data, "navigableOwnedEnds", association, &Association::getNavigableOwnedEnds, determineAndParseOwnedAttribute);
 }
 
 void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMetaData& data) {

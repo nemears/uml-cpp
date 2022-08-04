@@ -102,7 +102,7 @@ namespace UML {
             Element* get(Element* me, ID theID);
             void addToMount(Element& el);
             virtual void createNode(Element* el);
-            void eraseNode(ManagerNode* node, ID id);
+            virtual void eraseNode(ManagerNode* node, ID id);
             void releaseNode(Element& el);
             void restoreNode(Element& el);
         public:
@@ -128,7 +128,8 @@ namespace UML {
             }
             void lazy(bool lazy);
             Element& create(ElementType eType);
-            void reindex(ID oldID, ID newID);
+            virtual void reindex(ID oldID, ID newID);
+            virtual void forceRestore(ElementPtr ref, Parsers::ParserMetaData& data);
             // Sets up composite directory of model for quick aquire and release
             void mount(std::string path);
             void mountEl(Element& el);

@@ -65,6 +65,7 @@ namespace UML {
             std::thread* m_garbageCollectionThread = 0;
             std::thread* m_zombieKillerThread = 0;
             std::unordered_map<ID, std::mutex> m_locks;
+            std::mutex m_locksMtx;
             std::atomic<bool> m_running = false;
             std::mutex m_runMtx;
             std::condition_variable m_runCv;
@@ -83,6 +84,8 @@ namespace UML {
             std::condition_variable m_zombieCv;
 
             // helper methods
+        protected:
+            void eraseNode(ManagerNode* node, ID id) override;
             void createNode(Element* el) override;
             void closeClientConnections(ClientInfo& client);
             std::vector<std::unique_lock<std::mutex>> lockReferences(Element& el);
@@ -97,6 +100,8 @@ namespace UML {
             void log(std::string msg);
             bool loaded(ID id) override;
             void reset();
+            void reindex(ID oldID, ID newID) override;
+            void forceRestore(ElementPtr ref, Parsers::ParserMetaData& data) override;
             void shutdownServer();
             void setMaxEls(int maxEls);
             int getMaxEls();

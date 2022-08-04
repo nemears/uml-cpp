@@ -14,6 +14,10 @@
 
 namespace UML {
 
+bool isValidID(std::string strn) {
+    return std::regex_match (strn, std::regex("(?:[A-Za-z0-9_&]{28})"));
+}
+
 void Element::setReference(Element* referencing) {
     if (m_node->m_references.count(referencing->getID())) {
         m_node->m_references[referencing->getID()].numRefs++;

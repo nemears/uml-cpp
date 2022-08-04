@@ -89,3 +89,26 @@ TEST_F(RestfulTest, saveTest) {
     client.put(*clazz);
     client.save();
 }
+
+void raceConditionThread(ID id) {
+    UmlClient client;
+    PackagePtr pckg = &client.get(id).as<Package>();
+    PackagePtr child = client.create<Package>();
+    pckg->getPackagedElements().add(*child);
+    client.putAll();
+}
+
+TEST_F(RestfulTest, raceConditionTest) {
+    UmlClient client;
+    PackagePtr pckg = client.create<Package>();
+    std::thread rcThread(&raceConditionThread, pckg.id());
+    PackagePtr child = client.create<Package>();
+    pckg->getPackagedElements().add(*child);
+    client.putAll();
+    rcThread.join();
+    // TODO 
+    pckg.release();
+    pckg.aquire();
+    ASSERT_EQ(pckg->getPackagedElements().size(), 1);
+    // ASSERT_EQ(pckg->getPackagedElements().front(), *child);
+}

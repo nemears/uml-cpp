@@ -24,6 +24,7 @@ namespace UML{
                 ParserMetaData(UmlManager* manager);
                 UmlManager* m_manager;
                 ParserStrategy m_strategy = ParserStrategy::WHOLE;
+                void* m_additionalData = 0;
         };
     }
 }

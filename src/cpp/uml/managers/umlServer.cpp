@@ -58,6 +58,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         try {
             std::vector<ID> idsOfReferences;
             {
+                std::unique_lock<std::mutex> locksLock(m_locksMtx);
                 std::lock_guard<std::mutex> elLck(m_locks[elID]);
                 log("aquired lock for element " + elID.string());
                 Element& elToErase = get(elID);
@@ -66,13 +67,14 @@ void UmlServer::handleMessage(ID id, std::string buff) {
                     log("aquired lock for element " + refPair.first.string());
                     idsOfReferences.push_back(refPair.first);
                 }
+                locksLock.unlock();
                 m_msgV = true;
                 m_msgCv.notify_one();
                 erase(elID);
             }
             log("released lock for element " + elID.string());
             for (const ID refID : idsOfReferences) {
-                log("released lock for element " + id.string());
+                log("released lock for element " + refID.string());
             }
             m_locks.erase(elID);
             log("erased element " + elID.string());
@@ -101,12 +103,20 @@ void UmlServer::handleMessage(ID id, std::string buff) {
                 send(info.socket, msg.c_str(), msg.length() , 0);
             }            
         }
+        std::vector<ID> idsOfReferences;
         try {
+            std::unique_lock<std::mutex> locksLock(m_locksMtx);
             std::lock_guard<std::mutex> elLck(m_locks[elID]);
             log("aquired lock for element " + elID.string());
+            Element& el = get(elID);
+            std::vector<std::unique_lock<std::mutex>> refLcks = lockReferences(el);
+            for (auto& refPair : el.m_node->m_references) {
+                log("aquired lock for element " + refPair.first.string());
+                idsOfReferences.push_back(refPair.first);
+            }
+            locksLock.unlock();
             m_msgV = true;
             m_msgCv.notify_one();
-            Element& el = get(elID);
             Parsers::EmitterMetaData data = Parsers::getData(el);
             data.m_isJSON = true;
             std::string msg = Parsers::emitString(data, el);
@@ -122,6 +132,9 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             send(info.socket, msg.c_str(), msg.length() , 0);
         }
         log("released lock for element " + elID.string());
+        for (const ID refID : idsOfReferences) {
+            log("released lock for element " + refID.string());
+        }
     } else if (node["POST"] || node["post"]) {
         m_msgV = true;
         m_msgCv.notify_one();
@@ -142,6 +155,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     } else if (node["PUT"] || node["put"]) {
         YAML::Node putNode = (node["PUT"] ? node["PUT"] : node["put"]);
         ID elID = ID::fromString(putNode["id"].as<std::string>());
+        std::unique_lock<std::mutex> locksLock(m_locksMtx);
         std::lock_guard<std::mutex> elLck(m_locks[elID]);
         log("aquired lock for element " + elID.string());
         m_msgV = true;
@@ -155,6 +169,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         }
         Parsers::ParserMetaData data(this);
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
+        data.m_additionalData = &locksLock;
         try {
             Element& el = *Parsers::parseYAML(putNode["element"], data);
             if (isRoot) {
@@ -451,6 +466,29 @@ void UmlServer::createNode(Element* el) {
     m_locks[el->getID()];
 }
 
+void UmlServer::eraseNode(ManagerNode* node, ID id) {
+    UmlManager::eraseNode(node, id);
+    m_locks.erase(id);
+}
+
+void UmlServer::forceRestore(ElementPtr el, Parsers::ParserMetaData& data) {
+    std::unique_lock<std::mutex>* locksLock = reinterpret_cast<std::unique_lock<std::mutex>*>(data.m_additionalData);
+    // std::lock_guard<std::mutex> elLck(m_locks[el.id()]);
+    std::vector<std::unique_lock<std::mutex>> m_referenceLocks = lockReferences(*el);
+    std::vector<ID> idsOfReferences;
+    // log("aquired lock for element " + el.id().string());
+    for (auto& refPair : (*el).m_node->m_references) {
+        log("aquired lock for element " + refPair.first.string());
+        idsOfReferences.push_back(refPair.first);
+    }
+    locksLock->unlock();
+    UmlManager::forceRestore(el, data);
+    // log("released lock for element " + el.id().string());
+    for (const ID refID : idsOfReferences) {
+        log("released lock for element " + refID.string());
+    }
+}
+
 std::vector<std::unique_lock<std::mutex>> UmlServer::lockReferences(Element& el) {
     std::vector<std::unique_lock<std::mutex>> ret;
     ret.reserve(el.m_node->m_references.size());
@@ -576,17 +614,23 @@ int UmlServer::numClients() {
 }
 
 bool UmlServer::loaded(ID id) {
-    std::unique_lock<std::mutex> mLck(m_msgMtx);
-    m_msgCv.wait(mLck, [this]{ return m_msgV ? true : false; });
-    if (m_locks.count(id)) {
-        std::lock_guard<std::mutex> lck(m_locks.at(id));
-    }
+    std::lock_guard<std::mutex> lck(m_locks.at(id));\
     return UmlManager::loaded(id);
 }
 
 void UmlServer::reset() {
     log("server resetting");
     clear();
+}
+
+void UmlServer::reindex(ID oldID, ID newID) {
+    {
+        std::lock_guard<std::mutex> oldLock(m_locks[oldID]);
+        std::lock_guard<std::mutex> newLock(m_locks[newID]);
+        UmlManager::reindex(oldID, newID);
+    }
+    m_locks.erase(oldID);
+    m_locks[newID];
 }
 
 void UmlServer::shutdownServer() {

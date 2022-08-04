@@ -299,7 +299,7 @@ void UmlManager::reindex(ID oldID, ID newID) {
             // This logic should only be called when it is loading from disk
             // and will overwrite the existing element in memory with one from disk
             // during a UmlManager::open() or UmlManager::aquire(id) invoke
-            
+
             ManagerNode* m_node = &m_graph[newID];
             delete m_node->m_managerElementMemory;
             ManagerNode& oldNode = m_graph[oldID];
@@ -407,6 +407,28 @@ void UmlManager::restoreNode(Element& ret) {
     ret.restoreReferences();
 }
 
+void UmlManager::forceRestore(ElementPtr el, Parsers::ParserMetaData& data) {
+    for (auto& refPair : el.m_node->m_references) {
+        if (!UmlManager::loaded(refPair.first)) {
+            continue;
+        }
+        if (refPair.second.node && refPair.second.node->m_managerElementMemory) {
+            el->restoreReference(refPair.second.node->m_managerElementMemory);
+            if (!refPair.second.node->m_references.count(el.id())) {
+                refPair.second.node->m_managerElementMemory->setReference(el.ptr());
+            }
+            refPair.second.node->m_managerElementMemory->restoreReference(el.ptr());
+        } else {
+            Element& ref = get(refPair.first);
+            el->restoreReference(&ref);
+            if (!ref.m_node->m_references.count(el.id())) {
+                ref.m_node->m_managerElementMemory->setReference(el.ptr());
+            }
+            ref.restoreReference(el.ptr());
+        }
+    }
+}
+
 ElementPtr UmlManager::aquire(ID id) {
     if (m_mountBase.empty()) {
         throw ManagerNotMountedException();
@@ -498,7 +520,8 @@ void UmlManager::eraseNode(ManagerNode* node, ID id) {
     }
     delete node->m_managerElementMemory;
     m_graph.erase(id);
-    m_elements.erase(std::find(m_elements.begin(), m_elements.end(), id));
+    m_elements.erase(id);
+    // m_elements.erase(std::find(m_elements.begin(), m_elements.end(), id));
     if (!m_mountBase.empty()) {
         std::filesystem::remove_all(m_mountBase / (id.string() + ".yml"));
     }

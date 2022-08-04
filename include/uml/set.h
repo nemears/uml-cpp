@@ -1806,6 +1806,17 @@ namespace UML {
                 }
             };
             /**
+             * Removes all elements from set
+             **/
+            void clear() {
+                if (m_readOnly) {
+                    throw ReadOnlySetException("");
+                }
+                while (m_root) {
+                    remove(m_root->m_id);
+                }
+            };
+            /**
              * gets the element with the given id from the set
              * @param id the id of the element we want to get
              * @return the element with the supplied id

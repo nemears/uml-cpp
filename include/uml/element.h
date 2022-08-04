@@ -158,9 +158,7 @@ namespace UML {
     };
 
     // Helper function to assess possible ids
-    static bool isValidID(std::string strn) {
-        return std::regex_match (strn, std::regex("(?:[A-Za-z0-9_&]{28})"));
-    }
+    bool isValidID(std::string strn);
 
     class InvalidElementCastException : public std::exception {
         

@@ -114,7 +114,7 @@ namespace UML {
               * @return the element you wish to get from the manager
              **/
             virtual Element& get(ID id);
-            size_t count(ID id);
+            virtual size_t count(ID id);
             virtual bool loaded(ID id);
             template <class T = Element>
             UmlPtr<T> create() {

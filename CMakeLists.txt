@@ -5,6 +5,11 @@ enable_testing()
 
 option(UML_CLIENT_SERVER "allows for building of src/cpp/uml/managers for restful server client classes" ON)
 option(UML_BUILD_TESTS "build tests for uml library" ON)
+option(UML_DEBUG "builds with debug tools and without optimizations" OFF)
+
+if (UML_DEBUG)
+    add_definitions( -DUML_DEBUG )
+endif()
 
 set (CMAKE_CXX_STANDARD 17)
 
@@ -14,7 +19,6 @@ set (CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Threads REQUIRED)
 
 IF(UNIX)
-    option(UML_DEBUG "builds without optimizations" OFF)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
     add_compile_options(-Wall -Wextra -pedantic)
     IF(NOT UML_DEBUG) 

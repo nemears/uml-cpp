@@ -82,6 +82,7 @@ namespace UML {
             std::list<ID> m_zombies;
             std::mutex m_zombieMtx;
             std::condition_variable m_zombieCv;
+            std::mutex m_graphMtx;
 
             // helper methods
         protected:
@@ -99,6 +100,7 @@ namespace UML {
             int numClients();
             void log(std::string msg);
             bool loaded(ID id) override;
+            size_t count(ID id) override;
             void reset();
             void reindex(ID oldID, ID newID) override;
             void forceRestore(ElementPtr ref, Parsers::ParserMetaData& data) override;

@@ -155,8 +155,6 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     } else if (node["PUT"] || node["put"]) {
         YAML::Node putNode = (node["PUT"] ? node["PUT"] : node["put"]);
         ID elID = ID::fromString(putNode["id"].as<std::string>());
-        std::unique_lock<std::mutex> locksLock(m_locksMtx);
-        std::lock_guard<std::mutex> elLck(m_locks[elID]);
         log("aquired lock for element " + elID.string());
         m_msgV = true;
         m_msgCv.notify_one();
@@ -169,11 +167,14 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         }
         Parsers::ParserMetaData data(this);
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
-        data.m_additionalData = &locksLock;
         try {
-            Element& el = *Parsers::parseYAML(putNode["element"], data);
+            ElementPtr el = Parsers::parseYAML(putNode["element"], data);
+            if (el) {
+                // restore references
+                data.m_manager->forceRestore(el, data);
+            }
             if (isRoot) {
-                setRoot(el);
+                setRoot(*el);
             }
             log("server put element " + elID.string() + " successfully for client " + id.string());
         } catch (std::exception& e) {
@@ -382,8 +383,8 @@ void UmlServer::acceptNewClients(UmlServer* me) {
             me->log("got id from client: " + std::string(buff));
             ClientInfo& info = me->m_clients[ID::fromString(buff)];
             info.socket = newSocketD;
-            info.thread = new std::thread(receiveFromClient, me, ID::fromString(buff));;
-            info.handler = new std::thread(clientSubThreadHandler, me, ID::fromString(buff));;
+            info.thread = new std::thread(receiveFromClient, me, ID::fromString(buff));
+            info.handler = new std::thread(clientSubThreadHandler, me, ID::fromString(buff));
             if (!send(newSocketD, buff, 29, 0)) { // send ID back to say that the server has a thread ready for the client's messages
                 #ifdef WIN32
                 closesocket(newSocketD);
@@ -462,6 +463,7 @@ void UmlServer::zombieKiller(UmlServer* me) {
 }
 
 void UmlServer::createNode(Element* el) {
+    std::lock_guard<std::mutex> graphLock(m_graphMtx);
     UmlManager::createNode(el);
     m_locks[el->getID()];
 }
@@ -472,18 +474,16 @@ void UmlServer::eraseNode(ManagerNode* node, ID id) {
 }
 
 void UmlServer::forceRestore(ElementPtr el, Parsers::ParserMetaData& data) {
-    std::unique_lock<std::mutex>* locksLock = reinterpret_cast<std::unique_lock<std::mutex>*>(data.m_additionalData);
-    // std::lock_guard<std::mutex> elLck(m_locks[el.id()]);
+    std::unique_lock<std::mutex> locksLock(m_locksMtx);
+    std::lock_guard<std::mutex> elLck(m_locks[el.id()]);
     std::vector<std::unique_lock<std::mutex>> m_referenceLocks = lockReferences(*el);
+    locksLock.unlock();
     std::vector<ID> idsOfReferences;
-    // log("aquired lock for element " + el.id().string());
     for (auto& refPair : (*el).m_node->m_references) {
         log("aquired lock for element " + refPair.first.string());
         idsOfReferences.push_back(refPair.first);
     }
-    locksLock->unlock();
     UmlManager::forceRestore(el, data);
-    // log("released lock for element " + el.id().string());
     for (const ID refID : idsOfReferences) {
         log("released lock for element " + refID.string());
     }
@@ -498,12 +498,44 @@ std::vector<std::unique_lock<std::mutex>> UmlServer::lockReferences(Element& el)
     return ret;
 }
 
+#ifdef UML_DEBUG
+std::string time_in_HH_MM_SS_MMM()
+{
+    using namespace std::chrono;
+
+    // get current time
+    auto now = system_clock::now();
+
+    // get number of milliseconds for the current second
+    // (remainder after division into seconds)
+    auto ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
+
+    // convert to std::time_t in order to convert to std::tm (broken time)
+    auto timer = system_clock::to_time_t(now);
+
+    // convert to broken time
+    std::tm bt = *std::localtime(&timer);
+
+    std::ostringstream oss;
+
+    oss << std::put_time(&bt, "%H:%M:%S"); // HH:MM:SS
+    oss << '.' << std::setfill('0') << std::setw(3) << ms.count();
+
+    return oss.str();
+}
+
+#endif
+
 void UmlServer::log(std::string msg) {
     std::lock_guard<std::mutex> lck(m_logMtx);
+    #if UML_DEBUG
+    std::cout << "[" << time_in_HH_MM_SS_MMM() << "]:" << msg << std::endl;
+    #else
     auto now = std::chrono::system_clock::now();
     std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
     std::string nowStr = std::ctime(&nowTime);
     std::cout << "[" + nowStr.substr(0, nowStr.size() - 1) + "]:" + msg << std::endl;
+    #endif
 }
 
 UmlServer::UmlServer(int port, bool deferStart) {
@@ -618,6 +650,11 @@ bool UmlServer::loaded(ID id) {
     return UmlManager::loaded(id);
 }
 
+size_t UmlServer::count(ID id) {
+    // std::lock_guard<std::mutex> graphLock(m_graphMtx);
+    return UmlManager::count(id);
+}
+
 void UmlServer::reset() {
     log("server resetting");
     clear();
@@ -625,8 +662,11 @@ void UmlServer::reset() {
 
 void UmlServer::reindex(ID oldID, ID newID) {
     {
+        std::unique_lock<std::mutex> locksLock(m_locksMtx);
         std::lock_guard<std::mutex> oldLock(m_locks[oldID]);
         std::lock_guard<std::mutex> newLock(m_locks[newID]);
+        locksLock.unlock();
+        std::lock_guard<std::mutex> graphLock(m_graphMtx);
         UmlManager::reindex(oldID, newID);
     }
     m_locks.erase(oldID);

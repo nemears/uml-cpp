@@ -422,14 +422,7 @@ ElementPtr parseString(string body, ParserMetaData& data) {
 }
 
 ElementPtr parseYAML(YAML::Node node, ParserMetaData& data) {
-    ElementPtr ret = parseNode(node, data);
-    if (ret) {
-        // restore references
-        data.m_manager->forceRestore(ret, data);
-        return ret;
-    } else {
-        throw UmlParserException("could not parse string representing an element!", "", node);
-    }
+    return parseNode(node, data);
 }
 
 EmitterMetaData getData(Element& el) {

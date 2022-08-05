@@ -294,7 +294,7 @@ Element& UmlManager::get(ID id) {
 
 void UmlManager::reindex(ID oldID, ID newID) {
     if (oldID != newID) {
-        if (m_elements.count(newID)) {
+        if (count(newID)) {
             // Element with this ID already exists, overwrite it with new one
             // This logic should only be called when it is loading from disk
             // and will overwrite the existing element in memory with one from disk

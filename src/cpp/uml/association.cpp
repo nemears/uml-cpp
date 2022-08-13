@@ -11,7 +11,7 @@ using namespace UML;
 
 void Association::AddEndTypeFunctor::operator()(Element& el) const {
     if (el.as<Property>().getType()) {
-        if (el.as<Property>().m_type.loaded(el.as<Property>().m_type.ids().front())) {
+        if (el.as<Property>().getType().loaded() && !m_el.as<Association>().getEndTypes().contains(el.as<Property>().getType().id())) {
             m_el.as<Association>().getEndTypes().add(*el.as<Property>().getType());
             el.as<Property>().getType()->setReference(&m_el);
         }

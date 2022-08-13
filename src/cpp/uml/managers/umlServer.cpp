@@ -56,26 +56,26 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     if (node["DELETE"] || node["delete"]) {
         ID elID = ID::fromString((node["DELETE"] ? node["DELETE"] : node["delete"]).as<std::string>());
         try {
-            std::vector<ID> idsOfReferences;
+            // std::vector<ID> idsOfReferences;
             {
                 std::unique_lock<std::mutex> locksLock(m_locksMtx);
                 std::lock_guard<std::mutex> elLck(m_locks[elID]);
-                log("aquired lock for element " + elID.string());
+                // log("aquired lock for element " + elID.string());
                 Element& elToErase = get(elID);
                 std::vector<std::unique_lock<std::mutex>> refLcks = lockReferences(elToErase);
                 for (auto& refPair : elToErase.m_node->m_references) {
-                    log("aquired lock for element " + refPair.first.string());
-                    idsOfReferences.push_back(refPair.first);
+                    // log("aquired lock for element " + refPair.first.string());
+                    // idsOfReferences.push_back(refPair.first);
                 }
                 locksLock.unlock();
                 m_msgV = true;
                 m_msgCv.notify_one();
                 erase(elID);
             }
-            log("released lock for element " + elID.string());
-            for (const ID refID : idsOfReferences) {
-                log("released lock for element " + refID.string());
-            }
+            // log("released lock for element " + elID.string());
+            // for (const ID refID : idsOfReferences) {
+            //     log("released lock for element " + refID.string());
+            // }
             m_locks.erase(elID);
             log("erased element " + elID.string());
             std::lock_guard<std::mutex> garbageLck(m_garbageMtx);
@@ -103,17 +103,17 @@ void UmlServer::handleMessage(ID id, std::string buff) {
                 send(info.socket, msg.c_str(), msg.length() , 0);
             }            
         }
-        std::vector<ID> idsOfReferences;
+        // std::vector<ID> idsOfReferences;
         try {
             std::unique_lock<std::mutex> locksLock(m_locksMtx);
             std::lock_guard<std::mutex> elLck(m_locks[elID]);
-            log("aquired lock for element " + elID.string());
+            // log("aquired lock for element " + elID.string());
             Element& el = get(elID);
             std::vector<std::unique_lock<std::mutex>> refLcks = lockReferences(el);
-            for (auto& refPair : el.m_node->m_references) {
-                log("aquired lock for element " + refPair.first.string());
-                idsOfReferences.push_back(refPair.first);
-            }
+            // for (auto& refPair : el.m_node->m_references) {
+            //     // log("aquired lock for element " + refPair.first.string());
+            //     idsOfReferences.push_back(refPair.first);
+            // }
             locksLock.unlock();
             m_msgV = true;
             m_msgCv.notify_one();
@@ -132,9 +132,9 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             send(info.socket, msg.c_str(), msg.length() , 0);
         }
         log("released lock for element " + elID.string());
-        for (const ID refID : idsOfReferences) {
-            log("released lock for element " + refID.string());
-        }
+        // for (const ID refID : idsOfReferences) {
+        //     log("released lock for element " + refID.string());
+        // }
     } else if (node["POST"] || node["post"]) {
         m_msgV = true;
         m_msgCv.notify_one();
@@ -155,7 +155,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     } else if (node["PUT"] || node["put"]) {
         YAML::Node putNode = (node["PUT"] ? node["PUT"] : node["put"]);
         ID elID = ID::fromString(putNode["id"].as<std::string>());
-        log("aquired lock for element " + elID.string());
+        // log("aquired lock for element " + elID.string());
         m_msgV = true;
         m_msgCv.notify_one();
         bool isRoot = false;
@@ -181,7 +181,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             log("Error parsing PUT request: " + std::string(e.what()));
             log("released lock for element " + elID.string());
         }
-        log("released lock for element " + elID.string());
+        // log("released lock for element " + elID.string());
     } else if (node["SAVE"] || node["save"]) {
         YAML::Node saveNode = (node["SAVE"] ? node["SAVE"] : node["save"]);
         std::string path = saveNode.as<std::string>();
@@ -478,15 +478,15 @@ void UmlServer::forceRestore(ElementPtr el, Parsers::ParserMetaData& data) {
     std::lock_guard<std::mutex> elLck(m_locks[el.id()]);
     std::vector<std::unique_lock<std::mutex>> m_referenceLocks = lockReferences(*el);
     locksLock.unlock();
-    std::vector<ID> idsOfReferences;
-    for (auto& refPair : (*el).m_node->m_references) {
-        log("aquired lock for element " + refPair.first.string());
-        idsOfReferences.push_back(refPair.first);
-    }
+    // std::vector<ID> idsOfReferences;
+    // for (auto& refPair : (*el).m_node->m_references) {
+    //     log("aquired lock for element " + refPair.first.string());
+    //     idsOfReferences.push_back(refPair.first);
+    // }
     UmlManager::forceRestore(el, data);
-    for (const ID refID : idsOfReferences) {
-        log("released lock for element " + refID.string());
-    }
+    // for (const ID refID : idsOfReferences) {
+    //     log("released lock for element " + refID.string());
+    // }
 }
 
 std::vector<std::unique_lock<std::mutex>> UmlServer::lockReferences(Element& el) {

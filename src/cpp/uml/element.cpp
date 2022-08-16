@@ -139,6 +139,8 @@ void Element::setID(std::string id) {
 void Element::setID(ID id) {
     if (m_manager) {
         m_manager->reindex(m_id, id);
+    } else if (m_manager2) {
+        m_manager2->reindex(m_id, id);
     }
     m_id = id;
 }

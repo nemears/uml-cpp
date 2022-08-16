@@ -955,7 +955,7 @@ TEST_F(ClassTest, partTest) {
 }
 
 TEST_F(ClassTest, parseConnectorTest) {
-    Element* el;
+    Element* el = 0;
     UmlManager m;
     ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/connector.yml").ptr());
 

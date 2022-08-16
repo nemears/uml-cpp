@@ -17,6 +17,7 @@ namespace UML {
 
         friend class UmlManager;
         friend class AbstractAccessPolicy;
+        template <class AccessPolicy, class PersistencePolicy> friend class Manager;
 
         protected:
             Set<PackageableElement, Package> m_packagedElements = Set<PackageableElement, Package>(this);

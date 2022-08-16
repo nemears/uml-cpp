@@ -12,6 +12,10 @@ namespace UML {
                 return UmlPtr<T>(&create(T::elementType())->template as<T>());
             }
             virtual ElementPtr get(ID id) = 0;
+            virtual void reindex (ID oldID, ID newID) = 0;
+            virtual void release(Element& el) = 0;
+            virtual void removeNode(ID id) = 0;
+            virtual void open(std::string path) = 0;
     };
 }
 

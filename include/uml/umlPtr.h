@@ -66,7 +66,11 @@ namespace UML {
                         return ptr->m_ptrId == m_ptrId;
                     });
                     if (m_node->m_ptrs.empty() && !m_node->m_managerElementMemory) {
-                        m_manager->m_graph.erase(m_id);
+                        if (m_manager) {
+                            m_manager->m_graph.erase(m_id);
+                        } else if (m_manager2) {
+                            m_manager2->removeNode(m_id);
+                        }
                     }
                 }
             };
@@ -93,7 +97,12 @@ namespace UML {
                 } else if (m_ptr) {
                     return *m_ptr;
                 } else {
-                    ElementPtr temp = &m_manager->get(m_id);
+                    ElementPtr temp(0);
+                    if (m_manager2) {
+                        temp = m_manager2->get(m_id);
+                    } else {
+                        temp = &m_manager->get(m_id);
+                    }
                     if (!m_ptr) {
                         const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
                     }
@@ -107,7 +116,12 @@ namespace UML {
                 } else if (m_ptr) {
                     return m_ptr;
                 } else {
-                    ElementPtr temp = &m_manager->get(m_id);
+                    ElementPtr temp(0);
+                    if (m_manager2) {
+                        temp = m_manager2->get(m_id);
+                    } else {
+                        temp = &m_manager->get(m_id);
+                    }
                     if (!m_ptr) {
                         const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
                     }
@@ -150,7 +164,7 @@ namespace UML {
                     m_id = el->getID();
                     m_ptr = const_cast<T*>(el);
                     m_node = m_ptr->m_node;
-                    m_manager = el->m_manager;
+                    m_manager = el->m_manager; // delete
                     m_manager2 = el->m_manager2;
                     m_ptrId = 0;
                     if (el->m_node->m_ptrs.size() > 0) {
@@ -202,11 +216,20 @@ namespace UML {
             };
             void release() {
                 if (m_ptr) {
-                    m_manager->release(*m_ptr);
+                    if (m_manager) { // TODO delete
+                        m_manager->release(*m_ptr);
+                    } else if (m_manager2) {
+                        m_manager2->release(*m_ptr);
+                    }
                 }
             };
             void aquire() {
-                UmlPtr<> temp = m_manager->aquire(m_id);
+                ElementPtr temp(0);
+                if (m_manager) {
+                    temp = m_manager->aquire(m_id);
+                } else if (m_manager2) {
+                    temp = m_manager2->get(m_id);
+                }
                 m_ptr = dynamic_cast<T*>(temp.ptr());
                 m_node = m_ptr->m_node;
                 m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
@@ -241,9 +264,9 @@ namespace UML {
                 } else {
                     if (m_node) {
                         removeFromGraph();
-                        if (m_node->m_ptrs.empty()) {
-                            m_manager->m_graph.erase(m_id);
-                        }
+                        // if (m_node->m_ptrs.empty()) {
+                        //     m_manager->m_graph.erase(m_id);
+                        // }
                     }
                 }
             };

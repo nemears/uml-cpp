@@ -3,7 +3,7 @@
 #include "test/uml-cpp-paths.h"
 #include "uml/parsers/parser.h"
 #include "test/umlTestUtil.h"
-#include "uml/managers/managerPolicy.h"
+#include "uml/managers/basicManager.h"
 
 using namespace std;
 using namespace UML;
@@ -17,7 +17,7 @@ class UmlManagerTest : public ::testing::Test {
 };
 
 TEST_F(UmlManagerTest, FactoryTest) {
-    UmlManager m;
+    BasicManager m;
     Class& c = *m.create<Class>();
     ASSERT_TRUE(c.getElementType() == ElementType::CLASS);
 }
@@ -242,4 +242,9 @@ TEST_F(UmlManagerTest, policyManagerTest) {
     m.release(*p);
     ASSERT_FALSE(p.loaded());
     ASSERT_EQ(m.get(p.id()).ptr(), p.ptr());
+    PackagePtr child = m.create<Package>();
+    p->getPackagedElements().add(*child);
+    p.release();
+    ASSERT_FALSE(p.loaded());
+    ASSERT_FALSE(child->getOwningPackage().loaded());
 }

@@ -1,6 +1,7 @@
 #include "uml/parsers/parser.h"
 #include <fstream>
 #include "uml/uml-stable.h"
+#include "uml/managers/managerPolicy.h"
 
 using namespace std;
 
@@ -1302,7 +1303,10 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["package"]) {
-        PackagePtr pckg = data.m_manager->create<Package>();
+        PackagePtr pckg(0);// = data.m_manager->create<Package>();
+        if (data.m_manager2) {
+            pckg = data.m_manager2->create<Package>();
+        }
         parsePackage(node["package"], *pckg, data);
         ret = pckg.ptr();
     }

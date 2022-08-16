@@ -2,6 +2,7 @@
 #define _UML_UML_PTR_H_
 
 #include "element.h"
+#include "managers/abstractManager.h"
 
 namespace UML {
 
@@ -18,6 +19,8 @@ namespace UML {
 
         template <class T, class U> friend class Singleton;
         friend class UmlManager;
+        template <class AccessPolicy, class PersistencePolicy> friend class Manager;
+        friend class AbstractAccessPolicy;
         template <class T> friend class UmlPtr;
 
         protected:
@@ -33,10 +36,13 @@ namespace UML {
 
         template <class U, class V> friend class Singleton;
         friend class UmlManager;
+        template <class AccessPolicy, class PersistencePolicy> friend class Manager;
+        friend class AbstractAccessPolicy;
         template <class U> friend class UmlPtr;
 
         private:
             UmlManager* m_manager = 0;
+            AbstractManager* m_manager2 = 0;
             T* m_ptr = 0;
             ManagerNode* m_node = 0;
         protected:
@@ -145,6 +151,7 @@ namespace UML {
                     m_ptr = const_cast<T*>(el);
                     m_node = m_ptr->m_node;
                     m_manager = el->m_manager;
+                    m_manager2 = el->m_manager2;
                     m_ptrId = 0;
                     if (el->m_node->m_ptrs.size() > 0) {
                         m_ptrId = el->m_node->m_ptrs.back()->m_ptrId + 1;
@@ -163,7 +170,23 @@ namespace UML {
                 reassignPtr(rhs);
             };
             T* ptr() {
-                return m_ptr;
+                if (m_id == ID::nullID()) {
+                    return 0;
+                } else if (m_ptr) {
+                    return m_ptr;
+                } else {
+                    ElementPtr temp(0);
+                    if (m_manager2) {
+                        temp = m_manager2->get(m_id);
+                    } else {
+                        temp = &m_manager->get(m_id);
+                    }
+                    if (!m_ptr) {
+                        const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
+                    }
+                    const_cast<UmlPtr<T>*>(this)->m_node = m_ptr->m_node;
+                    return  dynamic_cast<T*>(temp.ptr());
+                }
             };
             ID id() const {
                 return m_id;
@@ -193,6 +216,7 @@ namespace UML {
                     m_id = el->getID();
                     m_ptr = el;
                     m_manager = el->m_manager;
+                    m_manager2 = el->m_manager2;
                     if (el->m_node->m_ptrs.size() > 0) {
                         m_ptrId = el->m_node->m_ptrs.back()->m_ptrId + 1;
                     }

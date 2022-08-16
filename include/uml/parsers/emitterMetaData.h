@@ -7,6 +7,7 @@
 namespace UML {
 
     class UmlManager;
+    class AbstractManager;
 
     namespace Parsers {
 
@@ -20,7 +21,8 @@ namespace UML {
                 std::filesystem::path m_path;
                 EmitterStrategy m_strategy;
                 std::string m_fileName;
-                UmlManager* m_manager;
+                UmlManager* m_manager = 0;
+                AbstractManager* m_manager2 = 0;
                 bool m_isJSON = false;
                 std::filesystem::path getMountPath(ID id);
                 std::filesystem::path getPath(ID id);

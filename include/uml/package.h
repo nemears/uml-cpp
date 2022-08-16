@@ -16,6 +16,7 @@ namespace UML {
     class Package : public PackageableElement, public Namespace, public TemplateableElement {
 
         friend class UmlManager;
+        friend class AbstractAccessPolicy;
 
         protected:
             Set<PackageableElement, Package> m_packagedElements = Set<PackageableElement, Package>(this);

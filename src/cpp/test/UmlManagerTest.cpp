@@ -3,6 +3,7 @@
 #include "test/uml-cpp-paths.h"
 #include "uml/parsers/parser.h"
 #include "test/umlTestUtil.h"
+#include "uml/managers/managerPolicy.h"
 
 using namespace std;
 using namespace UML;
@@ -232,4 +233,13 @@ TEST_F(UmlManagerTest, eraseReferenceWhileReleasedTest) {
     m.erase(*c);
     i.aquire();
     ASSERT_EQ(i->getClassifiers().size(), 0);
+}
+
+TEST_F(UmlManagerTest, policyManagerTest) {
+    BasicManager m;
+    PackagePtr p = m.create<Package>();
+    m.mount(".");
+    m.release(*p);
+    ASSERT_FALSE(p.loaded());
+    ASSERT_EQ(m.get(p.id()).ptr(), p.ptr());
 }

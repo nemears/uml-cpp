@@ -182,6 +182,8 @@ namespace UML {
     class InstanceSpecification;
     class Property;
     class Association;
+    class AbstractAccessPolicy;
+    class AbstractManager;
     class UmlManager;
     class UmlServer;
     struct ManagerNode;
@@ -230,6 +232,8 @@ namespace UML {
     class Element {
 
         friend class UmlManager;
+        friend class AbstractAccessPolicy;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class UmlClient;
         friend class UmlServer;
         friend class ElementDoesntExistException;
@@ -270,8 +274,10 @@ namespace UML {
 
         private:
         protected:
-            UmlManager* m_manager;
-            ManagerNode* m_node;
+            UmlManager* m_manager = 0;
+            AbstractAccessPolicy* m_accessPolicy = 0;
+            AbstractManager* m_manager2 = 0;
+            ManagerNode* m_node = 0;
             ID m_id;
 
             const ElementType m_elementType;

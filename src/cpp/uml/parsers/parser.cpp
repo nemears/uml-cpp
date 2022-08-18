@@ -2,6 +2,7 @@
 #include <fstream>
 #include "uml/uml-stable.h"
 #include "uml/managers/managerPolicy.h"
+#include <iostream>
 
 using namespace std;
 
@@ -343,9 +344,14 @@ void parseSetDefinitions(YAML::Node node, ParserMetaData& data, string key, U& o
 template <class T = Element, class V = T> 
 T& parseDefinition(YAML::Node node, ParserMetaData& data, string key, void (*parser)(YAML::Node, V&, ParserMetaData&)) {
     if (node[key].IsMap()) {
-        T& ret = *data.m_manager->create<T>();
-        parser(node[key], ret, data);
-        return ret;
+        UmlPtr<T> ret;
+        if (data.m_manager2) {
+            ret = data.m_manager2->create<T>();
+        } else if (data.m_manager) {              // TODO
+            ret = data.m_manager->create<T>();    // DELETE
+        }                                         // TODO
+        parser(node[key], *ret, data);
+        return *ret;
     } else {
         throw UmlParserException("Invalid yaml node type for " + key + " definition, it must be a map!", data.m_path.string(), node[key]);
     }
@@ -395,6 +401,10 @@ ElementPtr parse(ParserMetaData& data) {
             }
         }
     } else {
+        if (!data.m_manager) {
+            std::cout << "TODO: m_manager2 restore all references we loaded" << std::endl;
+            return ret;
+        }
         // we want to restore all of the references of what we loaded
         for (const ID id : data.m_manager->m_elements) {
             ElementPtr el = &data.m_manager->get(id);
@@ -1271,9 +1281,14 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["model"]) {
-        Model& model = *data.m_manager->create<Model>();
-        parsePackage(node["model"], model, data);
-        ret = &model;
+        UmlPtr<Model> model;
+        if (data.m_manager2) {
+            model = data.m_manager2->create<Model>();
+        } else if (data.m_manager) {                    // TODO
+            model = data.m_manager->create<Model>();    // DELETE
+        }                                               // TODO
+        parsePackage(node["model"], *model, data);
+        ret = model;
     }
 
     if (node["objectFlow"]) {
@@ -1306,7 +1321,9 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         PackagePtr pckg(0);// = data.m_manager->create<Package>();
         if (data.m_manager2) {
             pckg = data.m_manager2->create<Package>();
-        }
+        } else if (data.m_manager) {                    // TODO
+            pckg = data.m_manager->create<Package>();   // DELETE
+        }                                               // TODO
         parsePackage(node["package"], *pckg, data);
         ret = pckg.ptr();
     }

@@ -7,6 +7,7 @@ namespace UML{
     class Model : public Package {
 
         friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Model();

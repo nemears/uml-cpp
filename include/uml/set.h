@@ -581,9 +581,9 @@ namespace UML {
                 setName(node);
                 add(node);
                 if (m_el) {
-                    if (m_el->m_manager) {
+                    // if (m_el->m_manager) {
                         m_el->setReference(&el);
-                    }
+                    // }
                 }
             };
             /**
@@ -602,7 +602,7 @@ namespace UML {
                             this->removeReadOnly(this->m_root->m_id);
                         }
                     } else {
-                        if (m_size >= m_upper) {
+                        if (m_size >= (size_t) m_upper) {
                             throw ManagerStateException("TODO: size > upper");
                         }
                     }
@@ -1864,7 +1864,7 @@ namespace UML {
              * @param i the index of the element in the set
              * @return the element at the index supplied
              **/
-            T& get(int i) {
+            T& get(size_t i) {
                 size_t size = m_size;
                 SetNode* node = m_root;  //this wont work
                 while (i < size) {

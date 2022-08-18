@@ -79,6 +79,7 @@ namespace UML {
                 removeFromGraph();
                 m_id = rhs.m_id;
                 m_manager = rhs.m_manager;
+                m_manager2 = rhs.m_manager2;
                 m_ptr = 0;
                 m_ptrId = 0;
                 m_node = rhs.m_node;
@@ -246,6 +247,9 @@ namespace UML {
                     el->m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
                     m_node = m_ptr->m_node;
                 }
+            };
+            UmlPtr() {
+                // nothing
             };
             virtual ~UmlPtr() {
                 if (m_id == ID::nullID()) {

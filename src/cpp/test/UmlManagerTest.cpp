@@ -23,7 +23,7 @@ TEST_F(UmlManagerTest, FactoryTest) {
 }
 
 TEST_F(UmlManagerTest, openAndSaveTest) {
-    UmlManager m;
+    BasicManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "umlManagerTests/simpleModel.yml"));
     ASSERT_EQ(m.getRoot()->getID(), ID::fromString("GAfdua&ubXfsR1EgdB3HeVglkaor"));
     ASSERT_EQ(m.getRoot()->as<NamedElement>().getName(), "test");
@@ -39,7 +39,7 @@ TEST_F(UmlManagerTest, openAndSaveTest) {
     EXPECT_EQ(m.getRoot()->as<Package>().getPackagedElements().size(), 2);
     //ASSERT_EQ(m.getModel()->getPackagedElements().front()->getID(), p.getID());
 
-    Package& p2 = m.get(pID).as<Package>();
+    Package& p2 = m.get(pID)->as<Package>();
     m.getRoot()->as<Package>().getPackagedElements().remove(p2);
     m.save();
 }

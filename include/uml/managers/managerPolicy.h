@@ -4,6 +4,7 @@
 #include "uml/element.h"
 #include "abstractManager.h"
 #include "abstractAccessPolicy.h"
+#include "uml/umlPtr.h"
 
 namespace UML {
 
@@ -19,6 +20,8 @@ namespace UML {
 
     template <typename AccessPolicy, typename PersistencePolicy>
     class Manager : public AbstractManager , public AccessPolicy, public PersistencePolicy {
+        protected:
+            ElementPtr m_root;
         public:
             template <class T = Element>
             UmlPtr<T> create() {
@@ -31,14 +34,17 @@ namespace UML {
             };
 
             Element* create(ElementType type) override {
-                switch (type)
-                {
-                case ElementType::PACKAGE:
-                    return create<Package>().ptr();
-                    break;
-                
-                default:
-                    break;
+                switch (type) {
+                    case ElementType::MODEL : {
+                        return create<Model>().ptr();
+                    }
+                    case ElementType::PACKAGE: {
+                        return create<Package>().ptr();
+                        break;
+                    }
+                    default: {
+                        throw ManagerPolicyStateException("could not do multimethod create!");
+                    }
                 }
                 return 0;
             }
@@ -75,9 +81,30 @@ namespace UML {
                 AccessPolicy::removeNode(id);
             }
 
-            void open(std::string path) override {
-                ElementPtr root = PersistencePolicy::parse(path, this);
-                AccessPolicy::setRoot(root);
+            ElementPtr open(std::string path) {
+                m_root = PersistencePolicy::parse(path, this);
+                return m_root;
+            }
+
+            ElementPtr open() {
+                m_root = PersistencePolicy::parse(this);
+                return m_root;
+            }
+
+            void save() {
+                PersistencePolicy::write(this);
+            }
+
+            void setRoot(Element* root) {
+                m_root = root;
+            }
+
+            ElementPtr getRoot() const override {
+                return m_root;
+            }
+
+            std::string getLocation(ID id) override {
+                return PersistencePolicy::getLocation(id);
             }
     };
 

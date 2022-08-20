@@ -3,6 +3,7 @@
 
 #include "element.h"
 #include "umlManager.h"
+#include "managers/abstractManager.h"
 
 /**
  * A quick note: The Set class is complicated and took a lot of time for me to figure out.
@@ -1901,7 +1902,12 @@ namespace UML {
                         node = node->m_left;
                     }
                     if (!node->m_el) {
-                        node->m_el = m_el->m_manager->get(m_el, node->m_id);
+                        if (m_el->m_manager) {
+                            node->m_el = m_el->m_manager->get(m_el, node->m_id);
+                        } else if (m_el->m_manager2) {
+                            node->m_el = m_el->m_manager2->get(m_el, node->m_id);
+                        }
+                        
                     }
                     return *dynamic_cast<T*>(node->m_el);
                 }

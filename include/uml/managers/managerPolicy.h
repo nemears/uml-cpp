@@ -8,16 +8,6 @@
 
 namespace UML {
 
-    class ManagerPolicyStateException : public std::exception {
-        std::string m_msg;
-        const char* what() const throw() override {
-            return m_msg.c_str();
-        };
-        public:
-            ManagerPolicyStateException(){};
-            ManagerPolicyStateException(std::string msg) : m_msg("UmlManager bad state! " + msg) {};
-    };
-
     template <typename AccessPolicy, typename PersistencePolicy>
     class Manager : public AbstractManager , public AccessPolicy, public PersistencePolicy {
         protected:
@@ -35,15 +25,35 @@ namespace UML {
 
             Element* create(ElementType type) override {
                 switch (type) {
+                    case ElementType::CLASS : {
+                        return create<Class>().ptr();
+                    }
+                    case ElementType::EXTENSION : {
+                        return create<Extension>().ptr();
+                    }
+                    case ElementType::EXTENSION_END : {
+                        return create<ExtensionEnd>().ptr();
+                    }
+                    case ElementType::INSTANCE_SPECIFICATION : {
+                        return create<InstanceSpecification>().ptr();
+                    }
                     case ElementType::MODEL : {
                         return create<Model>().ptr();
                     }
                     case ElementType::PACKAGE: {
                         return create<Package>().ptr();
-                        break;
+                    }
+                    case ElementType::PROFILE : {
+                        return create<Profile>().ptr();
+                    }
+                    case ElementType::PROFILE_APPLICATION: {
+                        return create<ProfileApplication>().ptr();
+                    }
+                    case ElementType::STEREOTYPE : {
+                        return create<Stereotype>().ptr();
                     }
                     default: {
-                        throw ManagerPolicyStateException("could not do multimethod create!");
+                        throw ManagerPolicyStateException("could not do multimethod create for element type: " + Element::elementTypeToString(type));
                     }
                 }
                 return 0;
@@ -66,11 +76,19 @@ namespace UML {
                 return ret;
             };
 
+            bool loaded(ID id) override {
+                return AccessPolicy::loaded(id);
+            }
+
             void release(Element& el) override {
                 PersistencePolicy::write(el, this);
                 // el.m_node->m_mountedFlag = true;
                 AccessPolicy::releaseNode(el);
             }
+
+            void erase(Element& el) override {
+                AccessPolicy::eraseNode(el.m_node);
+            };
 
             void reindex(ID oldID, ID newID) override {
                 AccessPolicy::reindex(oldID, newID);
@@ -105,6 +123,10 @@ namespace UML {
 
             std::string getLocation(ID id) override {
                 return PersistencePolicy::getLocation(id);
+            }
+
+            void setLocation(ID id, std::string location) override {
+                PersistencePolicy::setLocation(id, location);
             }
     };
 

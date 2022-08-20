@@ -30,8 +30,50 @@ namespace UML {
                 return ElementPtr(0);
             }
 
+            bool loaded(ID id) {
+                return m_graph.count(id) > 0;
+            }
+
             void restoreNode(Element& el) {
                 restore(el);
+            }
+
+            void eraseNode(ManagerNode* node) {
+                // std::vector<ManagerNode*> idsToErase(node->m_references.size());
+                // size_t i = 0;
+                // for (auto& pair : node->m_references) {
+                //     if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+                //         // element has been released, aquire
+                //         try {
+                //             idsToErase[i] = getNode(get(pair.first));//->m_node;
+                //         } catch (ID_doesNotExistException& idException) {
+                //             idsToErase[i] = 0;
+                //         }
+                //     } else {
+                //         idsToErase[i] = pair.second.node;
+                //     }
+                //     i++;
+                // }
+                // for (auto& refNode : idsToErase) {
+                //     if (!refNode) {
+                //         continue;
+                //     }
+                //     refNode->m_managerElementMemory->removeReference(id);
+                //     refNode->m_managerElementMemory->referenceErased(id);
+                //     if (refNode->m_references.count(id)) {
+                //         refNode->m_references.erase(id);
+                //     }
+                // }
+                // for (auto& ptr : node->m_ptrs) {
+                //     ptr->erasePtr();
+                // }
+                // delete node->m_managerElementMemory;
+                // m_graph.erase(id);
+                // m_elements.erase(id);
+                // // m_elements.erase(std::find(m_elements.begin(), m_elements.end(), id));
+                // if (!m_mountBase.empty()) {
+                //     std::filesystem::remove_all(m_mountBase / (id.string() + ".yml"));
+                // }
             }
 
             void releaseNode(Element& el) {

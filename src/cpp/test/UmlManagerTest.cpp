@@ -45,7 +45,7 @@ TEST_F(UmlManagerTest, openAndSaveTest) {
 }
 
 TEST_F(UmlManagerTest, multipleFileTest) {
-    UmlManager m;
+    BasicManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "umlManagerTests/multipleFiles.yml"));
     ASSERT_TRUE(m.getRoot());
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
@@ -111,7 +111,7 @@ TEST_F(UmlManagerTest, releaseTest) {
 }
 
 TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
-    UmlManager m;
+    BasicManager m;
     Package& p = *m.create<Package>();
     Class& c = *m.create<Class>();
     InstanceSpecification& i = *m.create<InstanceSpecification>();
@@ -122,7 +122,7 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     ASSERT_NO_THROW(m.mount(ymlPath + "umlManagerTests"));
     ASSERT_TRUE(i.getClassifiers().size() != 0);
     ASSERT_EQ(i.getClassifiers().front().getID(), c.getID());
-    ASSERT_NO_THROW(m.release(c.getID()));
+    ASSERT_NO_THROW(m.release(c));
     ASSERT_TRUE(i.getClassifiers().size() != 0);
     Class* c2 = &i.getClassifiers().front().as<Class>();
     ASSERT_TRUE(i.getOwner());
@@ -134,7 +134,7 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     ASSERT_EQ(p.getMembers().front(), *c2);
     ASSERT_EQ(&p.getMembers().front(), c2);
     ASSERT_EQ(&p.getPackagedElements().front(), c2);
-    ASSERT_NO_THROW(m.release(p.getID()));
+    ASSERT_NO_THROW(m.release(p));
     ASSERT_TRUE(c2->getOwner());
     ASSERT_TRUE(i.getOwner());
     Package* p2 = &i.getOwner()->as<Package>();
@@ -162,18 +162,18 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
 }
 
 TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {
-    UmlManager m;
+    BasicManager m;
     Package& pckg = *m.create<Package>();
     m.setRoot(&pckg);
     m.mount(ymlPath + "umlManagerTests");
     Package& child = *m.create<Package>();   
     pckg.getPackagedElements().add(child);
-    ASSERT_NO_THROW(m.release(child.getID()));
+    ASSERT_NO_THROW(m.release(child));
 }
 
 TEST_F(UmlManagerTest, ManagerMountStressTest) {
     const size_t numElements = 2;
-    UmlManager m;
+    BasicManager m;
     Package& root = *m.create<Package>();
     ID rootID = root.getID();
     m.setRoot(&root);
@@ -184,14 +184,14 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
         PackagePtr child = m.create<Package>();
         pckg->getPackagedElements().add(*child);
         ids.push_back(pckg->getID());
-        m.release(pckg->getID()); // release or segfault
+        m.release(*pckg); // release or segfault
         pckg = child;
     }
     m.release(*pckg);
     for (size_t i = 0; i < numElements; i++) {
         EXPECT_FALSE(m.loaded(ids[i])) << "at index" << i;
     }
-    pckg = &m.get(rootID).as<Package>(); // try to only aquire root
+    pckg = &m.get(rootID)->as<Package>(); // try to only aquire root
     for (size_t i = 0; i < numElements; i++) {
         EXPECT_FALSE(m.loaded(*pckg->getPackagedElements().ids().begin())) << "at index " << i;
         ASSERT_EQ(pckg->getPackagedElements().size(), 1) << "at index " << i;
@@ -204,15 +204,16 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
         }
         pckg = &pckg->getPackagedElements().front().as<Package>();
     }
-    Package& root3 = m.get(rootID).as<Package>();
+    Package& root3 = m.get(rootID)->as<Package>();
+    ASSERT_EQ(root3.getID(), rootID);
 }
 
 TEST_F(UmlManagerTest, basicEraseFunctionalityTest) {
-    UmlManager m;
+    BasicManager m;
     Package& package = *m.create<Package>();
     Package& child = *m.create<Package>();
     package.getPackagedElements().add(child);
-    m.setRoot(package);
+    m.setRoot(&package);
     m.mount(ymlPath + "umlManagerTests");
     ID childID = child.getID();
     m.erase(child);

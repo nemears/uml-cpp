@@ -70,6 +70,10 @@ namespace UML {
                 return m_persistenPath.string();
             }
 
+            void setLocation(ID id, std::filesystem::path location) {
+                m_elementPaths[id] = location;
+            }
+
         public:
             void mount(std::filesystem::path mountPath) {
                 m_mountBase = mountPath;

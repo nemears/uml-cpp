@@ -232,6 +232,7 @@ namespace UML {
     class Element {
 
         friend class UmlManager;
+        friend class AbstractManager;
         friend class AbstractAccessPolicy;
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class UmlClient;

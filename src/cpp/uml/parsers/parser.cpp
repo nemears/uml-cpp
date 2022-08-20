@@ -203,18 +203,27 @@ bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
             if (isValidID(node[key].as<std::string>())) {
                 // ID
                 ID id = ID::fromString(node[key].as<std::string>());
-                if (data.m_manager->UmlManager::loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                    try {
-                        (el.*elSignature)(data.m_manager->get(id).as<T>());
-                    } catch (DuplicateElementInSetException& e) {
-                        // nothing let (that part) fail
+                if (data.m_manager) {
+                    if (data.m_manager->UmlManager::loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
+                        try {
+                            (el.*elSignature)(data.m_manager->get(id).as<T>());
+                        } catch (DuplicateElementInSetException& e) {
+                            // nothing let (that part) fail
+                        }
+                        catch (std::exception& e) {
+                            throw UmlParserException("Unexpected Uml error: " + std::string(e.what()), data.m_path.string(), node[key]);
+                        }
+                    } else {
+                        (el.*idSignature)(id);
                     }
-                    catch (std::exception& e) {
-                        throw UmlParserException("Unexpected Uml error: " + std::string(e.what()), data.m_path.string(), node[key]);
+                } else if (data.m_manager2) {
+                    if (data.m_manager2->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
+                        (el.*elSignature)(data.m_manager2->get(id)->as<T>());
+                    } else {
+                        (el.*idSignature)(id);
                     }
-                } else {
-                    (el.*idSignature)(id);
                 }
+                
                 return true;
             } else {
                 // Path
@@ -384,8 +393,8 @@ ElementPtr parse(ParserMetaData& data) {
         }
         for (size_t i = 0; i < nodes[1].size(); i++) {
             ID id = ID::fromString(nodes[1][i].as<std::string>());
-            if (data.m_manager->loaded(id)) {
-                Element& el = data.m_manager->get(id);
+            if (data.m_manager ? data.m_manager->loaded(id) : data.m_manager2->loaded(id)) {
+                Element& el = data.m_manager ? data.m_manager->get(id) : *data.m_manager2->get(id);
                 if (ret->m_node->m_references.count(id) == 0) {
                     // reference not set while parsing
                     ret->setReference(&el);
@@ -398,6 +407,8 @@ ElementPtr parse(ParserMetaData& data) {
                 } else {
                     el.restoreReference(ret.ptr());
                 }
+            } else if (ret->m_node->m_references.count(id) == 0) {
+                ret->setReference(id);
             }
         }
     } else {
@@ -1067,11 +1078,7 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["class"]) {
-        if (node["class"].IsMap()) {
-            ClassPtr clazz = data.m_manager->create<Class>();
-            parseClass(node["class"], *clazz, data);
-            ret = clazz;
-        }
+        ret = &parseDefinition<Class>(node, data, "class", parseClass);
     }
 
     if (node["classifierTemplateParameter"]) {
@@ -1359,9 +1366,14 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["profile"] && node["profile"].IsMap()) {
-        Profile& profile = *data.m_manager->create<Profile>();
-        parsePackage(node["profile"], profile, data);
-        ret = &profile;
+        ProfilePtr profile;
+        if (data.m_manager) {
+            profile = data.m_manager->create<Profile>();
+        } else if (data.m_manager2) {
+            profile = data.m_manager2->create<Profile>();
+        }
+        parsePackage(node["profile"], *profile, data);
+        ret = profile;
     }
 
     if (node["profileApplication"]) {
@@ -1456,7 +1468,12 @@ ElementPtr parseExternalAddToManager(ParserMetaData& data, string path) {
         filesystem::path cPath = data.m_path;
         data.m_path = cPath.parent_path() / path;
         ElementPtr ret = parse(data);
-        data.m_manager->setPath(ret->getID(), data.m_path.string());
+        if (data.m_manager) {
+            data.m_manager->setPath(ret->getID(), data.m_path.string());
+        } else if (data.m_manager2) {
+            data.m_manager2->setLocation(ret->getID(), data.m_path.string());
+        }
+        
         data.m_path = cPath;
         return ret;
     } else {
@@ -2166,9 +2183,7 @@ Comment& determineAndParseOwnedComment(YAML::Node node, ParserMetaData& data) {
 
 InstanceSpecification& determinAndParseAppliedStereotype(YAML::Node node, ParserMetaData& data) {
     if (node["instanceSpecification"]) {
-        InstanceSpecification& instance = *data.m_manager->create<InstanceSpecification>();
-        parseInstanceSpecification(node["instanceSpecification"], instance, data);
-        return instance;
+        return parseDefinition<InstanceSpecification>(node, data, "instanceSpecification", parseInstanceSpecification);
     } else {
         throw UmlParserException("Invalid uml element identifier for appliedStereotype entry, can only be an InstanceSpecification!", data.m_path.string(), node);
     }
@@ -2840,14 +2855,15 @@ PackageMerge& determineAndParsePackageMerge(YAML::Node node, ParserMetaData& dat
 
 ProfileApplication& determineAndParseProfileApplication(YAML::Node node, ParserMetaData& data) {
     if (node["profileApplication"]) {
-        if (node["profileApplication"].IsMap()) {
-            ProfileApplication& profileApplication = *data.m_manager->create<ProfileApplication>();
-            parseProfileApplication(node["profileApplication"], profileApplication, data);
-            return profileApplication;
-        }
-        else {
-            throw UmlParserException("Invalid yaml node type for profileApplication definition, must be a map!", data.m_path.string(), node["profileApplication"]);
-        }
+        return parseDefinition<ProfileApplication>(node, data, "profileApplication", parseProfileApplication);
+        // if (node["profileApplication"].IsMap()) {
+        //     ProfileApplication& profileApplication = *data.m_manager->create<ProfileApplication>();
+        //     parseProfileApplication(node["profileApplication"], profileApplication, data);
+        //     return profileApplication;
+        // }
+        // else {
+        //     throw UmlParserException("Invalid yaml node type for profileApplication definition, must be a map!", data.m_path.string(), node["profileApplication"]);
+        // }
     } else {
         throw UmlParserException("Invalid uml element for profileApplication definition, can only be a profileApplication!", data.m_path.string(), node);
     }
@@ -2928,13 +2944,7 @@ PackageableElement& determineAndParsePackageableElement(YAML::Node node, ParserM
 
 Stereotype& determineAndParseStereotype(YAML::Node node, ParserMetaData& data) {
     if (node["stereotype"]) {
-        if (node["stereotype"].IsMap()) {
-            Stereotype& stereotype = *data.m_manager->create<Stereotype>();
-            parseClass(node["stereotype"], stereotype, data);
-            return stereotype;
-        } else {
-            throw UmlParserException("Invalid yaml node type for stereotype definition, it must be a map!", data.m_path.string(), node["stereotype"]);
-        }
+        return parseDefinition<Stereotype>(node, data, "stereotype", parseClass);
     } else {
         throw UmlParserException("Invalid element identifier for stereotype, it may only be stereotype!", data.m_path.string(), node);
     }
@@ -3651,9 +3661,7 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
 
 ExtensionEnd& determineAndParseOwnedEnd(YAML::Node node, ParserMetaData& data) {
     if (node["extensionEnd"]) {
-        ExtensionEnd& extensionEnd = *data.m_manager->create<ExtensionEnd>();
-        parseProperty(node["extensionEnd"], extensionEnd, data);
-        return extensionEnd;
+        return parseDefinition<ExtensionEnd>(node, data, "extensionEnd", parseProperty);
     } else {
         throw UmlParserException("Invalide uml element identifier, can only be an extensionEnd!", data.m_path.string(), node);
     }

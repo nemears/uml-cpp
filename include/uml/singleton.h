@@ -40,6 +40,7 @@ namespace UML {
                     }
                     if (this->m_el) {
                         ret.m_manager = this->m_el->m_manager;
+                        ret.m_manager2 = this->m_el->m_manager2;
                     }
                 }
                 return ret;

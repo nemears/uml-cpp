@@ -3,6 +3,7 @@
 
 #include "element.h"
 #include "managers/abstractManager.h"
+#include "umlManager.h"
 
 namespace UML {
 

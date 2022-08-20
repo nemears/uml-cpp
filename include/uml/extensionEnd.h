@@ -11,6 +11,7 @@ namespace UML {
     class ExtensionEnd : public Property {
 
         friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         private:
             Singleton<Stereotype, ExtensionEnd> m_extensionType = Singleton<Stereotype, ExtensionEnd>(this);

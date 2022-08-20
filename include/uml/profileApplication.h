@@ -13,6 +13,7 @@ namespace UML {
     class ProfileApplication : public DirectedRelationship {
 
         friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class Package;
 
         private:

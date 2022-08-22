@@ -137,26 +137,6 @@ namespace UML {
         NOT_SET
     };
 
-    class Element;
-    class AbstractUmlPtr;
-
-    /**
-     * The ManagerNode struct is used as nodes in the internal graphs of the element's manager
-     * It is also stored as a pointer from within the element so each element can quickly access
-     * its place in the reference graph
-     **/
-    struct ManagerNode {
-        Element* m_managerElementMemory = 0;
-        std::string m_path;
-        bool m_mountedFlag = false;
-        struct NodeReference {
-            ManagerNode* node = 0;
-            size_t numRefs = 0;
-        };
-        std::unordered_map<ID, NodeReference> m_references;
-        std::list<AbstractUmlPtr*> m_ptrs; // list to UmlPtr*'s
-    };
-
     // Helper function to assess possible ids
     bool isValidID(std::string strn);
 
@@ -174,6 +154,7 @@ namespace UML {
             };
     };  
 
+    class Element;
     class ElementDoesntExistException;
     class Relationship;
     class DirectedRelationship;
@@ -234,6 +215,7 @@ namespace UML {
         friend class UmlManager;
         friend class AbstractManager;
         friend class AbstractAccessPolicy;
+        friend struct ManagerNode;
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class UmlClient;
         friend class UmlServer;

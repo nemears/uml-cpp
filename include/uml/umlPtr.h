@@ -4,6 +4,7 @@
 #include "element.h"
 #include "managers/abstractManager.h"
 #include "umlManager.h"
+#include "managers/managerNode.h"
 
 namespace UML {
 
@@ -23,6 +24,7 @@ namespace UML {
         template <class AccessPolicy, class PersistencePolicy> friend class Manager;
         friend class AbstractAccessPolicy;
         template <class T> friend class UmlPtr;
+        friend struct ManagerNode;
 
         protected:
             ID m_id = ID::nullID();

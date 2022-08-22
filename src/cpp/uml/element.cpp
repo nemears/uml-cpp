@@ -20,7 +20,7 @@ bool isValidID(std::string strn) {
 
 void Element::setReference(Element* referencing) {
     if (m_node->m_references.count(referencing->getID())) {
-        m_node->m_references[referencing->getID()].numRefs++;
+        m_node->m_references[referencing->getID()].count++;
     } else {
         m_node->m_references[referencing->getID()] = ManagerNode::NodeReference{referencing->m_node, 1};
     }
@@ -28,7 +28,7 @@ void Element::setReference(Element* referencing) {
 
 void Element::setReference(ID id) {
     if (m_node->m_references.count(id)) {
-        m_node->m_references[id].numRefs++;
+        m_node->m_references[id].count++;
     } else {
         // TODO maybe check if loaded? cause this can be called when the element of the id is not released
         m_node->m_references[id] = ManagerNode::NodeReference{0, 1};
@@ -36,8 +36,8 @@ void Element::setReference(ID id) {
 }
 
 void Element::removeReference(ID referencing) {
-    if (m_node->m_references[referencing].numRefs > 1) {
-        m_node->m_references[referencing].numRefs--;
+    if (m_node->m_references[referencing].count > 1) {
+        m_node->m_references[referencing].count--;
     } else {
         m_node->m_references.erase(referencing);
     }

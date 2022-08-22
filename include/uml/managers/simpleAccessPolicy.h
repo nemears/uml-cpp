@@ -8,18 +8,9 @@ namespace UML {
         private:
             std::unordered_map<ID, ManagerNode> m_graph;
         protected:
-            template <class T = Element>
-            UmlPtr<T> create() {
-                T* ptr = createPtr<T>();
-                m_graph[ptr->getID()] = {ptr};
-                setNode(&m_graph[ptr->getID()]);
-                UmlPtr<T> ret(ptr);
-                return ret;
-            }
-
-            void assignNode(Element* newElement) {
-                m_graph[newElement->getID()] = {newElement};
-                setNode(&m_graph[newElement->getID()]);
+            ManagerNode& assignNode(Element* newElement) {
+                ManagerNode& node = m_graph[newElement->getID()] = {newElement};
+                return node;
             }
 
             ElementPtr get(ID id) {
@@ -31,56 +22,85 @@ namespace UML {
             }
 
             bool loaded(ID id) {
-                return m_graph.count(id) > 0;
+                std::unordered_map<ID, ManagerNode>::const_iterator result = m_graph.find(id);
+                return result != m_graph.end() && (*result).second.m_managerElementMemory;
             }
 
-            void restoreNode(Element& el) {
-                restore(el);
+            void restoreNode(ManagerNode* restoredNode) {
+                // el.m_node->m_managerElementMemory = &el;
+                for (auto& pair : restoredNode->m_references) {
+                    ManagerNode* node = pair.second.node;
+                    if (!node || !node->m_managerElementMemory) {
+                        // element has been released, possibly there are no pointers
+                        continue;
+                    }
+                    node->restoreReference(restoredNode->m_managerElementMemory);
+                    restoredNode->restoreReference(node->m_managerElementMemory);
+                }
+                restoredNode->restoreReferences();
             }
 
-            void eraseNode(ManagerNode* node) {
-                // std::vector<ManagerNode*> idsToErase(node->m_references.size());
-                // size_t i = 0;
-                // for (auto& pair : node->m_references) {
-                //     if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
-                //         // element has been released, aquire
-                //         try {
-                //             idsToErase[i] = getNode(get(pair.first));//->m_node;
-                //         } catch (ID_doesNotExistException& idException) {
-                //             idsToErase[i] = 0;
-                //         }
-                //     } else {
-                //         idsToErase[i] = pair.second.node;
-                //     }
-                //     i++;
-                // }
-                // for (auto& refNode : idsToErase) {
-                //     if (!refNode) {
-                //         continue;
-                //     }
-                //     refNode->m_managerElementMemory->removeReference(id);
-                //     refNode->m_managerElementMemory->referenceErased(id);
-                //     if (refNode->m_references.count(id)) {
-                //         refNode->m_references.erase(id);
-                //     }
-                // }
-                // for (auto& ptr : node->m_ptrs) {
-                //     ptr->erasePtr();
-                // }
-                // delete node->m_managerElementMemory;
-                // m_graph.erase(id);
-                // m_elements.erase(id);
-                // // m_elements.erase(std::find(m_elements.begin(), m_elements.end(), id));
-                // if (!m_mountBase.empty()) {
-                //     std::filesystem::remove_all(m_mountBase / (id.string() + ".yml"));
-                // }
+            void eraseNode(ManagerNode* node, AbstractManager* me) {
+                ID id = node->m_managerElementMemory->getID();
+                std::vector<ManagerNode*> nodesToErase(node->m_references.size());
+                {
+                    std::vector<ID> idsToAquire(node->m_references.size());
+                    size_t i = 0;
+                    for (auto& pair : node->m_references) {
+                        if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+                            // element has been released, aquire
+                            nodesToErase[i] = 0;
+                            idsToAquire[i] = pair.first;
+                            // try {
+                            //     me->get(pair.first);
+                            //     nodesToErase[i] = pair.second.node;
+                            // } catch (ID_doesNotExistException& idException) {
+                            //     nodesToErase[i] = 0;
+                            // }
+                        } else {
+                            nodesToErase[i] = pair.second.node;
+                        }
+                        i++;
+                    }
+                    i = 0;
+                    for (auto& refNode : nodesToErase) {
+                        if (!refNode) {
+                            refNode = getNode(*me->get(idsToAquire[i]));
+                        }
+                        i++;
+                    }
+                }
+                for (auto& refNode : nodesToErase) {
+                    if (!refNode) {
+                        continue;
+                    }
+                    refNode->removeReference(*node->m_managerElementMemory);
+                    refNode->referenceErased(id);
+                    if (refNode->m_references.count(id)) {
+                        refNode->m_references.erase(id);
+                    }
+                }
+                node->erase();
+                delete node->m_managerElementMemory;
+                m_graph.erase(id);
             }
 
-            void releaseNode(Element& el) {
-                ID elID = el.getID();
-                ManagerNode* node = AbstractAccessPolicy::releaseNode(el);
+            void releaseNode(ManagerNode* node) {
+                ID id = node->m_managerElementMemory->getID();
+                for (auto& e : node->m_references) {
+                    if (!e.second.node) {
+                        // el has been released there are no pointers
+                        continue;
+                    }
+                    if (e.second.node->m_managerElementMemory) {
+                        e.second.node->releaseReference(id);
+                    }
+                }
+                node->releasePtrs();
+                node->m_managerElementMemory = 0;
+                delete node->m_managerElementMemory;
                 if (node->m_ptrs.empty()) {
-                    m_graph.erase(elID);
+                    m_graph.erase(id);
                 }
             }
 

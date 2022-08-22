@@ -252,8 +252,8 @@ void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, 
                 if (node[key][i].IsScalar()) {
                     if (isValidID(node[key][i].as<std::string>())) {
                         ID id = ID::fromString(node[key][i].as<std::string>());
-                        if (data.m_manager->UmlManager::loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                            T& t = data.m_manager->get(id).as<T>();
+                        if ((data.m_manager ? data.m_manager->UmlManager::loaded(id) : data.m_manager2->loaded(id)) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
+                            T& t = data.m_manager ? data.m_manager->get(id).as<T>() : data.m_manager2->get(id)->as<T>();
                             if ((owner.*signature)().getOpposite() && (t.*(owner.*signature)().getOpposite())().contains(owner)) {
                                 (owner.*signature)().add(id);
                             } else {
@@ -1212,9 +1212,7 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["instanceSpecification"]) {
-        InstanceSpecification& inst = *data.m_manager->create<InstanceSpecification>();
-        parseInstanceSpecification(node["instanceSpecification"], inst, data);
-        ret = &inst;
+        ret = &parseDefinition<InstanceSpecification>(node, data, "instanceSpecification", parseInstanceSpecification);
     }
 
     if (node["instanceValue"]) {

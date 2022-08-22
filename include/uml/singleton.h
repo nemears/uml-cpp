@@ -2,6 +2,7 @@
 #define _UML_SINGLETON_H_
 
 #include "set.h"
+#include "managers/managerNode.h"
 
 namespace UML {
 

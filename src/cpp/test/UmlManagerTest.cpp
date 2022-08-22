@@ -172,7 +172,7 @@ TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {
 }
 
 TEST_F(UmlManagerTest, ManagerMountStressTest) {
-    const size_t numElements = 2;
+    const size_t numElements = 20;
     BasicManager m;
     Package& root = *m.create<Package>();
     ID rootID = root.getID();
@@ -223,7 +223,7 @@ TEST_F(UmlManagerTest, basicEraseFunctionalityTest) {
 }
 
 TEST_F(UmlManagerTest, eraseReferenceWhileReleasedTest) {
-    UmlManager m;
+    BasicManager m;
     ClassPtr c = m.create<Class>();
     InstanceSpecificationPtr i = m.create<InstanceSpecification>();
     i->getClassifiers().add(*c);

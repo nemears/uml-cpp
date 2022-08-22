@@ -340,7 +340,7 @@ void UmlManager::reindex(ID oldID, ID newID) {
                     // reference is relased currently with no ptrs
                     throw ManagerStateException("Bad state in reindex, reference released! TODO maybe aquire released el");
                 } else if (ref.second.node->m_references.count(oldID)) {
-                    size_t numRefs = ref.second.node->m_references[oldID].numRefs;
+                    size_t numRefs = ref.second.node->m_references[oldID].count;
                     ref.second.node->m_references.erase(oldID);
                     ref.second.node->m_references[newID] = ManagerNode::NodeReference{newDisc, numRefs};
                 }
@@ -594,7 +594,7 @@ ElementPtr UmlManager::getRoot() {\
 }
 
 void UmlManager::setPath(ID elID, std::string path) {
-    m_graph[elID].m_path = path;
+    // m_graph[elID].m_path = path;
 }
 
 Element* UmlManager::get(Element* me, ID theID) {

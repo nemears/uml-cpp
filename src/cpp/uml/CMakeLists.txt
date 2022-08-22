@@ -23,7 +23,7 @@ set(umlSources  element.cpp id.cpp set.cpp umlManager.cpp namedElement.cpp names
                 parsers/parser.cpp parsers/emitterMetaData.cpp
 
                 #managers
-                managers/abstractManager.cpp
+                managers/abstractManager.cpp managers/managerNode.cpp
 
                 #CMAKE option for set
                 PARENT_SCOPE)

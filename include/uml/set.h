@@ -4,6 +4,7 @@
 #include "element.h"
 #include "umlManager.h"
 #include "managers/abstractManager.h"
+#include "umlPtr.h"
 
 /**
  * A quick note: The Set class is complicated and took a lot of time for me to figure out.
@@ -859,7 +860,11 @@ namespace UML {
                 SetNode* temp = innerInnerRemove(id);
                 for (auto& func : m_removeFunctors) {
                     if (!temp->m_el) {
-                        temp->m_el = m_el->m_manager->get(m_el, temp->m_id);
+                        if (m_el->m_manager) { // TODO delete
+                            temp->m_el = m_el->m_manager->get(m_el, temp->m_id);
+                        } else if (m_el->m_manager2) {
+                            temp->m_el = m_el->m_manager2->get(m_el, temp->m_id);
+                        }
                     }
                     (*func)(*dynamic_cast<T*>(temp->m_el));
                 }
@@ -1137,8 +1142,14 @@ namespace UML {
                     innerRemove(id);
                     if (m_el) 
                     {
-                        m_el->m_manager->get(id).removeReference(m_el->getID());
-                        m_el->removeReference(id);
+                        if (m_el->m_manager) {
+                            m_el->m_manager->get(id).removeReference(m_el->getID());
+                            m_el->removeReference(id);
+                        } else if (m_el->m_manager2) {
+                            m_el->m_manager2->get(id)->removeReference(m_el->getID());
+                            m_el->removeReference(id);
+                        }
+                        
                     }
                 }
             };
@@ -1770,8 +1781,13 @@ namespace UML {
                 }
                 SetNode* node = createNode(id);
                 add(node);
-                if (m_el && m_el->m_manager) {
-                    m_el->setReference(id);
+                if (m_el) {
+                    if (m_el->m_manager) { // TODO delete
+                        m_el->setReference(id);
+                    } else if (m_el->m_manager2) {
+                        m_el->setReference(id);
+                    }
+                    
                 }
             };
             /**

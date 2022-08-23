@@ -78,9 +78,13 @@ namespace UML {
             void mount(std::filesystem::path mountPath) {
                 m_mountBase = mountPath;
                 std::filesystem::create_directories(m_mountBase / std::filesystem::path("mount"));
-                // for (auto& pair : m_graph) {
-                //     mountEl(*pair.second.m_managerElementMemory);
-                // }
+            }
+
+            virtual ~FilePersistencePolicy() {
+                // delete mount
+                if (!m_mountBase.empty()) {
+                    std::filesystem::remove_all(m_mountBase / "mount");
+                }
             }
     };
 }

@@ -4,6 +4,7 @@
 #include "uml/parsers/parser.h"
 #include "test/umlTestUtil.h"
 #include "uml/managers/basicManager.h"
+#include "uml/managers/threadSafeManager.h"
 
 using namespace std;
 using namespace UML;
@@ -238,6 +239,20 @@ TEST_F(UmlManagerTest, eraseReferenceWhileReleasedTest) {
 
 TEST_F(UmlManagerTest, policyManagerTest) {
     BasicManager m;
+    PackagePtr p = m.create<Package>();
+    m.mount(".");
+    m.release(*p);
+    ASSERT_FALSE(p.loaded());
+    ASSERT_EQ(m.get(p.id()).ptr(), p.ptr());
+    PackagePtr child = m.create<Package>();
+    p->getPackagedElements().add(*child);
+    p.release();
+    ASSERT_FALSE(p.loaded());
+    ASSERT_FALSE(child->getOwningPackage().loaded());
+}
+
+TEST_F(UmlManagerTest, threadSafeManagerTest) {
+    ThreadSafeManager m;
     PackagePtr p = m.create<Package>();
     m.mount(".");
     m.release(*p);

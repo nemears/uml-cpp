@@ -25,6 +25,7 @@ namespace UML {
         };
         std::unordered_map<ID, NodeReference> m_references;
         std::list<AbstractUmlPtr*> m_ptrs; // list to UmlPtr*'s
+        ManagerNode(){};
         void setReference(Element& el);
         void setReference(ID id);
         void removeReference(Element& el);

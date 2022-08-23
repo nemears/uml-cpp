@@ -9,7 +9,8 @@ namespace UML {
             std::unordered_map<ID, ManagerNode> m_graph;
         protected:
             ManagerNode& assignNode(Element* newElement) {
-                ManagerNode& node = m_graph[newElement->getID()] = {newElement};
+                ManagerNode& node = m_graph[newElement->getID()];
+                node.m_managerElementMemory = newElement;
                 return node;
             }
 

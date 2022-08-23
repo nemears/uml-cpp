@@ -18,7 +18,8 @@ void UmlManager::clear() {
 }
 
 void UmlManager::createNode(Element* el) {
-    m_graph[el->getID()] = {el};
+    ManagerNode& node = m_graph[el->getID()] = ManagerNode();
+    node.m_managerElementMemory = el;
 }
 
 UmlManager::UmlManager() {

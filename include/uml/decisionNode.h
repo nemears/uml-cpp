@@ -12,7 +12,7 @@ namespace UML {
 
     class DecisionNode : public ControlNode {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Singleton<ObjectFlow, DecisionNode> m_decisionInputFlow = Singleton<ObjectFlow, DecisionNode>(this);

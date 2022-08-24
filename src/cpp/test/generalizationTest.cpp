@@ -14,7 +14,7 @@ class GeneralizationTest : public ::testing::Test {
 };
 
 TEST_F(GeneralizationTest, basicSetSpecificAndGeneralTest) {
-    UmlManager m;
+    BasicManager m;
     GeneralizationPtr r = m.create<Generalization>();
     ClassPtr s = m.create<Class>();
     ClassPtr g = m.create<Class>();
@@ -39,7 +39,7 @@ TEST_F(GeneralizationTest, basicSetSpecificAndGeneralTest) {
 }
 
 TEST_F(GeneralizationTest, addGeneralFunctorTest) {
-    UmlManager m;
+    BasicManager m;
     Classifier& s = *m.create<Class>();
     Classifier& g = *m.create<Class>();
     s.getGenerals().add(g);
@@ -66,7 +66,7 @@ TEST_F(GeneralizationTest, addGeneralFunctorTest) {
 }
 
 TEST_F(GeneralizationTest, AddGeneralizationFunctorTest) {
-    UmlManager m;
+    BasicManager m;
     ClassPtr s = m.create<Class>();
     ClassPtr g = m.create<Class>();
     GeneralizationPtr r = m.create<Generalization>();
@@ -77,7 +77,7 @@ TEST_F(GeneralizationTest, AddGeneralizationFunctorTest) {
 }
 
 TEST_F(GeneralizationTest, AddGeneralizationFunctorGeneralSetTest) {
-    UmlManager m;
+    BasicManager m;
     ClassPtr s = m.create<Class>();
     ClassPtr g = m.create<Class>();
     GeneralizationPtr r = m.create<Generalization>();
@@ -88,7 +88,7 @@ TEST_F(GeneralizationTest, AddGeneralizationFunctorGeneralSetTest) {
 }
 
 TEST_F(GeneralizationTest, resetGeneralTest) {
-    UmlManager m;
+    BasicManager m;
     Generalization& r = *m.create<Generalization>();
     Class& g = *m.create<Class>();
     Class& s = *m.create<Class>();
@@ -110,7 +110,7 @@ TEST_F(GeneralizationTest, resetGeneralTest) {
 }
 
 TEST_F(GeneralizationTest, resetSpecificTest) {
-    UmlManager m;
+    BasicManager m;
     Generalization& r = *m.create<Generalization>();
     Class& g = *m.create<Class>();
     Class& s = *m.create<Class>();
@@ -136,7 +136,7 @@ TEST_F(GeneralizationTest, resetSpecificTest) {
 }
 
 TEST_F(GeneralizationTest, backwardsResetGeneralTest) {
-    UmlManager m;
+    BasicManager m;
     Generalization& r = *m.create<Generalization>();
     Class& g = *m.create<Class>();
     Class& s = *m.create<Class>();
@@ -158,7 +158,7 @@ TEST_F(GeneralizationTest, backwardsResetGeneralTest) {
 }
 
 TEST_F(GeneralizationTest, backwardsResetSpecificTest) {
-    UmlManager m;
+    BasicManager m;
     Generalization& r = *m.create<Generalization>();
     Class& g = *m.create<Class>();
     Class& s = *m.create<Class>();
@@ -184,10 +184,10 @@ TEST_F(GeneralizationTest, backwardsResetSpecificTest) {
 }
 
 TEST_F(GeneralizationTest, ResetSpecificByGeneralTest) {
-    UmlManager m;
-    Classifier& g = *m.create<Classifier>();
-    Classifier& s = *m.create<Classifier>();
-    Classifier& s2 = *m.create<Classifier>();
+    BasicManager m;
+    Classifier& g = *m.create<Class>();
+    Classifier& s = *m.create<Class>();
+    Classifier& s2 = *m.create<Class>();
     s.getGenerals().add(g);
     Generalization* r = &s.getGeneralizations().front();
     r->setSpecific(&s2);

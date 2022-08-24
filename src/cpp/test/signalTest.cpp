@@ -14,7 +14,7 @@ class SignalTest : public ::testing::Test {
 };
 
 TEST_F(SignalTest, basicSignalAndReceptionTest) {
-    UmlManager m;
+    BasicManager m;
     Class& clazz = *m.create<Class>();
     Signal& signal = *m.create<Signal>();
     Reception& reception = *m.create<Reception>();
@@ -63,11 +63,10 @@ TEST_F(SignalTest, basicSignalAndReceptionTest) {
 }
 
 TEST_F(SignalTest, parseSignalTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "signalTests/basicSignal.yml").ptr());
-    ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
-    Package& pckg = el->as<Package>();
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "signalTests/basicSignal.yml"));
+    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+    Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
     Signal& signal = pckg.getPackagedElements().get("signal").as<Signal>();
     Class& clazz = pckg.getPackagedElements().get("class").as<Class>();
@@ -78,7 +77,7 @@ TEST_F(SignalTest, parseSignalTest) {
 }
 
 TEST_F(SignalTest, emitSignalTest) {
-    UmlManager m;
+    BasicManager m;
     Package& pckg = *m.create<Package>();
     Signal& signal = *m.create<Signal>();
     Property& attr = *m.create<Property>();

@@ -6,7 +6,7 @@
 namespace UML {
     class FinalNode : public ControlNode {
         
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             FinalNode();

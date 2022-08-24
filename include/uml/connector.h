@@ -13,7 +13,7 @@ namespace UML {
 
     class Connector : public Feature {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Singleton<Association, Connector> m_type = Singleton<Association, Connector>(this);

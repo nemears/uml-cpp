@@ -11,7 +11,7 @@ namespace UML {
     class RedefinableTemplateSignature : public RedefinableElement, public TemplateSignature {
 
         friend class Classifier;
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Singleton<Classifier, RedefinableTemplateSignature> m_classifier = Singleton<Classifier, RedefinableTemplateSignature>(this);

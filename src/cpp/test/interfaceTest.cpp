@@ -21,7 +21,7 @@ class InterfaceTest : public ::testing::Test {
 };
 
 TEST_F(InterfaceTest, basicInterfaceTest) {
-    UmlManager m;
+    BasicManager m;
     Interface& interface_uml = *m.create<Interface>();
     Property& property1 = *m.create<Property>();
     Property& property2 = *m.create<Property>();
@@ -121,9 +121,9 @@ TEST_F(InterfaceTest, basicInterfaceTest) {
 }
 
 TEST_F(InterfaceTest, parseBasicInterfaceTest) {
-    UmlManager m;
-    Element* el;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "interfaceTests/basicInterface.yml").ptr());
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "interfaceTests/basicInterface.yml"));
+    Element* el = m.getRoot().ptr();
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package& pckg = el->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
@@ -152,7 +152,7 @@ TEST_F(InterfaceTest, parseBasicInterfaceTest) {
 }
 
 TEST_F(InterfaceTest, emitInterfaceTest) {
-    UmlManager m;
+    BasicManager m;
     Package& root = *m.create<Package>();
     Interface& interface_uml = *m.create<Interface>();
     Property& prop = *m.create<Property>();
@@ -212,11 +212,10 @@ TEST_F(InterfaceTest, emitInterfaceTest) {
 }
 
 TEST_F(InterfaceTest, parsePortW_InterfaceTest) {
-    UmlManager m;
-    Element* el;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "interfaceTests/portW_Interface.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    Package& pckg = el->as<Package>();
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "interfaceTests/portW_Interface.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
     Class& implementing = pckg.getPackagedElements().get("implementing").as<Class>();
     Interface& interface_uml = pckg.getPackagedElements().get("interface").as<Interface>();
@@ -233,7 +232,7 @@ TEST_F(InterfaceTest, parsePortW_InterfaceTest) {
 }
 
 TEST_F(InterfaceTest, emitPortWInterfaceTest) {
-    UmlManager m;
+    BasicManager m;
     Package& root = *m.create<Package>();
     Class& implementing = *m.create<Class>();
     Interface& interface_uml = *m.create<Interface>();
@@ -301,7 +300,7 @@ TEST_F(InterfaceTest, emitPortWInterfaceTest) {
 }
 
 TEST_F(InterfaceTest, mountInterfaceTest) {
-    UmlManager m;
+    BasicManager m;
     Package& root = *m.create<Package>();
     Interface& interface_uml = *m.create<Interface>();
     Property& prop = *m.create<Property>();
@@ -337,13 +336,13 @@ TEST_F(InterfaceTest, mountInterfaceTest) {
     connector.getEnds().add(pEnd, eEnd);
     boat.getOwnedConnectors().add(connector);
     root.getPackagedElements().add(interface_uml, implementing, engine, propeller, boat);
-    m.setRoot(root);
+    m.setRoot(&root);
     m.mount(ymlPath + "interfaceTests");
 
     ID interfaceID = interface_uml.getID();
     m.release(interface_uml);
     ASSERT_FALSE(m.loaded(interfaceID));
-    Interface& interface2 = m.aquire(interfaceID)->as<Interface>();
+    Interface& interface2 = m.get(interfaceID)->as<Interface>();
     ASSERT_EQ(interface2.getOwningPackage().id(), root.getID());
     ASSERT_EQ(interface2.getOwnedAttributes().size(), 1);
     ASSERT_EQ(interface2.getOwnedOperations().size(), 1);
@@ -363,42 +362,42 @@ TEST_F(InterfaceTest, mountInterfaceTest) {
     ID propertyID = prop.getID();
     m.release(prop);
     ASSERT_FALSE(m.loaded(propertyID));
-    Property& prop2 = m.aquire(propertyID)->as<Property>();
+    Property& prop2 = m.get(propertyID)->as<Property>();
     ASSERT_TRUE(prop2.getInterface());
     ASSERT_EQ(*prop2.getInterface(), interface2);
 
     ID operationID = op.getID();
     m.release(op);
     ASSERT_FALSE(m.loaded(operationID));
-    Operation& op2 = m.aquire(operationID)->as<Operation>();
+    Operation& op2 = m.get(operationID)->as<Operation>();
     ASSERT_TRUE(op2.getInterface());
     ASSERT_EQ(*op2.getInterface(), interface2);
 
     ID nestID = nest.getID();
     m.release(nest);
     ASSERT_FALSE(m.loaded(nestID));
-    DataType& nest2 = m.aquire(nestID)->as<DataType>();
+    DataType& nest2 = m.get(nestID)->as<DataType>();
     ASSERT_TRUE(nest2.getNamespace());
     ASSERT_EQ(*nest2.getNamespace(), interface2);
 
     ID realizationID = realization.getID();
     m.release(realization);
     ASSERT_FALSE(m.loaded(realizationID));
-    InterfaceRealization& realization2 = m.aquire(realizationID)->as<InterfaceRealization>();
+    InterfaceRealization& realization2 = m.get(realizationID)->as<InterfaceRealization>();
     ASSERT_TRUE(realization2.getImplementingClassifier());
     ASSERT_EQ(*realization2.getImplementingClassifier(), implementing);
 
     ID pPortID = pPort.getID();
     m.release(pPort);
     ASSERT_FALSE(m.loaded(pPortID));
-    Port& pPort2 = m.aquire(pPortID)->as<Port>();
+    Port& pPort2 = m.get(pPortID)->as<Port>();
     ASSERT_TRUE(pPort2.getClass());
     ASSERT_EQ(*pPort2.getClass(), propeller);
 
     ID connectorID = connector.getID();
     m.release(connector);
     ASSERT_FALSE(m.loaded(connectorID));
-    Connector& connector2 = m.aquire(connectorID)->as<Connector>();
+    Connector& connector2 = m.get(connectorID)->as<Connector>();
     ASSERT_TRUE(connector2.getFeaturingClassifier());
     ASSERT_EQ(*connector2.getFeaturingClassifier(), boat);
 }

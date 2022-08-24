@@ -11,7 +11,7 @@ namespace UML {
     class Constraint : public PackageableElement {
 
         friend class Namespace;
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Singleton<Namespace, Constraint> m_context = Singleton<Namespace, Constraint>(this);

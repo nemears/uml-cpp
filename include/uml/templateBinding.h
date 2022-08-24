@@ -16,7 +16,7 @@ namespace UML {
 
     class TemplateBinding : public DirectedRelationship {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class TemplateableElement;
         
         private:

@@ -17,9 +17,6 @@ namespace UML {
     };
 
     class BehavioralFeature : public Feature , public Namespace {
-
-        friend class UmlManager;
-
         protected:
             Set<Behavior, BehavioralFeature> m_methods = Set<Behavior, BehavioralFeature>(this);
             Set<Parameter, BehavioralFeature> m_ownedParameters = Set<Parameter, BehavioralFeature>(this);

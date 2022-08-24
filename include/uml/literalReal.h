@@ -6,7 +6,7 @@
 namespace UML {
     class LiteralReal : public LiteralSpecification {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             double m_value = 0;

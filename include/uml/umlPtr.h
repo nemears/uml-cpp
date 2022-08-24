@@ -3,7 +3,6 @@
 
 #include "element.h"
 #include "managers/abstractManager.h"
-#include "umlManager.h"
 #include "managers/managerNode.h"
 
 namespace UML {
@@ -20,7 +19,6 @@ namespace UML {
     class AbstractUmlPtr {
 
         template <class T, class U> friend class Singleton;
-        friend class UmlManager;
         template <class AccessPolicy, class PersistencePolicy> friend class Manager;
         friend class AbstractAccessPolicy;
         template <class T> friend class UmlPtr;
@@ -38,14 +36,12 @@ namespace UML {
     class UmlPtr : public AbstractUmlPtr {
 
         template <class U, class V> friend class Singleton;
-        friend class UmlManager;
         template <class AccessPolicy, class PersistencePolicy> friend class Manager;
         friend class AbstractAccessPolicy;
         template <class U> friend class UmlPtr;
 
         private:
-            UmlManager* m_manager = 0;
-            AbstractManager* m_manager2 = 0;
+            AbstractManager* m_manager = 0;
             T* m_ptr = 0;
             ManagerNode* m_node = 0;
         protected:
@@ -69,11 +65,7 @@ namespace UML {
                         return ptr->m_ptrId == m_ptrId;
                     });
                     if (m_node->m_ptrs.empty() && !m_node->m_managerElementMemory) {
-                        if (m_manager) {
-                            m_manager->m_graph.erase(m_id);
-                        } else if (m_manager2) {
-                            m_manager2->removeNode(m_id);
-                        }
+                        m_manager->removeNode(m_id);
                     }
                 }
             };
@@ -82,7 +74,6 @@ namespace UML {
                 removeFromGraph();
                 m_id = rhs.m_id;
                 m_manager = rhs.m_manager;
-                m_manager2 = rhs.m_manager2;
                 m_ptr = 0;
                 m_ptrId = 0;
                 m_node = rhs.m_node;
@@ -101,12 +92,7 @@ namespace UML {
                 } else if (m_ptr) {
                     return *m_ptr;
                 } else {
-                    ElementPtr temp(0);
-                    if (m_manager2) {
-                        temp = m_manager2->get(m_id);
-                    } else {
-                        temp = &m_manager->get(m_id);
-                    }
+                    ElementPtr temp = m_manager->get(m_id);
                     if (!m_ptr) {
                         const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
                     }
@@ -120,12 +106,7 @@ namespace UML {
                 } else if (m_ptr) {
                     return m_ptr;
                 } else {
-                    ElementPtr temp(0);
-                    if (m_manager2) {
-                        temp = m_manager2->get(m_id);
-                    } else {
-                        temp = &m_manager->get(m_id);
-                    }
+                    ElementPtr temp = m_manager->get(m_id);
                     if (!m_ptr) {
                         const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
                     }
@@ -168,8 +149,7 @@ namespace UML {
                     m_id = el->getID();
                     m_ptr = const_cast<T*>(el);
                     m_node = m_ptr->m_node;
-                    m_manager = el->m_manager; // delete
-                    m_manager2 = el->m_manager2;
+                    m_manager = el->m_manager;
                     m_ptrId = 0;
                     if (el->m_node->m_ptrs.size() > 0) {
                         m_ptrId = el->m_node->m_ptrs.back()->m_ptrId + 1;
@@ -193,12 +173,7 @@ namespace UML {
                 } else if (m_ptr) {
                     return m_ptr;
                 } else {
-                    ElementPtr temp(0);
-                    if (m_manager2) {
-                        temp = m_manager2->get(m_id);
-                    } else {
-                        temp = &m_manager->get(m_id);
-                    }
+                    ElementPtr temp = m_manager->get(m_id);
                     if (!m_ptr) {
                         const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
                     }
@@ -220,20 +195,11 @@ namespace UML {
             };
             void release() {
                 if (m_ptr) {
-                    if (m_manager) { // TODO delete
-                        m_manager->release(*m_ptr);
-                    } else if (m_manager2) {
-                        m_manager2->release(*m_ptr);
-                    }
+                    m_manager->release(*m_ptr);
                 }
             };
             void aquire() {
-                ElementPtr temp(0);
-                if (m_manager) {
-                    temp = m_manager->aquire(m_id);
-                } else if (m_manager2) {
-                    temp = m_manager2->get(m_id);
-                }
+                ElementPtr temp = m_manager->get(m_id);
                 m_ptr = dynamic_cast<T*>(temp.ptr());
                 m_node = m_ptr->m_node;
                 m_node->m_ptrs.push_back(const_cast<UmlPtr<T>*>(this));
@@ -243,7 +209,6 @@ namespace UML {
                     m_id = el->getID();
                     m_ptr = el;
                     m_manager = el->m_manager;
-                    m_manager2 = el->m_manager2;
                     if (el->m_node->m_ptrs.size() > 0) {
                         m_ptrId = el->m_node->m_ptrs.back()->m_ptrId + 1;
                     }
@@ -261,12 +226,12 @@ namespace UML {
                 if (m_ptr) {
                     removeFromGraph();
                     if (m_ptr->m_node->m_ptrs.empty()) {
-                        if (m_manager && !m_manager->m_mountBase.empty() && !m_manager->m_lazy) {
-                            m_manager->mountEl(*m_ptr);
-                            m_manager->releaseNode(*m_ptr);
-                            m_manager->m_graph.erase(m_id);
-                            delete m_ptr;
-                        }
+                        // if (m_manager && !m_manager->m_mountBase.empty() && !m_manager->m_lazy) {
+                        //     m_manager->mountEl(*m_ptr);
+                        //     m_manager->releaseNode(*m_ptr);
+                        //     m_manager->m_graph.erase(m_id);
+                        //     delete m_ptr;
+                        // }
                     }
                 } else {
                     if (m_node) {

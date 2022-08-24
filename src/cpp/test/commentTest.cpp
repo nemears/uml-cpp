@@ -17,7 +17,7 @@ class CommentTest : public ::testing::Test {
 };
 
 TEST_F(CommentTest, annotatedElementTest) {
-    UmlManager m;
+    BasicManager m;
     Package& pckg = *m.create<Package>();
     Package& annotated = *m.create<Package>();
     Comment& comment = *m.create<Comment>();
@@ -34,18 +34,17 @@ TEST_F(CommentTest, annotatedElementTest) {
 }
 
 TEST_F(CommentTest, testBasicComment) {
-    UmlManager m;
-    Element* el;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "commentTests/comment.yml").ptr());
-    ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
-    Package& pckg = *dynamic_cast<Package*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "commentTests/comment.yml").ptr());
+    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+    Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getOwnedComments().size(), 1);
     Comment& comment = pckg.getOwnedComments().front();
     ASSERT_EQ(comment.getBody(), "i am a comment!");
 }
 
 TEST_F(CommentTest, commentEmitTest) {
-    UmlManager m;
+    BasicManager m;
     Package& pckg = *m.create<Package>();
     Comment& comment = *m.create<Comment>();
     pckg.setID("zN&UM2AHrXX07rAiNxTmmMwLYI1O");
@@ -63,7 +62,7 @@ TEST_F(CommentTest, commentEmitTest) {
 }
 
 TEST_F(CommentTest, mountAndEditCommentTest) {
-    UmlManager m;
+    BasicManager m;
     Package& root = *m.create<Package>();
     Comment& comment = *m.create<Comment>();
     root.getOwnedComments().add(comment);
@@ -80,7 +79,7 @@ TEST_F(CommentTest, mountAndEditCommentTest) {
 
     ID commentID = comment2.getID();
     m.release(comment2, root);
-    Comment& comment3 = m.aquire(commentID)->as<Comment>();
+    Comment& comment3 = m.get(commentID)->as<Comment>();
     Package& root2 = comment3.getOwner()->as<Package>();
     ASSERT_TRUE(comment3.getOwner());
     ASSERT_EQ(*comment3.getOwner(), root2);

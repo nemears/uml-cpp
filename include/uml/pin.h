@@ -6,9 +6,6 @@
 
 namespace UML {
     class Pin : public ObjectNode , public MultiplicityElement {
-
-        friend class UmlManager;
-
         protected:
             bool m_isControl = false;
             Pin();

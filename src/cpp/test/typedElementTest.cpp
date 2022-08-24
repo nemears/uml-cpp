@@ -10,7 +10,7 @@ class TypedElementTest : public ::testing::Test {
 };
 
 TEST_F(TypedElementTest, GetTypeTest) {
-	UmlManager m;
+	BasicManager m;
 	Property& p = *m.create<Property>();
 	Class& t = *m.create<Class>();
 	p.setType(t);
@@ -18,13 +18,13 @@ TEST_F(TypedElementTest, GetTypeTest) {
 }
 
 TEST_F(TypedElementTest, GetTypeReturnsNullTest) {
-	UmlManager m;
+	BasicManager m;
 	Property& t = *m.create<Property>();
     ASSERT_FALSE(t.getType());
 }
 
 TEST_F(TypedElementTest, reindexTypeTest) {
-	UmlManager m;
+	BasicManager m;
 	Class& t = *m.create<Class>();
 	Property& p = *m.create<Property>();
 	Class& c = *m.create<Class>();
@@ -38,7 +38,7 @@ TEST_F(TypedElementTest, reindexTypeTest) {
 	t.setID(id);
 	ASSERT_TRUE(p.getType());
 	ASSERT_EQ(p.getType()->getID(), id);
-	m.release(id);
+	m.release(t);
 	ASSERT_TRUE(p.getType());
 	ASSERT_EQ(p.getType()->getID(), id);
 }

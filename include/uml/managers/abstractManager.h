@@ -32,14 +32,14 @@ namespace UML {
             Element* get(Element* me, ID theID);
     };
 
-    class ManagerPolicyStateException : public std::exception {
+    class ManagerStateException : public std::exception {
         std::string m_msg;
         const char* what() const throw() override {
             return m_msg.c_str();
         };
         public:
-            ManagerPolicyStateException(){};
-            ManagerPolicyStateException(std::string msg) : m_msg("UmlManager bad state! " + msg) {};
+            ManagerStateException(){};
+            ManagerStateException(std::string msg) : m_msg("Uml Manager bad state! " + msg) {};
     };
 }
 

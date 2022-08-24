@@ -11,7 +11,7 @@ namespace UML {
 
     class EnumerationLiteral : public InstanceSpecification {
         
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class Enumeration;
 
         protected:

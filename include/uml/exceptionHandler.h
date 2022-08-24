@@ -16,7 +16,7 @@ namespace UML {
     class ExceptionHandler : public Element {
 
         friend class ExecutableNode;
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Singleton<ExecutableNode, ExceptionHandler> m_protectedNode = Singleton<ExecutableNode, ExceptionHandler>(this);

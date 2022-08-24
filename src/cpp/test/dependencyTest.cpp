@@ -18,7 +18,7 @@ class DependencyTest : public ::testing::Test {
 };
 
 TEST_F(DependencyTest, addClientAndSupplierTest) {
-    UmlManager m;
+    BasicManager m;
     Package& client = *m.create<Package>();
     Package& supplier = *m.create<Package>();
     Dependency& dep = *m.create<Dependency>();
@@ -37,7 +37,7 @@ TEST_F(DependencyTest, addClientAndSupplierTest) {
 }
 
 TEST_F(DependencyTest, removeClientAndSupplierTest) {
-    UmlManager m;
+    BasicManager m;
     Package& client = *m.create<Package>();
     Package& supplier = *m.create<Package>();
     Dependency& dep = *m.create<Dependency>();
@@ -61,7 +61,7 @@ TEST_F(DependencyTest, removeClientAndSupplierTest) {
 }
 
 TEST_F(DependencyTest, setAndRemoveFromClientTest) {
-    UmlManager m;
+    BasicManager m;
     Package& client = *m.create<Package>();
     Dependency& dependency = *m.create<Dependency>();
     client.getClientDependencies().add(dependency);
@@ -80,11 +80,10 @@ TEST_F(DependencyTest, setAndRemoveFromClientTest) {
     ASSERT_EQ(dependency.getRelatedElements().size(), 0);
 }
 TEST_F(DependencyTest, basicDependencyTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "dependencyTests/basicDependency.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    Package& pckg = el->as<Package>();
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "dependencyTests/basicDependency.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
     ASSERT_EQ(pckg.getPackagedElements().get("dependency").getElementType(), ElementType::DEPENDENCY);
     Dependency& dep = pckg.getPackagedElements().get("dependency").as<Dependency>();
@@ -95,7 +94,7 @@ TEST_F(DependencyTest, basicDependencyTest) {
 }
 
 TEST_F(DependencyTest, basicDependencyEmitTest) {
-    UmlManager m;
+    BasicManager m;
     Package& pckg = *m.create<Package>();
     Dependency& dependency = *m.create<Dependency>();
     Package& client = *m.create<Package>();
@@ -133,11 +132,10 @@ TEST_F(DependencyTest, basicDependencyEmitTest) {
 }
 
 TEST_F(DependencyTest, parseAllTheSubclassesTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "dependencyTests/allSubClasses.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    Package& pckg = el->as<Package>();
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "dependencyTests/allSubClasses.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 5);
     ASSERT_EQ(pckg.getPackagedElements().get("abstraction").getElementType(), ElementType::ABSTRACTION);
     Abstraction& abs = pckg.getPackagedElements().get("abstraction").as<Abstraction>();
@@ -162,7 +160,7 @@ TEST_F(DependencyTest, parseAllTheSubclassesTest) {
 }
 
 TEST_F(DependencyTest, emitAllDependencySubClassesTest) {
-    UmlManager m;
+    BasicManager m;
     Package& pckg = *m.create<Package>();
     Abstraction& abstraction = *m.create<Abstraction>();
     Realization& realization = *m.create<Realization>();
@@ -273,7 +271,7 @@ void ASSERT_RESTORE_DEPENDENCY(Dependency& dependency, NamedElement& client, Nam
 }
 
 TEST_F(DependencyTest, mountAndEditDependencyTest) {
-  UmlManager m;
+  BasicManager m;
   Package& root = *m.create<Package>();
   Package& supplier = *m.create<Package>();
   Package& client = *m.create<Package>();
@@ -287,7 +285,7 @@ TEST_F(DependencyTest, mountAndEditDependencyTest) {
   ID dependencyID = dependency.getID();
   m.release(dependency);
   ASSERT_FALSE(m.loaded(dependencyID));
-  Dependency& dependency2 = m.aquire(dependencyID)->as<Dependency>();
+  Dependency& dependency2 = m.get(dependencyID)->as<Dependency>();
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency2, client, supplier));
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency2, root));
 
@@ -295,9 +293,9 @@ TEST_F(DependencyTest, mountAndEditDependencyTest) {
   m.release(client, dependency2);
   ASSERT_FALSE(m.loaded(dependencyID));
   ASSERT_FALSE(m.loaded(clientID));
-  Dependency& dependency3 = m.aquire(dependencyID)->as<Dependency>();
+  Dependency& dependency3 = m.get(dependencyID)->as<Dependency>();
   ASSERT_FALSE(m.loaded(clientID));
-  Package& client2 = m.aquire(clientID)->as<Package>();
+  Package& client2 = m.get(clientID)->as<Package>();
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency3, client2, supplier));
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency3, root));
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(client2, root));
@@ -305,9 +303,9 @@ TEST_F(DependencyTest, mountAndEditDependencyTest) {
   m.release(dependency3, client2);
   ASSERT_FALSE(m.loaded(dependencyID));
   ASSERT_FALSE(m.loaded(clientID));
-  Package& client3= m.aquire(clientID)->as<Package>();
+  Package& client3= m.get(clientID)->as<Package>();
   ASSERT_FALSE(m.loaded(dependencyID));
-  Dependency& dependency4 = m.aquire(dependencyID)->as<Dependency>();
+  Dependency& dependency4 = m.get(dependencyID)->as<Dependency>();
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency4, client3, supplier));
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency4, root));
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(client3, root));
@@ -315,16 +313,16 @@ TEST_F(DependencyTest, mountAndEditDependencyTest) {
   ID supplierID = supplier.getID();
   m.release(supplier);
   ASSERT_FALSE(m.loaded(supplierID));
-  Package& supplier2 = m.aquire(supplierID)->as<Package>();
+  Package& supplier2 = m.get(supplierID)->as<Package>();
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency4, client3, supplier2));
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier2, root));
 
   m.release(supplier2, dependency4);
   ASSERT_FALSE(m.loaded(dependencyID));
   ASSERT_FALSE(m.loaded(supplierID));
-  Dependency& dependency5 = m.aquire(dependencyID)->as<Dependency>();
+  Dependency& dependency5 = m.get(dependencyID)->as<Dependency>();
   ASSERT_FALSE(m.loaded(supplierID));
-  Package& supplier3 = m.aquire(supplierID)->as<Package>();
+  Package& supplier3 = m.get(supplierID)->as<Package>();
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency5, client3, supplier3));
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier3, root));
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency5, root));
@@ -332,9 +330,9 @@ TEST_F(DependencyTest, mountAndEditDependencyTest) {
   m.release(dependency5, supplier3);
   ASSERT_FALSE(m.loaded(dependencyID));
   ASSERT_FALSE(m.loaded(supplierID));
-  Package& supplier4 = m.aquire(supplierID)->as<Package>();
+  Package& supplier4 = m.get(supplierID)->as<Package>();
   ASSERT_FALSE(m.loaded(dependencyID));
-  Dependency& dependency6 = m.aquire(dependencyID)->as<Dependency>();
+  Dependency& dependency6 = m.get(dependencyID)->as<Dependency>();
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_DEPENDENCY(dependency6, client3, supplier4));
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(supplier4, root));
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(dependency6, root));

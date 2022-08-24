@@ -7,12 +7,13 @@
 
 namespace UML {
 
+    class Package;
     typedef UmlPtr<Package> PackagePtr;
     typedef UmlPtr<Namespace> NamespacePtr;
 
     class PackageImport : public DirectedRelationship {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class Namespace;
 
         protected:

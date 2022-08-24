@@ -17,7 +17,7 @@ class ValueSpecificationTest : public ::testing::Test {
 };
 
 TEST_F(ValueSpecificationTest, LiteralStringTest) {
-    UmlManager m;
+    BasicManager m;
     string val = "test";
     Property& p = *m.create<Property>();
     PrimitiveType& prim = *m.create<PrimitiveType>();
@@ -29,7 +29,7 @@ TEST_F(ValueSpecificationTest, LiteralStringTest) {
 }
 
 TEST_F(ValueSpecificationTest, LiteralIntTest) {
-    UmlManager m;
+    BasicManager m;
     int val = -1;
     Property& p = *m.create<Property>();
     PrimitiveType& prim = *m.create<PrimitiveType>();
@@ -41,7 +41,7 @@ TEST_F(ValueSpecificationTest, LiteralIntTest) {
 }
 
 TEST_F(ValueSpecificationTest, LiteralRealTest) {
-    UmlManager m;
+    BasicManager m;
     double val = -3.14159;
     Property& p = *m.create<Property>();
     PrimitiveType& prim = *m.create<PrimitiveType>();
@@ -53,7 +53,7 @@ TEST_F(ValueSpecificationTest, LiteralRealTest) {
 }
 
 TEST_F(ValueSpecificationTest, LiteralBoolTest) {
-    UmlManager m;
+    BasicManager m;
     bool val = 0; // > 0 is true
     Property& p = *m.create<Property>();
     PrimitiveType& prim = *m.create<PrimitiveType>();
@@ -65,7 +65,7 @@ TEST_F(ValueSpecificationTest, LiteralBoolTest) {
 }
 
 TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
-    UmlManager m;
+    BasicManager m;
     LiteralBool& v = *m.create<LiteralBool>();
     Slot& s = *m.create<Slot>();
     s.getValues().add(v);
@@ -75,7 +75,7 @@ TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
 }
 
 TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
-    UmlManager m;
+    BasicManager m;
     LiteralInt& v = *m.create<LiteralInt>();
     Slot& s = *m.create<Slot>();
     s.getValues().add(v);
@@ -85,7 +85,7 @@ TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
 }
 
 TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
-    UmlManager m;
+    BasicManager m;
     Expression& e = *m.create<Expression>();
     LiteralBool& b = *m.create<LiteralBool>();
     e.getOperands().add(b);
@@ -96,7 +96,7 @@ TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
 }
 
 TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
-    UmlManager m;
+    BasicManager m;
     Expression& e = *m.create<Expression>();
     LiteralBool& b = *m.create<LiteralBool>();
     e.getOperands().add(b);
@@ -107,7 +107,7 @@ TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
 }
 
 TEST_F(ValueSpecificationTest, LiteralUnlimitedNaturalTest) {
-    UmlManager m;
+    BasicManager m;
     LiteralUnlimitedNatural& n = *m.create<LiteralUnlimitedNatural>();
     ASSERT_EQ(n.getNumberValue(), 0);
     ASSERT_EQ(n.isInfinite(), false);
@@ -120,11 +120,10 @@ TEST_F(ValueSpecificationTest, LiteralUnlimitedNaturalTest) {
 }
 
 TEST_F(ValueSpecificationTest, expressionTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "expressionTests/expression.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    Package* pckg = dynamic_cast<Package*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "expressionTests/expression.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
     PrimitiveTypePtr b = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("bool_bzkcabSy3CiFd&HmJOtnVRK")));
     PrimitiveTypePtr i = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("int_r9nNbBukx47IomXrT2raqtc4")));
@@ -159,7 +158,7 @@ TEST_F(ValueSpecificationTest, expressionTest) {
 }
 
 TEST_F(ValueSpecificationTest, mountExpressionTest) {
-    UmlManager m;
+    BasicManager m;
     Expression& expression = *m.create<Expression>();
     LiteralReal& first = *m.create<LiteralReal>();
     LiteralInt& last = *m.create<LiteralInt>();
@@ -173,7 +172,7 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
     ID lastID = last.getID();
     m.release(expression);
     ASSERT_FALSE(m.loaded(expressionID));
-    Expression& expression2 = m.aquire(expressionID)->as<Expression>();
+    Expression& expression2 = m.get(expressionID)->as<Expression>();
     ASSERT_EQ(expression2.getOperands().size(), 2);
     ASSERT_EQ(expression2.getOperands().front(), first);
     ASSERT_EQ(expression2.getOperands().back(), last);
@@ -186,7 +185,7 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
     m.release(first);
     ASSERT_FALSE(m.loaded(firstID));
     ASSERT_EQ(*expression2.getOperands().ids().begin(), firstID);
-    LiteralReal& first2 = m.aquire(firstID)->as<LiteralReal>();
+    LiteralReal& first2 = m.get(firstID)->as<LiteralReal>();
     ASSERT_EQ(expression2.getOperands().size(), 2);
     ASSERT_EQ(expression2.getOperands().front(), first2);
     ASSERT_EQ(expression2.getOperands().back(), last);
@@ -199,8 +198,8 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
     m.release(first2, expression2);
     ASSERT_FALSE(m.loaded(firstID));
     ASSERT_FALSE(m.loaded(expressionID));
-    LiteralReal& first3 = m.aquire(firstID)->as<LiteralReal>();
-    Expression& expression3 = m.aquire(expressionID)->as<Expression>();
+    LiteralReal& first3 = m.get(firstID)->as<LiteralReal>();
+    Expression& expression3 = m.get(expressionID)->as<Expression>();
     ASSERT_EQ(expression3.getOperands().size(), 2);
     ASSERT_EQ(expression3.getOperands().front(), first3);
     ASSERT_EQ(expression3.getOperands().back(), last);
@@ -212,11 +211,10 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
 }
 
 TEST_F(ValueSpecificationTest, testParsingSomeLiterals) {
-    UmlManager m;
-    Element* el;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "literalsTests/someLiterals.yml").ptr());
-    ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
-    Package* pckg = dynamic_cast<Package*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "literalsTests/someLiterals.yml"));
+    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+    Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_EQ(pckg->getPackagedElements().size(), 3);
     ASSERT_EQ(pckg->getPackagedElements().get("infinity").getElementType(), ElementType::LITERAL_UNLIMITED_NATURAL);
     LiteralUnlimitedNatural* n1 = dynamic_cast<LiteralUnlimitedNatural*>(&pckg->getPackagedElements().get("infinity"));
@@ -233,7 +231,7 @@ TEST_F(ValueSpecificationTest, testParsingSomeLiterals) {
 }
 
 TEST_F(ValueSpecificationTest, testEmitLiteralUnlimitedNatural) {
-    UmlManager m;
+    BasicManager m;
     Package& p = *m.create<Package>();
     LiteralUnlimitedNatural& l1 = *m.create<LiteralUnlimitedNatural>();
     LiteralUnlimitedNatural& l2 = *m.create<LiteralUnlimitedNatural>();

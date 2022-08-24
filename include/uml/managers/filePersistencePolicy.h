@@ -16,7 +16,7 @@ namespace UML {
                     throw ID_doesNotExistException(id);
                 }
                 Parsers::ParserMetaData data;
-                data.m_manager2 = manager;
+                data.m_manager = manager;
                 data.m_path = m_mountBase / "mount" / (id.string() + ".yml");
                 data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
                 ElementPtr ret = Parsers::parse(data);
@@ -25,24 +25,22 @@ namespace UML {
 
             void write(Element& el, AbstractManager* me) {
                 if (m_mountBase.empty()) {
-                    throw ManagerPolicyStateException("manager not mounted");
+                    throw ManagerStateException("manager not mounted");
                 }
                 Parsers::EmitterMetaData data = { m_mountBase / std::filesystem::path("mount"),
                                                     Parsers::EmitterStrategy::INDIVIDUAL,
                                                     el.getID().string() + ".yml",
-                                                    0,
                                                     me };
                 Parsers::emitToFile(el, data, data.m_path.string(), data.m_fileName);
             }
 
             void write(AbstractManager* me) {
                 if (m_persistenPath.empty()) {
-                    throw ManagerPolicyStateException("bad path when saving!");
+                    throw ManagerStateException("bad path when saving!");
                 }
                 Parsers::EmitterMetaData data = { m_persistenPath.parent_path(),
                                                     Parsers::EmitterStrategy::WHOLE,
                                                     m_persistenPath.filename().string(),
-                                                    0,
                                                     me };
                 Parsers::emitToFile(*me->getRoot(), data, data.m_path.string(), data.m_fileName);
             }
@@ -54,10 +52,10 @@ namespace UML {
 
             ElementPtr parse(AbstractManager* me) {
                 if (m_persistenPath.empty()) {
-                    throw ManagerPolicyStateException("bad path when opening!");
+                    throw ManagerStateException("bad path when opening!");
                 }
                 Parsers::ParserMetaData data;
-                data.m_manager2 = me;
+                data.m_manager = me;
                 data.m_path = m_persistenPath;
                 data.m_strategy = Parsers::ParserStrategy::WHOLE;
                 return Parsers::parse(data);

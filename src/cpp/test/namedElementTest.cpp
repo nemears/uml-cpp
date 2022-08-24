@@ -14,21 +14,21 @@ public:
 };
 
 TEST_F(NamedElementTest, SetNameTest) {
-    UmlManager m;
+    BasicManager m;
     Package& namedEl = *m.create<Package>();
     namedEl.setName("test");
     EXPECT_EQ(namedEl.getName(), "test");
 }
 
 TEST_F(NamedElementTest, GetNullNameTest) {
-    UmlManager m;
+    BasicManager m;
     Package& ne = *m.create<Package>();
     ASSERT_NO_THROW(ne.getName());
     EXPECT_TRUE(ne.getName().compare("") == 0);
 }
 
 TEST_F(NamedElementTest, reIndexNameTest) {
-    UmlManager m;
+    BasicManager m;
     Package& e1 = *m.create<Package>();
     Package& e2 = *m.create<Package>();
     e1.getPackagedElements().add(e2);
@@ -39,7 +39,7 @@ TEST_F(NamedElementTest, reIndexNameTest) {
 }
 
 TEST_F(NamedElementTest, overwriteNamespaceTest) {
-    UmlManager m;
+    BasicManager m;
     Package& p1 = *m.create<Package>();
     Package& p2 = *m.create<Package>();
     Package& c = *m.create<Package>();
@@ -52,7 +52,7 @@ TEST_F(NamedElementTest, overwriteNamespaceTest) {
 }
 
 TEST_F(NamedElementTest, overwriteNamespaceByOwnedMemebersAddTest) {
-    UmlManager m;
+    BasicManager m;
     Package& p1 = *m.create<Package>();
     Package& p2 = *m.create<Package>();
     Package& c = *m.create<Package>();
@@ -65,7 +65,7 @@ TEST_F(NamedElementTest, overwriteNamespaceByOwnedMemebersAddTest) {
 }
 
 TEST_F(NamedElementTest, visibilityTest) {
-    UmlManager m;
+    BasicManager m;
     Package& n = *m.create<Package>();
     ASSERT_TRUE(n.getVisibility() == VisibilityKind::PUBLIC);
     ASSERT_NO_THROW(n.setVisibility(VisibilityKind::PRIVATE));
@@ -73,7 +73,7 @@ TEST_F(NamedElementTest, visibilityTest) {
 }
 
 TEST_F(NamedElementTest, singletonMethodsTest) {
-    UmlManager m;
+    BasicManager m;
     Package& p = *m.create<Package>();
     Package& c = *m.create<Package>();
     ASSERT_FALSE(c.getNamespace());
@@ -85,11 +85,11 @@ TEST_F(NamedElementTest, singletonMethodsTest) {
 }
 
 TEST_F(NamedElementTest, eraseNamepaceTest) {
-    UmlManager m;
+    BasicManager m;
     Package& package = *m.create<Package>();
     Package& nmspc = *m.create<Package>();
     nmspc.getPackagedElements().add(package);
-    m.setRoot(nmspc);
+    m.setRoot(&nmspc);
     m.mount(ymlPath + "namedElementTests");
     ID nmspcID = nmspc.getID();
     m.erase(nmspc);
@@ -100,7 +100,7 @@ TEST_F(NamedElementTest, eraseNamepaceTest) {
 }
 
 TEST_F(NamedElementTest, testQualifiedName) {
-    UmlManager m;
+    BasicManager m;
     Package& one = *m.create<Package>();
     Package& two = *m.create<Package>();
     Package& three = *m.create<Package>();

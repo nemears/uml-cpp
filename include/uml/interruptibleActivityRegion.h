@@ -6,7 +6,7 @@
 namespace UML {
     class InterruptibleActivityRegion : public ActivityGroup {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Set<ActivityNode, InterruptibleActivityRegion> m_nodes = Set<ActivityNode, InterruptibleActivityRegion>(this);

@@ -7,7 +7,7 @@
 namespace UML {
     class Signal : public Classifier {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             OrderedSet<Property, Signal> m_ownedAttributes = OrderedSet<Property, Signal>(this);

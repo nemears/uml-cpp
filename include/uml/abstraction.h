@@ -10,7 +10,7 @@ namespace UML {
      **/
     class Abstraction : public Dependency {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Abstraction();

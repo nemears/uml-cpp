@@ -6,7 +6,7 @@
 namespace UML {
     class ValuePin : public InputPin {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Singleton<ValueSpecification, ValuePin> m_value = Singleton<ValueSpecification, ValuePin>(this);

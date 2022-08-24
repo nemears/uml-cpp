@@ -23,7 +23,6 @@ namespace UML {
      **/
     class Classifier: public Namespace, public Type , public RedefinableElement, public TemplateableElement {
         
-        friend class UmlManager;
         friend class InstanceSpecification;
         friend class Generalization;
         friend class NamedElement;

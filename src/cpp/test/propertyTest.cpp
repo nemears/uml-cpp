@@ -14,7 +14,7 @@ class PropertyTest : public ::testing::Test {
 };
 
 TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
-    UmlManager m;
+    BasicManager m;
     Property& p = *m.create<Property>();
     PrimitiveType& stringP = *m.create<PrimitiveType>();
     p.setType(&stringP);
@@ -27,7 +27,7 @@ TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
 }
 
 TEST_F(PropertyTest, reindexID_forClassiferTest) {
-    UmlManager m;
+    BasicManager m;
     Class& c = *m.create<Class>();
     Property& p = *m.create<Property>();
     p.setAggregation(AggregationKind::COMPOSITE);
@@ -56,7 +56,7 @@ TEST_F(PropertyTest, reindexID_forClassiferTest) {
 }
 
 TEST_F(PropertyTest, reindexNameForClassifierTest) {
-    UmlManager m;
+    BasicManager m;
     Class& c = *m.create<Class>();
     Property& p = *m.create<Property>();
     p.setAggregation(AggregationKind::COMPOSITE);
@@ -85,7 +85,7 @@ TEST_F(PropertyTest, reindexNameForClassifierTest) {
 }
 
 TEST_F(PropertyTest, overwriteClassifierTest) {
-    UmlManager m;
+    BasicManager m;
     Class& p1 = *m.create<Class>();
     Class& p2 = *m.create<Class>();
     Property& c = *m.create<Property>();
@@ -99,7 +99,7 @@ TEST_F(PropertyTest, overwriteClassifierTest) {
 }
 
 TEST_F(PropertyTest, overwriteClassifierByAttributesAddTest) {
-    UmlManager m;
+    BasicManager m;
     Class& p1 = *m.create<Class>();
     Class& p2 = *m.create<Class>();
     Property& c = *m.create<Property>();
@@ -113,7 +113,7 @@ TEST_F(PropertyTest, overwriteClassifierByAttributesAddTest) {
 }
 
 TEST_F(PropertyTest, redefinePropertyTest) {
-    UmlManager m;
+    BasicManager m;
     Property& prop = *m.create<Property>();
     prop.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
     Property& redefined = *m.create<Property>();
@@ -165,7 +165,7 @@ TEST_F(PropertyTest, redefinePropertyTest) {
 }
 
 TEST_F(PropertyTest, reindexRedefinedPropertyTest) {
-    UmlManager m;
+    BasicManager m;
     Class& b = *m.create<Class>();
     Class& s = *m.create<Class>();
     Generalization& g = *m.create<Generalization>();
@@ -198,11 +198,10 @@ TEST_F(PropertyTest, reindexRedefinedPropertyTest) {
 }
 
 TEST_F(PropertyTest, forwardTypeTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "propertyTests/forwardType.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    Package* pckg = dynamic_cast<Package*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/forwardType.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
     ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::CLASS);
@@ -214,11 +213,10 @@ TEST_F(PropertyTest, forwardTypeTest) {
 }
 
 TEST_F(PropertyTest, backwardsTypeTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "propertyTests/backwardTypeTest.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    Package* pckg = dynamic_cast<Package*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/backwardTypeTest.yml").ptr());
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
     ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::CLASS);
@@ -231,12 +229,10 @@ TEST_F(PropertyTest, backwardsTypeTest) {
 }
 
 TEST_F(PropertyTest, multiplicityTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "propertyTests/multiplicityTest.yml").ptr());
-    ASSERT_TRUE(el);
-    ASSERT_TRUE(el->getElementType() == ElementType::PROPERTY);
-    Property* prop = dynamic_cast<Property*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/multiplicityTest.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PROPERTY);
+    Property* prop = &m.getRoot()->as<Property>();
     ASSERT_TRUE(prop->multiplicitySpecified());
     ASSERT_TRUE(prop->getLowerValue());
     ASSERT_TRUE(prop->getLower() == 0);
@@ -249,23 +245,21 @@ TEST_F(PropertyTest, multiplicityTest) {
 }
 
 TEST_F(PropertyTest, improperTypeTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/improperType.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/improperType2.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/improperType3.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/propertyNotMap.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/attributesNotSequence.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/invalidLower.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "propertyTests/invalidUpper.yml").ptr(), Parsers::UmlParserException);
+    BasicManager m;
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType2.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType3.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/propertyNotMap.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/attributesNotSequence.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/invalidLower.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/invalidUpper.yml"), Parsers::UmlParserException);
 }
 
 TEST_F(PropertyTest, literalBoolDefaultValueTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "propertyTests/literalBool.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    Package* pckg = dynamic_cast<Package*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/literalBool.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
     PrimitiveType* b = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().front());
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
@@ -281,11 +275,10 @@ TEST_F(PropertyTest, literalBoolDefaultValueTest) {
 }
 
 TEST_F(PropertyTest, literalsTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "propertyTests/defaultValue.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    Package* pckg = dynamic_cast<Package*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/defaultValue.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
     PrimitiveType* b = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get("bool"));
     PrimitiveType* i = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get("int"));
@@ -327,11 +320,10 @@ TEST_F(PropertyTest, literalsTest) {
 }
 
 TEST_F(PropertyTest, parseRedefinedPropertyTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "propertyTests/redefinedProperty.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    Package& pckg = el->as<Package>();
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/redefinedProperty.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
     ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
     Class& base = pckg.getPackagedElements().front().as<Class>();
@@ -348,7 +340,7 @@ TEST_F(PropertyTest, parseRedefinedPropertyTest) {
 }
 
 TEST_F(PropertyTest, emitRedefinedPropertyTest) {
-    UmlManager m;
+    BasicManager m;
     Package& pckg = *m.create<Package>();
     Property& prop = *m.create<Property>();
     Property& redefined = *m.create<Property>();
@@ -394,12 +386,12 @@ TEST_F(PropertyTest, emitRedefinedPropertyTest) {
 }
 
 TEST_F(PropertyTest, mountPropertyTest) {
-    UmlManager m;
+    BasicManager m;
     Package& pckg = *m.create<Package>();
     m.setRoot(&pckg);
-    m.parse(ymlPath + "uml/primitiveTypes.yml");
+    m.open(ymlPath + "uml/primitiveTypes.yml");
     PackageMerge& merge = *m.create<PackageMerge>();
-    merge.setMergedPackage(m.get(ID::fromString("Primitive_Types_WZcyDDLemQ97")).as<Package>());
+    merge.setMergedPackage(m.get(ID::fromString("Primitive_Types_WZcyDDLemQ97"))->as<Package>());
     pckg.getPackageMerge().add(merge);
     Property& prop = *m.create<Property>();
     Property& redefined = *m.create<Property>();
@@ -412,13 +404,13 @@ TEST_F(PropertyTest, mountPropertyTest) {
     b.getOwnedAttributes().add(redefined);
     s.getOwnedAttributes().add(prop);
     ASSERT_NO_THROW(prop.getRedefinedProperties().add(redefined));
-    redefined.setType(m.get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT")).as<Type>());
+    redefined.setType(m.get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT"))->as<Type>());
     prop.setDefaultValue(&defaultValue);
     pckg.getPackagedElements().add(b);
     pckg.getPackagedElements().add(s);
     ASSERT_NO_THROW(m.mount(ymlPath + "propertyTests"));
     // TODO explore tree (probably don't need to)
-    ASSERT_NO_THROW(m.release(prop.getID()));
+    ASSERT_NO_THROW(m.release(prop));
     Property& prop2 = s.getOwnedAttributes().front();
     ASSERT_TRUE(prop2.getClass());
     ASSERT_EQ(prop2.getClass(), &s);
@@ -451,14 +443,14 @@ TEST_F(PropertyTest, mountPropertyTest) {
     ASSERT_TRUE(s.getOwnedElements().contains(prop2));
 
     // Release the redefined prop
-    ASSERT_NO_THROW(m.release(redefined.getID()));
+    ASSERT_NO_THROW(m.release(redefined));
     Property& redefined2 = b.getOwnedAttributes().front();
     ASSERT_EQ(prop2.getRedefinedProperties().size(), 1);
     ASSERT_EQ(&prop2.getRedefinedProperties().front(), &redefined2);
     ASSERT_EQ(prop2.getRedefinedElements().size(), 1);
     ASSERT_EQ(&prop2.getRedefinedElements().front(), &redefined2);
     ASSERT_TRUE(redefined2.getType());
-    ASSERT_EQ(redefined2.getType(), &m.get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT")).as<Type>());
+    ASSERT_EQ(redefined2.getType(), &m.get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT"))->as<Type>());
     ASSERT_TRUE(redefined2.getClass());
     ASSERT_EQ(redefined2.getClass()->getID(), b.getID());
     ASSERT_TRUE(redefined2.getFeaturingClassifier());
@@ -467,13 +459,13 @@ TEST_F(PropertyTest, mountPropertyTest) {
     ID redefinedID = redefined2.getID();
     Type& stringType = *redefined2.getType();
     m.release(redefined2, stringType);
-    Property& redefined3 = m.aquire(redefinedID)->as<Property>();
+    Property& redefined3 = m.get(redefinedID)->as<Property>();
     ASSERT_EQ(prop2.getRedefinedProperties().size(), 1);
     ASSERT_EQ(&prop2.getRedefinedProperties().front(), &redefined3);
     ASSERT_EQ(prop2.getRedefinedElements().size(), 1);
     ASSERT_EQ(&prop2.getRedefinedElements().front(), &redefined3);
     ASSERT_TRUE(redefined3.getType());
-    ASSERT_EQ(redefined3.getType(), &m.get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT")).as<Type>());
+    ASSERT_EQ(redefined3.getType(), &m.get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT"))->as<Type>());
     ASSERT_TRUE(redefined3.getClass());
     ASSERT_EQ(redefined3.getClass()->getID(), b.getID());
     ASSERT_TRUE(redefined3.getFeaturingClassifier());
@@ -482,7 +474,7 @@ TEST_F(PropertyTest, mountPropertyTest) {
     ID propID = prop2.getID();
 
     m.release(prop2, defaultValue);
-    Property& prop3 = m.aquire(propID)->as<Property>();
+    Property& prop3 = m.get(propID)->as<Property>();
     ASSERT_TRUE(prop3.getDefaultValue());
     ASSERT_TRUE(prop3.getDefaultValue()->isSubClassOf(ElementType::LITERAL_STRING));
     ASSERT_EQ(prop3.getOwnedElements().size(), 1);

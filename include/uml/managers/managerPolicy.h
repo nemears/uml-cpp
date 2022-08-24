@@ -46,15 +46,90 @@ namespace UML {
                 ManagerNode& node = AccessPolicy::assignNode(newElement);
                 newElement->m_node = &node;
                 UmlPtr<T> ret(newElement);
-                ret->m_manager2 = this;
-                ret.m_manager2 = this;
+                ret->m_manager = this;
+                ret.m_manager = this;
                 return ret;
             };
 
             Element* create(ElementType type) override {
                 switch (type) {
+                    case ElementType::ABSTRACTION : {
+                        return create<Abstraction>().ptr();
+                    }
+                    case ElementType::ACTION_INPUT_PIN : {
+                        return create<ActionInputPin>().ptr();
+                    }
+                    case ElementType::ACTIVITY : {
+                        return create<Activity>().ptr();
+                    }
+                    case ElementType::ACTIVITY_FINAL_NODE : {
+                        return create<ActivityFinalNode>().ptr();
+                    }
+                    case ElementType::ACTIVITY_PARAMETER_NODE : {
+                        return create<ActivityParameterNode>().ptr();
+                    }
+                    case ElementType::ACTIVITY_PARTITION : {
+                        return create<ActivityPartition>().ptr();
+                    }
+                    case ElementType::ARTIFACT : {
+                        return create<Artifact>().ptr();
+                    }
+                    case ElementType::ASSOCIATION : {
+                        return create<Association>().ptr();
+                    }
+                    case ElementType::CALL_BEHAVIOR_ACTION : {
+                        return create<CallBehaviorAction>().ptr();
+                    }
+                    case ElementType::CENTRAL_BUFFER_NODE : {
+                        return create<CentralBufferNode>().ptr();
+                    }
                     case ElementType::CLASS : {
                         return create<Class>().ptr();
+                    }
+                    case ElementType::CLASSIFIER_TEMPLATE_PARAMETER : {
+                        return create<ClassifierTemplateParameter>().ptr();
+                    }
+                    case ElementType::COMMENT : {
+                        return create<Comment>().ptr();
+                    }
+                    case ElementType::CONNECTOR : {
+                        return create<Connector>().ptr();
+                    }
+                    case ElementType::CONNECTOR_END : {
+                        return create<ConnectorEnd>().ptr();
+                    }
+                    case ElementType::CONSTRAINT : {
+                        return create<Constraint>().ptr();
+                    }
+                    case ElementType::CONTROL_FLOW : {
+                        return create<ControlFlow>().ptr();
+                    }
+                    // case ElementType::CREATE_OBJECT_ACTION : {
+                    //     return create<CreateObjectAction>().ptr();
+                    // }
+                    case ElementType::DATA_STORE_NODE : {
+                        return create<DataStoreNode>().ptr();
+                    }
+                    case ElementType::DATA_TYPE : {
+                        return create<DataType>().ptr();
+                    }
+                    case ElementType::DEPENDENCY : {
+                        return create<Dependency>().ptr();
+                    }
+                    case ElementType::DEPLOYMENT : {
+                        return create<Deployment>().ptr();
+                    }
+                    case ElementType::ELEMENT_IMPORT : {
+                        return create<ElementImport>().ptr();
+                    }
+                    case ElementType::ENUMERATION : {
+                        return create<Enumeration>().ptr();
+                    }
+                    case ElementType::ENUMERATION_LITERAL : {
+                        return create<EnumerationLiteral>().ptr();
+                    }
+                    case ElementType::EXPRESSION : {
+                        return create<Expression>().ptr();
                     }
                     case ElementType::EXTENSION : {
                         return create<Extension>().ptr();
@@ -62,14 +137,95 @@ namespace UML {
                     case ElementType::EXTENSION_END : {
                         return create<ExtensionEnd>().ptr();
                     }
+                    case ElementType::FLOW_FINAL_NODE : {
+                        return create<FlowFinalNode>().ptr();
+                    }
+                    case ElementType::FORK_NODE : {
+                        return create<ForkNode>().ptr();
+                    }
+                    case ElementType::GENERALIZATION : {
+                        return create<Generalization>().ptr();
+                    }
+                    case ElementType::GENERALIZATION_SET : {
+                        return create<GeneralizationSet>().ptr();
+                    }
+                    case ElementType::INITIAL_NODE : {
+                        return create<InitialNode>().ptr();
+                    }
                     case ElementType::INSTANCE_SPECIFICATION : {
                         return create<InstanceSpecification>().ptr();
+                    }
+                    case ElementType::INSTANCE_VALUE : {
+                        return create<InstanceValue>().ptr();
+                    }
+                    case ElementType::INTERFACE_UML : {
+                        return create<Interface>().ptr();
+                    }
+                    case ElementType::INTERFACE_REALIZATION : {
+                        return create<InterfaceRealization>().ptr();
+                    }
+                    case ElementType::JOIN_NODE : {
+                        return create<JoinNode>().ptr();
+                    }
+                    case ElementType::LITERAL_BOOL : {
+                        return create<LiteralBool>().ptr();
+                    }
+                    case ElementType::LITERAL_INT : {
+                        return create<LiteralInt>().ptr();
+                    }
+                    case ElementType::LITERAL_NULL : {
+                        return create<LiteralNull>().ptr();
+                    }
+                    case ElementType::LITERAL_REAL : {
+                        return create<LiteralReal>().ptr();
+                    }
+                    case ElementType::LITERAL_STRING : {
+                        return create<LiteralString>().ptr();
+                    }
+                    case ElementType::LITERAL_UNLIMITED_NATURAL : {
+                        return create<LiteralUnlimitedNatural>().ptr();
+                    }
+                    case ElementType::MANIFESTATION : {
+                        return create<Manifestation>().ptr();
+                    }
+                    case ElementType::MERGE_NODE : {
+                        return create<MergeNode>().ptr();
                     }
                     case ElementType::MODEL : {
                         return create<Model>().ptr();
                     }
+                    case ElementType::OBJECT_FLOW : {
+                        return create<ObjectFlow>().ptr();
+                    }
+                    case ElementType::OPAQUE_ACTION : {
+                        return create<OpaqueAction>().ptr();
+                    }
+                    case ElementType::OPAQUE_BEHAVIOR : {
+                        return create<OpaqueBehavior>().ptr();
+                    }
+                    case ElementType::OPERATION : {
+                        return create<Operation>().ptr();
+                    }
                     case ElementType::PACKAGE: {
                         return create<Package>().ptr();
+                    }
+                    case ElementType::PACKAGE_IMPORT : {
+                        return create<PackageImport>().ptr();
+                    }
+                    case ElementType::PACKAGE_MERGE : {
+                        return create<PackageMerge>().ptr();
+                    }
+                    case ElementType::PARAMETER : {
+                        return create<Parameter>().ptr();
+                    }
+                    case ElementType::PARAMETER_SET : {
+                        return create<ParameterSet>().ptr();
+                    }
+                    case ElementType::PORT : {
+                        return create<Port>().ptr();
+                    }
+                    case ElementType::PRIMITIVE_TYPE : {
+                        return create<PrimitiveType>().ptr();
                     }
                     case ElementType::PROFILE : {
                         return create<Profile>().ptr();
@@ -77,11 +233,41 @@ namespace UML {
                     case ElementType::PROFILE_APPLICATION: {
                         return create<ProfileApplication>().ptr();
                     }
+                    case ElementType::PROPERTY : {
+                        return create<Property>().ptr();
+                    }
+                    case ElementType::REALIZATION : {
+                        return create<Realization>().ptr();
+                    }
+                    case ElementType::RECEPTION  : {
+                        return create<Reception>().ptr();
+                    }
+                    case ElementType::SIGNAL : {
+                        return create<Signal>().ptr();
+                    }
+                    case ElementType::SLOT : {
+                        return create<Slot>().ptr();
+                    }
                     case ElementType::STEREOTYPE : {
                         return create<Stereotype>().ptr();
                     }
+                    case ElementType::TEMPLATE_BINDING : {
+                        return create<TemplateBinding>().ptr();
+                    }
+                    case ElementType::TEMPLATE_PARAMETER : {
+                        return create<TemplateParameter>().ptr();
+                    }
+                    case ElementType::TEMPLATE_PARAMETER_SUBSTITUTION :{
+                        return create<TemplateParameterSubstitution>().ptr();
+                    }
+                    case ElementType::USAGE : {
+                        return create<Usage>().ptr();
+                    }
+                    case ElementType::VALUE_PIN : {
+                        return create<ValuePin>().ptr();
+                    }
                     default: {
-                        throw ManagerPolicyStateException("could not do multimethod create for element type: " + Element::elementTypeToString(type));
+                        throw ManagerStateException("could not do multimethod create for element type: " + Element::elementTypeToString(type));
                     }
                 }
                 return 0;
@@ -114,6 +300,12 @@ namespace UML {
                 PersistencePolicy::write(el, this);
                 // el.m_node->m_mountedFlag = true;
                 AccessPolicy::releaseNode(el.m_node);
+            }
+
+            template <class ... Elements> 
+            void release(Element& el, Elements&... els) {
+                release(el);
+                release(els...);
             }
 
             void erase(Element& el) override {

@@ -17,7 +17,7 @@ class EnumerationTest : public ::testing::Test {
 };
 
 TEST_F(EnumerationTest, addOwnedLiteralTest) {
-    UmlManager m;
+    BasicManager m;
     Enumeration& e = *m.create<Enumeration>();
     EnumerationLiteral& l = *m.create<EnumerationLiteral>();
     ASSERT_NO_THROW(e.getOwnedLiterals().add(l));
@@ -36,7 +36,7 @@ TEST_F(EnumerationTest, addOwnedLiteralTest) {
 }
 
 TEST_F(EnumerationTest, setEnumerationTest) {
-    UmlManager m;
+    BasicManager m;
     Enumeration& e = *m.create<Enumeration>();
     EnumerationLiteral& l = *m.create<EnumerationLiteral>();
     ASSERT_NO_THROW(l.setEnumeration(&e));
@@ -55,7 +55,7 @@ TEST_F(EnumerationTest, setEnumerationTest) {
 }
 
 TEST_F(EnumerationTest, removeOwnedLiteralTest) {
-    UmlManager m;
+    BasicManager m;
     Enumeration& e = *m.create<Enumeration>();
     EnumerationLiteral& l = *m.create<EnumerationLiteral>();
     e.getOwnedLiterals().add(l);
@@ -71,7 +71,7 @@ TEST_F(EnumerationTest, removeOwnedLiteralTest) {
 }
 
 TEST_F(EnumerationTest, setNullEnumeration) {
-    UmlManager m;
+    BasicManager m;
     Enumeration& e = *m.create<Enumeration>();
     EnumerationLiteral& l = *m.create<EnumerationLiteral>();
     e.getOwnedLiterals().add(l);
@@ -87,11 +87,10 @@ TEST_F(EnumerationTest, setNullEnumeration) {
 }
 
 TEST_F(EnumerationTest, basicEnumerationTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "enumerationTests/basicEnumeration.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::ENUMERATION);
-    Enumeration* e = dynamic_cast<Enumeration*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "enumerationTests/basicEnumeration.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::ENUMERATION);
+    Enumeration* e = &m.getRoot()->as<Enumeration>();
     ASSERT_TRUE(e->getOwnedLiterals().size() == 2);
     EnumerationLiteral* l1 = &e->getOwnedLiterals().front();
     EnumerationLiteral* l2 = &e->getOwnedLiterals().back();
@@ -117,7 +116,7 @@ TEST_F(EnumerationTest, basicEnumerationTest) {
 }
 
 TEST_F(EnumerationTest, emitEnumerationWLiterals) {
-    UmlManager m;
+    BasicManager m;
     Enumeration& e = *m.create<Enumeration>();
     EnumerationLiteral& l1 = *m.create<EnumerationLiteral>();
     EnumerationLiteral& l2 = *m.create<EnumerationLiteral>();
@@ -146,7 +145,7 @@ TEST_F(EnumerationTest, emitEnumerationWLiterals) {
 }
 
 TEST_F(EnumerationTest, mountEnumerationTest) {
-    UmlManager m;
+    BasicManager m;
     Enumeration& enumeration = *m.create<Enumeration>();
     EnumerationLiteral& enumerationLiteral = *m.create<EnumerationLiteral>();
     enumeration.getOwnedLiterals().add(enumerationLiteral);
@@ -157,7 +156,7 @@ TEST_F(EnumerationTest, mountEnumerationTest) {
     ID enumerationLiteralID = enumerationLiteral.getID();
     m.release(enumeration);
     ASSERT_FALSE(m.loaded(enumerationID));
-    Enumeration& enumeration2 = m.aquire(enumerationID)->as<Enumeration>();
+    Enumeration& enumeration2 = m.get(enumerationID)->as<Enumeration>();
     ASSERT_EQ(enumeration2.getOwnedLiterals().size(), 1);
     ASSERT_EQ(enumeration2.getOwnedLiterals().front(), enumerationLiteral);
     ASSERT_TRUE(enumerationLiteral.getEnumeration());
@@ -167,11 +166,11 @@ TEST_F(EnumerationTest, mountEnumerationTest) {
     m.release(enumerationLiteral, enumeration2);
     ASSERT_FALSE(m.loaded(enumerationID));
     ASSERT_FALSE(m.loaded(enumerationLiteralID));
-    Enumeration& enumeration3 = m.aquire(enumerationID)->as<Enumeration>();
+    Enumeration& enumeration3 = m.get(enumerationID)->as<Enumeration>();
     ASSERT_FALSE(m.loaded(enumerationLiteralID));
     ASSERT_EQ(enumeration3.getOwnedLiterals().size(), 1);
     ASSERT_EQ(enumeration3.getOwnedMembers().size(), 1);
-    EnumerationLiteral& enumerationLiteral2 = m.aquire(enumerationLiteralID)->as<EnumerationLiteral>();
+    EnumerationLiteral& enumerationLiteral2 = m.get(enumerationLiteralID)->as<EnumerationLiteral>();
     ASSERT_EQ(enumeration3.getOwnedLiterals().front(), enumerationLiteral2);
     ASSERT_TRUE(enumerationLiteral2.getEnumeration());
     ASSERT_EQ(*enumerationLiteral2.getEnumeration(), enumeration3);

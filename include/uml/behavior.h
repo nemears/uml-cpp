@@ -10,7 +10,6 @@ namespace UML {
 
     class Behavior : public Class {
 
-        friend class UmlManager;
         friend class BehavioralFeature;
 
         protected:

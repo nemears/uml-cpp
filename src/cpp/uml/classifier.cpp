@@ -75,7 +75,7 @@ void Classifier::RemoveOwnedMemberFunctor::operator()(Element& el) const {
     if (el.as<NamedElement>().getVisibility() != VisibilityKind::PRIVATE) {
         for (auto& pair : m_el.m_node->m_references) {
             if (!pair.second.node && m_el.m_manager->loaded(pair.first)) {
-                pair.second.node = m_el.m_manager->UmlManager::get(pair.first).m_node;
+                pair.second.node = m_el.m_manager->get(pair.first).ptr()->m_node;
             }
             if (pair.second.node->m_managerElementMemory && 
                 pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 

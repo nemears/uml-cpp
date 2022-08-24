@@ -16,7 +16,7 @@ namespace UML {
 
     class TemplateParameterSubstitution : public Element {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class TemplateBinding;
 
         private:

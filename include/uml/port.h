@@ -9,7 +9,7 @@ namespace UML {
 
     class Port : public Property {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         private:
             void setPortInterfaces(BehavioredClassifier& clazz);

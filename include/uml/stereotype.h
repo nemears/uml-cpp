@@ -11,7 +11,6 @@ namespace UML {
 
     class Stereotype : public Class {
 
-        friend class UmlManager;
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class Profile;
 

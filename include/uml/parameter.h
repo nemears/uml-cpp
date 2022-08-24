@@ -33,7 +33,7 @@ namespace UML {
 
     class Parameter : public ConnectableElement , public MultiplicityElement {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class Operation;
 
         protected:

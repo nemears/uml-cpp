@@ -7,7 +7,7 @@
 namespace UML {
     class CallBehaviorAction : public CallAction {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Singleton<Behavior, CallBehaviorAction> m_behavior = Singleton<Behavior, CallBehaviorAction>(this);

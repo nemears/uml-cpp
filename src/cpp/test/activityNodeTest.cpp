@@ -34,7 +34,7 @@ class ActivityNodeTest : public ::testing::Test {
 };
 
 TEST_F(ActivityNodeTest, reindexID_test) {
-    UmlManager m;
+    BasicManager m;
     Activity& a = *m.create<Activity>();
     ActivityNode& n = *m.create<ActivityNode>();
     a.getNodes().add(n);
@@ -45,7 +45,7 @@ TEST_F(ActivityNodeTest, reindexID_test) {
 }
 
 TEST_F(ActivityNodeTest, reindexNameTest) {
-    UmlManager m;
+    BasicManager m;
     Activity& a = *m.create<Activity>();
     ActivityNode& n = *m.create<ActivityNode>();
     a.getNodes().add(n);
@@ -55,7 +55,7 @@ TEST_F(ActivityNodeTest, reindexNameTest) {
 }
 
 TEST_F(ActivityNodeTest, addIncomingFunctorTest) {
-    UmlManager m;
+    BasicManager m;
     ActivityNode& n = *m.create<ActivityNode>();
     ActivityEdge& e = *m.create<ActivityEdge>();
     n.getIncoming().add(e);
@@ -66,7 +66,7 @@ TEST_F(ActivityNodeTest, addIncomingFunctorTest) {
 }
 
 TEST_F(ActivityNodeTest, setTargetTest) {
-    UmlManager m;
+    BasicManager m;
     ActivityNode& n = *m.create<ActivityNode>();
     ActivityEdge& e = *m.create<ActivityEdge>();
     e.setTarget(&n);
@@ -77,7 +77,7 @@ TEST_F(ActivityNodeTest, setTargetTest) {
 }
 
 TEST_F(ActivityNodeTest, addOutgoingFunctorTest) {
-    UmlManager m;
+    BasicManager m;
     ActivityNode& n = *m.create<ActivityNode>();
     ActivityEdge& e = *m.create<ActivityEdge>();
     n.getOutgoing().add(e);
@@ -88,7 +88,7 @@ TEST_F(ActivityNodeTest, addOutgoingFunctorTest) {
 }
 
 TEST_F(ActivityNodeTest, setSourceTest) {
-    UmlManager m;
+    BasicManager m;
     ActivityNode& n = *m.create<ActivityNode>();
     ActivityEdge& e = *m.create<ActivityEdge>();
     e.setSource(&n);

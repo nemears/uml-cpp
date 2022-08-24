@@ -6,7 +6,7 @@
 namespace UML {
     class DeployedArtifact : virtual public NamedElement {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             DeployedArtifact();

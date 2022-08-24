@@ -8,7 +8,6 @@
 
 namespace UML{
 
-    class UmlManager;
     class AbstractManager;
     class Element;
 
@@ -22,10 +21,8 @@ namespace UML{
         class ParserMetaData {
             public:
                 std::filesystem::path m_path;
-                ParserMetaData(UmlManager* manager); // delete
                 ParserMetaData(){};
-                UmlManager* m_manager = 0; // delete
-                AbstractManager* m_manager2 = 0;
+                AbstractManager* m_manager = 0;
                 ParserStrategy m_strategy = ParserStrategy::WHOLE;
                 void* m_additionalData = 0;
         };

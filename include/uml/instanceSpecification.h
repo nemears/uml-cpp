@@ -16,7 +16,6 @@ namespace UML{
 
     class InstanceSpecification : public PackageableElement , public DeployedArtifact, public DeploymentTarget {
 
-        friend class UmlManager;
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class Classifier;
         friend class InstanceValue;

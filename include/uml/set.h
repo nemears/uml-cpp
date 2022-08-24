@@ -2092,7 +2092,11 @@ namespace UML {
 
             T& operator*() {
                 if (!m_node->m_el) {
-                    m_node->m_el = m_el->m_manager->get(m_el, m_node->m_id);
+                    if (m_el->m_manager) {
+                        m_node->m_el = m_el->m_manager->get(m_el, m_node->m_id);
+                    } else if (m_el->m_manager2) {
+                        m_node->m_el = m_el->m_manager2->get(m_el, m_node->m_id);
+                    }
                 }
                 return dynamic_cast<T&>(*m_node->m_el);
             };

@@ -1,7 +1,8 @@
 #ifndef _UML_UML_SERVER_H_
 #define _UML_UML_SERVER_H_
 
-#include "uml/umlManager.h"
+// #include "uml/umlManager.h"
+#include "threadSafeManager.h"
 #include <atomic>
 #include <iostream>
 #include <mutex>
@@ -25,7 +26,7 @@ namespace std {
 
 namespace UML {
 
-    class UmlServer : public UmlManager {
+    class UmlServer : public ThreadSafeManager {
 
         private:
             struct ClientInfo {
@@ -86,8 +87,8 @@ namespace UML {
 
             // helper methods
         protected:
-            void eraseNode(ManagerNode* node, ID id) override;
-            void createNode(Element* el) override;
+            // void eraseNode(ManagerNode* node, ID id);// override;
+            // void createNode(Element* el);// override;
             void closeClientConnections(ClientInfo& client);
             std::vector<std::unique_lock<std::mutex>> lockReferences(Element& el);
         public:
@@ -99,11 +100,11 @@ namespace UML {
             void start();
             int numClients();
             void log(std::string msg);
-            bool loaded(ID id) override;
-            size_t count(ID id) override;
+            // bool loaded(ID id);// override;
+            size_t count(ID id);// override;
             void reset();
-            void reindex(ID oldID, ID newID) override;
-            void forceRestore(ElementPtr ref, Parsers::ParserMetaData& data) override;
+            // void reindex(ID oldID, ID newID) override;
+            // void forceRestore(ElementPtr ref, Parsers::ParserMetaData& data);// override;
             void shutdownServer();
             void setMaxEls(int maxEls);
             int getMaxEls();
@@ -111,7 +112,7 @@ namespace UML {
             int waitTillShutDown(int ms);
             int waitTillShutDown();
             int waitForProcessing();
-            void setRoot(Element* el) override;
+            void setRoot(Element* el); // override;
             void setRoot(Element& el);
     };
 }

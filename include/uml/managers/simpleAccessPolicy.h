@@ -5,9 +5,9 @@
 
 namespace UML {
     class SimpleAccessPolicy : public AbstractAccessPolicy {
-        private:
-            std::unordered_map<ID, ManagerNode> m_graph;
         protected:
+            std::unordered_map<ID, ManagerNode> m_graph;
+            
             ManagerNode& assignNode(Element* newElement) {
                 ManagerNode& node = m_graph[newElement->getID()];
                 node.m_managerElementMemory = newElement;

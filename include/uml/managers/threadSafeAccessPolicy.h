@@ -4,6 +4,8 @@
 #include <mutex>
 #include <uml/element.h>
 #include "managerNode.h"
+#include "abstractAccessPolicy.h"
+#include "uml/umlPtr.h"
 
 namespace UML {
     struct ThreadSafeManagerNode : public ManagerNode {

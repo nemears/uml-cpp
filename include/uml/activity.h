@@ -16,7 +16,7 @@ namespace UML {
 
     class Activity : public Behavior {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Set<ActivityNode, Activity> m_nodes = Set<ActivityNode, Activity>(this);

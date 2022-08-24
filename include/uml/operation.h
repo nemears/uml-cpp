@@ -21,7 +21,7 @@ namespace UML {
 
     class Operation : public BehavioralFeature , public TemplateableElement, public ParameterableElement {
         
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class Class;
         friend class Parameter;
         friend class DataType;

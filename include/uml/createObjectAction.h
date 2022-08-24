@@ -7,7 +7,7 @@
 namespace UML {
     class CreateObjectAction : public Action {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Classifier* classifier;

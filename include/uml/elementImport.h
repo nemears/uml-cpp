@@ -6,12 +6,13 @@
 
 namespace UML {
 
+    class PackageableElement;
     typedef UmlPtr<PackageableElement> PackageableElementPtr;
     typedef UmlPtr<Namespace> NamespacePtr;
 
     class ElementImport : public DirectedRelationship {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class Namespace;
 
         protected:

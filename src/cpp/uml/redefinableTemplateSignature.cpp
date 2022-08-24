@@ -1,6 +1,5 @@
 #include "uml/redefinableTemplateSignature.h"
 #include "uml/templateableElement.h"
-#include "uml/umlManager.h"
 #include "uml/templateParameter.h"
 #include "uml/parameterableElement.h"
 #include "uml/property.h"

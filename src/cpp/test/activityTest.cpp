@@ -27,7 +27,7 @@ class ActivityTest : public ::testing::Test {
 };
 
 TEST_F(ActivityTest, addNodeFunctorTest) {
-    UmlManager m;
+    BasicManager m;
     Activity& a = *m.create<Activity>();
     ActivityNode& n = *m.create<ActivityNode>();
     a.getNodes().add(n);
@@ -41,7 +41,7 @@ TEST_F(ActivityTest, addNodeFunctorTest) {
 }
 
 TEST_F(ActivityTest, setNodeActivityTest) {
-    UmlManager m;
+    BasicManager m;
     Activity& a = *m.create<Activity>();
     ActivityNode& n = *m.create<ActivityNode>();
     n.setActivity(a);
@@ -55,7 +55,7 @@ TEST_F(ActivityTest, setNodeActivityTest) {
 }
 
 TEST_F(ActivityTest, addEdgeFunctorTest) {
-    UmlManager m;
+    BasicManager m;
     Activity& a = *m.create<Activity>();
     ActivityEdge& e = *m.create<ActivityEdge>();
     a.getEdges().add(e);
@@ -69,7 +69,7 @@ TEST_F(ActivityTest, addEdgeFunctorTest) {
 }
 
 TEST_F(ActivityTest, setEdgeActivityTest) {
-    UmlManager m;
+    BasicManager m;
     Activity& a = *m.create<Activity>();
     ActivityEdge& e = *m.create<ActivityEdge>();
     e.setActivity(&a);
@@ -83,8 +83,9 @@ TEST_F(ActivityTest, setEdgeActivityTest) {
 }
 
 TEST_F(ActivityTest, parseControlNodes) {
-    UmlManager m;
-    ElementPtr parsed = m.parse(ymlPath + "activityTests/controlNodes.yml");
+    BasicManager m;
+    m.open(ymlPath + "activityTests/controlNodes.yml");
+    ElementPtr parsed = m.getRoot();
     ASSERT_EQ(parsed->getElementType(), ElementType::ACTIVITY);
     Activity& activity = parsed->as<Activity>();
     ASSERT_EQ(activity.getNodes().size(), 5);
@@ -111,8 +112,9 @@ TEST_F(ActivityTest, parseControlNodes) {
 }
 
 TEST_F(ActivityTest, objectNodeTest) {
-    UmlManager m;
-    ElementPtr parsed = m.parse(ymlPath + "activityTests/objectNode.yml");
+    BasicManager m;
+    m.open(ymlPath + "activityTests/objectNode.yml");
+    ElementPtr parsed = m.getRoot();
     ASSERT_EQ(parsed->getElementType(), ElementType::ACTIVITY);
     Activity& activity = parsed->as<Activity>();
     ASSERT_EQ(activity.getNodes().size(), 5);
@@ -133,7 +135,7 @@ TEST_F(ActivityTest, objectNodeTest) {
 }
 
 TEST_F(ActivityTest, emitActivityTest) {
-    UmlManager m;
+    BasicManager m;
     Activity& activity = *m.create<Activity>();
     CentralBufferNode& objectNode = *m.create<CentralBufferNode>();
     objectNode.setOrdering(ObjectNodeOrderingKind::UNORDERED);
@@ -154,9 +156,9 @@ TEST_F(ActivityTest, emitActivityTest) {
 }
 
 TEST_F(ActivityTest, mountActivityTest) {
-    UmlManager m;
+    BasicManager m;
     ActivityPtr activity = m.create<Activity>();
-    m.setRoot(*activity);
+    m.setRoot(activity.ptr());
     OpaqueActionPtr action = m.create<OpaqueAction>();
     ExceptionHandlerPtr exceptionHandler = m.create<ExceptionHandler>();
     activity->getNodes().add(*action);

@@ -5,7 +5,6 @@
 #include "yaml-cpp/yaml.h"
 #include "uml/parsers/parserMetaData.h"
 #include "uml/parsers/emitterMetaData.h"
-#include "uml/umlManager.h"
 #include "uml/umlPtr.h"
 #include "uml/set.h"
 #include "uml/singleton.h"
@@ -29,8 +28,6 @@ namespace UML {
                     return m_msg.c_str();
                 }
         };
-
-        UmlManager* parse(std::string path);
 
         ElementPtr parse(ParserMetaData& data);
 

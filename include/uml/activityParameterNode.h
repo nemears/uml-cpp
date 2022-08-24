@@ -10,7 +10,7 @@ namespace UML {
 
     class ActivityParameterNode : public ObjectNode {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Singleton<Parameter, ActivityParameterNode> m_parameter = Singleton<Parameter, ActivityParameterNode>(this);

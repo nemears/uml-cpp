@@ -6,7 +6,7 @@
 namespace UML{
     class PrimitiveType : public DataType {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             PrimitiveType();

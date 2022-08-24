@@ -9,7 +9,7 @@ namespace UML {
 
     class ClassifierTemplateParameter : public TemplateParameter {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class Classifier;
 
         protected:

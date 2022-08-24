@@ -6,7 +6,7 @@
 namespace UML {
     class LiteralInt : public LiteralSpecification {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             int m_value = 0; // TODO change to long so we can hold any number?

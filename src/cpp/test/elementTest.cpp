@@ -10,7 +10,7 @@ UML_SET_INTEGRATION_TEST(ElementAppliedStereotypes, InstanceSpecification, Enume
 class ElementTest : public ::testing::Test {};
 
 TEST_F(ElementTest, UmlPtrTest) {
-    UmlManager m;
+    BasicManager m;
     Package& pckg = *m.create<Package>();
     Package& child = *m.create<Package>();
     pckg.getPackagedElements().add(child);
@@ -26,7 +26,7 @@ TEST_F(ElementTest, UmlPtrTest) {
 }
 
 TEST_F(ElementTest, UmlPtrComparisonTest) {
-    UmlManager m;
+    BasicManager m;
     PackagePtr pckg = m.create<Package>();
     PackagePtr child = m.create<Package>();
     pckg->getPackagedElements().add(*child);
@@ -40,30 +40,30 @@ TEST_F(ElementTest, UmlPtrComparisonTest) {
     ASSERT_EQ(*(child->getOwner()), *pckg);
 }
 
-TEST_F(ElementTest, UmlPtrScopeTest) {
-    UmlManager m;
-    m.mount(".");
-    // m.lossless(false);
-    m.lazy(false);
-    ID pckgID;
-    {
-        PackagePtr pckg = m.create<Package>();
-        pckgID = pckg->getID();
-        ASSERT_TRUE(m.loaded(pckgID));
-    }
-    ASSERT_FALSE(m.loaded(pckgID));
-    // m.lossless(true);
-    m.lazy(true);
-    {
-        PackagePtr pckg = m.create<Package>();
-        pckgID = pckg->getID();
-        ASSERT_TRUE(m.loaded(pckgID));
-    }
-    ASSERT_TRUE(m.loaded(pckgID));
-}
+// TEST_F(ElementTest, UmlPtrScopeTest) {
+//     BasicManager m;
+//     m.mount(".");
+//     // m.lossless(false);
+//     m.lazy(false);
+//     ID pckgID;
+//     {
+//         PackagePtr pckg = m.create<Package>();
+//         pckgID = pckg->getID();
+//         ASSERT_TRUE(m.loaded(pckgID));
+//     }
+//     ASSERT_FALSE(m.loaded(pckgID));
+//     // m.lossless(true);
+//     m.lazy(true);
+//     {
+//         PackagePtr pckg = m.create<Package>();
+//         pckgID = pckg->getID();
+//         ASSERT_TRUE(m.loaded(pckgID));
+//     }
+//     ASSERT_TRUE(m.loaded(pckgID));
+// }
 
 TEST_F(ElementTest, UmlPtrReleaseTest) {
-    UmlManager m;
+    BasicManager m;
     m.mount(".");
     PackagePtr pckg = m.create<Package>();
     PackagePtr child = m.create<Package>();
@@ -80,7 +80,7 @@ TEST_F(ElementTest, UmlPtrReleaseTest) {
 }
 
 TEST_F(ElementTest, AcessReleasedPtrTest) {
-    UmlManager m;
+    BasicManager m;
     m.mount(".");
     // m.lazy(false);
     // m.lossless(false);
@@ -92,7 +92,7 @@ TEST_F(ElementTest, AcessReleasedPtrTest) {
 }
 
 TEST_F(ElementTest, reassignPtrTest) { // TODO recreate managermountstresstest error
-    UmlManager m;
+    BasicManager m;
     PackagePtr pckg = m.create<Package>();
     PackagePtr ogPckg = pckg;
     ID ogID = pckg.id();    
@@ -115,7 +115,7 @@ TEST_F(ElementTest, reassignPtrTest) { // TODO recreate managermountstresstest e
 }
 
 TEST_F(ElementTest, OverrideID_Test) {
-    UmlManager m;
+    BasicManager m;
     PackagePtr el = m.create<Package>();
     el->setID("7d18ee4282c64f528ec4fab67a75");
     ID id = ID::fromString("7d18ee4282c64f528ec4fab67a75");
@@ -123,7 +123,7 @@ TEST_F(ElementTest, OverrideID_Test) {
 }
 
 TEST_F(ElementTest, GetOwnedElementsTest) {
-  UmlManager m;
+  BasicManager m;
   Package& el2 = *m.create<Package>();
   Package& el3 = *m.create<Package>();
   el2.getPackagedElements().add(el3);
@@ -132,14 +132,14 @@ TEST_F(ElementTest, GetOwnedElementsTest) {
 }
 
 TEST_F(ElementTest, InvalidID_Test) {
-    UmlManager m;
+    BasicManager m;
     Package& el3 = *m.create<Package>();
     EXPECT_THROW(el3.setID("not a uuid4"), InvalidID_Exception);
     EXPECT_NO_THROW(el3.setID("7d18ee4282c64f528ec4fab67a75"));
 }
 
 TEST_F(ElementTest, getNullOwnerTest) {
-    UmlManager m;
+    BasicManager m;
     PackagePtr e = m.create<Package>();
     ASSERT_THROW(e->getOwner()->getID(), NullPtrException);
     ASSERT_FALSE(e->getOwner());
@@ -149,7 +149,7 @@ TEST_F(ElementTest, getNullOwnerTest) {
 }
 
 TEST_F(ElementTest, setAndGetOwnerTest) {
-    UmlManager m;
+    BasicManager m;
     Package& e = *m.create<Package>();
     Package& c = *m.create<Package>();
     c.setOwningPackage(e);
@@ -159,7 +159,7 @@ TEST_F(ElementTest, setAndGetOwnerTest) {
 }
 
 TEST_F(ElementTest, getOwnedElementsBasicTest) {
-    UmlManager m;
+    BasicManager m;
     Package& e = *m.create<Package>();
     Package& c = *m.create<Package>();
     ASSERT_NO_THROW(e.getPackagedElements().add(c));
@@ -167,7 +167,7 @@ TEST_F(ElementTest, getOwnedElementsBasicTest) {
 }
 
 TEST_F(ElementTest, getOwnedElementByNameTest) {
-    UmlManager m;
+    BasicManager m;
     Package& e = *m.create<Package>();
     Package& n = *m.create<Package>();
     n.setName("name");
@@ -180,7 +180,7 @@ TEST_F(ElementTest, getOwnedElementByNameTest) {
 }
 
 TEST_F(ElementTest, reIndexID_Test) {
-    UmlManager m;
+    BasicManager m;
     Package& e1 = *m.create<Package>();
     Package& e2 = *m.create<Package>();
     e1.getPackagedElements().add(e2);
@@ -189,7 +189,7 @@ TEST_F(ElementTest, reIndexID_Test) {
 }
 
 TEST_F(ElementTest, basicRelationshipTest) {
-  UmlManager m;
+  BasicManager m;
   Package& e = *m.create<Package>();
   Package& a = *m.create<Package>();
   PackageMerge& r = *m.create<PackageMerge>();
@@ -203,7 +203,7 @@ TEST_F(ElementTest, basicRelationshipTest) {
 }
 
 TEST_F(ElementTest, reindexRelationshipID_test) {
-    UmlManager m;
+    BasicManager m;
     Package& e = *m.create<Package>();
     Package& a = *m.create<Package>();
     PackageMerge& r = *m.create<PackageMerge>();
@@ -216,7 +216,7 @@ TEST_F(ElementTest, reindexRelationshipID_test) {
 }
 
 TEST_F(ElementTest, setOwnerFunctorTest) {
-    UmlManager m;
+    BasicManager m;
     Package& e = *m.create<Package>();
     Package& c = *m.create<Package>();
     e.getPackagedElements().add(c);
@@ -225,7 +225,7 @@ TEST_F(ElementTest, setOwnerFunctorTest) {
 }
 
 TEST_F(ElementTest, setOwnerTest) {
-    UmlManager m;
+    BasicManager m;
     Package& e = *m.create<Package>();
     Package& c = *m.create<Package>();
     c.setOwningPackage(&e);
@@ -234,7 +234,7 @@ TEST_F(ElementTest, setOwnerTest) {
 }
 
 TEST_F(ElementTest, overwriteOwnerTest) {
-  UmlManager m;
+  BasicManager m;
   Package& p1 = *m.create<Package>();
   Package& p2 = *m.create<Package>();
   Package& c = *m.create<Package>();
@@ -247,7 +247,7 @@ TEST_F(ElementTest, overwriteOwnerTest) {
 }
 
 TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
-  UmlManager m;
+  BasicManager m;
   Package& p1 = *m.create<Package>();
   Package& p2 = *m.create<Package>();
   Package& c = *m.create<Package>();
@@ -260,7 +260,7 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
 }
 
 TEST_F(ElementTest, readOnlySequenceTest) {
-    UmlManager m;
+    BasicManager m;
     Package& p = *m.create<Package>();
     Package& c1 = *m.create<Package>();
     Package& c2 = *m.create<Package>();
@@ -270,7 +270,7 @@ TEST_F(ElementTest, readOnlySequenceTest) {
 }
 
 TEST_F(ElementTest, readOnlyRelatedElementsTest) {
-    UmlManager mm;
+    BasicManager mm;
     Package& p = *mm.create<Package>();
     Package& m = *mm.create<Package>();
     PackageMerge& r = *mm.create<PackageMerge>();
@@ -282,14 +282,14 @@ TEST_F(ElementTest, readOnlyRelatedElementsTest) {
 }
 
 // TEST_F(ElementTest, checkAppliedStereotypeFunctorTest) {
-//   UmlManager m;
+//   BasicManager m;
 //   Class& c = m.create<Class>();
 //   InstanceSpecification& s = m.create<InstanceSpecification>();
 //   ASSERT_THROW(c.getAppliedStereotypes().add(s), InvalidAppliedStereotypeException());
 // }
 
 TEST_F(ElementTest, AddAndRemoveAppliedStereotypetest) {
-  UmlManager m;
+  BasicManager m;
   Class& c = *m.create<Class>();
   InstanceSpecification& i = *m.create<InstanceSpecification>();
   Stereotype& s = *m.create<Stereotype>();
@@ -301,14 +301,14 @@ TEST_F(ElementTest, AddAndRemoveAppliedStereotypetest) {
 }
 
 TEST_F(ElementTest, asFuncTest) {
-  UmlManager m;
+  BasicManager m;
   UmlPtr<Classifier> classifier = m.create<Class>();
   Class& clazz = classifier->as<Class>();
   ASSERT_EQ(classifier->getID(), clazz.getID());
 }
 
 TEST_F(ElementTest, emitJSON_test) {
-    UmlManager m;
+    BasicManager m;
     PackagePtr p = m.create<Package>();
     PackagePtr c = m.create<Package>();
     p->getPackagedElements().add(*c);

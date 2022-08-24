@@ -2,7 +2,6 @@
 #define _UML_SET_H_
 
 #include "element.h"
-#include "umlManager.h"
 #include "managers/abstractManager.h"
 #include "umlPtr.h"
 
@@ -860,11 +859,7 @@ namespace UML {
                 SetNode* temp = innerInnerRemove(id);
                 for (auto& func : m_removeFunctors) {
                     if (!temp->m_el) {
-                        if (m_el->m_manager) { // TODO delete
-                            temp->m_el = m_el->m_manager->get(m_el, temp->m_id);
-                        } else if (m_el->m_manager2) {
-                            temp->m_el = m_el->m_manager2->get(m_el, temp->m_id);
-                        }
+                        temp->m_el = m_el->m_manager->get(m_el, temp->m_id);
                     }
                     (*func)(*dynamic_cast<T*>(temp->m_el));
                 }
@@ -1140,16 +1135,9 @@ namespace UML {
                 // this will always need to search tree (don't know any quicker way)
                 if (AbstractSet::contains(id)) {
                     innerRemove(id);
-                    if (m_el) 
-                    {
-                        if (m_el->m_manager) {
-                            m_el->m_manager->get(id).removeReference(m_el->getID());
-                            m_el->removeReference(id);
-                        } else if (m_el->m_manager2) {
-                            m_el->m_manager2->get(id)->removeReference(m_el->getID());
-                            m_el->removeReference(id);
-                        }
-                        
+                    if (m_el) {
+                        m_el->m_manager->get(id)->removeReference(m_el->getID());
+                        m_el->removeReference(id);
                     }
                 }
             };
@@ -1160,7 +1148,7 @@ namespace UML {
             void addReadOnly(ID id) {
                 SetNode* node = createNode(id);
                 add(node);
-                if (m_el && m_el->m_manager) {
+                if (m_el) {
                     m_el->setReference(id);
                 }
             };
@@ -1171,7 +1159,7 @@ namespace UML {
             void addReadOnly(T& el) {
                 SetNode* node = createNode(el);
                 add(node);
-                if (m_el && m_el->m_manager) {
+                if (m_el) {
                     m_el->setReference(&el);
                 }
             };
@@ -1782,12 +1770,7 @@ namespace UML {
                 SetNode* node = createNode(id);
                 add(node);
                 if (m_el) {
-                    if (m_el->m_manager) { // TODO delete
-                        m_el->setReference(id);
-                    } else if (m_el->m_manager2) {
-                        m_el->setReference(id);
-                    }
-                    
+                    m_el->setReference(id);\
                 }
             };
             /**
@@ -1918,11 +1901,7 @@ namespace UML {
                         node = node->m_left;
                     }
                     if (!node->m_el) {
-                        if (m_el->m_manager) {
-                            node->m_el = m_el->m_manager->get(m_el, node->m_id);
-                        } else if (m_el->m_manager2) {
-                            node->m_el = m_el->m_manager2->get(m_el, node->m_id);
-                        }
+                        node->m_el = m_el->m_manager->get(m_el, node->m_id);
                         
                     }
                     return *dynamic_cast<T*>(node->m_el);
@@ -2092,11 +2071,7 @@ namespace UML {
 
             T& operator*() {
                 if (!m_node->m_el) {
-                    if (m_el->m_manager) {
-                        m_node->m_el = m_el->m_manager->get(m_el, m_node->m_id);
-                    } else if (m_el->m_manager2) {
-                        m_node->m_el = m_el->m_manager2->get(m_el, m_node->m_id);
-                    }
+                    m_node->m_el = m_el->m_manager->get(m_el, m_node->m_id);
                 }
                 return dynamic_cast<T&>(*m_node->m_el);
             };

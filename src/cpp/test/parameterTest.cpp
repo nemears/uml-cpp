@@ -17,20 +17,20 @@ class ParameterTest : public ::testing::Test {
 };
 
 TEST_F(ParameterTest, TestSetDirection) {
-    UmlManager m;
+    BasicManager m;
     Parameter& p = *m.create<Parameter>();
     p.setDirection(ParameterDirectionKind::IN_UML);
     ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::IN_UML);
 }
 
 TEST_F(ParameterTest, TestGetNotSetDirection) {
-    UmlManager m;
+    BasicManager m;
     Parameter& p = *m.create<Parameter>();
     ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::NONE);
 }
 
 TEST_F(ParameterTest, reindexID_ownerTest) {
-    UmlManager m;
+    BasicManager m;
     OpaqueBehavior& a = *m.create<OpaqueBehavior>();
     Parameter& p = *m.create<Parameter>();
     a.getOwnedParameters().add(p);
@@ -41,14 +41,13 @@ TEST_F(ParameterTest, reindexID_ownerTest) {
 }
 
 TEST_F(ParameterTest, properExceptions) {
-    Element* el;
-    UmlManager m;
-    ASSERT_THROW(el = m.parse(ymlPath + "parameterTests/invalidDirection.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "parameterTests/invalidDirection2.yml").ptr(), Parsers::UmlParserException);
+    BasicManager m;
+    ASSERT_THROW(m.open(ymlPath + "parameterTests/invalidDirection.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "parameterTests/invalidDirection2.yml"), Parsers::UmlParserException);
 }
 
 TEST_F(ParameterTest, emitParameterWMultiplicityTest) {
-    UmlManager m;
+    BasicManager m;
     OpaqueBehavior& b = *m.create<OpaqueBehavior>();
     Parameter& p = *m.create<Parameter>();
     b.setID("SeJ_0hSPaIa4EYap3sXgRQm4LuSn");

@@ -16,7 +16,7 @@ UML_SET_INTEGRATION_TEST(RedefinableTemplateSignatureExtendedSignature, Redefina
 class ClassifierTest : public ::testing::Test {};
 
 TEST_F(ClassifierTest, GetOwnedAttributesTest) {
-	UmlManager m;
+	BasicManager m;
 	Class& classifier1 = *m.create<Class>();
 	Property& prop = *m.create<Property>();
 	classifier1.getOwnedAttributes().add(prop);
@@ -45,7 +45,7 @@ TEST_F(ClassifierTest, GetOwnedAttributesTest) {
 }
 
 TEST_F(ClassifierTest, addAttributeFunctorTest) {
-  UmlManager m;
+  BasicManager m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   c.getOwnedAttributes().add(p);
@@ -58,7 +58,7 @@ TEST_F(ClassifierTest, addAttributeFunctorTest) {
 }
 
 TEST_F(ClassifierTest, setClassifierTest) {
-  UmlManager m;
+  BasicManager m;
   Property& p = *m.create<Property>();
   Class& c = *m.create<Class>();
   p.setClass(&c);
@@ -72,7 +72,7 @@ TEST_F(ClassifierTest, setClassifierTest) {
 }
 
 TEST_F(ClassifierTest, removeAttributeFunctorTest) {
-  UmlManager m;
+  BasicManager m;
   Property& p = *m.create<Property>();
   Class& c = *m.create<Class>();
   c.getOwnedAttributes().add(p);
@@ -87,7 +87,7 @@ TEST_F(ClassifierTest, removeAttributeFunctorTest) {
 }
 
 TEST_F(ClassifierTest, inheritedMembersTest) {
-  UmlManager m;
+  BasicManager m;
   Class& g1 = *m.create<Class>();
   Class& s1 = *m.create<Class>();
   Property& p1 = *m.create<Property>();
@@ -160,7 +160,7 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
 }
 
 TEST_F(ClassifierTest, reindexClassifierID_test) {
-	UmlManager m;
+	BasicManager m;
 	DataType& reindexed = *m.create<DataType>();
 	DataType& general = *m.create<DataType>();
 	Generalization& generalization = *m.create<Generalization>();
@@ -189,7 +189,7 @@ TEST_F(ClassifierTest, reindexClassifierID_test) {
 }
 
 TEST_F(ClassifierTest, redefinableTemplateSignatureAddAndRemoveParametersWhenExtendedTest) {
-  UmlManager m;
+  BasicManager m;
   RedefinableTemplateSignaturePtr extendedSig = m.create<RedefinableTemplateSignature>();
   RedefinableTemplateSignaturePtr sigExtending = m.create<RedefinableTemplateSignature>();
   TemplateParameterPtr parameter = m.create<TemplateParameter>();

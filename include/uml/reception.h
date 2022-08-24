@@ -11,7 +11,7 @@ namespace UML {
 
     class Reception : public BehavioralFeature {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Singleton<Signal, Reception> m_signal = Singleton<Signal, Reception>(this);

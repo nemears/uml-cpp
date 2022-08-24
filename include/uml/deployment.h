@@ -14,8 +14,8 @@ namespace UML {
 
     class Deployment : public Dependency {
 
-        friend class UmlManager;
         friend class DeploymentTarget;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         private:
             Set<DeployedArtifact, Deployment> m_deployedArtifacts = Set<DeployedArtifact, Deployment>(this);

@@ -26,7 +26,7 @@ void ManagerNode::setReference(ID id) {
 void ManagerNode::removeReference(Element& el) {
     std::unordered_map<ID, NodeReference>::iterator ref = m_references.find(el.getID());
     if (ref == m_references.end()) {
-        throw ManagerPolicyStateException("tried to remove inexistent reference");
+        throw ManagerStateException("tried to remove inexistent reference");
     }
     if (ref->second.count == 1) {
         m_references.erase(ref);

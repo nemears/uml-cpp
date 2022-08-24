@@ -1,7 +1,6 @@
 #ifndef _UML_UML_SERVER_H_
 #define _UML_UML_SERVER_H_
 
-// #include "uml/umlManager.h"
 #include "threadSafeManager.h"
 #include <atomic>
 #include <iostream>

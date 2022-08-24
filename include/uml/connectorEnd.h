@@ -13,7 +13,7 @@ namespace UML {
 
     class ConnectorEnd : public MultiplicityElement {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class Connector;
 
         protected:

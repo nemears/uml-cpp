@@ -10,7 +10,7 @@ namespace UML {
 
     class JoinNode : public ControlNode {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Singleton<ValueSpecification, JoinNode> m_joinSpec = Singleton<ValueSpecification, JoinNode>(this);

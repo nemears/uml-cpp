@@ -7,7 +7,6 @@ namespace UML {
     class Profile : public Package {
 
         friend class Stereotype;
-        friend class UmlManager;
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:

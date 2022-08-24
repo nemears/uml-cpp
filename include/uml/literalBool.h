@@ -6,7 +6,7 @@
 namespace UML {
     class LiteralBool : public LiteralSpecification {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             bool m_value = false;

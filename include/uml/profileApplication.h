@@ -6,13 +6,13 @@
 
 namespace UML {
 
+    class Package;
     class Profile;
     typedef UmlPtr<Profile> ProfilePtr;
     typedef UmlPtr<Package> PackagePtr;
 
     class ProfileApplication : public DirectedRelationship {
 
-        friend class UmlManager;
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class Package;
 

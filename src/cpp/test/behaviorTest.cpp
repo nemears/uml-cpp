@@ -17,7 +17,7 @@ class BehaviorTest : public ::testing::Test {
 };
 
 TEST_F(BehaviorTest, removeParameterFunctorTest) {
-    UmlManager m;
+    BasicManager m;
     OpaqueBehavior& b = *m.create<OpaqueBehavior>();
     Parameter& p = *m.create<Parameter>();
     Operation& o = *m.create<Operation>();
@@ -31,7 +31,7 @@ TEST_F(BehaviorTest, removeParameterFunctorTest) {
 }
 
 TEST_F(BehaviorTest, reindexBehaviorID_Test) {
-    UmlManager m;
+    BasicManager m;
     OpaqueBehavior& behavior = *m.create<OpaqueBehavior>();
     Parameter& param = *m.create<Parameter>();
     Class& owner = *m.create<Class>();
@@ -52,11 +52,10 @@ TEST_F(BehaviorTest, reindexBehaviorID_Test) {
 }
 
 TEST_F(BehaviorTest, parseMultipleSimpleBodies) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "opaqueBehaviorTests/multipleSimpleBodies.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::OPAQUE_BEHAVIOR);
-    OpaqueBehavior* bhv = dynamic_cast<OpaqueBehavior*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "opaqueBehaviorTests/multipleSimpleBodies.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::OPAQUE_BEHAVIOR);
+    OpaqueBehavior* bhv = &m.getRoot()->as<OpaqueBehavior>();
     ASSERT_TRUE(bhv->getName().compare("test") == 0);
     ASSERT_TRUE(bhv->getID() == ID::fromString("i0wopIpBjBHdekQ57DbWeHfWmQp3"));
     ASSERT_TRUE(bhv->getBodies().size() == 3);
@@ -67,9 +66,9 @@ TEST_F(BehaviorTest, parseMultipleSimpleBodies) {
 
 TEST_F(BehaviorTest, parseParameter) {
     Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "opaqueBehaviorTests/param.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::OPAQUE_BEHAVIOR);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "opaqueBehaviorTests/param.yml").ptr());
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::OPAQUE_BEHAVIOR);
     OpaqueBehavior* bhv = dynamic_cast<OpaqueBehavior*>(el);
     ASSERT_TRUE(bhv->getOwnedParameters().size() == 1);
     Parameter* param = &bhv->getOwnedParameters().front();
@@ -78,15 +77,15 @@ TEST_F(BehaviorTest, parseParameter) {
 }
 
 TEST_F(BehaviorTest, properParameters) {
-    UmlManager m;
-    ASSERT_THROW(m.parse(ymlPath + "opaqueBehaviorTests/improperParameters.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(m.parse(ymlPath + "opaqueBehaviorTests/bodyNotLiteralString.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(m.parse(ymlPath + "opaqueBehaviorTests/bodiesEntryIsSequence.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(m.parse(ymlPath + "opaqueBehaviorTests/bodiesNotSequence.yml").ptr(), Parsers::UmlParserException);
+    BasicManager m;
+    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/improperParameters.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodyNotLiteralString.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodiesEntryIsSequence.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodiesNotSequence.yml"), Parsers::UmlParserException);
 }
 
 TEST_F(BehaviorTest, emitBasicOpaqueBehavior) {
-    UmlManager m;
+    BasicManager m;
     OpaqueBehavior& b = *m.create<OpaqueBehavior>();
     Property& p = *m.create<Property>();
     Operation& o = *m.create<Operation>();

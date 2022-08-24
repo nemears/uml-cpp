@@ -13,7 +13,7 @@ namespace UML {
     class PackageMerge : public DirectedRelationship {
 
         friend class Package;
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Singleton<Package, PackageMerge> m_receivingPackage = Singleton<Package, PackageMerge>(this);

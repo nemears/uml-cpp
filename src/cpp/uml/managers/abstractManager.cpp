@@ -13,7 +13,7 @@ Element* AbstractManager::get(Element* me, ID theID) {
                 }
                 return me->m_node->m_references[theID].node->m_managerElementMemory;
             } else {
-                throw ManagerPolicyStateException("could not find reference " + theID.string());
+                throw ManagerStateException("could not find reference " + theID.string());
             }
         } else {
             get(theID);

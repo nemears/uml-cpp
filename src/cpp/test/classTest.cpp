@@ -23,7 +23,7 @@ class ClassTest : public ::testing::Test {
 };
 
 TEST_F(ClassTest, BasicOperationTest) {
-    UmlManager m;
+    BasicManager m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
     OpaqueBehavior& oB = *m.create<OpaqueBehavior>();
@@ -37,7 +37,7 @@ TEST_F(ClassTest, BasicOperationTest) {
 }
 
 TEST_F(ClassTest, addOperationFunctorTest) {
-    UmlManager m;
+    BasicManager m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
     c.getOwnedOperations().add(o);
@@ -56,7 +56,7 @@ TEST_F(ClassTest, addOperationFunctorTest) {
 }
 
 TEST_F(ClassTest, setClassTest) {
-    UmlManager m;
+    BasicManager m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
     o.setClass(c);
@@ -75,7 +75,7 @@ TEST_F(ClassTest, setClassTest) {
 }
 
 TEST_F(ClassTest, overwriteClassTest) {
-  UmlManager m;
+  BasicManager m;
   Class& p1 = *m.create<Class>();
   Class& p2 = *m.create<Class>();
   Operation& c = *m.create<Operation>();
@@ -100,7 +100,7 @@ TEST_F(ClassTest, overwriteClassTest) {
 }
 
 TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
-  UmlManager m;
+  BasicManager m;
   Class& p1 = *m.create<Class>();
   Class& p2 = *m.create<Class>();
   Operation& c = *m.create<Operation>();
@@ -125,7 +125,7 @@ TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
 }
 
 TEST_F(ClassTest, removeOperationFunctorTest) {
-  UmlManager m;
+  BasicManager m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
   c.getOwnedOperations().add(o);
@@ -141,7 +141,7 @@ TEST_F(ClassTest, removeOperationFunctorTest) {
 }
 
 TEST_F(ClassTest, addOwnedAttributeTest) {
-  UmlManager m;
+  BasicManager m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
@@ -168,7 +168,7 @@ TEST_F(ClassTest, addOwnedAttributeTest) {
 }
 
 TEST_F(ClassTest, addOwnedAttributeAsStructuredClassifierTest) {
-  UmlManager m;
+  BasicManager m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   c.as<StructuredClassifier>().getOwnedAttributes().add(p);
@@ -195,7 +195,7 @@ TEST_F(ClassTest, addOwnedAttributeAsStructuredClassifierTest) {
 }
 
 TEST_F(ClassTest, setStructuredClassifierTest) {
-  UmlManager m;
+  BasicManager m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   ASSERT_NO_THROW(p.setClass(&c));
@@ -220,7 +220,7 @@ TEST_F(ClassTest, setStructuredClassifierTest) {
 }
 
 TEST_F(ClassTest, removeOwnedAttributeFunctorTest) {
-  UmlManager m;
+  BasicManager m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   c.getOwnedAttributes().add(p);
@@ -238,7 +238,7 @@ TEST_F(ClassTest, removeOwnedAttributeFunctorTest) {
 }
 
 TEST_F(ClassTest, setFeaturingClassifierNullTest) {
-  UmlManager m;
+  BasicManager m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   c.getOwnedAttributes().add(p);
@@ -257,7 +257,7 @@ TEST_F(ClassTest, setFeaturingClassifierNullTest) {
 }
 
 TEST_F(ClassTest, addCompositePropertyTest) {
-  UmlManager m;
+  BasicManager m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   p.setAggregation(AggregationKind::COMPOSITE);
@@ -286,7 +286,7 @@ TEST_F(ClassTest, addCompositePropertyTest) {
 }
 
 TEST_F(ClassTest, backwardsAddCompositePropertyTest) {
-  UmlManager m;
+  BasicManager m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
@@ -315,7 +315,7 @@ TEST_F(ClassTest, backwardsAddCompositePropertyTest) {
 }
 
 TEST_F(ClassTest, removePropertyFromParts) {
-  UmlManager m;
+  BasicManager m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   p.setAggregation(AggregationKind::COMPOSITE);
@@ -345,7 +345,7 @@ TEST_F(ClassTest, removePropertyFromParts) {
 }
 
 TEST_F(ClassTest, addAndRemoveNestedClassifierTest) {
-  UmlManager m;
+  BasicManager m;
   Class& c = *m.create<Class>();
   DataType& d = *m.create<DataType>();
   c.getNestedClassifiers().add(d);
@@ -362,21 +362,19 @@ TEST_F(ClassTest, addAndRemoveNestedClassifierTest) {
 }
 
 TEST_F(ClassTest, parseID_andName) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/class_w_id_and_name.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
-    Class* clazz = dynamic_cast<Class*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "classTests/class_w_id_and_name.yml").ptr());
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::CLASS);
+    Class* clazz = &m.getRoot()->as<Class>();
     ASSERT_TRUE(clazz->getID() == ID::fromString("g8WBwHt6sgOqvS9ZlgKv9XTmHZ&C"));
     ASSERT_TRUE(clazz->getName().compare("test") == 0);
 }
 
 TEST_F(ClassTest, parseBasicProperty) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/classWithAttributes.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
-    Class* clazz = dynamic_cast<Class*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "classTests/classWithAttributes.yml").ptr());
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::CLASS);
+    Class* clazz = &m.getRoot()->as<Class>();
     ASSERT_TRUE(clazz->getAttributes().size() == 2);
     Property* prop1 = dynamic_cast<Property*>(&clazz->getAttributes().front());
     Property* prop2 = dynamic_cast<Property*>(&clazz->getAttributes().back());
@@ -393,11 +391,10 @@ TEST_F(ClassTest, parseBasicProperty) {
 }
 
 TEST_F(ClassTest, parseOperation) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/operation.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
-    Class* clazz = dynamic_cast<Class*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "classTests/operation.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::CLASS);
+    Class* clazz = &m.getRoot()->as<Class>();
     ASSERT_EQ(clazz->getOwnedOperations().size(), 1);
     Operation* op = &clazz->getOwnedOperations().front();
     ASSERT_TRUE(op->getName().compare("isValid") == 0);
@@ -410,17 +407,16 @@ TEST_F(ClassTest, parseOperation) {
 }
 
 TEST_F(ClassTest, properErrors) {
-    UmlManager m;
-    ASSERT_THROW(m.parse(ymlPath + "classTests/improperOperationIdentifier.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(m.parse(ymlPath + "classTests/operationsNotSequence.yml").ptr(), Parsers::UmlParserException);
+    BasicManager m;
+    ASSERT_THROW(m.open(ymlPath + "classTests/improperOperationIdentifier.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "classTests/operationsNotSequence.yml"), Parsers::UmlParserException);
 }
 
 TEST_F(ClassTest, basicGeneralizationTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/basicGeneralization.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    Package* pckg = dynamic_cast<Package*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "classTests/basicGeneralization.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
     Class* general = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
@@ -437,11 +433,10 @@ TEST_F(ClassTest, basicGeneralizationTest) {
 }
 
 TEST_F(ClassTest, inheritedMembersTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/inheritedMembers.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    Package* pckg = dynamic_cast<Package*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "classTests/inheritedMembers.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 4);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
     Class* general = dynamic_cast<Class*>(&pckg->getPackagedElements().get("general"));
@@ -470,7 +465,7 @@ TEST_F(ClassTest, inheritedMembersTest) {
 }
 
 TEST_F(ClassTest, emitClassWAttribute) {
-    UmlManager m;
+    BasicManager m;
     Class& c = *m.create<Class>();
     Property& p = *m.create<Property>();
     c.setID("hWVMp5upOkVsWnkrfl0I6O5bQsbO");
@@ -494,7 +489,7 @@ TEST_F(ClassTest, emitClassWAttribute) {
 }
 
 TEST_F(ClassTest, emitClassWAttributeNOperation) {
-    UmlManager m;
+    BasicManager m;
     Class& c = *m.create<Class>();
     Property& p = *m.create<Property>();
     Operation& o = *m.create<Operation>();
@@ -528,7 +523,7 @@ TEST_F(ClassTest, emitClassWAttributeNOperation) {
 }
 
 TEST_F(ClassTest, emitFilledInOperation) {
-    UmlManager m;
+    BasicManager m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
     OpaqueBehavior& b = *m.create<OpaqueBehavior>();
@@ -580,11 +575,10 @@ TEST_F(ClassTest, emitFilledInOperation) {
 }
 
 TEST_F(ClassTest, nestedClassifierParsingTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "classTests/nestedClassifiers.yml").ptr());
-    ASSERT_EQ(el->getElementType(), ElementType::CLASS);
-    Class& clazz = el->as<Class>();
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "classTests/nestedClassifiers.yml"));
+    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::CLASS);
+    Class& clazz = m.getRoot()->as<Class>();
     ASSERT_EQ(clazz.getNestedClassifiers().size(), 7);
     ASSERT_EQ(clazz.getNestedClassifiers().get(0).getElementType(), ElementType::ASSOCIATION);
     ASSERT_EQ(clazz.getNestedClassifiers().get(0).getName(), "assoc");
@@ -603,7 +597,7 @@ TEST_F(ClassTest, nestedClassifierParsingTest) {
 }
 
 TEST_F(ClassTest, nestedClassifierEmitTest) {
-    UmlManager m;
+    BasicManager m;
     Class& clazz = *m.create<Class>();
     Artifact& artifact = *m.create<Artifact>();
     Association& association = *m.create<Association>();
@@ -651,7 +645,7 @@ TEST_F(ClassTest, nestedClassifierEmitTest) {
 }
 
 TEST_F(ClassTest, mountFullClassTest) {
-    UmlManager m;
+    BasicManager m;
     Package& pckg = *m.create<Package>();
     Class& base = *m.create<Class>();
     Class& spec = *m.create<Class>();
@@ -673,7 +667,7 @@ TEST_F(ClassTest, mountFullClassTest) {
     m.setRoot(&pckg);
     std::string mountPath = ymlPath + "classTests";
     ASSERT_NO_THROW(m.mount(mountPath));
-    ASSERT_NO_THROW(m.release(base.getID()));
+    ASSERT_NO_THROW(m.release(base));
     ASSERT_TRUE(prop.getOwner());
     Class& base2 = prop.getOwner()->as<Class>();
     ASSERT_TRUE(prop.getClass());
@@ -775,7 +769,7 @@ TEST_F(ClassTest, mountFullClassTest) {
 
     ID genID = gen2.getID();
     m.release(gen2, spec2);
-    Generalization& gen3 = m.aquire(genID)->as<Generalization>();
+    Generalization& gen3 = m.get(genID)->as<Generalization>();
     ASSERT_TRUE(gen3.getSpecific());
     Class& spec3 = gen3.getSpecific()->as<Class>();
     ASSERT_EQ(gen3.getSources().size(), 1);
@@ -809,7 +803,7 @@ TEST_F(ClassTest, mountFullClassTest) {
     ID specID = spec3.getID();
     m.release(spec3, nestSpec2);
     ASSERT_FALSE(m.loaded(specID));
-    Class& nestSpec3 = m.aquire(nestSpecID)->as<Class>();
+    Class& nestSpec3 = m.get(nestSpecID)->as<Class>();
     ASSERT_TRUE(nestSpec3.getNamespace());
     Class& spec4 = nestSpec3.getNamespace()->as<Class>();
     ASSERT_EQ(*nestSpec3.getNamespace(), spec4);
@@ -840,7 +834,7 @@ TEST_F(ClassTest, mountFullClassTest) {
 
     ID opID = op2.getID();
     m.release(base2, op2);
-    Operation& op3 = m.aquire(opID)->as<Operation>();
+    Operation& op3 = m.get(opID)->as<Operation>();
     ASSERT_TRUE(op3.getClass());
     Class& base3 = *op3.getClass();
     ASSERT_TRUE(op3.getFeaturingClassifier());
@@ -875,7 +869,7 @@ TEST_F(ClassTest, mountFullClassTest) {
     ASSERT_TRUE(base3.getMembers().contains(prop2));
 
     m.release(base3, prop2);
-    Property& prop3 = m.aquire(propID)->as<Property>();
+    Property& prop3 = m.get(propID)->as<Property>();
     ASSERT_TRUE(prop3.getClass());
     Class& base4 = *prop3.getClass();
     ASSERT_TRUE(prop3.getFeaturingClassifier());
@@ -897,7 +891,7 @@ TEST_F(ClassTest, mountFullClassTest) {
     ASSERT_FALSE(m.loaded(specID));
     ASSERT_FALSE(m.loaded(genID));
     ASSERT_FALSE(m.loaded(baseID));
-    Class& spec5 = m.aquire(specID)->as<Class>();
+    Class& spec5 = m.get(specID)->as<Class>();
     ASSERT_TRUE(m.loaded(genID));
     ASSERT_TRUE(m.loaded(baseID));
     ASSERT_EQ(spec5.getInheritedMembers().size(), 2);
@@ -910,11 +904,10 @@ TEST_F(ClassTest, mountFullClassTest) {
 }
 
 TEST_F(ClassTest, parseOwnedAttributeTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/ownedAttributeTest.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::CLASS);
-    Class& c = *dynamic_cast<Class*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "structuredClassifierTests/ownedAttributeTest.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::CLASS);
+    Class& c = m.getRoot()->as<Class>();
     ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
     Property* p = &c.getOwnedAttributes().front();
     ASSERT_TRUE(c.getAttributes().size() == 1);
@@ -932,10 +925,9 @@ TEST_F(ClassTest, parseOwnedAttributeTest) {
 }
 
 TEST_F(ClassTest, partTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/partTest.yml").ptr());
-    Class& c = *dynamic_cast<Class*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "structuredClassifierTests/partTest.yml").ptr());
+    Class& c = m.getRoot()->as<Class>();
     ASSERT_TRUE(c.getParts().size() == 1);
     ASSERT_TRUE(c.getOwnedAttributes().size() == 1);
     Property* p = &c.getOwnedAttributes().front();
@@ -955,12 +947,11 @@ TEST_F(ClassTest, partTest) {
 }
 
 TEST_F(ClassTest, parseConnectorTest) {
-    Element* el = 0;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "structuredClassifierTests/connector.yml").ptr());
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "structuredClassifierTests/connector.yml"));
 
-    ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
-    Package& root = el->as<Package>();
+    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+    Package& root = m.getRoot()->as<Package>();
     OpaqueBehavior& contract = root.getPackagedElements().get("contract").as<OpaqueBehavior>();
     Association& association = root.getPackagedElements().get("association").as<Association>();
     Property& assocEnd1 = association.getOwnedEnds().get("end1");

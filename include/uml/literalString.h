@@ -6,7 +6,7 @@
 namespace UML {
     class LiteralString : public LiteralSpecification {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             std::string m_value;

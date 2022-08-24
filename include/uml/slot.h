@@ -13,7 +13,8 @@ namespace UML {
     typedef UmlPtr<InstanceSpecification> InstanceSpecificationPtr;
 
     class Slot : public Element {
-        friend class UmlManager;
+        
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class InstanceSpecification;
         
         protected:

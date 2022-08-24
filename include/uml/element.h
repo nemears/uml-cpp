@@ -165,7 +165,6 @@ namespace UML {
     class Association;
     class AbstractAccessPolicy;
     class AbstractManager;
-    class UmlManager;
     class UmlServer;
     struct ManagerNode;
     class AddToMountFunctor;
@@ -212,7 +211,6 @@ namespace UML {
      **/
     class Element {
 
-        friend class UmlManager;
         friend class AbstractManager;
         friend class AbstractAccessPolicy;
         friend struct ManagerNode;
@@ -257,9 +255,7 @@ namespace UML {
 
         private:
         protected:
-            UmlManager* m_manager = 0;
-            AbstractAccessPolicy* m_accessPolicy = 0;
-            AbstractManager* m_manager2 = 0;
+            AbstractManager* m_manager = 0;
             ManagerNode* m_node = 0;
             ID m_id;
 

@@ -10,7 +10,7 @@ namespace UML {
      **/
     class Realization : public Abstraction {
         
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Realization();

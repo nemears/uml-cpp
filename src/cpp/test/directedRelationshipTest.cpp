@@ -8,7 +8,7 @@ class DirectedRelationshipTest : public ::testing::Test {
 };
 
 TEST_F(DirectedRelationshipTest, sourceAndTargetTest) {
-    UmlManager m;
+    BasicManager m;
     PackageMerge& dr = *m.create<PackageMerge>();
     Package& a = *m.create<Package>();
     Package& b = *m.create<Package>();
@@ -21,7 +21,7 @@ TEST_F(DirectedRelationshipTest, sourceAndTargetTest) {
 }
 
 TEST_F(DirectedRelationshipTest, addTargetFunctorTest) {
-    UmlManager m;
+    BasicManager m;
     PackageMerge& dr = *m.create<PackageMerge>();
     Package& a = *m.create<Package>();
     Package& b = *m.create<Package>();
@@ -33,7 +33,7 @@ TEST_F(DirectedRelationshipTest, addTargetFunctorTest) {
 }
 
 TEST_F(DirectedRelationshipTest, removeRelationshipFunctorTest) {
-    UmlManager m;
+    BasicManager m;
     PackageMerge& dr = *m.create<PackageMerge>();
     Package& a = *m.create<Package>();
     Package& b = *m.create<Package>(); 

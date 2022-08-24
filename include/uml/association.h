@@ -8,7 +8,7 @@
 namespace UML {
     class Association : public Classifier, public Relationship {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class Property;
 
         protected:

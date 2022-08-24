@@ -7,7 +7,7 @@
 namespace UML {
     class Expression : public ValueSpecification {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             std::string m_symbol = "";

@@ -166,7 +166,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             m_urls[putNode["qualifiedName"].as<std::string>()] = elID;
         }
         Parsers::ParserMetaData data;//(this);
-        data.m_manager2 = this;
+        data.m_manager = this;
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
         try {
             ElementPtr el = Parsers::parseYAML(putNode["element"], data);

@@ -9,7 +9,7 @@ UML_SINGLETON_INTEGRATION_TEST(StereotypeProfile, Profile, Stereotype, &Stereoty
 class StereotypeTest : public ::testing::Test {};
 
 TEST_F(StereotypeTest, setProfileTest) {
-    UmlManager m;
+    BasicManager m;
     Stereotype& s = *m.create<Stereotype>();
     Profile& p = *m.create<Profile>();
     s.setProfile(p);
@@ -18,7 +18,7 @@ TEST_F(StereotypeTest, setProfileTest) {
 }
 
 TEST_F(StereotypeTest, overrideProfileTest) {
-    UmlManager m;
+    BasicManager m;
     Stereotype& s = *m.create<Stereotype>();
     Profile& p = *m.create<Profile>();
     Profile& p2 = *m.create<Profile>();

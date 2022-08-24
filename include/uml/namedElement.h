@@ -8,7 +8,6 @@
 namespace UML{
 
     class Namespace;
-    class UmlManager;
     class Dependency;
     typedef UmlPtr<Namespace> NamespacePtr;
 
@@ -28,7 +27,6 @@ namespace UML{
      **/
     class NamedElement : virtual public Element {
 
-        friend class UmlManager;
         friend class Namespace;
         friend void Parsers::setNamespace(NamedElement& el, ID id);
 

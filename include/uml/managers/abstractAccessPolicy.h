@@ -22,7 +22,7 @@ namespace UML {
                 for (auto& ref : newDisc->m_references) {
                     if (!ref.second.node) {
                         // reference is relased currently with no ptrs
-                        throw ManagerPolicyStateException("Bad state in reindex, reference released! TODO maybe aquire released el");
+                        throw ManagerStateException("Bad state in reindex, reference released! TODO maybe aquire released el");
                     } else if (ref.second.node->m_references.count(oldID)) {
                         size_t numRefs = ref.second.node->m_references[oldID].count;
                         ref.second.node->m_references.erase(oldID);

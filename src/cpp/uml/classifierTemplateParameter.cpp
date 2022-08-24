@@ -1,6 +1,5 @@
 #include "uml/classifierTemplateParameter.h"
 #include "uml/templateableElement.h"
-#include "uml/umlManager.h"
 #include "uml/parameterableElement.h"
 #include "uml/property.h"
 #include "uml/generalization.h"

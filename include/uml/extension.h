@@ -10,7 +10,6 @@ namespace UML {
 
     class Extension : public Association {
 
-        friend class UmlManager;
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class ExtensionEnd;
 

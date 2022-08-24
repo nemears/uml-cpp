@@ -6,7 +6,7 @@
 namespace UML {
     class LiteralUnlimitedNatural : public LiteralSpecification {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         private:
             unsigned long m_val;

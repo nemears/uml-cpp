@@ -154,7 +154,7 @@ namespace UML {
             T& front() {
                 if (this->m_first) {
                     if (!m_first->m_el) {
-                        m_first->m_el = &this->m_el->m_manager->UmlManager::get(m_first->m_id);
+                        m_first->m_el = this->m_el->m_manager->get(m_first->m_id).ptr();
                     }
                     return *dynamic_cast<T*>(this->m_first->m_el);
                 } else {
@@ -164,7 +164,7 @@ namespace UML {
             T& back() {
                 if (m_last) {
                     if (!m_last->m_el) {
-                        m_last->m_el = &this->m_el->m_manager->get(m_last->m_id);
+                        m_last->m_el = this->m_el->m_manager->get(m_last->m_id).ptr();
                     }
                     return *dynamic_cast<T*>(m_last->m_el);
                 } else {
@@ -226,7 +226,7 @@ namespace UML {
             };
             T& operator*() {
                 if (!m_node->m_el && m_node->m_id != ID::nullID()) {
-                    m_node->m_el = &m_el->m_manager->UmlManager::get(m_node->m_id);
+                    m_node->m_el = m_el->m_manager->get(m_node->m_id).ptr();
                 }
                 return dynamic_cast<T&>(*m_node->m_el);
             };

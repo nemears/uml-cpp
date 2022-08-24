@@ -193,7 +193,7 @@ ElementPtr UmlClient::get(ID id) {
         i++;
     }
     Parsers::ParserMetaData data;
-    data.m_manager2 = this;
+    data.m_manager = this;
     if (std::string("ERROR").compare(buff) == 0) {
         free(buff);
         throw ManagerStateException("ERROR from server!");
@@ -227,7 +227,7 @@ ElementPtr UmlClient::get(std::string qualifiedName) {
         i++;
     }
     Parsers::ParserMetaData data;
-    data.m_manager2 = this;
+    data.m_manager = this;
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
     Element& ret = *Parsers::parseString(buff, data);
     free(buff);

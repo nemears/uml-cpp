@@ -1,6 +1,5 @@
 #include "uml/parsers/parserMetaData.h"
 #include <algorithm>
-#include "uml/umlManager.h"
 #include "uml/uml-stable.h"
 
 using namespace std;
@@ -19,14 +18,6 @@ void ParserMetaData::ElementsFunctor::operator()(Element& el) const {
         delete data->postProcessFlag[el.getID()];
     }
     data->postProcessFlag.erase(el.getID());
-}
-
-ParserMetaData::ParserMetaData(UmlManager* manager) {
-    m_manager = manager;
-    if (!manager->m_path.empty()) {
-        m_path = m_manager->m_path;
-    }
-    elements.addProcedures.push_back(new ElementsFunctor(0, this));
 }
 
 void applyFunctor(ParserMetaData& data, ID relEl, AbstractPostProcessFunctor* functor) {

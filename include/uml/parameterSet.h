@@ -10,7 +10,7 @@ namespace UML {
 
     class ParameterSet : public NamedElement {
 
-        friend class UmlManager;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Set<Constraint, ParameterSet> m_conditions = Set<Constraint, ParameterSet>(this);

@@ -21,7 +21,7 @@ class DataTypeTest : public ::testing::Test {
 };
 
 TEST_F(DataTypeTest, addOwnedAttributeTest) {
-    UmlManager m;
+    BasicManager m;
     DataType& d = *m.create<DataType>();
     Property& p = *m.create<Property>();
     d.getOwnedAttributes().add(p);
@@ -45,7 +45,7 @@ TEST_F(DataTypeTest, addOwnedAttributeTest) {
 }
 
 TEST_F(DataTypeTest, setDataTypeTest) {
-    UmlManager m;
+    BasicManager m;
     DataType& d = *m.create<DataType>();
     Property& p = *m.create<Property>();
     p.setDataType(d);
@@ -69,7 +69,7 @@ TEST_F(DataTypeTest, setDataTypeTest) {
 }
 
 TEST_F(DataTypeTest, removeOwnedAttributeFunctorTest) {
-    UmlManager m;
+    BasicManager m;
     DataType& d = *m.create<DataType>();
     Property& p = *m.create<Property>();
     Property& p2 = *m.create<Property>();
@@ -130,7 +130,7 @@ TEST_F(DataTypeTest, removeOwnedAttributeFunctorTest) {
 }
 
 TEST_F(DataTypeTest, OverridePropertyDataTypeW_NullTest) {
-    UmlManager m;
+    BasicManager m;
     DataType& d = *m.create<DataType>();
     Property& p = *m.create<Property>();
     Property& p2 = *m.create<Property>();
@@ -163,7 +163,7 @@ TEST_F(DataTypeTest, OverridePropertyDataTypeW_NullTest) {
 }
 
 TEST_F(DataTypeTest, OverridePropertyDataTypeW_OtherTest) {
-    UmlManager m;
+    BasicManager m;
     DataType& d = *m.create<DataType>();
     Property& p = *m.create<Property>();
     Property& p2 = *m.create<Property>();
@@ -210,7 +210,7 @@ TEST_F(DataTypeTest, OverridePropertyDataTypeW_OtherTest) {
 }
 
 TEST_F(DataTypeTest, addOwnedOperationTest) {
-    UmlManager m;
+    BasicManager m;
     DataType& d = *m.create<DataType>();
     Operation& o = *m.create<Operation>();
     ASSERT_NO_THROW(d.getOwnedOperations().add(o));
@@ -229,7 +229,7 @@ TEST_F(DataTypeTest, addOwnedOperationTest) {
 }
 
 TEST_F(DataTypeTest, OperationSetDataTypeTest) {
-    UmlManager m;
+    BasicManager m;
     DataType& d = *m.create<DataType>();
     Operation& o = *m.create<Operation>();
     ASSERT_NO_THROW(o.setDataType(&d));
@@ -248,7 +248,7 @@ TEST_F(DataTypeTest, OperationSetDataTypeTest) {
 }
 
 TEST_F(DataTypeTest, RemoveOwnedOperationFunctorTest) {
-    UmlManager m;
+    BasicManager m;
     DataType& d = *m.create<DataType>();
     Operation& o = *m.create<Operation>();
     Operation& o2 = *m.create<Operation>();
@@ -276,7 +276,7 @@ TEST_F(DataTypeTest, RemoveOwnedOperationFunctorTest) {
 }
 
 TEST_F(DataTypeTest, overwriteOperationDataTypeW_NullTest) {
-    UmlManager m;
+    BasicManager m;
     DataType& d = *m.create<DataType>();
     Operation& o = *m.create<Operation>();
     d.getOwnedOperations().add(o);
@@ -294,7 +294,7 @@ TEST_F(DataTypeTest, overwriteOperationDataTypeW_NullTest) {
 }
 
 TEST_F(DataTypeTest, overwriteOperationDataTypeW_OtherOperationTest) {
-    UmlManager m;
+    BasicManager m;
     DataType& d = *m.create<DataType>();
     Operation& o = *m.create<Operation>();
     DataType& d2 = *m.create<DataType>();
@@ -323,7 +323,7 @@ TEST_F(DataTypeTest, overwriteOperationDataTypeW_OtherOperationTest) {
 }
 
 TEST_F(DataTypeTest, reindexOwnedAttributeIDTest) {
-    UmlManager m;
+    BasicManager m;
     DataTypePtr d = m.create<DataType>();
     PropertyPtr p = m.create<Property>();
     d->getOwnedAttributes().add(*p);
@@ -338,7 +338,7 @@ TEST_F(DataTypeTest, reindexOwnedAttributeIDTest) {
 }
 
 TEST_F(DataTypeTest, reindexOwnedAttributeNameTest) {
-    UmlManager m;
+    BasicManager m;
     DataTypePtr d = m.create<DataType>();
     PropertyPtr p = m.create<Property>();
     p->setName("1");
@@ -353,7 +353,7 @@ TEST_F(DataTypeTest, reindexOwnedAttributeNameTest) {
 }
 
 TEST_F(DataTypeTest, reindexOwnedOperationIDTest) {
-    UmlManager m;
+    BasicManager m;
     DataType& d = *m.create<DataType>();
     Operation& o = *m.create<Operation>();
     d.getOwnedOperations().add(o);
@@ -367,7 +367,7 @@ TEST_F(DataTypeTest, reindexOwnedOperationIDTest) {
 }
 
 TEST_F(DataTypeTest, reindexOwnedOperationNameTest) {
-    UmlManager m;
+    BasicManager m;
     DataTypePtr d = m.create<DataType>();
     OperationPtr o = m.create<Operation>();
     o->setName("1");
@@ -381,11 +381,10 @@ TEST_F(DataTypeTest, reindexOwnedOperationNameTest) {
 }
 
 TEST_F(DataTypeTest, basicDataTypeTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "dataTypeTests/basicDataType.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::DATA_TYPE);
-    DataType& d = *dynamic_cast<DataType*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "dataTypeTests/basicDataType.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::DATA_TYPE);
+    DataType& d = m.getRoot()->as<DataType>();
     ASSERT_TRUE(d.getName().compare("int") == 0);
     ASSERT_TRUE(d.getOwnedAttributes().size() == 1);
     Property* p = &d.getOwnedAttributes().front();
@@ -408,7 +407,7 @@ TEST_F(DataTypeTest, basicDataTypeTest) {
 }
 
 TEST_F(DataTypeTest, emitDataTypeW_GeneralAndAttribute) {
-    UmlManager m;
+    BasicManager m;
     Package& pckg = *m.create<Package>();
     DataType& t = *m.create<DataType>();
     DataType& g = *m.create<DataType>();
@@ -484,7 +483,7 @@ TEST_F(DataTypeTest, emitDataTypeW_GeneralAndAttribute) {
 }
 
 TEST_F(DataTypeTest, mountAndEditDataType) {
-    UmlManager m;
+    BasicManager m;
     DataType& baseType = *m.create<DataType>();
     DataType& specificType = *m.create<DataType>();
     Generalization& generalization = *m.create<Generalization>();
@@ -511,7 +510,7 @@ TEST_F(DataTypeTest, mountAndEditDataType) {
     
     ID baseTypeID = baseType2.getID();
     m.release(baseType2, root);
-    DataType& baseType3 = m.aquire(baseTypeID)->as<DataType>();
+    DataType& baseType3 = m.get(baseTypeID)->as<DataType>();
     ASSERT_TRUE(baseType3.getOwningPackage());
     Package& root2 = *baseType3.getOwningPackage();
     ASSERT_TRUE(baseType3.getNamespace());
@@ -538,7 +537,7 @@ TEST_F(DataTypeTest, mountAndEditDataType) {
     
     ID basePropID = baseProp2.getID();
     m.release(baseProp2, baseType3);
-    Property& baseProp3 = m.aquire(basePropID)->as<Property>();
+    Property& baseProp3 = m.get(basePropID)->as<Property>();
     DataType& baseType4 = *baseProp3.getDataType();
     ASSERT_TRUE(baseProp3.getFeaturingClassifier());
     ASSERT_EQ(*baseProp3.getFeaturingClassifier(), baseType4);
@@ -570,7 +569,7 @@ TEST_F(DataTypeTest, mountAndEditDataType) {
 
     ID baseOpID = baseOp2.getID();
     m.release(baseOp2, baseType4);
-    Operation& baseOp3 = m.aquire(baseOpID)->as<Operation>();
+    Operation& baseOp3 = m.get(baseOpID)->as<Operation>();
     DataType& baseType5 = *baseOp3.getDataType();
     ASSERT_TRUE(baseOp3.getDataType());
     ASSERT_EQ(*baseOp3.getDataType(), baseType5);
@@ -588,11 +587,10 @@ TEST_F(DataTypeTest, mountAndEditDataType) {
 }
 
 TEST_F(DataTypeTest, basicPrimitiveTypeTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "primitiveTypeTests/basicPrimitiveType.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PRIMITIVE_TYPE);
-    DataType& d = *dynamic_cast<DataType*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "primitiveTypeTests/basicPrimitiveType.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PRIMITIVE_TYPE);
+    DataType& d = m.getRoot()->as<DataType>();
     ASSERT_TRUE(d.getName().compare("int") == 0);
     ASSERT_TRUE(d.getOwnedAttributes().size() == 1);
     Property* p = &d.getOwnedAttributes().front();
@@ -615,7 +613,7 @@ TEST_F(DataTypeTest, basicPrimitiveTypeTest) {
 }
 
 TEST_F(DataTypeTest, emitPrimWGeneralAndAttribute) {
-    UmlManager m;
+    BasicManager m;
     Package& pckg = *m.create<Package>();
     PrimitiveType& t = *m.create<PrimitiveType>();
     PrimitiveType& g = *m.create<PrimitiveType>();;

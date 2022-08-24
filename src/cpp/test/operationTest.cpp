@@ -15,7 +15,7 @@ class OperationTest : public ::testing::Test {
 };
 
 TEST_F(OperationTest, SetAndGetTypeTest) {
-    UmlManager m;
+    BasicManager m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
     ASSERT_NO_THROW(o.setType(&c));
@@ -23,7 +23,7 @@ TEST_F(OperationTest, SetAndGetTypeTest) {
 }
 
 TEST_F(OperationTest, reIndexID_Test) {
-    UmlManager m;
+    BasicManager m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
     o.setClass(&c);
@@ -33,7 +33,7 @@ TEST_F(OperationTest, reIndexID_Test) {
 }
 
 TEST_F(OperationTest, reIndexNameTest) {
-    UmlManager m;
+    BasicManager m;
     ClassPtr c = m.create<Class>();
     OperationPtr o = m.create<Operation>();
     o->setClass(*c);
@@ -43,7 +43,7 @@ TEST_F(OperationTest, reIndexNameTest) {
 }
 
 TEST_F(OperationTest, AddMethodFunctorTest) {
-    UmlManager mm;
+    BasicManager mm;
     Operation& o = *mm.create<Operation>();
     OpaqueBehavior& m = *mm.create<OpaqueBehavior>();
     o.getMethods().add(m);
@@ -59,7 +59,7 @@ TEST_F(OperationTest, AddMethodFunctorTest) {
 }
 
 TEST_F(OperationTest, SetSpecificationTest) {
-    UmlManager mm;
+    BasicManager mm;
     Operation& o = *mm.create<Operation>();
     OpaqueBehavior& m = *mm.create<OpaqueBehavior>();
     m.setSpecification(&o);
@@ -75,7 +75,7 @@ TEST_F(OperationTest, SetSpecificationTest) {
 }
 
 TEST_F(OperationTest, AddParameterFunctorForAbstractOperationTest) {
-    UmlManager mm;
+    BasicManager mm;
     Operation& o = *mm.create<Operation>();
     Parameter& p = *mm.create<Parameter>();
     o.getOwnedParameters().add(p);
@@ -91,7 +91,7 @@ TEST_F(OperationTest, AddParameterFunctorForAbstractOperationTest) {
 }
 
 TEST_F(OperationTest, SetOperationAbstractOperationTest) {
-    UmlManager mm;
+    BasicManager mm;
     Operation& o = *mm.create<Operation>();
     Parameter& p = *mm.create<Parameter>();
     p.setOperation(o);
@@ -130,7 +130,7 @@ TEST_F(OperationTest, SetOperationAbstractOperationTest) {
 // }
 
 // TEST_F(OperationTest, checkParameterFunctorTest) {
-//     UmlManager mm;
+//     BasicManager mm;
 //     Operation& o = mm.create<Operation>();
 //     Parameter& p = mm.create<Parameter>();
 //     Parameter& p2 = mm.create<Parameter>();
@@ -157,7 +157,7 @@ TEST_F(OperationTest, SetOperationAbstractOperationTest) {
 // }
 
 // TEST_F(OperationTest, setOperationReturnParameterExceptionTest) {
-//     UmlManager mm;
+//     BasicManager mm;
 //     Operation& o = mm.create<Operation>();
 //     Parameter& p = mm.create<Parameter>();
 //     Parameter& p2 = mm.create<Parameter>();
@@ -185,7 +185,7 @@ TEST_F(OperationTest, SetOperationAbstractOperationTest) {
 // }
 
 TEST_F(OperationTest, removeOwnedParameterFunctorTest) {
-    UmlManager mm;
+    BasicManager mm;
     Operation& o = *mm.create<Operation>();
     Parameter& p = *mm.create<Parameter>();
     o.getOwnedParameters().add(p);
@@ -201,7 +201,7 @@ TEST_F(OperationTest, removeOwnedParameterFunctorTest) {
 }
 
 TEST_F(OperationTest, removeOwnedParameterW_NullOperationTest) {
-    UmlManager mm;
+    BasicManager mm;
     Operation& o = *mm.create<Operation>();
     Parameter& p = *mm.create<Parameter>();
     o.getOwnedParameters().add(p);
@@ -217,7 +217,7 @@ TEST_F(OperationTest, removeOwnedParameterW_NullOperationTest) {
 }
 
 TEST_F(OperationTest, overrideParameterOperationTest) {
-    UmlManager mm;
+    BasicManager mm;
     Operation& o = *mm.create<Operation>();
     Parameter& p = *mm.create<Parameter>();
     Operation& o2 = *mm.create<Operation>();
@@ -244,7 +244,7 @@ TEST_F(OperationTest, overrideParameterOperationTest) {
 }
 
 TEST_F(OperationTest, reindexParameterDirectionTest) {
-    UmlManager mm;
+    BasicManager mm;
     Operation& o = *mm.create<Operation>();
     Parameter& p = *mm.create<Parameter>();
     Parameter& p2 = *mm.create<Parameter>();
@@ -276,7 +276,7 @@ TEST_F(OperationTest, reindexParameterDirectionTest) {
 }
 
 TEST_F(OperationTest, RemoveMethodFunctorTest) {
-    UmlManager mm;
+    BasicManager mm;
     Operation& o = *mm.create<Operation>();
     OpaqueBehavior& m = *mm.create<OpaqueBehavior>();
     o.getMethods().add(m);
@@ -287,7 +287,7 @@ TEST_F(OperationTest, RemoveMethodFunctorTest) {
 }
 
 TEST_F(OperationTest, SetNullSpecificationTest) {
-    UmlManager mm;
+    BasicManager mm;
     Operation& o = *mm.create<Operation>();
     OpaqueBehavior& m = *mm.create<OpaqueBehavior>();
     o.getMethods().add(m);
@@ -298,7 +298,7 @@ TEST_F(OperationTest, SetNullSpecificationTest) {
 }
 
 TEST_F(OperationTest, OverrideSpecificationTest) {
-    UmlManager mm;
+    BasicManager mm;
     Operation& o = *mm.create<Operation>();
     OpaqueBehavior& m = *mm.create<OpaqueBehavior>();
     Operation& o2 = *mm.create<Operation>();
@@ -311,18 +311,16 @@ TEST_F(OperationTest, OverrideSpecificationTest) {
 }
 
 TEST_F(OperationTest, properExceptions) {
-    Element* el;
-    UmlManager m;
-    ASSERT_THROW(el = m.parse(ymlPath + "operationTests/invalidBehavior.yml").ptr(), Parsers::UmlParserException);
-    ASSERT_THROW(el = m.parse(ymlPath + "operationTests/invalidMethodList.yml").ptr(), Parsers::UmlParserException);
+    BasicManager m;
+    ASSERT_THROW(m.open(ymlPath + "operationTests/invalidBehavior.yml"), Parsers::UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "operationTests/invalidMethodList.yml"), Parsers::UmlParserException);
 }
 
 TEST_F(OperationTest, basicParamTest) {
-    Element* el;
-    UmlManager m;
-    ASSERT_NO_THROW(el = m.parse(ymlPath + "operationTests/basicParameter.yml").ptr());
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
-    Package* pckg = dynamic_cast<Package*>(el);
+    BasicManager m;
+    ASSERT_NO_THROW(m.open(ymlPath + "operationTests/basicParameter.yml"));
+    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
     PrimitiveTypePtr b = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("bool_bzkcabSy3CiFd&HmJOtnVRK")));
     PrimitiveTypePtr i = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("int_r9nNbBukx47IomXrT2raqtc4")));
@@ -342,7 +340,7 @@ TEST_F(OperationTest, basicParamTest) {
 }
 
 TEST_F(OperationTest, mountAndEditOperationTest) {
-    UmlManager m;
+    BasicManager m;
     Class& clazz = *m.create<Class>();
     OpaqueBehavior& bhv = *m.create<OpaqueBehavior>();
     Operation& op = *m.create<Operation>();
@@ -359,7 +357,7 @@ TEST_F(OperationTest, mountAndEditOperationTest) {
     ID opID = op.getID();
     ID clazzID = clazz.getID();
     m.release(op);
-    Operation& op2 = m.aquire(opID)->as<Operation>();
+    Operation& op2 = m.get(opID)->as<Operation>();
     ASSERT_TRUE(op2.getClass());
     ASSERT_EQ(*op2.getClass(), clazz);
     ASSERT_TRUE(op2.getFeaturingClassifier());
@@ -383,7 +381,7 @@ TEST_F(OperationTest, mountAndEditOperationTest) {
 
     ID paramID = param.getID();
     m.release(param);
-    Parameter& param2 = m.aquire(paramID)->as<Parameter>();
+    Parameter& param2 = m.get(paramID)->as<Parameter>();
     ASSERT_TRUE(param2.getOperation());
     ASSERT_EQ(*param2.getOperation(), op2);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(param2, op2));
@@ -391,9 +389,9 @@ TEST_F(OperationTest, mountAndEditOperationTest) {
     m.release(param2, op2);
     ASSERT_FALSE(m.loaded(paramID));
     ASSERT_FALSE(m.loaded(opID));
-    Operation& op3 = m.aquire(opID)->as<Operation>();
+    Operation& op3 = m.get(opID)->as<Operation>();
     ASSERT_FALSE(m.loaded(paramID));
-    Parameter& param3 = m.aquire(paramID)->as<Parameter>();
+    Parameter& param3 = m.get(paramID)->as<Parameter>();
     ASSERT_TRUE(param3.getOperation());
     ASSERT_EQ(*param3.getOperation(), op3);
     ASSERT_EQ(op3.getOwnedParameters().size(), 1);
@@ -403,7 +401,7 @@ TEST_F(OperationTest, mountAndEditOperationTest) {
 
     ID bhvID = bhv.getID();
     m.release(bhv);
-    OpaqueBehavior& bhv2 = m.aquire(bhvID)->as<OpaqueBehavior>();
+    OpaqueBehavior& bhv2 = m.get(bhvID)->as<OpaqueBehavior>();
     ASSERT_TRUE(bhv2.getSpecification());
     ASSERT_EQ(*bhv2.getSpecification(), op3);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(bhv2, clazz));
@@ -411,16 +409,16 @@ TEST_F(OperationTest, mountAndEditOperationTest) {
     m.release(bhv2, op3);
     ASSERT_FALSE(m.loaded(bhvID));
     ASSERT_FALSE(m.loaded(opID));
-    OpaqueBehavior& bhv3 = m.aquire(bhvID)->as<OpaqueBehavior>();
+    OpaqueBehavior& bhv3 = m.get(bhvID)->as<OpaqueBehavior>();
     ASSERT_FALSE(m.loaded(opID));
-    Operation& op4 = m.aquire(opID)->as<Operation>();
+    Operation& op4 = m.get(opID)->as<Operation>();
     ASSERT_TRUE(bhv3.getSpecification());
     ASSERT_EQ(*bhv3.getSpecification(), op4);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(bhv3, clazz));
 
     ID bhvParamID = bhvParam.getID();
     m.release(bhvParam);
-    Parameter& bhvParam2 = m.aquire(bhvParamID)->as<Parameter>();
+    Parameter& bhvParam2 = m.get(bhvParamID)->as<Parameter>();
     // ASSERT_TRUE(bhvParam2.hasBehavior());
     // ASSERT_EQ(bhvParam2.getBehaviorRef(), bhv3);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(bhvParam2, bhv3));
@@ -428,9 +426,9 @@ TEST_F(OperationTest, mountAndEditOperationTest) {
     m.release(bhvParam2, bhv3);
     ASSERT_FALSE(m.loaded(bhvID));
     ASSERT_FALSE(m.loaded(bhvParamID));
-    Behavior& bhv4 = m.aquire(bhvID)->as<Behavior>();
+    Behavior& bhv4 = m.get(bhvID)->as<Behavior>();
     ASSERT_FALSE(m.loaded(bhvParamID));
-    Parameter& bhvParam3 = m.aquire(bhvParamID)->as<Parameter>();
+    Parameter& bhvParam3 = m.get(bhvParamID)->as<Parameter>();
     // ASSERT_TRUE(bhvParam3.hasBehavior());
     // ASSERT_EQ(bhvParam3.getBehaviorRef(), bhv4);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(bhvParam3, bhv4));

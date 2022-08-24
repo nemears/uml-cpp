@@ -5,9 +5,6 @@
 
 namespace UML {
     class DirectedRelationship : public Relationship {
-
-        friend class UmlManager;
-
         protected:
             Set<Element, DirectedRelationship> m_targets = Set<Element, DirectedRelationship>(this);
             Set<Element, DirectedRelationship> m_sources = Set<Element, DirectedRelationship>(this);

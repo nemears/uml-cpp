@@ -186,13 +186,6 @@ namespace {
     void emitParameterSet(YAML::Emitter& emitter, ParameterSet& parameterSet, EmitterMetaData& data);
 }
 
-ParserMetaData::ParserMetaData(UmlManager* manager) {
-    m_manager = manager;
-    if (!manager->m_path.empty()) {
-        m_path = m_manager->m_path;
-    }
-}
-
 /**
  * Template helper functions for parsing
  **/
@@ -203,26 +196,26 @@ bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
             if (isValidID(node[key].as<std::string>())) {
                 // ID
                 ID id = ID::fromString(node[key].as<std::string>());
-                if (data.m_manager) {
-                    if (data.m_manager->UmlManager::loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                        try {
-                            (el.*elSignature)(data.m_manager->get(id).as<T>());
-                        } catch (DuplicateElementInSetException& e) {
-                            // nothing let (that part) fail
-                        }
-                        catch (std::exception& e) {
-                            throw UmlParserException("Unexpected Uml error: " + std::string(e.what()), data.m_path.string(), node[key]);
-                        }
-                    } else {
-                        (el.*idSignature)(id);
-                    }
-                } else if (data.m_manager2) {
-                    if (data.m_manager2->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                        (el.*elSignature)(data.m_manager2->get(id)->as<T>());
-                    } else {
-                        (el.*idSignature)(id);
-                    }
+                // if (data.m_manager) {
+                //     if (data.m_manager->UmlManager::loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
+                //         try {
+                //             (el.*elSignature)(data.m_manager->get(id).as<T>());
+                //         } catch (DuplicateElementInSetException& e) {
+                //             // nothing let (that part) fail
+                //         }
+                //         catch (std::exception& e) {
+                //             throw UmlParserException("Unexpected Uml error: " + std::string(e.what()), data.m_path.string(), node[key]);
+                //         }
+                //     } else {
+                //         (el.*idSignature)(id);
+                //     }
+                // } else if (data.m_manager2) {
+                if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
+                    (el.*elSignature)(data.m_manager->get(id)->as<T>());
+                } else {
+                    (el.*idSignature)(id);
                 }
+                // }
                 
                 return true;
             } else {
@@ -252,8 +245,8 @@ void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, 
                 if (node[key][i].IsScalar()) {
                     if (isValidID(node[key][i].as<std::string>())) {
                         ID id = ID::fromString(node[key][i].as<std::string>());
-                        if ((data.m_manager ? data.m_manager->UmlManager::loaded(id) : data.m_manager2->loaded(id)) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                            T& t = data.m_manager ? data.m_manager->get(id).as<T>() : data.m_manager2->get(id)->as<T>();
+                        if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
+                            T& t = data.m_manager->get(id)->as<T>();
                             if ((owner.*signature)().getOpposite() && (t.*(owner.*signature)().getOpposite())().contains(owner)) {
                                 (owner.*signature)().add(id);
                             } else {
@@ -353,12 +346,7 @@ void parseSetDefinitions(YAML::Node node, ParserMetaData& data, string key, U& o
 template <class T = Element, class V = T> 
 T& parseDefinition(YAML::Node node, ParserMetaData& data, string key, void (*parser)(YAML::Node, V&, ParserMetaData&)) {
     if (node[key].IsMap()) {
-        UmlPtr<T> ret;
-        if (data.m_manager2) {
-            ret = data.m_manager2->create<T>();
-        } else if (data.m_manager) {              // TODO
-            ret = data.m_manager->create<T>();    // DELETE
-        }                                         // TODO
+        UmlPtr<T> ret = data.m_manager->create<T>();
         parser(node[key], *ret, data);
         return *ret;
     } else {
@@ -377,13 +365,6 @@ void parseSingletonDefinition(YAML::Node node, ParserMetaData& data, std::string
     }
 };
 
-UmlManager* parse(string path) {
-    UmlManager* ret = new UmlManager;
-    ElementPtr root = ret->parse(path);
-    ret->setRoot(*root);
-    return ret;
-}
-
 ElementPtr parse(ParserMetaData& data) {
     std::vector<YAML::Node> nodes = YAML::LoadAllFromFile(data.m_path.string());
     ElementPtr ret = parseNode(nodes[0], data);
@@ -393,8 +374,8 @@ ElementPtr parse(ParserMetaData& data) {
         }
         for (size_t i = 0; i < nodes[1].size(); i++) {
             ID id = ID::fromString(nodes[1][i].as<std::string>());
-            if (data.m_manager ? data.m_manager->loaded(id) : data.m_manager2->loaded(id)) {
-                Element& el = data.m_manager ? data.m_manager->get(id) : *data.m_manager2->get(id);
+            if (data.m_manager->loaded(id)) {
+                Element& el = *data.m_manager->get(id);
                 if (ret->m_node->m_references.count(id) == 0) {
                     // reference not set while parsing
                     ret->setReference(&el);
@@ -412,23 +393,23 @@ ElementPtr parse(ParserMetaData& data) {
             }
         }
     } else {
-        if (!data.m_manager) {
-            std::cout << "TODO: m_manager2 restore all references we loaded" << std::endl;
-            return ret;
-        }
-        // we want to restore all of the references of what we loaded
-        for (const ID id : data.m_manager->m_elements) {
-            ElementPtr el = &data.m_manager->get(id);
-            for (auto& refPair : el->m_node->m_references) {
-                ElementPtr reference = &data.m_manager->get(refPair.first);
-                el->restoreReference(reference.ptr());
-                if (!reference->m_node->m_references.count(el.id())) {
-                    reference->setReference(el.id());
-                } else {
-                    reference->restoreReference(el.ptr());
-                }
-            }
-        }
+        // if (!data.m_manager) {
+        //     std::cout << "TODO: m_manager2 restore all references we loaded" << std::endl;
+        //     return ret;
+        // }
+        // // we want to restore all of the references of what we loaded
+        // for (const ID id : data.m_manager->m_elements) {
+        //     ElementPtr el = &data.m_manager->get(id);
+        //     for (auto& refPair : el->m_node->m_references) {
+        //         ElementPtr reference = &data.m_manager->get(refPair.first);
+        //         el->restoreReference(reference.ptr());
+        //         if (!reference->m_node->m_references.count(el.id())) {
+        //             reference->setReference(el.id());
+        //         } else {
+        //             reference->restoreReference(el.ptr());
+        //         }
+        //     }
+        // }
     }
     return ret;
 }
@@ -749,7 +730,7 @@ ElementType elementTypeFromString(string eType) {
 
 void setNamespace(NamedElement& el, ID id) {
     if (el.m_manager->loaded(id)) {
-        el.m_namespace.addReadOnly(el.m_manager->UmlManager::get(id).as<Namespace>());
+        el.m_namespace.addReadOnly(el.m_manager->get(id)->as<Namespace>());
     } else {
         el.m_namespace.addReadOnly(id);
     }
@@ -757,7 +738,7 @@ void setNamespace(NamedElement& el, ID id) {
 
 void setOwner(Element& el, ID id) {
     if (el.m_manager->loaded(id)) {
-        el.m_owner->addReadOnly(el.m_manager->UmlManager::get(id));
+        el.m_owner->addReadOnly(*el.m_manager->get(id));
     } else {
         el.m_owner->addReadOnly(id);
     }
@@ -1286,12 +1267,7 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["model"]) {
-        UmlPtr<Model> model;
-        if (data.m_manager2) {
-            model = data.m_manager2->create<Model>();
-        } else if (data.m_manager) {                    // TODO
-            model = data.m_manager->create<Model>();    // DELETE
-        }                                               // TODO
+        UmlPtr<Model> model = data.m_manager->create<Model>();
         parsePackage(node["model"], *model, data);
         ret = model;
     }
@@ -1323,12 +1299,7 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["package"]) {
-        PackagePtr pckg(0);// = data.m_manager->create<Package>();
-        if (data.m_manager2) {
-            pckg = data.m_manager2->create<Package>();
-        } else if (data.m_manager) {                    // TODO
-            pckg = data.m_manager->create<Package>();   // DELETE
-        }                                               // TODO
+        PackagePtr pckg = data.m_manager->create<Package>();
         parsePackage(node["package"], *pckg, data);
         ret = pckg.ptr();
     }
@@ -1364,12 +1335,7 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     }
 
     if (node["profile"] && node["profile"].IsMap()) {
-        ProfilePtr profile;
-        if (data.m_manager) {
-            profile = data.m_manager->create<Profile>();
-        } else if (data.m_manager2) {
-            profile = data.m_manager2->create<Profile>();
-        }
+        ProfilePtr profile = data.m_manager->create<Profile>();
         parsePackage(node["profile"], *profile, data);
         ret = profile;
     }
@@ -1466,11 +1432,7 @@ ElementPtr parseExternalAddToManager(ParserMetaData& data, string path) {
         filesystem::path cPath = data.m_path;
         data.m_path = cPath.parent_path() / path;
         ElementPtr ret = parse(data);
-        if (data.m_manager) {
-            data.m_manager->setPath(ret->getID(), data.m_path.string());
-        } else if (data.m_manager2) {
-            data.m_manager2->setLocation(ret->getID(), data.m_path.string());
-        }
+        data.m_manager->setLocation(ret->getID(), data.m_path.string());
         
         data.m_path = cPath;
         return ret;
@@ -1483,7 +1445,7 @@ void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
     filesystem::path newPath;
     switch (data.m_strategy) {
         case EmitterStrategy::WHOLE : {
-            newPath = data.getPath(el.getID());
+            newPath = data.m_manager->getLocation(el.getID());
             break;
         }
         case EmitterStrategy::INDIVIDUAL : {

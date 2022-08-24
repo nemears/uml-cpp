@@ -10,7 +10,6 @@ namespace UML {
 
     class ExtensionEnd : public Property {
 
-        friend class UmlManager;
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         private:

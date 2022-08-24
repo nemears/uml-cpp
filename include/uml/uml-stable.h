@@ -82,11 +82,11 @@
 #include "uml/templateParameter.h"
 #include "uml/templateParameterSubstitution.h"
 #include "uml/templateSignature.h"
-#include "uml/umlManager.h"
 #include "uml/umlPtr.h"
 #include "uml/usage.h"
 #include "uml/valuePin.h"
 
+#include "uml/managers/basicManager.h"
 #include "uml/managers/umlClient.h"
 #include "uml/parsers/parser.h"
 

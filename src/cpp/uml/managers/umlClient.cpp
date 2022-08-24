@@ -1,3 +1,4 @@
+#include "uml/uml-stable.h"
 #include "uml/managers/umlClient.h"
 #ifndef WIN32
 #include <sys/socket.h>
@@ -12,7 +13,6 @@
 #include <iostream>
 #include "yaml-cpp/yaml.h"
 #include "uml/parsers/parser.h"
-#include "uml/uml-stable.h"
 
 #define UML_CLIENT_MSG_SIZE 200
 
@@ -171,7 +171,7 @@ UmlClient::~UmlClient() {
     #endif
 }
 
-Element& UmlClient::get(ID id) {
+ElementPtr UmlClient::get(ID id) {
     YAML::Emitter emitter;
     emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
         YAML::Key << "GET" << YAML::Value << id.string() << 
@@ -192,7 +192,8 @@ Element& UmlClient::get(ID id) {
         }
         i++;
     }
-    Parsers::ParserMetaData data(this);
+    Parsers::ParserMetaData data;
+    data.m_manager2 = this;
     if (std::string("ERROR").compare(buff) == 0) {
         free(buff);
         throw ManagerStateException("ERROR from server!");
@@ -200,11 +201,11 @@ Element& UmlClient::get(ID id) {
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
     Element& ret = *Parsers::parseString(buff, data);
     free(buff);
-    restoreNode(ret);
-    return ret;
+    SimpleAccessPolicy::restoreNode(ret.m_node);
+    return ElementPtr(&ret);
 }
 
-Element& UmlClient::get(std::string qualifiedName) {
+ElementPtr UmlClient::get(std::string qualifiedName) {
     YAML::Emitter emitter;
     emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
         YAML::Key << "GET" << YAML::Value << qualifiedName << 
@@ -225,19 +226,24 @@ Element& UmlClient::get(std::string qualifiedName) {
         }
         i++;
     }
-    Parsers::ParserMetaData data(this);
+    Parsers::ParserMetaData data;
+    data.m_manager2 = this;
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
     Element& ret = *Parsers::parseString(buff, data);
     free(buff);
-    return ret;
+    return ElementPtr(&ret);
 }
 
 Element& UmlClient::post(ElementType eType) {
+    return *create(eType);
+}
+
+Element* UmlClient::create(ElementType eType) {
+    Element* ret = Manager<SimpleAccessPolicy, ServerPersistencePolicy>::create(eType);
     YAML::Emitter emitter;
-    Element& ret = UmlManager::create(eType);
     emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
         YAML::Key << "POST" << YAML::Value << Element::elementTypeToString(eType) << 
-        YAML::Key << "id" << YAML::Value << ret.getID().string() <<
+        YAML::Key << "id" << YAML::Value << ret->getID().string() <<
     YAML::EndMap;
     sendEmitter(m_socketD, emitter);
     return ret;
@@ -270,28 +276,13 @@ void UmlClient::erase(Element& el) {
     emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
         YAML::Key << "DELETE" << YAML::Value << el.getID().string() << 
     YAML::EndMap;
-    UmlManager::erase(el);
+    Manager<SimpleAccessPolicy, ServerPersistencePolicy>::erase(el);
     sendEmitter(m_socketD, emitter);
 }
 
-ElementPtr UmlClient::aquire(ID id) {
-    return &get(id);
-}
-
 void UmlClient::release(Element& el) {
-    ID elID = el.getID();
     put(el);
-    releaseNode(el);
-    ManagerNode* node = el.m_node;
-    node->m_managerElementMemory = 0;
-    delete &el;
-    if (node->m_ptrs.empty()) {
-        m_graph.erase(elID);
-    }
-}
-
-void UmlClient::release(ID id) {
-    release(*m_graph[id].m_managerElementMemory);
+    Manager<SimpleAccessPolicy, ServerPersistencePolicy>::release(el);
 }
 
 void UmlClient::setRoot(Element* el) {
@@ -307,15 +298,11 @@ void UmlClient::setRoot(Element* el) {
             Parsers::emitIndividual(*el, emitter);
         emitter << YAML::EndMap << YAML::EndMap;
         sendEmitter(m_socketD, emitter);
-        m_root = el->getID();
+        m_root = el;
     } else {
-        m_root = ID::nullID();
+        m_root = ElementPtr();
         erase(*getRoot());
     }
-}
-
-void UmlClient::setRoot(Element& el) {
-    setRoot(&el);
 }
 
 void UmlClient::shutdownServer() {

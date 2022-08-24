@@ -7,6 +7,7 @@ namespace UML {
     class AbstractManager {
 
         template <class T, class U> friend class Set;
+        template <class T> friend struct SetIterator;
 
         public:
             virtual Element* create(ElementType type) = 0;
@@ -22,8 +23,11 @@ namespace UML {
             virtual void erase(Element& el) = 0;
             virtual ElementPtr open(std::string path) = 0;
             virtual ElementPtr getRoot() const = 0;
+            virtual void setRoot(Element* root) = 0;
             virtual std::string getLocation(ID id) = 0;
             virtual void setLocation(ID id, std::string location) = 0;
+            virtual void save(std::string location) = 0;
+            virtual void save() = 0;
         protected:
             Element* get(Element* me, ID theID);
     };

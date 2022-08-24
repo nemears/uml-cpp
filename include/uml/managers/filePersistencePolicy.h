@@ -1,11 +1,11 @@
 #ifndef _UML_MANAGERS_FILE_PERSISTENCE_POLICY_H_
 #define _UML_MANAGERS_FILE_PERSISTENCE_POLICY_H_
 
-#include "abstractPersistencePolicy.h"
 #include "uml/element.h"
+#include "uml/parsers/parser.h"
 
 namespace UML {
-    class FilePersistencePolicy : public AbstractPersistencePolicy {
+    class FilePersistencePolicy {
         private:
             std::filesystem::path m_mountBase;
             std::filesystem::path m_persistenPath;
@@ -45,6 +45,11 @@ namespace UML {
                                                     0,
                                                     me };
                 Parsers::emitToFile(*me->getRoot(), data, data.m_path.string(), data.m_fileName);
+            }
+
+            void write(std::filesystem::path path, AbstractManager* me) {
+                m_persistenPath = path;
+                write(me);
             }
 
             ElementPtr parse(AbstractManager* me) {

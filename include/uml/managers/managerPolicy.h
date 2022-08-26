@@ -322,12 +322,12 @@ namespace UML {
             }
 
             ElementPtr open(std::string path) override {
-                m_root = PersistencePolicy::parse(path, this);
+                setRoot(PersistencePolicy::parse(path, this).ptr());
                 return m_root;
             }
 
-            ElementPtr open() {
-                m_root = PersistencePolicy::parse(this);
+            ElementPtr open() override {
+                setRoot(PersistencePolicy::parse(this).ptr());
                 return m_root;
             }
 

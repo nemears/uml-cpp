@@ -14,10 +14,9 @@ namespace UML {
     };
 
     class ThreadSafeAccessPolicy : public AbstractAccessPolicy {
-        private:
+        protected:
             std::unordered_map<ID, ThreadSafeManagerNode> m_graph;
             std::mutex m_graphMtx;
-        protected:
             ManagerNode& assignNode(Element* newElement) {
                 // lock graph for access
                 std::lock_guard<std::mutex> graphLock(m_graphMtx);
@@ -32,7 +31,7 @@ namespace UML {
                 std::unordered_map<ID, ThreadSafeManagerNode>::iterator result = m_graph.find(id);
                 if (result != m_graph.end() && (*result).second.m_managerElementMemory) {
                     // lock node for creation
-                    std::lock_guard<std::mutex> nodeLock(static_cast<ThreadSafeManagerNode&>(result->second).m_mtx);
+                    // std::lock_guard<std::mutex> nodeLock(static_cast<ThreadSafeManagerNode&>(result->second).m_mtx);
                     return ElementPtr(result->second.m_managerElementMemory);
                 }
                 return ElementPtr(0);
@@ -47,7 +46,7 @@ namespace UML {
 
             void restoreNode(ManagerNode* restoredNode) {
                 // lock just node access
-                std::lock_guard<std::mutex> nodeLock(static_cast<ThreadSafeManagerNode*>(restoredNode)->m_mtx);
+                // std::lock_guard<std::mutex> nodeLock(static_cast<ThreadSafeManagerNode*>(restoredNode)->m_mtx);
                 for (auto& pair : restoredNode->m_references) {
                     ManagerNode* node = pair.second.node;
                     if (!node || !node->m_managerElementMemory) {
@@ -64,7 +63,7 @@ namespace UML {
                 ID id = node->m_managerElementMemory->getID();
                 {
                     // lock node
-                    std::lock_guard<std::mutex> nodeLck(static_cast<ThreadSafeManagerNode*>(node)->m_mtx);
+                    // std::lock_guard<std::mutex> nodeLck(static_cast<ThreadSafeManagerNode*>(node)->m_mtx);
                     std::vector<ManagerNode*> nodesToErase(node->m_references.size());
                     {
                         std::vector<ID> idsToAquire(node->m_references.size());
@@ -106,7 +105,7 @@ namespace UML {
             }
 
             void releaseNode(ManagerNode* node) {
-                std::lock_guard<std::mutex> nodeLck(static_cast<ThreadSafeManagerNode*>(node)->m_mtx);
+                // std::lock_guard<std::mutex> nodeLck(static_cast<ThreadSafeManagerNode*>(node)->m_mtx);
                 ID id = node->m_managerElementMemory->getID();
                 for (auto& e : node->m_references) {
                     if (!e.second.node) {
@@ -138,7 +137,7 @@ namespace UML {
                     // during a UmlManager::open() or UmlManager::aquire(id) invoke
 
                     ThreadSafeManagerNode* node = &m_graph[newID];
-                    std::lock_guard<std::mutex> nodeLck(node->m_mtx);
+                    // std::lock_guard<std::mutex> nodeLck(node->m_mtx);
                     delete node->m_managerElementMemory;
                     ThreadSafeManagerNode& oldNode = m_graph[oldID];
                     node->m_managerElementMemory = oldNode.m_managerElementMemory;
@@ -148,7 +147,7 @@ namespace UML {
                 } else  {
                     // reindex
                     ThreadSafeManagerNode& discRef = m_graph[oldID];
-                    std::lock_guard<std::mutex> oldLock(discRef.m_mtx);
+                    // std::lock_guard<std::mutex> oldLock(discRef.m_mtx);
 
                     // copy over node
                     ThreadSafeManagerNode& newDisc = m_graph[newID];
@@ -159,7 +158,7 @@ namespace UML {
                     for (auto& refNode : discRef.m_references) {
                         newDisc.m_references[refNode.first] = refNode.second;
                     }
-                    std::lock_guard<std::mutex> newLock(newDisc.m_mtx);
+                    // std::lock_guard<std::mutex> newLock(newDisc.m_mtx);
                     reindexNoReplace(oldID, newID, &newDisc);
                     m_graph.erase(oldID);
                 }

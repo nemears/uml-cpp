@@ -64,16 +64,11 @@ namespace UML {
             std::thread* m_acceptThread = 0;
             std::thread* m_garbageCollectionThread = 0;
             std::thread* m_zombieKillerThread = 0;
-            std::unordered_map<ID, std::mutex> m_locks;
-            std::mutex m_locksMtx;
             std::atomic<bool> m_running = false;
             std::mutex m_runMtx;
             std::condition_variable m_runCv;
             std::mutex m_logMtx;
             std::mutex m_acceptMtx;
-            std::mutex m_msgMtx;
-            std::condition_variable m_msgCv;
-            bool m_msgV = false;
             std::mutex m_shutdownMtx;
             std::condition_variable m_shutdownCv;
             bool m_shutdownV = false;
@@ -86,10 +81,7 @@ namespace UML {
 
             // helper methods
         protected:
-            // void eraseNode(ManagerNode* node, ID id);// override;
-            // void createNode(Element* el);// override;
             void closeClientConnections(ClientInfo& client);
-            std::vector<std::unique_lock<std::mutex>> lockReferences(Element& el);
         public:
             UmlServer();
             UmlServer(int port);
@@ -99,19 +91,15 @@ namespace UML {
             void start();
             int numClients();
             void log(std::string msg);
-            // bool loaded(ID id);// override;
-            size_t count(ID id);// override;
+            size_t count(ID id);
             void reset();
-            // void reindex(ID oldID, ID newID) override;
-            // void forceRestore(ElementPtr ref, Parsers::ParserMetaData& data);// override;
             void shutdownServer();
             void setMaxEls(int maxEls);
             int getMaxEls();
             int getNumElsInMemory();
             int waitTillShutDown(int ms);
             int waitTillShutDown();
-            int waitForProcessing();
-            void setRoot(Element* el); // override;
+            void setRoot(Element* el) override;
             void setRoot(Element& el);
     };
 }

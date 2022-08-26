@@ -30,8 +30,8 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     log("server got message from client(" + id.string() + "):\n" + std::string(buff));
 
     if (buff == "KILL") {
-        m_msgV = true;
-        m_msgCv.notify_one();
+        // m_msgV = true;
+        // m_msgCv.notify_one();
         info.handlerCv.notify_one();
         shutdownServer();
         return;
@@ -56,27 +56,14 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     if (node["DELETE"] || node["delete"]) {
         ID elID = ID::fromString((node["DELETE"] ? node["DELETE"] : node["delete"]).as<std::string>());
         try {
-            // std::vector<ID> idsOfReferences;
-            {
-                std::unique_lock<std::mutex> locksLock(m_locksMtx);
-                std::lock_guard<std::mutex> elLck(m_locks[elID]);
-                // log("aquired lock for element " + elID.string());
-                Element& elToErase = *get(elID);
-                std::vector<std::unique_lock<std::mutex>> refLcks = lockReferences(elToErase);
-                for (auto& refPair : elToErase.m_node->m_references) {
-                    // log("aquired lock for element " + refPair.first.string());
-                    // idsOfReferences.push_back(refPair.first);
-                }
-                locksLock.unlock();
-                m_msgV = true;
-                m_msgCv.notify_one();
-                erase(elToErase);
+            ThreadSafeManagerNode* node = &m_graph.at(elID);
+            if (!node->m_managerElementMemory) {
+                get(elID);
+                node = &m_graph.at(elID);
             }
-            // log("released lock for element " + elID.string());
-            // for (const ID refID : idsOfReferences) {
-            //     log("released lock for element " + refID.string());
-            // }
-            m_locks.erase(elID);
+            std::lock_guard<std::mutex> lck(node->m_mtx);
+            Element& elToErase = *node->m_managerElementMemory;
+            erase(elToErase);
             log("erased element " + elID.string());
             std::lock_guard<std::mutex> garbageLck(m_garbageMtx);
             m_releaseQueue.remove(elID);
@@ -103,20 +90,8 @@ void UmlServer::handleMessage(ID id, std::string buff) {
                 send(info.socket, msg.c_str(), msg.length() , 0);
             }            
         }
-        // std::vector<ID> idsOfReferences;
         try {
-            std::unique_lock<std::mutex> locksLock(m_locksMtx);
-            std::lock_guard<std::mutex> elLck(m_locks[elID]);
-            // log("aquired lock for element " + elID.string());
             Element& el = *get(elID);
-            std::vector<std::unique_lock<std::mutex>> refLcks = lockReferences(el);
-            // for (auto& refPair : el.m_node->m_references) {
-            //     // log("aquired lock for element " + refPair.first.string());
-            //     idsOfReferences.push_back(refPair.first);
-            // }
-            locksLock.unlock();
-            m_msgV = true;
-            m_msgCv.notify_one();
             Parsers::EmitterMetaData data = Parsers::getData(el);
             data.m_isJSON = true;
             std::string msg = Parsers::emitString(data, el);
@@ -131,13 +106,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             std::string msg = std::string("{ERROR: ") + std::string(e.what()) + std::string("}");
             send(info.socket, msg.c_str(), msg.length() , 0);
         }
-        log("released lock for element " + elID.string());
-        // for (const ID refID : idsOfReferences) {
-        //     log("released lock for element " + refID.string());
-        // }
     } else if (node["POST"] || node["post"]) {
-        m_msgV = true;
-        m_msgCv.notify_one();
         log("server handling post request from client " + id.string());
         try {
             ElementType type = Parsers::elementTypeFromString((node["POST"] ? node["POST"] : node["post"]).as<std::string>());
@@ -155,9 +124,6 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     } else if (node["PUT"] || node["put"]) {
         YAML::Node putNode = (node["PUT"] ? node["PUT"] : node["put"]);
         ID elID = ID::fromString(putNode["id"].as<std::string>());
-        // log("aquired lock for element " + elID.string());
-        m_msgV = true;
-        m_msgCv.notify_one();
         bool isRoot = false;
         if (putNode["qualifiedName"]) {
             if (putNode["qualifiedName"].as<std::string>().compare("") == 0) {
@@ -165,10 +131,11 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             }
             m_urls[putNode["qualifiedName"].as<std::string>()] = elID;
         }
-        Parsers::ParserMetaData data;//(this);
+        Parsers::ParserMetaData data;
         data.m_manager = this;
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
         try {
+            std::lock_guard<std::mutex> lck(m_graph[elID].m_mtx);
             ElementPtr el = Parsers::parseYAML(putNode["element"], data);
             if (el) {
                 // restore references
@@ -180,9 +147,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             log("server put element " + elID.string() + " successfully for client " + id.string());
         } catch (std::exception& e) {
             log("Error parsing PUT request: " + std::string(e.what()));
-            log("released lock for element " + elID.string());
         }
-        // log("released lock for element " + elID.string());
     } else if (node["SAVE"] || node["save"]) {
         YAML::Node saveNode = (node["SAVE"] ? node["SAVE"] : node["save"]);
         std::string path = saveNode.as<std::string>();
@@ -193,6 +158,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         std::string msg = std::string("{ERROR: ") + std::string("ERROR receiving message from client, invalid format!\nMessage:\n" + buff) + std::string("}");
         send(info.socket, msg.c_str(), msg.length() , 0);
     }
+    log("Done processing message");
 }
 
 void UmlServer::receiveFromClient(UmlServer* me, ID id) {
@@ -204,97 +170,93 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
     me->log("server set up thread to listen to client " + id.string());
     ClientInfo& info = me->m_clients[id];
     while (me->m_running) {
-        int numEvents;
-        struct pollfd pfds[1] = {{info.socket, POLLIN}};
-        #ifndef WIN32
-        if ((numEvents = poll(pfds, 1, 1000))) {
-        #else
-        if ((numEvents = WSAPoll(pfds, 1, 1000))) {
-        #endif
-            // data to read
-            // first bytes are size of message
-            uint32_t size;
-            ssize_t bytesRead = recv(info.socket, (char*)&size, sizeof(uint32_t), 0);
-            size = ntohl(size);
-            ssize_t sizeSize = sizeof(uint32_t);
-            if (bytesRead == 0) {
-                // client shutdown
-                me->log("error receiving message, lost connection to client");
-                std::lock_guard<std::mutex> zombieLck(me->m_zombieMtx);
-                me->m_zombies.push_back(id);
-                me->m_zombieCv.notify_one();
-                return;
-            }
-            if (bytesRead < 0) {
-                // error
-                me->log("error receiving message, " + std::string(strerror(errno)));
-                continue;
-            }
+        // data to read
+        // first bytes are size of message
+        uint32_t size;
+        ssize_t bytesRead = recv(info.socket, (char*)&size, sizeof(uint32_t), 0);
+        size = ntohl(size);
+        ssize_t sizeSize = sizeof(uint32_t);
+        if (bytesRead == 0) {
+            // client shutdown
+            me->log("error receiving message, lost connection to client");
+            std::lock_guard<std::mutex> zombieLck(me->m_zombieMtx);
+            me->m_zombies.push_back(id);
+            me->m_zombieCv.notify_one();
+            return;
+        }
+        if (bytesRead < 0) {
+            // error
+            me->log("error receiving message, " + std::string(strerror(errno)));
+            continue;
+        }
 
-            if (size == 0) {
-                me->log("error determining size of message");
-                continue;
+        if (size == 0) {
+            me->log("error determining size of message");
+            continue;
+        }
+
+        // get rest of message
+        char* messageBuffer = (char*) malloc(2 * size);
+
+        if (messageBuffer == 0) {
+            me->log("error receiving message, could not allocate memory for message of size " + std::to_string(size));
+            continue;
+        }
+
+        bytesRead = recv(info.socket, messageBuffer, 2 * size, 0);
+
+        // store message data
+        {
+            std::lock_guard<std::mutex> handlerLck(info.handlerMtx);
+            info.threadQueue.push_back(messageBuffer);
+        }
+
+        // check for additional data
+        while (bytesRead > size) { // TODO test
+
+            // get second size
+            uint32_t secondSize;
+            memcpy(&secondSize, &messageBuffer[size], sizeof(uint32_t));
+            secondSize = ntohl(secondSize);
+
+            // move message buffer up
+            bytesRead -= (size + sizeSize);
+            char* tempBuffer = (char*) malloc(bytesRead);
+            memcpy(tempBuffer, messageBuffer + size + sizeSize, bytesRead);
+            free(messageBuffer);
+            ssize_t newMessageBufferSize = bytesRead;
+            if (secondSize > bytesRead) {
+                newMessageBufferSize = 2 * secondSize;
+            } else if (secondSize != bytesRead && secondSize + sizeSize > bytesRead) {
+                newMessageBufferSize = secondSize + sizeSize;
             }
+            messageBuffer = (char*) malloc(newMessageBufferSize);
+            memcpy(messageBuffer, tempBuffer, bytesRead);
+            free(tempBuffer);
 
-            // get rest of message
-            char* messageBuffer = (char*) malloc(2 * size);
-
-            if (messageBuffer == 0) {
-                me->log("error receiving message, could not allocate memory for message of size " + std::to_string(size));
-                continue;
+            // receive rest of this message
+            if (secondSize > bytesRead || (secondSize != bytesRead && secondSize + sizeSize > bytesRead)) {
+                ssize_t recvRet = recv(info.socket, 
+                                    messageBuffer + bytesRead, 
+                                    newMessageBufferSize - bytesRead, 
+                                    0);
+                if (recvRet < 0) {
+                    // error
+                    me->log("error receiving message, " + std::string(strerror(errno)));
+                    break;
+                }
+                bytesRead += recvRet;
             }
-
-            bytesRead = recv(info.socket, messageBuffer, 2 * size, 0);
 
             // store message data
+            std::lock_guard<std::mutex> lck(info.handlerMtx);
             info.threadQueue.push_back(messageBuffer);
-            std::lock_guard<std::mutex> handlerLck(info.handlerMtx);
-
-            // check for additional data
-            while (bytesRead > size) { // TODO test
-
-                // get second size
-                uint32_t secondSize;
-                memcpy(&secondSize, &messageBuffer[size], sizeof(uint32_t));
-                secondSize = ntohl(secondSize);
-
-                // move message buffer up
-                bytesRead -= (size + sizeSize);
-                char* tempBuffer = (char*) malloc(bytesRead);
-                memcpy(tempBuffer, messageBuffer + size + sizeSize, bytesRead);
-                free(messageBuffer);
-                ssize_t newMessageBufferSize = bytesRead;
-                if (secondSize > bytesRead) {
-                    newMessageBufferSize = 2 * secondSize;
-                } else if (secondSize != bytesRead && secondSize + sizeSize > bytesRead) {
-                    newMessageBufferSize = secondSize + sizeSize;
-                }
-                messageBuffer = (char*) malloc(newMessageBufferSize);
-                memcpy(messageBuffer, tempBuffer, bytesRead);
-                free(tempBuffer);
-
-                // receive rest of this message
-                if (secondSize > bytesRead || (secondSize != bytesRead && secondSize + sizeSize > bytesRead)) {
-                    ssize_t recvRet = recv(info.socket, 
-                                        messageBuffer + bytesRead, 
-                                        newMessageBufferSize - bytesRead, 
-                                        0);
-                    if (recvRet < 0) {
-                        // error
-                        me->log("error receiving message, " + std::string(strerror(errno)));
-                        break;
-                    }
-                    bytesRead += recvRet;
-                }
-
-                // store message data
-                info.threadQueue.push_back(messageBuffer);
-                size = secondSize;
-            }
-
-            // start processing messages
-            info.handlerCv.notify_one();
+            size = secondSize;
+            me->log("receive from client thread added new message to threadQueue");
         }
+
+        // start processing messages
+        info.handlerCv.notify_one();
     }
 }
 
@@ -417,10 +379,8 @@ void UmlServer::garbageCollector(UmlServer* me) {
         if (me->m_numEls == me->m_maxEls) {
             ID releasedID = me->m_releaseQueue.back();
             Element& elToErase = *me->get(releasedID);
-            std::vector<std::unique_lock<std::mutex>> refLcks = me->lockReferences(elToErase);
             me->release(elToErase);
             me->m_releaseQueue.pop_back();
-            me->m_locks.erase(releasedID);
         } else {
             me->m_numEls++;
         }
@@ -457,42 +417,6 @@ void UmlServer::zombieKiller(UmlServer* me) {
         }
         me->m_zombies.clear();
     }
-}
-
-// void UmlServer::createNode(Element* el) {
-//     std::lock_guard<std::mutex> graphLock(m_graphMtx);
-//     UmlManager::createNode(el);
-//     m_locks[el->getID()];
-// }
-
-// void UmlServer::eraseNode(ManagerNode* node, ID id) {
-//     UmlManager::eraseNode(node, id);
-//     m_locks.erase(id);
-// }
-
-// void UmlServer::forceRestore(ElementPtr el, Parsers::ParserMetaData& data) {
-//     std::unique_lock<std::mutex> locksLock(m_locksMtx);
-//     std::lock_guard<std::mutex> elLck(m_locks[el.id()]);
-//     std::vector<std::unique_lock<std::mutex>> m_referenceLocks = lockReferences(*el);
-//     locksLock.unlock();
-//     // std::vector<ID> idsOfReferences;
-//     // for (auto& refPair : (*el).m_node->m_references) {
-//     //     log("aquired lock for element " + refPair.first.string());
-//     //     idsOfReferences.push_back(refPair.first);
-//     // }
-//     // UmlManager::forceRestore(el, data);
-//     // for (const ID refID : idsOfReferences) {
-//     //     log("released lock for element " + refID.string());
-//     // }
-// }
-
-std::vector<std::unique_lock<std::mutex>> UmlServer::lockReferences(Element& el) {
-    std::vector<std::unique_lock<std::mutex>> ret;
-    ret.reserve(el.m_node->m_references.size());
-    for (auto& referencePair : el.m_node->m_references) {
-        ret.push_back(std::unique_lock<std::mutex>(m_locks[referencePair.first]));
-    }
-    return ret;
 }
 
 #ifdef UML_DEBUG
@@ -642,11 +566,6 @@ int UmlServer::numClients() {
     return m_clients.size();
 }
 
-// bool UmlServer::loaded(ID id) {
-//     std::lock_guard<std::mutex> lck(m_locks.at(id));\
-//     return UmlManager::loaded(id);
-// }
-
 size_t UmlServer::count(ID id) {
     // std::lock_guard<std::mutex> graphLock(m_graphMtx);
     return loaded(id) ? 1 : 0;
@@ -657,27 +576,8 @@ void UmlServer::reset() {
     // clear();
 }
 
-// void UmlServer::reindex(ID oldID, ID newID) {
-//     {
-//         std::unique_lock<std::mutex> locksLock(m_locksMtx);
-//         std::lock_guard<std::mutex> oldLock(m_locks[oldID]);
-//         std::lock_guard<std::mutex> newLock(m_locks[newID]);
-//         locksLock.unlock();
-//         std::lock_guard<std::mutex> graphLock(m_graphMtx);
-//         UmlManager::reindex(oldID, newID);
-//     }
-//     m_locks.erase(oldID);
-//     m_locks[newID];
-// }
-
 void UmlServer::shutdownServer() {
     log("server shutting down");
-
-    // wait for processing message traffic to end
-    // std::unique_lock<std::mutex> mLck(m_msgMtx);
-    // m_msgCv.wait(mLck, [this]{ return !m_msgV; });
-
-    // connect to self to stop acceptNewClientsLoop
     bool fail = false;
     struct addrinfo hints;
     struct addrinfo* myAddress;
@@ -789,13 +689,6 @@ int UmlServer::waitTillShutDown(int ms) {
 int UmlServer::waitTillShutDown() {
     std::unique_lock<std::mutex> sLck(m_shutdownMtx);
     m_shutdownCv.wait(sLck, [this] { return m_shutdownV; });
-    return 1;
-}
-
-int UmlServer::waitForProcessing() {
-    log("wiating until server idle");
-    std::unique_lock<std::mutex> pLck(m_msgMtx);
-    m_msgCv.wait(pLck, [this] { return !m_msgV; });
     return 1;
 }
 

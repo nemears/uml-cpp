@@ -15,7 +15,7 @@ UML_SINGLETON_INTEGRATION_TEST(PackageableElementOwningPackage, Package, Package
 UML_SET_INTEGRATION_TEST(PackagePackageMerges, PackageMerge, Package, &Package::getPackageMerge);
 UML_SINGLETON_INTEGRATION_TEST(PackageMergeReceivingPackage, Package, PackageMerge, &PackageMerge::getReceivingPackage, &PackageMerge::setReceivingPackage);
 UML_SINGLETON_INTEGRATION_TEST(PackageMergeMergedPackage, Package, PackageMerge, &PackageMerge::getMergedPackage, &PackageMerge::setMergedPackage);
-UML_SET_INTEGRATION_TEST(PackagemOwnedStereotypes, Stereotype, Package, &Package::getOwnedStereotypes);
+UML_SET_INTEGRATION_TEST(PackageOwnedStereotypes, Stereotype, Package, &Package::getOwnedStereotypes);
 
 TEST_F(PackageTest, addPackagedElementTest) {
     BasicManager m;

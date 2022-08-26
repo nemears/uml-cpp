@@ -242,6 +242,9 @@ namespace UML {
                     case ElementType::RECEPTION  : {
                         return create<Reception>().ptr();
                     }
+                    case ElementType::REDEFINABLE_TEMPLATE_SIGNATURE : {
+                        return create<RedefinableTemplateSignature>().ptr();
+                    }
                     case ElementType::SIGNAL : {
                         return create<Signal>().ptr();
                     }
@@ -259,6 +262,9 @@ namespace UML {
                     }
                     case ElementType::TEMPLATE_PARAMETER_SUBSTITUTION :{
                         return create<TemplateParameterSubstitution>().ptr();
+                    }
+                    case ElementType::TEMPLATE_SIGNATURE : {
+                        return create<TemplateSignature>().ptr();
                     }
                     case ElementType::USAGE : {
                         return create<Usage>().ptr();

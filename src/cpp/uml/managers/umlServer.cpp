@@ -62,6 +62,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
                 node = &m_graph.at(elID);
             }
             std::lock_guard<std::mutex> lck(node->m_mtx);
+            std::vector<std::unique_lock<std::mutex>> referenceLocks = lockReferences(*node);
             Element& elToErase = *node->m_managerElementMemory;
             erase(elToErase);
             log("erased element " + elID.string());
@@ -101,7 +102,6 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             }
             log("server got element " +  elID.string() + " for client " + id.string() + ":\n" + msg);
         } catch (std::exception& e) {
-            log("released lock for element " + elID.string());
             log(e.what());
             std::string msg = std::string("{ERROR: ") + std::string(e.what()) + std::string("}");
             send(info.socket, msg.c_str(), msg.length() , 0);
@@ -135,7 +135,9 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         data.m_manager = this;
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
         try {
-            std::lock_guard<std::mutex> lck(m_graph[elID].m_mtx);
+            ThreadSafeManagerNode& node = m_graph.at(elID);
+            std::lock_guard<std::mutex> lck(node.m_mtx);
+            std::vector<std::unique_lock<std::mutex>> refLcks = lockReferences(node);
             ElementPtr el = Parsers::parseYAML(putNode["element"], data);
             if (el) {
                 // restore references
@@ -378,6 +380,9 @@ void UmlServer::garbageCollector(UmlServer* me) {
         me->m_garbageCv.wait(garbageLck, [me] { return me->m_releaseQueue.size() != me->m_numEls; });
         if (me->m_numEls == me->m_maxEls) {
             ID releasedID = me->m_releaseQueue.back();
+            ThreadSafeManagerNode& node = me->m_graph.at(releasedID);
+            std::lock_guard<std::mutex> nodeLock(node.m_mtx);
+            std::vector<std::unique_lock<std::mutex>> refLocks = me->lockReferences(node);
             Element& elToErase = *me->get(releasedID);
             me->release(elToErase);
             me->m_releaseQueue.pop_back();
@@ -446,6 +451,18 @@ std::string time_in_HH_MM_SS_MMM()
 }
 
 #endif
+
+std::vector<std::unique_lock<std::mutex>> UmlServer::lockReferences(ManagerNode& node) {
+    std::vector<std::unique_lock<std::mutex>> ret;
+    ret.reserve(node.m_references.size());
+    for (auto& referencePair : node.m_references) {
+        if (!referencePair.second.node) {
+            continue;
+        }
+        ret.push_back(std::unique_lock<std::mutex>(static_cast<ThreadSafeManagerNode*>(referencePair.second.node)->m_mtx));
+    }
+    return ret;
+}
 
 void UmlServer::log(std::string msg) {
     std::lock_guard<std::mutex> lck(m_logMtx);

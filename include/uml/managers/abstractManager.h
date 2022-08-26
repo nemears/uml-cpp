@@ -22,6 +22,7 @@ namespace UML {
             virtual void removeNode(ID id) = 0;
             virtual void erase(Element& el) = 0;
             virtual ElementPtr open(std::string path) = 0;
+            virtual ElementPtr open() = 0;
             virtual ElementPtr getRoot() const = 0;
             virtual void setRoot(Element* root) = 0;
             virtual std::string getLocation(ID id) = 0;

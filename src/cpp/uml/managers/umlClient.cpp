@@ -7,10 +7,15 @@
 #include <poll.h>
 #include <unistd.h>
 #include <cstring>
+#include <netinet/tcp.h>
 #else
 #endif
 #include "uml/managers/umlServer.h"
+
+#ifdef UML_DEBUG
 #include <iostream>
+#endif
+
 #include "yaml-cpp/yaml.h"
 #include "uml/parsers/parser.h"
 
@@ -42,6 +47,34 @@ void sendEmitter(socketType socket, YAML::Emitter& emitter) {
     free(packet);
 }
 
+#ifdef UML_DEBUG
+std::string time_in_HH_MM_SS_MMM()
+{
+    using namespace std::chrono;
+
+    // get current time
+    auto now = system_clock::now();
+
+    // get number of milliseconds for the current second
+    // (remainder after division into seconds)
+    auto ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
+
+    // convert to std::time_t in order to convert to std::tm (broken time)
+    auto timer = system_clock::to_time_t(now);
+
+    // convert to broken time
+    std::tm bt = *std::localtime(&timer);
+
+    std::ostringstream oss;
+
+    oss << std::put_time(&bt, "%H:%M:%S"); // HH:MM:SS
+    oss << '.' << std::setfill('0') << std::setw(3) << ms.count();
+
+    return oss.str();
+}
+
+#endif
+
 void UmlClient::init() {
     #ifndef WIN32
     struct addrinfo hints;
@@ -66,6 +99,14 @@ void UmlClient::init() {
         throw ManagerStateException("client could not connect to server! " + std::string(strerror(errno)));
     }
     freeaddrinfo(myAddress);
+    
+    // disable Nagle's on client side for no latency, client tends to write write read which is bad and it is hard to bundle writes together 
+    // since is controlled by user of api
+    int yes = 1;
+    int result = setsockopt(m_socketD, IPPROTO_TCP, TCP_NODELAY, (char*) &yes, sizeof(int));
+    if (result < 0) {
+        throw ManagerStateException("could not disable Nagle's algorithm on client side!");
+    }
     #else
     int status = WSAStartup(MAKEWORD(2,2), &m_wsaData);
     if (status != 0) {
@@ -132,6 +173,9 @@ void UmlClient::init() {
     if (id.string().compare(acceptBuff) != 0) {
         throw ManagerStateException("did not get proper accept message!");
     }
+    #ifdef UML_DEBUG
+    std::cout << time_in_HH_MM_SS_MMM() << ": client initialized" << std::endl;
+    #endif
 }
 
 UmlClient::UmlClient() : id(ID::randomID()) {
@@ -162,6 +206,9 @@ UmlClient::UmlClient(std::string adress) : id(ID::randomID()) {
 UmlClient::~UmlClient() {
     #ifndef WIN32
     close(m_socketD);
+    #ifdef UML_DEBUG
+    std::cout << time_in_HH_MM_SS_MMM() << ": client destroyed" << std::endl;
+    #endif
     #else
     int result = shutdown(m_socketD, SD_SEND);
     if (result == SOCKET_ERROR) {
@@ -177,6 +224,9 @@ ElementPtr UmlClient::get(ID id) {
         YAML::Key << "GET" << YAML::Value << id.string() << 
     YAML::EndMap;
     sendEmitter(m_socketD, emitter);
+    #ifdef UML_DEBUG
+    std::cout << time_in_HH_MM_SS_MMM() << ": client semt get reqiest for el of id " << id.string() << std::endl;
+    #endif
     char* buff = (char*)malloc(UML_CLIENT_MSG_SIZE);
     int bytesReceived = recv(m_socketD, buff, UML_CLIENT_MSG_SIZE, 0);
     if (bytesReceived <= 0) {
@@ -202,6 +252,9 @@ ElementPtr UmlClient::get(ID id) {
     Element& ret = *Parsers::parseString(buff, data);
     free(buff);
     SimpleAccessPolicy::restoreNode(ret.m_node);
+    #ifdef UML_DEBUG
+    std::cout << time_in_HH_MM_SS_MMM() << ": client got el of id " << id.string() << std::endl;
+    #endif
     return ElementPtr(&ret);
 }
 
@@ -231,6 +284,9 @@ ElementPtr UmlClient::get(std::string qualifiedName) {
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
     Element& ret = *Parsers::parseString(buff, data);
     free(buff);
+    #ifdef UML_DEBUG
+    std::cout << time_in_HH_MM_SS_MMM() << ": client got el of name " << qualifiedName << std::endl;
+    #endif
     return ElementPtr(&ret);
 }
 
@@ -246,6 +302,9 @@ Element* UmlClient::create(ElementType eType) {
         YAML::Key << "id" << YAML::Value << ret->getID().string() <<
     YAML::EndMap;
     sendEmitter(m_socketD, emitter);
+    #ifdef UML_DEBUG
+    std::cout << time_in_HH_MM_SS_MMM() << ": client created element of id " << ret->getID().string() << std::endl;
+    #endif
     return ret;
 }
 
@@ -263,6 +322,9 @@ void UmlClient::put(Element& el) {
         Parsers::emitIndividual(el, emitter);
     emitter << YAML::EndMap << YAML::EndMap;
     sendEmitter(m_socketD, emitter);
+    #ifdef UML_DEBUG
+    std::cout << time_in_HH_MM_SS_MMM() << ": client put el of id " << el.getID().string() << std::endl;
+    #endif
 }
 
 void UmlClient::putAll() {
@@ -278,6 +340,9 @@ void UmlClient::erase(Element& el) {
     YAML::EndMap;
     Manager<SimpleAccessPolicy, ServerPersistencePolicy>::erase(el);
     sendEmitter(m_socketD, emitter);
+    #ifdef UML_DEBUG
+    std::cout << time_in_HH_MM_SS_MMM() << ": client erased el" << std::endl;
+    #endif
 }
 
 void UmlClient::release(Element& el) {
@@ -303,6 +368,9 @@ void UmlClient::setRoot(Element* el) {
         m_root = ElementPtr();
         erase(*getRoot());
     }
+    #ifdef UML_DEBUG
+    std::cout << time_in_HH_MM_SS_MMM() << ": client set root" << std::endl;
+    #endif
 }
 
 void UmlClient::shutdownServer() {

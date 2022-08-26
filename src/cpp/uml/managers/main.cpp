@@ -1,4 +1,5 @@
 #include "uml/managers/umlServer.h"
+#include "uml/uml-stable.h"
 #include <iostream>
 #ifndef WIN32
 #include <unistd.h>

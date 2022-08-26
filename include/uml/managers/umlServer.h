@@ -82,6 +82,7 @@ namespace UML {
             // helper methods
         protected:
             void closeClientConnections(ClientInfo& client);
+            std::vector<std::unique_lock<std::mutex>> lockReferences(ManagerNode& node);
         public:
             UmlServer();
             UmlServer(int port);

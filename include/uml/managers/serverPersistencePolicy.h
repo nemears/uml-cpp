@@ -20,7 +20,7 @@ namespace UML {
                 
             }
             ElementPtr parse(AbstractManager* me) {
-
+                return ElementPtr();
             }
             ElementPtr parse(std::string path, AbstractManager* me) {
                 return ElementPtr();

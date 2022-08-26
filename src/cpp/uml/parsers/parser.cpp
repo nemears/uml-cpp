@@ -1058,7 +1058,7 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
         ret = &parseDefinition<CentralBufferNode>(node, data, "centralBufferNode", parseObjectNode);
     }
 
-    if (node["class"]) {
+    if (node["class"] && node["class"].IsMap()) {
         ret = &parseDefinition<Class>(node, data, "class", parseClass);
     }
 

@@ -226,11 +226,16 @@ namespace UML {
             };
             T& operator*() {
                 if (!m_node->m_el && m_node->m_id != ID::nullID()) {
-                    m_node->m_el = m_el->m_manager->get(m_node->m_id).ptr();
+                    m_node->m_el = m_el->m_manager->get(m_el, m_node->m_id);
                 }
                 return dynamic_cast<T&>(*m_node->m_el);
             };
-            T* operator->() { return dynamic_cast<T*>(m_node->m_el); };
+            T* operator->() {
+                if (!m_node->m_el && m_node->m_id != ID::nullID()) {
+                    m_node->m_el = m_el->m_manager->get(m_el, m_node->m_id);
+                }
+                return dynamic_cast<T&>(*m_node->m_el);
+            };
             OrderedSetIterator operator++() {
                 if (m_node->m_next) {
                     do {

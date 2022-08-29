@@ -28,6 +28,9 @@ namespace UML {
             std::string getLocation(ID id) {
                 return "";
             }
+            std::string getLocation() {
+                return "";
+            }
             void setLocation(ID id, std::string location) {
                 
             }

@@ -65,11 +65,10 @@ TEST_F(BehaviorTest, parseMultipleSimpleBodies) {
 }
 
 TEST_F(BehaviorTest, parseParameter) {
-    Element* el;
     BasicManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "opaqueBehaviorTests/param.yml").ptr());
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::OPAQUE_BEHAVIOR);
-    OpaqueBehavior* bhv = dynamic_cast<OpaqueBehavior*>(el);
+    OpaqueBehavior* bhv = &m.getRoot()->as<OpaqueBehavior>();
     ASSERT_TRUE(bhv->getOwnedParameters().size() == 1);
     Parameter* param = &bhv->getOwnedParameters().front();
     ASSERT_TRUE(param->getName().compare("test") == 0);

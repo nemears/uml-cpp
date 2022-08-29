@@ -291,10 +291,6 @@ ElementPtr UmlClient::get(std::string qualifiedName) {
 }
 
 Element& UmlClient::post(ElementType eType) {
-    return *create(eType);
-}
-
-Element* UmlClient::create(ElementType eType) {
     Element* ret = Manager<SimpleAccessPolicy, ServerPersistencePolicy>::create(eType);
     YAML::Emitter emitter;
     emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
@@ -305,7 +301,7 @@ Element* UmlClient::create(ElementType eType) {
     #ifdef UML_DEBUG
     std::cout << time_in_HH_MM_SS_MMM() << ": client created element of id " << ret->getID().string() << std::endl;
     #endif
-    return ret;
+    return *ret;
 }
 
 void UmlClient::put(Element& el) {

@@ -73,6 +73,10 @@ namespace UML {
                 return m_persistenPath.string();
             }
 
+            std::string getLocation() {
+                return m_persistenPath.string();
+            }
+
             void setLocation(ID id, std::filesystem::path location) {
                 m_elementPaths[id] = location;
             }

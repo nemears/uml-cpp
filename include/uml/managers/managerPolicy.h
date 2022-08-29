@@ -113,6 +113,9 @@ namespace UML {
                     case ElementType::DATA_TYPE : {
                         return create<DataType>().ptr();
                     }
+                    case ElementType::DECISION_NODE : {
+                        return create<DecisionNode>().ptr();
+                    }
                     case ElementType::DEPENDENCY : {
                         return create<Dependency>().ptr();
                     }
@@ -127,6 +130,9 @@ namespace UML {
                     }
                     case ElementType::ENUMERATION_LITERAL : {
                         return create<EnumerationLiteral>().ptr();
+                    }
+                    case ElementType::EXCEPTION_HANDLER : {
+                        return create<ExceptionHandler>().ptr();
                     }
                     case ElementType::EXPRESSION : {
                         return create<Expression>().ptr();
@@ -151,6 +157,9 @@ namespace UML {
                     }
                     case ElementType::INITIAL_NODE : {
                         return create<InitialNode>().ptr();
+                    }
+                    case ElementType::INPUT_PIN : {
+                        return create<InputPin>().ptr();
                     }
                     case ElementType::INSTANCE_SPECIFICATION : {
                         return create<InstanceSpecification>().ptr();
@@ -205,6 +214,9 @@ namespace UML {
                     }
                     case ElementType::OPERATION : {
                         return create<Operation>().ptr();
+                    }
+                    case ElementType::OUTPUT_PIN : {
+                        return create<OutputPin>().ptr();
                     }
                     case ElementType::PACKAGE: {
                         return create<Package>().ptr();
@@ -355,6 +367,10 @@ namespace UML {
 
             std::string getLocation(ID id) override {
                 return PersistencePolicy::getLocation(id);
+            }
+
+            std::string getLocation() override {
+                return PersistencePolicy::getLocation();
             }
 
             void setLocation(ID id, std::string location) override {

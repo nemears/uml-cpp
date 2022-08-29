@@ -211,7 +211,14 @@ bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
                 //     }
                 // } else if (data.m_manager2) {
                 if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                    (el.*elSignature)(data.m_manager->get(id)->as<T>());
+                    try {
+                        (el.*elSignature)(data.m_manager->get(id)->as<T>());
+                    } catch (DuplicateElementInSetException& e) {
+                        // nothing let (that part) fail
+                    }
+                    catch (std::exception& e) {
+                        throw UmlParserException("Unexpected Uml error: " + std::string(e.what()), data.m_path.string(), node[key]);
+                    }
                 } else {
                     (el.*idSignature)(id);
                 }
@@ -3099,7 +3106,7 @@ void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge, EmitterMetaDa
 
     if (merge.getMergedPackage()) {
         filesystem::path path = data.getPath(merge.getMergedPackage().id());
-        if (path.empty() || path == data.m_path / data.m_fileName) {
+        if (path == data.m_manager->getLocation() || path == data.m_path / data.m_fileName) {
             emitter << YAML::Key << "mergedPackage" << YAML::Value << merge.getMergedPackage().id().string();
         } else {
             emitToFile(*merge.getMergedPackage(), data, path.parent_path().string(), path.filename().string());
@@ -3655,7 +3662,7 @@ void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& applicat
 
     if (application.getAppliedProfile()) {
         filesystem::path path = data.getPath(application.getAppliedProfile().id());
-        if (path.empty() || path == data.m_path / data.m_fileName) {
+        if (path == data.m_manager->getLocation() || path == data.m_path / data.m_fileName) {
             emitter << YAML::Key << "appliedProfile" << YAML::Value << application.getAppliedProfile().id().string();
         } else {
             //emit(emitter, *application.getAppliedProfile(), data);

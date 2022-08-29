@@ -8,6 +8,7 @@ namespace UML {
 
         template <class T, class U> friend class Set;
         template <class T> friend struct SetIterator;
+        template <class T, class U> friend struct OrderedSetIterator;
 
         public:
             virtual Element* create(ElementType type) = 0;
@@ -26,6 +27,7 @@ namespace UML {
             virtual ElementPtr getRoot() const = 0;
             virtual void setRoot(Element* root) = 0;
             virtual std::string getLocation(ID id) = 0;
+            virtual std::string getLocation() = 0;
             virtual void setLocation(ID id, std::string location) = 0;
             virtual void save(std::string location) = 0;
             virtual void save() = 0;

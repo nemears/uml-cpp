@@ -5,6 +5,18 @@
 
 namespace UML {
 
+ManagerNode& ManagerNode::operator=(const ManagerNode& rhs) {
+    m_managerElementMemory = rhs.m_managerElementMemory;
+    m_mountedFlag = rhs.m_mountedFlag;
+    for (auto& ptr : rhs.m_ptrs) {
+        m_ptrs.push_back(ptr);
+    }
+    for (auto& pair : rhs.m_references) {
+        m_references[pair.first] = {pair.second.node, pair.second.count};
+    }
+    return *this;
+}
+
 void ManagerNode::setReference(Element& el) {
     auto reference = m_references.find(el.getID());
     if (reference == m_references.end()) {

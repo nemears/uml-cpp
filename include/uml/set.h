@@ -273,6 +273,7 @@ namespace UML {
             };
             void setName(SetNode* node);
             void instantiateSetNode(SetNode* node);
+            virtual void deleteNode(SetNode* node) = 0;
         public:
             /**
              * returns a bool on whether the id supplied is in the set
@@ -617,7 +618,7 @@ namespace UML {
              * polymorphic method to delete a node on removal or destruction
              * @param node the node being deleted from memory
              **/
-            virtual void deleteNode(SetNode* node) {
+            void deleteNode(SetNode* node) override {
                 delete node;
             };
             /**
@@ -863,7 +864,11 @@ namespace UML {
                     }
                     (*func)(*dynamic_cast<T*>(temp->m_el));
                 }
-                deleteNode(temp);
+                if (m_setToInstantiate) {
+                    m_setToInstantiate->deleteNode(temp);
+                } else {
+                    deleteNode(temp);
+                }
                 m_size--;
             };
             /**

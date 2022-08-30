@@ -40,6 +40,9 @@ namespace UML {
         protected:
             ElementPtr m_root;
         public:
+            virtual ~Manager() {
+                AccessPolicy::clear();
+            }
             template <class T = Element>
             UmlPtr<T> create() {
                 T* newElement = new T;
@@ -49,7 +52,7 @@ namespace UML {
                 ret->m_manager = this;
                 ret.m_manager = this;
                 return ret;
-            };
+            }
 
             Element* create(ElementType type) override {
                 switch (type) {

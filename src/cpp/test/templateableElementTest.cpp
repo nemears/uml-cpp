@@ -82,15 +82,18 @@ TEST_F(TemplateableElementTest, multipleParametersTest) {
     ASSERT_EQ(p1->getOwnedParameteredElement()->getElementType(), ElementType::PRIMITIVE_TYPE);
     PrimitiveType* p = dynamic_cast<PrimitiveType*>(p1->getOwnedParameteredElement().ptr());
     ASSERT_EQ(p->getName(), "long");
+    ASSERT_EQ(*p->getOwningTemplateParameter(), *p1);
     TemplateParameter* p2 = &s->getOwnedParameters().get(1);
     ASSERT_EQ(p2->getOwnedParameteredElement()->getElementType(), ElementType::INSTANCE_SPECIFICATION);
     InstanceSpecification* i = dynamic_cast<InstanceSpecification*>(p2->getOwnedParameteredElement().ptr());
     ASSERT_EQ(i->getName(), "test");
+    ASSERT_EQ(*i->getOwningTemplateParameter(), *p2);
     TemplateParameter* p3 = &s->getOwnedParameters().back();
     ASSERT_TRUE(p3->getOwnedParameteredElement());
     ASSERT_EQ(p3->getOwnedParameteredElement()->getElementType(), ElementType::LITERAL_INT);
     LiteralInt* li = dynamic_cast<LiteralInt*>(p3->getOwnedParameteredElement().ptr());
     ASSERT_EQ(li->getValue(), 1);
+    ASSERT_EQ(*li->getOwningTemplateParameter(), *p3);
 }
 
 TEST_F(TemplateableElementTest, referencedParameterTest) {

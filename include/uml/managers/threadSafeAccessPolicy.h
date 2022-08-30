@@ -10,6 +10,9 @@
 namespace UML {
     struct ThreadSafeManagerNode : public ManagerNode {
         ThreadSafeManagerNode(){};
+        ThreadSafeManagerNode& operator=(const ThreadSafeManagerNode& rhs) {
+            return static_cast<ThreadSafeManagerNode&>(ManagerNode::operator=(rhs));
+        };
         std::mutex m_mtx;
     };
 
@@ -17,6 +20,16 @@ namespace UML {
         protected:
             std::unordered_map<ID, ThreadSafeManagerNode> m_graph;
             std::mutex m_graphMtx;
+
+            void clear() {
+                std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                for (auto& pair : m_graph) {
+                    delete pair.second.m_managerElementMemory;
+                    pair.second.erase();
+                }
+                m_graph.clear();
+            }
+
             ManagerNode& assignNode(Element* newElement) {
                 // lock graph for access
                 std::lock_guard<std::mutex> graphLock(m_graphMtx);
@@ -117,8 +130,8 @@ namespace UML {
                     }
                 }
                 node->releasePtrs();
-                node->m_managerElementMemory = 0;
                 delete node->m_managerElementMemory;
+                node->m_managerElementMemory = 0;
                 if (node->m_ptrs.empty()) {
                     std::lock_guard<std::mutex> graphLck(m_graphMtx);
                     m_graph.erase(id);
@@ -137,8 +150,9 @@ namespace UML {
                     // during a UmlManager::open() or UmlManager::aquire(id) invoke
 
                     ThreadSafeManagerNode* node = &m_graph[newID];
-                    // std::lock_guard<std::mutex> nodeLck(node->m_mtx);
-                    delete node->m_managerElementMemory;
+                    if (node->m_managerElementMemory) {
+                        delete node->m_managerElementMemory;
+                    }
                     ThreadSafeManagerNode& oldNode = m_graph[oldID];
                     node->m_managerElementMemory = oldNode.m_managerElementMemory;
                     setNode(node);
@@ -150,14 +164,14 @@ namespace UML {
                     // std::lock_guard<std::mutex> oldLock(discRef.m_mtx);
 
                     // copy over node
-                    ThreadSafeManagerNode& newDisc = m_graph[newID];
-                    newDisc.m_managerElementMemory = discRef.m_managerElementMemory;
-                    for (auto& ptr: discRef.m_ptrs) {
-                        newDisc.m_ptrs.push_back(ptr);
-                    }
-                    for (auto& refNode : discRef.m_references) {
-                        newDisc.m_references[refNode.first] = refNode.second;
-                    }
+                    ThreadSafeManagerNode& newDisc = m_graph[newID] = discRef;
+                    // newDisc.m_managerElementMemory = discRef.m_managerElementMemory;
+                    // for (auto& ptr: discRef.m_ptrs) {
+                    //     newDisc.m_ptrs.push_back(ptr);
+                    // }
+                    // for (auto& refNode : discRef.m_references) {
+                    //     newDisc.m_references[refNode.first] = refNode.second;
+                    // }
                     // std::lock_guard<std::mutex> newLock(newDisc.m_mtx);
                     reindexNoReplace(oldID, newID, &newDisc);
                     m_graph.erase(oldID);

@@ -7,6 +7,14 @@ namespace UML {
     class SimpleAccessPolicy : public AbstractAccessPolicy {
         protected:
             std::unordered_map<ID, ManagerNode> m_graph;
+
+            void clear() {
+                for (auto& pair : m_graph) {
+                    delete pair.second.m_managerElementMemory;
+                    pair.second.erase();
+                }
+                m_graph.clear();
+            }
             
             ManagerNode& assignNode(Element* newElement) {
                 ManagerNode& node = m_graph[newElement->getID()];
@@ -98,8 +106,8 @@ namespace UML {
                     }
                 }
                 node->releasePtrs();
-                node->m_managerElementMemory = 0;
                 delete node->m_managerElementMemory;
+                node->m_managerElementMemory = 0;
                 if (node->m_ptrs.empty()) {
                     m_graph.erase(id);
                 }
@@ -116,7 +124,9 @@ namespace UML {
                     // during a UmlManager::open() or UmlManager::aquire(id) invoke
 
                     ManagerNode* m_node = &m_graph[newID];
-                    delete m_node->m_managerElementMemory;
+                    if (m_node->m_managerElementMemory) {
+                        delete m_node->m_managerElementMemory;
+                    }
                     ManagerNode& oldNode = m_graph[oldID];
                     m_node->m_managerElementMemory = oldNode.m_managerElementMemory;
                     setNode(m_node);
@@ -126,9 +136,8 @@ namespace UML {
                 } else  {
                     // reindex
                     ManagerNode& discRef = m_graph[oldID];
-                    m_graph[newID] = std::move(discRef);
-                    ManagerNode* newDisc = &m_graph[newID];
-                    reindexNoReplace(oldID, newID, newDisc);
+                    ManagerNode& newDisc = m_graph[newID] = discRef;
+                    reindexNoReplace(oldID, newID, &newDisc);
                     m_graph.erase(oldID);
                     // if (!m_mountBase.empty()) {
                     //     std::filesystem::remove(m_mountBase / "mount" / (oldID.string() + ".yml"));

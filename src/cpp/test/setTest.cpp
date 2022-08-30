@@ -1681,3 +1681,26 @@ TEST_F(SetTest, emulateAssociationTest) {
     delete members;
     delete ownedElements;
 }
+
+TEST_F(SetTest, removeFromSubsetOfOrderedSet) {
+    OrderedSet<Package>* rootSet = new OrderedSet<Package>;
+    Set<Package>* subSet = new Set<Package>;
+
+    subSet->subsets(*rootSet);
+
+    BasicManager m;
+    PackagePtr pckg = m.create<Package>();
+    
+    subSet->add(*pckg);
+    ASSERT_EQ(rootSet->front(), *pckg);
+    ASSERT_EQ(rootSet->back(), *pckg);
+    ASSERT_EQ(subSet->front(), *pckg);
+    ASSERT_EQ(subSet->back(), *pckg);
+
+    subSet->remove(*pckg);
+    ASSERT_THROW(rootSet->front(), ManagerStateException);
+    ASSERT_THROW(rootSet->back(), ManagerStateException);
+
+    delete subSet;
+    delete rootSet;
+}

@@ -259,6 +259,7 @@ void UmlServer::receiveFromClient(UmlServer* me, ID id) {
 
         // start processing messages
         info.handlerCv.notify_one();
+        free(messageBuffer);
     }
 }
 
@@ -414,7 +415,7 @@ void UmlServer::closeClientConnections(ClientInfo& client) {
 void UmlServer::zombieKiller(UmlServer* me) {
     while(me->m_running) {
         std::unique_lock<std::mutex> zombieLck(me->m_zombieMtx);
-        me->m_zombieCv.wait(zombieLck, [me] { return !me->m_zombies.empty(); });
+        me->m_zombieCv.wait(zombieLck, [me] { return !me->m_zombies.empty() || !me->m_running; });
         for (const ID id : me->m_zombies) {
             ClientInfo& client = me->m_clients[id];
             me->closeClientConnections(client);

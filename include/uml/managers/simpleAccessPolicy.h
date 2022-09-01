@@ -36,7 +36,6 @@ namespace UML {
             }
 
             void restoreNode(ManagerNode* restoredNode) {
-                // el.m_node->m_managerElementMemory = &el;
                 for (auto& pair : restoredNode->m_references) {
                     ManagerNode* node = pair.second.node;
                     if (!node || !node->m_managerElementMemory) {
@@ -60,12 +59,6 @@ namespace UML {
                             // element has been released, aquire
                             nodesToErase[i] = 0;
                             idsToAquire[i] = pair.first;
-                            // try {
-                            //     me->get(pair.first);
-                            //     nodesToErase[i] = pair.second.node;
-                            // } catch (ID_doesNotExistException& idException) {
-                            //     nodesToErase[i] = 0;
-                            // }
                         } else {
                             nodesToErase[i] = pair.second.node;
                         }
@@ -130,7 +123,6 @@ namespace UML {
                     ManagerNode& oldNode = m_graph[oldID];
                     m_node->m_managerElementMemory = oldNode.m_managerElementMemory;
                     setNode(m_node);
-                    // m_node->m_managerElementMemory->m_node = m_node;
                     reindexReplace(oldID, newID, m_node, oldNode);
                     m_graph.erase(oldID);
                 } else  {
@@ -139,14 +131,10 @@ namespace UML {
                     ManagerNode& newDisc = m_graph[newID] = discRef;
                     reindexNoReplace(oldID, newID, &newDisc);
                     m_graph.erase(oldID);
-                    // if (!m_mountBase.empty()) {
-                    //     std::filesystem::remove(m_mountBase / "mount" / (oldID.string() + ".yml"));
-                    //     /** Should we write to new file now?**/
-                    // }
                 }
             }
 
-            void removeNode(ID id) {
+            void removeNode(ID id) override {
                 m_graph.erase(id);
             }
     };

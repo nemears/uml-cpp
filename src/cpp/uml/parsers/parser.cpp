@@ -196,20 +196,6 @@ bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
             if (isValidID(node[key].as<std::string>())) {
                 // ID
                 ID id = ID::fromString(node[key].as<std::string>());
-                // if (data.m_manager) {
-                //     if (data.m_manager->UmlManager::loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                //         try {
-                //             (el.*elSignature)(data.m_manager->get(id).as<T>());
-                //         } catch (DuplicateElementInSetException& e) {
-                //             // nothing let (that part) fail
-                //         }
-                //         catch (std::exception& e) {
-                //             throw UmlParserException("Unexpected Uml error: " + std::string(e.what()), data.m_path.string(), node[key]);
-                //         }
-                //     } else {
-                //         (el.*idSignature)(id);
-                //     }
-                // } else if (data.m_manager2) {
                 if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
                     try {
                         (el.*elSignature)(data.m_manager->get(id)->as<T>());
@@ -234,7 +220,6 @@ bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
                     throw UmlParserException("Could not identify valid file at path " + node[key].as<std::string>(), data.m_path.string(), node[key]);
                 }
                 return true;
-                // throw UmlParserException("TODO, parse reference from path (seems a lil irrelevant)", data.m_path.string(), node[key]);
             }
         } else {
             throw UmlParserException("Invalid yaml node type for " + key + " entry, expected a scalar id", data.m_path.string(), node[key]);

@@ -61,6 +61,32 @@ namespace UML {
                     newNode->m_ptrs.push_back(ptr);
                 }
             }
+
+            virtual void removeNode(ID id) = 0;
+
+            virtual void removePtr(AbstractUmlPtr& ptr) {
+                ptr.m_node->m_ptrs.remove_if([&](const AbstractUmlPtr* ptrEntry) {
+                    return ptrEntry->m_ptrId == ptr.m_ptrId;
+                });
+                if (ptr.m_node->m_ptrs.empty() && !ptr.m_node->m_managerElementMemory) {
+                    removeNode(ptr.m_id);
+                }
+            }
+
+            virtual void assignPtr(AbstractUmlPtr& ptr) {
+                if (ptr.m_node->m_ptrs.size() > 0) {
+                    ptr.m_ptrId = ptr.m_node->m_ptrs.back()->m_ptrId + 1;
+                }
+               ptr.m_node->m_ptrs.push_back(const_cast<AbstractUmlPtr*>(&ptr));
+            }
+
+            virtual void restorePtr(AbstractUmlPtr& ptr) {
+                ptr.m_node->m_ptrs.push_back(const_cast<AbstractUmlPtr*>(&ptr));
+            }
+
+            ManagerNode* getNode(AbstractUmlPtr& ptr) {
+                return ptr.m_node;
+            }
     };
 }
 

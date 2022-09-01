@@ -25,6 +25,9 @@ namespace UML {
      *          - void releaseNode(ManagerNode* node) : release a node from memory
      *          - void reindex(ID oldID, ID newID) : reindex a node within the node graph
      *          - void removeNode(ID id) : remove a node with the specified id from the graph
+     *          - void assignPtr(AbstractUmlPtr& ptr) : assign a pointer to the list
+     *          - void removePtr(AbstractUmlPtr& ptr) : remove a pointer from the list
+     *          - void restorePtr(AbstractUmlPtr& ptr) : restores a ptr in the list (TODO reimplement)
      *      PersistencePolicy:
      *          - ElementPtr aquire(ID id, AbstractManager* manager) : aquire an element with the specified id from disk
      *          - void write(Element& el, AbstractManager* me) : write an element to disk
@@ -39,6 +42,15 @@ namespace UML {
     class Manager : public AbstractManager , public AccessPolicy, public PersistencePolicy {
         protected:
             ElementPtr m_root;
+            void removePtr(AbstractUmlPtr& ptr) override {
+                AccessPolicy::removePtr(ptr);
+            }
+            void assignPtr(AbstractUmlPtr& ptr) override {
+                AccessPolicy::assignPtr(ptr);
+            }
+            void restorePtr(AbstractUmlPtr& ptr) override {
+                AccessPolicy::restorePtr(ptr);
+            }
         public:
             virtual ~Manager() {
                 AccessPolicy::clear();
@@ -48,9 +60,8 @@ namespace UML {
                 T* newElement = new T;
                 ManagerNode& node = AccessPolicy::assignNode(newElement);
                 newElement->m_node = &node;
+                newElement->m_manager = this;
                 UmlPtr<T> ret(newElement);
-                ret->m_manager = this;
-                ret.m_manager = this;
                 return ret;
             }
 
@@ -319,7 +330,6 @@ namespace UML {
 
             void release(Element& el) override {
                 PersistencePolicy::write(el, this);
-                // el.m_node->m_mountedFlag = true;
                 AccessPolicy::releaseNode(el.m_node);
             }
 

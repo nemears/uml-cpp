@@ -14,6 +14,7 @@ namespace UML {
             return static_cast<ThreadSafeManagerNode&>(ManagerNode::operator=(rhs));
         };
         std::mutex m_mtx;
+        std::mutex m_ptrsMtx;
     };
 
     class ThreadSafeAccessPolicy : public AbstractAccessPolicy {
@@ -44,7 +45,6 @@ namespace UML {
                 std::unordered_map<ID, ThreadSafeManagerNode>::iterator result = m_graph.find(id);
                 if (result != m_graph.end() && (*result).second.m_managerElementMemory) {
                     // lock node for creation
-                    // std::lock_guard<std::mutex> nodeLock(static_cast<ThreadSafeManagerNode&>(result->second).m_mtx);
                     return ElementPtr(result->second.m_managerElementMemory);
                 }
                 return ElementPtr(0);
@@ -59,7 +59,6 @@ namespace UML {
 
             void restoreNode(ManagerNode* restoredNode) {
                 // lock just node access
-                // std::lock_guard<std::mutex> nodeLock(static_cast<ThreadSafeManagerNode*>(restoredNode)->m_mtx);
                 for (auto& pair : restoredNode->m_references) {
                     ManagerNode* node = pair.second.node;
                     if (!node || !node->m_managerElementMemory) {
@@ -76,7 +75,6 @@ namespace UML {
                 ID id = node->m_managerElementMemory->getID();
                 {
                     // lock node
-                    // std::lock_guard<std::mutex> nodeLck(static_cast<ThreadSafeManagerNode*>(node)->m_mtx);
                     std::vector<ManagerNode*> nodesToErase(node->m_references.size());
                     {
                         std::vector<ID> idsToAquire(node->m_references.size());
@@ -118,7 +116,6 @@ namespace UML {
             }
 
             void releaseNode(ManagerNode* node) {
-                // std::lock_guard<std::mutex> nodeLck(static_cast<ThreadSafeManagerNode*>(node)->m_mtx);
                 ID id = node->m_managerElementMemory->getID();
                 for (auto& e : node->m_references) {
                     if (!e.second.node) {
@@ -161,18 +158,7 @@ namespace UML {
                 } else  {
                     // reindex
                     ThreadSafeManagerNode& discRef = m_graph[oldID];
-                    // std::lock_guard<std::mutex> oldLock(discRef.m_mtx);
-
-                    // copy over node
                     ThreadSafeManagerNode& newDisc = m_graph[newID] = discRef;
-                    // newDisc.m_managerElementMemory = discRef.m_managerElementMemory;
-                    // for (auto& ptr: discRef.m_ptrs) {
-                    //     newDisc.m_ptrs.push_back(ptr);
-                    // }
-                    // for (auto& refNode : discRef.m_references) {
-                    //     newDisc.m_references[refNode.first] = refNode.second;
-                    // }
-                    // std::lock_guard<std::mutex> newLock(newDisc.m_mtx);
                     reindexNoReplace(oldID, newID, &newDisc);
                     m_graph.erase(oldID);
                 }
@@ -181,6 +167,21 @@ namespace UML {
             void removeNode(ID id) {
                 std::lock_guard<std::mutex> graphLck(m_graphMtx);
                 m_graph.erase(id);
+            }
+            
+            virtual void removePtr(AbstractUmlPtr& ptr) {
+                std::lock_guard<std::mutex> ptrsLck(static_cast<ThreadSafeManagerNode*>(getNode(ptr))->m_ptrsMtx);
+                AbstractAccessPolicy::removePtr(ptr);
+            }
+
+            virtual void assignPtr(AbstractUmlPtr& ptr) {
+                std::lock_guard<std::mutex> ptrsLck(static_cast<ThreadSafeManagerNode*>(getNode(ptr))->m_ptrsMtx);
+                AbstractAccessPolicy::assignPtr(ptr);
+            }
+
+            virtual void restorePtr(AbstractUmlPtr& ptr) {
+                std::lock_guard<std::mutex> ptrsLck(static_cast<ThreadSafeManagerNode*>(getNode(ptr))->m_ptrsMtx);
+                AbstractAccessPolicy::restorePtr(ptr);
             }
     };
 

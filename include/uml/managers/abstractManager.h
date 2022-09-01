@@ -4,11 +4,16 @@
 #include "uml/element.h"
 
 namespace UML {
+
+    class AbstractUmlPtr;
+
     class AbstractManager {
 
         template <class T, class U> friend class Set;
         template <class T> friend struct SetIterator;
         template <class T, class U> friend struct OrderedSetIterator;
+        template <class T> friend class UmlPtr;
+        template <class T, class U> friend class Singleton;
 
         public:
             virtual Element* create(ElementType type) = 0;
@@ -33,6 +38,9 @@ namespace UML {
             virtual void save() = 0;
         protected:
             Element* get(Element* me, ID theID);
+            virtual void removePtr(AbstractUmlPtr& ptr) = 0;
+            virtual void assignPtr(AbstractUmlPtr& ptr) = 0;
+            virtual void restorePtr(AbstractUmlPtr& ptr) = 0;
     };
 
     class ManagerStateException : public std::exception {

@@ -68,6 +68,9 @@ namespace UML {
                 ptr.m_node->m_ptrs.remove_if([&](const AbstractUmlPtr* ptrEntry) {
                     return ptrEntry->m_ptrId == ptr.m_ptrId;
                 });
+            }
+
+            virtual void destroyPtr(AbstractUmlPtr& ptr) {
                 if (ptr.m_node->m_ptrs.empty() && !ptr.m_node->m_managerElementMemory) {
                     removeNode(ptr.m_id);
                 }

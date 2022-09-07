@@ -45,6 +45,9 @@ namespace UML {
             void removePtr(AbstractUmlPtr& ptr) override {
                 AccessPolicy::removePtr(ptr);
             }
+            void destroyPtr(AbstractUmlPtr& ptr) override {
+                AccessPolicy::destroyPtr(ptr);
+            }
             void assignPtr(AbstractUmlPtr& ptr) override {
                 AccessPolicy::assignPtr(ptr);
             }

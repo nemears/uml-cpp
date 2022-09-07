@@ -62,6 +62,7 @@ namespace UML {
             void reassignPtr(const UmlPtr<U>& rhs) {
                 if (m_manager) {
                     m_manager->removePtr(*this);
+                    m_manager->destroyPtr(*this);
                 }
                 m_id = rhs.m_id;
                 m_manager = rhs.m_manager;
@@ -134,6 +135,7 @@ namespace UML {
             void operator=(const T* el) {
                 if (m_manager) {
                     m_manager->removePtr(*this);
+                    m_manager->destroyPtr(*this);
                 }
                 if (el) {
                     m_id = el->getID();
@@ -209,6 +211,7 @@ namespace UML {
                 }
                 if (m_ptr) {
                     m_manager->removePtr(*this);
+                    m_manager->destroyPtr(*this);
                     // if (m_ptr->m_node->m_ptrs.empty()) {
                         // if (m_manager && !m_manager->m_mountBase.empty() && !m_manager->m_lazy) {
                         //     m_manager->mountEl(*m_ptr);
@@ -220,6 +223,7 @@ namespace UML {
                 } else {
                     if (m_node) {
                         m_manager->removePtr(*this);
+                        m_manager->destroyPtr(*this);
                         // if (m_node->m_ptrs.empty()) {
                         //     m_manager->m_graph.erase(m_id);
                         // }

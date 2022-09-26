@@ -37,6 +37,9 @@ namespace UML {
         void releasePtrs();
         void referenceErased(ID id);
         void erase();
+        void erasePtrs();
+        void reindexPtrs(ID newID);
+        void assingPtr(AbstractUmlPtr* ptr);
     };
 }
 

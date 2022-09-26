@@ -347,7 +347,14 @@ namespace UML {
             };
 
             void reindex(ID oldID, ID newID) override {
-                AccessPolicy::reindex(oldID, newID);
+                if (oldID == newID) {
+                    return;
+                }
+                if (AccessPolicy::exists(newID)) {
+                    AccessPolicy::overwrite(oldID, newID);
+                } else {
+                    AccessPolicy::reindex(oldID, newID);
+                }
                 // TODO persistence policy reindex?
             }
 

@@ -50,6 +50,12 @@ namespace UML {
                 return ElementPtr(0);
             }
 
+            bool exists(ID id) {
+                // lock graph for access
+                std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                return m_graph.count(id);
+            }
+
             bool loaded(ID id) {
                 // lock graph for access
                 std::lock_guard<std::mutex> graphLock(m_graphMtx);
@@ -135,33 +141,33 @@ namespace UML {
                 }
             }
 
-            void reindex(ID oldID, ID newID) {
-                if (oldID == newID) {
-                    return;
-                }
-                std::lock_guard<std::mutex> graphLck(m_graphMtx);
-                if (m_graph.count(newID)) {
-                    // Element with this ID already exists, overwrite it with new one
-                    // This logic should only be called when it is loading from disk
-                    // and will overwrite the existing element in memory with one from disk
-                    // during a UmlManager::open() or UmlManager::aquire(id) invoke
+            void overwrite(ID oldID, ID newID) {
+                // lock graph for edit
+                std::lock_guard<std::mutex> graphLock(m_graphMtx);
 
-                    ThreadSafeManagerNode* node = &m_graph[newID];
-                    if (node->m_managerElementMemory) {
-                        delete node->m_managerElementMemory;
-                    }
-                    ThreadSafeManagerNode& oldNode = m_graph[oldID];
-                    node->m_managerElementMemory = oldNode.m_managerElementMemory;
-                    setNode(node);
-                    reindexReplace(oldID, newID, node, oldNode);
-                    m_graph.erase(oldID);
-                } else  {
-                    // reindex
-                    ThreadSafeManagerNode& discRef = m_graph[oldID];
-                    ThreadSafeManagerNode& newDisc = m_graph[newID] = discRef;
-                    reindexNoReplace(oldID, newID, &newDisc);
-                    m_graph.erase(oldID);
+                // overwrite
+                std::unordered_map<ID, ThreadSafeManagerNode>::iterator nodeToBeOverwrittenIterator = m_graph.find(newID);
+                ThreadSafeManagerNode& nodeToBeOverwritten = nodeToBeOverwrittenIterator->second;
+                ThreadSafeManagerNode& newNode = m_graph[oldID];
+                if (nodeToBeOverwritten.m_managerElementMemory) {
+                    delete nodeToBeOverwritten.m_managerElementMemory;
                 }
+                nodeToBeOverwritten.m_managerElementMemory = newNode.m_managerElementMemory;
+                setNode(&nodeToBeOverwritten);
+                nodeToBeOverwritten.m_references.clear();
+                nodeToBeOverwritten.reindexPtrs(newID);
+                m_graph.erase(oldID);
+            }
+
+            void reindex(ID oldID, ID newID) {
+                // lock graph for edit
+                std::lock_guard<std::mutex> graphLock(m_graphMtx);
+
+                // reindex
+                ThreadSafeManagerNode& discRef = m_graph[oldID];
+                ThreadSafeManagerNode& newDisc = m_graph[newID] = discRef;
+                reindexNoReplace(oldID, newID, &newDisc);
+                m_graph.erase(oldID);
             }
 
             void removeNode(ID id) {

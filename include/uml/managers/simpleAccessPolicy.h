@@ -10,6 +10,7 @@ namespace UML {
 
             void clear() {
                 for (auto& pair : m_graph) {
+                    pair.second.erasePtrs();
                     delete pair.second.m_managerElementMemory;
                     pair.second.erase();
                 }
@@ -33,6 +34,11 @@ namespace UML {
             bool loaded(ID id) {
                 std::unordered_map<ID, ManagerNode>::const_iterator result = m_graph.find(id);
                 return result != m_graph.end() && (*result).second.m_managerElementMemory;
+            }
+
+            bool exists(ID id) {
+                std::unordered_map<ID, ManagerNode>::const_iterator result = m_graph.find(id);
+                return result != m_graph.end();
             }
 
             void restoreNode(ManagerNode* restoredNode) {
@@ -106,32 +112,35 @@ namespace UML {
                 }
             }
 
-            void reindex(ID oldID, ID newID) {
-                if (oldID == newID) {
-                    return;
+            // Element with this ID already exists, overwrite it with new one
+            // This logic should only be called when it is loading from disk
+            // and will overwrite the existing element in memory with one from disk
+            // during a UmlManager::open() or UmlManager::aquire(id) invoke
+            void overwrite(ID oldID, ID newID) {
+                std::unordered_map<ID, ManagerNode>::iterator nodeToBeOverwrittenIterator = m_graph.find(newID);
+                ManagerNode& nodeToBeOverwritten = nodeToBeOverwrittenIterator->second;
+                ManagerNode& newNode = m_graph[oldID];
+                if (nodeToBeOverwritten.m_managerElementMemory) {
+                    delete nodeToBeOverwritten.m_managerElementMemory;
                 }
-                if (m_graph.count(newID)) {
-                    // Element with this ID already exists, overwrite it with new one
-                    // This logic should only be called when it is loading from disk
-                    // and will overwrite the existing element in memory with one from disk
-                    // during a UmlManager::open() or UmlManager::aquire(id) invoke
+                nodeToBeOverwritten.m_managerElementMemory = newNode.m_managerElementMemory;
+                setNode(&nodeToBeOverwritten);
+                nodeToBeOverwritten.m_references.clear();
+                nodeToBeOverwritten.reindexPtrs(newID);
+                for (auto& ptr : newNode.m_ptrs) {
+                    nodeToBeOverwritten.assingPtr(ptr);
+                    assignPtr(*ptr);
+                }
+                m_graph.erase(oldID);
+            }
 
-                    ManagerNode* m_node = &m_graph[newID];
-                    if (m_node->m_managerElementMemory) {
-                        delete m_node->m_managerElementMemory;
-                    }
-                    ManagerNode& oldNode = m_graph[oldID];
-                    m_node->m_managerElementMemory = oldNode.m_managerElementMemory;
-                    setNode(m_node);
-                    reindexReplace(oldID, newID, m_node, oldNode);
-                    m_graph.erase(oldID);
-                } else  {
-                    // reindex
-                    ManagerNode& discRef = m_graph[oldID];
-                    ManagerNode& newDisc = m_graph[newID] = discRef;
-                    reindexNoReplace(oldID, newID, &newDisc);
-                    m_graph.erase(oldID);
-                }
+            void reindex(ID oldID, ID newID) {
+                
+                // reindex
+                ManagerNode& discRef = m_graph[oldID];
+                ManagerNode& newDisc = m_graph[newID] = discRef;
+                reindexNoReplace(oldID, newID, &newDisc);
+                m_graph.erase(oldID);
             }
 
             void removeNode(ID id) override {

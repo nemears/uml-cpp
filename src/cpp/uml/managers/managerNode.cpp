@@ -78,4 +78,20 @@ void ManagerNode::erase() {
     }
 }
 
+void ManagerNode::erasePtrs() {
+    for (auto& ptr : m_ptrs) {
+        ptr->erasePtr();
+    }
+}
+
+void ManagerNode::reindexPtrs(ID newID) {
+    for (auto& ptr : m_ptrs) {
+        ptr->reindex(newID, m_managerElementMemory);
+    }
+}
+
+void ManagerNode::assingPtr(AbstractUmlPtr* ptr) {
+    ptr->m_node = this;
+}
+
 }

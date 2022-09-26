@@ -512,7 +512,7 @@ TEST_F(DataTypeTest, mountAndEditDataType) {
     m.release(baseType2, root);
     DataType& baseType3 = m.get(baseTypeID)->as<DataType>();
     ASSERT_TRUE(baseType3.getOwningPackage());
-    Package& root2 = *baseType3.getOwningPackage();
+    Package& root2 = *baseType3.getOwningPackage(); // This line removes root from its node->m_ptrs list
     ASSERT_TRUE(baseType3.getNamespace());
     ASSERT_EQ(*baseType3.getNamespace(), root2);
     ASSERT_TRUE(baseType3.getOwner());

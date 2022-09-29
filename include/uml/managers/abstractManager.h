@@ -12,6 +12,7 @@ namespace UML {
         template <class T, class U> friend class Set;
         template <class T> friend struct SetIterator;
         template <class T, class U> friend struct OrderedSetIterator;
+        template <class T, class U> friend class OrderedSet;
         template <class T> friend class UmlPtr;
         template <class T, class U> friend class Singleton;
 

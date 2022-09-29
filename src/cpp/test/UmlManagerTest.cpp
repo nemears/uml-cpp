@@ -264,3 +264,11 @@ TEST_F(UmlManagerTest, threadSafeManagerTest) {
     ASSERT_FALSE(p.loaded());
     ASSERT_FALSE(child->getOwningPackage().loaded());
 }
+
+TEST_F(UmlManagerTest, overwriteRootTest) {
+    BasicManager m;
+    m.setRoot(m.create<Package>().ptr());
+    m.mount(".");
+    m.getRoot().release();
+    m.get(m.getRoot().id());
+}

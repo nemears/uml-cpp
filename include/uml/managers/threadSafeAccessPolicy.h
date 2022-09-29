@@ -156,6 +156,10 @@ namespace UML {
                 setNode(&nodeToBeOverwritten);
                 nodeToBeOverwritten.m_references.clear();
                 nodeToBeOverwritten.reindexPtrs(newID);
+                for (auto& ptr : newNode.m_ptrs) {
+                    nodeToBeOverwritten.assingPtr(ptr);
+                    assignPtr(*ptr);
+                }
                 m_graph.erase(oldID);
             }
 

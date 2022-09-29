@@ -209,25 +209,9 @@ namespace UML {
                 if (m_id == ID::nullID()) {
                     return;
                 }
-                if (m_ptr) {
+                if (m_node) {
                     m_manager->removePtr(*this);
                     m_manager->destroyPtr(*this);
-                    // if (m_ptr->m_node->m_ptrs.empty()) {
-                        // if (m_manager && !m_manager->m_mountBase.empty() && !m_manager->m_lazy) {
-                        //     m_manager->mountEl(*m_ptr);
-                        //     m_manager->releaseNode(*m_ptr);
-                        //     m_manager->m_graph.erase(m_id);
-                        //     delete m_ptr;
-                        // }
-                    // }
-                } else {
-                    if (m_node) {
-                        m_manager->removePtr(*this);
-                        m_manager->destroyPtr(*this);
-                        // if (m_node->m_ptrs.empty()) {
-                        //     m_manager->m_graph.erase(m_id);
-                        // }
-                    }
                 }
             }
     };

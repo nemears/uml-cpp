@@ -29,8 +29,8 @@ namespace UML {
      *          - void removePtr(AbstractUmlPtr& ptr) : remove a pointer from the list
      *          - void restorePtr(AbstractUmlPtr& ptr) : restores a ptr in the list (TODO reimplement)
      *      PersistencePolicy:
-     *          - ElementPtr aquire(ID id, AbstractManager* manager) : aquire an element with the specified id from disk
-     *          - void write(Element& el, AbstractManager* me) : write an element to disk
+     *          - ElementPtr aquire(ID id, AbstractManager* manager) : aquire an element with the specified id from disk // move to swap policy
+     *          - void write(Element& el, AbstractManager* me) : write an element to disk // move to swap policy
      *          - void write(AbstractManager* me) : write everything to disk whole
      *          - void write(std::string key, AbstractManager* me) : write to disk under key
      *          - ElementPtr parse(AbstractManager* me) : read from disk

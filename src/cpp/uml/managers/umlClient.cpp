@@ -218,6 +218,37 @@ UmlClient::~UmlClient() {
     #endif
 }
 
+Element* UmlClient::get(Element* me, ID theID) {
+    if (!theID.isNull()) {
+        if (me->m_node) {
+            if (me->m_node->m_references.count(theID)) {
+                if (!me->m_node->m_references[theID].node || !me->m_node->m_references[theID].node->m_managerElementMemory) {
+                    // check map to allow quick restore of reference
+                    std::unordered_map<ID, ManagerNode>::iterator it = m_graph.find(theID);
+                    if (it != m_graph.end() && it->second.m_managerElementMemory) {
+                        me->m_node->m_references[theID].node = &(it->second);
+                        if (it->second.m_references.count(me->getID())) {
+                            it->second.restoreReference(me);
+                        } else {
+                            it->second.setReference(me->getID());
+                        }
+                    } else {
+                        ElementPtr aquired = get(theID);
+                        me->m_node->m_references[theID].node = aquired->m_node;
+                    }
+                }
+                return me->m_node->m_references[theID].node->m_managerElementMemory;
+            } else {
+                throw ManagerStateException("could not find reference " + theID.string());
+            }
+        } else {
+            get(theID);
+            return  me->m_node->m_references[theID].node->m_managerElementMemory;
+        }
+    }
+    return 0;
+}
+
 ElementPtr UmlClient::get(ID id) {
     YAML::Emitter emitter;
     emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
@@ -225,7 +256,7 @@ ElementPtr UmlClient::get(ID id) {
     YAML::EndMap;
     sendEmitter(m_socketD, emitter);
     #ifdef UML_DEBUG
-    std::cout << time_in_HH_MM_SS_MMM() << ": client semt get reqiest for el of id " << id.string() << std::endl;
+    std::cout << time_in_HH_MM_SS_MMM() << ": client sent get reqiest for el of id " << id.string() << std::endl;
     #endif
     char* buff = (char*)malloc(UML_CLIENT_MSG_SIZE);
     int bytesReceived = recv(m_socketD, buff, UML_CLIENT_MSG_SIZE, 0);

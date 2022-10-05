@@ -48,6 +48,9 @@ void ManagerNode::removeReference(Element& el) {
 }
 
 void ManagerNode::restoreReference(Element* el) {
+    if (!el) {
+        throw ManagerStateException("reference is null when trying to restore!");
+    }
     m_managerElementMemory->restoreReference(el);
 }
 

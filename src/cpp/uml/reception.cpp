@@ -17,18 +17,22 @@ Set<Signal, Reception>& Reception::getSignalSingleton() {
 }
 
 void Reception::referencingReleased(ID id) {
+    BehavioralFeature::referencingReleased(id);
     m_signal.release(id);
 }
 
 void Reception::referenceReindexed(ID oldID, ID newID) {
+    BehavioralFeature::referenceReindexed(oldID, newID);
     m_signal.reindex(oldID, newID);
 }
 
 void Reception::reindexName(ID id, std::string newName) {
+    BehavioralFeature::reindexName(id, newName);
     m_signal.reindexName(id, newName);
 }
 
 void Reception::referenceErased(ID id) {
+    BehavioralFeature::referenceErased(id);
     m_signal.eraseElement(id);
 }
 

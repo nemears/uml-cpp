@@ -38,7 +38,7 @@ namespace UML {
             virtual void save(std::string location) = 0;
             virtual void save() = 0;
         protected:
-            Element* get(Element* me, ID theID);
+            virtual Element* get(Element* me, ID theID);
             virtual void removePtr(AbstractUmlPtr& ptr) = 0;
             virtual void destroyPtr(AbstractUmlPtr& ptr) = 0;
             virtual void assignPtr(AbstractUmlPtr& ptr) = 0;

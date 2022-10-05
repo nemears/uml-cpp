@@ -82,8 +82,8 @@ namespace UML {
                     if (!refNode) {
                         continue;
                     }
-                    refNode->removeReference(*node->m_managerElementMemory);
                     refNode->referenceErased(id);
+                    // refNode->removeReference(*node->m_managerElementMemory);
                     if (refNode->m_references.count(id)) {
                         refNode->m_references.erase(id);
                     }

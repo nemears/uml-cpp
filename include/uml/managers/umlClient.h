@@ -23,6 +23,8 @@ namespace UML {
             WSADATA m_wsaData;
             #endif
             void init();
+        protected:
+            Element* get(Element* me, ID theID) override;
         public:
             const ID id;
             UmlClient();

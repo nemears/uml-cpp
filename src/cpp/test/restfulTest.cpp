@@ -72,7 +72,7 @@ TEST_F(RestfulTest, headTest) {
     root->setName("root");
     child->setName("test");
     root->getPackagedElements().add(*child);
-    client.put(*child);
+    client.release(*child);
     client.setRoot(root.ptr());
     // ASSERT_EQ(*root, client.get(""));
     ASSERT_EQ(client.get(""), root);
@@ -84,10 +84,12 @@ TEST_F(RestfulTest, saveTest) {
     ClassPtr clazz = client.create<Class>();
     newRoot->getPackagedElements().add(*clazz);
     client.setRoot(newRoot.ptr());
-    client.put(*clazz);
+    client.release(*clazz);
     clazz->setName("clzz");
-    client.put(*clazz);
+    client.release(*clazz);
     client.save();
+    // TODO can misbehave and still pass
+    // TODO shutdown server and startup server somehow and check
 }
 
 void raceConditionThread(ID id) {
@@ -95,7 +97,9 @@ void raceConditionThread(ID id) {
     PackagePtr pckg = &client.get(id)->as<Package>();
     PackagePtr child = client.create<Package>();
     pckg->getPackagedElements().add(*child);
-    client.putAll();
+    client.release(*pckg);
+    client.release(*child);
+    // client.putAll();
 }
 
 TEST_F(RestfulTest, raceConditionTest) {
@@ -104,11 +108,43 @@ TEST_F(RestfulTest, raceConditionTest) {
     std::thread rcThread(&raceConditionThread, pckg.id());
     PackagePtr child = client.create<Package>();
     pckg->getPackagedElements().add(*child);
-    client.putAll();
+    // client.putAll();
+    client.release(*pckg);
+    client.release(*child);
     rcThread.join();
     // TODO 
     pckg.release();
     pckg.aquire();
     ASSERT_EQ(pckg->getPackagedElements().size(), 1);
     // ASSERT_EQ(pckg->getPackagedElements().front(), *child);
+}
+
+TEST_F(RestfulTest, badReferenceTest) {
+    UmlClient client;
+    ID clazzID;
+    ID instID;
+
+    // dereference clazz from inst by releasing both, changing clazz's id, and releasing, then aquiring inst
+    {
+        ClassPtr clazz = client.create<Class>();
+        InstanceSpecificationPtr inst = client.create<InstanceSpecification>();
+        inst->getClassifiers().add(*clazz);
+        clazzID = clazz.id();
+        instID = inst.id();
+        clazz.release();
+        inst.release();
+    }
+    {
+        ClassPtr clazz = &client.get(clazzID)->as<Class>();
+        clazz->setID(ID::randomID());
+        clazz.release();
+    }
+    InstanceSpecificationPtr inst;
+    ClassPtr clazz;
+    ASSERT_NO_THROW(inst = &client.get(instID)->as<InstanceSpecification>());
+    ASSERT_NO_THROW(clazz = &client.get(clazzID)->as<Class>());
+    ClassifierPtr instClassifier;
+    ASSERT_NO_THROW(instClassifier = &inst->getClassifiers().front());
+    ASSERT_EQ(clazz.id(), instClassifier.id());
+    ASSERT_EQ(clazz.ptr(), instClassifier.ptr());
 }

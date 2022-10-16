@@ -343,6 +343,7 @@ namespace UML {
             }
 
             void erase(Element& el) override {
+                PersistencePolicy::eraseEl(el);
                 AccessPolicy::eraseNode(el.m_node, this);
             };
 
@@ -356,6 +357,7 @@ namespace UML {
                     AccessPolicy::reindex(oldID, newID);
                 }
                 // TODO persistence policy reindex?
+                PersistencePolicy::reindex(oldID, newID, this);
             }
 
             void removeNode(ID id) override {

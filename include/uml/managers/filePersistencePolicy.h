@@ -81,6 +81,14 @@ namespace UML {
                 m_elementPaths[id] = location;
             }
 
+            void eraseEl(Element& el) {
+                // TODO delete from filesystem
+            }
+
+            void reindex(ID oldID, ID newID, AbstractManager* me) {
+                // TODO
+            }
+
         public:
             void mount(std::filesystem::path mountPath) {
                 m_mountBase = mountPath;

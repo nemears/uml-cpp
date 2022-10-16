@@ -135,7 +135,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         data.m_manager = this;
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
         try {
-            ThreadSafeManagerNode& node = m_graph.at(elID);
+            ThreadSafeManagerNode& node = m_graph.at(elID); // not thread safe !
             std::lock_guard<std::mutex> lck(node.m_mtx);
             std::vector<std::unique_lock<std::mutex>> refLcks = lockReferences(node);
             ElementPtr el = Parsers::parseYAML(putNode["element"], data);
@@ -153,7 +153,11 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     } else if (node["SAVE"] || node["save"]) {
         YAML::Node saveNode = (node["SAVE"] ? node["SAVE"] : node["save"]);
         std::string path = saveNode.as<std::string>();
-        save(path);
+        try {
+            save(path);
+        } catch (std::exception& e) {
+            log("ERROR saving element, error: " + std::string(e.what()));
+        }
         log("saved element to " + path);
     } else {
         log("ERROR receiving message from client, invalid format!\nMessage:\n" + buff);

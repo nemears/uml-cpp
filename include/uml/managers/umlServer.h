@@ -77,7 +77,6 @@ namespace UML {
             std::list<ID> m_zombies;
             std::mutex m_zombieMtx;
             std::condition_variable m_zombieCv;
-            std::mutex m_graphMtx;
 
             // helper methods
         protected:

@@ -17,7 +17,7 @@ namespace UML {
                 m_graph.clear();
             }
             
-            ManagerNode& assignNode(Element* newElement) {
+            virtual ManagerNode& assignNode(Element* newElement) {
                 ManagerNode& node = m_graph[newElement->getID()];
                 node.m_managerElementMemory = newElement;
                 return node;
@@ -41,7 +41,7 @@ namespace UML {
                 return result != m_graph.end();
             }
 
-            void restoreNode(ManagerNode* restoredNode) {
+            virtual void restoreNode(ManagerNode* restoredNode) {
                 for (auto& pair : restoredNode->m_references) {
                     ManagerNode* node = pair.second.node;
                     if (!node || !node->m_managerElementMemory) {

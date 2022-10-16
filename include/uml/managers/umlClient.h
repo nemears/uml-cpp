@@ -2,62 +2,50 @@
 #define _UML_UML_CLIENT_H_
 
 #include "managerPolicy.h"
-#include "simpleAccessPolicy.h"
+#include "serverAccessPolicy.h"
 #include "serverPersistencePolicy.h"
 
-#ifdef WIN32
-#include "winsock2.h"
-#include <ws2tcpip.h>
-#include <stdio.h>
-#endif
-
 namespace UML {
-    class UmlClient : public Manager<SimpleAccessPolicy, ServerPersistencePolicy> {
-        private:
-            std::string m_address;
-            int m_port;
-            #ifndef WIN32
-            int m_socketD = 0;
-            #else
-            SOCKET m_socketD = INVALID_SOCKET;
-            WSADATA m_wsaData;
-            #endif
-            void init();
-        protected:
-            Element* get(Element* me, ID theID) override;
+    // typedef Manager<SimpleAccessPolicy, ServerPersistencePolicy> UmlClient;
+
+    class UmlClient : public Manager<ServerAccessPolicy, ServerPersistencePolicy> {
         public:
-            const ID id;
-            UmlClient();
-            UmlClient(std::string m_address);
-            virtual ~UmlClient();
-            ElementPtr get(ID id) override;
-            // template <class T = Element> T& get(ID id) {
-            //     return get(id).as<T>();
-            // }
-            ElementPtr get(std::string qualifiedName);
-            // template <class T = Element> T& get(std::string qualifiedName) {
-            //     return get(qualifiedName).as<T>();
-            // }
-            void put(Element& el);
-            void putAll();
-            Element& post(ElementType eType);
-            template<class T = Element> 
-            UmlPtr<T> create() {
-                return UmlPtr<T>(&post(T::elementType()).template as<T>());
+            ElementPtr get(std::string qualifiedName) {
+                return getElFromServer(qualifiedName, this);
             }
-            void erase(Element& el) override;
-            // ElementPtr aquire(ID id) override;
-            void release(Element& el) override;
-            template <class ... Elements> void release(Element& el, Elements&... els) {
-                release(el);
-                release(els...);
+            ElementPtr get(ID id) {
+                return Manager<ServerAccessPolicy, ServerPersistencePolicy>::get(id);
             }
-            // void release(ID id) override;
-            void setRoot(Element* root) override;
-            void shutdownServer(); // maybe we need to pass a key or something
-            void save() override;
-            void save(std::string path) override;
+            void setRoot(Element* root) override {
+                setRootForServer(root);
+                Manager<ServerAccessPolicy, ServerPersistencePolicy>::setRoot(root);
+            }
     };
+
+    // class UmlClient : public Manager<SimpleAccessPolicy, ServerPersistencePolicy> {
+    //     protected:
+    //         Element* get(Element* me, ID theID) override;
+    //     public:
+    //         ElementPtr get(ID id) override;
+    //         ElementPtr get(std::string qualifiedName);
+    //         void put(Element& el);
+    //         void putAll();
+    //         Element& post(ElementType eType);
+    //         template<class T = Element> 
+    //         UmlPtr<T> create() {
+    //             return UmlPtr<T>(&post(T::elementType()).template as<T>());
+    //         }
+    //         void erase(Element& el) override;
+    //         void release(Element& el) override;
+    //         template <class ... Elements> void release(Element& el, Elements&... els) {
+    //             release(el);
+    //             release(els...);
+    //         }
+    //         void setRoot(Element* root) override;
+    //         void shutdownServer(); // maybe we need to pass a key or something
+    //         void save() override;
+    //         void save(std::string path) override;
+    // };
 }
 
 #endif

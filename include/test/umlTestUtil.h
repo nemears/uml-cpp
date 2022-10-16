@@ -113,6 +113,16 @@ namespace UML {
         t.release();
         ASSERT_FALSE(t.loaded());
         ASSERT_EQ(((*u).*acessor)().front(), *t);
+        u.release();
+        t.release();
+        ASSERT_FALSE(u.loaded());
+        ASSERT_FALSE(t.loaded());
+        ASSERT_EQ(((*u).*acessor)().front(), *t);
+        u.release();
+        t.release();
+        ASSERT_FALSE(u.loaded());
+        ASSERT_FALSE(t.loaded());
+        ASSERT_EQ(*t, ((*u).*acessor)().front());
         ASSERT_NO_THROW(((*u).*acessor)().remove(*t));
         ASSERT_NO_THROW(((*u).*acessor)().add(*t2));
         ASSERT_NO_THROW(((*u).*acessor)().add(*t));

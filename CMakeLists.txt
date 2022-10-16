@@ -46,7 +46,7 @@ set(YAML_CPP_BUILD_TESTS OFF)
 # src
 add_subdirectory(src/cpp/uml)
 if(UML_CLIENT_SERVER)
-    list(APPEND umlSources managers/umlClient.cpp managers/umlServer.cpp)
+    list(APPEND umlSources managers/umlServer.cpp managers/abstractClient.cpp)
 else() 
     add_definitions( -DNO_UML_CLIENT_SERVER)
 endif()

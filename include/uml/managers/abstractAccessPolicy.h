@@ -39,29 +39,6 @@ namespace UML {
                 }
             }
 
-            void reindexReplace(ID oldID, ID newID, ManagerNode* newNode, ManagerNode& oldNode) {
-                for (auto& pair : newNode->m_references) {
-                    if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
-                        continue;
-                    }
-
-                    // Not sure why I am doing these two lines below here TODO investigate
-                    pair.second.node->m_managerElementMemory->referencingReleased(newID);
-                    pair.second.node->m_references[newID].node = 0;
-                }
-                for (auto& ptr : newNode->m_ptrs) {
-                    ptr->reindex(newID, newNode->m_managerElementMemory);
-                }
-                for (auto& ptr : oldNode.m_ptrs) {
-                    ptr->reindex(newID, newNode->m_managerElementMemory);
-                    ptr->m_ptrId = 0;
-                    if (newNode->m_ptrs.size() > 0) {
-                        ptr->m_ptrId = newNode->m_ptrs.back()->m_ptrId + 1;
-                    }
-                    newNode->m_ptrs.push_back(ptr);
-                }
-            }
-
             virtual void removeNode(ID id) = 0;
 
             virtual void removePtr(AbstractUmlPtr& ptr) {

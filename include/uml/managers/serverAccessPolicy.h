@@ -20,6 +20,9 @@ namespace UML {
                     // put reference back in map
                     if (loaded(pair.first)) {
                         pair.second.node = getNode(*get(pair.first));
+                        if (!pair.second.node->m_references.count(restoredNode->m_managerElementMemory->getID())) {
+                            pair.second.node->setReference(*restoredNode->m_managerElementMemory);
+                        }
                     }
                 }
                 SimpleAccessPolicy::restoreNode(restoredNode);

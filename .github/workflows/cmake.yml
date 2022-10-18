@@ -25,5 +25,5 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: Test
-      working-directory: ${{github.workspace}}/build
-      run: ${{github.workspace}}/build/./uml-server -d 60000 & ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
+      working-directory: ${{github.workspace}}
+      run: ${{github.workspace}}/runServerAndTest.sh

@@ -252,22 +252,6 @@ ElementPtr AbstractClient::getElFromServer(ID id, AbstractManager* me) {
     data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
     Element& ret = *Parsers::parseString(buff, data);
     free(buff);
-    // for (auto& pair : ret.m_node->m_references) {
-    //     if (!pair.second.node && exists(pair.first)) {
-    //         pair.second.node = &m_graph[pair.first];
-    //     }
-    //     if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
-    //         // element has been released, possibly there are no pointers
-    //         continue;
-    //     }
-    //     if (pair.second.node->m_references.count(id)) {
-    //         pair.second.node->restoreReference(&ret);
-    //     } else {
-    //         pair.second.node->setReference(ret);
-    //     }
-    //     ret.m_node->restoreReference(pair.second.node->m_managerElementMemory);
-    // }
-    // SimpleAccessPolicy::restoreNode(ret.m_node);
     #ifdef UML_DEBUG
     std::cout << time_in_HH_MM_SS_MMM() << ": client got el of id " << id.string() << std::endl;
     #endif

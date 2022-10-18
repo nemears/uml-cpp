@@ -56,11 +56,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     if (node["DELETE"] || node["delete"]) {
         ID elID = ID::fromString((node["DELETE"] ? node["DELETE"] : node["delete"]).as<std::string>());
         try {
-            ThreadSafeManagerNode* node = &m_graph.at(elID);
-            if (!node->m_managerElementMemory) {
-                get(elID);
-                node = &m_graph.at(elID);
-            }
+            ThreadSafeManagerNode* node = static_cast<ThreadSafeManagerNode*>(getNode(*get(elID)));
             std::lock_guard<std::mutex> lck(node->m_mtx);
             std::vector<std::unique_lock<std::mutex>> referenceLocks = lockReferences(*node);
             Element& elToErase = *node->m_managerElementMemory;
@@ -84,7 +80,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             elID = ID::fromString(getNode.as<std::string>());
         } else {
             try {
-                elID = m_urls.at(getNode.as<std::string>());
+                elID = m_urls.at(getNode.as<std::string>()); // not thread safe!
             } catch (std::exception& e) {
                 log(e.what());
                 std::string msg = std::string("{ERROR: ") + std::string(e.what()) + std::string("}");
@@ -135,7 +131,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         data.m_manager = this;
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
         try {
-            ThreadSafeManagerNode& node = m_graph.at(elID); // not thread safe !
+            ThreadSafeManagerNode& node = *static_cast<ThreadSafeManagerNode*>(getNode(*get(elID)));
             std::lock_guard<std::mutex> lck(node.m_mtx);
             std::vector<std::unique_lock<std::mutex>> refLcks = lockReferences(node);
             ElementPtr el = Parsers::parseYAML(putNode["element"], data);
@@ -385,7 +381,7 @@ void UmlServer::garbageCollector(UmlServer* me) {
         me->m_garbageCv.wait(garbageLck, [me] { return me->m_releaseQueue.size() != me->m_numEls; });
         if (me->m_numEls == me->m_maxEls) {
             ID releasedID = me->m_releaseQueue.back();
-            ThreadSafeManagerNode& node = me->m_graph.at(releasedID);
+            ThreadSafeManagerNode& node = *static_cast<ThreadSafeManagerNode*>(me->getNode(*me->get(releasedID)));
             std::lock_guard<std::mutex> nodeLock(node.m_mtx);
             std::vector<std::unique_lock<std::mutex>> refLocks = me->lockReferences(node);
             Element& elToErase = *me->get(releasedID);

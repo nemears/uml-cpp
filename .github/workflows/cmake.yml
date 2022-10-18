@@ -26,4 +26,4 @@ jobs:
 
     - name: Test
       working-directory: ${{github.workspace}}
-      run: ${{github.workspace}}/runServerAndTest.sh
+      run: ${{github.workspace}}/runServerAndTests.sh

@@ -4,6 +4,7 @@
 #include "uml/element.h"
 #include "uml/managers/abstractManager.h"
 #include "uml/umlPtr.h"
+#include "uml/set.h"
 
 namespace UML {
     class AbstractAccessPolicy {
@@ -66,6 +67,10 @@ namespace UML {
 
             ManagerNode* getNode(AbstractUmlPtr& ptr) {
                 return ptr.m_node;
+            }
+
+            Element& getEl(AbstractSet& set) {
+                return set.getEl();
             }
     };
 }

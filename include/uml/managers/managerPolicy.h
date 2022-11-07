@@ -54,6 +54,16 @@ namespace UML {
             void restorePtr(AbstractUmlPtr& ptr) override {
                 AccessPolicy::restorePtr(ptr);
             }
+
+            void addToSet(Element& el, AbstractSet& set) override {
+                auto access = AccessPolicy::accessSet(set, el);
+                set.innerAdd(el);
+            }
+
+            void removeFromSet(ID id, AbstractSet& set) override {
+                auto access = AccessPolicy::accessSet(set, id);
+                set.managerRemove(id);
+            }
         public:
             virtual ~Manager() {
                 AccessPolicy::clear();

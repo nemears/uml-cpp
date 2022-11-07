@@ -6,6 +6,7 @@
 namespace UML {
 
     class AbstractUmlPtr;
+    class AbstractSet;
 
     class AbstractManager {
 
@@ -43,6 +44,8 @@ namespace UML {
             virtual void destroyPtr(AbstractUmlPtr& ptr) = 0;
             virtual void assignPtr(AbstractUmlPtr& ptr) = 0;
             virtual void restorePtr(AbstractUmlPtr& ptr) = 0;
+            virtual void addToSet(Element& el, AbstractSet& set) = 0;
+            virtual void removeFromSet(ID id, AbstractSet& set) = 0;
     };
 
     class ManagerStateException : public std::exception {

@@ -146,6 +146,15 @@ namespace UML {
             void removeNode(ID id) override {
                 m_graph.erase(id);
             }
+
+            // TODO do some checks of the graph in this maybe?
+            int accessSet(AbstractSet& set, Element& el) {
+                return 0;
+            }
+
+            int accessSet(AbstractSet& set, ID id) {
+                return 0;
+            }
     };
 }
 

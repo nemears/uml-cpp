@@ -98,8 +98,10 @@ namespace UML {
         template <class T, class U> friend class OrderedSet;
         template <class T> friend struct SetIterator;
         template <class T> friend struct ID_Set;
+        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend void recursiveSetContains(ID id, AbstractSet* set);
         friend class Element;
+        friend class AbstractAccessPolicy;
         protected:
             size_t m_size = 0;
             int m_upper = 0; // this effectively lets us determine the type of the set (1 = singleton, 0 = set, -1 = orderedSet)
@@ -274,6 +276,9 @@ namespace UML {
             void setName(SetNode* node);
             void instantiateSetNode(SetNode* node);
             virtual void deleteNode(SetNode* node) = 0;
+            virtual void innerAdd(Element& el) = 0;
+            virtual void managerRemove(ID id) = 0;
+            virtual Element& getEl() const = 0;
         public:
             /**
              * returns a bool on whether the id supplied is in the set
@@ -403,6 +408,10 @@ namespace UML {
                     subsetOf->m_size++;
                 }
             };
+
+            Element& getEl() const override {
+                return *m_el;
+            }
             /**
              * Adds a node into the tree for this set
              * @param node the new node being added to the tree
@@ -575,19 +584,20 @@ namespace UML {
                 }
             };
             /**
-             * adds an element to the set without invoking it's opposite, functors or singleton behavior
-             * @param el the element being added to the set
-             **/
-            void innerAdd(T& el) {
-                SetNode* node = createNode(el);
-                setName(node);
-                add(node);
-                if (m_el) {
-                    // if (m_el->m_manager) {
-                        m_el->setReference(&el);
-                    // }
+             * adds el to set, should be invoked by the manager after adding an element
+            */
+            void innerAdd(Element& el) override {
+                if (m_readOnly) {
+                    throw ReadOnlySetException(el.getID().string());
                 }
-            };
+                nonOppositeAdd(el.template as<T>());
+                if (m_oppositeFunctor) {
+                    (*m_oppositeFunctor)(el);
+                }
+                for (auto& op : m_otherOpposites) {
+                    (*op)(el);
+                }
+            }
             /**
              * Adds an element to the set without invoking its opposite functor
              * @param el the element being added to the set
@@ -609,7 +619,14 @@ namespace UML {
                         }
                     }
                 }
-                innerAdd(el);
+                SetNode* node = createNode(el);
+                setName(node);
+                add(node);
+                if (m_el) {
+                    // if (m_el->m_manager) {
+                        m_el->setReference(&el);
+                    // }
+                }
                 for (auto& func : m_addFunctors) {
                     (*func)(el);
                 }
@@ -666,7 +683,29 @@ namespace UML {
                     delete node->m_parent;
                     node->m_parent = 0;
                 }
-            };
+            }
+
+            void managerRemove(ID id) override {
+                if (m_readOnly) {
+                    throw ReadOnlySetException(id.string());
+                }
+                if (m_root) {
+                    innerRemove(id);
+                    if (m_oppositeFunctor) {
+                        T& el = m_el->m_manager->get(m_el, id)->template as<T>();
+                        (*m_oppositeFunctor)(el, 1);
+                    }
+                    for (auto& op : m_otherOpposites) {
+                        T& el = m_el->m_manager->get(m_el, id)->template as<T>();
+                        (*op)(el, 1);
+                    }
+                    if (m_el) {
+                        m_el->removeReference(id);
+                    }
+                } else {
+                    throw ID_doesNotExistException(id);
+                }
+            }
 
             SetNode* innerInnerRemove(ID id) {
                 SetNode* temp = search(id, m_root);
@@ -1744,15 +1783,10 @@ namespace UML {
              * @param el the element being added to the set
              **/
             void add(T& el) {
-                if (m_readOnly) {
-                    throw ReadOnlySetException(el.getID().string());
-                }
-                nonOppositeAdd(el);
-                if (m_oppositeFunctor) {
-                    (*m_oppositeFunctor)(el);
-                }
-                for (auto& op : m_otherOpposites) {
-                    (*op)(el);
+                if (m_el) {
+                    m_el->m_manager->addToSet(el, *this);
+                } else {
+                    innerAdd(el);
                 }
             };
              /**

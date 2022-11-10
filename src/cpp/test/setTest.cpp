@@ -13,6 +13,8 @@
 
 #include "uml/uml-stable.h"
 
+#include "uml/set/set.h"
+
 using namespace UML;
 
 class SetTest : public ::testing::Test {
@@ -1703,4 +1705,28 @@ TEST_F(SetTest, removeFromSubsetOfOrderedSet) {
 
     delete subSet;
     delete rootSet;
+}
+
+class TestElement2 : public Element {
+
+    template<typename AccessPolicy, typename PersistencePolciy> friend class Manager;
+
+    private:
+        Set2<TestElement2, TestElement2> m_others = Set2<TestElement2, TestElement2>(*this);
+    public:
+        TestElement2() : Element(ElementType::ELEMENT) {
+            m_others.opposite(&TestElement2::getOthers);
+        };
+        virtual ~TestElement2() {
+            mountAndRelease();
+        };
+        Set2<TestElement2, TestElement2>& getOthers() { return m_others; };
+};
+
+TEST_F(SetTest, set2Test) {
+    BasicManager m;
+    UmlPtr<TestElement2> el = m.create<TestElement2>();
+    UmlPtr<TestElement2> otherEl = m.create<TestElement2>();
+    el->getOthers().add(otherEl);
+    ASSERT_EQ(el->getOthers().get(otherEl.id()), otherEl);
 }

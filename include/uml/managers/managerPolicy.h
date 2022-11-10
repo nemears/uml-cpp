@@ -64,6 +64,10 @@ namespace UML {
                 auto access = AccessPolicy::accessSet(set, id);
                 set.managerRemove(id);
             }
+
+            SetLock lockEl(Element& el) override {
+                return AccessPolicy::lockEl(el);
+            }
         public:
             virtual ~Manager() {
                 AccessPolicy::clear();

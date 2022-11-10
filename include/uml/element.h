@@ -240,6 +240,7 @@ namespace UML {
         friend class Usage;
         template <class T, class U> friend class Singleton;
         template <class T, class U> friend class Set;
+        template <class T, class U> friend class Set2;
         template <class V, class W> friend class OppositeFunctor;
         template <class T> friend struct SetIterator;
         template <class T, class U> friend class OrderedSet;

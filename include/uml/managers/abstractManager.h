@@ -2,6 +2,7 @@
 #define _UML_MANAGERS_ABSTRACT_MANAGER_H_
 
 #include "uml/element.h"
+#include "uml/set/setLock.h"
 
 namespace UML {
 
@@ -11,6 +12,7 @@ namespace UML {
     class AbstractManager {
 
         template <class T, class U> friend class Set;
+        template <class T, class U> friend class Set2;
         template <class T> friend struct SetIterator;
         template <class T, class U> friend struct OrderedSetIterator;
         template <class T, class U> friend class OrderedSet;
@@ -46,6 +48,7 @@ namespace UML {
             virtual void restorePtr(AbstractUmlPtr& ptr) = 0;
             virtual void addToSet(Element& el, AbstractSet& set) = 0;
             virtual void removeFromSet(ID id, AbstractSet& set) = 0;
+            virtual SetLock lockEl(Element& el) = 0;
     };
 
     class ManagerStateException : public std::exception {

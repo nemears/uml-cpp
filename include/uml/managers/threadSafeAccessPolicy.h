@@ -17,6 +17,15 @@ namespace UML {
         std::mutex m_ptrsMtx;
     };
 
+    struct ThreadSafeSetLock : public SetLock {
+
+        std::unique_lock<std::mutex> m_lck;
+
+        ThreadSafeSetLock(ThreadSafeManagerNode& node) : m_lck(node.m_mtx) {
+            
+        }
+    };
+
     class ThreadSafeAccessPolicy : public AbstractAccessPolicy {
         protected:
             std::unordered_map<ID, ThreadSafeManagerNode> m_graph;
@@ -232,6 +241,10 @@ namespace UML {
 
             std::vector<std::unique_lock<std::mutex>> accessSet(AbstractSet& set, ID id) {
                 
+            }
+        public:
+            SetLock lockEl(Element& el) {
+                return ThreadSafeSetLock(*static_cast<ThreadSafeManagerNode*>(getNode(el)));
             }
     };
 

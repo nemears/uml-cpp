@@ -155,6 +155,10 @@ namespace UML {
             int accessSet(AbstractSet& set, ID id) {
                 return 0;
             }
+
+            SetLock lockEl(Element& el) {
+                return SetLock();
+            }
     };
 }
 

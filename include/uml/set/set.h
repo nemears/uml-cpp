@@ -18,16 +18,40 @@ namespace UML {
 
     };
 
-    template <class T = Element, class U = Element>//, typename DataTypePolicy>
-    class Set2 : public AbstractSet2 {
-        private:
+    template <class T, class U>
+    class TypedSet : public AbstractSet2 {
+
+        template <class V, class W, class OtherCreationPolicy> friend class Set2;
+
+        protected:
+            virtual void innerAdd(T& el) = 0;
+    };
+
+    template <class T>
+    class SetCreationPolicy {
+        protected:
+            SetNode* create(T& el) {
+                SetNode* ret = new SetNode();
+                ret->m_ptr = &el;
+                return ret;
+            }
+    };
+
+    template <
+                class T, 
+                class U, 
+                class CreationPolicy = SetCreationPolicy<T>
+            >
+    class Set2 : public TypedSet<T, U> , public CreationPolicy {
+
+        protected:
             SetNode* m_root = 0;
             U& m_el;
             std::vector<AbstractSet2*> m_superSets;
             std::vector<AbstractSet2*> m_subSets;
             std::vector<AbstractSet2*> m_redefines;
             bool m_readOnly = false;
-            Set2<U,T>& (T::*m_oppositeSignature)() = 0;
+            TypedSet<U,T>& (T::*m_oppositeSignature)() = 0;
             unsigned int m_guard = 0;
 
             /**
@@ -122,10 +146,9 @@ namespace UML {
                 }
             };
 
-            void innerAdd(T& el) {
+            void innerAdd(T& el) override {
                 // add
-                SetNode* node = new SetNode;
-                node->m_ptr = &el;
+                SetNode* node = CreationPolicy::create(el);
                 if (!m_root) {
                     m_root = node;
                 } else {
@@ -139,7 +162,7 @@ namespace UML {
             virtual ~Set2() {
                 // TODO
             }
-            void opposite(Set2<U,T>& (T::*oppositeSignature)()) {
+            void opposite(TypedSet<U,T>& (T::*oppositeSignature)()) {
                 m_oppositeSignature = oppositeSignature;
             }
             void add(UmlPtr<T> el) {
@@ -172,11 +195,10 @@ namespace UML {
                 if (result) {
                     return result->m_ptr;
                 }
+                // TODO throw error
             }
 
     };
-
-
 }
 
 #endif

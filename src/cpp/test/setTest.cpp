@@ -14,6 +14,7 @@
 #include "uml/uml-stable.h"
 
 #include "uml/set/set.h"
+#include "uml/set/orderedSet.h"
 
 using namespace UML;
 
@@ -1713,9 +1714,13 @@ class TestElement2 : public Element {
 
     private:
         Set2<TestElement2, TestElement2> m_others = Set2<TestElement2, TestElement2>(*this);
+    protected:
+        TypedSet<TestElement2, TestElement2>& getOthersSet() {
+            return m_others;
+        }
     public:
         TestElement2() : Element(ElementType::ELEMENT) {
-            m_others.opposite(&TestElement2::getOthers);
+            m_others.opposite(&TestElement2::getOthersSet);
         };
         virtual ~TestElement2() {
             mountAndRelease();
@@ -1729,4 +1734,35 @@ TEST_F(SetTest, set2Test) {
     UmlPtr<TestElement2> otherEl = m.create<TestElement2>();
     el->getOthers().add(otherEl);
     ASSERT_EQ(el->getOthers().get(otherEl.id()), otherEl);
+}
+
+class TestElementWOrderedSet : public Element {
+    template<typename AccessPolicy, typename PersistencePolciy> friend class Manager;
+
+    private:
+        OrderedSet2<TestElementWOrderedSet, TestElementWOrderedSet> m_others = OrderedSet2<TestElementWOrderedSet, TestElementWOrderedSet>(*this);
+    protected:
+        TypedSet<TestElementWOrderedSet, TestElementWOrderedSet>& getOthersSet() {
+            return m_others;
+        }
+    public:
+        TestElementWOrderedSet() : Element(ElementType::ELEMENT) {
+            m_others.opposite(&TestElementWOrderedSet::getOthersSet);
+        };
+        virtual ~TestElementWOrderedSet() {
+            mountAndRelease();
+        };
+        OrderedSet2<TestElementWOrderedSet, TestElementWOrderedSet>& getOthers() { return m_others; };
+};
+
+TEST_F(SetTest, orderedSet2Test) {
+    BasicManager m;
+    UmlPtr<TestElementWOrderedSet> el = m.create<TestElementWOrderedSet>();
+    UmlPtr<TestElementWOrderedSet> otherEl = m.create<TestElementWOrderedSet>();
+    UmlPtr<TestElementWOrderedSet> otherEl2 = m.create<TestElementWOrderedSet>();
+    el->getOthers().add(otherEl);
+    ASSERT_EQ(el->getOthers().get(otherEl.id()), otherEl);
+    el->getOthers().add(otherEl2);
+    ASSERT_EQ(el->getOthers().front(), otherEl);
+    ASSERT_EQ(el->getOthers().back(), otherEl2);
 }

@@ -1766,3 +1766,48 @@ TEST_F(SetTest, orderedSet2Test) {
     ASSERT_EQ(el->getOthers().front(), otherEl);
     ASSERT_EQ(el->getOthers().back(), otherEl2);
 }
+
+class SubsetTestElement : public Element {
+    template<typename AccessPolicy, typename PersistencePolciy> friend class Manager;
+    
+    private:
+        Set2<SubsetTestElement, SubsetTestElement> rootSet = Set2<SubsetTestElement, SubsetTestElement>(*this);
+        Set2<SubsetTestElement, SubsetTestElement> subSet = Set2<SubsetTestElement, SubsetTestElement>(*this);
+        TypedSet<SubsetTestElement, SubsetTestElement>& getRootSetSet() {
+            return rootSet;
+        }
+        TypedSet<SubsetTestElement, SubsetTestElement>& getSubSetSet() {
+            return subSet;
+        }
+    public:
+        SubsetTestElement() : Element(ElementType::ELEMENT) {
+            subSet.subsets(rootSet);
+            rootSet.opposite(&SubsetTestElement::getRootSetSet);
+            subSet.opposite(&SubsetTestElement::getSubSetSet);
+        }
+        Set2<SubsetTestElement, SubsetTestElement>& getRootSet() {
+            return rootSet;
+        }
+        Set2<SubsetTestElement, SubsetTestElement>& getSubSet() {
+            return subSet;
+        }
+};
+
+TEST_F(SetTest, set2SubsetTest) {
+    BasicManager m;
+    UmlPtr<SubsetTestElement> el1 = m.create<SubsetTestElement>();
+    UmlPtr<SubsetTestElement> el2 = m.create<SubsetTestElement>();
+    UmlPtr<SubsetTestElement> el3 = m.create<SubsetTestElement>();
+    el1->getRootSet().add(el2);
+    ASSERT_EQ(el1->getRootSet().get(el2.id()), el2);
+    ASSERT_EQ(el1->getRootSet().size(), 1);
+    ASSERT_EQ(el1->getSubSet().size(), 0);
+    el1->getSubSet().add(el3);
+    ASSERT_EQ(el1->getRootSet().get(el2.id()), el2);
+    ASSERT_EQ(el1->getRootSet().get(el3.id()), el3);
+    ASSERT_EQ(el1->getRootSet().size(), 2);
+    ASSERT_TRUE(el1->getSubSet().contains(el3));
+    ASSERT_FALSE(el1->getSubSet().contains(el2));
+    ASSERT_EQ(el1->getSubSet().size(), 1);
+
+}

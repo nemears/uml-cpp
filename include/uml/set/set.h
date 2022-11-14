@@ -6,12 +6,24 @@
 
 namespace UML {
 
+    class SetStateException : public std::exception {
+        std::string m_msg;
+        public:
+            SetStateException(){};
+            SetStateException(std::string msg) : m_msg("Error in Uml Set: " + msg) {};
+            const char* what() const throw() override {
+                return m_msg.c_str();
+            };
+    };
+
+    class AbstractSet2;
+
     struct SetNode {
         ElementPtr m_ptr;
         SetNode* m_parent = 0;
         SetNode* m_left = 0;
         SetNode* m_right = 0;
-        unsigned int m_guard = 0;
+        AbstractSet2* set = 0;
     };
 
     template <class T, class U> class TypedSet;
@@ -23,37 +35,12 @@ namespace UML {
         protected:
             SetNode* m_root = 0;
 
-            unsigned int m_guard = 0;
             std::vector<AbstractSet2*> m_superSets;
             std::vector<AbstractSet2*> m_subSets;
             std::vector<AbstractSet2*> m_redefines;
 
             size_t m_size = 0;
 
-            /**
-             * Gets all sets that are a superset of this one in dfs order and stored in a pointer to a vector, 
-             * responsibility of vector destruction is required
-             * TODO: fix subsets method to make sure it will be 'proper' bfs order for algorithms
-             * @return the pointer to a vector of all supersets of this set
-             **/
-            std::vector<AbstractSet2*>* getAllSuperSets() {
-                std::list<AbstractSet2*> stack;
-                std::vector<AbstractSet2*>* allSuperSets = new std::vector<AbstractSet2*>;
-                for (auto& subsetOf : this->m_superSets) {
-                    stack.push_back(subsetOf);
-                }
-                while (!stack.empty()) {
-                    AbstractSet2* front = stack.front();
-                    stack.pop_front();
-                    if (std::find(allSuperSets->begin(), allSuperSets->end(), front) == allSuperSets->end()) {
-                        allSuperSets->push_back(front);
-                        for (auto& subsetOf : front->m_superSets) {
-                            stack.push_front(subsetOf);
-                        }
-                    }
-                }
-                return allSuperSets;
-            };
         public:
             /**
              * this set subsets the set supplied, meaning all elements within this set will be contained within the set supplied
@@ -64,29 +51,10 @@ namespace UML {
             void subsets(TypedSet<V, W>& subsetOf) {
                 if (std::find(m_superSets.begin(), m_superSets.end(), &subsetOf) == m_superSets.end()) {
                     m_superSets.push_back(&subsetOf);
-                    std::vector<AbstractSet2*>* allSuperSets = getAllSuperSets();
-                    for (auto& subsetOfSubsetOf : *allSuperSets) {
-                        if (m_guard < subsetOfSubsetOf->m_guard + 1) {
-                            m_guard = subsetOfSubsetOf->m_guard + 1;
-                        }
-                    }
-                    size_t max_guard = m_guard;
-                    for (auto& subset : m_subSets) {
-                        if (subset->m_guard <= max_guard) {
-                            subset->m_guard = max_guard + 1;
-                        }
-                        max_guard++;
-                    }
-                    // for (auto& subsetOfSubsetOf : *allSuperSets) {
-                    //     if (max_guard >= subsetOfSubsetOf->m_nextSubsetGuard) {
-                    //         subsetOfSubsetOf->m_nextSubsetGuard = max_guard + 1;
-                    //     }
-                    // }
-                    delete allSuperSets;
                     subsetOf.m_subSets.push_back(this);
-                    for (auto& redefinedSet : subsetOf.m_redefines) {
-                        redefinedSet->m_guard = subsetOf.m_guard;
-                    }
+                    // for (auto& redefinedSet : subsetOf.m_redefines) {
+                    //     redefinedSet->m_guard = subsetOf.m_guard;
+                    // }
                     // for (const auto& set : subsetOf.m_addFunctors) {
                     //     if (!m_addFunctors.count(set)) {
                     //         m_addFunctors.insert(set);
@@ -145,54 +113,6 @@ namespace UML {
             TypedSet<U,T>& (T::*m_oppositeSignature)() = 0;
 
             /**
-             * Places the node within the tree taking in account the id and the guard of the node
-             * @param node the new node being placed within the tree
-             * @param parent the node that you want to place the new node below
-             **/
-            void place(SetNode* node, SetNode* parent) {
-                if (node->m_ptr && node->m_ptr.id() == parent->m_ptr.id()) {
-                    delete node;
-                    throw DuplicateElementInSetException();
-                }
-                if (parent->m_left) {
-                    // prefer placement to left
-                    if (parent->m_right) {
-                        // both children are populated, determine where to placenewID
-                        if (node->m_ptr.id() > parent->m_right->m_ptr.id() && parent->m_left->m_guard <= this->m_guard) {
-                            // place to left if greater than right
-                            place(node, parent->m_left);
-                        } else if (parent->m_right->m_guard <= this->m_guard) {
-                            // place to right if less than right
-                            place(node, parent->m_right);
-                        } else {
-                            if (node->m_ptr.id() > parent->m_right->m_ptr.id()) {
-                                SetNode* temp = parent->m_left;
-                                parent->m_left = node;
-                                place(parent->m_right, temp);
-                                parent->m_right = temp;
-                                node->m_parent = parent;
-                            } else {
-                                // TODO double check logic
-                                place(node, parent->m_left);
-                            }
-                        }
-                    } else {
-                        if (node->m_ptr.id() > parent->m_left->m_ptr.id()) {
-                            // if node greater than left, swap left to right
-                            parent->m_right = parent->m_left;
-                            parent->m_left = node;
-                        } else {
-                            parent->m_right = node;
-                        }
-                        node->m_parent = parent;
-                    }
-                } else {
-                    parent->m_left = node;
-                    node->m_parent = parent;
-                }
-            };
-
-    /**
              * Searches the tree for the node with given id from the node supplied
              * @param id the ID of the node you are looking for
              * @param node the node you are basing your search off of
@@ -239,6 +159,7 @@ namespace UML {
             void innerAdd(T& el) override {
                 // add
                 SetNode* node = CreationPolicy::create(el);
+                node->set = this;
                 innerAddDFS(node, this);
             }
 
@@ -248,23 +169,178 @@ namespace UML {
              * @param set: the current set we are checking
             */
             void innerAddDFS(SetNode* node, AbstractSet2* set) {
-                if (!set->m_root) {
-                    set->m_root = node;
-                    set->m_size++;
-                    for (AbstractSet2* superSet : set->m_superSets) {
-                        innerAddDFS(node, superSet);
-                    }
-                    return;
+                // place in supersets
+                for (AbstractSet2* superSet : set->m_superSets) {
+                    innerAddDFS(node, superSet);
                 }
                 
                 if (set->m_superSets.size() == 0) {
                     // root set, place the node in the tree
-                    
+                    // gather our sets supersets to place the node correctly
+                    std::unordered_set<AbstractSet2*> allSuperSets;
+                    {
+                        allSuperSets.insert(this);
+                        std::list<AbstractSet2*> queue;
+                        for (auto superSet : this->m_superSets) {
+                            queue.push_back(superSet);
+                        }
+                        while (!queue.empty()) {
+                            AbstractSet2* front = queue.front();
+                            queue.pop_front();
+                            allSuperSets.insert(front);
+                            for (auto superSet : front->m_superSets) {
+                                queue.push_back(superSet);
+                            }
+                        }
+                    }
+                    std::unordered_set<AbstractSet2*> allSubSets;
+                    {
+                        // allSubSets.insert(this);
+                        std::list<AbstractSet2*> queue;
+                        for (auto subSet : this->m_subSets) {
+                            queue.push_back(subSet);
+                        }
+                        while (!queue.empty()) {
+                            AbstractSet2* front = queue.front();
+                            queue.pop_front();
+                            allSubSets.insert(front);
+                            for (auto subSet : front->m_subSets) {
+                                queue.push_back(subSet);
+                            }
+                        }
+                    }
+                    SetNode* currNode = set->m_root;
+                    // handle divider nodes
+                    while (currNode && ((!allSuperSets.count(currNode->set) && !allSubSets.count(currNode->set)) || (!currNode->m_ptr && currNode->m_right))) {
+                        bool createDividerNode = true;
+                        if (!currNode->m_ptr) {
+                            /**
+                             * This is a divider node : m_ptr is null
+                             * 
+                             * Divider nodes represent a way to keep all subsets of
+                             * a superset as part of the superset yet also keeping the
+                             * necessary subsets seperate
+                            */
+
+                            createDividerNode = !allSuperSets.count(currNode->set);
+
+                            if (!createDividerNode) {
+                                if (allSubSets.count(currNode->m_left->set) || currNode->m_left->set == this) {
+                                    currNode = currNode->m_left;
+                                } else if (allSubSets.count(currNode->m_right->set) || currNode->m_right->set == this) {
+                                    currNode = currNode->m_right;
+                                } else {
+                                    throw SetStateException("INTERNAL ERROR please report! Could not navigate through divider node");
+                                }
+                            }
+                        }
+                        if (createDividerNode) {
+                            SetNode* dividerNode = new SetNode();
+                            // find most similar set between node and currNode
+                            AbstractSet2* dividerNodeScope = 0;
+                            {
+                                std::list<AbstractSet2*> queue;
+                                for (auto superSet: currNode->set->m_superSets) {
+                                    queue.push_back(superSet);
+                                }
+                                while (!queue.empty()) {
+                                    AbstractSet2* superSet = queue.front();
+                                    queue.pop_front();
+                                    if (allSuperSets.count(superSet)) {
+                                        dividerNodeScope = superSet;
+                                    }
+                                    for (auto superSuperSet : superSet->m_superSets) {
+                                        queue.push_back(superSuperSet);
+                                    }
+                                }
+                                if (!dividerNodeScope) {
+                                    throw SetStateException("INTERNAL ERROR please report! Could not find shared set for divider node");
+                                }
+                            }
+                            dividerNode->set = dividerNodeScope;
+                            currNode->m_parent = dividerNode;
+                            dividerNode->m_left = currNode;
+
+                            // readjust roots if needed
+                            {
+                                std::list<AbstractSet2*> queue;
+                                queue.push_back(set);
+                                while (!queue.empty()) {
+                                    AbstractSet2* front = queue.front();
+                                    queue.pop_front();
+                                    std::list<AbstractSet2*> frontQueue;
+                                    if (front->m_root == currNode && allSuperSets.count(front)) {
+                                        front->m_root = dividerNode;
+                                    }
+                                    for (auto subSet : front->m_subSets) {
+                                        queue.push_back(subSet);
+                                    }
+                                }
+                            }
+
+                            currNode = dividerNode; 
+                        }
+                    }
+                    while (currNode) {
+
+                        if (currNode->m_ptr.id() == node->m_ptr.id() && currNode->set != this) {
+                            // node is allready in supersets, adjust node to be in lower sets
+                            // TODO
+                        }
+
+                        if (allSubSets.count(currNode->set)) {
+                            // this is a subsets node, we must place it below ours
+                            node->m_parent = currNode->m_parent;
+                            node->m_left = currNode;
+                            currNode->m_parent = node;
+                            if (node->m_parent->m_left == currNode) {
+                                node->m_parent->m_left = node;
+                            } else if (node->m_parent->m_right == currNode) {
+                                node->m_parent->m_right = node;
+                            }
+
+                            // adjust roots
+                            for (auto superSet : allSuperSets) {
+                                if (superSet->m_root == currNode) {
+                                    superSet->m_root = node;
+                                }
+                            }
+                            break;
+                        }
+                        
+                        // no children, place to left
+                        if (!currNode->m_left) {
+                            currNode->m_left = node;
+                            node->m_parent = currNode;
+                            break;
+                        }
+
+                        // one child determine where to place
+                        if (!currNode->m_right) {
+                            if (node->m_ptr.id() > currNode->m_left->m_ptr.id()) {
+                                currNode->m_right = currNode->m_left;
+                                currNode->m_left = node;
+                            } else {
+                                currNode->m_right = node;
+                            }
+                            node->m_parent = currNode;
+                            break;
+                        }
+
+                        // two children, pick side to recurse
+                        if (node->m_ptr.id() > currNode->m_left->m_ptr.id()) {
+                            currNode = currNode->m_left;
+                        } else {
+                            currNode = currNode->m_right;
+                        }
+                    }
+                    for (auto superSet : allSuperSets) {
+                        superSet->m_size++;
+                    }
                 }
 
-                // place in supersets
-                for (AbstractSet2* superSet : set->m_superSets) {
-                    innerAddDFS(node, superSet);
+                if (!set->m_root) {
+                    set->m_root = node;
                 }
             }
         public:
@@ -275,7 +351,75 @@ namespace UML {
 
             }
             virtual ~Set2() {
-                // TODO
+                SetLock myLock = m_el.m_manager->lockEl(m_el); 
+
+                // TODO lock all of the elements in the set lock?
+
+                std::unordered_set<AbstractSet2*> allSuperSets;
+                {
+                    std::list<AbstractSet2*> queue;
+                    for (auto superSet : this->m_superSets) {
+                        queue.push_back(superSet);
+                    }
+                    while (!queue.empty()) {
+                        AbstractSet2* front = queue.front();
+                        queue.pop_front();
+                        allSuperSets.insert(front);
+                        for (auto superSet : front->m_superSets) {
+                            queue.push_back(superSet);
+                        }
+                    }
+                }
+
+                // start from bottom left
+                SetNode* currNode = this->m_root;
+                while (currNode && currNode->m_left) {
+                    currNode = currNode->m_left;
+                }
+
+                while (currNode) {
+                    if (currNode->m_right) {
+                        currNode = currNode->m_right;
+                    } else if (currNode->m_left) {
+                        currNode = currNode->m_left;
+                    } else {
+                        // we are probably going to delete this node
+                        SetNode* nodeToDelete = currNode;
+                        if (allSuperSets.count(nodeToDelete->set)) {
+                            // this is owned by a superset which will be deleted after us (probably, not necessarily guaranteed)
+                            break;
+                        }
+                        if (currNode->m_parent) {
+                            if (currNode->m_parent->m_left == currNode) {
+                                currNode->m_parent->m_left = 0;
+                            } else if (currNode->m_parent->m_right == currNode) {
+                                currNode->m_parent->m_right = 0;
+                            } else {
+                                // throw SetStateException("Bad state could not find node in right or left of parent when deleting!");
+                            }
+                        }
+                        
+                        if (this->m_root == currNode) {
+                            for (auto superSet : allSuperSets) {
+                                if (superSet->m_root == currNode) {
+                                    superSet->m_root = 0;
+                                }
+                            }
+                        }
+
+                        currNode = currNode->m_parent;
+                        delete nodeToDelete;
+                        if (currNode && allSuperSets.count(currNode->set)) {
+                            break;
+                        }
+                    }
+                }
+                // for (auto superSet : this->m_superSets) {
+                //     superSet->m_subSets.erase(std::find(superSet->m_subSets.begin(), superSet->m_subSets.end(), this));
+                // }
+                // for (auto subSet : this->m_subSets) {
+                //     subSet->m_superSets.erase(std::find(subSet->m_superSets.begin(), subSet->m_superSets.end(), this));
+                // }
             }
             void opposite(TypedSet<U,T>& (T::*oppositeSignature)()) {
                 m_oppositeSignature = oppositeSignature;
@@ -288,7 +432,7 @@ namespace UML {
                 SetLock elLock = m_el.m_manager->lockEl(el);
                 SetLock myLock = m_el.m_manager->lockEl(m_el);
                 if (m_readOnly) {
-                    // TODO throw error
+                    throw SetStateException("Cannot add to read only set!");
                 }
                 // add
                 innerAdd(el);
@@ -302,25 +446,26 @@ namespace UML {
                 SetLock myLock = m_el.m_manager->lockEl(m_el);
                 
                 // get
-                if (!m_root) {
-                    // TODO throw error
+                if (!this->m_root) {
+                    throw SetStateException("Could not find element " + id.string() + " in set!");
                 }
-                SetNode* result = search(id, m_root);
+                SetNode* result = search(id, this->m_root);
 
                 if (result) {
                     return result->m_ptr;
                 }
-                // TODO throw error
+                
+                throw SetStateException("Could not find element " + id.string() + " in set!");
             }
 
             bool contains(T& el) const {
                 SetLock myLock = m_el.m_manager->lockEl(m_el);
                 
                 // get
-                if (!m_root) {
+                if (!this->m_root) {
                     return false;
                 }
-                SetNode* result = search(el.getID(), m_root);
+                SetNode* result = search(el.getID(), this->m_root);
 
                 return result;
             }

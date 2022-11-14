@@ -1809,5 +1809,61 @@ TEST_F(SetTest, set2SubsetTest) {
     ASSERT_TRUE(el1->getSubSet().contains(el3));
     ASSERT_FALSE(el1->getSubSet().contains(el2));
     ASSERT_EQ(el1->getSubSet().size(), 1);
+}
 
+class TestComplexSubsetElement : public Element {
+    template<typename AccessPolicy, typename PersistencePolciy> friend class Manager;
+    
+    public:
+        Set2<Element, TestComplexSubsetElement> rootSet = Set2<Element, TestComplexSubsetElement>(*this);
+        Set2<NamedElement, TestComplexSubsetElement> rightSet1 = Set2<NamedElement, TestComplexSubsetElement>(*this);
+        Set2<NamedElement, TestComplexSubsetElement> leftSet1 = Set2<NamedElement, TestComplexSubsetElement>(*this);
+        Set2<PackageableElement, TestComplexSubsetElement> rightSet2 = Set2<PackageableElement, TestComplexSubsetElement>(*this);
+        Set2<PackageableElement, TestComplexSubsetElement> leftSet2 = Set2<PackageableElement, TestComplexSubsetElement>(*this);
+        TestComplexSubsetElement() : Element(ElementType::ELEMENT) {
+            rightSet1.subsets(rootSet);
+            leftSet1.subsets(rootSet);
+            rightSet2.subsets(rightSet1);
+            leftSet2.subsets(leftSet1);
+        }
+};
+
+TEST_F(SetTest, complexSubsetTest) {
+    BasicManager m;
+    UmlPtr<TestComplexSubsetElement> testEl = m.create<TestComplexSubsetElement>();
+    UmlPtr<Package> rightP = m.create<Package>();
+    UmlPtr<Package> leftP = m.create<Package>();
+    testEl->rightSet2.add(rightP);
+    testEl->leftSet2.add(leftP);
+    ASSERT_EQ(testEl->rightSet2.size(), 1);
+    ASSERT_EQ(testEl->rightSet1.size(), 1);
+    ASSERT_EQ(testEl->leftSet2.size(), 1);
+    ASSERT_EQ(testEl->leftSet1.size(), 1);
+    ASSERT_EQ(testEl->rootSet.size(), 2);
+    ASSERT_EQ(testEl->rightSet2.get(rightP->getID()), rightP);
+    ASSERT_EQ(testEl->rightSet1.get(rightP->getID()), rightP);
+    ASSERT_EQ(testEl->rootSet.get(rightP->getID()), rightP);
+    ASSERT_EQ(testEl->leftSet1.get(leftP->getID()), leftP);
+    ASSERT_EQ(testEl->leftSet2.get(leftP->getID()), leftP);
+    ASSERT_EQ(testEl->rootSet.get(leftP->getID()), leftP);
+
+    UmlPtr<Package> rightP2 = m.create<Package>();
+    UmlPtr<Package> leftP2 = m.create<Package>();
+    testEl->rightSet1.add(rightP2);
+    testEl->leftSet1.add(leftP2);
+    ASSERT_EQ(testEl->rootSet.size(), 4);
+    ASSERT_EQ(testEl->rightSet1.size(), 2);
+    ASSERT_EQ(testEl->leftSet1.size(), 2);
+    ASSERT_EQ(testEl->rightSet2.size(), 1);
+    ASSERT_EQ(testEl->leftSet2.size(), 1);
+    ASSERT_TRUE(testEl->rootSet.contains(rightP2));
+    ASSERT_TRUE(testEl->rightSet1.contains(rightP2));
+    ASSERT_FALSE(testEl->rightSet2.contains(rightP2));
+    ASSERT_FALSE(testEl->leftSet1.contains(rightP2));
+    ASSERT_FALSE(testEl->leftSet2.contains(rightP2));
+    ASSERT_TRUE(testEl->rootSet.contains(leftP2));
+    ASSERT_TRUE(testEl->leftSet1.contains(leftP2));
+    ASSERT_FALSE(testEl->leftSet2.contains(leftP2));
+    ASSERT_FALSE(testEl->rightSet1.contains(leftP2));
+    ASSERT_FALSE(testEl->rightSet2.contains(leftP2));
 }

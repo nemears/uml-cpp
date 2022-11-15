@@ -2011,3 +2011,49 @@ TEST_F(SetTest, complexSubsetRemoveTest) {
     ASSERT_FALSE(testEl->leftSet2.contains(leftP2));
     ASSERT_FALSE(testEl->leftSet2.contains(leftP));
 }
+
+class RedefinedTestElement : public Element {
+    public:
+        Set2<Package, RedefinedTestElement> rootSet = Set2<Package, RedefinedTestElement>(this);
+        Set2<Package, RedefinedTestElement> redefiningSet = Set2<Package, RedefinedTestElement>(this);
+        RedefinedTestElement() : Element(ElementType::ELEMENT) {
+            redefiningSet.redefines(rootSet);
+        }
+};
+
+TEST_F(SetTest, set2RedefinesTest) {
+    BasicManager m;
+    UmlPtr<RedefinedTestElement> testEl = m.create<RedefinedTestElement>();
+    Package& p = *m.create<Package>();
+    testEl->redefiningSet.add(p);
+    ASSERT_EQ(testEl->rootSet.size(), 1);
+    ASSERT_EQ(testEl->redefiningSet.size(), 1);
+    ASSERT_TRUE(testEl->rootSet.contains(p));
+    ASSERT_TRUE(testEl->redefiningSet.contains(p));
+    testEl->redefiningSet.remove(p);
+    ASSERT_EQ(testEl->rootSet.size(), 0);
+    ASSERT_EQ(testEl->redefiningSet.size(), 0);
+    ASSERT_FALSE(testEl->rootSet.contains(p));
+    ASSERT_FALSE(testEl->redefiningSet.contains(p));
+    Package& p2 = *m.create<Package>();
+    testEl->redefiningSet.add(p);
+    ASSERT_EQ(testEl->rootSet.size(), 1);
+    ASSERT_EQ(testEl->redefiningSet.size(), 1);
+    testEl->rootSet.remove(p);
+    ASSERT_EQ(testEl->rootSet.size(), 0);
+    ASSERT_EQ(testEl->redefiningSet.size(), 0);
+    ASSERT_FALSE(testEl->rootSet.contains(p));
+    ASSERT_FALSE(testEl->redefiningSet.contains(p));
+    testEl->rootSet.add(p);
+    ASSERT_EQ(testEl->rootSet.size(), 1);
+    ASSERT_EQ(testEl->redefiningSet.size(), 1);
+    ASSERT_TRUE(testEl->rootSet.contains(p));
+    ASSERT_TRUE(testEl->redefiningSet.contains(p));
+    testEl->redefiningSet.add(p2);
+    ASSERT_EQ(testEl->rootSet.size(), 2);
+    ASSERT_EQ(testEl->redefiningSet.size(), 2);
+    Package& p3 = *m.create<Package>();
+    testEl->rootSet.add(p3);
+    ASSERT_EQ(testEl->rootSet.size(), 3);
+    ASSERT_EQ(testEl->redefiningSet.size(), 3);
+}

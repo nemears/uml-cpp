@@ -1,5 +1,4 @@
-#ifndef _UML_SET_SET_H_
-#define _UML_SET_SET_H_
+#pragma once
 
 #include "uml/element.h"
 #include "setLock.h"
@@ -39,6 +38,8 @@ namespace UML {
             std::vector<AbstractSet2*> m_subSets;
             std::vector<AbstractSet2*> m_redefines;
 
+            bool m_rootRedefinedSet = true;
+
             size_t m_size = 0;
 
             std::unordered_set<AbstractSet2*> getAllSuperSets() {
@@ -73,6 +74,44 @@ namespace UML {
                     }
                 }
                 return allSubSets;
+            }
+
+        public:
+            /**
+             * this set subsets the set supplied, meaning all elements within this set will be contained within the set supplied
+             * but this set will not necessarily have all of the elements within the set supplied
+             * @param subsetOf the set that we are a subset of
+             **/
+            void subsets(AbstractSet2& subsetOf) {
+                if (std::find(this->m_superSets.begin(), this->m_superSets.end(), &subsetOf) == this->m_superSets.end()) {
+                    this->m_superSets.push_back(&subsetOf);
+                    subsetOf.m_subSets.push_back(this);
+                    // for (auto& redefinedSet : subsetOf.m_redefines) {
+                    //     redefinedSet->m_guard = subsetOf.m_guard;
+                    // }
+                    // for (const auto& set : subsetOf.m_addFunctors) {
+                    //     if (!m_addFunctors.count(set)) {
+                    //         m_addFunctors.insert(set);
+                    //     }
+                    // }
+                    // for (auto& set : subsetOf.m_removeFunctors) {
+                    //     if (!m_removeFunctors.count(set)) {
+                    //         m_removeFunctors.insert(set);
+                    //     }
+                    // }
+                    // if (subsetOf.m_oppositeFunctor && 
+                    //     std::find(m_otherOpposites.begin(), m_otherOpposites.end(), subsetOf.m_oppositeFunctor) == m_otherOpposites.end()) {
+                    //     m_otherOpposites.push_back(subsetOf.m_oppositeFunctor);
+                    // }
+                    // for (auto& op : subsetOf.m_otherOpposites) {
+                    //     if (std::find(m_otherOpposites.begin(), m_otherOpposites.end(), op) == m_otherOpposites.end()) {
+                    //         m_otherOpposites.push_back(op);
+                    //     }
+                    // }
+                    // if (subsetOf.m_upper < 0 && subsetOf.m_upper != m_upper) {
+                    //     m_setToInstantiate = &subsetOf;
+                    // }
+                }
             }
     };
 
@@ -156,7 +195,15 @@ namespace UML {
                 // add
                 SetNode* node = CreationPolicy::create(el);
                 node->set = this;
-                innerAddDFS(node, this);
+                if (!this->m_rootRedefinedSet) {
+                    for (auto redefinedSet : this->m_redefines) {
+                        if (redefinedSet->m_rootRedefinedSet) {
+                            node->set = redefinedSet;
+                            break;
+                        }
+                    }
+                }
+                innerAddDFS(node, node->set);
             }
 
             /**
@@ -169,28 +216,21 @@ namespace UML {
                 for (AbstractSet2* superSet : set->m_superSets) {
                     innerAddDFS(node, superSet);
                 }
+
+                // adjust redefines
+                for (AbstractSet2* redefinedSet : set->m_redefines) {
+                    if (!redefinedSet->m_root) {
+                        redefinedSet->m_root = node;
+                    }
+                    redefinedSet->m_size++;
+                }
                 
-                if (set->m_superSets.size() == 0) {
+                if (set->m_superSets.size() == 0 && set->m_rootRedefinedSet) {
                     // root set, place the node in the tree
                     // gather our set's supersets and subsets
                     std::unordered_set<AbstractSet2*> allSuperSetsAndMe = this->getAllSuperSets();
-                    allSuperSetsAndMe.insert(this);
-                    std::unordered_set<AbstractSet2*> allSubSets;
-                    {
-                        // allSubSets.insert(this);
-                        std::list<AbstractSet2*> queue;
-                        for (auto subSet : this->m_subSets) {
-                            queue.push_back(subSet);
-                        }
-                        while (!queue.empty()) {
-                            AbstractSet2* front = queue.front();
-                            queue.pop_front();
-                            allSubSets.insert(front);
-                            for (auto subSet : front->m_subSets) {
-                                queue.push_back(subSet);
-                            }
-                        }
-                    }
+                    allSuperSetsAndMe.insert(node->set);
+                    std::unordered_set<AbstractSet2*> allSubSets = this->getAllSubSets();
                     SetNode* currNode = set->m_root;
                     // handle divider nodes
                     while (currNode && ((!allSuperSetsAndMe.count(currNode->set) && !allSubSets.count(currNode->set)) || (!currNode->m_ptr && currNode->m_right))) {
@@ -383,8 +423,11 @@ namespace UML {
 
                 std::unordered_set<AbstractSet2*> allSuperSets = this->getAllSuperSets();
                 allSuperSets.insert(this);
+                for (auto redefinedSet : this->m_redefines) {
+                    allSuperSets.insert(redefinedSet);
+                }
                 for (auto superSet : allSuperSets) {
-                    if (superSet->m_superSets.size() == 0) {
+                    if (superSet->m_superSets.size() == 0 && superSet->m_rootRedefinedSet) {
                         // root set
                         if (node->m_parent) {
                             SetNode* parent = getParent(node, superSet->m_root);
@@ -478,7 +521,7 @@ namespace UML {
                         subSet->m_root = node->m_left;
                     }
                 }
-                delete node;
+                delete node; // TODO CreationPolicy deleteNode
             }
         public:
             Set2(U& el) : m_el(el) {
@@ -488,6 +531,9 @@ namespace UML {
 
             }
             virtual ~Set2() {
+                if (!this->m_rootRedefinedSet) {
+                    return;
+                }
                 SetLock myLock = m_el.m_manager->lockEl(m_el); 
 
                 // TODO lock all of the elements in the set lock?
@@ -548,41 +594,46 @@ namespace UML {
                 m_oppositeSignature = oppositeSignature;
             }
             /**
-             * this set subsets the set supplied, meaning all elements within this set will be contained within the set supplied
-             * but this set will not necessarily have all of the elements within the set supplied
-             * @param subsetOf the set that we are a subset of
+             * makes sure that the set we are redefining is the same tree as ours and vice versa
+             * @param redefined, the set that this set is redefining
              **/
-            template <class V = Element, class W = Element>
-            void subsets(TypedSet<V, W>& subsetOf) {
-                if (std::find(this->m_superSets.begin(), this->m_superSets.end(), &subsetOf) == this->m_superSets.end()) {
-                    this->m_superSets.push_back(&subsetOf);
-                    subsetOf.m_subSets.push_back(this);
-                    // for (auto& redefinedSet : subsetOf.m_redefines) {
-                    //     redefinedSet->m_guard = subsetOf.m_guard;
-                    // }
-                    // for (const auto& set : subsetOf.m_addFunctors) {
-                    //     if (!m_addFunctors.count(set)) {
-                    //         m_addFunctors.insert(set);
-                    //     }
-                    // }
-                    // for (auto& set : subsetOf.m_removeFunctors) {
-                    //     if (!m_removeFunctors.count(set)) {
-                    //         m_removeFunctors.insert(set);
-                    //     }
-                    // }
-                    // if (subsetOf.m_oppositeFunctor && 
-                    //     std::find(m_otherOpposites.begin(), m_otherOpposites.end(), subsetOf.m_oppositeFunctor) == m_otherOpposites.end()) {
-                    //     m_otherOpposites.push_back(subsetOf.m_oppositeFunctor);
-                    // }
-                    // for (auto& op : subsetOf.m_otherOpposites) {
-                    //     if (std::find(m_otherOpposites.begin(), m_otherOpposites.end(), op) == m_otherOpposites.end()) {
-                    //         m_otherOpposites.push_back(op);
-                    //     }
-                    // }
-                    // if (subsetOf.m_upper < 0 && subsetOf.m_upper != m_upper) {
-                    //     m_setToInstantiate = &subsetOf;
-                    // }
+            template <class V = Element, class W = Element> 
+            void redefines(TypedSet<V, W>& redefined) {
+                if (this->m_root) {
+                    throw SetStateException("WARNING redefines set after set was used, must make sure redefining is done during configuration, before use!");
                 }
+                this->m_redefines.push_back(&redefined);
+                redefined.m_redefines.push_back(this);
+                redefined.m_rootRedefinedSet = false;
+                for (auto set : redefined.m_superSets) {
+                    this->subsets(*set);
+                }
+                for (auto subSet : redefined.m_subSets) {
+                    subSet->subsets(*this);
+                }
+                // for (auto& func : redefined.m_addFunctors) {
+                //     if (!m_addFunctors.count(func)) {
+                //         m_addFunctors.insert(func);
+                //     }
+                // }
+                // for (auto& func : redefined.m_removeFunctors) {
+                //     if (!m_removeFunctors.count(func)) {
+                //         m_removeFunctors.insert(func);
+                //     }
+                // }
+                // if (redefined.m_ownsOppositeFunctor && !m_ownsOppositeFunctor) {
+                //     m_oppositeFunctor = redefined.m_oppositeFunctor;
+                //     m_otherOpposites.clear();
+                // } else {
+                //     for (auto& opp : redefined.m_otherOpposites) {
+                //         m_otherOpposites.push_back(opp);
+                //     }
+                // }
+                // if (redefined.m_upper < 0 && redefined.m_upper != m_upper) {
+                //     m_setToInstantiate = &redefined;
+                // } else if (m_upper < 0 && redefined.m_upper >= 0) {
+                //     redefined.m_setToInstantiate = this;
+                // }
             }
             void add(UmlPtr<T> el) {
                 add(*el);
@@ -669,5 +720,3 @@ namespace UML {
             }
     };
 }
-
-#endif

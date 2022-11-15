@@ -472,6 +472,10 @@ namespace UML {
                                 parent->m_left = node->m_left;
                                 if (parent->m_left) {
                                     parent->m_left->m_parent = parent;
+                                } else {
+                                    // left is empty, so we need to put right in left
+                                    parent->m_left = parent->m_right;
+                                    parent->m_right = 0;
                                 }
                             } else if (parent->m_right == node) {
                                 parent->m_right = node->m_left;

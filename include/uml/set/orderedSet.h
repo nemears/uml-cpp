@@ -10,7 +10,8 @@ namespace UML {
     };
 
     template <class T>
-    class OrderedSetNodeCreationPolicy {
+    class OrderedSetNodeAllocationPolicy {
+        // this policy implements a linked list on top of the regular set tree
         protected:
             OrderedSetNode* m_first = 0;
             OrderedSetNode* m_last = 0;
@@ -18,29 +19,48 @@ namespace UML {
                 OrderedSetNode* ret = new OrderedSetNode();
                 ret->m_ptr = &el;
                 ret->m_prev = m_last;
+                if (ret->m_prev) {
+                    ret->m_prev->m_next = ret;
+                }
                 m_last = ret;
                 if (!m_first) {
                     m_first = ret;
                 }
                 return ret;
             }
+            void deleteNode(SetNode* node) {
+                OrderedSetNode* orderedNode = static_cast<OrderedSetNode*>(node);
+                if (m_first == node) {
+                    m_first = orderedNode->m_next;
+                }
+                if (m_last == node) {
+                    m_last = orderedNode->m_prev;
+                }
+                if (orderedNode->m_prev) {
+                    orderedNode->m_prev->m_next = orderedNode->m_next;
+                }
+                if (orderedNode->m_next) {
+                    orderedNode->m_next->m_prev = orderedNode->m_prev;
+                }
+                delete node;
+            }
     };
 
     template<class T, class U>
-    class OrderedSet2 : public Set2<T, U, OrderedSetNodeCreationPolicy<T>> {
+    class OrderedSet2 : public Set2<T, U, OrderedSetNodeAllocationPolicy<T>> {
         public:
-            OrderedSet2(U& el) : Set2<T, U, OrderedSetNodeCreationPolicy<T>>(el) {}
+            OrderedSet2(U& el) : Set2<T, U, OrderedSetNodeAllocationPolicy<T>>(el) {}
             UmlPtr<T> front() {
                 SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (!this->m_first) {
-                    // TODO throw error
+                    throw SetStateException("front is null");
                 }
                 return this->m_first->m_ptr;
             }
             UmlPtr<T> back() {
                 SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (!this->m_last) {
-                    // TODO throw error
+                    throw SetStateException("last is null");
                 }
                 return this->m_last->m_ptr;
             }

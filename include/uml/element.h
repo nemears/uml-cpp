@@ -187,6 +187,7 @@ namespace UML {
     template <class T> struct SetIterator;
     template <class V, class W> class OppositeFunctor;
     template <class T, class U> class Singleton;
+    template <class T, class U> class Singleton2;
     template <class T, class U> class OrderedSet;
     template <class T, class U> struct OrderedSetIterator;
     template <class T> class UmlPtr;
@@ -239,6 +240,7 @@ namespace UML {
         friend class InterfaceRealization;
         friend class Usage;
         template <class T, class U> friend class Singleton;
+        template <class T, class U> friend class Singleton2;
         template <class T, class U> friend class Set;
         template <class T, class U, class AllocationPolicy> friend class Set2;
         template <class V, class W> friend class OppositeFunctor;

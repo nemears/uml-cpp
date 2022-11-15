@@ -116,9 +116,13 @@ namespace UML {
     };
 
     template <class T, class U>
+    class Singleton2;
+
+    template <class T, class U>
     class TypedSet : public AbstractSet2 {
 
         template <class V, class W, class OtherCreationPolicy> friend class Set2;
+        template <class V, class W> friend class Singleton2;
 
         protected:
             virtual void innerAdd(T& el) = 0;

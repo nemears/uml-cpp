@@ -19,6 +19,7 @@ namespace UML {
         template <class T, class U> friend class OrderedSet2;
         template <class T> friend class UmlPtr;
         template <class T, class U> friend class Singleton;
+        template <class T, class U> friend class Singleton2;
 
         public:
             virtual Element* create(ElementType type) = 0;

@@ -15,6 +15,7 @@
 
 #include "uml/set/set.h"
 #include "uml/set/orderedSet.h"
+#include "uml/set/singleton.h"
 
 using namespace UML;
 
@@ -2080,4 +2081,25 @@ TEST_F(SetTest, orderedSet2AllocationPolicy) {
     el->getOthers().remove(otherEl);
     ASSERT_EQ(el->getOthers().front(), otherEl2);
     ASSERT_EQ(el->getOthers().back(), otherEl2);
+}
+
+class TestElementWSingleton : public Element {
+    public:
+        Singleton2<TestElementWSingleton, TestElementWSingleton> singleton = Singleton2<TestElementWSingleton, TestElementWSingleton>(this);
+        TestElementWSingleton() : Element(ElementType::ELEMENT) {};
+};
+
+TEST_F(SetTest, singleton2Test) {
+    BasicManager m;
+    UmlPtr<TestElementWSingleton> testEl = m.create<TestElementWSingleton>();
+    UmlPtr<TestElementWSingleton> el = m.create<TestElementWSingleton>();
+    UmlPtr<TestElementWSingleton> otherEl = m.create<TestElementWSingleton>();
+    testEl->singleton.set(el);
+    ASSERT_EQ(testEl->singleton.get(), el);
+    testEl->singleton.set(0);
+    ASSERT_FALSE(testEl->singleton.get());
+    testEl->singleton.set(el);
+    ASSERT_EQ(testEl->singleton.get(), el);
+    testEl->singleton.set(otherEl);
+    ASSERT_EQ(testEl->singleton.get(), otherEl);
 }

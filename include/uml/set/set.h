@@ -126,21 +126,25 @@ namespace UML {
     };
 
     template <class T>
-    class SetCreationPolicy {
+    class SetAllocationPolicy {
         protected:
             SetNode* create(T& el) {
                 SetNode* ret = new SetNode();
                 ret->m_ptr = &el;
                 return ret;
             }
+
+            void deleteNode(SetNode* node) {
+                delete node;
+            }
     };
 
     template <
                 class T, 
                 class U, 
-                class CreationPolicy = SetCreationPolicy<T>
+                class AllocationPolicy = SetAllocationPolicy<T>
             >
-    class Set2 : public TypedSet<T, U> , public CreationPolicy {
+    class Set2 : public TypedSet<T, U> , public AllocationPolicy {
 
         protected:
             U& m_el;
@@ -193,7 +197,7 @@ namespace UML {
 
             void innerAdd(T& el) override {
                 // add
-                SetNode* node = CreationPolicy::create(el);
+                SetNode* node = AllocationPolicy::create(el);
                 node->set = this;
                 if (!this->m_rootRedefinedSet) {
                     for (auto redefinedSet : this->m_redefines) {
@@ -462,10 +466,14 @@ namespace UML {
                             }
                             if (parent->m_left == node) {
                                 parent->m_left = node->m_left;
-                                parent->m_left->m_parent = parent;
+                                if (parent->m_left) {
+                                    parent->m_left->m_parent = parent;
+                                }
                             } else if (parent->m_right == node) {
                                 parent->m_right = node->m_left;
-                                parent->m_right->m_parent = parent;
+                                if (parent->m_right) {
+                                    parent->m_right->m_parent = parent;
+                                }
                             } else {
                                 throw SetStateException("Could not remove element of id " + id.string() + " from set because of an internal error");
                             }
@@ -521,7 +529,7 @@ namespace UML {
                         subSet->m_root = node->m_left;
                     }
                 }
-                delete node; // TODO CreationPolicy deleteNode
+                AllocationPolicy::deleteNode(node);
             }
         public:
             Set2(U& el) : m_el(el) {

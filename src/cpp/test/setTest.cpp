@@ -2057,3 +2057,27 @@ TEST_F(SetTest, set2RedefinesTest) {
     ASSERT_EQ(testEl->rootSet.size(), 3);
     ASSERT_EQ(testEl->redefiningSet.size(), 3);
 }
+
+TEST_F(SetTest, orderedSet2AllocationPolicy) {
+    BasicManager m;
+    UmlPtr<TestElementWOrderedSet> el = m.create<TestElementWOrderedSet>();
+    UmlPtr<TestElementWOrderedSet> otherEl = m.create<TestElementWOrderedSet>();
+    UmlPtr<TestElementWOrderedSet> otherEl2 = m.create<TestElementWOrderedSet>();
+    UmlPtr<TestElementWOrderedSet> otherEl3 = m.create<TestElementWOrderedSet>();
+    el->getOthers().add(otherEl);
+    ASSERT_EQ(el->getOthers().get(otherEl.id()), otherEl);
+    ASSERT_EQ(el->getOthers().front(), otherEl);
+    ASSERT_EQ(el->getOthers().back(), otherEl);
+    el->getOthers().add(otherEl2);
+    ASSERT_EQ(el->getOthers().front(), otherEl);
+    ASSERT_EQ(el->getOthers().back(), otherEl2);
+    el->getOthers().add(otherEl3);
+    ASSERT_EQ(el->getOthers().front(), otherEl);
+    ASSERT_EQ(el->getOthers().back(), otherEl3);
+    el->getOthers().remove(otherEl3);
+    ASSERT_EQ(el->getOthers().front(), otherEl);
+    ASSERT_EQ(el->getOthers().back(), otherEl2);
+    el->getOthers().remove(otherEl);
+    ASSERT_EQ(el->getOthers().front(), otherEl2);
+    ASSERT_EQ(el->getOthers().back(), otherEl2);
+}

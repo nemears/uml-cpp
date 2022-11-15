@@ -12,7 +12,7 @@ namespace UML {
     class AbstractManager {
 
         template <class T, class U> friend class Set;
-        template <class T, class U, class CreationPolicy> friend class Set2;
+        template <class T, class U, class AllocationPolicy> friend class Set2;
         template <class T> friend struct SetIterator;
         template <class T, class U> friend struct OrderedSetIterator;
         template <class T, class U> friend class OrderedSet;

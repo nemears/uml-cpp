@@ -4,10 +4,10 @@
 
 namespace UML {
     template <class T, class U>
-    class Singleton2 : public Set2<T, U> {
+    class Singleton2 : public PrivateSet<T, U> {
         public:
-            Singleton2(U& el) : Set2<T, U>(el) {}
-            Singleton2(U* el) : Set2<T, U>(el) {}
+            Singleton2(U& el) : PrivateSet<T, U>(el) {}
+            Singleton2(U* el) : PrivateSet<T, U>(el) {}
             UmlPtr<T> get() {
                 SetLock myLck = this->m_el.m_manager->lockEl(this->m_el);
                 if (this->m_root) {
@@ -39,7 +39,7 @@ namespace UML {
                         throw SetStateException("Cannot add to read only set!");
                     }
                     // add
-                    Set2<T,U>::innerAdd(*el);
+                    PrivateSet<T,U>::innerAdd(*el);
                     el->m_node->setReference(this->m_el);
                     this->m_el.m_node->setReference(*el);
                     // handle opposites

@@ -47,9 +47,9 @@ namespace UML {
     };
 
     template<class T, class U>
-    class OrderedSet2 : public Set2<T, U, OrderedSetNodeAllocationPolicy<T>> {
+    class OrderedSet2 : public PrivateSet<T, U, OrderedSetNodeAllocationPolicy<T>> {
         public:
-            OrderedSet2(U& el) : Set2<T, U, OrderedSetNodeAllocationPolicy<T>>(el) {}
+            OrderedSet2(U& el) : PrivateSet<T, U, OrderedSetNodeAllocationPolicy<T>>(el) {}
             UmlPtr<T> front() {
                 SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (!this->m_first) {
@@ -63,6 +63,21 @@ namespace UML {
                     throw SetStateException("last is null");
                 }
                 return this->m_last->m_ptr;
+            }
+            void add(UmlPtr<T> el) {
+                add(*el);
+            }
+            void add(T& el) {
+                this->PrivateSet<T,U, OrderedSetNodeAllocationPolicy<T>>::add(el);
+            }
+            void remove(ID id) {
+                this->PrivateSet<T,U, OrderedSetNodeAllocationPolicy<T>>::remove(id);
+            }
+            void remove(T& el) {
+                remove(el.getID());
+            }
+            void remove (UmlPtr<T> el) {
+                remove(el.id());
             }
     };
 }

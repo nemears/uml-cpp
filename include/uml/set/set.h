@@ -29,7 +29,7 @@ namespace UML {
 
     class AbstractSet2 {
 
-        template <class V, class W, class OtherCreationPolicy> friend class Set2;
+        template <class V, class W, class OtherCreationPolicy> friend class PrivateSet;
 
         protected:
             SetNode* m_root = 0;
@@ -121,7 +121,7 @@ namespace UML {
     template <class T, class U>
     class TypedSet : public AbstractSet2 {
 
-        template <class V, class W, class OtherCreationPolicy> friend class Set2;
+        template <class V, class W, class OtherCreationPolicy> friend class PrivateSet;
         template <class V, class W> friend class Singleton2;
 
         protected:
@@ -148,7 +148,7 @@ namespace UML {
                 class U, 
                 class AllocationPolicy = SetAllocationPolicy<T>
             >
-    class Set2 : public TypedSet<T, U> , public AllocationPolicy {
+    class PrivateSet : public TypedSet<T, U> , public AllocationPolicy {
 
         protected:
             U& m_el;
@@ -539,14 +539,53 @@ namespace UML {
                 }
                 AllocationPolicy::deleteNode(node);
             }
+
+            void add(T& el) {
+                // "lock" elements we are editing
+                SetLock elLock = m_el.m_manager->lockEl(el);
+                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                if (m_readOnly) {
+                    throw SetStateException("Cannot add to read only set!");
+                }
+                // add
+                innerAdd(el);
+                el.m_node->setReference(m_el);
+                m_el.m_node->setReference(el);
+                // handle opposites
+                if (m_oppositeSignature) {
+                    (el.*m_oppositeSignature)().innerAdd(m_el);   
+                }
+            }
+            void remove(ID id) {
+                // "lock" elements we are editing
+                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                T* el = 0;
+                try {
+                    el = &m_el.m_node->m_references.at(id).node->m_managerElementMemory->template as<T>(); // should be safe because we have a ptr
+                } catch (std::exception e) {
+                    throw SetStateException("Could not find el with id of " + id.string() + " in set");
+                }
+                SetLock elLock = m_el.m_manager->lockEl(*el);
+                if (m_readOnly) {
+                    throw SetStateException("Cannot remove from read only set!");
+                }
+                // remove
+                innerRemove(id);
+                el->m_node->removeReference(m_el);
+                m_el.m_node->removeReference(*el);
+                // handle opposites
+                if (m_oppositeSignature) {
+                    (el->*m_oppositeSignature)().innerRemove(m_el.getID());
+                }
+            }
         public:
-            Set2(U& el) : m_el(el) {
+            PrivateSet(U& el) : m_el(el) {
                 
             }
-            Set2(U* el) : m_el(*el) {
+            PrivateSet(U* el) : m_el(*el) {
 
             }
-            virtual ~Set2() {
+            virtual ~PrivateSet() {
                 if (!this->m_rootRedefinedSet) {
                     return;
                 }
@@ -651,53 +690,8 @@ namespace UML {
                 //     redefined.m_setToInstantiate = this;
                 // }
             }
-            void add(UmlPtr<T> el) {
-                add(*el);
-            }
-            void add(T& el) {
-                // "lock" elements we are editing
-                SetLock elLock = m_el.m_manager->lockEl(el);
-                SetLock myLock = m_el.m_manager->lockEl(m_el);
-                if (m_readOnly) {
-                    throw SetStateException("Cannot add to read only set!");
-                }
-                // add
-                innerAdd(el);
-                el.m_node->setReference(m_el);
-                m_el.m_node->setReference(el);
-                // handle opposites
-                if (m_oppositeSignature) {
-                    (el.*m_oppositeSignature)().innerAdd(m_el);   
-                }
-            }
-            void remove(ID id) {
-                // "lock" elements we are editing
-                SetLock myLock = m_el.m_manager->lockEl(m_el);
-                T* el = 0;
-                try {
-                    el = &m_el.m_node->m_references.at(id).node->m_managerElementMemory->template as<T>(); // should be safe because we have a ptr
-                } catch (std::exception e) {
-                    throw SetStateException("Could not find el with id of " + id.string() + " in set");
-                }
-                SetLock elLock = m_el.m_manager->lockEl(*el);
-                if (m_readOnly) {
-                    throw SetStateException("Cannot remove from read only set!");
-                }
-                // remove
-                innerRemove(id);
-                el->m_node->removeReference(m_el);
-                m_el.m_node->removeReference(*el);
-                // handle opposites
-                if (m_oppositeSignature) {
-                    (el->*m_oppositeSignature)().innerRemove(m_el.getID());
-                }
-            }
-            void remove(T& el) {
-                remove(el.getID());
-            }
-            void remove (UmlPtr<T> el) {
-                remove(el.id());
-            }
+            
+            // Shared Accessors, all of these can be used by subclasses
             UmlPtr<T> get(ID id) const {
                 // "lock" sets owner while we search
                 SetLock myLock = m_el.m_manager->lockEl(m_el);
@@ -733,6 +727,28 @@ namespace UML {
 
             size_t size() const {
                 return this->m_size;
+            }
+    };
+
+    template <class T, class U>
+    class Set2 : public PrivateSet<T,U> {
+        public:
+            Set2(U* el) : PrivateSet<T,U>(el) {}
+            Set2(U& el) : PrivateSet<T,U>(el) {};
+            void add(UmlPtr<T> el) {
+                add(*el);
+            }
+            void add(T& el) {
+                PrivateSet<T,U>::add(el);
+            }
+            void remove(ID id) {
+                PrivateSet<T,U>::remove(id);
+            }
+            void remove(T& el) {
+                remove(el.getID());
+            }
+            void remove (UmlPtr<T> el) {
+                remove(el.id());
             }
     };
 }

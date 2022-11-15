@@ -9,6 +9,54 @@ namespace UML {
         OrderedSetNode* m_next = 0;
     };
 
+    template<class T, class U> class OrderedSet2;
+
+    template <class T>
+    class OrderedSet2Iterator {
+
+        template<class V, class W> friend class OrderedSet2;
+
+        private:
+            OrderedSetNode* curr = 0;
+            std::unordered_set<AbstractSet2*> validSets;
+        public:
+            OrderedSet2Iterator() {}
+            OrderedSet2Iterator(const OrderedSet2Iterator& rhs) {
+                curr = rhs.curr;
+                validSets = rhs.validSets;
+            }
+            T& operator*() {
+                return curr->m_ptr->as<T>();
+            }
+            UmlPtr<T> operator->() {
+                return curr->m_ptr;
+            }
+            OrderedSet2Iterator operator++() {
+                do {
+                    curr = curr->m_next;
+                } while (curr && !validSets.count(curr->set));
+                return *this;
+            }
+            friend bool operator== (const OrderedSet2Iterator& lhs, const OrderedSet2Iterator& rhs) {
+                if (!lhs.curr && !lhs.curr) {
+                    return true;
+                }
+                if (!lhs.curr || !lhs.curr) {
+                    return false;
+                }
+                return lhs.curr == rhs.curr;
+            }
+            friend bool operator!= (const OrderedSet2Iterator& lhs, const OrderedSet2Iterator& rhs) {
+                if (!lhs.curr && !lhs.curr) {
+                    return false;
+                }
+                if (!lhs.curr || !lhs.curr) {
+                    return true;
+                }
+                return lhs.curr != rhs.curr;
+            }
+    };
+
     template <class T>
     class OrderedSetNodeAllocationPolicy {
         // this policy implements a linked list on top of the regular set tree
@@ -78,6 +126,18 @@ namespace UML {
             }
             void remove (UmlPtr<T> el) {
                 remove(el.id());
+            }
+
+            OrderedSet2Iterator<T> begin() {
+                OrderedSet2Iterator<T> ret;
+                ret.curr = this->m_first;
+                ret.validSets = this->getAllSuperSets();
+                ret.validSets.insert(this);
+                return ret;
+            }
+
+            OrderedSet2Iterator<T> end() {
+                return OrderedSet2Iterator<T>();
             }
     };
 }

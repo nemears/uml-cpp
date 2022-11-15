@@ -1766,6 +1766,9 @@ TEST_F(SetTest, orderedSet2Test) {
     el->getOthers().add(otherEl2);
     ASSERT_EQ(el->getOthers().front(), otherEl);
     ASSERT_EQ(el->getOthers().back(), otherEl2);
+    for (TestElementWOrderedSet& testEl : el->getOthers()) {
+        ASSERT_TRUE(testEl == otherEl || testEl == otherEl2);
+    }
 }
 
 class SubsetTestElement : public Element {

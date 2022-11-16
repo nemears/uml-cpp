@@ -730,6 +730,92 @@ namespace UML {
             }
     };
 
+    template <class T, class U> class Set2;
+
+    template <class T>
+    class Set2Iterator {
+
+        template <class V, class W> friend class Set2;
+
+        private:
+            SetNode* root = 0;
+            SetNode* curr = 0;
+            std::unordered_set<AbstractSet2*> validSets;
+        public:
+            Set2Iterator() {};
+            Set2Iterator(Set2Iterator& rhs) {
+                curr = rhs.curr;
+                validSets = rhs.validSets;
+            }
+            T& operator*() {
+                return curr->m_ptr->as<T>();
+            }
+            UmlPtr<T> operator->() {
+                return curr->m_ptr;
+            }
+            Set2Iterator operator++() {
+                do {
+                    if (curr->m_left) {
+                        // always go left
+                        curr = curr->m_left;
+                    } else {
+                        if (!curr->m_parent/** || m_node->m_parent->m_guard < m_guard**/) {
+                            // if there is no parent to go to we must end
+                            curr = 0;
+                            break;
+                        }
+                        // we hit bottom, choose next right
+                        SetNode* temp;
+                        SetNode* last = curr;
+                        if (last == root) {
+                            curr = 0;
+                            break;
+                        }
+                        bool found = false;
+                        do {
+                            temp = last->m_parent;
+                            if (temp->m_right) {
+                                if (temp->m_right->m_ptr.id() != last->m_ptr.id()) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            last = temp;
+                        } while (temp->m_parent && validSets.count(temp->m_parent->set));
+                        if (!found) {
+                            curr = 0;
+                            break;
+                        } else {
+                            if (temp->m_right == curr) {
+                                curr = 0;
+                                break;
+                            }
+                            curr = temp->m_right;
+                        }
+                    }
+                } while (!curr->m_ptr);
+                return *this;
+            }
+            friend bool operator== (const Set2Iterator& lhs, const Set2Iterator& rhs) {
+                if (!lhs.curr && !lhs.curr) {
+                    return true;
+                }
+                if (!lhs.curr || !lhs.curr) {
+                    return false;
+                }
+                return lhs.curr == rhs.curr;
+            }
+            friend bool operator!= (const Set2Iterator& lhs, const Set2Iterator& rhs) {
+                if (!lhs.curr && !lhs.curr) {
+                    return false;
+                }
+                if (!lhs.curr || !lhs.curr) {
+                    return true;
+                }
+                return lhs.curr != rhs.curr;
+            }
+    };
+
     template <class T, class U>
     class Set2 : public PrivateSet<T,U> {
         public:
@@ -749,6 +835,17 @@ namespace UML {
             }
             void remove (UmlPtr<T> el) {
                 remove(el.id());
+            }
+            Set2Iterator<T> begin() {
+                Set2Iterator<T> ret;
+                ret.curr = this->m_root;
+                ret.root = this->m_root;
+                ret.validSets = this->getAllSuperSets();
+                ret.validSets.insert(this);
+                return ret;
+            }
+            Set2Iterator<T> end() {
+                return Set2Iterator<T>();
             }
     };
 }

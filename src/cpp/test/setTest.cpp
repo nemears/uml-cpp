@@ -1735,6 +1735,11 @@ TEST_F(SetTest, set2Test) {
     UmlPtr<TestElement2> otherEl = m.create<TestElement2>();
     el->getOthers().add(otherEl);
     ASSERT_EQ(el->getOthers().get(otherEl.id()), otherEl);
+    UmlPtr<TestElement2> otherEl2 = m.create<TestElement2>();
+    el->getOthers().add(otherEl2);
+    for (TestElement2& tt : el->getOthers()) {
+        ASSERT_TRUE(tt.getID() == otherEl.id() || tt.getID() == otherEl2.id());
+    }
 }
 
 class TestElementWOrderedSet : public Element {

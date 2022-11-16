@@ -2111,3 +2111,36 @@ TEST_F(SetTest, singleton2Test) {
     testEl->singleton.set(otherEl);
     ASSERT_EQ(testEl->singleton.get(), otherEl);
 }
+
+class TestElementWFunctor : public Element {
+    public:
+        Set2<TestElementWFunctor, TestElementWFunctor> set = Set2<TestElementWFunctor, TestElementWFunctor>(this);
+
+        int count = 0;
+        
+        class TestFunctor : public SetFunctor2<TestElementWFunctor, TestElementWFunctor> {
+            public:
+                TestFunctor(TestElementWFunctor& f) : SetFunctor2<TestElementWFunctor, TestElementWFunctor>(f) {}
+                void operator()(TestElementWFunctor& el) override {
+                    std::cout << "PP" << std::endl;
+                    el.count++;
+                }
+        };
+
+        TestFunctor functor = TestFunctor(*this);
+
+        TestElementWFunctor() : Element(ElementType::ELEMENT) {
+            set.setAddFunctor(functor);
+            set.setRemoveFunctor(functor);
+        }
+};
+
+TEST_F(SetTest, testFunctorsW2) {
+    BasicManager m;
+    UmlPtr<TestElementWFunctor> el = m.create<TestElementWFunctor>();
+    UmlPtr<TestElementWFunctor> otherEl = m.create<TestElementWFunctor>();
+    el->set.add(otherEl);
+    ASSERT_EQ(otherEl->count, 1);
+    el->set.remove(otherEl);
+    ASSERT_EQ(otherEl->count, 2);
+}

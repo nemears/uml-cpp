@@ -42,6 +42,9 @@ namespace UML {
 
             size_t m_size = 0;
 
+            virtual void runAddFunctor(Element& el) = 0;
+            virtual void runRemoveFunctor(Element& el) = 0;
+
             std::unordered_set<AbstractSet2*> getAllSuperSets() {
                 std::unordered_set<AbstractSet2*> allSuperSets;
                 std::list<AbstractSet2*> queue;
@@ -86,31 +89,6 @@ namespace UML {
                 if (std::find(this->m_superSets.begin(), this->m_superSets.end(), &subsetOf) == this->m_superSets.end()) {
                     this->m_superSets.push_back(&subsetOf);
                     subsetOf.m_subSets.push_back(this);
-                    // for (auto& redefinedSet : subsetOf.m_redefines) {
-                    //     redefinedSet->m_guard = subsetOf.m_guard;
-                    // }
-                    // for (const auto& set : subsetOf.m_addFunctors) {
-                    //     if (!m_addFunctors.count(set)) {
-                    //         m_addFunctors.insert(set);
-                    //     }
-                    // }
-                    // for (auto& set : subsetOf.m_removeFunctors) {
-                    //     if (!m_removeFunctors.count(set)) {
-                    //         m_removeFunctors.insert(set);
-                    //     }
-                    // }
-                    // if (subsetOf.m_oppositeFunctor && 
-                    //     std::find(m_otherOpposites.begin(), m_otherOpposites.end(), subsetOf.m_oppositeFunctor) == m_otherOpposites.end()) {
-                    //     m_otherOpposites.push_back(subsetOf.m_oppositeFunctor);
-                    // }
-                    // for (auto& op : subsetOf.m_otherOpposites) {
-                    //     if (std::find(m_otherOpposites.begin(), m_otherOpposites.end(), op) == m_otherOpposites.end()) {
-                    //         m_otherOpposites.push_back(op);
-                    //     }
-                    // }
-                    // if (subsetOf.m_upper < 0 && subsetOf.m_upper != m_upper) {
-                    //     m_setToInstantiate = &subsetOf;
-                    // }
                 }
             }
     };
@@ -127,6 +105,15 @@ namespace UML {
         protected:
             virtual void innerAdd(T& el) = 0;
             virtual void innerRemove(ID id) = 0;
+    };
+
+    template <class T, class U>
+    class SetFunctor2 {
+        protected:
+            U& m_el;
+        public:
+            SetFunctor2(U& el) : m_el(el) {};
+            virtual void operator()(T& el) = 0;
     };
 
     template <class T>
@@ -154,6 +141,8 @@ namespace UML {
             U& m_el;
             bool m_readOnly = false;
             TypedSet<U,T>& (T::*m_oppositeSignature)() = 0;
+            SetFunctor2<T,U>* m_addFunctor = 0; // TODO thinking about moving to policy, then behavior can be sorted at compile time
+            SetFunctor2<T,U>* m_removeFunctor = 0;
 
             /**
              * Searches the tree for the node with given id from the node supplied
@@ -199,6 +188,19 @@ namespace UML {
                 }
             };
 
+            void runAddFunctor(Element& el) override {
+                if (!m_addFunctor) {
+                    return;
+                }
+                (*m_addFunctor)(el.as<T>());
+            }
+            void runRemoveFunctor(Element& el) override {
+                if (!m_removeFunctor) {
+                    return;
+                }
+                (*m_removeFunctor)(el.as<T>());
+            }
+
             void innerAdd(T& el) override {
                 // add
                 SetNode* node = AllocationPolicy::create(el);
@@ -212,6 +214,13 @@ namespace UML {
                     }
                 }
                 innerAddDFS(node, node->set);
+
+                if (m_addFunctor) {
+                    (*m_addFunctor)(el);
+                }
+                for (auto superSet : this->getAllSuperSets()) { // TODO calling getSuperSets twice, maybe call it once and pass it down into innerAddDfs
+                    superSet->runAddFunctor(el);
+                }
             }
 
             /**
@@ -537,6 +546,9 @@ namespace UML {
                         subSet->m_root = node->m_left;
                     }
                 }
+                for (auto superSet : allSuperSets) {
+                    superSet->runRemoveFunctor(*node->m_ptr);
+                }
                 AllocationPolicy::deleteNode(node);
             }
 
@@ -666,31 +678,24 @@ namespace UML {
                 for (auto subSet : redefined.m_subSets) {
                     subSet->subsets(*this);
                 }
-                // for (auto& func : redefined.m_addFunctors) {
-                //     if (!m_addFunctors.count(func)) {
-                //         m_addFunctors.insert(func);
-                //     }
-                // }
-                // for (auto& func : redefined.m_removeFunctors) {
-                //     if (!m_removeFunctors.count(func)) {
-                //         m_removeFunctors.insert(func);
-                //     }
-                // }
-                // if (redefined.m_ownsOppositeFunctor && !m_ownsOppositeFunctor) {
-                //     m_oppositeFunctor = redefined.m_oppositeFunctor;
-                //     m_otherOpposites.clear();
-                // } else {
-                //     for (auto& opp : redefined.m_otherOpposites) {
-                //         m_otherOpposites.push_back(opp);
-                //     }
-                // }
-                // if (redefined.m_upper < 0 && redefined.m_upper != m_upper) {
-                //     m_setToInstantiate = &redefined;
-                // } else if (m_upper < 0 && redefined.m_upper >= 0) {
-                //     redefined.m_setToInstantiate = this;
-                // }
             }
             
+            void setAddFunctor(SetFunctor2<T,U>& f) {
+                if (!m_addFunctor && !this->m_root) { // TODO make sure set isn't initialized besides checking root
+                    m_addFunctor = &f;
+                } else {
+                    throw SetStateException("Set already initialized!");
+                }
+            }
+
+            void setRemoveFunctor(SetFunctor2<T,U>& f) {
+                if (!m_removeFunctor && !this->m_root) { // TODO make sure set isn't initialized besides checking root
+                    m_removeFunctor = &f;
+                } else {
+                    throw SetStateException("Set already initialized!");
+                }
+            }
+
             // Shared Accessors, all of these can be used by subclasses
             UmlPtr<T> get(ID id) const {
                 // "lock" sets owner while we search

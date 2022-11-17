@@ -242,6 +242,19 @@ namespace UML {
             std::vector<std::unique_lock<std::mutex>> accessSet(AbstractSet& set, ID id) {
                 
             }
+            ElementPtr createPtr(AbstractManager* manager, ID id) {
+                std::unordered_map<ID, ThreadSafeManagerNode>::const_iterator nodeIt = m_graph.find(id);
+                const ThreadSafeManagerNode* node = 0;
+                if (nodeIt == m_graph.end()) {
+                    node = &m_graph[id];
+                } else {
+                    node = &nodeIt->second;
+                }
+                ElementPtr ret;
+                setPtr(ret, id, manager, node);
+                assignPtr(ret);
+                return ret;
+            }
         public:
             SetLock lockEl(Element& el) {
                 return ThreadSafeSetLock(*static_cast<ThreadSafeManagerNode*>(getNode(el)));

@@ -23,7 +23,7 @@ namespace UML {
 
         public:
             virtual Element* create(ElementType type) = 0;
-            template <class T = Element>
+            template <class T>
             UmlPtr<T> create() {
                 return UmlPtr<T>(&create(T::elementType())->template as<T>());
             }
@@ -44,6 +44,7 @@ namespace UML {
             virtual void save() = 0;
         protected:
             virtual Element* get(Element* me, ID theID);
+            virtual ElementPtr createPtr(ID id) = 0; // TODO maybe return ElementPtr?
             virtual void removePtr(AbstractUmlPtr& ptr) = 0;
             virtual void destroyPtr(AbstractUmlPtr& ptr) = 0;
             virtual void assignPtr(AbstractUmlPtr& ptr) = 0;

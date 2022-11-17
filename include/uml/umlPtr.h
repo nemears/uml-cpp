@@ -13,7 +13,7 @@ namespace UML {
         };
     };
 
-    template <class T, class U> class Singleton;
+    template <class T, class U, class AdditionPolicy, class RemovalPolicy> class Singleton;
     template <class T> class UmlPtr;
 
     class AbstractUmlPtr {

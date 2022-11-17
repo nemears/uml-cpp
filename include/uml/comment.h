@@ -2,7 +2,7 @@
 #define _UML_COMMENT_H_
 
 #include "element.h"
-#include "set.h"
+#include "set/set.h"
 
 namespace UML {
     class Comment : public Element {

@@ -3,7 +3,7 @@
 
 #include <string>
 #include "element.h"
-#include "singleton.h"
+#include "set/singleton.h"
 
 namespace UML{
 
@@ -33,17 +33,16 @@ namespace UML{
         protected:
             std::string m_name;
             std::string m_absoluteNamespace;
-            Singleton<Namespace, NamedElement> m_namespace = Singleton<Namespace, NamedElement>(this);
-            class UpdateQualifiedNameFunctor : public SetFunctor {
+            class UpdateQualifiedNamePolicy {
                 public:
-                    UpdateQualifiedNameFunctor(Element* them) : SetFunctor(them) {};
-                    void operator()(Element& el) const override;
+                    void apply(Namespace& el, NamedElement& me);
             };
-            class RemoveQualifiedNameFunctor : public SetFunctor {
+            class RemoveQualifiedNamePolicy {
                 public:
-                    RemoveQualifiedNameFunctor(Element* them) : SetFunctor(them) {};
-                    void operator()(Element& el) const override;
+                    void apply(Namespace& el, NamedElement& me);
             };
+            CustomSingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy, RemoveQualifiedNamePolicy> m_namespace = CustomSingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy, RemoveQualifiedNamePolicy>(this);
+        protected:
             Set<Dependency, NamedElement>* m_clientDependencies;
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             void reindexName(ID id, std::string newName) override;

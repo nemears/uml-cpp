@@ -9,19 +9,19 @@ namespace UML {
         OrderedSetNode* m_next = 0;
     };
 
-    template<class T, class U> class OrderedSet2;
+    template<class T, class U> class OrderedSet;
 
     template <class T>
-    class OrderedSet2Iterator {
+    class OrderedSetIterator {
 
-        template<class V, class W> friend class OrderedSet2;
+        template<class V, class W> friend class OrderedSet;
 
         private:
             OrderedSetNode* curr = 0;
-            std::unordered_set<AbstractSet2*> validSets;
+            std::unordered_set<AbstractSet*> validSets;
         public:
-            OrderedSet2Iterator() {}
-            OrderedSet2Iterator(const OrderedSet2Iterator& rhs) {
+            OrderedSetIterator() {}
+            OrderedSetIterator(const OrderedSetIterator& rhs) {
                 curr = rhs.curr;
                 validSets = rhs.validSets;
             }
@@ -31,13 +31,13 @@ namespace UML {
             UmlPtr<T> operator->() {
                 return curr->m_ptr;
             }
-            OrderedSet2Iterator operator++() {
+            OrderedSetIterator operator++() {
                 do {
                     curr = curr->m_next;
                 } while (curr && !validSets.count(curr->set));
                 return *this;
             }
-            friend bool operator== (const OrderedSet2Iterator& lhs, const OrderedSet2Iterator& rhs) {
+            friend bool operator== (const OrderedSetIterator& lhs, const OrderedSetIterator& rhs) {
                 if (!lhs.curr && !lhs.curr) {
                     return true;
                 }
@@ -46,7 +46,7 @@ namespace UML {
                 }
                 return lhs.curr == rhs.curr;
             }
-            friend bool operator!= (const OrderedSet2Iterator& lhs, const OrderedSet2Iterator& rhs) {
+            friend bool operator!= (const OrderedSetIterator& lhs, const OrderedSetIterator& rhs) {
                 if (!lhs.curr && !lhs.curr) {
                     return false;
                 }
@@ -94,10 +94,15 @@ namespace UML {
             }
     };
 
-    template<class T, class U>
-    class OrderedSet2 : public PrivateSet<T, U, OrderedSetNodeAllocationPolicy<T>> {
+    template <
+                class T, 
+                class U,
+                class AdditionPolicy = DoNothing<T, U>,
+                class RemovalPolicy = DoNothing<T, U>
+            >
+    class OrderedSet : public PrivateSet<T, U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>> {
         public:
-            OrderedSet2(U& el) : PrivateSet<T, U, OrderedSetNodeAllocationPolicy<T>>(el) {}
+            OrderedSet(U& el) : PrivateSet<T, U, OrderedSetNodeAllocationPolicy<T>>(el) {}
             UmlPtr<T> front() {
                 SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (!this->m_first) {
@@ -128,16 +133,16 @@ namespace UML {
                 remove(el.id());
             }
 
-            OrderedSet2Iterator<T> begin() {
-                OrderedSet2Iterator<T> ret;
+            OrderedSetIterator<T> begin() {
+                OrderedSetIterator<T> ret;
                 ret.curr = this->m_first;
                 ret.validSets = this->getAllSuperSets();
                 ret.validSets.insert(this);
                 return ret;
             }
 
-            OrderedSet2Iterator<T> end() {
-                return OrderedSet2Iterator<T>();
+            OrderedSetIterator<T> end() {
+                return OrderedSetIterator<T>();
             }
     };
 }

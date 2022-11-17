@@ -2,7 +2,7 @@
 #define _UML_MULTIPLICITY_ELEMENT_H_
 
 #include "element.h"
-#include "singleton.h"
+#include "set/singleton.h"
 #include "valueSpecification.h"
 
 namespace UML {

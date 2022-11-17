@@ -125,6 +125,10 @@ namespace UML {
                 return ret;
             }
 
+            SetNode* create(UmlPtr<T> el) {
+                return create(*el);
+            }
+
             void deleteNode(SetNode* node) {
                 delete node;
             }
@@ -221,6 +225,27 @@ namespace UML {
                 for (auto superSet : this->getAllSuperSets()) { // TODO calling getSuperSets twice, maybe call it once and pass it down into innerAddDfs
                     superSet->runAddFunctor(el);
                 }
+            }
+
+            void innerAdd(ID id) {
+                SetNode* node = AllocationPolicy::create(m_el.m_manager->createPtr(id));
+                node->set = this;
+                if (!this->m_rootRedefinedSet) {
+                    for (auto redefinedSet : this->m_redefines) {
+                        if (redefinedSet->m_rootRedefinedSet) {
+                            node->set = redefinedSet;
+                            break;
+                        }
+                    }
+                }
+                innerAddDFS(node, node->set);
+
+                // if (m_addFunctor) {
+                //     (*m_addFunctor)(el);
+                // }
+                // for (auto superSet : this->getAllSuperSets()) { // TODO calling getSuperSets twice, maybe call it once and pass it down into innerAddDfs
+                //     superSet->runAddFunctor(el);
+                // }
             }
 
             /**
@@ -568,6 +593,35 @@ namespace UML {
                     (el.*m_oppositeSignature)().innerAdd(m_el);   
                 }
             }
+            void addReadOnly(T& el) {
+                // "lock" elements we are editing
+                SetLock elLock = m_el.m_manager->lockEl(el);
+                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                // add
+                innerAdd(el);
+                el.m_node->setReference(m_el);
+                m_el.m_node->setReference(el);
+                // handle opposites
+                if (m_oppositeSignature) {
+                    (el.*m_oppositeSignature)().innerAdd(m_el);   
+                }
+            }
+            void add(ID id) {
+                // "lock" elements we are editing
+                // SetLock elLock = m_el.m_manager->lockEl(el);
+                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                if (m_readOnly) {
+                    throw SetStateException("Cannot add to read only set!");
+                }
+                // add
+                innerAdd(id);
+                // el.m_node->setReference(m_el);
+                m_el.m_node->setReference(id);
+                // handle opposites
+                // if (m_oppositeSignature) {
+                //     (el.*m_oppositeSignature)().innerAdd(m_el);   
+                // }
+            }
             void remove(ID id) {
                 // "lock" elements we are editing
                 SetLock myLock = m_el.m_manager->lockEl(m_el);
@@ -589,6 +643,56 @@ namespace UML {
                 if (m_oppositeSignature) {
                     (el->*m_oppositeSignature)().innerRemove(m_el.getID());
                 }
+            }
+            void removeReadOnly(ID id) {
+                // "lock" elements we are editing
+                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                T* el = 0;
+                try {
+                    el = &m_el.m_node->m_references.at(id).node->m_managerElementMemory->template as<T>(); // should be safe because we have a ptr
+                } catch (std::exception e) {
+                    throw SetStateException("Could not find el with id of " + id.string() + " in set");
+                }
+                SetLock elLock = m_el.m_manager->lockEl(*el);
+                // remove
+                innerRemove(id);
+                el->m_node->removeReference(m_el);
+                m_el.m_node->removeReference(*el);
+                // handle opposites
+                if (m_oppositeSignature) {
+                    (el->*m_oppositeSignature)().innerRemove(m_el.getID());
+                }
+            }
+            void reindexDFS(SetNode* node, AbstractSet2* set) {
+                for (auto superSet : set->m_superSets) {
+                    reindexDFS(node, superSet);
+                }
+                if (set->m_superSets.size() == 0) {
+                    SetNode* parent = getParent(node, this->m_root);
+                    if (parent->m_left == node) {
+                        if (parent->m_right && parent->m_right->m_ptr.id() > node->m_ptr.id()) {
+                            parent->m_left = parent->m_right;
+                            parent->m_right = node;
+                        }
+                    } else if (parent->m_right == node) {
+                        if (node->m_ptr.id() > parent->m_left->m_ptr.id()) {
+                            parent->m_right = parent->m_left;
+                            parent->m_left = node;
+                        }
+                    } else {
+                        throw SetStateException("bad state reindexing, bad parent found! contact developer");
+                    }
+                }
+            }
+            void reindex(ID newID) {
+                if (!this->m_root) {
+                    return;
+                }
+                SetNode* node = search(newID, this->m_root);
+                if (!node->m_parent) {
+                    return;
+                } 
+                reindexDFS(node, this);
             }
         public:
             PrivateSet(U& el) : m_el(el) {

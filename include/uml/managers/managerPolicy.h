@@ -41,7 +41,12 @@ namespace UML {
     template <typename AccessPolicy, typename PersistencePolicy>
     class Manager : public AbstractManager , public AccessPolicy, public PersistencePolicy {
         protected:
+
             ElementPtr m_root;
+
+            ElementPtr createPtr(ID id) override {
+                return AccessPolicy::createPtr(this, id);
+            }
             void removePtr(AbstractUmlPtr& ptr) override {
                 AccessPolicy::removePtr(ptr);
             }

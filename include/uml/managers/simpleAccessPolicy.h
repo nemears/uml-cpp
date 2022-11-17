@@ -159,6 +159,20 @@ namespace UML {
             SetLock lockEl(Element& el) {
                 return SetLock();
             }
+
+            ElementPtr createPtr(AbstractManager* manager, ID id) {
+                std::unordered_map<ID, ManagerNode>::const_iterator nodeIt = m_graph.find(id);
+                const ManagerNode* node = 0;
+                if (nodeIt == m_graph.end()) {
+                    node = &m_graph[id];
+                } else {
+                    node = &nodeIt->second;
+                }
+                ElementPtr ret;
+                setPtr(ret, id, manager, node);
+                assignPtr(ret);
+                return ret;
+            }
     };
 }
 

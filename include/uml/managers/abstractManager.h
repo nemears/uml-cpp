@@ -12,14 +12,12 @@ namespace UML {
     class AbstractManager {
 
         template <class T, class U> friend class Set;
-        template <class T, class U, class AllocationPolicy> friend class PrivateSet;
+        template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
         template <class T> friend struct SetIterator;
         template <class T, class U> friend struct OrderedSetIterator;
         template <class T, class U> friend class OrderedSet;
-        template <class T, class U> friend class OrderedSet2;
         template <class T> friend class UmlPtr;
         template <class T, class U> friend class Singleton;
-        template <class T, class U> friend class Singleton2;
 
         public:
             virtual Element* create(ElementType type) = 0;

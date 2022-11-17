@@ -3,19 +3,33 @@
 #include "set.h"
 
 namespace UML {
+
     template <class T, class U>
-    class Singleton2 : public PrivateSet<T, U> {
+    class Singleton : virtual public TypedSet<T,U> {
+        virtual UmlPtr<T> get() = 0;
+        virtual void set(T* el) = 0;
+        virtual void set(T& el) = 0;
+        virtual void set(UmlPtr<T> el) = 0;
+    };
+
+    template <
+                class T, 
+                class U,
+                class AdditionPolicy = DoNothing<T, U>,
+                class RemovalPolicy = DoNothing<T, U>
+            >
+    class CustomSingleton : public PrivateSet<T, U, AdditionPolicy, RemovalPolicy> , public Singleton<T,U> {
         public:
-            Singleton2(U& el) : PrivateSet<T, U>(el) {}
-            Singleton2(U* el) : PrivateSet<T, U>(el) {}
-            UmlPtr<T> get() {
+            CustomSingleton(U& el) : PrivateSet<T, U>(el) {}
+            CustomSingleton(U* el) : PrivateSet<T, U>(el) {}
+            UmlPtr<T> get() override {
                 SetLock myLck = this->m_el.m_manager->lockEl(this->m_el);
                 if (this->m_root) {
                     return this->m_root->m_ptr;
                 }
                 return UmlPtr<T>();
             }
-            void set(T* el) {
+            void set(T* el) override {
                 SetLock myLck = this->m_el.m_manager->lockEl(this->m_el);
                 if (this->m_root && (!el || el->getID() != this->m_root->m_ptr.id())) {
                     SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
@@ -49,11 +63,11 @@ namespace UML {
                 }
             }
 
-            void set(T& el) {
+            void set(T& el) override {
                 set(&el);
             }
 
-            void set(UmlPtr<T> el) {
+            void set(UmlPtr<T> el) override {
                 if (el) {
                     set(*el);
                 } else {

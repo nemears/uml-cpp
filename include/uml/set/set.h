@@ -1,7 +1,9 @@
 #pragma once
 
 #include "uml/element.h"
+#include "uml/umlPtr.h"
 #include "setLock.h"
+#include "doNothingPolicy.h"
 
 namespace UML {
 
@@ -15,28 +17,28 @@ namespace UML {
             };
     };
 
-    class AbstractSet2;
+    class AbstractSet;
 
     struct SetNode {
         ElementPtr m_ptr;
         SetNode* m_parent = 0;
         SetNode* m_left = 0;
         SetNode* m_right = 0;
-        AbstractSet2* set = 0;
+        AbstractSet* set = 0;
     };
 
     template <class T, class U> class TypedSet;
 
-    class AbstractSet2 {
+    class AbstractSet {
 
-        template <class V, class W, class OtherCreationPolicy> friend class PrivateSet;
+        template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
 
         protected:
             SetNode* m_root = 0;
 
-            std::vector<AbstractSet2*> m_superSets;
-            std::vector<AbstractSet2*> m_subSets;
-            std::vector<AbstractSet2*> m_redefines;
+            std::vector<AbstractSet*> m_superSets;
+            std::vector<AbstractSet*> m_subSets;
+            std::vector<AbstractSet*> m_redefines;
 
             bool m_rootRedefinedSet = true;
 
@@ -45,14 +47,14 @@ namespace UML {
             virtual void runAddFunctor(Element& el) = 0;
             virtual void runRemoveFunctor(Element& el) = 0;
 
-            std::unordered_set<AbstractSet2*> getAllSuperSets() {
-                std::unordered_set<AbstractSet2*> allSuperSets;
-                std::list<AbstractSet2*> queue;
+            std::unordered_set<AbstractSet*> getAllSuperSets() {
+                std::unordered_set<AbstractSet*> allSuperSets;
+                std::list<AbstractSet*> queue;
                 for (auto superSet : this->m_superSets) {
                     queue.push_back(superSet);
                 }
                 while (!queue.empty()) {
-                    AbstractSet2* front = queue.front();
+                    AbstractSet* front = queue.front();
                     queue.pop_front();
                     allSuperSets.insert(front);
                     for (auto superSet : front->m_superSets) {
@@ -62,14 +64,14 @@ namespace UML {
                 return allSuperSets;
             }
 
-            std::unordered_set<AbstractSet2*> getAllSubSets() {
-                std::unordered_set<AbstractSet2*> allSubSets;
-                std::list<AbstractSet2*> queue;
+            std::unordered_set<AbstractSet*> getAllSubSets() {
+                std::unordered_set<AbstractSet*> allSubSets;
+                std::list<AbstractSet*> queue;
                 for (auto subSet : this->m_subSets) {
                     queue.push_back(subSet);
                 }
                 while (!queue.empty()) {
-                    AbstractSet2* front = queue.front();
+                    AbstractSet* front = queue.front();
                     queue.pop_front();
                     allSubSets.insert(front);
                     for (auto subSet : front->m_subSets) {
@@ -85,7 +87,7 @@ namespace UML {
              * but this set will not necessarily have all of the elements within the set supplied
              * @param subsetOf the set that we are a subset of
              **/
-            void subsets(AbstractSet2& subsetOf) {
+            void subsets(AbstractSet& subsetOf) {
                 if (std::find(this->m_superSets.begin(), this->m_superSets.end(), &subsetOf) == this->m_superSets.end()) {
                     this->m_superSets.push_back(&subsetOf);
                     subsetOf.m_subSets.push_back(this);
@@ -93,27 +95,18 @@ namespace UML {
             }
     };
 
-    template <class T, class U>
-    class Singleton2;
+    template <class T, class U, class AdditionPolicy, class RemovalPolicy>
+    class CustomSingleton;
 
     template <class T, class U>
-    class TypedSet : public AbstractSet2 {
+    class TypedSet : public AbstractSet {
 
-        template <class V, class W, class OtherCreationPolicy> friend class PrivateSet;
-        template <class V, class W> friend class Singleton2;
+        template <class V, class W, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
+        template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomSingleton;
 
         protected:
             virtual void innerAdd(T& el) = 0;
             virtual void innerRemove(ID id) = 0;
-    };
-
-    template <class T, class U>
-    class SetFunctor2 {
-        protected:
-            U& m_el;
-        public:
-            SetFunctor2(U& el) : m_el(el) {};
-            virtual void operator()(T& el) = 0;
     };
 
     template <class T>
@@ -137,16 +130,16 @@ namespace UML {
     template <
                 class T, 
                 class U, 
+                class AdditionPolicy = DoNothing<T,U>,
+                class RemovalPolicy = DoNothing<T,U>,
                 class AllocationPolicy = SetAllocationPolicy<T>
             >
-    class PrivateSet : public TypedSet<T, U> , public AllocationPolicy {
+    class PrivateSet : virtual public TypedSet<T, U> , public AllocationPolicy {
 
         protected:
             U& m_el;
             bool m_readOnly = false;
             TypedSet<U,T>& (T::*m_oppositeSignature)() = 0;
-            SetFunctor2<T,U>* m_addFunctor = 0; // TODO thinking about moving to policy, then behavior can be sorted at compile time
-            SetFunctor2<T,U>* m_removeFunctor = 0;
 
             /**
              * Searches the tree for the node with given id from the node supplied
@@ -193,16 +186,10 @@ namespace UML {
             };
 
             void runAddFunctor(Element& el) override {
-                if (!m_addFunctor) {
-                    return;
-                }
-                (*m_addFunctor)(el.as<T>());
+                AdditionPolicy::apply(el, m_el);
             }
             void runRemoveFunctor(Element& el) override {
-                if (!m_removeFunctor) {
-                    return;
-                }
-                (*m_removeFunctor)(el.as<T>());
+                RemovalPolicy::apply(el, m_el);
             }
 
             void innerAdd(T& el) override {
@@ -219,9 +206,7 @@ namespace UML {
                 }
                 innerAddDFS(node, node->set);
 
-                if (m_addFunctor) {
-                    (*m_addFunctor)(el);
-                }
+                AdditionPolicy::apply(el, m_el);
                 for (auto superSet : this->getAllSuperSets()) { // TODO calling getSuperSets twice, maybe call it once and pass it down into innerAddDfs
                     superSet->runAddFunctor(el);
                 }
@@ -253,14 +238,14 @@ namespace UML {
              * @param node: the node being placed
              * @param set: the current set we are checking
             */
-            void innerAddDFS(SetNode* node, AbstractSet2* set) {
+            void innerAddDFS(SetNode* node, AbstractSet* set) {
                 // place in supersets
-                for (AbstractSet2* superSet : set->m_superSets) {
+                for (AbstractSet* superSet : set->m_superSets) {
                     innerAddDFS(node, superSet);
                 }
 
                 // adjust redefines
-                for (AbstractSet2* redefinedSet : set->m_redefines) {
+                for (AbstractSet* redefinedSet : set->m_redefines) {
                     if (!redefinedSet->m_root) {
                         redefinedSet->m_root = node;
                     }
@@ -270,9 +255,9 @@ namespace UML {
                 if (set->m_superSets.size() == 0 && set->m_rootRedefinedSet) {
                     // root set, place the node in the tree
                     // gather our set's supersets and subsets
-                    std::unordered_set<AbstractSet2*> allSuperSetsAndMe = this->getAllSuperSets();
+                    std::unordered_set<AbstractSet*> allSuperSetsAndMe = this->getAllSuperSets();
                     allSuperSetsAndMe.insert(node->set);
-                    std::unordered_set<AbstractSet2*> allSubSets = this->getAllSubSets();
+                    std::unordered_set<AbstractSet*> allSubSets = this->getAllSubSets();
                     SetNode* currNode = set->m_root;
                     // handle divider nodes
                     while (currNode && ((!allSuperSetsAndMe.count(currNode->set) && !allSubSets.count(currNode->set)) || (!currNode->m_ptr && currNode->m_right))) {
@@ -301,14 +286,14 @@ namespace UML {
                         if (createDividerNode) {
                             SetNode* dividerNode = new SetNode();
                             // find most similar set between node and currNode
-                            AbstractSet2* dividerNodeScope = 0;
+                            AbstractSet* dividerNodeScope = 0;
                             {
-                                std::list<AbstractSet2*> queue;
+                                std::list<AbstractSet*> queue;
                                 for (auto superSet: currNode->set->m_superSets) {
                                     queue.push_back(superSet);
                                 }
                                 while (!queue.empty()) {
-                                    AbstractSet2* superSet = queue.front();
+                                    AbstractSet* superSet = queue.front();
                                     queue.pop_front();
                                     if (allSuperSetsAndMe.count(superSet)) {
                                         dividerNodeScope = superSet;
@@ -327,12 +312,12 @@ namespace UML {
 
                             // readjust roots if needed
                             {
-                                std::list<AbstractSet2*> queue;
+                                std::list<AbstractSet*> queue;
                                 queue.push_back(set);
                                 while (!queue.empty()) {
-                                    AbstractSet2* front = queue.front();
+                                    AbstractSet* front = queue.front();
                                     queue.pop_front();
-                                    std::list<AbstractSet2*> frontQueue;
+                                    std::list<AbstractSet*> frontQueue;
                                     if (front->m_root == currNode && allSuperSetsAndMe.count(front)) {
                                         front->m_root = dividerNode;
                                     }
@@ -463,7 +448,7 @@ namespace UML {
                     throw SetStateException("Could not remove element of id " + id.string() + " from set because it is not in the set");
                 }
 
-                std::unordered_set<AbstractSet2*> allSuperSets = this->getAllSuperSets();
+                std::unordered_set<AbstractSet*> allSuperSets = this->getAllSuperSets();
                 allSuperSets.insert(this);
                 for (auto redefinedSet : this->m_redefines) {
                     allSuperSets.insert(redefinedSet);
@@ -663,7 +648,7 @@ namespace UML {
                     (el->*m_oppositeSignature)().innerRemove(m_el.getID());
                 }
             }
-            void reindexDFS(SetNode* node, AbstractSet2* set) {
+            void reindexDFS(SetNode* node, AbstractSet* set) {
                 for (auto superSet : set->m_superSets) {
                     reindexDFS(node, superSet);
                 }
@@ -709,7 +694,7 @@ namespace UML {
 
                 // TODO lock all of the elements in the set lock?
 
-                std::unordered_set<AbstractSet2*> allSuperSets = this->getAllSuperSets();
+                std::unordered_set<AbstractSet*> allSuperSets = this->getAllSuperSets();
 
                 // start from bottom left
                 SetNode* currNode = this->m_root;
@@ -783,22 +768,6 @@ namespace UML {
                     subSet->subsets(*this);
                 }
             }
-            
-            void setAddFunctor(SetFunctor2<T,U>& f) {
-                if (!m_addFunctor && !this->m_root) { // TODO make sure set isn't initialized besides checking root
-                    m_addFunctor = &f;
-                } else {
-                    throw SetStateException("Set already initialized!");
-                }
-            }
-
-            void setRemoveFunctor(SetFunctor2<T,U>& f) {
-                if (!m_removeFunctor && !this->m_root) { // TODO make sure set isn't initialized besides checking root
-                    m_removeFunctor = &f;
-                } else {
-                    throw SetStateException("Set already initialized!");
-                }
-            }
 
             // Shared Accessors, all of these can be used by subclasses
             UmlPtr<T> get(ID id) const {
@@ -839,20 +808,20 @@ namespace UML {
             }
     };
 
-    template <class T, class U> class Set2;
+    template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomSet;
 
     template <class T>
-    class Set2Iterator {
+    class SetIterator {
 
-        template <class V, class W> friend class Set2;
+        template <class V, class W> friend class CustomSet;
 
         private:
             SetNode* root = 0;
             SetNode* curr = 0;
-            std::unordered_set<AbstractSet2*> validSets;
+            std::unordered_set<AbstractSet*> validSets;
         public:
-            Set2Iterator() {};
-            Set2Iterator(Set2Iterator& rhs) {
+            SetIterator() {};
+            SetIterator(SetIterator& rhs) {
                 curr = rhs.curr;
                 validSets = rhs.validSets;
             }
@@ -862,7 +831,7 @@ namespace UML {
             UmlPtr<T> operator->() {
                 return curr->m_ptr;
             }
-            Set2Iterator operator++() {
+            SetIterator<T> operator++() {
                 do {
                     if (curr->m_left) {
                         // always go left
@@ -905,7 +874,7 @@ namespace UML {
                 } while (!curr->m_ptr);
                 return *this;
             }
-            friend bool operator== (const Set2Iterator& lhs, const Set2Iterator& rhs) {
+            friend bool operator== (const SetIterator& lhs, const SetIterator& rhs) {
                 if (!lhs.curr && !lhs.curr) {
                     return true;
                 }
@@ -914,7 +883,7 @@ namespace UML {
                 }
                 return lhs.curr == rhs.curr;
             }
-            friend bool operator!= (const Set2Iterator& lhs, const Set2Iterator& rhs) {
+            friend bool operator!= (const SetIterator& lhs, const SetIterator& rhs) {
                 if (!lhs.curr && !lhs.curr) {
                     return false;
                 }
@@ -926,34 +895,51 @@ namespace UML {
     };
 
     template <class T, class U>
-    class Set2 : public PrivateSet<T,U> {
+    class Set : virtual public TypedSet<T,U> {
         public:
-            Set2(U* el) : PrivateSet<T,U>(el) {}
-            Set2(U& el) : PrivateSet<T,U>(el) {};
-            void add(UmlPtr<T> el) {
+            virtual void add(UmlPtr<T> el) = 0;
+            virtual void add(T& el) = 0;
+            virtual void remove(ID id) = 0;
+            virtual void remove(T& el) = 0;
+            virtual void remove(UmlPtr<T>& el) = 0;
+            virtual SetIterator<T> begin() = 0;
+            virtual SetIterator<T> end() = 0;
+    };
+
+    template <
+                class T, 
+                class U,
+                class AdditionPolicy = DoNothing<T, U>,
+                class RemovalPolicy = DoNothing<T, U>
+            >
+    class CustomSet : public PrivateSet<T,U, AdditionPolicy, RemovalPolicy> , public Set<T,U> {
+        public:
+            CustomSet(U* el) : PrivateSet<T,U>(el) {}
+            CustomSet(U& el) : PrivateSet<T,U>(el) {}
+            void add(UmlPtr<T> el) override {
                 add(*el);
             }
-            void add(T& el) {
+            void add(T& el) override {
                 PrivateSet<T,U>::add(el);
             }
-            void remove(ID id) {
+            void remove(ID id) override {
                 PrivateSet<T,U>::remove(id);
             }
-            void remove(T& el) {
+            void remove(T& el) override {
                 remove(el.getID());
             }
-            void remove (UmlPtr<T> el) {
+            void remove (UmlPtr<T> el) override {
                 remove(el.id());
             }
-            Set2Iterator<T> begin() {
-                Set2Iterator<T> ret;
+            SetIterator<T> begin() override {
+                SetIterator<T> ret;
                 ret.curr = this->m_root;
                 ret.root = this->m_root;
                 ret.validSets = this->getAllSuperSets();
                 ret.validSets.insert(this);
                 return ret;
             }
-            Set2Iterator<T> end() {
+            SetIterator<T> end() override {
                 return Set2Iterator<T>();
             }
     };

@@ -9,7 +9,8 @@
 #include <unordered_map>
 #include <unordered_set>
 #include "id.h"
-#include <mutex>
+// #include <mutex>
+#include "set/doNothingPolicy.h"
 
 namespace YAML {
     class Node;
@@ -183,13 +184,11 @@ namespace UML {
     class BehavioredClassifier;
     class InterfaceRealization;
     class Usage;
+    template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomSet;
     template <class T, class U> class Set;
-    template <class T> struct SetIterator;
-    template <class V, class W> class OppositeFunctor;
+    template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomSingleton;
     template <class T, class U> class Singleton;
-    template <class T, class U> class Singleton2;
-    template <class T, class U> class OrderedSet;
-    template <class T, class U> struct OrderedSetIterator;
+    template< class T, class U> class TypedSet;
     template <class T> class UmlPtr;
     typedef UmlPtr<Element> ElementPtr;
     class SetReferenceFunctor;
@@ -239,15 +238,9 @@ namespace UML {
         friend class BehavioredClassifier;
         friend class InterfaceRealization;
         friend class Usage;
-        template <class T, class U> friend class Singleton;
-        template <class T, class U> friend class Singleton2;
-        template <class T, class U> friend class Set;
-        template <class T, class U, class AllocationPolicy> friend class PrivateSet;
-        template <class V, class W> friend class OppositeFunctor;
-        template <class T> friend struct SetIterator;
-        template <class T, class U> friend class OrderedSet;
-        template <class T, class U> friend class OrderedSet2;
-        template <class T, class U> friend struct OrderedSetIterator;
+        template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomSingleton;
+        template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomSet;
+        template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
         template <class T> friend class UmlPtr;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);
         friend ElementPtr Parsers::parseYAML(YAML::Node node, Parsers::ParserMetaData& data);
@@ -266,13 +259,13 @@ namespace UML {
             const ElementType m_elementType;
 
             // owner
-            Singleton<Element, Element>* m_owner;
-            Set<Element, Element>& getOwnerSingleton();
+            CustomSingleton<Element, Element, DoNothing<Element, Element>, DoNothing<Element, Element>>* m_owner;
+            TypedSet<Element, Element>& getOwnerSingleton();
             
             // ownedElements
-            Set<Element, Element>* m_ownedElements;
-            Set<Comment, Element>* m_ownedComments;
-            Set<InstanceSpecification, Element>* m_appliedStereotype;
+            CustomSet<Element, Element, DoNothing<Element, Element>, DoNothing<Element, Element>>* m_ownedElements;
+            CustomSet<Comment, Element, DoNothing<Comment, Element>, DoNothing<Comment, Element>>* m_ownedComments;
+            CustomSet<InstanceSpecification, Element, DoNothing<InstanceSpecification, Element>, DoNothing<InstanceSpecification, Element>>* m_appliedStereotype;
             void setOwner(Element* el);
             void setOwnerByID(ID id);
             virtual void referencingReleased(ID id);

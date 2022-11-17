@@ -1,4 +1,4 @@
-set(umlSources  element.cpp id.cpp set.cpp namedElement.cpp namespace.cpp package.cpp packageableElement.cpp
+set(umlSources  element.cpp id.cpp namedElement.cpp namespace.cpp package.cpp packageableElement.cpp
                 templateableElement.cpp parameterableElement.cpp relationship.cpp directedRelationship.cpp packageMerge.cpp
                 dependency.cpp classifier.cpp typedElement.cpp feature.cpp property.cpp structuredClassifier.cpp class.cpp 
                 connectableElement.cpp encapsulatedClassifier.cpp multiplicityElement.cpp behavioralFeature.cpp behavior.cpp

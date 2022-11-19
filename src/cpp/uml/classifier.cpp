@@ -12,107 +12,94 @@
 
 using namespace UML;
 
-void Classifier::AddGeneralizationFunctor::operator()(Element& el) const {
-    if (el.as<Generalization>().getGeneral() && !m_el.as<Classifier>().m_generals.contains(el.as<Generalization>().getGeneral().id())) {
+void Classifier::AddGeneralizationPolicy::apply(Generalization& el, Classifier& me) {
+    if (el.getGeneral() && !me.m_generals.contains(el.getGeneral().id())) {
         if (el.as<Generalization>().getGeneral().loaded()) {
-            m_el.as<Classifier>().m_generals.add(*el.as<Generalization>().getGeneral());
+            me.m_generals.add(el.getGeneral());
         } else {
-            m_el.as<Classifier>().m_generals.add(el.as<Generalization>().getGeneral().id());
+            me.m_generals.add(el.getGeneral().id());
         }
     }
 }
 
-void Classifier::RemoveGeneralizationFunctor::operator()(Element& el) const {
-    if (el.as<Generalization>().getGeneral() && m_el.as<Classifier>().m_generals.contains(el.as<Generalization>().getGeneral().id())) {
-        m_el.as<Classifier>().m_generals.remove(el.as<Generalization>().getGeneral().id());
+void Classifier::RemoveGeneralizationPolicy::apply(Generalization& el, Classifier& me) {
+    if (el.getGeneral() && me.m_generals.contains(el.getGeneral().id())) {
+        me.m_generals.remove(el.getGeneral().id());
     }
 }
 
-void Classifier::AddGeneralFunctor::operator()(Element& el) const {
+void Classifier::AddGeneralPolicy::apply(Classifier& el, Classifier& me) {
     bool createGeneralization = true;
-    for (auto& generalization : m_el.as<Classifier>().m_generalizations) {
+    for (auto& generalization : me.m_generalizations) {
         if (generalization.getGeneral().id() == el.getID()) {
             createGeneralization = false;
             break;
         }
     }
     if (createGeneralization) {
-        Generalization& newGeneralization = *m_el.m_manager->create<Generalization>();
-        newGeneralization.setGeneral(el.as<Classifier>());
-        m_el.as<Classifier>().getGeneralizations().add(newGeneralization);
+        Generalization& newGeneralization = *me.m_manager->create<Generalization>();
+        newGeneralization.setGeneral(el);
+        me.getGeneralizations().add(newGeneralization);
     }
-    for (auto& mem : el.as<Classifier>().m_members) {
+    for (auto& mem : el.m_members) {
         if (mem.getVisibility() != VisibilityKind::PRIVATE) {
-            m_el.as<Classifier>().m_inheritedMembers.nonOppositeAdd(mem);
+            m_el.m_inheritedMembers.add(mem);
         }
     }
-    el.setReference(&m_el);
+    el.setReference(&me);
 }
 
-void Classifier::RemoveGeneralFunctor::operator()(Element& el) const {
-    for (auto& mem : el.as<Classifier>().m_members) {
-        if (mem.getVisibility() != VisibilityKind::PRIVATE && m_el.as<Classifier>().m_inheritedMembers.contains(mem.getID())) {
-            m_el.as<Classifier>().m_inheritedMembers.nonOppositeRemove(mem.getID());
+void Classifier::RemoveGeneralPolicy::apply(Classifier& el, Classifier& me) {
+    for (auto& mem : el.m_members) {
+        if (mem.getVisibility() != VisibilityKind::PRIVATE && me.m_inheritedMembers.contains(mem.getID())) {
+            me.m_inheritedMembers.remove(mem.getID());
         }
     }
     el.removeReference(m_el.getID());
 }
 
-void Classifier::AddOwnedMemberFunctor::operator()(Element& el) const {
-    if (el.as<NamedElement>().getVisibility() != VisibilityKind::PRIVATE) {
-        for (auto& pair : m_el.m_node->m_references) {
-            if (pair.second.node && 
-                pair.second.node->m_managerElementMemory && 
-                pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
-                pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(m_el.getID())) {
-                    pair.second.node->m_managerElementMemory->as<Classifier>().getInheritedMembers().nonOppositeAdd(el.as<NamedElement>());
-            }
-        }
-    }
-}
+// void Classifier::AddOwnedMemberFunctor::operator()(Element& el) const {
+//     if (el.as<NamedElement>().getVisibility() != VisibilityKind::PRIVATE) {
+//         for (auto& pair : m_el.m_node->m_references) {
+//             if (pair.second.node && 
+//                 pair.second.node->m_managerElementMemory && 
+//                 pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
+//                 pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(m_el.getID())) {
+//                     pair.second.node->m_managerElementMemory->as<Classifier>().getInheritedMembers().nonOppositeAdd(el.as<NamedElement>());
+//             }
+//         }
+//     }
+// }
 
-void Classifier::RemoveOwnedMemberFunctor::operator()(Element& el) const {
-    if (el.as<NamedElement>().getVisibility() != VisibilityKind::PRIVATE) {
-        for (auto& pair : m_el.m_node->m_references) {
-            if (!pair.second.node && m_el.m_manager->loaded(pair.first)) {
-                pair.second.node = m_el.m_manager->get(pair.first).ptr()->m_node;
-            }
-            if (pair.second.node->m_managerElementMemory && 
-                pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
-                pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(m_el.getID())) {
-                    pair.second.node->m_managerElementMemory->as<Classifier>().m_inheritedMembers.nonOppositeRemove(el.getID());
-            }
-        }
-    }
-}
+// void Classifier::RemoveOwnedMemberFunctor::operator()(Element& el) const {
+//     if (el.as<NamedElement>().getVisibility() != VisibilityKind::PRIVATE) {
+//         for (auto& pair : m_el.m_node->m_references) {
+//             if (!pair.second.node && m_el.m_manager->loaded(pair.first)) {
+//                 pair.second.node = m_el.m_manager->get(pair.first).ptr()->m_node;
+//             }
+//             if (pair.second.node->m_managerElementMemory && 
+//                 pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
+//                 pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(m_el.getID())) {
+//                     pair.second.node->m_managerElementMemory->as<Classifier>().m_inheritedMembers.nonOppositeRemove(el.getID());
+//             }
+//         }
+//     }
+// }
 
-Set<RedefinableTemplateSignature, Classifier>& Classifier::getOwnedTemplateSignatureSingleton() {
+TypedSet<RedefinableTemplateSignature, Classifier>& Classifier::getOwnedTemplateSignatureSingleton() {
     return m_classifierOwnedTemplateSignature;
 }
 
-Set<ClassifierTemplateParameter, Classifier>& Classifier::getTemplateParameterSingleton() {
+TypedSet<ClassifierTemplateParameter, Classifier>& Classifier::getTemplateParameterSingleton() {
     return m_classifierTemplateParameter;
 }
 
-void Classifier::referencingReleased(ID id) {
-    Namespace::referencingReleased(id);
-    PackageableElement::referencingReleased(id);
-    m_generals.release(id);
-    m_powerTypeExtent.release(id);
-}
 
 void Classifier::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
     PackageableElement::referenceReindexed(oldID, newID); // todo non super call meth
     m_generals.reindex(oldID, newID);
     m_powerTypeExtent.reindex(oldID, newID);
-}
-
-void Classifier::reindexName(ID id, std::string newName) {
-    Namespace::reindexName(id, newName);
-    PackageableElement::reindexName(id, newName);
-    m_generals.reindexName(id, newName);
-    m_powerTypeExtent.reindexName(id, newName);
 }
 
 void Classifier::restoreReferences() {
@@ -137,8 +124,6 @@ void Classifier::referenceErased(ID id) {
 }
 
 void Classifier::init() {
-    m_ownedMembers.m_addFunctors.insert(new AddOwnedMemberFunctor(this));
-    m_ownedMembers.m_removeFunctors.insert(new RemoveOwnedMemberFunctor(this));
     m_features.subsets(m_members);
     m_features.opposite(&Feature::getFeaturingClassifierSingleton);
     m_features.m_readOnly = true;
@@ -146,10 +131,6 @@ void Classifier::init() {
     m_attributes.m_readOnly = true;
     m_generalizations.subsets(*m_ownedElements);
     m_generalizations.opposite(&Generalization::getSpecificSingleton);
-    m_generalizations.m_addFunctors.insert(new AddGeneralizationFunctor(this));
-    m_generalizations.m_removeFunctors.insert(new RemoveGeneralizationFunctor(this));
-    m_generals.m_addFunctors.insert(new AddGeneralFunctor(this));
-    m_generals.m_removeFunctors.insert(new RemoveGeneralFunctor(this));
     m_inheritedMembers.subsets(m_members);
     m_inheritedMembers.m_readOnly = true;
     m_powerTypeExtent.opposite(&GeneralizationSet::getPowerTypeSingleton);

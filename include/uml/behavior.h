@@ -13,13 +13,11 @@ namespace UML {
         friend class BehavioralFeature;
 
         protected:
-            Set<Parameter, Behavior> m_ownedParameters = Set<Parameter, Behavior>(this);
-            Singleton<BehavioralFeature, Behavior> m_specification = Singleton<BehavioralFeature, Behavior>(this);
-            void referencingReleased(ID id) override;
-            void reindexName(ID id, std::string newName) override;
+            CustomSet<Parameter, Behavior> m_ownedParameters = CustomSet<Parameter, Behavior>(this);
+            CustomSingleton<BehavioralFeature, Behavior> m_specification = CustomSingleton<BehavioralFeature, Behavior>(this);
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
-            Set<BehavioralFeature, Behavior>& getSpecificationSingleton();
+            TypedSet<BehavioralFeature, Behavior>& getSpecificationSingleton();
             void init();
             Behavior();
         public:

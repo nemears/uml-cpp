@@ -10,7 +10,7 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Set<Stereotype, Profile> m_profileOwnedStereotypes = Set<Stereotype, Profile>(this);
+            CustomSet<Stereotype, Profile> m_profileOwnedStereotypes = CustomSet<Stereotype, Profile>(this);
             void init();
             Profile();
         public:

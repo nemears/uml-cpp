@@ -16,30 +16,26 @@ namespace UML {
             bool m_isUnique = true;
             int m_lower = -1;
             int m_upper = -1;
-            Singleton<ValueSpecification, MultiplicityElement> m_lowVal = Singleton<ValueSpecification, MultiplicityElement>(this);
-            Singleton<ValueSpecification, MultiplicityElement> m_upVal = Singleton<ValueSpecification, MultiplicityElement>(this);
-            class AddLowerFunctor : public SetFunctor {
+            class AddLowerPolicy {
                 public:
-                    AddLowerFunctor(Element* them) : SetFunctor(them) {};
-                    void operator()(Element& el) const override;
+                    void apply(ValueSpecification& el, MultiplicityElement& me);
             };
-            class RemoveLowerFunctor : public SetFunctor {
+            class RemoveLowerPolicy {
                 public:
-                    RemoveLowerFunctor(Element* them) : SetFunctor(them) {};
-                    void operator()(Element& el) const override;
+                    void apply(ValueSpecification& el, MultiplicityElement& me);
             };
-            class AddUpperFunctor : public SetFunctor {
+            class AddUpperPolicy {
                 public:
-                    AddUpperFunctor(Element* them) : SetFunctor(them) {};
-                    void operator()(Element& el) const override;
+                    void apply(ValueSpecification& el, MultiplicityElement& me);
             };
-            class RemoveUpperFunctor : public SetFunctor {
+            class RemoveUpperPolicy {
                 public:
-                    RemoveUpperFunctor(Element* them) : SetFunctor(them) {};
-                    void operator()(Element& el) const override;
+                    void apply(ValueSpecification& el, MultiplicityElement& me);
             };
-            Set<ValueSpecification, MultiplicityElement>& getLowerValueSingleton();
-            Set<ValueSpecification, MultiplicityElement>& getUpperValueSingleton();
+            CustomSingleton<ValueSpecification, MultiplicityElement, AddLowerPolicy, RemoveLowerPolicy> m_lowVal = CustomSingleton<ValueSpecification, MultiplicityElement, AddLowerPolicy, RemoveLowerPolicy>(this);
+            CustomSingleton<ValueSpecification, MultiplicityElement, AddUpperPolicy, RemoveUpperPolicy> m_upVal = CustomSingleton<ValueSpecification, MultiplicityElement, AddUpperPolicy, RemoveUpperPolicy>(this);
+            TypedSet<ValueSpecification, MultiplicityElement>& getLowerValueSingleton();
+            TypedSet<ValueSpecification, MultiplicityElement>& getUpperValueSingleton();
             void init();
             MultiplicityElement();
         private:

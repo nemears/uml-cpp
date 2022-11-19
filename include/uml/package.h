@@ -18,13 +18,11 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Set<PackageableElement, Package> m_packagedElements = Set<PackageableElement, Package>(this);
-            Set<PackageMerge, Package> m_packageMerge = Set<PackageMerge, Package>(this);
-            Set<Stereotype, Package> m_ownedStereotypes = Set<Stereotype, Package>(this);
-            Set<ProfileApplication, Package> m_profileApplications = Set<ProfileApplication, Package>(this);
-            void referencingReleased(ID id) override;
+            CustomSet<PackageableElement, Package> m_packagedElements = CustomSet<PackageableElement, Package>(this);
+            CustomSet<PackageMerge, Package> m_packageMerge = CustomSet<PackageMerge, Package>(this);
+            CustomSet<Stereotype, Package> m_ownedStereotypes = CustomSet<Stereotype, Package>(this);
+            CustomSet<ProfileApplication, Package> m_profileApplications = CustomSet<ProfileApplication, Package>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
             Package();

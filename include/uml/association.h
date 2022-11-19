@@ -3,7 +3,7 @@
 
 #include "classifier.h"
 #include "relationship.h"
-#include "orderedSet.h"
+#include "set/orderedSet.h"
 
 namespace UML {
     class Association : public Classifier, public Relationship {
@@ -12,30 +12,24 @@ namespace UML {
         friend class Property;
 
         protected:
-            OrderedSet<Property, Association> m_memberEnds = OrderedSet<Property, Association>(this);
-            class AddEndTypeFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class AddMemberEndPolicy {
                 public:
-                    AddEndTypeFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(Property& el, Association& me);
             };
-            class RemoveEndTypeFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemoveMemberEndPolicy {
                 public:
-                    RemoveEndTypeFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(Property& el, Association& me);
             };
-            OrderedSet<Property, Association> m_ownedEnds = OrderedSet<Property, Association>(this);
-            Set<Property, Association> m_navigableOwnedEnds = Set<Property, Association>(this);
-            Set<Type, Association> m_endTypes = Set<Type, Association>(this);
-            void referencingReleased(ID id) override;
+            CustomOrderedSet<Property, Association, AddMemberEndPolicy, RemoveMemberEndPolicy> m_memberEnds = CustomOrderedSet<Property, Association, AddMemberEndPolicy, RemoveMemberEndPolicy>(this);
+            CustomOrderedSet<Property, Association> m_ownedEnds = CustomOrderedSet<Property, Association>(this);
+            CustomSet<Property, Association> m_navigableOwnedEnds = CustomSet<Property, Association>(this);
+            CustomSet<Type, Association> m_endTypes = CustomSet<Type, Association>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void restoreReferences() override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
-            Set<Property, Association>& getMemberEndsSet();
-            Set<Property, Association>& getOwnedEndsSet();
+            // Set<Property, Association>& getMemberEndsSet();
+            // Set<Property, Association>& getOwnedEndsSet();
             void init();
             Association();
         public:

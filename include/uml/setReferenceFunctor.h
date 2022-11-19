@@ -1,18 +1,16 @@
 #ifndef _UML_SET_REFERENCE_FUNCTOR_H_
 #define _UML_SET_REFERENCE_FUNCTOR_H_
 
-#include "set.h"
-
 namespace UML {
-    class SetReferenceFunctor : public SetFunctor {
+    template <class T, class U>
+    class SetReferencePolicy {
         public:
-            SetReferenceFunctor(Element* them) : SetFunctor(them) {};
-            void operator()(Element& el) const override;
+            void apply(T& el, U& me);
     };
-    class RemoveReferenceFunctor : public SetFunctor {
+    template<class T, class U>
+    class RemoveReferencePolicy {
         public:
-            RemoveReferenceFunctor(Element* them) : SetFunctor(them) {};
-            void operator()(Element& el) const override;
+            void apply(T& el, U& me);
     };
 }
 

@@ -1,8 +1,7 @@
 #ifndef _UML_SLOT_H_
 #define _UML_SLOT_H_
 
-#include "uml/set.h"
-#include "uml/singleton.h"
+#include "set/singleton.h"
 
 namespace UML {
 
@@ -18,15 +17,13 @@ namespace UML {
         friend class InstanceSpecification;
         
         protected:
-            Singleton<StructuralFeature, Slot> m_definingFeature = Singleton<StructuralFeature, Slot>(this);
-            Set<ValueSpecification, Slot> m_values = Set<ValueSpecification, Slot>(this);
-            Singleton<InstanceSpecification, Slot> m_owningInstance = Singleton<InstanceSpecification, Slot>(this);
-            void referencingReleased(ID id) override;
+            CustomSingleton<StructuralFeature, Slot> m_definingFeature = CustomSingleton<StructuralFeature, Slot>(this);
+            CustomSet<ValueSpecification, Slot> m_values = CustomSet<ValueSpecification, Slot>(this);
+            CustomSingleton<InstanceSpecification, Slot> m_owningInstance = CustomSingleton<InstanceSpecification, Slot>(this);
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
-            Set<StructuralFeature, Slot>& getDefiningFeatureSingleton();
-            Set<InstanceSpecification, Slot>& getOwningInstanceSingleton();
+            TypedSet<StructuralFeature, Slot>& getDefiningFeatureSingleton();
+            TypedSet<InstanceSpecification, Slot>& getOwningInstanceSingleton();
             void init();
             Slot();
         public:

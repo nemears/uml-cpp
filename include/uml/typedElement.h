@@ -13,13 +13,10 @@ namespace UML{
         friend class Type;
 
         protected:
-            Singleton<Type, TypedElement> m_type = Singleton<Type, TypedElement>(this);
-            void referencingReleased(ID id) override;
+            CustomSingleton<Type, TypedElement> m_type = CustomSingleton<Type, TypedElement>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
-            void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
-            Set<Type, TypedElement>& getTypeSingleton();
+            TypedSet<Type, TypedElement>& getTypeSingleton();
             void init();
             TypedElement();
         public:

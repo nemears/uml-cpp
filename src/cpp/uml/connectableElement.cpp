@@ -10,31 +10,19 @@
 
 using namespace UML;
 
-void ConnectableElement::referencingReleased(ID id) {
-    TypedElement::referencingReleased(id);
-    ParameterableElement::referencingReleased(id);
-    m_ends.release(id);
-}
-
 void ConnectableElement::referenceReindexed(ID oldID, ID newID) {
     TypedElement::referenceReindexed(oldID, newID);
     ParameterableElement::referenceReindexed(oldID, newID);
     m_ends.reindex(oldID, newID);
 }
 
-void ConnectableElement::reindexName(ID id, std::string newName) {
-    TypedElement::reindexName(id, newName);
-    ParameterableElement::reindexName(id, newName);
-    m_ends.reindexName(id, newName);
-}
-
-void ConnectableElement::restoreReference(Element* el) {
-    TypedElement::restoreReference(el);
-    ParameterableElement::restoreReference(el);
-    if (m_ends.contains(el->getID())) {
-        el->setReference(this);
-    }
-}
+// void ConnectableElement::restoreReference(Element* el) {
+//     TypedElement::restoreReference(el);
+//     ParameterableElement::restoreReference(el);
+//     if (m_ends.contains(el->getID())) {
+//         el->setReference(this);
+//     }
+// }
 
 void ConnectableElement::referenceErased(ID id) {
     TypedElement::referenceErased(id);
@@ -43,8 +31,6 @@ void ConnectableElement::referenceErased(ID id) {
 
 void ConnectableElement::init() {
     m_ends.m_readOnly = true;
-    m_ends.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_ends.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 ConnectableElement::ConnectableElement() : Element(ElementType::CONNECTABLE_ELEMENT) {

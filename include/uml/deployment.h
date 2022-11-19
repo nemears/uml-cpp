@@ -18,9 +18,9 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         private:
-            Set<DeployedArtifact, Deployment> m_deployedArtifacts = Set<DeployedArtifact, Deployment>(this);
-            Singleton<DeploymentTarget, Deployment> m_location = Singleton<DeploymentTarget, Deployment>(this);
-            Set<DeploymentTarget, Deployment>& getLocationSingleton();
+            CustomSet<DeployedArtifact, Deployment> m_deployedArtifacts = CustomSet<DeployedArtifact, Deployment>(this);
+            CustomSingleton<DeploymentTarget, Deployment> m_location = CustomSingleton<DeploymentTarget, Deployment>(this);
+            TypedSet<DeploymentTarget, Deployment>& getLocationSingleton();
             void init();
             Deployment();
         public:

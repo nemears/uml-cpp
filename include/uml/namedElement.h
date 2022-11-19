@@ -35,22 +35,20 @@ namespace UML{
             std::string m_absoluteNamespace;
             class UpdateQualifiedNamePolicy {
                 public:
-                    void apply(Namespace& el, NamedElement& me);
+                    static void apply(Namespace& el, NamedElement& me);
             };
             class RemoveQualifiedNamePolicy {
                 public:
-                    void apply(Namespace& el, NamedElement& me);
+                    static void apply(Namespace& el, NamedElement& me);
             };
             CustomSingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy, RemoveQualifiedNamePolicy> m_namespace = CustomSingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy, RemoveQualifiedNamePolicy>(this);
         protected:
-            Set<Dependency, NamedElement>* m_clientDependencies;
+            CustomSet<Dependency, NamedElement>* m_clientDependencies;
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
-            void reindexName(ID id, std::string newName) override;
             void updateQualifiedName(std::string absoluteNamespace);
-            void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
-            Set<Namespace, NamedElement>& getNamespaceSingleton();
+            TypedSet<Namespace, NamedElement>& getNamespaceSingleton();
             void init();
             NamedElement();
         public:

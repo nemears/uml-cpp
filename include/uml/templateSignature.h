@@ -3,8 +3,8 @@
 
 #include "element.h"
 #include "templateParameter.h"
-#include "singleton.h"
-#include "orderedSet.h"
+#include "set/singleton.h"
+#include "set/orderedSet.h"
 
 namespace UML {
 
@@ -20,16 +20,12 @@ namespace UML {
         friend class TemplateableElement;
 
         protected:
-            Singleton<TemplateableElement, TemplateSignature> m_template = Singleton<TemplateableElement, TemplateSignature>(this);
-            OrderedSet<TemplateParameter, TemplateSignature> m_parameters = OrderedSet<TemplateParameter, TemplateSignature>(this);
-            OrderedSet<TemplateParameter, TemplateSignature> m_ownedParameters =  OrderedSet<TemplateParameter, TemplateSignature>(this);
-            void referencingReleased(ID id) override;
+            CustomSingleton<TemplateableElement, TemplateSignature> m_template = CustomSingleton<TemplateableElement, TemplateSignature>(this);
+            CustomOrderedSet<TemplateParameter, TemplateSignature> m_parameters = CustomOrderedSet<TemplateParameter, TemplateSignature>(this);
+            CustomOrderedSet<TemplateParameter, TemplateSignature> m_ownedParameters =  CustomOrderedSet<TemplateParameter, TemplateSignature>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
-            Set<TemplateableElement, TemplateSignature>& getTemplateSingleton();
-            Set<TemplateParameter, TemplateSignature>& getParametersSet();
-            Set<TemplateParameter, TemplateSignature>& getOwnedParametersSet();
+            TypedSet<TemplateableElement, TemplateSignature>& getTemplateSingleton();
             void init();
             TemplateSignature();
         public:

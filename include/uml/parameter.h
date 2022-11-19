@@ -38,17 +38,15 @@ namespace UML {
 
         protected:
             ParameterDirectionKind m_direction = ParameterDirectionKind::NONE;
-            Singleton<Operation, Parameter> m_operation = Singleton<Operation, Parameter>(this);
-            Singleton<ValueSpecification, Parameter> m_defaultValue = Singleton<ValueSpecification, Parameter>(this);
-            Set<ParameterSet, Parameter> m_parameterSets = Set<ParameterSet, Parameter>(this);
+            CustomSingleton<Operation, Parameter> m_operation = CustomSingleton<Operation, Parameter>(this);
+            CustomSingleton<ValueSpecification, Parameter> m_defaultValue = CustomSingleton<ValueSpecification, Parameter>(this);
+            CustomSet<ParameterSet, Parameter> m_parameterSets = CustomSet<ParameterSet, Parameter>(this);
             bool m_isException = false;
             bool m_isStream = false;
             ParameterEffectKind m_effect = ParameterEffectKind::NONE;
-            Set<Operation, Parameter>& getOperationSingleton();
-            Set<ValueSpecification, Parameter>& getDefaultValueSingleton();
-            void referencingReleased(ID id) override;
+            TypedSet<Operation, Parameter>& getOperationSingleton();
+            TypedSet<ValueSpecification, Parameter>& getDefaultValueSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
             Parameter();

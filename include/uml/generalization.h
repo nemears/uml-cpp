@@ -2,7 +2,7 @@
 #define _UML_GENERALIZATION_H_
 
 #include "directedRelationship.h"
-#include "singleton.h"
+#include "set/singleton.h"
 
 namespace UML {
 
@@ -16,28 +16,24 @@ namespace UML {
         friend class Classifier;
 
         protected:
-            Singleton<Classifier, Generalization> m_general = Singleton<Classifier, Generalization>(this);
-            Singleton<Classifier, Generalization> m_specific = Singleton<Classifier, Generalization>(this);
-            Set<GeneralizationSet, Generalization> m_generalizationSets = Set<GeneralizationSet, Generalization>(this);
-            class AddGeneralFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class AddGeneralPolicy {
                 public:
-                    AddGeneralFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(Classifier& el, Generalization& me);
             };
-            class RemoveGeneralFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemoveGeneralPolicy {
                 public:
-                    RemoveGeneralFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(Classifier& el, Generalization& me);
             };
+            CustomSingleton<Classifier, Generalization, AddGeneralPolicy, RemoveGeneralPolicy> m_general = CustomSingleton<Classifier, Generalization, AddGeneralPolicy, RemoveGeneralPolicy>(this);
+            CustomSingleton<Classifier, Generalization> m_specific = CustomSingleton<Classifier, Generalization>(this);
+            CustomSet<GeneralizationSet, Generalization> m_generalizationSets = CustomSet<GeneralizationSet, Generalization>(this);
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(ID id, std::string newName) override;
             void referencingReleased(ID id) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
-            Set<Classifier, Generalization>& getGeneralSingleton();
-            Set<Classifier, Generalization>& getSpecificSingleton();
+            TypedSet<Classifier, Generalization>& getGeneralSingleton();
+            TypedSet<Classifier, Generalization>& getSpecificSingleton();
             void init();
             Generalization();
         public:

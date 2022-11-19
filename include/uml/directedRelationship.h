@@ -6,8 +6,8 @@
 namespace UML {
     class DirectedRelationship : public Relationship {
         protected:
-            Set<Element, DirectedRelationship> m_targets = Set<Element, DirectedRelationship>(this);
-            Set<Element, DirectedRelationship> m_sources = Set<Element, DirectedRelationship>(this);
+            CustomSet<Element, DirectedRelationship> m_targets = CustomSet<Element, DirectedRelationship>(this);
+            CustomSet<Element, DirectedRelationship> m_sources = CustomSet<Element, DirectedRelationship>(this);
             void init();
             DirectedRelationship();
         public:

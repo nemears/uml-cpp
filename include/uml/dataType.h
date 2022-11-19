@@ -2,7 +2,7 @@
 #define _UML_DATA_TYPE_H_
 
 #include "classifier.h"
-#include "orderedSet.h"
+#include "set/orderedSet.h"
 
 namespace UML {
     class DataType : public Classifier {
@@ -12,10 +12,10 @@ namespace UML {
         friend class Operation;
 
         protected:
-            OrderedSet<Property, DataType> m_ownedAttributes = OrderedSet<Property, DataType>(this);
-            OrderedSet<Operation, DataType> m_ownedOperations = OrderedSet<Operation, DataType>(this);
-            Set<Property, DataType>& getOwnedAttributesSet();
-            Set<Operation, DataType>& getOwnedOperationsSet();
+            CustomOrderedSet<Property, DataType> m_ownedAttributes = CustomOrderedSet<Property, DataType>(this);
+            CustomOrderedSet<Operation, DataType> m_ownedOperations = CustomOrderedSet<Operation, DataType>(this);
+            TypedSet<Property, DataType>& getOwnedAttributesSet();
+            TypedSet<Operation, DataType>& getOwnedOperationsSet();
             void init();
             DataType();
         public:

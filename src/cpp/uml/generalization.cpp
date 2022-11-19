@@ -13,34 +13,23 @@
 
 using namespace UML;
 
-void Generalization::AddGeneralFunctor::operator()(Element& el) const {
-    if (m_el.as<Generalization>().getSpecific() && !m_el.as<Generalization>().getSpecific()->getGenerals().contains(el.getID())) {
-        m_el.as<Generalization>().getSpecific()->getGenerals().add(el.as<Classifier>());
+void Generalization::AddGeneralPolicy::apply(Classifier& el, Generalization& me) {
+    if (me.getSpecific() && !me.getSpecific()->getGenerals().contains(el.getID())) {
+        me.getSpecific()->getGenerals().add(el);
     }
-    el.setReference(&m_el);
+    // el.setReference(&m_el);
 }
 
-void Generalization::RemoveGeneralFunctor::operator()(Element& el) const {
-    if (m_el.as<Generalization>().getSpecific() && m_el.as<Generalization>().getSpecific()->getGenerals().contains(el.getID())) {
-        m_el.as<Generalization>().getSpecific()->getGenerals().remove(el.as<Classifier>());
+void Generalization::RemoveGeneralPolicy::apply(Classifier& el, Generalization& me) {
+    if (me.getSpecific() && me.getSpecific()->getGenerals().contains(el.getID())) {
+        me.getSpecific()->getGenerals().remove(el);
     }
-    el.removeReference(m_el.getID());
-}
-
-
-void Generalization::referencingReleased(ID id) {
-    DirectedRelationship::referencingReleased(id);
-    m_generalizationSets.release(id);
+    // el.removeReference(m_el.getID());
 }
 
 void Generalization::referenceReindexed(ID oldID, ID newID) {
     DirectedRelationship::referenceReindexed(oldID, newID);
     m_generalizationSets.reindex(oldID, newID);
-}
-
-void Generalization::reindexName(ID id, std::string newName) {
-    DirectedRelationship::reindexName(id, newName);
-    m_generalizationSets.reindexName(id, newName);
 }
 
 void Generalization::referenceErased(ID id) {
@@ -50,7 +39,7 @@ void Generalization::referenceErased(ID id) {
 
 void Generalization::restoreReference(Element* el) {
     DirectedRelationship::restoreReference(el);
-    m_general.restore(el);
+    // m_general.restore(el);
     if (m_specific.get().id() == el->getID() && m_general.get() && !m_specific.get()->getGenerals().contains(m_general.get().id())) {
         m_specific.get()->getGenerals().add(*m_general.get());
     } else if (m_general.get().id() == el->getID()) {
@@ -58,24 +47,20 @@ void Generalization::restoreReference(Element* el) {
     }
 }
 
-Set<Classifier, Generalization>& Generalization::getGeneralSingleton() {
+TypedSet<Classifier, Generalization>& Generalization::getGeneralSingleton() {
     return m_general;
 }
 
-Set<Classifier, Generalization>& Generalization::getSpecificSingleton() {
+TypedSet<Classifier, Generalization>& Generalization::getSpecificSingleton() {
     return m_specific;
 }
 
 void Generalization::init() {
     m_general.subsets(m_targets);
-    m_general.m_addFunctors.insert(new AddGeneralFunctor(this));
-    m_general.m_removeFunctors.insert(new RemoveGeneralFunctor(this));
     m_specific.subsets(*m_owner);
     m_specific.subsets(m_sources);
     m_specific.opposite(&Classifier::getGeneralizations);
     m_generalizationSets.opposite(&GeneralizationSet::getGeneralizations);
-    m_generalizationSets.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_generalizationSets.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 Generalization::Generalization() : Element(ElementType::GENERALIZATION) {

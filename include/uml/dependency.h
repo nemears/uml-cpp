@@ -11,12 +11,9 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Set<NamedElement, Dependency> m_clients = Set<NamedElement, Dependency>(this);
-            Set<NamedElement, Dependency> m_suppliers = Set<NamedElement, Dependency>(this);
-            void referencingReleased(ID id) override;
+            CustomSet<NamedElement, Dependency> m_clients = CustomSet<NamedElement, Dependency>(this);
+            CustomSet<NamedElement, Dependency> m_suppliers = CustomSet<NamedElement, Dependency>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
-            void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             void init();
             Dependency();

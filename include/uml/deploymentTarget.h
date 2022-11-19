@@ -12,7 +12,7 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Set<Deployment, DeploymentTarget> m_deployments = Set<Deployment, DeploymentTarget>(this);
+            CustomSet<Deployment, DeploymentTarget> m_deployments = CustomSet<Deployment, DeploymentTarget>(this);
             void init();
             DeploymentTarget();
         public:

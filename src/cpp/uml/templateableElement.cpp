@@ -6,7 +6,7 @@
 
 using namespace UML;
 
-Set<TemplateSignature, TemplateableElement>& TemplateableElement::getOwnedTemplateSignatureSingleton() {
+TypedSet<TemplateSignature, TemplateableElement>& TemplateableElement::getOwnedTemplateSignatureSingleton() {
     return m_ownedTemplateSignature;
 }
 

@@ -22,27 +22,20 @@ namespace UML{
 
         protected:
             bool m_setFlag = false;
-            Set<Classifier, InstanceSpecification> m_classifiers = Set<Classifier, InstanceSpecification>(this);
-            class AddClassifierFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class AddClassifierPolicy {
                 public:
-                    AddClassifierFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(Classifier& el, InstanceSpecification& me);
             };
-            class RemoveClassifierFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemoveClassifierPolicy {
                 public:
-                    RemoveClassifierFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(Classifier& el, InstanceSpecification& me);
             };
-            Set<Slot, InstanceSpecification> m_slots = Set<Slot, InstanceSpecification>(this);
-            Singleton <ValueSpecification, InstanceSpecification> m_specification = Singleton<ValueSpecification, InstanceSpecification>(this);
-            void referencingReleased(ID id) override;
+            CustomSet<Classifier, InstanceSpecification, AddClassifierPolicy, RemoveClassifierPolicy> m_classifiers = CustomSet<Classifier, InstanceSpecification, AddClassifierPolicy, RemoveClassifierPolicy>(this);
+            CustomSet<Slot, InstanceSpecification> m_slots = CustomSet<Slot, InstanceSpecification>(this);
+            CustomSingleton <ValueSpecification, InstanceSpecification> m_specification = CustomSingleton<ValueSpecification, InstanceSpecification>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
-            Set<ValueSpecification, InstanceSpecification>& getSpecificationSingleton();
+            TypedSet<ValueSpecification, InstanceSpecification>& getSpecificationSingleton();
             void init();
             InstanceSpecification();
         public:

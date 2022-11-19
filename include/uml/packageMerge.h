@@ -2,7 +2,7 @@
 #define _UML_PACKAGE_MERGE_H_
 
 #include "directedRelationship.h"
-#include "singleton.h"
+#include "set/singleton.h"
 
 namespace UML {
     
@@ -16,10 +16,10 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<Package, PackageMerge> m_receivingPackage = Singleton<Package, PackageMerge>(this);
-            Singleton<Package, PackageMerge> m_mergedPackage = Singleton<Package, PackageMerge>(this);
-            Set<Package, PackageMerge>& getReceivingPackageSingleton();
-            Set<Package, PackageMerge>& getMergedPackageSingleton();
+            CustomSingleton<Package, PackageMerge> m_receivingPackage = CustomSingleton<Package, PackageMerge>(this);
+            CustomSingleton<Package, PackageMerge> m_mergedPackage = CustomSingleton<Package, PackageMerge>(this);
+            TypedSet<Package, PackageMerge>& getReceivingPackageSingleton();
+            TypedSet<Package, PackageMerge>& getMergedPackageSingleton();
             void init();
             PackageMerge();
         public:

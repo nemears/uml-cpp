@@ -13,11 +13,9 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Set<Constraint, ParameterSet> m_conditions = Set<Constraint, ParameterSet>(this);
-            Set<Parameter, ParameterSet> m_parameters = Set<Parameter, ParameterSet>(this);
-            void referencingReleased(ID id) override;
+            CustomSet<Constraint, ParameterSet> m_conditions = CustomSet<Constraint, ParameterSet>(this);
+            CustomSet<Parameter, ParameterSet> m_parameters = CustomSet<Parameter, ParameterSet>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
             ParameterSet();

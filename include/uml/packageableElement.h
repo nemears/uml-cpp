@@ -14,13 +14,13 @@ namespace UML {
         friend class Package;
 
         protected:
-            Singleton<Package, PackageableElement> m_owningPackage = Singleton<Package, PackageableElement>(this);
+            CustomSingleton<Package, PackageableElement> m_owningPackage = CustomSingleton<Package, PackageableElement>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(ID id, std::string newName) override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
-            Set<Package, PackageableElement>& getOwningPackageSingleton();
+            TypedSet<Package, PackageableElement>& getOwningPackageSingleton();
             void init();
             PackageableElement();
         public:

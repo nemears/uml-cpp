@@ -188,6 +188,7 @@ namespace UML {
     template <class T, class U> class Set;
     template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomSingleton;
     template <class T, class U> class Singleton;
+    template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomOrderedSet;
     template< class T, class U> class TypedSet;
     template <class T> class UmlPtr;
     typedef UmlPtr<Element> ElementPtr;
@@ -240,6 +241,7 @@ namespace UML {
         friend class Usage;
         template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomSingleton;
         template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomSet;
+        template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomOrderedSet;
         template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
         template <class T> friend class UmlPtr;
         friend Parsers::EmitterMetaData Parsers::getData(Element& el);

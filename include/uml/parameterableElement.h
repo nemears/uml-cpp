@@ -18,15 +18,12 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<TemplateParameter, ParameterableElement> m_templateParameter = Singleton<TemplateParameter, ParameterableElement>(this);
-            Singleton<TemplateParameter, ParameterableElement> m_owningTemplateParameter = Singleton<TemplateParameter, ParameterableElement>(this);
-            void referencingReleased(ID id) override;
+            CustomSingleton<TemplateParameter, ParameterableElement> m_templateParameter = CustomSingleton<TemplateParameter, ParameterableElement>(this);
+            CustomSingleton<TemplateParameter, ParameterableElement> m_owningTemplateParameter = CustomSingleton<TemplateParameter, ParameterableElement>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
-            void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
-            Set<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
-            Set<TemplateParameter, ParameterableElement>& getTemplateParameterSingleton();
+            TypedSet<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
+            TypedSet<TemplateParameter, ParameterableElement>& getTemplateParameterSingleton();
             void init();
             ParameterableElement();
         public:

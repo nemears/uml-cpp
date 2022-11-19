@@ -15,39 +15,29 @@ namespace UML{
      **/
     class Namespace : virtual public NamedElement {
         protected:
-            Set<NamedElement, Namespace> m_members = Set<NamedElement, Namespace>(this);
-            Set<NamedElement, Namespace> m_ownedMembers = Set<NamedElement, Namespace>(this);
-            Set<Constraint, Namespace> m_ownedRules = Set<Constraint, Namespace>(this);
-            Set<ElementImport, Namespace> m_elementImports = Set<ElementImport, Namespace>(this);
-            Set<PackageImport, Namespace> m_packageImports = Set<PackageImport, Namespace>(this);
-            Set<PackageableElement, Namespace> m_importedMembers = Set<PackageableElement, Namespace>(this);
-            class AddElementImportFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class AddElementImportPolicy {
                 public:
-                    AddElementImportFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(ElementImport& el, Namespace& me);
             };
-            class RemoveElementImportFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemoveElementImportPolicy {
                 public:
-                    RemoveElementImportFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(ElementImport& el, Namespace& me);
             };
-            class AddPackageImportFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class AddPackageImportPolicy {
                 public:
-                    AddPackageImportFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(PackageImport& el, Namespace& me);
             };
-            class RemovePackageImportFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemovePackageImportPolicy {
                 public:
-                    RemovePackageImportFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(PackageImport& el, Namespace& me);
             };
-            void referencingReleased(ID id) override;
+            CustomSet<NamedElement, Namespace> m_members = CustomSet<NamedElement, Namespace>(this);
+            CustomSet<NamedElement, Namespace> m_ownedMembers = CustomSet<NamedElement, Namespace>(this);
+            CustomSet<Constraint, Namespace> m_ownedRules = CustomSet<Constraint, Namespace>(this);
+            CustomSet<ElementImport, Namespace, AddElementImportPolicy, RemoveElementImportPolicy> m_elementImports = CustomSet<ElementImport, Namespace, AddElementImportPolicy, RemoveElementImportPolicy>(this);
+            CustomSet<PackageImport, Namespace, AddPackageImportPolicy, RemovePackageImportPolicy> m_packageImports = CustomSet<PackageImport, Namespace, AddPackageImportPolicy, RemovePackageImportPolicy>(this);
+            CustomSet<PackageableElement, Namespace> m_importedMembers = CustomSet<PackageableElement, Namespace>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
             Namespace();

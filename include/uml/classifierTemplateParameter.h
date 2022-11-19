@@ -14,9 +14,9 @@ namespace UML {
 
         protected:
             bool m_allowSubstitutable = true;
-            Singleton<Classifier, ClassifierTemplateParameter> m_classifierParameteredElement = Singleton<Classifier, ClassifierTemplateParameter>(this);
-            Set<Classifier, ClassifierTemplateParameter> m_constrainingClassifiers = Set<Classifier, ClassifierTemplateParameter>(this);
-            Set<Classifier, ClassifierTemplateParameter>& getParameteredElementSingleton();
+            CustomSingleton<Classifier, ClassifierTemplateParameter> m_classifierParameteredElement = CustomSingleton<Classifier, ClassifierTemplateParameter>(this);
+            CustomSet<Classifier, ClassifierTemplateParameter> m_constrainingClassifiers = CustomSet<Classifier, ClassifierTemplateParameter>(this);
+            TypedSet<Classifier, ClassifierTemplateParameter>& getParameteredElementSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(ID id, std::string newName) override;
             void referencingReleased(ID id) override;

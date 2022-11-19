@@ -9,28 +9,18 @@
 
 using namespace UML;
 
-void Dependency::referencingReleased(ID id) {
-    DirectedRelationship::referencingReleased(id);
-    PackageableElement::referencingReleased(id);
-}
-
 void Dependency::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
     Relationship::referenceReindexed(oldID, newID);
 }
 
-void Dependency::reindexName(ID id, std::string newName) {
-    PackageableElement::reindexName(id, newName);
-    Relationship::reindexName(id, newName);
-}
-
-void Dependency::restoreReference(Element* el) {
-    PackageableElement::restoreReference(el);
-    Relationship::restoreReference(el);
-    if (m_suppliers.contains(el->getID())) {
-        el->setReference(this); // need this logic for all setReference top level calls
-    }
-}
+// void Dependency::restoreReference(Element* el) {
+//     PackageableElement::restoreReference(el);
+//     Relationship::restoreReference(el);
+//     if (m_suppliers.contains(el->getID())) {
+//         el->setReference(this); // need this logic for all setReference top level calls
+//     }
+// }
 
 void Dependency::referenceErased(ID id) {
     PackageableElement::referenceErased(id);
@@ -41,8 +31,6 @@ void Dependency::init() {
     m_clients.subsets(m_sources);
     m_clients.opposite(&NamedElement::getClientDependencies);
     m_suppliers.subsets(m_targets);
-    m_suppliers.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_suppliers.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 Dependency::Dependency() : Element(ElementType::DEPENDENCY) {

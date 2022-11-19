@@ -38,50 +38,42 @@ namespace UML{
         protected:
             AggregationKind m_aggregation = AggregationKind::NONE;
             bool m_composite = false;
-            Singleton<ValueSpecification, Property> m_defaultValue = Singleton<ValueSpecification, Property>(this);
-            Singleton<DataType, Property> m_dataType = Singleton<DataType, Property>(this);
-            Singleton<Class, Property> m_class = Singleton<Class, Property>(this);
-            Singleton<Association, Property> m_association = Singleton<Association, Property>(this);
-            Singleton<Association, Property> m_owningAssociation = Singleton<Association, Property>(this);
-            Singleton<Interface, Property> m_interface = Singleton<Interface, Property>(this);
-            Set<Property, Property> m_redefinedProperties = Set<Property, Property>(this);
-            // void reindexName(std::string oldName, std::string newName) override;
-            class AddEndTypeFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            // class AddEndTypeFunctor : public SetFunctor {
+            //     private:
+            //         void operator()(Element& el) const override;
+            //     public:
+            //         AddEndTypeFunctor(Element* el) : SetFunctor(el) {};
+            // };
+            // class RemoveEndTypeFunctor : public SetFunctor {
+            //     private:
+            //         void operator()(Element& el) const override;
+            //     public:
+            //         RemoveEndTypeFunctor(Element* el) : SetFunctor(el) {};
+            // };
+            class AddRedefinedPropertyPolicy {
                 public:
-                    AddEndTypeFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(Property& el, Property& me);
             };
-            class RemoveEndTypeFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemoveRedefinedPropertyPolicy {
                 public:
-                    RemoveEndTypeFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(Property& el, Property& me);
             };
-            class AddRedefinitionContextFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
-                public:
-                    AddRedefinitionContextFunctor(Element* el) : SetFunctor(el) {};
-            };
-            class RemoveRedefinitionContextFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
-                public:
-                    RemoveRedefinitionContextFunctor(Element* el) : SetFunctor(el) {};
-            };
+            CustomSingleton<ValueSpecification, Property> m_defaultValue = CustomSingleton<ValueSpecification, Property>(this);
+            CustomSingleton<DataType, Property> m_dataType = CustomSingleton<DataType, Property>(this);
+            CustomSingleton<Class, Property> m_class = CustomSingleton<Class, Property>(this);
+            CustomSingleton<Association, Property> m_association = CustomSingleton<Association, Property>(this);
+            CustomSingleton<Association, Property> m_owningAssociation = CustomSingleton<Association, Property>(this);
+            CustomSingleton<Interface, Property> m_interface = CustomSingleton<Interface, Property>(this);
+            CustomSet<Property, Property, AddRedefinedPropertyPolicy, RemoveRedefinedPropertyPolicy> m_redefinedProperties = CustomSet<Property, Property, AddRedefinedPropertyPolicy, RemoveRedefinedPropertyPolicy>(this);
             void setComposite(bool composite);
-            void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
-            void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
-            Set<ValueSpecification, Property>& getDefaultValueSingleton();
-            Set<Class, Property>& getClassSingleton();
-            Set<DataType, Property>& getDataTypeSingleton();
-            Set<Association, Property>& getAssociationSingleton();
-            Set<Association, Property>& getOwningAssociationSingleton();
-            Set<Interface, Property>& getInterfaceSingleton();
+            TypedSet<ValueSpecification, Property>& getDefaultValueSingleton();
+            TypedSet<Class, Property>& getClassSingleton();
+            TypedSet<DataType, Property>& getDataTypeSingleton();
+            TypedSet<Association, Property>& getAssociationSingleton();
+            TypedSet<Association, Property>& getOwningAssociationSingleton();
+            TypedSet<Interface, Property>& getInterfaceSingleton();
             void init();
             Property();
         public:

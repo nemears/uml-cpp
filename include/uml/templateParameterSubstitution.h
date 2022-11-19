@@ -2,7 +2,7 @@
 #define _UML_TEMPLATE_PARAMETER_SUBSTITUTION_H_
 
 #include "element.h"
-#include "singleton.h"
+#include "set/singleton.h"
 
 namespace UML {
 
@@ -20,19 +20,19 @@ namespace UML {
         friend class TemplateBinding;
 
         private:
-            Singleton<TemplateParameter, TemplateParameterSubstitution> m_formal = Singleton<TemplateParameter, TemplateParameterSubstitution>(this);
-            Singleton<TemplateBinding, TemplateParameterSubstitution> m_templateBinding = Singleton<TemplateBinding, TemplateParameterSubstitution>(this);
-            Singleton<ParameterableElement, TemplateParameterSubstitution> m_actual = Singleton<ParameterableElement, TemplateParameterSubstitution>(this);
-            Singleton<ParameterableElement, TemplateParameterSubstitution> m_ownedActual = Singleton<ParameterableElement, TemplateParameterSubstitution>(this);
+            CustomSingleton<TemplateParameter, TemplateParameterSubstitution> m_formal = CustomSingleton<TemplateParameter, TemplateParameterSubstitution>(this);
+            CustomSingleton<TemplateBinding, TemplateParameterSubstitution> m_templateBinding = CustomSingleton<TemplateBinding, TemplateParameterSubstitution>(this);
+            CustomSingleton<ParameterableElement, TemplateParameterSubstitution> m_actual = CustomSingleton<ParameterableElement, TemplateParameterSubstitution>(this);
+            CustomSingleton<ParameterableElement, TemplateParameterSubstitution> m_ownedActual = CustomSingleton<ParameterableElement, TemplateParameterSubstitution>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(ID id, std::string newName) override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
-            Set<TemplateParameter, TemplateParameterSubstitution>& getFormalSingleton();
-            Set<TemplateBinding, TemplateParameterSubstitution>& getTemplateBindingSingleton();
-            Set<ParameterableElement, TemplateParameterSubstitution>& getActualSingleton();
-            Set<ParameterableElement, TemplateParameterSubstitution>& getOwnedActualSingleton();
+            TypedSet<TemplateParameter, TemplateParameterSubstitution>& getFormalSingleton();
+            TypedSet<TemplateBinding, TemplateParameterSubstitution>& getTemplateBindingSingleton();
+            TypedSet<ParameterableElement, TemplateParameterSubstitution>& getActualSingleton();
+            TypedSet<ParameterableElement, TemplateParameterSubstitution>& getOwnedActualSingleton();
             void init();
             TemplateParameterSubstitution();
         public:

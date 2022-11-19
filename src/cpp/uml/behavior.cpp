@@ -11,19 +11,9 @@
 
 using namespace UML;
 
-void Behavior::referencingReleased(ID id) {
-    Class::referencingReleased(id);
-    m_specification.release(id);
-}
-
-void Behavior::reindexName(ID id, std::string newName) {
-    Class::reindexName(id, newName);
-    m_specification.reindexName(id, newName);
-}
-
 void Behavior::referenceReindexed(ID oldID, ID newID) {
     Class::referenceReindexed(oldID, newID);
-    m_specification.reindex(oldID, newID);
+    m_specification.reindex(newID);
 }
 
 void Behavior::referenceErased(ID id) {
@@ -31,7 +21,7 @@ void Behavior::referenceErased(ID id) {
     m_specification.eraseElement(id);
 }
 
-Set<BehavioralFeature, Behavior>& Behavior::getSpecificationSingleton() {
+TypedSet<BehavioralFeature, Behavior>& Behavior::getSpecificationSingleton() {
     return m_specification;
 }
 

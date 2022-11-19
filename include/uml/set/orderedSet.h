@@ -9,12 +9,12 @@ namespace UML {
         OrderedSetNode* m_next = 0;
     };
 
-    template<class T, class U> class OrderedSet;
+    template<class V, class W, class AdditionPolicy, class RemovalPolicy> class CustomOrderedSet;
 
     template <class T>
     class OrderedSetIterator {
 
-        template<class V, class W> friend class OrderedSet;
+        template<class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomOrderedSet;
 
         private:
             OrderedSetNode* curr = 0;
@@ -94,46 +94,61 @@ namespace UML {
             }
     };
 
+    template <class T, class U>
+    class OrderedSet : virtual public TypedSet<T,U> {
+        public:
+            virtual UmlPtr<T> front() = 0;
+            virtual UmlPtr<T> back() = 0;
+            virtual void add(UmlPtr<T> el) = 0;
+            virtual void add(T& el) = 0;
+            virtual void remove(ID id) = 0;
+            virtual void remove(T& el) = 0;
+            virtual void remove(UmlPtr<T> el) = 0;
+            virtual OrderedSetIterator<T> begin() = 0;
+            virtual OrderedSetIterator<T> end() = 0;
+    };
+
     template <
                 class T, 
                 class U,
                 class AdditionPolicy = DoNothing<T, U>,
                 class RemovalPolicy = DoNothing<T, U>
             >
-    class OrderedSet : public PrivateSet<T, U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>> {
+    class CustomOrderedSet : public PrivateSet<T, U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>> , public OrderedSet<T,U> {
         public:
-            OrderedSet(U& el) : PrivateSet<T, U, OrderedSetNodeAllocationPolicy<T>>(el) {}
-            UmlPtr<T> front() {
+            CustomOrderedSet(U& el) : PrivateSet<T, U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>(el) {}
+            CustomOrderedSet(U* el) : PrivateSet<T, U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>(el) {}
+            UmlPtr<T> front() override {
                 SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (!this->m_first) {
                     throw SetStateException("front is null");
                 }
                 return this->m_first->m_ptr;
             }
-            UmlPtr<T> back() {
+            UmlPtr<T> back() override {
                 SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (!this->m_last) {
                     throw SetStateException("last is null");
                 }
                 return this->m_last->m_ptr;
             }
-            void add(UmlPtr<T> el) {
+            void add(UmlPtr<T> el) override {
                 add(*el);
             }
-            void add(T& el) {
-                this->PrivateSet<T,U, OrderedSetNodeAllocationPolicy<T>>::add(el);
+            void add(T& el) override {
+                this->PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::add(el);
             }
-            void remove(ID id) {
-                this->PrivateSet<T,U, OrderedSetNodeAllocationPolicy<T>>::remove(id);
+            void remove(ID id) override {
+                this->PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::remove(id);
             }
-            void remove(T& el) {
+            void remove(T& el) override {
                 remove(el.getID());
             }
-            void remove (UmlPtr<T> el) {
+            void remove (UmlPtr<T> el) override {
                 remove(el.id());
             }
 
-            OrderedSetIterator<T> begin() {
+            OrderedSetIterator<T> begin() override {
                 OrderedSetIterator<T> ret;
                 ret.curr = this->m_first;
                 ret.validSets = this->getAllSuperSets();
@@ -141,7 +156,7 @@ namespace UML {
                 return ret;
             }
 
-            OrderedSetIterator<T> end() {
+            OrderedSetIterator<T> end() override {
                 return OrderedSetIterator<T>();
             }
     };

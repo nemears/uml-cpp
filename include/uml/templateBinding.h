@@ -3,7 +3,7 @@
 
 #include "directedRelationship.h"
 #include "templateParameterSubstitution.h"
-#include "singleton.h"
+#include "set/singleton.h"
 
 namespace UML {
 
@@ -20,12 +20,12 @@ namespace UML {
         friend class TemplateableElement;
         
         private:
-            Singleton<TemplateableElement, TemplateBinding> m_boundElement = Singleton<TemplateableElement, TemplateBinding>(this);
-            Singleton<TemplateSignature, TemplateBinding> m_signature = Singleton<TemplateSignature, TemplateBinding>(this);
-            Set<TemplateParameterSubstitution, TemplateBinding> m_parameterSubstitutions = Set<TemplateParameterSubstitution, TemplateBinding>(this);
+            CustomSingleton<TemplateableElement, TemplateBinding> m_boundElement = CustomSingleton<TemplateableElement, TemplateBinding>(this);
+            CustomSingleton<TemplateSignature, TemplateBinding> m_signature = CustomSingleton<TemplateSignature, TemplateBinding>(this);
+            CustomSet<TemplateParameterSubstitution, TemplateBinding> m_parameterSubstitutions = CustomSet<TemplateParameterSubstitution, TemplateBinding>(this);
             void restoreReference(Element* el) override;
-            Set<TemplateableElement, TemplateBinding>& getBoundElementSingleton();
-            Set<TemplateSignature, TemplateBinding>& getSignatureSingleton();
+            TypedSet<TemplateableElement, TemplateBinding>& getBoundElementSingleton();
+            TypedSet<TemplateSignature, TemplateBinding>& getSignatureSingleton();
             void init();
             TemplateBinding();
         public:

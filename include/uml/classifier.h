@@ -30,55 +30,45 @@ namespace UML {
         friend class ClassifierTemplateParameter;
 
         protected:
-            Set<Feature, Classifier> m_features = Set<Feature, Classifier>(this);
-            Set<Property, Classifier> m_attributes = Set<Property, Classifier>(this);
-            Set<Generalization, Classifier> m_generalizations = Set<Generalization, Classifier>(this);
-            Set<Classifier, Classifier> m_generals = Set<Classifier, Classifier>(this);
-            Set<NamedElement, Classifier> m_inheritedMembers = Set<NamedElement, Classifier>(this);
-            Set<GeneralizationSet, Classifier> m_powerTypeExtent = Set<GeneralizationSet, Classifier>(this);
-            Singleton<RedefinableTemplateSignature, Classifier> m_classifierOwnedTemplateSignature = Singleton<RedefinableTemplateSignature, Classifier>(this);
-            Singleton<ClassifierTemplateParameter, Classifier> m_classifierTemplateParameter = Singleton<ClassifierTemplateParameter, Classifier>(this);
-            class AddGeneralizationFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class AddGeneralizationPolicy {
                 public:
-                    AddGeneralizationFunctor(Element* el) : SetFunctor(el) {};
+                    static void apply(Generalization& el, Classifier& m_el);
             };
-            class RemoveGeneralizationFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemoveGeneralizationPolicy {
                 public:
-                    RemoveGeneralizationFunctor(Element* el) : SetFunctor(el) {};
+                    static void apply(Generalization& el, Classifier& m_el);
             };
-            class AddGeneralFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class AddGeneralPolicy {
                 public:
-                    AddGeneralFunctor(Element* el) : SetFunctor(el) {};
+                    static void apply(Classifier& el, Classifier& m_el);
             };
-            class RemoveGeneralFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemoveGeneralPolicy {
                 public:
-                    RemoveGeneralFunctor(Element* el) : SetFunctor(el) {};
+                    static void apply(Classifier& el, Classifier& m_el);
             };
-            class AddOwnedMemberFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
-                public:
-                    AddOwnedMemberFunctor(Element* el) : SetFunctor(el) {};
-            };
-            class RemoveOwnedMemberFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
-                public:
-                    RemoveOwnedMemberFunctor(Element* el) : SetFunctor(el) {};
-            };
-            Set<RedefinableTemplateSignature, Classifier>& getOwnedTemplateSignatureSingleton();
-            Set<ClassifierTemplateParameter, Classifier>& getTemplateParameterSingleton();
+            // class AddOwnedMemberFunctor : public SetFunctor {
+            //     private:
+            //         void operator()(Element& el) const override;
+            //     public:
+            //         AddOwnedMemberFunctor(Element* el) : SetFunctor(el) {};
+            // };
+            // class RemoveOwnedMemberFunctor : public SetFunctor {
+            //     private:
+            //         void operator()(Element& el) const override;
+            //     public:
+            //         RemoveOwnedMemberFunctor(Element* el) : SetFunctor(el) {};
+            // };
+            CustomSet<Feature, Classifier> m_features = CustomSet<Feature, Classifier>(this);
+            CustomSet<Property, Classifier> m_attributes = CustomSet<Property, Classifier>(this);
+            CustomSet<Generalization, Classifier, AddGeneralizationPolicy, RemoveGeneralizationPolicy> m_generalizations = CustomSet<Generalization, Classifier, AddGeneralizationPolicy, RemoveGeneralizationPolicy>(this);
+            CustomSet<Classifier, Classifier, AddGeneralPolicy, RemoveGeneralPolicy> m_generals = CustomSet<Classifier, Classifier, AddGeneralPolicy, RemoveGeneralPolicy>(this);
+            CustomSet<NamedElement, Classifier> m_inheritedMembers = CustomSet<NamedElement, Classifier>(this);
+            CustomSet<GeneralizationSet, Classifier> m_powerTypeExtent = CustomSet<GeneralizationSet, Classifier>(this);
+            CustomSingleton<RedefinableTemplateSignature, Classifier> m_classifierOwnedTemplateSignature = CustomSingleton<RedefinableTemplateSignature, Classifier>(this);
+            CustomSingleton<ClassifierTemplateParameter, Classifier> m_classifierTemplateParameter = CustomSingleton<ClassifierTemplateParameter, Classifier>(this);
+            TypedSet<RedefinableTemplateSignature, Classifier>& getOwnedTemplateSignatureSingleton();
+            TypedSet<ClassifierTemplateParameter, Classifier>& getTemplateParameterSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
-            void referencingReleased(ID id) override;
             void restoreReferences() override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;

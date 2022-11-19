@@ -4,7 +4,7 @@
 #include "behavioralFeature.h"
 #include "templateableElement.h"
 #include "parameterableElement.h"
-#include "orderedSet.h"
+#include "set/orderedSet.h"
 #include "parameter.h"
 
 namespace UML {
@@ -28,21 +28,19 @@ namespace UML {
         friend class Interface;
 
         protected:
-            Singleton<Type, Operation> m_type = Singleton<Type, Operation>(this);
-            Singleton<Class, Operation> m_class = Singleton<Class, Operation>(this);
-            Singleton<DataType, Operation> m_dataType = Singleton<DataType, Operation>(this);
-            Singleton<Interface, Operation> m_interface = Singleton<Interface, Operation>(this);
-            OrderedSet<Parameter, Operation> m_operationOwnedParameters = OrderedSet<Parameter, Operation>(this);
-            void referencingReleased(ID id) override;
+            CustomSingleton<Type, Operation> m_type = CustomSingleton<Type, Operation>(this);
+            CustomSingleton<Class, Operation> m_class = CustomSingleton<Class, Operation>(this);
+            CustomSingleton<DataType, Operation> m_dataType = CustomSingleton<DataType, Operation>(this);
+            CustomSingleton<Interface, Operation> m_interface = CustomSingleton<Interface, Operation>(this);
+            CustomOrderedSet<Parameter, Operation> m_operationOwnedParameters = CustomOrderedSet<Parameter, Operation>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
-            Set<Type, Operation>& getTypeSingleton();
-            Set<Class, Operation>& getClassSingleton();
-            Set<DataType, Operation>& getDataTypeSingleton();
-            Set<Interface, Operation>& getInterfaceSingleton();
-            Set<Parameter, Operation>& getOwnedParametersSet();
+            TypedSet<Type, Operation>& getTypeSingleton();
+            TypedSet<Class, Operation>& getClassSingleton();
+            TypedSet<DataType, Operation>& getDataTypeSingleton();
+            TypedSet<Interface, Operation>& getInterfaceSingleton();
+            // Set<Parameter, Operation>& getOwnedParametersSet();
             void init();
             Operation();
         public:

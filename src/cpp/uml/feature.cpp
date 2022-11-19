@@ -18,29 +18,18 @@ void Feature::referenceReindexed(ID oldID, ID newID) {
     m_featuringClassifier.reindex(oldID, newID);
 }
 
-void Feature::reindexName(ID id, std::string newName) {
-    RedefinableElement::reindexName(id, newName);
-    NamedElement::reindexName(id, newName);
-}
-
-void Feature::referencingReleased(ID id) {
-    RedefinableElement::referencingReleased(id);
-    NamedElement::referencingReleased(id);
-    m_featuringClassifier.release(id);
-}
-
 void Feature::referenceErased(ID id) {
     RedefinableElement::referenceErased(id);
     NamedElement::referenceErased(id);
     m_featuringClassifier.eraseElement(id);
 }
 
-void Feature::restoreReference(Element* el) {
-    RedefinableElement::restoreReference(el);
-    m_featuringClassifier.restore(el);
-}
+// void Feature::restoreReference(Element* el) {
+//     RedefinableElement::restoreReference(el);
+//     m_featuringClassifier.restore(el);
+// }
 
-Set<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
+TypedSet<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
     return m_featuringClassifier;
 }
 

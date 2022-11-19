@@ -12,22 +12,18 @@ namespace UML {
     class BehavioredClassifier : virtual public Classifier {
 
         protected:
-            Set<Behavior, BehavioredClassifier> m_ownedBehaviors = Set<Behavior, BehavioredClassifier>(this);
-            Singleton<Behavior, BehavioredClassifier> m_classifierBehavior = Singleton<Behavior, BehavioredClassifier>(this);
-            Set<InterfaceRealization, BehavioredClassifier> m_interfaceRealizations = Set<InterfaceRealization, BehavioredClassifier>(this);
-            class RemoveInterfaceRealizationFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemoveInterfaceRealizationPolicy {
                 public:
-                    RemoveInterfaceRealizationFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(InterfaceRealization& el, BehavioredClassifier& me);
             };
-            class AddInterfaceRealizationFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class AddInterfaceRealizationPolicy {
                 public:
-                    AddInterfaceRealizationFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(InterfaceRealization& el, BehavioredClassifier& me);
             };
-            Set<Behavior, BehavioredClassifier>& getClassifierBehaviorSingleton();
+            CustomSet<Behavior, BehavioredClassifier> m_ownedBehaviors = CustomSet<Behavior, BehavioredClassifier>(this);
+            CustomSingleton<Behavior, BehavioredClassifier> m_classifierBehavior = CustomSingleton<Behavior, BehavioredClassifier>(this);
+            CustomSet<InterfaceRealization, BehavioredClassifier, AddInterfaceRealizationPolicy, RemoveInterfaceRealizationPolicy> m_interfaceRealizations = CustomSet<InterfaceRealization, BehavioredClassifier, AddInterfaceRealizationPolicy, RemoveInterfaceRealizationPolicy>(this);
+            TypedSet<Behavior, BehavioredClassifier>& getClassifierBehaviorSingleton();
             void init();
             BehavioredClassifier();
         public:

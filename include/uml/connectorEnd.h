@@ -17,13 +17,11 @@ namespace UML {
         friend class Connector;
 
         protected:
-            Singleton<ConnectableElement, ConnectorEnd> m_role = Singleton<ConnectableElement, ConnectorEnd>(this);
-            Singleton<Property, ConnectorEnd> m_definingEnd = Singleton<Property, ConnectorEnd>(this);
-            Set<ConnectableElement, ConnectorEnd>& getRoleSingleton();
-            Set<Property, ConnectorEnd>& getDefiningEndSingleton();
+            CustomSingleton<ConnectableElement, ConnectorEnd> m_role = CustomSingleton<ConnectableElement, ConnectorEnd>(this);
+            CustomSingleton<Property, ConnectorEnd> m_definingEnd = CustomSingleton<Property, ConnectorEnd>(this);
+            TypedSet<ConnectableElement, ConnectorEnd>& getRoleSingleton();
+            TypedSet<Property, ConnectorEnd>& getDefiningEndSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
-            void referencingReleased(ID id) override;
             void referenceErased(ID id) override;
             void init();
             ConnectorEnd();

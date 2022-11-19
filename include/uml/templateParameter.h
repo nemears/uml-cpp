@@ -2,7 +2,7 @@
 #define _UML_TEMPLATE_PARAMETER_H_
 
 #include "element.h"
-#include "singleton.h"
+#include "set/singleton.h"
 
 namespace UML {
 
@@ -21,20 +21,20 @@ namespace UML {
         friend class ParameterableElement;
         
         protected:
-            Singleton<TemplateSignature, TemplateParameter> m_signature = Singleton<TemplateSignature, TemplateParameter>(this);
-            Singleton<ParameterableElement, TemplateParameter> m_parameteredElement = Singleton<ParameterableElement, TemplateParameter>(this);
-            Singleton<ParameterableElement, TemplateParameter> m_ownedParameteredElement = Singleton<ParameterableElement, TemplateParameter>(this);
-            Singleton<ParameterableElement, TemplateParameter> m_default = Singleton<ParameterableElement, TemplateParameter>(this);
-            Singleton<ParameterableElement, TemplateParameter> m_ownedDefault = Singleton<ParameterableElement, TemplateParameter>(this);
+            CustomSingleton<TemplateSignature, TemplateParameter> m_signature = CustomSingleton<TemplateSignature, TemplateParameter>(this);
+            CustomSingleton<ParameterableElement, TemplateParameter> m_parameteredElement = CustomSingleton<ParameterableElement, TemplateParameter>(this);
+            CustomSingleton<ParameterableElement, TemplateParameter> m_ownedParameteredElement = CustomSingleton<ParameterableElement, TemplateParameter>(this);
+            CustomSingleton<ParameterableElement, TemplateParameter> m_default = CustomSingleton<ParameterableElement, TemplateParameter>(this);
+            CustomSingleton<ParameterableElement, TemplateParameter> m_ownedDefault = CustomSingleton<ParameterableElement, TemplateParameter>(this);
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
-            Set<TemplateSignature, TemplateParameter>& getSignatureSingleton();
-            Set<ParameterableElement, TemplateParameter>& getParameteredElementSingleton();
-            Set<ParameterableElement, TemplateParameter>& getOwnedParameteredElementSingleton();
-            Set<ParameterableElement, TemplateParameter>& getDefaultSingleton();
-            Set<ParameterableElement, TemplateParameter>& getOwnedDefaultSingleton();
+            TypedSet<TemplateSignature, TemplateParameter>& getSignatureSingleton();
+            TypedSet<ParameterableElement, TemplateParameter>& getParameteredElementSingleton();
+            TypedSet<ParameterableElement, TemplateParameter>& getOwnedParameteredElementSingleton();
+            TypedSet<ParameterableElement, TemplateParameter>& getDefaultSingleton();
+            TypedSet<ParameterableElement, TemplateParameter>& getOwnedDefaultSingleton();
             void init();
             TemplateParameter();
         public:

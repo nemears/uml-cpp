@@ -9,11 +9,9 @@ namespace UML {
 
     class RedefinableElement : virtual public NamedElement {
         protected:
-            Set<RedefinableElement, RedefinableElement> m_redefinedElement = Set<RedefinableElement, RedefinableElement>(this);
-            Set<Classifier, RedefinableElement> m_redefinitionContext = Set<Classifier, RedefinableElement>(this);
-            void referencingReleased(ID id) override;
+            CustomSet<RedefinableElement, RedefinableElement> m_redefinedElement = CustomSet<RedefinableElement, RedefinableElement>(this);
+            CustomSet<Classifier, RedefinableElement> m_redefinitionContext = CustomSet<Classifier, RedefinableElement>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
             RedefinableElement();

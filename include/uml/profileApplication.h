@@ -1,8 +1,8 @@
 #ifndef _UML_PROFILE_APPLICATION_H_
 #define _UML_PROFILE_APPLICATION_H_
 
-#include "uml/directedRelationship.h"
-#include "uml/singleton.h"
+#include "directedRelationship.h"
+#include "set/singleton.h"
 
 namespace UML {
 
@@ -17,10 +17,10 @@ namespace UML {
         friend class Package;
 
         private:
-            Singleton<Profile, ProfileApplication> m_appliedProfile = Singleton<Profile, ProfileApplication>(this);
-            Singleton<Package, ProfileApplication> m_applyingPackage = Singleton<Package, ProfileApplication>(this);
-            Set<Profile, ProfileApplication>& getAppliedProfileSingleton();
-            Set<Package, ProfileApplication>& getApplyingPackageSingleton();
+            CustomSingleton<Profile, ProfileApplication> m_appliedProfile = CustomSingleton<Profile, ProfileApplication>(this);
+            CustomSingleton<Package, ProfileApplication> m_applyingPackage = CustomSingleton<Package, ProfileApplication>(this);
+            TypedSet<Profile, ProfileApplication>& getAppliedProfileSingleton();
+            TypedSet<Package, ProfileApplication>& getApplyingPackageSingleton();
             void init();
             ProfileApplication();
         public:

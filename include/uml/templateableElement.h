@@ -17,9 +17,9 @@ namespace UML {
         friend class TemplateSignature;
         
         protected:
-            Singleton<TemplateSignature, TemplateableElement> m_ownedTemplateSignature = Singleton<TemplateSignature, TemplateableElement>(this);
-            Set<TemplateBinding, TemplateableElement> m_templateBindings = Set<TemplateBinding, TemplateableElement>(this);
-            Set<TemplateSignature, TemplateableElement>& getOwnedTemplateSignatureSingleton();
+            CustomSingleton<TemplateSignature, TemplateableElement> m_ownedTemplateSignature = CustomSingleton<TemplateSignature, TemplateableElement>(this);
+            CustomSet<TemplateBinding, TemplateableElement> m_templateBindings = CustomSet<TemplateBinding, TemplateableElement>(this);
+            TypedSet<TemplateSignature, TemplateableElement>& getOwnedTemplateSignatureSingleton();
             void init();
             TemplateableElement();
         public:

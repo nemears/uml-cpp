@@ -14,13 +14,11 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<Namespace, Constraint> m_context = Singleton<Namespace, Constraint>(this);
-            Set<Element, Constraint> m_constrainedElements = Set<Element, Constraint>(this);
-            Set<ValueSpecification, Constraint> m_specifications = Set<ValueSpecification, Constraint>(this);
-            Set<Namespace, Constraint>& getContextSingleton();
-            void referencingReleased(ID id) override;
+            CustomSingleton<Namespace, Constraint> m_context = CustomSingleton<Namespace, Constraint>(this);
+            CustomSet<Element, Constraint> m_constrainedElements = CustomSet<Element, Constraint>(this);
+            CustomSet<ValueSpecification, Constraint> m_specifications = CustomSet<ValueSpecification, Constraint>(this);
+            TypedSet<Namespace, Constraint>& getContextSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
             Constraint();

@@ -15,20 +15,20 @@ namespace UML {
             void setPortInterfaces(BehavioredClassifier& clazz);
             void removePortInterfaces(BehavioredClassifier& clazz);
         protected:
-            Set<Interface, Port> m_required = Set<Interface, Port>(this);
-            Set<Interface, Port> m_provided = Set<Interface, Port>(this);
-            class SetTypeFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
-                public:
-                    SetTypeFunctor(Element* el) : SetFunctor(el) {};
-            };
-            class RemoveTypeFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
-                public:
-                    RemoveTypeFunctor(Element* el) : SetFunctor(el) {};
-            };
+            // class SetTypeFunctor : public SetFunctor {
+            //     private:
+            //         void operator()(Element& el) const override;
+            //     public:
+            //         SetTypeFunctor(Element* el) : SetFunctor(el) {};
+            // };
+            // class RemoveTypeFunctor : public SetFunctor {
+            //     private:
+            //         void operator()(Element& el) const override;
+            //     public:
+            //         RemoveTypeFunctor(Element* el) : SetFunctor(el) {};
+            // };
+            CustomSet<Interface, Port> m_required = CustomSet<Interface, Port>(this);
+            CustomSet<Interface, Port> m_provided = CustomSet<Interface, Port>(this);
             bool m_isBehavior = false;
             bool m_isConjugated = false;
             bool m_isService = true;

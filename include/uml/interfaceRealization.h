@@ -15,22 +15,18 @@ namespace UML {
         friend class BehavioredClassifier;
 
         protected:
-            Singleton<Interface, InterfaceRealization> m_contract = Singleton<Interface, InterfaceRealization>(this);
-            Singleton<BehavioredClassifier, InterfaceRealization> m_implementingClassifier = Singleton<BehavioredClassifier, InterfaceRealization>(this);
-            class RemoveContractFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemoveContractPolicy {
                 public:
-                    RemoveContractFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(Interface& el, InterfaceRealization& me);
             };
-            class SetContractFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class SetContractPolicy {
                 public:
-                    SetContractFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(Interface& el, InterfaceRealization& me);
             };
-            Set<Interface, InterfaceRealization>& getContractSingleton();
-            Set<BehavioredClassifier, InterfaceRealization>& getImplementingClassifierSingleton();
+            CustomSingleton<Interface, InterfaceRealization, SetContractPolicy, RemoveContractPolicy> m_contract = CustomSingleton<Interface, InterfaceRealization, SetContractPolicy, RemoveContractPolicy>(this);
+            CustomSingleton<BehavioredClassifier, InterfaceRealization> m_implementingClassifier = CustomSingleton<BehavioredClassifier, InterfaceRealization>(this);
+            TypedSet<Interface, InterfaceRealization>& getContractSingleton();
+            TypedSet<BehavioredClassifier, InterfaceRealization>& getImplementingClassifierSingleton();
             void init();
             InterfaceRealization();
         public:

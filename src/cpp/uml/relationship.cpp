@@ -2,29 +2,14 @@
 
 using namespace UML;
 
-void Relationship::referencingReleased(ID id) {
-    Element::referencingReleased(id);
-    m_relatedElements.release(id);
-}
-
 void Relationship::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    m_relatedElements.reindex(oldID, newID);
-}
-
-void Relationship::reindexName(ID id, std::string newName) {
-    Element::reindexName(id, newName);
-    m_relatedElements.reindexName(id, newName);
+    m_relatedElements.reindex(newID);
 }
 
 void Relationship::referenceErased(ID id) {
     Element::referenceErased(id);
     m_relatedElements.eraseElement(id);
-}
-
-void Relationship::restoreReference(Element* el) {
-    Element::restoreReference(el);
-    m_relatedElements.restore(el);
 }
 
 void Relationship::init() {

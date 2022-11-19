@@ -18,10 +18,10 @@ namespace UML {
 
     class BehavioralFeature : public Feature , public Namespace {
         protected:
-            Set<Behavior, BehavioralFeature> m_methods = Set<Behavior, BehavioralFeature>(this);
-            Set<Parameter, BehavioralFeature> m_ownedParameters = Set<Parameter, BehavioralFeature>(this);
-            Set<Type, BehavioralFeature> m_raisedExceptions = Set<Type, BehavioralFeature>(this);
-            Set<ParameterSet, BehavioralFeature> m_ownedParameterSets = Set<ParameterSet, BehavioralFeature>(this);
+            CustomSet<Behavior, BehavioralFeature> m_methods = CustomSet<Behavior, BehavioralFeature>(this);
+            CustomSet<Parameter, BehavioralFeature> m_ownedParameters = CustomSet<Parameter, BehavioralFeature>(this);
+            CustomSet<Type, BehavioralFeature> m_raisedExceptions = CustomSet<Type, BehavioralFeature>(this);
+            CustomSet<ParameterSet, BehavioralFeature> m_ownedParameterSets = CustomSet<ParameterSet, BehavioralFeature>(this);
             bool m_returnSpecified = false;
             CallConcurrencyKind m_concurrency = CallConcurrencyKind::Sequential;
             void referencingReleased(ID id) override;

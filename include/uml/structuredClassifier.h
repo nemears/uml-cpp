@@ -14,16 +14,18 @@ namespace UML {
         friend class Property;
 
         protected:
-            Set<ConnectableElement, StructuredClassifier> m_roles = Set<ConnectableElement, StructuredClassifier>(this);
-            Set<Property, StructuredClassifier> m_ownedAttributes = Set<Property, StructuredClassifier>(this);
-            Set<Property, StructuredClassifier> m_parts = Set<Property, StructuredClassifier>(this);
-            Set<Connector, StructuredClassifier> m_ownedConnectors = Set<Connector, StructuredClassifier>(this);
-            class AddPartFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class AddPartPolicy {
                 public:
-                    AddPartFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(Property& prop, StructuredClassifier& me);
             };
+            class RemovePartPolicy {
+                public:
+                    void apply(Property& prop, StructuredClassifier& me);
+            };
+            CustomSet<ConnectableElement, StructuredClassifier> m_roles = CustomSet<ConnectableElement, StructuredClassifier>(this);
+            CustomSet<Property, StructuredClassifier> m_ownedAttributes = CustomSet<Property, StructuredClassifier>(this);
+            CustomSet<Property, StructuredClassifier, AddPartPolicy, RemovePartPolicy> m_parts = CustomSet<Property, StructuredClassifier, AddPartPolicy, RemovePartPolicy>(this);
+            CustomSet<Connector, StructuredClassifier> m_ownedConnectors = CustomSet<Connector, StructuredClassifier>(this);
             void restoreReferences() override;
             void init();
             StructuredClassifier();

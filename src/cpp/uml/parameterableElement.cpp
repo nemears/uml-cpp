@@ -4,36 +4,28 @@
 
 using namespace UML;
 
-void ParameterableElement::referencingReleased(ID id) {
-    m_templateParameter.release(id);
-}
-
 void ParameterableElement::referenceReindexed(ID oldID, ID newID) {
-    m_templateParameter.reindex(oldID, newID);
+    m_templateParameter.reindex(newID);
 }
 
-void ParameterableElement::reindexName(ID id, std::string newName) {
-    m_templateParameter.reindexName(id, newName);
-}
-
-void ParameterableElement::restoreReference(Element* el) {
-    m_templateParameter.restore(el);
-    if (el->isSubClassOf(ElementType::TEMPLATE_PARAMETER) && el->as<TemplateParameter>().m_ownedDefault.get().id() == m_id) {
-        if (m_templateParameter.empty()) {
-            m_templateParameter.set(el->getID());
-        }
-    }
-}
+// void ParameterableElement::restoreReference(Element* el) {
+//     m_templateParameter.restore(el);
+//     if (el->isSubClassOf(ElementType::TEMPLATE_PARAMETER) && el->as<TemplateParameter>().m_ownedDefault.get().id() == m_id) {
+//         if (m_templateParameter.empty()) {
+//             m_templateParameter.set(el->getID());
+//         }
+//     }
+// }
 
 void ParameterableElement::referenceErased(ID id) {
     m_templateParameter.eraseElement(id);
 }
 
-Set<TemplateParameter, ParameterableElement>& ParameterableElement::getOwningTemplateParameterSingleton() {
+TypedSet<TemplateParameter, ParameterableElement>& ParameterableElement::getOwningTemplateParameterSingleton() {
     return m_owningTemplateParameter;
 }
 
-Set<TemplateParameter, ParameterableElement>& ParameterableElement::getTemplateParameterSingleton() {
+TypedSet<TemplateParameter, ParameterableElement>& ParameterableElement::getTemplateParameterSingleton() {
     return m_templateParameter;
 }
 

@@ -3,7 +3,7 @@
 
 #include "feature.h"
 #include "connectorEnd.h"
-#include "orderedSet.h"
+#include "set/orderedSet.h"
 
 namespace UML {
 
@@ -16,39 +16,28 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<Association, Connector> m_type = Singleton<Association, Connector>(this);
-            Set<Behavior, Connector> m_contracts = Set<Behavior, Connector>(this);
-            OrderedSet<ConnectorEnd, Connector> m_ends = OrderedSet<ConnectorEnd, Connector>(this);
-            Set<Association, Connector>& getTypeSingleton();
-            Set<ConnectorEnd, Connector>& getEndsSet();
-            class SetTypeFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class SetTypePolicy {
                 public:
-                    SetTypeFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(Association& el, Connector& me);
             };
-            class RemoveTypeFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemoveTypePolicy {
                 public:
-                    RemoveTypeFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(Association& el, Connector& me);
             };
-            class AddEndFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class AddEndPolicy {
                 public:
-                    AddEndFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(ConnectorEnd& end, Connector& me);
             };
-            class RemoveEndFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemoveEndPolicy {
                 public:
-                    RemoveEndFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(ConnectorEnd& end, Connector& me);
             };
-            void referencingReleased(ID id) override;
+            CustomSingleton<Association, Connector> m_type = CustomSingleton<Association, Connector>(this);
+            CustomSet<Behavior, Connector> m_contracts = CustomSet<Behavior, Connector>(this);
+            CustomOrderedSet<ConnectorEnd, Connector> m_ends = CustomOrderedSet<ConnectorEnd, Connector>(this);
+            TypedSet<Association, Connector>& getTypeSingleton();
+            // Set<ConnectorEnd, Connector>& getEndsSet();
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
-            void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             void init();
             Connector();

@@ -15,8 +15,8 @@ namespace UML {
         friend class Profile;
 
         private:
-            Singleton<Profile, Stereotype> m_profile = Singleton<Profile, Stereotype>(this);
-            Set<Profile, Stereotype>& getProfileSingleton();
+            CustomSingleton<Profile, Stereotype> m_profile = CustomSingleton<Profile, Stereotype>(this);
+            TypedSet<Profile, Stereotype>& getProfileSingleton();
             void init();
             Stereotype();
         public:

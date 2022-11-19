@@ -4,6 +4,7 @@
 #include "uml/umlPtr.h"
 #include "setLock.h"
 #include "doNothingPolicy.h"
+#include "uml/macros.h"
 
 namespace UML {
 
@@ -136,6 +137,10 @@ namespace UML {
             >
     class PrivateSet : virtual public TypedSet<T, U> , public AllocationPolicy {
 
+        friend class Relationship;
+        friend class DirectedRelationship;
+        FRIEND_ALL_UML()
+
         protected:
             U& m_el;
             bool m_readOnly = false;
@@ -186,10 +191,10 @@ namespace UML {
             };
 
             void runAddFunctor(Element& el) override {
-                AdditionPolicy::apply(el, m_el);
+                AdditionPolicy::apply(el.as<T>(), m_el);
             }
             void runRemoveFunctor(Element& el) override {
-                RemovalPolicy::apply(el, m_el);
+                RemovalPolicy::apply(el.as<T>(), m_el);
             }
 
             void innerAdd(T& el) override {
@@ -679,6 +684,10 @@ namespace UML {
                 } 
                 reindexDFS(node, this);
             }
+
+            void eraseElement(ID id) {
+                remove(id);
+            }
         public:
             PrivateSet(U& el) : m_el(el) {
                 
@@ -813,7 +822,7 @@ namespace UML {
     template <class T>
     class SetIterator {
 
-        template <class V, class W> friend class CustomSet;
+        template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomSet;
 
         private:
             SetNode* root = 0;
@@ -901,7 +910,7 @@ namespace UML {
             virtual void add(T& el) = 0;
             virtual void remove(ID id) = 0;
             virtual void remove(T& el) = 0;
-            virtual void remove(UmlPtr<T>& el) = 0;
+            virtual void remove(UmlPtr<T> el) = 0;
             virtual SetIterator<T> begin() = 0;
             virtual SetIterator<T> end() = 0;
     };
@@ -914,8 +923,8 @@ namespace UML {
             >
     class CustomSet : public PrivateSet<T,U, AdditionPolicy, RemovalPolicy> , public Set<T,U> {
         public:
-            CustomSet(U* el) : PrivateSet<T,U>(el) {}
-            CustomSet(U& el) : PrivateSet<T,U>(el) {}
+            CustomSet(U* el) : PrivateSet<T,U, AdditionPolicy, RemovalPolicy>(el) {}
+            CustomSet(U& el) : PrivateSet<T,U, AdditionPolicy, RemovalPolicy>(el) {}
             void add(UmlPtr<T> el) override {
                 add(*el);
             }
@@ -940,7 +949,7 @@ namespace UML {
                 return ret;
             }
             SetIterator<T> end() override {
-                return Set2Iterator<T>();
+                return SetIterator<T>();
             }
     };
 }

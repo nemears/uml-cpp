@@ -10,25 +10,11 @@
 
 using namespace UML;
 
-void BehavioralFeature::referencingReleased(ID id) {
-    Namespace::referencingReleased(id);
-    Feature::referencingReleased(id);
-    m_methods.release(id);
-    m_raisedExceptions.release(id);
-}
-
 void BehavioralFeature::referenceReindexed(ID oldID, ID newID) {
     Feature::referenceReindexed(oldID, newID);
     Namespace::referenceReindexed(oldID, newID);
-    m_methods.reindex(oldID, newID);
-    m_raisedExceptions.reindex(oldID, newID);
-}
-
-void BehavioralFeature::reindexName(ID id, std::string newName) {
-    Feature::reindexName(id, newName);
-    Namespace::reindexName(id, newName);
-    m_methods.reindexName(id, newName);
-    m_raisedExceptions.reindexName(id, newName);
+    m_methods.reindex(newID);
+    m_raisedExceptions.reindex(newID);
 }
 
 void BehavioralFeature::referenceErased(ID id) {
@@ -41,8 +27,8 @@ void BehavioralFeature::referenceErased(ID id) {
 void BehavioralFeature::init() {
     m_methods.opposite(&Behavior::getSpecificationSingleton);
     m_ownedParameters.subsets(m_ownedMembers);
-    m_raisedExceptions.addFunctor(new SetReferenceFunctor(this));
-    m_raisedExceptions.removeFunctor(new RemoveReferenceFunctor(this));
+    // m_raisedExceptions.addFunctor(new SetReferenceFunctor(this));
+    // m_raisedExceptions.removeFunctor(new RemoveReferenceFunctor(this));
     m_ownedParameterSets.subsets(*m_ownedElements);
 }
 

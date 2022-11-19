@@ -13,14 +13,11 @@ namespace UML {
         friend class Classifier;
 
         protected:
-            Singleton<Classifier, Feature> m_featuringClassifier = Singleton<Classifier, Feature>(this);
+            CustomSingleton<Classifier, Feature> m_featuringClassifier = CustomSingleton<Classifier, Feature>(this);
             bool m_static = false;
-            void reindexName(ID id, std::string newName) override;
-            void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
-            Set<Classifier, Feature>& getFeaturingClassifierSingleton();
+            TypedSet<Classifier, Feature>& getFeaturingClassifierSingleton();
             void init();
             Feature();
         public:

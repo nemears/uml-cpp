@@ -17,13 +17,11 @@ namespace UML {
         protected:
             bool m_covering = false;
             bool m_disjoint = false;
-            Singleton<Classifier, GeneralizationSet> m_powerType = Singleton<Classifier, GeneralizationSet>(this);
-            Set<Generalization, GeneralizationSet> m_generalizations = Set<Generalization, GeneralizationSet>(this);
+            CustomSingleton<Classifier, GeneralizationSet> m_powerType = CustomSingleton<Classifier, GeneralizationSet>(this);
+            CustomSet<Generalization, GeneralizationSet> m_generalizations = CustomSet<Generalization, GeneralizationSet>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
-            void referencingReleased(ID id) override;
             void referenceErased(ID id) override;
-            Set<Classifier, GeneralizationSet>& getPowerTypeSingleton();
+            TypedSet<Classifier, GeneralizationSet>& getPowerTypeSingleton();
             void init();
             GeneralizationSet();
         public:

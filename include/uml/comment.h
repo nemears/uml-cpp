@@ -10,11 +10,9 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Set<Element, Comment> m_annotatedElements = Set<Element, Comment>(this);
+            CustomSet<Element, Comment> m_annotatedElements = CustomSet<Element, Comment>(this);
             std::string m_body; // TODO move to literal string?
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
-            void referencingReleased(ID id) override;
             void referenceErased(ID id) override;
             void init();
             Comment();

@@ -2,7 +2,7 @@
 #define _UML_SIGNAL_H_
 
 #include "classifier.h"
-#include "orderedSet.h"
+#include "set/orderedSet.h"
 
 namespace UML {
     class Signal : public Classifier {
@@ -10,8 +10,8 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            OrderedSet<Property, Signal> m_ownedAttributes = OrderedSet<Property, Signal>(this);
-            Set<Property, Signal>& getOwnedAttributesSet();
+            CustomOrderedSet<Property, Signal> m_ownedAttributes = CustomOrderedSet<Property, Signal>(this);
+            // Set<Property, Signal>& getOwnedAttributesSet();
             void init();
             Signal();
         public:

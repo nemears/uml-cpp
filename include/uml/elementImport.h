@@ -2,7 +2,7 @@
 #define _UML_ELEMENT_IMPORT_H_
 
 #include "directedRelationship.h"
-#include "singleton.h"
+#include "set/singleton.h"
 
 namespace UML {
 
@@ -16,22 +16,18 @@ namespace UML {
         friend class Namespace;
 
         protected:
-            Singleton<PackageableElement, ElementImport> m_importedElement = Singleton<PackageableElement, ElementImport>(this);
-            Singleton<Namespace, ElementImport> m_importingNamespace = Singleton<Namespace, ElementImport>(this);
-            Set<PackageableElement, ElementImport>& getImportedElementSingleton();
-            Set<Namespace, ElementImport>& getImportingNamespaceSingleton();
-            class AddImportedElementFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class AddImportedElementPolicy {
                 public:
-                    AddImportedElementFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(PackageableElement& el, ElementImport& me);
             };
-            class RemoveImportedElementFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemoveImportedElementPolicy {
                 public:
-                    RemoveImportedElementFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(PackageableElement& el, ElementImport& me);
             };
+            CustomSingleton<PackageableElement, ElementImport, AddImportedElementPolicy, RemoveImportedElementPolicy> m_importedElement = CustomSingleton<PackageableElement, ElementImport, AddImportedElementPolicy, RemoveImportedElementPolicy>(this);
+            CustomSingleton<Namespace, ElementImport> m_importingNamespace = CustomSingleton<Namespace, ElementImport>(this);
+            TypedSet<PackageableElement, ElementImport>& getImportedElementSingleton();
+            TypedSet<Namespace, ElementImport>& getImportingNamespaceSingleton();
             void init();
             ElementImport();
         public:

@@ -14,40 +14,20 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<Classifier, RedefinableTemplateSignature> m_classifier = Singleton<Classifier, RedefinableTemplateSignature>(this);
-            Set<RedefinableTemplateSignature, RedefinableTemplateSignature> m_extendedSignatures = Set<RedefinableTemplateSignature, RedefinableTemplateSignature>(this);
-            Set<TemplateParameter, RedefinableTemplateSignature> m_inheritedParameters = Set<TemplateParameter, RedefinableTemplateSignature>(this);
-            class AddExtendedSignatureFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class AddExtendedSignaturePolicy {
                 public:
-                    AddExtendedSignatureFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(RedefinableTemplateSignature& el, RedefinableTemplateSignature& me);
             };
-            class RemoveExtendedSignatureFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
+            class RemoveExtendedSignaturePolicy {
                 public:
-                    RemoveExtendedSignatureFunctor(Element* el) : SetFunctor(el) {};
+                    void apply(RedefinableTemplateSignature& el, RedefinableTemplateSignature& me);
             };
-            class AddParameterInExtendedSignatureFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
-                public:
-                    RedefinableTemplateSignature* m_sig;
-                    AddParameterInExtendedSignatureFunctor(Element* el) : SetFunctor(el) {};
-            };
-            class RemoveParameterInExtendedSignatureFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
-                public:
-                    RedefinableTemplateSignature* m_sig;
-                    RemoveParameterInExtendedSignatureFunctor(Element* el) : SetFunctor(el) {};
-            };
-            Set<Classifier, RedefinableTemplateSignature>& getClassifierSingleton();
+            CustomSingleton<Classifier, RedefinableTemplateSignature> m_classifier = CustomSingleton<Classifier, RedefinableTemplateSignature>(this);
+            CustomSet<RedefinableTemplateSignature, RedefinableTemplateSignature, AddExtendedSignaturePolicy, RemoveExtendedSignaturePolicy> m_extendedSignatures = CustomSet<RedefinableTemplateSignature, RedefinableTemplateSignature, AddExtendedSignaturePolicy, RemoveExtendedSignaturePolicy>(this);
+            CustomSet<TemplateParameter, RedefinableTemplateSignature> m_inheritedParameters = CustomSet<TemplateParameter, RedefinableTemplateSignature>(this);
+            TypedSet<Classifier, RedefinableTemplateSignature>& getClassifierSingleton();
             void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
-            void referenceErased(ID id) override;
             void init();
             RedefinableTemplateSignature();
         public:

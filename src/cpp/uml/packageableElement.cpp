@@ -15,16 +15,6 @@ void PackageableElement::referenceReindexed(ID oldID, ID newID) {
     ParameterableElement::referenceReindexed(oldID, newID);
 }
 
-void PackageableElement::reindexName(ID id, std::string newName) {
-    NamedElement::reindexName(id, newName);
-    ParameterableElement::reindexName(id, newName);
-}
-
-void PackageableElement::referencingReleased(ID id) {
-    NamedElement::referencingReleased(id);
-    ParameterableElement::referencingReleased(id);
-}
-
 void PackageableElement::restoreReference(Element* el) {
     Element::restoreReference(el);
     ParameterableElement::restoreReference(el);
@@ -35,7 +25,7 @@ void PackageableElement::referenceErased(ID id) {
     ParameterableElement::referenceErased(id);
 }
 
-Set<Package, PackageableElement>& PackageableElement::getOwningPackageSingleton() {
+TypedSet<Package, PackageableElement>& PackageableElement::getOwningPackageSingleton() {
     return m_owningPackage;
 }
 

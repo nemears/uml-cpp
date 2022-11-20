@@ -22,6 +22,7 @@ namespace UML {
             CustomSingleton<InstanceSpecification, Slot> m_owningInstance = CustomSingleton<InstanceSpecification, Slot>(this);
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
+            void restoreReference(Element* el) override;
             TypedSet<StructuralFeature, Slot>& getDefiningFeatureSingleton();
             TypedSet<InstanceSpecification, Slot>& getOwningInstanceSingleton();
             void init();

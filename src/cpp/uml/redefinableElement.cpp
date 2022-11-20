@@ -11,19 +11,10 @@
 
 using namespace UML;
 
-void RedefinableElement::referencingReleased(ID id) {
-    m_redefinedElement.release(id);
-    m_redefinitionContext.release(id);
-}
 
 void RedefinableElement::referenceReindexed(ID oldID, ID newID) {
-    m_redefinedElement.reindex(oldID, newID);
-    m_redefinitionContext.reindex(oldID, newID);
-}
-
-void RedefinableElement::reindexName(ID id, std::string newName) {
-    m_redefinedElement.reindexName(id, newName);
-    m_redefinitionContext.reindexName(id, newName);
+    m_redefinedElement.reindex(newID);
+    m_redefinitionContext.reindex(newID);
 }
 
 void RedefinableElement::referenceErased(ID id) {

@@ -15,6 +15,7 @@ namespace UML {
         template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomSingleton;
         template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomOrderedSet;
         template <class T> friend class UmlPtr;
+        friend class Element;
 
         public:
             virtual Element* create(ElementType type) = 0;

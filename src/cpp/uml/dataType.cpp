@@ -12,11 +12,11 @@
 
 using namespace UML;
 
-Set<Property, DataType>& DataType::getOwnedAttributesSet() {
+TypedSet<Property, DataType>& DataType::getOwnedAttributesSet() {
     return m_ownedAttributes;
 }
 
-Set<Operation, DataType>& DataType::getOwnedOperationsSet() {
+TypedSet<Operation, DataType>& DataType::getOwnedOperationsSet() {
     return m_ownedOperations;
 }
 

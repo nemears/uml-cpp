@@ -52,11 +52,11 @@ namespace UML{
             // };
             class AddRedefinedPropertyPolicy {
                 public:
-                    void apply(Property& el, Property& me);
+                    static void apply(Property& el, Property& me);
             };
             class RemoveRedefinedPropertyPolicy {
                 public:
-                    void apply(Property& el, Property& me);
+                    static void apply(Property& el, Property& me);
             };
             CustomSingleton<ValueSpecification, Property> m_defaultValue = CustomSingleton<ValueSpecification, Property>(this);
             CustomSingleton<DataType, Property> m_dataType = CustomSingleton<DataType, Property>(this);
@@ -68,6 +68,7 @@ namespace UML{
             void setComposite(bool composite);
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
+            void restoreReference(Element* el) override;
             TypedSet<ValueSpecification, Property>& getDefaultValueSingleton();
             TypedSet<Class, Property>& getClassSingleton();
             TypedSet<DataType, Property>& getDataTypeSingleton();

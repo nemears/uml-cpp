@@ -15,8 +15,8 @@ namespace UML {
         friend class Enumeration;
 
         protected:
-            Singleton<Enumeration, EnumerationLiteral> m_enumeration = Singleton<Enumeration, EnumerationLiteral>(this);
-            Set<Enumeration, EnumerationLiteral>& getEnumerationSingleton();
+            CustomSingleton<Enumeration, EnumerationLiteral> m_enumeration = CustomSingleton<Enumeration, EnumerationLiteral>(this);
+            TypedSet<Enumeration, EnumerationLiteral>& getEnumerationSingleton();
             void init();
             EnumerationLiteral();
         public:

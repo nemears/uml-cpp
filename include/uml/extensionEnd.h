@@ -13,8 +13,8 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         private:
-            Singleton<Stereotype, ExtensionEnd> m_extensionType = Singleton<Stereotype, ExtensionEnd>(this);
-            Set<Stereotype, ExtensionEnd>& getTypeSingleton();
+            CustomSingleton<Stereotype, ExtensionEnd> m_extensionType = CustomSingleton<Stereotype, ExtensionEnd>(this);
+            TypedSet<Stereotype, ExtensionEnd>& getTypeSingleton();
             void init();
             ExtensionEnd();
         public:

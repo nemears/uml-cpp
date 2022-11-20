@@ -16,15 +16,15 @@ namespace UML {
         protected:
             class AddPartPolicy {
                 public:
-                    void apply(Property& prop, StructuredClassifier& me);
+                    static void apply(Property& prop, StructuredClassifier& me);
             };
             class RemovePartPolicy {
                 public:
-                    void apply(Property& prop, StructuredClassifier& me);
+                    static void apply(Property& prop, StructuredClassifier& me);
             };
             CustomSet<ConnectableElement, StructuredClassifier> m_roles = CustomSet<ConnectableElement, StructuredClassifier>(this);
-            CustomSet<Property, StructuredClassifier> m_ownedAttributes = CustomSet<Property, StructuredClassifier>(this);
-            CustomSet<Property, StructuredClassifier, AddPartPolicy, RemovePartPolicy> m_parts = CustomSet<Property, StructuredClassifier, AddPartPolicy, RemovePartPolicy>(this);
+            CustomSet<Property, StructuredClassifier, AddPartPolicy, RemovePartPolicy> m_ownedAttributes = CustomSet<Property, StructuredClassifier, AddPartPolicy, RemovePartPolicy>(this);
+            CustomSet<Property, StructuredClassifier> m_parts = CustomSet<Property, StructuredClassifier>(this);
             CustomSet<Connector, StructuredClassifier> m_ownedConnectors = CustomSet<Connector, StructuredClassifier>(this);
             void restoreReferences() override;
             void init();

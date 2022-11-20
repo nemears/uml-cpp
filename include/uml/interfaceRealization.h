@@ -17,11 +17,11 @@ namespace UML {
         protected:
             class RemoveContractPolicy {
                 public:
-                    void apply(Interface& el, InterfaceRealization& me);
+                    static void apply(Interface& el, InterfaceRealization& me);
             };
             class SetContractPolicy {
                 public:
-                    void apply(Interface& el, InterfaceRealization& me);
+                    static void apply(Interface& el, InterfaceRealization& me);
             };
             CustomSingleton<Interface, InterfaceRealization, SetContractPolicy, RemoveContractPolicy> m_contract = CustomSingleton<Interface, InterfaceRealization, SetContractPolicy, RemoveContractPolicy>(this);
             CustomSingleton<BehavioredClassifier, InterfaceRealization> m_implementingClassifier = CustomSingleton<BehavioredClassifier, InterfaceRealization>(this);

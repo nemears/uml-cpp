@@ -15,7 +15,7 @@ using namespace UML;
 void Feature::referenceReindexed(ID oldID, ID newID) {
     RedefinableElement::referenceReindexed(oldID, newID);
     NamedElement::referenceReindexed(oldID, newID);
-    m_featuringClassifier.reindex(oldID, newID);
+    m_featuringClassifier.reindex(newID);
 }
 
 void Feature::referenceErased(ID id) {

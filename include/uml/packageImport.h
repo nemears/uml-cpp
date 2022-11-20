@@ -19,11 +19,11 @@ namespace UML {
         protected:
             class AddImportedPackagePolicy {
                 public:
-                    void apply(Package& el, PackageImport& me);
+                    static void apply(Package& el, PackageImport& me);
             };
             class RemoveImportedPackagePolicy {
                 public:
-                    void apply(Package& el, PackageImport& me);
+                    static void apply(Package& el, PackageImport& me);
             };
             DEFINE_SINGLETON_W_POLICIES(ImportedPackage, m_importedPackage, Package, PackageImport, AddImportedPackagePolicy, RemoveImportedPackagePolicy)
             DEFINE_SINGLETON(ImportingNamespace, m_importingNamespace, Namespace, PackageImport)

@@ -14,16 +14,6 @@ void Package::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
 }
 
-void Package::reindexName(ID id, std::string newName) {
-    Namespace::reindexName(id, newName);
-    PackageableElement::reindexName(id, newName);
-}
-
-void Package::referencingReleased(ID id) {
-    Namespace::referencingReleased(id);
-    PackageableElement::referencingReleased(id);
-}
-
 void Package::referenceErased(ID id) {
     Namespace::referenceErased(id);
     PackageableElement::referenceErased(id);

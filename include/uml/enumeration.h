@@ -13,8 +13,7 @@ namespace UML {
         friend class EnumerationLiteral;
 
         protected:
-            OrderedSet<EnumerationLiteral, Enumeration> m_ownedLiterals = OrderedSet<EnumerationLiteral, Enumeration>(this);
-            Set<EnumerationLiteral, Enumeration>& getOwnedLiteralsSet();
+            CustomOrderedSet<EnumerationLiteral, Enumeration> m_ownedLiterals = CustomOrderedSet<EnumerationLiteral, Enumeration>(this);
             void init();
             Enumeration();
         public:

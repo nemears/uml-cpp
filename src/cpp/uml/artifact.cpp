@@ -10,14 +10,6 @@
 
 using namespace UML;
 
-Set<Property, Artifact>& Artifact::getOwnedAttributesSet() {
-    return m_ownedAttributes;
-}
-
-Set<Operation, Artifact>& Artifact::getOwnedOperationsSet() {
-    return m_ownedOperations;
-}
-
 void Artifact::init() {
     m_nestedArtifacts.subsets(m_ownedMembers);
     m_ownedAttributes.subsets(m_attributes);

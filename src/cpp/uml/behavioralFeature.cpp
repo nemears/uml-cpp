@@ -6,7 +6,6 @@
 #include "uml/stereotype.h"
 #include "uml/interface.h"
 #include "uml/deployment.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -27,8 +26,6 @@ void BehavioralFeature::referenceErased(ID id) {
 void BehavioralFeature::init() {
     m_methods.opposite(&Behavior::getSpecificationSingleton);
     m_ownedParameters.subsets(m_ownedMembers);
-    // m_raisedExceptions.addFunctor(new SetReferenceFunctor(this));
-    // m_raisedExceptions.removeFunctor(new RemoveReferenceFunctor(this));
     m_ownedParameterSets.subsets(*m_ownedElements);
 }
 

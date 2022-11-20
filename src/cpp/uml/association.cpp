@@ -9,37 +9,29 @@
 
 using namespace UML;
 
-void Association::AddEndTypeFunctor::operator()(Element& el) const {
-    if (el.as<Property>().getType()) {
-        if (el.as<Property>().getType().loaded() && !m_el.as<Association>().getEndTypes().contains(el.as<Property>().getType().id())) {
-            m_el.as<Association>().getEndTypes().add(*el.as<Property>().getType());
-            el.as<Property>().getType()->setReference(&m_el);
+void Association::AddMemberEndPolicy::apply(Property& el, Association& me) {
+    if (el.getType()) {
+        if (el.getType().loaded() && !me.getEndTypes().contains(el.getType().id())) {
+            SetLock typeLock = me.lockEl(*el.getType());
+            me.m_memberEnds.innerAddToOtherSet<Type, Association>(me.m_endTypes, *el.getType());
+            el.getType()->setReference(&me);
         }
     }
 }
 
-void Association::RemoveEndTypeFunctor::operator()(Element& el) const {
-    if (el.as<Property>().getType()) {
-        if (m_el.as<Association>().getEndTypes().contains(el.as<Property>().getType().id())) {
-            m_el.as<Association>().getEndTypes().remove(el.as<Property>().getType().id());
-            el.as<Property>().getType()->removeReference(m_el.getID());
+void Association::RemoveMemberEndPolicy::apply(Property& el, Association& me) {
+    if (el.getType()) {
+        if (me.getEndTypes().contains(el.getType().id())) {
+            SetLock typeLock = me.lockEl(*el.getType());
+            me.m_memberEnds.innerRemoveFromOtherSet<Type, Association>(me.m_endTypes, el.getType().id());
+            el.getType()->removeReference(me.getID());
         }
     }
-}
-
-void Association::referencingReleased(ID id) {
-    Classifier::referencingReleased(id);
-    Relationship::referencingReleased(id);
 }
 
 void Association::referenceReindexed(ID oldID, ID newID) {
     Classifier::referenceReindexed(oldID, newID);
     Relationship::referenceReindexed(oldID, newID);
-}
-
-void Association::reindexName(ID id, std::string newName) {
-    Classifier::reindexName(id, newName);
-    Relationship::reindexName(id, newName);
 }
 
 void Association::restoreReferences() {
@@ -54,7 +46,7 @@ void Association::restoreReferences() {
 
 void Association::restoreReference(Element* el) {
     Element::restoreReference(el);
-    if (m_endTypes.count(el->getID())) {
+    if (m_endTypes.contains(el->getID())) {
         el->setReference(this);
     }
 }
@@ -64,19 +56,9 @@ void Association::referenceErased(ID id) {
     Relationship::referenceErased(id);
 }
 
-Set<Property, Association>& Association::getMemberEndsSet() {
-    return m_memberEnds;
-}
-
-Set<Property, Association>& Association::getOwnedEndsSet() {
-    return m_ownedEnds;
-}
-
 void Association::init() {
     m_memberEnds.subsets(m_members);
     m_memberEnds.opposite(&Property::getAssociationSingleton);
-    m_memberEnds.m_addFunctors.insert(new AddEndTypeFunctor(this));
-    m_memberEnds.m_removeFunctors.insert(new RemoveEndTypeFunctor(this));
     m_ownedEnds.subsets(m_memberEnds);
     m_ownedEnds.subsets(m_ownedMembers);
     m_ownedEnds.subsets(m_features);

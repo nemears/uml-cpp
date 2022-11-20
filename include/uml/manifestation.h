@@ -12,8 +12,8 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         
         protected:
-            Singleton<PackageableElement, Manifestation> m_utilizedElement = Singleton<PackageableElement, Manifestation>(this);
-            Set<PackageableElement, Manifestation>& getUtilizedElementSingleton();
+            CustomSingleton<PackageableElement, Manifestation> m_utilizedElement = CustomSingleton<PackageableElement, Manifestation>(this);
+            TypedSet<PackageableElement, Manifestation>& getUtilizedElementSingleton();
             void init();
             Manifestation();
         public:

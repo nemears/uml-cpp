@@ -12,18 +12,12 @@
 #include "uml/interface.h"
 #include "uml/deployment.h"
 #include "uml/umlPtr.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-void Slot::referencingReleased(ID id) {
-    Element::referencingReleased(id);
-    m_definingFeature.release(id);
-}
-
 void Slot::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    m_definingFeature.reindex(oldID, newID);
+    m_definingFeature.reindex(newID);
 }
 
 void Slot::referenceErased(ID id) {
@@ -33,20 +27,18 @@ void Slot::referenceErased(ID id) {
 
 void Slot::restoreReference(Element* el) {
     Element::restoreReference(el);
-    m_definingFeature.restore(el);
+    // m_definingFeature.restore(el);
 }
 
-Set<StructuralFeature, Slot>& Slot::getDefiningFeatureSingleton() {
+TypedSet<StructuralFeature, Slot>& Slot::getDefiningFeatureSingleton() {
     return m_definingFeature;
 }
 
-Set<InstanceSpecification, Slot>& Slot::getOwningInstanceSingleton() {
+TypedSet<InstanceSpecification, Slot>& Slot::getOwningInstanceSingleton() {
     return m_owningInstance;
 }
 
 void Slot::init() {
-    m_definingFeature.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_definingFeature.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_owningInstance.subsets(*m_owner);
     m_owningInstance.opposite(&InstanceSpecification::getSlots);
     m_values.subsets(*m_ownedElements);

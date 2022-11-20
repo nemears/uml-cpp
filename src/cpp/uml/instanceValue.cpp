@@ -6,23 +6,12 @@
 #include "uml/dataType.h"
 #include "uml/stereotype.h"
 #include "uml/deployment.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-void InstanceValue::referencingReleased(ID id) {
-    ValueSpecification::referencingReleased(id);
-    m_instance.release(id);
-}
-
 void InstanceValue::referenceReindexed(ID oldID, ID newID) {
     ValueSpecification::referenceReindexed(oldID, newID);
-    m_instance.reindex(oldID, newID);
-}
-
-void InstanceValue::reindexName(ID id, std::string newName) {
-    ValueSpecification::reindexName(id, newName);
-    m_instance.reindexName(id, newName);
+    m_instance.reindex(newID);
 }
 
 void InstanceValue::referenceErased(ID id) {
@@ -32,16 +21,15 @@ void InstanceValue::referenceErased(ID id) {
 
 void InstanceValue::restoreReference(Element* el) {
     ValueSpecification::restoreReference(el);
-    m_instance.restore(el);
+    // m_instance.restore(el);
 }
 
-Set<InstanceSpecification, InstanceValue>& InstanceValue::getInstanceSingleton() {
+TypedSet<InstanceSpecification, InstanceValue>& InstanceValue::getInstanceSingleton() {
     return m_instance;
 }
 
 void InstanceValue::init() {
-    m_instance.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_instance.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
+    
 }
 
 InstanceValue::InstanceValue() : Element(ElementType::INSTANCE_VALUE) {

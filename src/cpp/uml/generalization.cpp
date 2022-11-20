@@ -9,7 +9,6 @@
 #include "uml/generalizationSet.h"
 #include "uml/interface.h"
 #include "uml/deployment.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
@@ -29,7 +28,7 @@ void Generalization::RemoveGeneralPolicy::apply(Classifier& el, Generalization& 
 
 void Generalization::referenceReindexed(ID oldID, ID newID) {
     DirectedRelationship::referenceReindexed(oldID, newID);
-    m_generalizationSets.reindex(oldID, newID);
+    m_generalizationSets.reindex(newID);
 }
 
 void Generalization::referenceErased(ID id) {

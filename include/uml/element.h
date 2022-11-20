@@ -11,6 +11,7 @@
 #include "id.h"
 // #include <mutex>
 #include "set/doNothingPolicy.h"
+#include "set/setLock.h"
 
 namespace YAML {
     class Node;
@@ -280,6 +281,7 @@ namespace UML {
             virtual void restoreReference(Element* el);
             virtual void referenceErased(ID id);
             void mountAndRelease();
+            SetLock lockEl(Element& el);
             Element(ElementType elementType);
         public:
             Element(const Element&) = delete;

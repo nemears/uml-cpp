@@ -1,5 +1,4 @@
 #include "uml/dependency.h"
-#include "uml/setReferenceFunctor.h"
 #include "uml/stereotype.h"
 #include "uml/behavior.h"
 #include "uml/dataType.h"

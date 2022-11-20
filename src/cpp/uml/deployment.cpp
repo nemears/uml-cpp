@@ -10,7 +10,7 @@
 
 using namespace UML;
 
-Set<DeploymentTarget, Deployment>& Deployment::getLocationSingleton() {
+TypedSet<DeploymentTarget, Deployment>& Deployment::getLocationSingleton() {
     return m_location;
 }
 

@@ -9,7 +9,7 @@
 
 using namespace UML;
 
-Set<ExtensionEnd, Extension>& Extension::getOwnedEndSingleton() {
+TypedSet<ExtensionEnd, Extension>& Extension::getOwnedEndSingleton() {
     return m_ownedEnd;
 }
 

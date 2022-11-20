@@ -11,27 +11,17 @@
 
 using namespace UML;
 
-Set<Operation, Parameter>& Parameter::getOperationSingleton() {
+TypedSet<Operation, Parameter>& Parameter::getOperationSingleton() {
     return m_operation;
 }
 
-Set<ValueSpecification, Parameter>& Parameter::getDefaultValueSingleton() {
+TypedSet<ValueSpecification, Parameter>& Parameter::getDefaultValueSingleton() {
     return m_defaultValue;
-}
-
-void Parameter::referencingReleased(ID id) {
-    ConnectableElement::referencingReleased(id);
-    m_parameterSets.release(id);
 }
 
 void Parameter::referenceReindexed(ID oldID, ID newID) {
     ConnectableElement::referenceReindexed(oldID, newID);
-    m_parameterSets.reindex(oldID, newID);
-}
-
-void Parameter::reindexName(ID id, std::string newName) {
-    ConnectableElement::reindexName(id, newName);
-    m_parameterSets.reindexName(id, newName);
+    m_parameterSets.reindex(newID);
 }
 
 void Parameter::referenceErased(ID id) {
@@ -41,7 +31,7 @@ void Parameter::referenceErased(ID id) {
 
 void Parameter::init() {
     m_operation.subsets(m_namespace);
-    m_operation.opposite(&Operation::getOwnedParametersSet);
+    m_operation.opposite(&Operation::getOwnedParameters);
     m_defaultValue.subsets(*m_ownedElements);
     m_parameterSets.opposite(&ParameterSet::getParameters);
 }

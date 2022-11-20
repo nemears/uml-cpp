@@ -43,19 +43,17 @@ void Classifier::AddGeneralPolicy::apply(Classifier& el, Classifier& me) {
     }
     for (auto& mem : el.m_members) {
         if (mem.getVisibility() != VisibilityKind::PRIVATE) {
-            m_el.m_inheritedMembers.add(mem);
+            me.m_inheritedMembers.add(mem);
         }
     }
-    el.setReference(&me);
 }
 
 void Classifier::RemoveGeneralPolicy::apply(Classifier& el, Classifier& me) {
-    for (auto& mem : el.m_members) {
-        if (mem.getVisibility() != VisibilityKind::PRIVATE && me.m_inheritedMembers.contains(mem.getID())) {
+    for (NamedElement& mem : el.m_members) {
+        if (mem.getVisibility() != VisibilityKind::PRIVATE && me.m_inheritedMembers.contains(mem)) {
             me.m_inheritedMembers.remove(mem.getID());
         }
     }
-    el.removeReference(m_el.getID());
 }
 
 // void Classifier::AddOwnedMemberFunctor::operator()(Element& el) const {
@@ -98,8 +96,8 @@ TypedSet<ClassifierTemplateParameter, Classifier>& Classifier::getTemplateParame
 void Classifier::referenceReindexed(ID oldID, ID newID) {
     Namespace::referenceReindexed(oldID, newID);
     PackageableElement::referenceReindexed(oldID, newID); // todo non super call meth
-    m_generals.reindex(oldID, newID);
-    m_powerTypeExtent.reindex(oldID, newID);
+    m_generals.reindex(newID);
+    m_powerTypeExtent.reindex(newID);
 }
 
 void Classifier::restoreReferences() {

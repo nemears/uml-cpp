@@ -11,16 +11,6 @@
 
 using namespace UML;
 
-void Operation::referencingReleased(ID id) {
-    BehavioralFeature::referencingReleased(id);
-    ParameterableElement::referencingReleased(id);
-}
-
-void Operation::reindexName(ID id, std::string newName) {
-    BehavioralFeature::reindexName(id, newName);
-    ParameterableElement::reindexName(id, newName);
-}
-
 void Operation::referenceReindexed(ID oldID, ID newID) {
     BehavioralFeature::referenceReindexed(oldID, newID);
     ParameterableElement::referenceReindexed(oldID, newID);
@@ -36,36 +26,36 @@ void Operation::restoreReference(Element* el) {
     ParameterableElement::restoreReference(el);
 }
 
-Set<Type, Operation>& Operation::getTypeSingleton() {
+TypedSet<Type, Operation>& Operation::getTypeSingleton() {
     return m_type;
 }
 
-Set<Class, Operation>& Operation::getClassSingleton() {
+TypedSet<Class, Operation>& Operation::getClassSingleton() {
     return m_class;
 }
 
-Set<DataType, Operation>& Operation::getDataTypeSingleton() {
+TypedSet<DataType, Operation>& Operation::getDataTypeSingleton() {
     return m_dataType;
 }
 
-Set<Interface, Operation>& Operation::getInterfaceSingleton() {
+TypedSet<Interface, Operation>& Operation::getInterfaceSingleton() {
     return m_interface;
 }
 
-Set<Parameter, Operation>& Operation::getOwnedParametersSet() {
-    return m_operationOwnedParameters;
-}
+// Set<Parameter, Operation>& Operation::getOwnedParametersSet() {
+//     return m_operationOwnedParameters;
+// }
 
 void Operation::init() {
     m_class.subsets(m_featuringClassifier);
     m_class.subsets(m_namespace);
-    m_class.opposite(&Class::getOwnedOperationsSet);
+    m_class.opposite(&Class::getOwnedOperations);
     m_dataType.subsets(m_featuringClassifier);
     m_dataType.subsets(m_namespace);
-    m_dataType.opposite(&DataType::getOwnedOperationsSet);
+    m_dataType.opposite(&DataType::getOwnedOperations);
     m_interface.subsets(m_namespace);
     m_interface.subsets(m_featuringClassifier);
-    m_interface.opposite(&Interface::getOwnedOperationsSet);
+    m_interface.opposite(&Interface::getOwnedOperations);
     m_operationOwnedParameters.redefines(m_ownedParameters);
     m_operationOwnedParameters.opposite(&Parameter::getOperationSingleton);
 }

@@ -14,11 +14,11 @@ namespace UML {
         protected:
             class AddMemberEndPolicy {
                 public:
-                    void apply(Property& el, Association& me);
+                    static void apply(Property& el, Association& me);
             };
             class RemoveMemberEndPolicy {
                 public:
-                    void apply(Property& el, Association& me);
+                    static void apply(Property& el, Association& me);
             };
             CustomOrderedSet<Property, Association, AddMemberEndPolicy, RemoveMemberEndPolicy> m_memberEnds = CustomOrderedSet<Property, Association, AddMemberEndPolicy, RemoveMemberEndPolicy>(this);
             CustomOrderedSet<Property, Association> m_ownedEnds = CustomOrderedSet<Property, Association>(this);

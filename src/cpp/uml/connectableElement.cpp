@@ -1,5 +1,4 @@
 #include "uml/connectableElement.h"
-#include "uml/setReferenceFunctor.h"
 #include "uml/behavior.h"
 #include "uml/package.h"
 #include "uml/stereotype.h"
@@ -13,7 +12,7 @@ using namespace UML;
 void ConnectableElement::referenceReindexed(ID oldID, ID newID) {
     TypedElement::referenceReindexed(oldID, newID);
     ParameterableElement::referenceReindexed(oldID, newID);
-    m_ends.reindex(oldID, newID);
+    m_ends.reindex(newID);
 }
 
 // void ConnectableElement::restoreReference(Element* el) {

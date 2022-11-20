@@ -18,11 +18,11 @@ namespace UML {
         protected:
             class AddGeneralPolicy {
                 public:
-                    void apply(Classifier& el, Generalization& me);
+                    static void apply(Classifier& el, Generalization& me);
             };
             class RemoveGeneralPolicy {
                 public:
-                    void apply(Classifier& el, Generalization& me);
+                    static void apply(Classifier& el, Generalization& me);
             };
             CustomSingleton<Classifier, Generalization, AddGeneralPolicy, RemoveGeneralPolicy> m_general = CustomSingleton<Classifier, Generalization, AddGeneralPolicy, RemoveGeneralPolicy>(this);
             CustomSingleton<Classifier, Generalization> m_specific = CustomSingleton<Classifier, Generalization>(this);

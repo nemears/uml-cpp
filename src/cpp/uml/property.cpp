@@ -10,54 +10,38 @@
 
 using namespace UML;
 
-void Property::AddEndTypeFunctor::operator()(Element& el) const {
-    if (m_el.as<Property>().getAssociation()) {
-        m_el.as<Property>().getAssociation()->getEndTypes().add(el.as<Type>());
-        el.setReference(m_el.as<Property>().getAssociation().ptr());
-    }
-}
+// void Property::AddEndTypeFunctor::operator()(Element& el) const {
+//     if (m_el.as<Property>().getAssociation()) {
+//         m_el.as<Property>().getAssociation()->getEndTypes().add(el.as<Type>());
+//         el.setReference(m_el.as<Property>().getAssociation().ptr());
+//     }
+// }
 
-void Property::RemoveEndTypeFunctor::operator()(Element& el) const {
-    if (m_el.as<Property>().getAssociation()) {
-        if (m_el.as<Property>().getAssociation()->getEndTypes().contains(el.getID())) {
-            m_el.as<Property>().getAssociation()->getEndTypes().remove(el.getID());
-            el.removeReference(m_el.as<Property>().getAssociation().id());
-        }
-    }
-}
+// void Property::RemoveEndTypeFunctor::operator()(Element& el) const {
+//     if (m_el.as<Property>().getAssociation()) {
+//         if (m_el.as<Property>().getAssociation()->getEndTypes().contains(el.getID())) {
+//             m_el.as<Property>().getAssociation()->getEndTypes().remove(el.getID());
+//             el.removeReference(m_el.as<Property>().getAssociation().id());
+//         }
+//     }
+// }
 
-void Property::AddRedefinitionContextFunctor::operator()(Element& el) const {
-    Property& me = m_el.as<Property>();
+void Property::AddRedefinedPropertyPolicy::apply(Property& el, Property& me) {
     if (me.getFeaturingClassifier() && !me.m_redefinitionContext.contains(me.getFeaturingClassifier().id())) {
-        me.m_redefinitionContext.nonOppositeAdd(*me.getFeaturingClassifier());
+        me.m_redefinitionContext.innerAdd(*me.getFeaturingClassifier());
     }
-    el.setReference(&m_el);
 }
 
-void Property::RemoveRedefinitionContextFunctor::operator()(Element& el) const {
-    Property& me = m_el.as<Property>();
+void Property::RemoveRedefinedPropertyPolicy::apply(Property& el, Property& me) {
     if (me.m_redefinedElement.empty() && me.getFeaturingClassifier() && !me.m_redefinitionContext.empty()) {
-        me.m_redefinitionContext.nonOppositeRemove(me.getFeaturingClassifier().id());
+        me.m_redefinitionContext.innerRemove(me.getFeaturingClassifier().id());
     }
-    el.removeReference(m_el.getID());
-}
-
-void Property::referencingReleased(ID id) {
-    StructuralFeature::referencingReleased(id);
-    ConnectableElement::referencingReleased(id);
-    m_association.release(id);
 }
 
 void Property::referenceReindexed(ID oldID, ID newID) {
     StructuralFeature::referenceReindexed(oldID, newID);
     ConnectableElement::referenceReindexed(oldID, newID);
-    m_association.reindex(oldID, newID);
-}
-
-void Property::reindexName(ID id, std::string newName) {
-    StructuralFeature::reindexName(id, newName);
-    ConnectableElement::reindexName(id, newName);
-    m_association.reindexName(id, newName);
+    m_association.reindex(newID);
 }
 
 void Property::restoreReference(Element* el) {
@@ -66,7 +50,8 @@ void Property::restoreReference(Element* el) {
     if (m_redefinedProperties.contains(el->getID())) {
         el->setReference(this);
         if (m_featuringClassifier.get() && !m_redefinitionContext.contains(m_featuringClassifier.get().id())) {
-            m_redefinitionContext.addReadOnly(m_featuringClassifier.get().id());
+            // TODO lock featuring classigier
+            m_redefinitionContext.innerAdd(m_featuringClassifier.get().id());
         }
     }
 }
@@ -77,27 +62,27 @@ void Property::referenceErased(ID id) {
     m_association.eraseElement(id);
 }
 
-Set<ValueSpecification, Property>& Property::getDefaultValueSingleton() {
+TypedSet<ValueSpecification, Property>& Property::getDefaultValueSingleton() {
     return m_defaultValue;
 }
 
-Set<Class, Property>& Property::getClassSingleton() {
+TypedSet<Class, Property>& Property::getClassSingleton() {
     return m_class;
 }
 
-Set<DataType, Property>& Property::getDataTypeSingleton() {
+TypedSet<DataType, Property>& Property::getDataTypeSingleton() {
     return m_dataType;
 }
 
-Set<Association, Property>& Property::getAssociationSingleton() {
+TypedSet<Association, Property>& Property::getAssociationSingleton() {
     return m_association;
 }
 
-Set<Association, Property>& Property::getOwningAssociationSingleton() {
+TypedSet<Association, Property>& Property::getOwningAssociationSingleton() {
     return m_owningAssociation;
 }
 
-Set<Interface, Property>& Property::getInterfaceSingleton() {
+TypedSet<Interface, Property>& Property::getInterfaceSingleton() {
     return m_interface;
 }
 
@@ -105,23 +90,19 @@ void Property::init() {
     m_defaultValue.subsets(*m_ownedElements);
     m_class.subsets(m_namespace);
     m_class.subsets(m_featuringClassifier);
-    m_class.opposite(&Class::getOwnedAttributesSet);
+    m_class.opposite(&Class::getOwnedAttributes);
     m_dataType.subsets(m_namespace);
     m_dataType.subsets(m_featuringClassifier);
     m_dataType.opposite(&DataType::getOwnedAttributesSet);
-    m_association.opposite(&Association::getMemberEndsSet);
+    m_association.opposite(&Association::getMemberEnds);
     m_owningAssociation.subsets(m_namespace);
     m_owningAssociation.subsets(m_featuringClassifier);
     m_owningAssociation.subsets(m_association);
-    m_owningAssociation.opposite(&Association::getOwnedEndsSet);
+    m_owningAssociation.opposite(&Association::getOwnedEnds);
     m_interface.subsets(m_namespace);
     m_interface.subsets(m_featuringClassifier);
-    m_interface.opposite(&Interface::getOwnedAttributesSet);
-    m_type.m_addFunctors.insert(new AddEndTypeFunctor(this));
-    m_type.m_removeFunctors.insert(new RemoveEndTypeFunctor(this));
+    m_interface.opposite(&Interface::getOwnedAttributes);
     m_redefinedProperties.subsets(m_redefinedElement);
-    m_redefinedProperties.m_addFunctors.insert(new AddRedefinitionContextFunctor(this));
-    m_redefinedProperties.m_removeFunctors.insert(new RemoveRedefinitionContextFunctor(this));
 }
 
 Property::Property() : Element(ElementType::PROPERTY) {
@@ -143,13 +124,15 @@ bool Property::isComposite() {
 void Property::setComposite(bool composite) {
     if (!composite && m_composite) {
         if (m_featuringClassifier.get() && m_featuringClassifier.get()->isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
-            m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.removeFromJustThisSet(m_id);
+            // TODO make this happen
+            // m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.removeFromJustThisSet(m_id);
         }
     }
     m_composite = composite;
     if (m_composite) {
         if (m_featuringClassifier.get() && m_featuringClassifier.get()->isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
-            m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.nonOppositeAdd(*this);
+            // m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.nonOppositeAdd(*this);
+            m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.innerAdd(*this);
         }
     }
 }

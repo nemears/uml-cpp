@@ -1,5 +1,4 @@
 #include "uml/namespace.h"
-#include "uml/setReferenceFunctor.h"
 #include "uml/stereotype.h"
 #include "uml/behavior.h"
 #include "uml/dataType.h"
@@ -9,33 +8,37 @@
 
 using namespace UML;
 
-void Namespace::AddElementImportFunctor::operator()(Element& el) const {
-    if (el.as<ElementImport>().getImportedElement() && !m_el.as<Namespace>().getImportedMembers().contains(el.as<ElementImport>().getImportedElement().id())) {
-        m_el.as<Namespace>().getImportedMembers().addReadOnly(*el.as<ElementImport>().getImportedElement());
+void Namespace::AddElementImportPolicy::apply(ElementImport& el, Namespace& me) {
+    if (el.getImportedElement() && !me.getImportedMembers().contains(el.getImportedElement().id())) {
+        // me.getImportedMembers().addReadOnly(*el.getImportedElement());
+        me.m_elementImports.innerAddToOtherSet(me.m_importedMembers, *el.getImportedElement());
     }
 }
 
-void Namespace::RemoveElementImportFunctor::operator()(Element& el) const {
-    if (el.as<ElementImport>().getImportedElement() && m_el.as<Namespace>().getImportedMembers().contains(el.as<ElementImport>().getImportedElement().id())) {
-        m_el.as<Namespace>().getImportedMembers().removeReadOnly(el.as<ElementImport>().getImportedElement().id());
+void Namespace::RemoveElementImportPolicy::apply(ElementImport& el, Namespace& me) {
+    if (el.getImportedElement() && me.getImportedMembers().contains(el.getImportedElement().id())) {
+        // me.getImportedMembers().removeReadOnly(el.getImportedElement().id());
+        me.m_elementImports.innerRemoveFromOtherSet(me.m_importedMembers, el.getImportedElement().id());
     }
 }
 
-void Namespace::AddPackageImportFunctor::operator()(Element& el) const {
-    if (el.as<PackageImport>().getImportedPackage()) {
-        for (auto& pckgMember : el.as<PackageImport>().getImportedPackage()->getPackagedElements()) {
-            if (!m_el.as<Namespace>().getImportedMembers().contains(pckgMember)) {
-                m_el.as<Namespace>().getImportedMembers().addReadOnly(pckgMember);
+void Namespace::AddPackageImportPolicy::apply(PackageImport& el, Namespace& me) {
+    if (el.getImportedPackage()) {
+        for (auto& pckgMember : el.getImportedPackage()->getPackagedElements()) {
+            if (!me.getImportedMembers().contains(pckgMember)) {
+                // me.getImportedMembers().addReadOnly(pckgMember);
+                me.m_packageImports.innerAddToOtherSet(me.m_importedMembers, pckgMember);
             }
         }
     }
 }
 
-void Namespace::RemovePackageImportFunctor::operator()(Element& el) const {
-    if (el.as<PackageImport>().getImportedPackage()) {
-        for (auto& pckgMember : el.as<PackageImport>().getImportedPackage()->getPackagedElements()) {
-            if (m_el.as<Namespace>().getImportedMembers().contains(pckgMember)) {
-                m_el.as<Namespace>().getImportedMembers().removeReadOnly(pckgMember.getID());
+void Namespace::RemovePackageImportPolicy::apply(PackageImport& el, Namespace& me) {
+    if (el.getImportedPackage()) {
+        for (auto& pckgMember : el.getImportedPackage()->getPackagedElements()) {
+            if (me.getImportedMembers().contains(pckgMember)) {
+                // me.getImportedMembers().removeReadOnly(pckgMember.getID());
+                me.m_packageImports.innerRemoveFromOtherSet(me.m_importedMembers, pckgMember.getID());
             }
         }
     }
@@ -43,17 +46,7 @@ void Namespace::RemovePackageImportFunctor::operator()(Element& el) const {
 
 void Namespace::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
-    m_members.reindex(oldID, newID);
-}
-
-void Namespace::reindexName(ID id, std::string newName) {
-    NamedElement::reindexName(id, newName);
-    m_members.reindexName(id, newName);
-}
-
-void Namespace::referencingReleased(ID id) {
-    NamedElement::referencingReleased(id);
-    m_members.release(id);
+    m_members.reindex(newID);
 }
 
 void Namespace::referenceErased(ID id) {
@@ -63,8 +56,6 @@ void Namespace::referenceErased(ID id) {
 
 void Namespace::init() {
     m_members.m_readOnly = true;
-    m_members.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_members.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_ownedMembers.subsets(*m_ownedElements);
     m_ownedMembers.subsets(m_members);
     m_ownedMembers.opposite(&NamedElement::getNamespaceSingleton);
@@ -75,12 +66,8 @@ void Namespace::init() {
     m_importedMembers.m_readOnly = true;
     m_elementImports.subsets(*m_ownedElements);
     m_elementImports.opposite(&ElementImport::getImportingNamespaceSingleton);
-    m_elementImports.m_addFunctors.insert(new AddElementImportFunctor(this));
-    m_elementImports.m_removeFunctors.insert(new RemoveElementImportFunctor(this));
     m_packageImports.subsets(*m_ownedElements);
     m_packageImports.opposite(&PackageImport::getImportingNamespaceSingleton);
-    m_packageImports.m_addFunctors.insert(new AddPackageImportFunctor(this));
-    m_packageImports.m_removeFunctors.insert(new RemovePackageImportFunctor(this));
 }
 
 Namespace::Namespace() : Element(ElementType::NAMESPACE) {

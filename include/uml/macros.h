@@ -36,7 +36,8 @@ void myType::set ## methodName(ID id) { \
 } \
 
 #define DEFINE_SINGLETON(methodName, singletonName, singletonType, myType) \
-DEFINE_SINGLETON_W_POLICIES(methodName, singletonName, singletonType, myType, DoNothing<singletonType, myType>, DoNothing<singletonType, myType>) \
+typedef DoNothing<singletonType, myType> _ ## singletonType ## _ ## myType ## DoNothingPolicy; \
+DEFINE_SINGLETON_W_POLICIES(methodName, singletonName, singletonType, myType, _ ## singletonType ## _ ## myType ## DoNothingPolicy, _ ## singletonType ## _ ## myType ## DoNothingPolicy) \
 
 #define FRIEND_ALL_UML() \
 friend class Element; \

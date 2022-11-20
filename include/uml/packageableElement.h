@@ -15,9 +15,7 @@ namespace UML {
 
         protected:
             CustomSingleton<Package, PackageableElement> m_owningPackage = CustomSingleton<Package, PackageableElement>(this);
-            void referencingReleased(ID id) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             TypedSet<Package, PackageableElement>& getOwningPackageSingleton();

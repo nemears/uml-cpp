@@ -8,8 +8,7 @@
 #include "uml/association.h"
 #include "uml/deployment.h"
 #include "uml/dataType.h"
-#include "uml/singleton.h"
-#include "uml/setReferenceFunctor.h"
+#include "uml/set/singleton.h"
 
 namespace UML {
 
@@ -43,27 +42,10 @@ void Element::removeReference(ID referencing) {
 }
 
 void Element::referenceReindexed(ID oldID, ID newID) {
-    m_ownedElements->reindex(oldID, newID);
-    m_owner->reindex(oldID, newID);
-    m_ownedComments->reindex(oldID, newID);
-    m_appliedStereotype->reindex(oldID, newID);
-}
-
-void Element::reindexName(ID id, std::string newName) {
-    m_ownedElements->reindexName(id, newName);
-    m_owner->reindexName(id, newName);
-}
-
-void Element::referencingReleased(ID id) {
-    if (m_node->m_references.count(id)) {
-        m_node->m_references[id].node = 0;
-    } else {
-        throw ManagerStateException("Releasing reference that we dont have a reference of ?!");
-    }
-    m_owner->release(id);
-    m_ownedElements->release(id);
-    m_ownedComments->release(id);
-    m_appliedStereotype->release(id);
+    m_ownedElements->reindex(newID);
+    m_owner->reindex(newID);
+    m_ownedComments->reindex(newID);
+    m_appliedStereotype->reindex(newID);
 }
 
 void Element::restoreReferences() {
@@ -76,8 +58,8 @@ void Element::restoreReference(Element* el) {
     } else {
         throw ManagerStateException("Bad state, should have reference if we are restoring a reference");
     }
-    m_ownedElements->restore(el);
-    m_owner->restore(el);
+    // m_ownedElements->restore(el);
+    // m_owner->restore(el);
 }
 
 void Element::referenceErased(ID id) {
@@ -96,7 +78,11 @@ void Element::mountAndRelease() {
     // }
 }
 
-Set<Element, Element>& Element::getOwnerSingleton() {
+SetLock Element::lockEl(Element& el) {
+    return m_manager->lockEl(el);
+}
+
+TypedSet<Element, Element>& Element::getOwnerSingleton() {
     return *m_owner;
 }
 
@@ -105,18 +91,18 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_node = 0;
     m_id = ID::randomID();
 
-    m_owner = new Singleton<Element, Element>(this);
+    m_owner = new CustomSingleton<Element, Element>(this);
     m_owner->opposite(&Element::getOwnedElements);
     m_owner->m_readOnly = true;
 
-    m_ownedElements = new Set<Element, Element>(this);
+    m_ownedElements = new CustomSet<Element, Element>(this);
     m_ownedElements->opposite(&Element::getOwnerSingleton);
     m_ownedElements->m_readOnly = true;
 
-    m_ownedComments = new Set<Comment, Element>(this);
+    m_ownedComments = new CustomSet<Comment, Element>(this);
     m_ownedComments->subsets(*m_ownedElements);
 
-    m_appliedStereotype = new Set<InstanceSpecification, Element>(this);
+    m_appliedStereotype = new CustomSet<InstanceSpecification, Element>(this);
     m_appliedStereotype->subsets(*m_ownedElements);
 }
 
@@ -530,12 +516,12 @@ Set<Comment, Element>& Element::getOwnedComments() {
     return *m_ownedComments;
 }
 
-void SetReferenceFunctor::operator()(Element& el) const {
-    el.setReference(&m_el);
-}
+// void SetReferenceFunctor::operator()(Element& el) const {
+//     el.setReference(&m_el);
+// }
 
-void RemoveReferenceFunctor::operator()(Element& el) const {
-    el.removeReference(m_el.getID());
-}
+// void RemoveReferenceFunctor::operator()(Element& el) const {
+//     el.removeReference(m_el.getID());
+// }
 
 }

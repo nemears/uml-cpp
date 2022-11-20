@@ -16,27 +16,9 @@
 
 using namespace UML;
 
-void InstanceSpecification::AddClassifierFunctor::operator()(Element& el) const {
-    el.setReference(&m_el);
-}
-
-void InstanceSpecification::RemoveClassifierFunctor::operator()(Element& el) const {
-    el.removeReference(el.getID());
-}
-
 void InstanceSpecification::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
-    m_classifiers.reindex(oldID, newID);
-}
-
-void InstanceSpecification::reindexName(ID id, std::string newName) {
-    PackageableElement::reindexName(id, newName);
-    m_classifiers.reindexName(id, newName);
-}
-
-void InstanceSpecification::referencingReleased(ID id) {
-    PackageableElement::referencingReleased(id);
-    m_classifiers.release(id);
+    m_classifiers.reindex(newID);
 }
 
 void InstanceSpecification::referenceErased(ID id) {
@@ -44,17 +26,11 @@ void InstanceSpecification::referenceErased(ID id) {
     m_classifiers.eraseElement(id);
 }
 
-void InstanceSpecification::restoreReference(Element* el) {
-    PackageableElement::restoreReference(el);
-}
-
-Set<ValueSpecification, InstanceSpecification>& InstanceSpecification::getSpecificationSingleton() {
+TypedSet<ValueSpecification, InstanceSpecification>& InstanceSpecification::getSpecificationSingleton() {
     return m_specification;
 }
 
 void InstanceSpecification::init() {
-    m_classifiers.m_addFunctors.insert(new AddClassifierFunctor(this));
-    m_classifiers.m_removeFunctors.insert(new RemoveClassifierFunctor(this));
     m_specification.subsets(*m_ownedElements);
     m_slots.subsets(*m_ownedElements);
     m_slots.opposite(&Slot::getOwningInstanceSingleton);
@@ -62,7 +38,6 @@ void InstanceSpecification::init() {
 
 InstanceSpecification::InstanceSpecification() : Element(ElementType::INSTANCE_SPECIFICATION) {
     init();
-    std::cout << "";
 }
 
 InstanceSpecification::~InstanceSpecification() {

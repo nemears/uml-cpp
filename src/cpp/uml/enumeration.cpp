@@ -7,10 +7,6 @@
 
 using namespace UML;
 
-Set<EnumerationLiteral, Enumeration>& Enumeration::getOwnedLiteralsSet() {
-    return m_ownedLiterals;
-}
-
 void Enumeration::init() {
     m_ownedLiterals.subsets(m_ownedMembers);
     m_ownedLiterals.opposite(&EnumerationLiteral::getEnumerationSingleton);

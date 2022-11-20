@@ -13,18 +13,18 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            class RemoveClientFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
-                public:
-                    RemoveClientFunctor(Element* el) : SetFunctor(el) {};
-            };
-            class SetClientFunctor : public SetFunctor {
-                private:
-                    void operator()(Element& el) const override;
-                public:
-                    SetClientFunctor(Element* el) : SetFunctor(el) {};
-            };
+            // class RemoveClientFunctor : public SetFunctor {
+            //     private:
+            //         void operator()(Element& el) const override;
+            //     public:
+            //         RemoveClientFunctor(Element* el) : SetFunctor(el) {};
+            // };
+            // class SetClientFunctor : public SetFunctor {
+            //     private:
+            //         void operator()(Element& el) const override;
+            //     public:
+            //         SetClientFunctor(Element* el) : SetFunctor(el) {};
+            // };
             void init();
             Usage();
         public:

@@ -2,7 +2,7 @@
 #define _UML_EXPRESSION_H_
 
 #include "valueSpecification.h"
-#include "orderedSet.h"
+#include "set/orderedSet.h"
 
 namespace UML {
     class Expression : public ValueSpecification {
@@ -11,8 +11,7 @@ namespace UML {
 
         protected:
             std::string m_symbol = "";
-            OrderedSet<ValueSpecification, Expression> m_operands = OrderedSet<ValueSpecification, Expression>(this);
-            Set<ValueSpecification, Expression>& getOperandsSet();
+            CustomOrderedSet<ValueSpecification, Expression> m_operands = CustomOrderedSet<ValueSpecification, Expression>(this);
             void init();
             Expression();
         public:

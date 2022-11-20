@@ -9,7 +9,7 @@
 
 using namespace UML;
 
-Set<Profile, Stereotype>& Stereotype::getProfileSingleton() {
+TypedSet<Profile, Stereotype>& Stereotype::getProfileSingleton() {
     return m_profile;
 }
 

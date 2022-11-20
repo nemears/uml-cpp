@@ -5,6 +5,7 @@
 #include "setLock.h"
 #include "doNothingPolicy.h"
 #include "uml/macros.h"
+#include "uml/forwardDeclarations.h"
 
 namespace UML {
 
@@ -45,8 +46,8 @@ namespace UML {
 
             size_t m_size = 0;
 
-            virtual void runAddFunctor(Element& el) = 0;
-            virtual void runRemoveFunctor(Element& el) = 0;
+            virtual void runAddPolicy(Element& el) = 0;
+            virtual void runRemovePolicy(Element& el) = 0;
 
             std::unordered_set<AbstractSet*> getAllSuperSets() {
                 std::unordered_set<AbstractSet*> allSuperSets;
@@ -137,9 +138,10 @@ namespace UML {
             >
     class PrivateSet : virtual public TypedSet<T, U> , public AllocationPolicy {
 
-        friend class Relationship;
-        friend class DirectedRelationship;
         FRIEND_ALL_UML()
+
+        friend AdditionPolicy;
+        friend RemovalPolicy;
 
         protected:
             U& m_el;
@@ -190,10 +192,10 @@ namespace UML {
                 }
             };
 
-            void runAddFunctor(Element& el) override {
+            void runAddPolicy(Element& el) override {
                 AdditionPolicy::apply(el.as<T>(), m_el);
             }
-            void runRemoveFunctor(Element& el) override {
+            void runRemovePolicy(Element& el) override {
                 RemovalPolicy::apply(el.as<T>(), m_el);
             }
 
@@ -213,7 +215,7 @@ namespace UML {
 
                 AdditionPolicy::apply(el, m_el);
                 for (auto superSet : this->getAllSuperSets()) { // TODO calling getSuperSets twice, maybe call it once and pass it down into innerAddDfs
-                    superSet->runAddFunctor(el);
+                    superSet->runAddPolicy(el);
                 }
             }
 
@@ -236,6 +238,11 @@ namespace UML {
                 // for (auto superSet : this->getAllSuperSets()) { // TODO calling getSuperSets twice, maybe call it once and pass it down into innerAddDfs
                 //     superSet->runAddFunctor(el);
                 // }
+            }
+
+            template<class V, class W>
+            void innerAddToOtherSet(TypedSet<V,W>& set, V& el) {
+                set.innerAdd(el);
             }
 
             /**
@@ -562,9 +569,14 @@ namespace UML {
                     }
                 }
                 for (auto superSet : allSuperSets) {
-                    superSet->runRemoveFunctor(*node->m_ptr);
+                    superSet->runRemovePolicy(*node->m_ptr);
                 }
                 AllocationPolicy::deleteNode(node);
+            }
+            
+            template <class V, class W>
+            void innerRemoveFromOtherSet(TypedSet<V,W>& set, ID id) {
+                set.innerRemove(id);
             }
 
             void add(T& el) {
@@ -796,24 +808,32 @@ namespace UML {
                 throw SetStateException("Could not find element " + id.string() + " in set!");
             }
 
-            bool contains(T& el) const {
+            bool contains(ID id) const {
                 SetLock myLock = m_el.m_manager->lockEl(m_el);
                 
                 // get
                 if (!this->m_root) {
                     return false;
                 }
-                SetNode* result = search(el.getID(), this->m_root);
+                SetNode* result = search(id, this->m_root);
 
                 return result;
             }
+            
+            bool contains(T& el) const {
+                return contains(el.getID());
+            }
 
             bool contains(UmlPtr<T> el) const {
-                return contains(*el);
+                return contains(el.id());
             }
 
             size_t size() const {
                 return this->m_size;
+            }
+
+            bool empty() const {
+                return this->m_size == 0;
             }
     };
 
@@ -906,6 +926,10 @@ namespace UML {
     template <class T, class U>
     class Set : virtual public TypedSet<T,U> {
         public:
+            virtual bool contains(ID id) const = 0;
+            virtual bool contains(T& el) const = 0;
+            virtual bool contains(UmlPtr<T> el) const = 0;
+            virtual void add(ID id) = 0;
             virtual void add(UmlPtr<T> el) = 0;
             virtual void add(T& el) = 0;
             virtual void remove(ID id) = 0;
@@ -922,17 +946,36 @@ namespace UML {
                 class RemovalPolicy = DoNothing<T, U>
             >
     class CustomSet : public PrivateSet<T,U, AdditionPolicy, RemovalPolicy> , public Set<T,U> {
+        protected:
+            void innerAdd(T& el) override {
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerAdd(el);
+            }
+            void innerRemove(ID id) override {
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerRemove(id);
+            }
         public:
             CustomSet(U* el) : PrivateSet<T,U, AdditionPolicy, RemovalPolicy>(el) {}
             CustomSet(U& el) : PrivateSet<T,U, AdditionPolicy, RemovalPolicy>(el) {}
+            bool contains(ID id) const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::contains(id);
+            }
+            bool contains(T& el) const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::contains(el);
+            }
+            bool contains(UmlPtr<T> el) const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::contains(el);
+            }
+            void add(ID id) override {
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::add(id);
+            }
             void add(UmlPtr<T> el) override {
-                add(*el);
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::add(el.id());
             }
             void add(T& el) override {
-                PrivateSet<T,U>::add(el);
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::add(el);
             }
             void remove(ID id) override {
-                PrivateSet<T,U>::remove(id);
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::remove(id);
             }
             void remove(T& el) override {
                 remove(el.getID());

@@ -8,10 +8,6 @@
 
 namespace UML {
 
-Set<LiteralString, OpaqueBehavior>& OpaqueBehavior::getBodiesSet() {
-    return m_bodies;
-}
-
 void OpaqueBehavior::init() {
     m_bodies.subsets(*m_ownedElements);
 }

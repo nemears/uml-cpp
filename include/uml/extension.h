@@ -19,9 +19,9 @@ namespace UML {
              * every model, but obviously it will be more efficient to just keep track of it by enum right now.
              **/
             ElementType m_metaClass = ElementType::NOT_SET;
-            Singleton<ExtensionEnd, Extension> m_ownedEnd = Singleton<ExtensionEnd, Extension>(this);
+            CustomSingleton<ExtensionEnd, Extension> m_ownedEnd = CustomSingleton<ExtensionEnd, Extension>(this);
             bool m_setFlag = false;
-            Set<ExtensionEnd, Extension>& getOwnedEndSingleton();
+            TypedSet<ExtensionEnd, Extension>& getOwnedEndSingleton();
             void init();
             Extension();
         public:

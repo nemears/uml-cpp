@@ -11,10 +11,10 @@
 
 using namespace UML;
 
-void MultiplicityElement::AddLowerFunctor::operator()(Element& el) const {
+void MultiplicityElement::AddLowerPolicy::apply(ValueSpecification& el, MultiplicityElement& me) {
     if (el.isSubClassOf(ElementType::LITERAL_INT)) {
         if (dynamic_cast<LiteralInt&>(el).getValue() >= 0) {
-            m_el.as<MultiplicityElement>().setLower(dynamic_cast<LiteralInt&>(el).getValue());
+            me.setLower(dynamic_cast<LiteralInt&>(el).getValue());
         }
     }
     else if (el.isSubClassOf(ElementType::EXPRESSION)) {
@@ -22,19 +22,18 @@ void MultiplicityElement::AddLowerFunctor::operator()(Element& el) const {
     }
 }
 
-void MultiplicityElement::RemoveLowerFunctor::operator()(Element& el) const {
-    MultiplicityElement& m_me = m_el.as<MultiplicityElement>();
-    if (m_me.m_lowSpecified) {
-        m_me.m_lower = -1;
-        m_me.m_lowSpecified = false;
-        m_me.m_multiplicityIsSpecified = false;
+void MultiplicityElement::RemoveLowerPolicy::apply(ValueSpecification& el, MultiplicityElement& me) {
+    if (me.m_lowSpecified) {
+        me.m_lower = -1;
+        me.m_lowSpecified = false;
+        me.m_multiplicityIsSpecified = false;
     }
 }
 
-void MultiplicityElement::AddUpperFunctor::operator()(Element& el) const {
+void MultiplicityElement::AddUpperPolicy::apply(ValueSpecification& el, MultiplicityElement& me) {
     if (el.isSubClassOf(ElementType::LITERAL_INT)) {
         if (dynamic_cast<LiteralInt&>(el).getValue() >= 0) {
-            m_el.as<MultiplicityElement>().setUpper(dynamic_cast<LiteralInt&>(el).getValue());
+            me.setUpper(dynamic_cast<LiteralInt&>(el).getValue());
         }
     }
     else if (el.isSubClassOf(ElementType::EXPRESSION)) {
@@ -42,30 +41,25 @@ void MultiplicityElement::AddUpperFunctor::operator()(Element& el) const {
     }
 }
 
-void MultiplicityElement::RemoveUpperFunctor::operator()(Element& el) const {
-    MultiplicityElement& m_me = m_el.as<MultiplicityElement>();
-    if (m_me.m_upSpecified) {
-        m_me.m_upper = -1;
-        m_me.m_upSpecified = false;
-        m_me.m_multiplicityIsSpecified = false;
+void MultiplicityElement::RemoveUpperPolicy::apply(ValueSpecification& el, MultiplicityElement& me) {
+    if (me.m_upSpecified) {
+        me.m_upper = -1;
+        me.m_upSpecified = false;
+        me.m_multiplicityIsSpecified = false;
     }
 }
 
-Set<ValueSpecification, MultiplicityElement>& MultiplicityElement::getLowerValueSingleton() {
+TypedSet<ValueSpecification, MultiplicityElement>& MultiplicityElement::getLowerValueSingleton() {
     return m_lowVal;
 }
 
-Set<ValueSpecification, MultiplicityElement>& MultiplicityElement::getUpperValueSingleton() {
+TypedSet<ValueSpecification, MultiplicityElement>& MultiplicityElement::getUpperValueSingleton() {
     return m_upVal;
 }
 
 void MultiplicityElement::init() {
     m_lowVal.subsets(*m_ownedElements);
-    m_lowVal.m_addFunctors.insert(new AddLowerFunctor(this));
-    m_lowVal.m_removeFunctors.insert(new RemoveLowerFunctor(this));
     m_upVal.subsets(*m_ownedElements);
-    m_upVal.m_addFunctors.insert(new AddUpperFunctor(this));
-    m_upVal.m_removeFunctors.insert(new RemoveUpperFunctor(this));
 }
 
 MultiplicityElement::MultiplicityElement() : Element(ElementType::MULTIPLICITY_ELEMENT) {

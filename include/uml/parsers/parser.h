@@ -6,8 +6,8 @@
 #include "uml/parsers/parserMetaData.h"
 #include "uml/parsers/emitterMetaData.h"
 #include "uml/umlPtr.h"
-#include "uml/set.h"
-#include "uml/singleton.h"
+#include "uml/set/set.h"
+#include "uml/set/singleton.h"
 #include "uml/forwardDeclarations.h"
 
 namespace UML {

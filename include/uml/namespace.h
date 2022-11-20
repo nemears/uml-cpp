@@ -17,19 +17,19 @@ namespace UML{
         protected:
             class AddElementImportPolicy {
                 public:
-                    void apply(ElementImport& el, Namespace& me);
+                    static void apply(ElementImport& el, Namespace& me);
             };
             class RemoveElementImportPolicy {
                 public:
-                    void apply(ElementImport& el, Namespace& me);
+                    static void apply(ElementImport& el, Namespace& me);
             };
             class AddPackageImportPolicy {
                 public:
-                    void apply(PackageImport& el, Namespace& me);
+                    static void apply(PackageImport& el, Namespace& me);
             };
             class RemovePackageImportPolicy {
                 public:
-                    void apply(PackageImport& el, Namespace& me);
+                    static void apply(PackageImport& el, Namespace& me);
             };
             CustomSet<NamedElement, Namespace> m_members = CustomSet<NamedElement, Namespace>(this);
             CustomSet<NamedElement, Namespace> m_ownedMembers = CustomSet<NamedElement, Namespace>(this);

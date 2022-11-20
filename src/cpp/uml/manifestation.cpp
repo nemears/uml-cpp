@@ -11,7 +11,7 @@
 
 using namespace UML;
 
-Set<PackageableElement, Manifestation>& Manifestation::getUtilizedElementSingleton() {
+TypedSet<PackageableElement, Manifestation>& Manifestation::getUtilizedElementSingleton() {
     return m_utilizedElement;
 }
 

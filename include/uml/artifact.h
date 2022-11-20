@@ -3,7 +3,7 @@
 
 #include "classifier.h"
 #include "deployedArtifact.h"
-#include "orderedSet.h"
+#include "set/orderedSet.h"
 
 namespace UML {
 
@@ -14,12 +14,10 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Set<Artifact, Artifact> m_nestedArtifacts = Set<Artifact, Artifact>(this);
-            OrderedSet<Property, Artifact> m_ownedAttributes = OrderedSet<Property, Artifact>(this);
-            OrderedSet<Operation, Artifact> m_ownedOperations = OrderedSet<Operation, Artifact>(this);
-            Set<Manifestation, Artifact> m_manifestations =  Set<Manifestation, Artifact>(this);
-            Set<Property, Artifact>& getOwnedAttributesSet();
-            Set<Operation, Artifact>& getOwnedOperationsSet();
+            CustomSet<Artifact, Artifact> m_nestedArtifacts = CustomSet<Artifact, Artifact>(this);
+            CustomOrderedSet<Property, Artifact> m_ownedAttributes = CustomOrderedSet<Property, Artifact>(this);
+            CustomOrderedSet<Operation, Artifact> m_ownedOperations = CustomOrderedSet<Operation, Artifact>(this);
+            CustomSet<Manifestation, Artifact> m_manifestations =  CustomSet<Manifestation, Artifact>(this);
             void init();
             Artifact();
         public:

@@ -8,9 +8,9 @@
 
 using namespace UML;
 
-void BehavioredClassifier::RemoveInterfaceRealizationFunctor::operator()(Element& el) const {
-    if (el.as<InterfaceRealization>().getContract()) {
-        std::list<Classifier*> queue = {&m_el.as<Classifier>()};
+void BehavioredClassifier::RemoveInterfaceRealizationPolicy::apply(InterfaceRealization& el, BehavioredClassifier& me) {
+    if (el.getContract()) {
+        std::list<Classifier*> queue = {&me};
         while (!queue.empty()) {
             Classifier* front = queue.front();
             queue.pop_front();
@@ -23,11 +23,13 @@ void BehavioredClassifier::RemoveInterfaceRealizationFunctor::operator()(Element
                     if (front->getID() == port.getType().id()) {
                         if (port.isConjugated()) {
                             if (port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
-                                port.getRequired().removeReadOnly(el.as<InterfaceRealization>().getContract().id());
+                                // port.getRequired().removeReadOnly(el.as<InterfaceRealization>().getContract().id());
+                                me.m_interfaceRealizations.innerRemoveFromOtherSet(port.getRequired(), el.getContract().id());
                             }
                         } else {
                             if (port.getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
-                                port.getProvided().removeReadOnly(el.as<InterfaceRealization>().getContract().id());
+                                // port.getProvided().removeReadOnly(el.as<InterfaceRealization>().getContract().id());
+                                me.m_interfaceRealizations.innerRemoveFromOtherSet(port.getProvided(), el.getContract().id());
                             }
                         }
                     }
@@ -41,9 +43,9 @@ void BehavioredClassifier::RemoveInterfaceRealizationFunctor::operator()(Element
     }
 }
 
-void BehavioredClassifier::AddInterfaceRealizationFunctor::operator()(Element& el) const {
-    if (el.as<InterfaceRealization>().getContract()) {
-        std::list<Classifier*> queue = {&m_el.as<Classifier>()};
+void BehavioredClassifier::AddInterfaceRealizationPolicy::apply(InterfaceRealization& el, BehavioredClassifier& me) {
+    if (el.getContract()) {
+        std::list<Classifier*> queue = {&me};
         while (!queue.empty()) {
             Classifier* front = queue.front();
             queue.pop_front();
@@ -56,11 +58,13 @@ void BehavioredClassifier::AddInterfaceRealizationFunctor::operator()(Element& e
                     if (port.getType().id() == front->m_id) {
                         if (port.isConjugated()) {
                             if (!port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
-                                port.getRequired().nonOppositeAdd(*el.as<InterfaceRealization>().getContract());
+                                // port.getRequired().nonOppositeAdd(*el.as<InterfaceRealization>().getContract());
+                                me.m_interfaceRealizations.innerAddToOtherSet(port.getRequired(), *el.getContract());
                             }
                         } else {
                             if (!port.getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
-                                port.getProvided().nonOppositeAdd(*el.as<InterfaceRealization>().getContract());
+                                // port.getProvided().nonOppositeAdd(*el.as<InterfaceRealization>().getContract());
+                                me.m_interfaceRealizations.innerAddToOtherSet(port.getProvided(), *el.getContract());
                             }
                         }
                     }
@@ -74,7 +78,7 @@ void BehavioredClassifier::AddInterfaceRealizationFunctor::operator()(Element& e
     }
 }
 
-Set<Behavior, BehavioredClassifier>& BehavioredClassifier::getClassifierBehaviorSingleton() {
+TypedSet<Behavior, BehavioredClassifier>& BehavioredClassifier::getClassifierBehaviorSingleton() {
     return m_classifierBehavior;
 }
 
@@ -83,8 +87,6 @@ void BehavioredClassifier::init() {
     m_classifierBehavior.subsets(m_ownedBehaviors);
     m_interfaceRealizations.subsets(*m_ownedElements);
     m_interfaceRealizations.opposite(&InterfaceRealization::getImplementingClassifierSingleton);
-    m_interfaceRealizations.addFunctor(new AddInterfaceRealizationFunctor(this));
-    m_interfaceRealizations.removeFunctor(new RemoveInterfaceRealizationFunctor(this));
 }
 
 BehavioredClassifier::BehavioredClassifier() : Element(ElementType::BEHAVIORED_CLASSIFIER) {

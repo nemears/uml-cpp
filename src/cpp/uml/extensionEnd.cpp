@@ -9,7 +9,7 @@
 
 using namespace UML;
 
-Set<Stereotype, ExtensionEnd>& ExtensionEnd::getTypeSingleton() {
+TypedSet<Stereotype, ExtensionEnd>& ExtensionEnd::getTypeSingleton() {
     return m_extensionType;
 }
 

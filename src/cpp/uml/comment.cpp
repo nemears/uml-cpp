@@ -1,21 +1,10 @@
 #include "uml/comment.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-void Comment::referencingReleased(ID id) {
-    Element::referencingReleased(id);
-    m_annotatedElements.release(id);
-}
-
 void Comment::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    m_annotatedElements.reindex(oldID, newID);
-}
-
-void Comment::reindexName(ID id, std::string newName) {
-    Element::reindexName(id, newName);
-    m_annotatedElements.reindexName(id, newName);
+    m_annotatedElements.reindex(newID);
 }
 
 void Comment::referenceErased(ID id) {
@@ -24,8 +13,7 @@ void Comment::referenceErased(ID id) {
 }
 
 void Comment::init() {
-    m_annotatedElements.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_annotatedElements.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
+    
 }
 
 Comment::Comment() : Element(ElementType::COMMENT) {

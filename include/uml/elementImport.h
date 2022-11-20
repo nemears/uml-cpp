@@ -18,11 +18,11 @@ namespace UML {
         protected:
             class AddImportedElementPolicy {
                 public:
-                    void apply(PackageableElement& el, ElementImport& me);
+                    static void apply(PackageableElement& el, ElementImport& me);
             };
             class RemoveImportedElementPolicy {
                 public:
-                    void apply(PackageableElement& el, ElementImport& me);
+                    static void apply(PackageableElement& el, ElementImport& me);
             };
             CustomSingleton<PackageableElement, ElementImport, AddImportedElementPolicy, RemoveImportedElementPolicy> m_importedElement = CustomSingleton<PackageableElement, ElementImport, AddImportedElementPolicy, RemoveImportedElementPolicy>(this);
             CustomSingleton<Namespace, ElementImport> m_importingNamespace = CustomSingleton<Namespace, ElementImport>(this);

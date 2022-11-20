@@ -12,8 +12,8 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            OrderedSet<LiteralString, OpaqueBehavior> m_bodies = OrderedSet<LiteralString, OpaqueBehavior>(this);
-            Set<LiteralString, OpaqueBehavior>& getBodiesSet();
+            CustomOrderedSet<LiteralString, OpaqueBehavior> m_bodies = CustomOrderedSet<LiteralString, OpaqueBehavior>(this);
+            // Set<LiteralString, OpaqueBehavior>& getBodiesSet();
             void init();
             OpaqueBehavior();
         public:

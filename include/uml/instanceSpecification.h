@@ -22,15 +22,7 @@ namespace UML{
 
         protected:
             bool m_setFlag = false;
-            class AddClassifierPolicy {
-                public:
-                    void apply(Classifier& el, InstanceSpecification& me);
-            };
-            class RemoveClassifierPolicy {
-                public:
-                    void apply(Classifier& el, InstanceSpecification& me);
-            };
-            CustomSet<Classifier, InstanceSpecification, AddClassifierPolicy, RemoveClassifierPolicy> m_classifiers = CustomSet<Classifier, InstanceSpecification, AddClassifierPolicy, RemoveClassifierPolicy>(this);
+            CustomSet<Classifier, InstanceSpecification> m_classifiers = CustomSet<Classifier, InstanceSpecification>(this);
             CustomSet<Slot, InstanceSpecification> m_slots = CustomSet<Slot, InstanceSpecification>(this);
             CustomSingleton <ValueSpecification, InstanceSpecification> m_specification = CustomSingleton<ValueSpecification, InstanceSpecification>(this);
             void referenceReindexed(ID oldID, ID newID) override;

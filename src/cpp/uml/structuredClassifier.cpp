@@ -13,9 +13,15 @@
 
 using namespace UML;
 
-void StructuredClassifier::AddPartFunctor::operator()(Element& el) const {
-    if (el.as<Property>().isComposite() && !m_el.as<StructuredClassifier>().m_parts.contains(el.getID())) {
-        m_el.as<StructuredClassifier>().m_parts.nonOppositeAdd(el.as<Property>());
+void StructuredClassifier::AddPartPolicy::apply(Property& el, StructuredClassifier& me) {
+    if (el.isComposite() && !me.m_parts.contains(el)) {
+        me.m_parts.innerAdd(el);
+    }
+}
+
+void StructuredClassifier::RemovePartPolicy::apply(Property& el, StructuredClassifier& me) {
+    if (el.isComposite() && me.m_parts.contains(el)) {
+        me.m_parts.innerRemove(el.getID());
     }
 }
 
@@ -34,7 +40,6 @@ void StructuredClassifier::init() {
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_roles);
-    m_ownedAttributes.m_addFunctors.insert(new AddPartFunctor(this));
     m_parts.subsets(m_ownedAttributes);
     m_parts.m_readOnly = true;
     m_ownedConnectors.subsets(m_ownedMembers);

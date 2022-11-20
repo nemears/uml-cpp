@@ -13,27 +13,17 @@
 
 using namespace UML;
 
-void NamedElement::UpdateQualifiedNameFunctor::operator()(Element& el) const {
-    m_el.as<NamedElement>().updateQualifiedName(el.as<NamedElement>().getQualifiedName());
+void NamedElement::UpdateQualifiedNamePolicy::apply(Namespace& el, NamedElement& me) {
+    me.updateQualifiedName(el.getQualifiedName());
 }
 
-void NamedElement::RemoveQualifiedNameFunctor::operator()(Element& el) const {
-    m_el.as<NamedElement>().updateQualifiedName("");
+void NamedElement::RemoveQualifiedNamePolicy::apply(Namespace& el, NamedElement& me) {
+    me.updateQualifiedName("");
 }
 
 void NamedElement::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    m_clientDependencies->reindex(oldID, newID);
-}
-
-void NamedElement::reindexName(ID id, std::string newName) {
-    Element::reindexName(id, newName);
-    m_clientDependencies->reindexName(id, newName);
-}
-
-void NamedElement::referencingReleased(ID id) {
-    Element::referencingReleased(id);
-    m_clientDependencies->release(id);
+    m_clientDependencies->reindex(newID);
 }
 
 void NamedElement::referenceErased(ID id) {
@@ -41,7 +31,7 @@ void NamedElement::referenceErased(ID id) {
     m_clientDependencies->eraseElement(id);
 }
 
-Set<Namespace, NamedElement>& NamedElement::getNamespaceSingleton() {
+TypedSet<Namespace, NamedElement>& NamedElement::getNamespaceSingleton() {
     return m_namespace;
 }
 
@@ -49,9 +39,7 @@ void NamedElement::init() {
     m_namespace.subsets(*m_owner);
     m_namespace.opposite(&Namespace::getOwnedMembers);
     m_namespace.m_readOnly = true;
-    m_namespace.m_addFunctors.insert(new UpdateQualifiedNameFunctor(this));
-    m_namespace.m_removeFunctors.insert(new RemoveQualifiedNameFunctor(this));
-    m_clientDependencies = new Set<Dependency, NamedElement>(this);
+    m_clientDependencies = new CustomSet<Dependency, NamedElement>(this);
     m_clientDependencies->opposite(&Dependency::getClients);
 }
 
@@ -113,7 +101,7 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
                 }
             }
             for (auto& clazz : clazzs) {
-                clazz->m_inheritedMembers.nonOppositeRemove(m_id);
+                clazz->m_inheritedMembers.innerRemove(m_id);
             }
         }
     }

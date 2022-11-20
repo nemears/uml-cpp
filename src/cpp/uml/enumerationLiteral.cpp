@@ -8,13 +8,13 @@
 
 using namespace UML;
 
-Set<Enumeration, EnumerationLiteral>& EnumerationLiteral::getEnumerationSingleton() {
+TypedSet<Enumeration, EnumerationLiteral>& EnumerationLiteral::getEnumerationSingleton() {
     return m_enumeration;
 }
 
 void EnumerationLiteral::init() {
     m_enumeration.subsets(m_namespace);
-    m_enumeration.opposite(&Enumeration::getOwnedLiteralsSet);
+    m_enumeration.opposite(&Enumeration::getOwnedLiterals);
 }
 
 EnumerationLiteral::EnumerationLiteral() : Element(ElementType::ENUMERATION_LITERAL) {

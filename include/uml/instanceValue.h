@@ -13,13 +13,11 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<InstanceSpecification, InstanceValue> m_instance = Singleton<InstanceSpecification, InstanceValue>(this);
-            void referencingReleased(ID id) override;
+            CustomSingleton<InstanceSpecification, InstanceValue> m_instance = CustomSingleton<InstanceSpecification, InstanceValue>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
-            Set<InstanceSpecification, InstanceValue>& getInstanceSingleton();
+            TypedSet<InstanceSpecification, InstanceValue>& getInstanceSingleton();
             void init();
             InstanceValue();
         public:

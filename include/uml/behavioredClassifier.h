@@ -14,11 +14,11 @@ namespace UML {
         protected:
             class RemoveInterfaceRealizationPolicy {
                 public:
-                    void apply(InterfaceRealization& el, BehavioredClassifier& me);
+                    static void apply(InterfaceRealization& el, BehavioredClassifier& me);
             };
             class AddInterfaceRealizationPolicy {
                 public:
-                    void apply(InterfaceRealization& el, BehavioredClassifier& me);
+                    static void apply(InterfaceRealization& el, BehavioredClassifier& me);
             };
             CustomSet<Behavior, BehavioredClassifier> m_ownedBehaviors = CustomSet<Behavior, BehavioredClassifier>(this);
             CustomSingleton<Behavior, BehavioredClassifier> m_classifierBehavior = CustomSingleton<Behavior, BehavioredClassifier>(this);

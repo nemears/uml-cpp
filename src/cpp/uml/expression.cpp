@@ -7,10 +7,6 @@
 
 using namespace UML;
 
-Set<ValueSpecification, Expression>& Expression::getOperandsSet() {
-    return m_operands;
-}
-
 void Expression::init() {
     m_operands.subsets(*m_ownedElements);
 }

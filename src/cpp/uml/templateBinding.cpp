@@ -9,24 +9,23 @@
 #include "uml/dataType.h"
 #include "uml/association.h"
 #include "uml/deployment.h"
-#include "uml/setReferenceFunctor.h"
 #include "uml/umlPtr.h"
 
 using namespace UML;
 
 void TemplateBinding::restoreReference(Element* el) {
     DirectedRelationship::restoreReference(el);
-    m_signature.restore(el);
+    // m_signature.restore(el);
     if (m_signature.get().id() == el->getID()) {
         el->setReference(this);
     }
 }
 
-Set<TemplateableElement, TemplateBinding>& TemplateBinding::getBoundElementSingleton() {
+TypedSet<TemplateableElement, TemplateBinding>& TemplateBinding::getBoundElementSingleton() {
     return m_boundElement;
 }
 
-Set<TemplateSignature, TemplateBinding>& TemplateBinding::getSignatureSingleton() {
+TypedSet<TemplateSignature, TemplateBinding>& TemplateBinding::getSignatureSingleton() {
     return m_signature;
 }
 
@@ -35,8 +34,6 @@ void TemplateBinding::init() {
     m_boundElement.subsets(*m_owner);
     m_boundElement.opposite(&TemplateableElement::getTemplateBindings);
     m_signature.subsets(m_targets);
-    m_signature.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_signature.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_parameterSubstitutions.subsets(*m_ownedElements);
     m_parameterSubstitutions.opposite(&TemplateParameterSubstitution::getTemplateBindingSingleton);
 }

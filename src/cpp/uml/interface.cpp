@@ -9,18 +9,6 @@
 
 using namespace UML;
 
-Set<Property, Interface>& Interface::getOwnedAttributesSet() {
-    return m_ownedAttributes;
-}
-
-Set<Operation, Interface>& Interface::getOwnedOperationsSet() {
-    return m_ownedOperations;
-}
-
-Set<Classifier, Interface>& Interface::getNestedClassifiersSet() {
-    return m_nestedClassifiers;
-}
-
 void Interface::init() {
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedAttributes.subsets(m_attributes);

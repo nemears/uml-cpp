@@ -10,10 +10,6 @@
 
 using namespace UML;
 
-Set<Property, Signal>& Signal::getOwnedAttributesSet() {
-    return m_ownedAttributes;
-}
-
 void Signal::init() {
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_ownedMembers);

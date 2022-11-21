@@ -9,7 +9,7 @@ namespace UML {
 
     class ExecutableNode : public ActivityNode {
         protected:
-            Set<ExceptionHandler, ExecutableNode> m_handlers = Set<ExceptionHandler, ExecutableNode>(this);
+            CustomSet<ExceptionHandler, ExecutableNode> m_handlers = CustomSet<ExceptionHandler, ExecutableNode>(this);
             void init();
             ExecutableNode();
         public:

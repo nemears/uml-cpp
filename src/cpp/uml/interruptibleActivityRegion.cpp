@@ -12,24 +12,14 @@
 
 using namespace UML;
 
-void InterruptibleActivityRegion::referencingReleased(ID id) {
-    ActivityGroup::referencingReleased(id);
-    m_interruptingEdges.release(id);
-}
-
 void InterruptibleActivityRegion::referenceReindexed(ID oldID, ID newID) {
     ActivityGroup::referenceReindexed(oldID, newID);
-    m_interruptingEdges.reindex(oldID, newID);
+    m_interruptingEdges.reindex(newID);
 }
 
 void InterruptibleActivityRegion::referenceErased(ID id) {
     ActivityGroup::referenceErased(id);
     m_interruptingEdges.eraseElement(id);
-}
-
-void InterruptibleActivityRegion::reindexName(ID id, std::string newName) {
-    ActivityGroup::reindexName(id, newName);
-    m_interruptingEdges.reindexName(id, newName);
 }
 
 void InterruptibleActivityRegion::init() {

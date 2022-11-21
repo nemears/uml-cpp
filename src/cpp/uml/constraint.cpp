@@ -11,23 +11,13 @@
 
 using namespace UML;
 
-Set<Namespace, Constraint>& Constraint::getContextSingleton() {
+TypedSet<Namespace, Constraint>& Constraint::getContextSingleton() {
     return m_context;
-}
-
-void Constraint::referencingReleased(ID id) {
-    PackageableElement::referencingReleased(id);
-    m_constrainedElements.release(id);
 }
 
 void Constraint::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
-    m_constrainedElements.reindex(oldID, newID);
-}
-
-void Constraint::reindexName(ID id, std::string newName) {
-    PackageableElement::reindexName(id, newName);
-    m_constrainedElements.reindexName(id, newName);
+    m_constrainedElements.reindex(newID);
 }
 
 void Constraint::referenceErased(ID id) {

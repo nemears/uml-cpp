@@ -13,10 +13,10 @@ namespace UML {
 
     class Action : public ExecutableNode {
         protected:
-            Set<InputPin, Action> m_inputs = Set<InputPin, Action>(this);
-            Set<OutputPin, Action> m_outputs = Set<OutputPin, Action>(this);
-            Set<Constraint, Action> m_localPreconditions = Set<Constraint, Action>(this);
-            Set<Constraint, Action> m_localPostconditions = Set<Constraint, Action>(this);
+            CustomSet<InputPin, Action> m_inputs = CustomSet<InputPin, Action>(this);
+            CustomSet<OutputPin, Action> m_outputs = CustomSet<OutputPin, Action>(this);
+            CustomSet<Constraint, Action> m_localPreconditions = CustomSet<Constraint, Action>(this);
+            CustomSet<Constraint, Action> m_localPostconditions = CustomSet<Constraint, Action>(this);
             // TODO context
             bool m_isLocallyReentrant = false;
             void init();

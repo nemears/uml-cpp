@@ -11,27 +11,16 @@
 #include "uml/interface.h"
 #include "uml/deployment.h"
 #include "uml/umlPtr.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-Set<Classifier, ClassifierTemplateParameter>& ClassifierTemplateParameter::getParameteredElementSingleton() {
+TypedSet<Classifier, ClassifierTemplateParameter>& ClassifierTemplateParameter::getParameteredElementSingleton() {
     return m_classifierParameteredElement;
 }
 
 void ClassifierTemplateParameter::referenceReindexed(ID oldID, ID newID) {
     TemplateParameter::referenceReindexed(oldID, newID);
-    m_constrainingClassifiers.reindex(oldID, newID);
-}
-
-void ClassifierTemplateParameter::reindexName(ID id, std::string newName) {
-    TemplateParameter::reindexName(id, newName);
-    m_constrainingClassifiers.reindexName(id, newName);
-}
-
-void ClassifierTemplateParameter::referencingReleased(ID id) {
-    TemplateParameter::referencingReleased(id);
-    m_constrainingClassifiers.release(id);
+    m_constrainingClassifiers.reindex(newID);
 }
 
 void ClassifierTemplateParameter::referenceErased(ID id) {
@@ -42,8 +31,6 @@ void ClassifierTemplateParameter::referenceErased(ID id) {
 void ClassifierTemplateParameter::init() {
     m_classifierParameteredElement.redefines(m_parameteredElement);
     m_classifierParameteredElement.opposite(&Classifier::getTemplateParameterSingleton);
-    m_constrainingClassifiers.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_constrainingClassifiers.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 ClassifierTemplateParameter::ClassifierTemplateParameter() : Element(ElementType::CLASSIFIER_TEMPLATE_PARAMETER) {

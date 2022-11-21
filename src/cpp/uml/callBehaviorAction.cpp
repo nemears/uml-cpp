@@ -13,27 +13,16 @@
 #include "uml/deployment.h"
 #include "uml/objectNode.h"
 #include "uml/umlPtr.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-Set<Behavior, CallBehaviorAction>& CallBehaviorAction::getBehaviorSingleton() {
+TypedSet<Behavior, CallBehaviorAction>& CallBehaviorAction::getBehaviorSingleton() {
     return m_behavior;
-}
-
-void CallBehaviorAction::referencingReleased(ID id) {
-    CallAction::referencingReleased(id);
-    m_behavior.release(id);
 }
 
 void CallBehaviorAction::referenceReindexed(ID oldID, ID newID) {
     CallAction::referenceReindexed(oldID, newID);
-    m_behavior.reindex(oldID, newID);
-}
-
-void CallBehaviorAction::reindexName(ID id, std::string newName) {
-    CallAction::reindexName(id, newName);
-    m_behavior.reindexName(id, newName);
+    m_behavior.reindex(newID);
 }
 
 void CallBehaviorAction::referenceErased(ID id) {
@@ -41,10 +30,7 @@ void CallBehaviorAction::referenceErased(ID id) {
     m_behavior.eraseElement(id);
 }
 
-void CallBehaviorAction::init() {
-    m_behavior.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_behavior.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-}
+void CallBehaviorAction::init() {}
 
 CallBehaviorAction::CallBehaviorAction() : Element(ElementType::CALL_BEHAVIOR_ACTION) {
     init();

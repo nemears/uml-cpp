@@ -13,36 +13,24 @@
 
 using namespace UML;
 
-Set<Activity, ActivityGroup>& ActivityGroup::getInActivitySingleton() {
+TypedSet<Activity, ActivityGroup>& ActivityGroup::getInActivitySingleton() {
     return m_inActivity;
 }
 
-Set<ActivityGroup, ActivityGroup>& ActivityGroup::getSuperGroupSingleton() {
+TypedSet<ActivityGroup, ActivityGroup>& ActivityGroup::getSuperGroupSingleton() {
     return m_superGroup;
-}
-
-void ActivityGroup::referencingReleased(ID id) {
-    NamedElement::referencingReleased(id);
-    m_containedNodes.release(id);
-    m_containedEdges.release(id);
 }
 
 void ActivityGroup::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
-    m_containedNodes.reindex(oldID, newID);
-    m_containedEdges.reindex(oldID, newID);
+    m_containedNodes.reindex(newID);
+    m_containedEdges.reindex(newID);
 }
 
 void ActivityGroup::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     m_containedNodes.eraseElement(id);
     m_containedEdges.eraseElement(id);
-}
-
-void ActivityGroup::reindexName(ID id, std::string newName) {
-    NamedElement::reindexName(id, newName);
-    m_containedNodes.reindexName(id, newName);
-    m_containedEdges.reindexName(id, newName);
 }
 
 void ActivityGroup::init() {

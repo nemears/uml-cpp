@@ -6,22 +6,10 @@
 
 using namespace UML;
 
-void TemplateParameter::referencingReleased(ID id) {
-    Element::referencingReleased(id);
-    m_parameteredElement.release(id);
-    m_default.release(id);
-}
-
 void TemplateParameter::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    m_parameteredElement.reindex(oldID, newID);
-    m_default.reindex(oldID, newID);
-}
-
-void TemplateParameter::reindexName(ID id, std::string newName) {
-    Element::reindexName(id, newName);
-    m_parameteredElement.reindexName(id, newName);
-    m_default.reindexName(id, newName);
+    m_parameteredElement.reindex(newID);
+    m_default.reindex(newID);
 }
 
 void TemplateParameter::referenceErased(ID id) {
@@ -30,29 +18,29 @@ void TemplateParameter::referenceErased(ID id) {
     m_default.eraseElement(id);
 }
 
-Set<TemplateSignature, TemplateParameter>& TemplateParameter::getSignatureSingleton() {
+TypedSet<TemplateSignature, TemplateParameter>& TemplateParameter::getSignatureSingleton() {
     return m_signature;
 }
 
-Set<ParameterableElement, TemplateParameter>& TemplateParameter::getParameteredElementSingleton() {
+TypedSet<ParameterableElement, TemplateParameter>& TemplateParameter::getParameteredElementSingleton() {
     return m_parameteredElement;
 }
 
-Set<ParameterableElement, TemplateParameter>& TemplateParameter::getOwnedParameteredElementSingleton() {
+TypedSet<ParameterableElement, TemplateParameter>& TemplateParameter::getOwnedParameteredElementSingleton() {
     return m_ownedParameteredElement;
 }
 
-Set<ParameterableElement, TemplateParameter>& TemplateParameter::getDefaultSingleton() {
+TypedSet<ParameterableElement, TemplateParameter>& TemplateParameter::getDefaultSingleton() {
     return m_default;
 }
 
-Set<ParameterableElement, TemplateParameter>& TemplateParameter::getOwnedDefaultSingleton() {
+TypedSet<ParameterableElement, TemplateParameter>& TemplateParameter::getOwnedDefaultSingleton() {
     return m_ownedDefault;
 }
 
 void TemplateParameter::init() {
     m_signature.subsets(*m_owner);
-    m_signature.opposite(&TemplateSignature::getOwnedParametersSet);
+    m_signature.opposite(&TemplateSignature::getOwnedParameters);
     m_parameteredElement.opposite(&ParameterableElement::getTemplateParameterSingleton);
     m_ownedParameteredElement.subsets(m_parameteredElement);
     m_ownedParameteredElement.subsets(*m_ownedElements);

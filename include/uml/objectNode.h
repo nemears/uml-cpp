@@ -23,16 +23,14 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<ValueSpecification, ObjectNode> m_upperBound = Singleton<ValueSpecification, ObjectNode>(this);
-            Singleton<Behavior, ObjectNode> m_selection = Singleton<Behavior, ObjectNode>(this);
+            CustomSingleton<ValueSpecification, ObjectNode> m_upperBound = CustomSingleton<ValueSpecification, ObjectNode>(this);
+            CustomSingleton<Behavior, ObjectNode> m_selection = CustomSingleton<Behavior, ObjectNode>(this);
             bool m_controlType = false;
             ObjectNodeOrderingKind m_ordering = ObjectNodeOrderingKind::FIFO;
-            Set<ValueSpecification, ObjectNode>& getUpperBoundSingleton();
-            Set<Behavior, ObjectNode>& getSelectionSingleton();
-            void referencingReleased(ID id) override;
+            TypedSet<ValueSpecification, ObjectNode>& getUpperBoundSingleton();
+            TypedSet<Behavior, ObjectNode>& getSelectionSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
-            void reindexName(ID id, std::string newName) override;
             void init();
             ObjectNode();
         public:

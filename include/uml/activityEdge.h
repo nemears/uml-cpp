@@ -24,23 +24,21 @@ namespace UML {
         friend class InterruptibleActivityRegion;
 
         protected:
-            Singleton<Activity, ActivityEdge> m_activity = Singleton<Activity, ActivityEdge>(this);
-            Singleton<ActivityNode, ActivityEdge> m_source = Singleton<ActivityNode, ActivityEdge>(this);
-            Singleton<ActivityNode, ActivityEdge> m_target = Singleton<ActivityNode, ActivityEdge>(this);
-            Singleton<ValueSpecification, ActivityEdge> m_guard = Singleton<ValueSpecification, ActivityEdge>(this);
-            Singleton<ValueSpecification, ActivityEdge> m_weight = Singleton<ValueSpecification, ActivityEdge>(this);
-            Set<ActivityGroup, ActivityEdge> m_inGroups = Set<ActivityGroup, ActivityEdge>(this);
-            Set<ActivityPartition, ActivityEdge> m_inPartitions = Set<ActivityPartition, ActivityEdge>(this);
-            Singleton<InterruptibleActivityRegion, ActivityEdge> m_interrupts = Singleton<InterruptibleActivityRegion, ActivityEdge>(this);
-            Set<Activity, ActivityEdge>& getActivitySingleton();
-            Set<ActivityNode, ActivityEdge>& getSourceSingleton();
-            Set<ActivityNode, ActivityEdge>& getTargetSingleton();
-            Set<ValueSpecification, ActivityEdge>& getGuardSingleton();
-            Set<ValueSpecification, ActivityEdge>& getWeightSingleton();
-            Set<InterruptibleActivityRegion, ActivityEdge>& getInterruptsSingleton();
-            void referencingReleased(ID id) override;
+            CustomSingleton<Activity, ActivityEdge> m_activity = CustomSingleton<Activity, ActivityEdge>(this);
+            CustomSingleton<ActivityNode, ActivityEdge> m_source = CustomSingleton<ActivityNode, ActivityEdge>(this);
+            CustomSingleton<ActivityNode, ActivityEdge> m_target = CustomSingleton<ActivityNode, ActivityEdge>(this);
+            CustomSingleton<ValueSpecification, ActivityEdge> m_guard = CustomSingleton<ValueSpecification, ActivityEdge>(this);
+            CustomSingleton<ValueSpecification, ActivityEdge> m_weight = CustomSingleton<ValueSpecification, ActivityEdge>(this);
+            CustomSet<ActivityGroup, ActivityEdge> m_inGroups = CustomSet<ActivityGroup, ActivityEdge>(this);
+            CustomSet<ActivityPartition, ActivityEdge> m_inPartitions = CustomSet<ActivityPartition, ActivityEdge>(this);
+            CustomSingleton<InterruptibleActivityRegion, ActivityEdge> m_interrupts = CustomSingleton<InterruptibleActivityRegion, ActivityEdge>(this);
+            TypedSet<Activity, ActivityEdge>& getActivitySingleton();
+            TypedSet<ActivityNode, ActivityEdge>& getSourceSingleton();
+            TypedSet<ActivityNode, ActivityEdge>& getTargetSingleton();
+            TypedSet<ValueSpecification, ActivityEdge>& getGuardSingleton();
+            TypedSet<ValueSpecification, ActivityEdge>& getWeightSingleton();
+            TypedSet<InterruptibleActivityRegion, ActivityEdge>& getInterruptsSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
         public:

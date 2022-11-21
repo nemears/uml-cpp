@@ -16,10 +16,6 @@
 
 using namespace UML;
 
-Set<OutputPin, CallAction>& CallAction::getResultsSet() {
-    return m_results;
-}
-
 void CallAction::init() {
     m_results.subsets(m_outputs);
 }

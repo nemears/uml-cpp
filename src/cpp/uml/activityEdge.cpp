@@ -14,52 +14,36 @@
 
 using namespace UML;
 
-Set<Activity, ActivityEdge>& ActivityEdge::getActivitySingleton() {
+TypedSet<Activity, ActivityEdge>& ActivityEdge::getActivitySingleton() {
     return m_activity;
 }
 
-Set<ActivityNode, ActivityEdge>& ActivityEdge::getSourceSingleton() {
+TypedSet<ActivityNode, ActivityEdge>& ActivityEdge::getSourceSingleton() {
     return m_source;
 }
 
-Set<ActivityNode, ActivityEdge>& ActivityEdge::getTargetSingleton() {
+TypedSet<ActivityNode, ActivityEdge>& ActivityEdge::getTargetSingleton() {
     return m_target;
 }
 
-Set<ValueSpecification, ActivityEdge>& ActivityEdge::getGuardSingleton() {
+TypedSet<ValueSpecification, ActivityEdge>& ActivityEdge::getGuardSingleton() {
     return m_guard;
 }
 
-Set<ValueSpecification, ActivityEdge>& ActivityEdge::getWeightSingleton() {
+TypedSet<ValueSpecification, ActivityEdge>& ActivityEdge::getWeightSingleton() {
     return m_weight;
 }
 
-Set<InterruptibleActivityRegion, ActivityEdge>& ActivityEdge::getInterruptsSingleton() {
+TypedSet<InterruptibleActivityRegion, ActivityEdge>& ActivityEdge::getInterruptsSingleton() {
     return m_interrupts;
-}
-
-void ActivityEdge::referencingReleased(ID id) {
-    NamedElement::referencingReleased(id);
-    RedefinableElement::referencingReleased(id);
-    m_source.release(id);
-    m_target.release(id);
-    m_inGroups.release(id);
 }
 
 void ActivityEdge::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
     RedefinableElement::referenceReindexed(oldID, newID);
-    m_source.reindex(oldID, newID);
-    m_target.reindex(oldID, newID);
-    m_inGroups.reindex(oldID, newID);
-}
-
-void ActivityEdge::reindexName(ID id, std::string newName) {
-    NamedElement::reindexName(id, newName);
-    RedefinableElement::reindexName(id, newName);
-    m_source.reindexName(id, newName);
-    m_target.reindexName(id, newName);
-    m_inGroups.reindexName(id, newName);
+    m_source.reindex(newID);
+    m_target.reindex(newID);
+    m_inGroups.reindex(newID);
 }
 
 void ActivityEdge::referenceErased(ID id) {

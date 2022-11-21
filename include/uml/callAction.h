@@ -6,9 +6,8 @@
 namespace UML {
     class CallAction : public InvocationAction {
         protected:
-            OrderedSet<OutputPin, CallAction> m_results = OrderedSet<OutputPin, CallAction>(this);
+            CustomOrderedSet<OutputPin, CallAction> m_results = CustomOrderedSet<OutputPin, CallAction>(this);
             bool m_isSynchronous = true;
-            Set<OutputPin, CallAction>& getResultsSet();
             void init();
             CallAction();
         public:

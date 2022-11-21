@@ -3,23 +3,12 @@
 #include "uml/templateParameter.h"
 #include "uml/parameterableElement.h"
 #include "uml/umlPtr.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-void TemplateSignature::referencingReleased(ID id) {
-    Element::referencingReleased(id);
-    m_parameters.release(id);
-}
-
-void TemplateSignature::reindexName(ID id, std::string newName) {
-    Element::reindexName(id, newName);
-    m_parameters.reindexName(id, newName);
-}
-
 void TemplateSignature::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    m_parameters.reindex(oldID, newID);
+    m_parameters.reindex(newID);
 }
 
 void TemplateSignature::referenceErased(ID id) {
@@ -27,23 +16,13 @@ void TemplateSignature::referenceErased(ID id) {
     m_parameters.eraseElement(id);
 }
 
-Set<TemplateableElement, TemplateSignature>& TemplateSignature::getTemplateSingleton() {
+TypedSet<TemplateableElement, TemplateSignature>& TemplateSignature::getTemplateSingleton() {
     return m_template;
-}
-
-Set<TemplateParameter, TemplateSignature>& TemplateSignature::getParametersSet() {
-    return m_parameters;
-}
-
-Set<TemplateParameter, TemplateSignature>& TemplateSignature::getOwnedParametersSet() {
-    return m_ownedParameters;
 }
 
 void TemplateSignature::init() {
     m_template.subsets(*m_owner);
     m_template.opposite(&TemplateableElement::getOwnedTemplateSignatureSingleton);
-    m_parameters.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_parameters.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_ownedParameters.subsets(m_parameters);
     m_ownedParameters.subsets(*m_ownedElements);
     m_ownedParameters.opposite(&TemplateParameter::getSignatureSingleton);

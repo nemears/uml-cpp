@@ -10,28 +10,21 @@
 #include "uml/interface.h"
 #include "uml/deployment.h"
 #include "uml/umlPtr.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-Set<Behavior, ObjectFlow>& ObjectFlow::getTransformationSingleton() {
+TypedSet<Behavior, ObjectFlow>& ObjectFlow::getTransformationSingleton() {
     return m_transformation;
 }
 
-Set<Behavior, ObjectFlow>& ObjectFlow::getSelectionSingleton() {
+TypedSet<Behavior, ObjectFlow>& ObjectFlow::getSelectionSingleton() {
     return m_selection;
-}
-
-void ObjectFlow::referencingReleased(ID id) {
-    ActivityEdge::referencingReleased(id);
-    m_transformation.release(id);
-    m_selection.release(id);
 }
 
 void ObjectFlow::referenceReindexed(ID oldID, ID newID) {
     ActivityEdge::referenceReindexed(oldID, newID);
-    m_transformation.reindex(oldID, newID);
-    m_selection.reindex(oldID, newID);
+    m_transformation.reindex(newID);
+    m_selection.reindex(newID);
 }
 
 void ObjectFlow::referenceErased(ID id) {
@@ -44,12 +37,7 @@ void ObjectFlow::restoreReference(Element* el) {
     NamedElement::restoreReference(el);
 }
 
-void ObjectFlow::init() {
-    m_transformation.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_transformation.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_selection.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_selection.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-}
+void ObjectFlow::init() {}
 
 ObjectFlow::ObjectFlow() : Element(ElementType::OBJECT_FLOW) {
     init();

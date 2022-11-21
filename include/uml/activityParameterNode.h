@@ -13,12 +13,10 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<Parameter, ActivityParameterNode> m_parameter = Singleton<Parameter, ActivityParameterNode>(this);
-            Set<Parameter, ActivityParameterNode>& getParameterSingleton();
-            void referencingReleased(ID id) override;
+            CustomSingleton<Parameter, ActivityParameterNode> m_parameter = CustomSingleton<Parameter, ActivityParameterNode>(this);
+            TypedSet<Parameter, ActivityParameterNode>& getParameterSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
-            void reindexName(ID id, std::string newName) override;
             void init();
             ActivityParameterNode();
         public:

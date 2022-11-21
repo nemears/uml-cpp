@@ -14,24 +14,16 @@
 
 using namespace UML;
 
-Set<Activity, ActivityNode>& ActivityNode::getActivitySingleton() {
+TypedSet<Activity, ActivityNode>& ActivityNode::getActivitySingleton() {
     return m_activity;
-}
-
-void ActivityNode::referencingReleased(ID id) {
-    NamedElement::referencingReleased(id);
-    RedefinableElement::referencingReleased(id);
-    m_incoming.release(id);
-    m_outgoing.release(id);
-    m_inGroups.release(id);
 }
 
 void ActivityNode::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
     RedefinableElement::referenceReindexed(oldID, newID);
-    m_incoming.reindex(oldID, newID);
-    m_outgoing.reindex(oldID, newID);
-    m_inGroups.reindex(oldID, newID);
+    m_incoming.reindex(newID);
+    m_outgoing.reindex(newID);
+    m_inGroups.reindex(newID);
 }
 
 void ActivityNode::referenceErased(ID id) {
@@ -40,14 +32,6 @@ void ActivityNode::referenceErased(ID id) {
     m_incoming.eraseElement(id);
     m_outgoing.eraseElement(id);
     m_inGroups.eraseElement(id);
-}
-
-void ActivityNode::reindexName(ID id, std::string newName) {
-    NamedElement::reindexName(id, newName);
-    RedefinableElement::reindexName(id, newName);
-    m_incoming.reindexName(id, newName);
-    m_outgoing.reindexName(id, newName);
-    m_inGroups.reindexName(id, newName);
 }
 
 void ActivityNode::init() {

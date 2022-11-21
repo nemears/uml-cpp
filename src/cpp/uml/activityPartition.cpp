@@ -10,30 +10,24 @@
 #include "uml/deployment.h"
 #include "uml/interruptibleActivityRegion.h"
 #include "uml/umlPtr.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-Set<Element, ActivityPartition>& ActivityPartition::getRepresentsSingleton() {
+TypedSet<Element, ActivityPartition>& ActivityPartition::getRepresentsSingleton() {
     return m_represents;
 }
 
-Set<Activity, ActivityPartition>& ActivityPartition::getInActivitySingleton() {
+TypedSet<Activity, ActivityPartition>& ActivityPartition::getInActivitySingleton() {
     return m_partitionInActivity;
 }
 
-Set<ActivityPartition, ActivityPartition>& ActivityPartition::getSuperPartitionSingleton() {
+TypedSet<ActivityPartition, ActivityPartition>& ActivityPartition::getSuperPartitionSingleton() {
     return m_superPartition;
-}
-
-void ActivityPartition::referencingReleased(ID id) {
-    ActivityGroup::referencingReleased(id);
-    m_represents.release(id);
 }
 
 void ActivityPartition::referenceReindexed(ID oldID, ID newID) {
     ActivityGroup::referenceReindexed(oldID, newID);
-    m_represents.reindex(oldID, newID);
+    m_represents.reindex(newID);
 }
 
 void ActivityPartition::referenceErased(ID id) {
@@ -41,14 +35,7 @@ void ActivityPartition::referenceErased(ID id) {
     m_represents.eraseElement(id);
 }
 
-void ActivityPartition::reindexName(ID id, std::string newName) {
-    ActivityGroup::reindexName(id, newName);
-    m_represents.reindexName(id, newName);
-}
-
 void ActivityPartition::init() {
-    m_represents.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_represents.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_partitionInActivity.redefines(m_inActivity);
     m_partitionInActivity.opposite(&Activity::getPartitions);
     m_superPartition.subsets(m_superGroup);

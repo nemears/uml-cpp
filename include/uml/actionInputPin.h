@@ -13,8 +13,8 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<Action, ActionInputPin> m_fromAction = Singleton<Action, ActionInputPin>(this);
-            Set<Action, ActionInputPin>& getFromActionSingleton();
+            CustomSingleton<Action, ActionInputPin> m_fromAction = CustomSingleton<Action, ActionInputPin>(this);
+            TypedSet<Action, ActionInputPin>& getFromActionSingleton();
             void init();
             ActionInputPin();
         public:

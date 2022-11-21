@@ -9,11 +9,9 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Set<ActivityNode, InterruptibleActivityRegion> m_nodes = Set<ActivityNode, InterruptibleActivityRegion>(this);
-            Set<ActivityEdge, InterruptibleActivityRegion> m_interruptingEdges = Set<ActivityEdge, InterruptibleActivityRegion>(this);
-            void referencingReleased(ID id) override;
+            CustomSet<ActivityNode, InterruptibleActivityRegion> m_nodes = CustomSet<ActivityNode, InterruptibleActivityRegion>(this);
+            CustomSet<ActivityEdge, InterruptibleActivityRegion> m_interruptingEdges = CustomSet<ActivityEdge, InterruptibleActivityRegion>(this);
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
             InterruptibleActivityRegion();

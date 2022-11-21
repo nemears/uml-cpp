@@ -29,7 +29,7 @@ void StructuredClassifier::restoreReferences() {
     Classifier::restoreReferences();
     for (auto& prop : m_ownedAttributes) {
         if (prop.isComposite() && !m_parts.contains(prop)) {
-            m_parts.addReadOnly(prop.getID());
+            m_parts.innerAdd(prop.getID());
         }
     }
 }

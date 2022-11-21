@@ -15,16 +15,14 @@ namespace UML {
         friend class Activity;
 
         protected:
-            Singleton<Activity, ActivityGroup> m_inActivity = Singleton<Activity, ActivityGroup>(this);
-            Singleton<ActivityGroup, ActivityGroup> m_superGroup = Singleton<ActivityGroup, ActivityGroup>(this);
-            Set<ActivityNode, ActivityGroup> m_containedNodes = Set<ActivityNode, ActivityGroup>(this);
-            Set<ActivityEdge, ActivityGroup> m_containedEdges = Set<ActivityEdge, ActivityGroup>(this);
-            Set<ActivityGroup, ActivityGroup> m_subGroups = Set<ActivityGroup, ActivityGroup>(this);
-            Set<Activity, ActivityGroup>& getInActivitySingleton();
-            Set<ActivityGroup, ActivityGroup>& getSuperGroupSingleton();
-            void referencingReleased(ID id) override;
+            CustomSingleton<Activity, ActivityGroup> m_inActivity = CustomSingleton<Activity, ActivityGroup>(this);
+            CustomSingleton<ActivityGroup, ActivityGroup> m_superGroup = CustomSingleton<ActivityGroup, ActivityGroup>(this);
+            CustomSet<ActivityNode, ActivityGroup> m_containedNodes = CustomSet<ActivityNode, ActivityGroup>(this);
+            CustomSet<ActivityEdge, ActivityGroup> m_containedEdges = CustomSet<ActivityEdge, ActivityGroup>(this);
+            CustomSet<ActivityGroup, ActivityGroup> m_subGroups = CustomSet<ActivityGroup, ActivityGroup>(this);
+            TypedSet<Activity, ActivityGroup>& getInActivitySingleton();
+            TypedSet<ActivityGroup, ActivityGroup>& getSuperGroupSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
             ActivityGroup();

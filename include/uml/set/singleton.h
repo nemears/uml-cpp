@@ -38,8 +38,8 @@ namespace UML {
                     // remove
                     this->innerRemove(this->m_root->m_ptr.id());
                     // handle opposites
-                    if (this->m_oppositeSignature) {
-                        (elToRemove.*this->m_oppositeSignature)().innerRemove(this->m_el.getID());
+                    if (this->m_opposite.enabled()) {
+                        this->m_opposite.removeOpposite(elToRemove);
                     }
                 }
                 if (el) {
@@ -52,8 +52,8 @@ namespace UML {
                     el->m_node->setReference(this->m_el);
                     this->m_el.m_node->setReference(*el);
                     // handle opposites
-                    if (this->m_oppositeSignature) {
-                        (el->*this->m_oppositeSignature)().innerAdd(this->m_el);   
+                    if (this->m_opposite.enabled()) {
+                        this->m_opposite.addOpposite(*el);
                     }
                 }
             }
@@ -74,8 +74,8 @@ namespace UML {
                     // remove
                     this->innerRemove(this->m_root->m_ptr.id());
                     // handle opposites
-                    if (this->m_oppositeSignature) {
-                        (elToRemove.*this->m_oppositeSignature)().innerRemove(this->m_el.getID());
+                    if (this->m_opposite.enabled()) {
+                        this->m_opposite.removeOpposite(elToRemove);
                     }
                 }
                 if (id != ID::nullID()) {

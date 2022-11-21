@@ -2,7 +2,7 @@
 #define _UML_INVOCATION_ACTION_H_
 
 #include "action.h"
-#include "orderedSet.h"
+#include "set/orderedSet.h"
 
 namespace UML {
 
@@ -10,13 +10,11 @@ namespace UML {
 
     class InvocationAction : public Action {
         protected:
-            OrderedSet<InputPin, InvocationAction> m_arguments = OrderedSet<InputPin, InvocationAction>(this);
-            Singleton<Port, InvocationAction> m_onPort = Singleton<Port, InvocationAction>(this);
-            Set<InputPin, InvocationAction>& getArgumentsSet();
-            Set<Port, InvocationAction>& getOnPortSingleton();
-            void referencingReleased(ID id) override;
+            CustomOrderedSet<InputPin, InvocationAction> m_arguments = CustomOrderedSet<InputPin, InvocationAction>(this);
+            CustomSingleton<Port, InvocationAction> m_onPort = CustomSingleton<Port, InvocationAction>(this);
+            TypedSet<InputPin, InvocationAction>& getArgumentsSet();
+            TypedSet<Port, InvocationAction>& getOnPortSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
             InvocationAction();

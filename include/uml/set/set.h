@@ -129,6 +129,16 @@ namespace UML {
             }
     };
 
+    template <class T>
+    class OppositeInterface {
+        public:
+            virtual bool enabled() {
+                return false;
+            }
+            virtual void addOpposite(T& el) {}
+            virtual void removeOpposite(T& el) {}
+    };
+
     template <
                 class T, 
                 class U, 
@@ -146,7 +156,7 @@ namespace UML {
         protected:
             U& m_el;
             bool m_readOnly = false;
-            TypedSet<U,T>& (T::*m_oppositeSignature)() = 0;
+            OppositeInterface<T> m_opposite = OppositeInterface<T>();
 
             /**
              * Searches the tree for the node with given id from the node supplied
@@ -591,8 +601,8 @@ namespace UML {
                 el.m_node->setReference(m_el);
                 m_el.m_node->setReference(el);
                 // handle opposites
-                if (m_oppositeSignature) {
-                    (el.*m_oppositeSignature)().innerAdd(m_el);   
+                if (m_opposite.enabled()) {
+                    m_opposite.addOpposite(el);
                 }
             }
             void addReadOnly(T& el) {
@@ -604,8 +614,8 @@ namespace UML {
                 el.m_node->setReference(m_el);
                 m_el.m_node->setReference(el);
                 // handle opposites
-                if (m_oppositeSignature) {
-                    (el.*m_oppositeSignature)().innerAdd(m_el);   
+                if (m_opposite.enabled()) {
+                    m_opposite.addOpposite(el);
                 }
             }
             void add(ID id) {
@@ -642,8 +652,8 @@ namespace UML {
                 el->m_node->removeReference(m_el);
                 m_el.m_node->removeReference(*el);
                 // handle opposites
-                if (m_oppositeSignature) {
-                    (el->*m_oppositeSignature)().innerRemove(m_el.getID());
+                if (m_opposite.enabled()) {
+                    m_opposite.removeOpposite(*el);
                 }
             }
             void removeReadOnly(ID id) {
@@ -661,8 +671,8 @@ namespace UML {
                 el->m_node->removeReference(m_el);
                 m_el.m_node->removeReference(*el);
                 // handle opposites
-                if (m_oppositeSignature) {
-                    (el->*m_oppositeSignature)().innerRemove(m_el.getID());
+                if (m_opposite.enabled()) {
+                    m_opposite.removeOpposite(*el);
                 }
             }
             void reindexDFS(SetNode* node, AbstractSet* set) {
@@ -767,8 +777,29 @@ namespace UML {
                     subSet->m_superSets.erase(std::find(subSet->m_superSets.begin(), subSet->m_superSets.end(), this));
                 }
             }
-            void opposite(TypedSet<U,T>& (T::*oppositeSignature)()) {
-                m_oppositeSignature = oppositeSignature;
+
+            template <class S>
+            void opposite(S& (T::*oppositeSignature)()) {
+
+                class OppositeInterfaceAdapter : public OppositeInterface<T> {
+                    public:
+                        S& (T::*signature)() = 0;
+                        U& me;
+                        OppositeInterfaceAdapter(U& u, S& (T::*sig)()) : me(u) {
+                            signature = sig;
+                        }
+                        bool enabled() override {
+                            return true;
+                        }
+                        void addOpposite(T& el) override {
+                            (el.*signature)().innerAdd(me);
+                        }
+                        void removeOpposite(T& el) override {
+                            (el.*signature)().innerRemove(me.getID());
+                        }
+                };
+
+                m_opposite = OppositeInterfaceAdapter(m_el, oppositeSignature);
             }
             /**
              * makes sure that the set we are redefining is the same tree as ours and vice versa
@@ -946,13 +977,13 @@ namespace UML {
                 class RemovalPolicy = DoNothing<T, U>
             >
     class CustomSet : public PrivateSet<T,U, AdditionPolicy, RemovalPolicy> , public Set<T,U> {
-        protected:
-            void innerAdd(T& el) override {
-                PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerAdd(el);
-            }
-            void innerRemove(ID id) override {
-                PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerRemove(id);
-            }
+        // protected:
+        //     void innerAdd(T& el) override {
+        //         PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerAdd(el);
+        //     }
+        //     void innerRemove(ID id) override {
+        //         PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerRemove(id);
+        //     }
         public:
             CustomSet(U* el) : PrivateSet<T,U, AdditionPolicy, RemovalPolicy>(el) {}
             CustomSet(U& el) : PrivateSet<T,U, AdditionPolicy, RemovalPolicy>(el) {}

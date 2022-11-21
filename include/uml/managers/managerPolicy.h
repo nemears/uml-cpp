@@ -60,15 +60,15 @@ namespace UML {
                 AccessPolicy::restorePtr(ptr);
             }
 
-            void addToSet(Element& el, AbstractSet& set) override {
-                auto access = AccessPolicy::accessSet(set, el);
-                set.innerAdd(el);
-            }
+            // void addToSet(Element& el, AbstractSet& set) override {
+            //     auto access = AccessPolicy::accessSet(set, el);
+            //     set.innerAdd(el);
+            // }
 
-            void removeFromSet(ID id, AbstractSet& set) override {
-                auto access = AccessPolicy::accessSet(set, id);
-                set.managerRemove(id);
-            }
+            // void removeFromSet(ID id, AbstractSet& set) override {
+            //     auto access = AccessPolicy::accessSet(set, id);
+            //     set.managerRemove(id);
+            // }
 
             SetLock lockEl(Element& el) override {
                 return AccessPolicy::lockEl(el);

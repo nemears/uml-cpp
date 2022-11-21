@@ -4,33 +4,18 @@
 #include "uml/parameterableElement.h"
 #include "uml/templateSignature.h"
 #include "uml/templateableElement.h"
-#include "uml/setReferenceFunctor.h"
 #include "uml/umlPtr.h"
 
 using namespace UML;
 
-void TemplateParameterSubstitution::referencingReleased(ID id) {
-    Element::referencingReleased(id);
-    m_formal.release(id);
-    m_actual.release(id);
-}
-
 void TemplateParameterSubstitution::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    m_formal.reindex(oldID, newID);
-    m_actual.reindex(oldID, newID);
-}
-
-void TemplateParameterSubstitution::reindexName(ID id, std::string newName) {
-    Element::reindexName(id, newName);
-    m_formal.reindexName(id, newName);
-    m_actual.reindexName(id, newName);
+    m_formal.reindex(newID);
+    m_actual.reindex(newID);
 }
 
 void TemplateParameterSubstitution::restoreReference(Element* el) {
     Element::restoreReference(el);
-    m_formal.restore(el);
-    m_actual.restore(el);
     if (m_formal.get().id() == el->getID()) {
         el->setReference(this);
     }
@@ -45,29 +30,25 @@ void TemplateParameterSubstitution::referenceErased(ID id) {
     m_actual.eraseElement(id);
 }
 
-Set<TemplateParameter, TemplateParameterSubstitution>& TemplateParameterSubstitution::getFormalSingleton() {
+TypedSet<TemplateParameter, TemplateParameterSubstitution>& TemplateParameterSubstitution::getFormalSingleton() {
     return m_formal;
 }
 
-Set<TemplateBinding, TemplateParameterSubstitution>& TemplateParameterSubstitution::getTemplateBindingSingleton() {
+TypedSet<TemplateBinding, TemplateParameterSubstitution>& TemplateParameterSubstitution::getTemplateBindingSingleton() {
     return m_templateBinding;
 }
 
-Set<ParameterableElement, TemplateParameterSubstitution>& TemplateParameterSubstitution::getActualSingleton() {
+TypedSet<ParameterableElement, TemplateParameterSubstitution>& TemplateParameterSubstitution::getActualSingleton() {
     return m_actual;
 }
 
-Set<ParameterableElement, TemplateParameterSubstitution>& TemplateParameterSubstitution::getOwnedActualSingleton() {
+TypedSet<ParameterableElement, TemplateParameterSubstitution>& TemplateParameterSubstitution::getOwnedActualSingleton() {
     return m_ownedActual;
 }
 
 void TemplateParameterSubstitution::init() {
-    m_formal.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_formal.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_templateBinding.subsets(*m_owner);
     m_templateBinding.opposite(&TemplateBinding::getParameterSubstitutions);
-    m_actual.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_actual.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_ownedActual.subsets(*m_ownedElements);
     m_ownedActual.subsets(m_actual);
 }

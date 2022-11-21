@@ -3,7 +3,7 @@
 
 #include "action.h"
 #include "literalString.h"
-#include "orderedSet.h"
+#include "set/orderedSet.h"
 
 namespace UML {
     class OpaqueAction : public Action {
@@ -11,10 +11,9 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Set<InputPin, OpaqueAction> m_inputValues = Set<InputPin, OpaqueAction>(this);
-            Set<OutputPin, OpaqueAction> m_outputValues = Set<OutputPin, OpaqueAction>(this);
-            OrderedSet<LiteralString, OpaqueAction> m_bodies = OrderedSet<LiteralString, OpaqueAction>(this); // TODO change to sequence when we make that
-            Set<LiteralString, OpaqueAction>& getBodiesSet();
+            CustomSet<InputPin, OpaqueAction> m_inputValues = CustomSet<InputPin, OpaqueAction>(this);
+            CustomSet<OutputPin, OpaqueAction> m_outputValues = CustomSet<OutputPin, OpaqueAction>(this);
+            CustomOrderedSet<LiteralString, OpaqueAction> m_bodies = CustomOrderedSet<LiteralString, OpaqueAction>(this); // TODO change to sequence when we make that
             void init();
             OpaqueAction();
         public:

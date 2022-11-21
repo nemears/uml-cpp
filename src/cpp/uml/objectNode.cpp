@@ -10,34 +10,21 @@
 #include "uml/interface.h"
 #include "uml/deployment.h"
 #include "uml/umlPtr.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-Set<ValueSpecification, ObjectNode>& ObjectNode::getUpperBoundSingleton() {
+TypedSet<ValueSpecification, ObjectNode>& ObjectNode::getUpperBoundSingleton() {
     return m_upperBound;
 }
 
-Set<Behavior, ObjectNode>& ObjectNode::getSelectionSingleton() {
+TypedSet<Behavior, ObjectNode>& ObjectNode::getSelectionSingleton() {
     return m_selection;
-}
-
-void ObjectNode::referencingReleased(ID id) {
-    ActivityNode::referencingReleased(id);
-    TypedElement::referencingReleased(id);
-    m_selection.release(id);
 }
 
 void ObjectNode::referenceReindexed(ID oldID, ID newID) {
     ActivityNode::referenceReindexed(oldID, newID);
     TypedElement::referenceReindexed(oldID, newID);
-    m_selection.reindex(oldID, newID);
-}
-
-void ObjectNode::reindexName(ID id, std::string newName) {
-    ActivityNode::reindexName(id, newName);
-    TypedElement::reindexName(id, newName);
-    m_selection.reindexName(id, newName);
+    m_selection.reindex(newID);
 }
 
 void ObjectNode::referenceErased(ID id) {
@@ -48,8 +35,6 @@ void ObjectNode::referenceErased(ID id) {
 
 void ObjectNode::init() {
     m_upperBound.subsets(*m_ownedElements);
-    m_selection.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_selection.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 ObjectNode::ObjectNode() : Element(ElementType::OBJECT_NODE) {

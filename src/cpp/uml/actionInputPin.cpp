@@ -16,7 +16,7 @@
 
 using namespace UML;
 
-Set<Action, ActionInputPin>& ActionInputPin::getFromActionSingleton() {
+TypedSet<Action, ActionInputPin>& ActionInputPin::getFromActionSingleton() {
     return m_fromAction;
 }
 

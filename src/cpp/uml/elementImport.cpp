@@ -10,36 +10,33 @@
 #include "uml/interface.h"
 #include "uml/deployment.h"
 #include "uml/umlPtr.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-void ElementImport::AddImportedElementFunctor::operator()(Element& el) const {
-    if (m_el.as<ElementImport>().getImportingNamespace()) {
-        m_el.as<ElementImport>().getImportingNamespace()->getImportedMembers().addReadOnly(el.as<PackageableElement>());
+void ElementImport::AddImportedElementPolicy::apply(PackageableElement& el, ElementImport& me) {
+    if (me.getImportingNamespace()) {
+        SetLock importingNamespaceLock = me.lockEl(*me.getImportingNamespace());
+        me.m_importedElement.innerAddToOtherSet(me.getImportingNamespace()->getImportedMembers(), el);
     }
 }
 
-void ElementImport::RemoveImportedElementFunctor::operator()(Element& el) const {
-    if (m_el.as<ElementImport>().getImportingNamespace()) {
-        m_el.as<ElementImport>().getImportingNamespace()->getImportedMembers().removeReadOnly(el.getID());
+void ElementImport::RemoveImportedElementPolicy::apply(PackageableElement& el, ElementImport& me) {
+    if (me.getImportingNamespace()) {
+        SetLock importingNamespaceLock = me.lockEl(*me.getImportingNamespace());
+        me.m_importedElement.innerRemoveFromOtherSet(me.getImportingNamespace()->getImportedMembers(), el.getID());
     }
 }
 
-Set<PackageableElement, ElementImport>& ElementImport::getImportedElementSingleton() {
+TypedSet<PackageableElement, ElementImport>& ElementImport::getImportedElementSingleton() {
     return m_importedElement;
 }
 
-Set<Namespace, ElementImport>& ElementImport::getImportingNamespaceSingleton() {
+TypedSet<Namespace, ElementImport>& ElementImport::getImportingNamespaceSingleton() {
     return m_importingNamespace;
 }
 
 void ElementImport::init() {
     m_importedElement.subsets(m_targets);
-    m_importedElement.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_importedElement.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_importedElement.m_addFunctors.insert(new AddImportedElementFunctor(this));
-    m_importedElement.m_removeFunctors.insert(new RemoveImportedElementFunctor(this));
     m_importingNamespace.subsets(*m_owner);
     m_importingNamespace.subsets(m_sources);
     m_importingNamespace.opposite(&Namespace::getElementImports);

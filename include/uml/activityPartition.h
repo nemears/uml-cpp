@@ -14,18 +14,16 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<Element, ActivityPartition> m_represents = Singleton<Element, ActivityPartition>(this);
-            Singleton<ActivityPartition, ActivityPartition> m_superPartition = Singleton<ActivityPartition, ActivityPartition>(this);
-            Set<ActivityPartition, ActivityPartition> m_subPartitions = Set<ActivityPartition, ActivityPartition>(this);
-            Set<ActivityNode, ActivityPartition> m_nodes = Set<ActivityNode, ActivityPartition>(this);
-            Set<ActivityEdge, ActivityPartition> m_edges = Set<ActivityEdge, ActivityPartition>(this);
-            Singleton<Activity, ActivityPartition> m_partitionInActivity = Singleton<Activity, ActivityPartition>(this);
-            Set<Element, ActivityPartition>& getRepresentsSingleton();
-            Set<Activity, ActivityPartition>& getInActivitySingleton();
-            Set<ActivityPartition, ActivityPartition>& getSuperPartitionSingleton();
-            void referencingReleased(ID id) override;
+            CustomSingleton<Element, ActivityPartition> m_represents = CustomSingleton<Element, ActivityPartition>(this);
+            CustomSingleton<ActivityPartition, ActivityPartition> m_superPartition = CustomSingleton<ActivityPartition, ActivityPartition>(this);
+            CustomSet<ActivityPartition, ActivityPartition> m_subPartitions = CustomSet<ActivityPartition, ActivityPartition>(this);
+            CustomSet<ActivityNode, ActivityPartition> m_nodes = CustomSet<ActivityNode, ActivityPartition>(this);
+            CustomSet<ActivityEdge, ActivityPartition> m_edges = CustomSet<ActivityEdge, ActivityPartition>(this);
+            CustomSingleton<Activity, ActivityPartition> m_partitionInActivity = CustomSingleton<Activity, ActivityPartition>(this);
+            TypedSet<Element, ActivityPartition>& getRepresentsSingleton();
+            TypedSet<Activity, ActivityPartition>& getInActivitySingleton();
+            TypedSet<ActivityPartition, ActivityPartition>& getSuperPartitionSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
             ActivityPartition();

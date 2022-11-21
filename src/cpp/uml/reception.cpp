@@ -7,28 +7,17 @@
 #include "uml/association.h"
 #include "uml/deployment.h"
 #include "uml/signal.h"
-#include "uml/setReferenceFunctor.h"
 #include "uml/umlPtr.h"
 
 using namespace UML;
 
-Set<Signal, Reception>& Reception::getSignalSingleton() {
+TypedSet<Signal, Reception>& Reception::getSignalSingleton() {
     return m_signal;
-}
-
-void Reception::referencingReleased(ID id) {
-    BehavioralFeature::referencingReleased(id);
-    m_signal.release(id);
 }
 
 void Reception::referenceReindexed(ID oldID, ID newID) {
     BehavioralFeature::referenceReindexed(oldID, newID);
-    m_signal.reindex(oldID, newID);
-}
-
-void Reception::reindexName(ID id, std::string newName) {
-    BehavioralFeature::reindexName(id, newName);
-    m_signal.reindexName(id, newName);
+    m_signal.reindex(newID);
 }
 
 void Reception::referenceErased(ID id) {
@@ -36,10 +25,7 @@ void Reception::referenceErased(ID id) {
     m_signal.eraseElement(id);
 }
 
-void Reception::init() {
-    m_signal.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_signal.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-}
+void Reception::init() {}
 
 Reception::Reception() : Element(ElementType::RECEPTION) {
     init();

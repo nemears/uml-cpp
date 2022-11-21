@@ -11,27 +11,16 @@
 #include "uml/interface.h"
 #include "uml/deployment.h"
 #include "uml/umlPtr.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-Set<Parameter, ActivityParameterNode>& ActivityParameterNode::getParameterSingleton() {
+TypedSet<Parameter, ActivityParameterNode>& ActivityParameterNode::getParameterSingleton() {
     return m_parameter;
-}
-
-void ActivityParameterNode::referencingReleased(ID id) {
-    ObjectNode::referencingReleased(id);
-    m_parameter.release(id);
 }
 
 void ActivityParameterNode::referenceReindexed(ID oldID, ID newID) {
     ObjectNode::referenceReindexed(oldID, newID);
-    m_parameter.reindex(oldID, newID);
-}
-
-void ActivityParameterNode::reindexName(ID id, std::string newName) {
-    ObjectNode::reindexName(id, newName);
-    m_parameter.reindexName(id, newName);
+    m_parameter.reindex(newID);
 }
 
 void ActivityParameterNode::referenceErased(ID id) {
@@ -39,10 +28,7 @@ void ActivityParameterNode::referenceErased(ID id) {
     m_parameter.eraseElement(id);
 }
 
-void ActivityParameterNode::init() {
-    m_parameter.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_parameter.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-}
+void ActivityParameterNode::init() {}
 
 ActivityParameterNode::ActivityParameterNode() : Element(ElementType::ACTIVITY_PARAMETER_NODE) {
     init();

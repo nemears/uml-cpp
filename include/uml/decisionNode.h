@@ -15,13 +15,11 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<ObjectFlow, DecisionNode> m_decisionInputFlow = Singleton<ObjectFlow, DecisionNode>(this);
-            Singleton<Behavior, DecisionNode> m_decisionInput = Singleton<Behavior, DecisionNode>(this);
-            Set<ObjectFlow, DecisionNode>& getDecisionInputFlowSingleton();
-            Set<Behavior, DecisionNode>& getDecisionInputSingleton();
-            void referencingReleased(ID id) override;
+            CustomSingleton<ObjectFlow, DecisionNode> m_decisionInputFlow = CustomSingleton<ObjectFlow, DecisionNode>(this);
+            CustomSingleton<Behavior, DecisionNode> m_decisionInput = CustomSingleton<Behavior, DecisionNode>(this);
+            TypedSet<ObjectFlow, DecisionNode>& getDecisionInputFlowSingleton();
+            TypedSet<Behavior, DecisionNode>& getDecisionInputSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
             DecisionNode();

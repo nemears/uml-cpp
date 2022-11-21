@@ -10,23 +10,24 @@
 
 using namespace UML;
 
-void InterfaceRealization::RemoveContractFunctor::operator()(Element& el) const {
-    if (m_el.as<InterfaceRealization>().getImplementingClassifier()) {
-        for (auto& pair : m_el.as<InterfaceRealization>().m_implementingClassifier.get()->m_node->m_references) {
+void InterfaceRealization::RemoveContractPolicy::apply(Interface& el, InterfaceRealization& me) {
+    if (me.getImplementingClassifier()) {
+        for (auto& pair : me.m_implementingClassifier.get()->m_node->m_references) {
             if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
                 // TODO aquire to not have loss, get rid of continue
                 continue;
             }
             if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
-                pair.second.node->m_managerElementMemory->as<Port>().getType().id() == m_el.as<InterfaceRealization>().m_implementingClassifier.get().id()) {
+                pair.second.node->m_managerElementMemory->as<Port>().getType().id() == me.m_implementingClassifier.get().id()) {
                     Port& port = pair.second.node->m_managerElementMemory->as<Port>();
+                    SetLock portLck = me.lockEl(port);
                     if (port.isConjugated()) {
                         if (port.getRequired().contains(el.getID())) {
-                            port.getRequired().removeReadOnly(el.getID());
+                            me.m_contract.innerRemoveFromOtherSet(port.getRequired(), el.getID());
                         }
                     } else {
                         if (port.getProvided().contains(el.getID())) {
-                            port.getProvided().removeReadOnly(el.getID());
+                            me.m_contract.innerRemoveFromOtherSet(port.getProvided(), el.getID());
                         }
                     }
             }
@@ -34,23 +35,24 @@ void InterfaceRealization::RemoveContractFunctor::operator()(Element& el) const 
     }
 }
 
-void InterfaceRealization::SetContractFunctor::operator()(Element& el) const {
-    if (m_el.as<InterfaceRealization>().getImplementingClassifier()) {
-        for (auto& pair : m_el.as<InterfaceRealization>().m_implementingClassifier.get()->m_node->m_references) {
+void InterfaceRealization::SetContractPolicy::apply(Interface& el, InterfaceRealization& me) {
+    if (me.getImplementingClassifier()) {
+        for (auto& pair : me.m_implementingClassifier.get()->m_node->m_references) {
             if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
                 // TODO aquire to not have loss, get rid of continue
                 continue;
             }
             if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
-                pair.second.node->m_managerElementMemory->as<Port>().getType().id() == m_el.as<InterfaceRealization>().m_implementingClassifier.get().id()) {
+                pair.second.node->m_managerElementMemory->as<Port>().getType().id() == me.m_implementingClassifier.get().id()) {
                     Port& port = pair.second.node->m_managerElementMemory->as<Port>();
+                    SetLock portLck = me.lockEl(port);
                     if (port.isConjugated()) {
                         if (!port.getRequired().contains(el.getID())) {
-                            port.getRequired().nonOppositeAdd(el.as<Interface>());
+                            me.m_contract.innerAddToOtherSet(port.getRequired(), el);
                         }
                     } else {
                         if (!port.getProvided().contains(el.getID())) {
-                            port.getProvided().nonOppositeAdd(el.as<Interface>());
+                             me.m_contract.innerAddToOtherSet(port.getProvided(), el);
                         }
                     }
             }
@@ -58,18 +60,16 @@ void InterfaceRealization::SetContractFunctor::operator()(Element& el) const {
     }
 }
 
-Set<Interface, InterfaceRealization>& InterfaceRealization::getContractSingleton() {
+TypedSet<Interface, InterfaceRealization>& InterfaceRealization::getContractSingleton() {
     return m_contract;
 }
 
-Set<BehavioredClassifier, InterfaceRealization>& InterfaceRealization::getImplementingClassifierSingleton() {
+TypedSet<BehavioredClassifier, InterfaceRealization>& InterfaceRealization::getImplementingClassifierSingleton() {
     return m_implementingClassifier;
 }
 
 void InterfaceRealization::init() {
     m_contract.subsets(m_suppliers);
-    m_contract.m_addFunctors.insert(new SetContractFunctor(this));
-    m_contract.m_removeFunctors.insert(new RemoveContractFunctor(this));
     m_implementingClassifier.subsets(m_clients);
     m_implementingClassifier.subsets(*m_owner);
     m_implementingClassifier.opposite(&BehavioredClassifier::getInterfaceRealizations);

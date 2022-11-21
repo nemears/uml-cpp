@@ -14,11 +14,10 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<Behavior, ObjectFlow> m_transformation = Singleton<Behavior, ObjectFlow>(this);
-            Singleton<Behavior, ObjectFlow> m_selection = Singleton<Behavior, ObjectFlow>(this);
-            Set<Behavior, ObjectFlow>& getTransformationSingleton();
-            Set<Behavior, ObjectFlow>& getSelectionSingleton();
-            void referencingReleased(ID id) override;
+            CustomSingleton<Behavior, ObjectFlow> m_transformation = CustomSingleton<Behavior, ObjectFlow>(this);
+            CustomSingleton<Behavior, ObjectFlow> m_selection = CustomSingleton<Behavior, ObjectFlow>(this);
+            TypedSet<Behavior, ObjectFlow>& getTransformationSingleton();
+            TypedSet<Behavior, ObjectFlow>& getSelectionSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;

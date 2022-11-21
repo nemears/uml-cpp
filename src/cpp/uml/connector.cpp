@@ -6,17 +6,18 @@
 #include "uml/dataType.h"
 #include "uml/association.h"
 #include "uml/deployment.h"
-#include "uml/setReferenceFunctor.h"
 #include "uml/umlPtr.h"
 
 using namespace UML;
 
-void Connector::SetTypeFunctor::operator()(Element& el) const {
-    for (auto& end : m_el.as<Connector>().getEnds()) {
+void Connector::SetTypePolicy::apply(Association& el, Connector& me) {
+    for (auto& end : me.getEnds()) {
         if (end.getRole() && end.getRole()->getType().id() != ID::nullID()) {
-            for (auto& assocEnd : el.as<Association>().getMemberEnds()) {
+            SetLock endLck = me.lockEl(end);
+            for (auto& assocEnd : el.getMemberEnds()) {
                 if (assocEnd.getType().id() == end.getRole()->getType().id()) {
-                    end.m_definingEnd.nonOppositeAdd(assocEnd);
+                    SetLock assocEndLock = me.lockEl(assocEnd);
+                    me.m_type.innerAddToOtherSet(end.m_definingEnd, assocEnd);
                     break;
                 }
             }
@@ -24,16 +25,17 @@ void Connector::SetTypeFunctor::operator()(Element& el) const {
     }
 }
 
-void Connector::RemoveTypeFunctor::operator()(Element& el) const {
+void Connector::RemoveTypePolicy::apply(Association& el, Connector& me) {
     // TODO
 }
 
-void Connector::AddEndFunctor::operator()(Element& el) const {
-    if (m_el.as<Connector>().getType()) {
-        if (el.as<ConnectorEnd>().getRole() && el.as<ConnectorEnd>().getRole()->getType()) {
-            for (auto& assocEnd : m_el.as<Connector>().getType()->getMemberEnds()) {
-                if (assocEnd.getType().id() == el.as<ConnectorEnd>().getRole()->getType().id()) {
-                    el.as<ConnectorEnd>().m_definingEnd.nonOppositeAdd(assocEnd);
+void Connector::AddEndPolicy::apply(ConnectorEnd& el, Connector& me) {
+    if (me.getType()) {
+        if (el.getRole() && el.getRole()->getType()) {
+            for (auto& assocEnd : me.getType()->getMemberEnds()) {
+                if (assocEnd.getType().id() == el.getRole()->getType().id()) {
+                    SetLock assocEndLck = me.lockEl(assocEnd);
+                    me.m_ends.innerAddToOtherSet(el.m_definingEnd, assocEnd);
                     break;
                 }
             }
@@ -41,34 +43,18 @@ void Connector::AddEndFunctor::operator()(Element& el) const {
     }
 }
 
-void Connector::RemoveEndFunctor::operator()(Element& el) const {
+void Connector::RemoveEndPolicy::apply(ConnectorEnd& el, Connector& me) {
     // TODO
 }
 
-Set<Association, Connector>& Connector::getTypeSingleton() {
+TypedSet<Association, Connector>& Connector::getTypeSingleton() {
     return m_type;
-}
-
-Set<ConnectorEnd, Connector>& Connector::getEndsSet() {
-    return m_ends;
-}
-
-void Connector::referencingReleased(ID id) {
-    Feature::referencingReleased(id);
-    m_type.release(id);
-    m_contracts.release(id);
 }
 
 void Connector::referenceReindexed(ID oldID, ID newID) {
     Feature::referenceReindexed(oldID, newID);
-    m_type.reindex(oldID, newID);
-    m_contracts.reindex(oldID, newID);
-}
-
-void Connector::reindexName(ID id, std::string newName) {
-    Feature::reindexName(id, newName);
-    m_type.reindexName(id, newName);
-    m_contracts.reindexName(id, newName);
+    m_type.reindex(newID);
+    m_contracts.reindex(newID);
 }
 
 void Connector::restoreReference(Element* el) {
@@ -87,15 +73,7 @@ void Connector::referenceErased(ID id) {
 }
 
 void Connector::init() {
-    m_type.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_type.m_addFunctors.insert(new SetTypeFunctor(this));
-    m_type.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_type.m_removeFunctors.insert(new RemoveTypeFunctor(this));
-    m_contracts.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_contracts.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_ends.subsets(*m_ownedElements);
-    m_ends.m_addFunctors.insert(new AddEndFunctor(this));
-    m_ends.m_removeFunctors.insert(new RemoveEndFunctor(this));
 }
 
 Connector::Connector() : Element(ElementType::CONNECTOR) {

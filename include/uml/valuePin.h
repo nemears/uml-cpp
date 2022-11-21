@@ -9,8 +9,8 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<ValueSpecification, ValuePin> m_value = Singleton<ValueSpecification, ValuePin>(this);
-            Set<ValueSpecification, ValuePin>& getValueSingleton();
+            CustomSingleton<ValueSpecification, ValuePin> m_value = CustomSingleton<ValueSpecification, ValuePin>(this);
+            TypedSet<ValueSpecification, ValuePin>& getValueSingleton();
             void init();
             ValuePin();
         public:

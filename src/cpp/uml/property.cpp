@@ -28,13 +28,15 @@ using namespace UML;
 
 void Property::AddRedefinedPropertyPolicy::apply(Property& el, Property& me) {
     if (me.getFeaturingClassifier() && !me.m_redefinitionContext.contains(me.getFeaturingClassifier().id())) {
-        me.m_redefinitionContext.innerAdd(*me.getFeaturingClassifier());
+        SetLock lock = me.lockEl(*me.getFeaturingClassifier());
+        me.m_redefinedProperties.innerAddToOtherSet(me.m_redefinitionContext ,*me.getFeaturingClassifier());
     }
 }
 
 void Property::RemoveRedefinedPropertyPolicy::apply(Property& el, Property& me) {
     if (me.m_redefinedElement.empty() && me.getFeaturingClassifier() && !me.m_redefinitionContext.empty()) {
-        me.m_redefinitionContext.innerRemove(me.getFeaturingClassifier().id());
+        SetLock lock = me.lockEl(*me.getFeaturingClassifier());
+        me.m_redefinedProperties.innerRemoveFromOtherSet(me.m_redefinitionContext, me.getFeaturingClassifier().id());
     }
 }
 
@@ -51,7 +53,7 @@ void Property::restoreReference(Element* el) {
         el->setReference(this);
         if (m_featuringClassifier.get() && !m_redefinitionContext.contains(m_featuringClassifier.get().id())) {
             // TODO lock featuring classigier
-            m_redefinitionContext.innerAdd(m_featuringClassifier.get().id());
+            // m_redefinitionContext.innerAdd(m_featuringClassifier.get().id());
         }
     }
 }

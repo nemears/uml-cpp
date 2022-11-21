@@ -2,7 +2,7 @@
 #define _UML_EXTENSION_HANDLER_H_
 
 #include "element.h"
-#include "singleton.h"
+#include "set/singleton.h"
 
 namespace UML {
 
@@ -19,17 +19,15 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<ExecutableNode, ExceptionHandler> m_protectedNode = Singleton<ExecutableNode, ExceptionHandler>(this);
-            Singleton<ExecutableNode, ExceptionHandler> m_handlerBody = Singleton<ExecutableNode, ExceptionHandler>(this);
-            Singleton<ObjectNode, ExceptionHandler> m_exceptionInput = Singleton<ObjectNode, ExceptionHandler>(this);
-            Set<Classifier, ExceptionHandler> m_exceptionTypes = Set<Classifier, ExceptionHandler>(this);
-            Set<ExecutableNode, ExceptionHandler>& getProtectedNodeSingleton();
-            Set<ExecutableNode, ExceptionHandler>& getHandlerBodySingleton();
-            Set<ObjectNode, ExceptionHandler>& getExceptionInputSingleton();
-            void referencingReleased(ID id) override;
+            CustomSingleton<ExecutableNode, ExceptionHandler> m_protectedNode = CustomSingleton<ExecutableNode, ExceptionHandler>(this);
+            CustomSingleton<ExecutableNode, ExceptionHandler> m_handlerBody = CustomSingleton<ExecutableNode, ExceptionHandler>(this);
+            CustomSingleton<ObjectNode, ExceptionHandler> m_exceptionInput = CustomSingleton<ObjectNode, ExceptionHandler>(this);
+            CustomSet<Classifier, ExceptionHandler> m_exceptionTypes = CustomSet<Classifier, ExceptionHandler>(this);
+            TypedSet<ExecutableNode, ExceptionHandler>& getProtectedNodeSingleton();
+            TypedSet<ExecutableNode, ExceptionHandler>& getHandlerBodySingleton();
+            TypedSet<ObjectNode, ExceptionHandler>& getExceptionInputSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
             void referenceErased(ID id) override;
-            void reindexName(ID id, std::string newName) override;
             void init();
             ExceptionHandler();
         public:

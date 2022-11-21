@@ -203,45 +203,45 @@ namespace UML {
                 AbstractAccessPolicy::restorePtr(ptr);
             }
 
-            std::vector<std::unique_lock<std::mutex>> accessSet(AbstractSet& set, Element& el) {
-                std::vector<std::unique_lock<std::mutex>> ret;
-                std::unordered_map<ID, bool> referenceIdsMap;
-                for (auto& pair : getNode(el)->m_references) {
-                    referenceIdsMap[pair.first] = false;
-                }
-                for (auto& pair : getNode(getEl(set))->m_references) {
-                    if (referenceIdsMap.count(pair.first)) {
-                        continue;
-                    }
-                    referenceIdsMap[pair.first] = false;
-                }
-                ret.reserve(getNode(el)->m_references.size());
-                for (auto& referencePair : getNode(el)->m_references) {
-                    if (!referencePair.second.node) {
-                        continue;
-                    }
-                    if (referenceIdsMap.at(referencePair.first)) {
-                        continue;
-                    }
-                    ret.push_back(std::unique_lock<std::mutex>(static_cast<ThreadSafeManagerNode*>(referencePair.second.node)->m_mtx));
-                    referenceIdsMap[referencePair.first] = true;
-                }
-                for (auto& referencePair : getNode(getEl(set))->m_references) {
-                    if (!referencePair.second.node) {
-                        continue;
-                    }
-                    if (referenceIdsMap.at(referencePair.first)) {
-                        continue;
-                    }
-                    ret.push_back(std::unique_lock<std::mutex>(static_cast<ThreadSafeManagerNode*>(referencePair.second.node)->m_mtx));
-                    referenceIdsMap[referencePair.first] = true;
-                }
-                return ret;
-            }
+            // std::vector<std::unique_lock<std::mutex>> accessSet(AbstractSet& set, Element& el) {
+            //     std::vector<std::unique_lock<std::mutex>> ret;
+            //     std::unordered_map<ID, bool> referenceIdsMap;
+            //     for (auto& pair : getNode(el)->m_references) {
+            //         referenceIdsMap[pair.first] = false;
+            //     }
+            //     for (auto& pair : getNode(getEl(set))->m_references) {
+            //         if (referenceIdsMap.count(pair.first)) {
+            //             continue;
+            //         }
+            //         referenceIdsMap[pair.first] = false;
+            //     }
+            //     ret.reserve(getNode(el)->m_references.size());
+            //     for (auto& referencePair : getNode(el)->m_references) {
+            //         if (!referencePair.second.node) {
+            //             continue;
+            //         }
+            //         if (referenceIdsMap.at(referencePair.first)) {
+            //             continue;
+            //         }
+            //         ret.push_back(std::unique_lock<std::mutex>(static_cast<ThreadSafeManagerNode*>(referencePair.second.node)->m_mtx));
+            //         referenceIdsMap[referencePair.first] = true;
+            //     }
+            //     for (auto& referencePair : getNode(getEl(set))->m_references) {
+            //         if (!referencePair.second.node) {
+            //             continue;
+            //         }
+            //         if (referenceIdsMap.at(referencePair.first)) {
+            //             continue;
+            //         }
+            //         ret.push_back(std::unique_lock<std::mutex>(static_cast<ThreadSafeManagerNode*>(referencePair.second.node)->m_mtx));
+            //         referenceIdsMap[referencePair.first] = true;
+            //     }
+            //     return ret;
+            // }
 
-            std::vector<std::unique_lock<std::mutex>> accessSet(AbstractSet& set, ID id) {
+            // std::vector<std::unique_lock<std::mutex>> accessSet(AbstractSet& set, ID id) {
                 
-            }
+            // }
             ElementPtr createPtr(AbstractManager* manager, ID id) {
                 std::unordered_map<ID, ThreadSafeManagerNode>::const_iterator nodeIt = m_graph.find(id);
                 const ThreadSafeManagerNode* node = 0;

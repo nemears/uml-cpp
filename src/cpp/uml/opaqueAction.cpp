@@ -16,10 +16,6 @@
 
 using namespace UML;
 
-Set<LiteralString, OpaqueAction>& OpaqueAction::getBodiesSet() {
-    return m_bodies;
-}
-
 void OpaqueAction::init() {
     m_inputValues.subsets(m_inputs);
     m_outputValues.subsets(m_outputs);

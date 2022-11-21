@@ -16,27 +16,13 @@
 
 using namespace UML;
 
-Set<InputPin, InvocationAction>& InvocationAction::getArgumentsSet() {
-    return m_arguments;
-}
-
-Set<Port, InvocationAction>& InvocationAction::getOnPortSingleton() {
+TypedSet<Port, InvocationAction>& InvocationAction::getOnPortSingleton() {
     return m_onPort;
-}
-
-void InvocationAction::referencingReleased(ID id) {
-    Action::referencingReleased(id);
-    m_onPort.release(id);
 }
 
 void InvocationAction::referenceReindexed(ID oldID, ID newID) {
     Action::referenceReindexed(oldID, newID);
-    m_onPort.reindex(oldID, newID);
-}
-
-void InvocationAction::reindexName(ID id, std::string newName) {
-    Action::reindexName(id, newName);
-    m_onPort.reindexName(id, newName);
+    m_onPort.reindex(newID);
 }
 
 void InvocationAction::referenceErased(ID id) {

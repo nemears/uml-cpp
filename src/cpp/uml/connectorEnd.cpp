@@ -11,30 +11,18 @@
 
 using namespace UML;
 
-Set<ConnectableElement, ConnectorEnd>& ConnectorEnd::getRoleSingleton() {
+TypedSet<ConnectableElement, ConnectorEnd>& ConnectorEnd::getRoleSingleton() {
     return m_role;
 }
 
-Set<Property, ConnectorEnd>& ConnectorEnd::getDefiningEndSingleton() {
+TypedSet<Property, ConnectorEnd>& ConnectorEnd::getDefiningEndSingleton() {
     return m_definingEnd;
-}
-
-void ConnectorEnd::referencingReleased(ID id) {
-    MultiplicityElement::referencingReleased(id);
-    m_role.release(id);
-    m_definingEnd.release(id);
 }
 
 void ConnectorEnd::referenceReindexed(ID oldID, ID newID) {
     MultiplicityElement::referenceReindexed(oldID, newID);
-    m_role.reindex(oldID, newID);
-    m_definingEnd.reindex(oldID, newID);
-}
-
-void ConnectorEnd::reindexName(ID id, std::string newName) {
-    MultiplicityElement::reindexName(id, newName);
-    m_role.reindexName(id, newName);
-    m_definingEnd.reindexName(id, newName);
+    m_role.reindex(newID);
+    m_definingEnd.reindex(newID);
 }
 
 void ConnectorEnd::referenceErased(ID id) {

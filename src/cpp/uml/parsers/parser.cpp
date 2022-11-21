@@ -199,7 +199,7 @@ bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
                 if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
                     try {
                         (el.*elSignature)(data.m_manager->get(id)->as<T>());
-                    } catch (DuplicateElementInSetException& e) {
+                    } catch (SetStateException& e) {
                         // nothing let (that part) fail
                     }
                     catch (std::exception& e) {

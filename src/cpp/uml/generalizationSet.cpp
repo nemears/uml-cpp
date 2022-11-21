@@ -14,20 +14,8 @@ using namespace UML;
 
 void GeneralizationSet::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
-    m_powerType.reindex(oldID, newID);
-    m_generalizations.reindex(oldID, newID);
-}
-
-void GeneralizationSet::reindexName(ID id, std::string newName) {
-    PackageableElement::reindexName(id, newName);
-    m_powerType.reindexName(id, newName);
-    m_generalizations.reindexName(id, newName);
-}
-
-void GeneralizationSet::referencingReleased(ID id) {
-    PackageableElement::referencingReleased(id);
-    m_powerType.release(id);
-    m_generalizations.release(id);
+    m_powerType.reindex(newID);
+    m_generalizations.reindex(newID);
 }
 
 void GeneralizationSet::referenceErased(ID id) {
@@ -36,7 +24,7 @@ void GeneralizationSet::referenceErased(ID id) {
     m_generalizations.eraseElement(id);
 }
 
-Set<Classifier, GeneralizationSet>& GeneralizationSet::getPowerTypeSingleton() {
+TypedSet<Classifier, GeneralizationSet>& GeneralizationSet::getPowerTypeSingleton() {
     return m_powerType;
 }
 

@@ -10,11 +10,9 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<Behavior, CallBehaviorAction> m_behavior = Singleton<Behavior, CallBehaviorAction>(this);
-            Set<Behavior, CallBehaviorAction>& getBehaviorSingleton();
-            void referencingReleased(ID id) override;
+            CustomSingleton<Behavior, CallBehaviorAction> m_behavior = CustomSingleton<Behavior, CallBehaviorAction>(this);
+            TypedSet<Behavior, CallBehaviorAction>& getBehaviorSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
             CallBehaviorAction();

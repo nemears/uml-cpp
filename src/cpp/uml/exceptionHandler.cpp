@@ -15,34 +15,26 @@
 #include "uml/interface.h"
 #include "uml/interruptibleActivityRegion.h"
 #include "uml/deployment.h"
-#include "uml/setReferenceFunctor.h"
 
 using namespace UML;
 
-Set<ExecutableNode, ExceptionHandler>& ExceptionHandler::getProtectedNodeSingleton() {
+TypedSet<ExecutableNode, ExceptionHandler>& ExceptionHandler::getProtectedNodeSingleton() {
     return m_protectedNode;
 }
 
-Set<ExecutableNode, ExceptionHandler>& ExceptionHandler::getHandlerBodySingleton() {
+TypedSet<ExecutableNode, ExceptionHandler>& ExceptionHandler::getHandlerBodySingleton() {
     return m_handlerBody;
 }
 
-Set<ObjectNode, ExceptionHandler>& ExceptionHandler::getExceptionInputSingleton() {
+TypedSet<ObjectNode, ExceptionHandler>& ExceptionHandler::getExceptionInputSingleton() {
     return m_exceptionInput;
-}
-
-void ExceptionHandler::referencingReleased(ID id) {
-    Element::referencingReleased(id);
-    m_handlerBody.release(id);
-    m_exceptionInput.release(id);
-    m_exceptionTypes.release(id);
 }
 
 void ExceptionHandler::referenceReindexed(ID oldID, ID newID) {
     Element::referenceReindexed(oldID, newID);
-    m_handlerBody.reindex(oldID, newID);
-    m_exceptionInput.reindex(oldID, newID);
-    m_exceptionTypes.reindex(oldID, newID);
+    m_handlerBody.reindex(newID);
+    m_exceptionInput.reindex(newID);
+    m_exceptionTypes.reindex(newID);
 }
 
 void ExceptionHandler::referenceErased(ID id) {
@@ -52,22 +44,9 @@ void ExceptionHandler::referenceErased(ID id) {
     m_exceptionTypes.eraseElement(id);
 }
 
-void  ExceptionHandler::reindexName(ID id, std::string newName) {
-    Element::reindexName(id, newName);
-    m_handlerBody.reindexName(id, newName);
-    m_exceptionInput.reindexName(id, newName);
-    m_exceptionTypes.reindexName(id, newName);
-}
-
 void ExceptionHandler::init() {
     m_protectedNode.subsets(*m_owner);
     m_protectedNode.opposite(&ExecutableNode::getHandlers);
-    m_handlerBody.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_handlerBody.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_exceptionInput.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_exceptionInput.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
-    m_exceptionTypes.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_exceptionTypes.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
 }
 
 ExceptionHandler::ExceptionHandler() : Element(ElementType::EXCEPTION_HANDLER) {

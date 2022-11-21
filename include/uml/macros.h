@@ -40,7 +40,7 @@ typedef DoNothing<singletonType, myType> _ ## singletonType ## _ ## myType ## Do
 DEFINE_SINGLETON_W_POLICIES(methodName, singletonName, singletonType, myType, _ ## singletonType ## _ ## myType ## DoNothingPolicy, _ ## singletonType ## _ ## myType ## DoNothingPolicy) \
 
 #define FRIEND_ALL_UML() \
-friend class Element; \
+friend class Action; \
 friend class ActivityEdge; \
 friend class ActivityGroup; \
 friend class ActivityNode; \
@@ -61,6 +61,7 @@ friend class Constraint; \
 friend class DecisionNode; \
 friend class Dependency; \
 friend class DirectedRelationship; \
+friend class Element; \
 friend class ElementImport; \
 friend class EncapsulatedClassifier; \
 friend class ExceptionHandler; \

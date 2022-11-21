@@ -13,8 +13,8 @@ namespace UML {
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Singleton<ValueSpecification, JoinNode> m_joinSpec = Singleton<ValueSpecification, JoinNode>(this);
-            Set<ValueSpecification, JoinNode>& getJoinSpecSingleton();
+            CustomSingleton<ValueSpecification, JoinNode> m_joinSpec = CustomSingleton<ValueSpecification, JoinNode>(this);
+            TypedSet<ValueSpecification, JoinNode>& getJoinSpecSingleton();
             void init();
             JoinNode();
         public:

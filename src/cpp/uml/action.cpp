@@ -18,9 +18,9 @@ using namespace UML;
 
 void Action::init() {
     m_inputs.subsets(*m_ownedElements);
-    m_inputs.setReadOnly(true);
+    m_inputs.m_readOnly = true;
     m_outputs.subsets(*m_ownedElements);
-    m_outputs.setReadOnly(true);
+    m_outputs.m_readOnly = true;
     m_localPreconditions.subsets(*m_ownedElements);
     m_localPostconditions.subsets(*m_ownedElements);
 }

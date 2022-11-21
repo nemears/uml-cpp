@@ -11,19 +11,9 @@
 
 using namespace UML;
 
-void ParameterSet::referencingReleased(ID id) {
-    NamedElement::referencingReleased(id);
-    m_parameters.release(id);
-}
-
 void ParameterSet::referenceReindexed(ID oldID, ID newID) {
     NamedElement::referenceReindexed(oldID, newID);
-    m_parameters.reindex(oldID, newID);
-}
-
-void ParameterSet::reindexName(ID id, std::string newName) {
-    NamedElement::reindexName(id, newName);
-    m_parameters.reindexName(id, newName);
+    m_parameters.reindex(newID);
 }
 
 void ParameterSet::referenceErased(ID id) {

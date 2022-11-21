@@ -25,7 +25,7 @@
 
 using namespace UML;
 
-Set<ValueSpecification, JoinNode>& JoinNode::getJoinSpecSingleton() {
+TypedSet<ValueSpecification, JoinNode>& JoinNode::getJoinSpecSingleton() {
     return m_joinSpec;
 }
 

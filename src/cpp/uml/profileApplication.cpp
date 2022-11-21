@@ -9,18 +9,16 @@
 
 using namespace UML;
 
-Set<Profile, ProfileApplication>& ProfileApplication::getAppliedProfileSingleton() {
+TypedSet<Profile, ProfileApplication>& ProfileApplication::getAppliedProfileSingleton() {
     return m_appliedProfile;
 }
 
-Set<Package, ProfileApplication>& ProfileApplication::getApplyingPackageSingleton() {
+TypedSet<Package, ProfileApplication>& ProfileApplication::getApplyingPackageSingleton() {
     return m_applyingPackage;
 }
 
 void ProfileApplication::init() {
     m_appliedProfile.subsets(m_targets);
-    m_appliedProfile.m_addFunctors.insert(new SetReferenceFunctor(this));
-    m_appliedProfile.m_removeFunctors.insert(new RemoveReferenceFunctor(this));
     m_applyingPackage.subsets(*m_owner);
     m_applyingPackage.subsets(m_sources);
     m_applyingPackage.opposite(&Package::getProfileApplications);

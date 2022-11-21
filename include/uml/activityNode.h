@@ -18,16 +18,14 @@ namespace UML {
         friend class Activity;
 
         protected:
-            Singleton<Activity, ActivityNode> m_activity = Singleton<Activity, ActivityNode>(this);
-            Set<ActivityEdge, ActivityNode> m_incoming = Set<ActivityEdge, ActivityNode>(this);
-            Set<ActivityEdge, ActivityNode> m_outgoing = Set<ActivityEdge, ActivityNode>(this);
-            Set<ActivityGroup, ActivityNode> m_inGroups = Set<ActivityGroup, ActivityNode>(this);
-            Set<ActivityPartition, ActivityNode> m_inPartitions = Set<ActivityPartition, ActivityNode>(this);
-            Set<InterruptibleActivityRegion, ActivityNode> m_interruptibleRegions = Set<InterruptibleActivityRegion, ActivityNode>(this);
-            Set<Activity, ActivityNode>& getActivitySingleton();
-            void referencingReleased(ID id) override;
+            CustomSingleton<Activity, ActivityNode> m_activity = CustomSingleton<Activity, ActivityNode>(this);
+            CustomSet<ActivityEdge, ActivityNode> m_incoming = CustomSet<ActivityEdge, ActivityNode>(this);
+            CustomSet<ActivityEdge, ActivityNode> m_outgoing = CustomSet<ActivityEdge, ActivityNode>(this);
+            CustomSet<ActivityGroup, ActivityNode> m_inGroups = CustomSet<ActivityGroup, ActivityNode>(this);
+            CustomSet<ActivityPartition, ActivityNode> m_inPartitions = CustomSet<ActivityPartition, ActivityNode>(this);
+            CustomSet<InterruptibleActivityRegion, ActivityNode> m_interruptibleRegions = CustomSet<InterruptibleActivityRegion, ActivityNode>(this);
+            TypedSet<Activity, ActivityNode>& getActivitySingleton();
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
         public:

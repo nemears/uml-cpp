@@ -16,7 +16,7 @@
 
 using namespace UML;
 
-Set<ValueSpecification, ValuePin>& ValuePin::getValueSingleton() {
+TypedSet<ValueSpecification, ValuePin>& ValuePin::getValueSingleton() {
     return m_value;
 }
 

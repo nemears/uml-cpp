@@ -90,18 +90,18 @@ TypedSet<Interface, Property>& Property::getInterfaceSingleton() {
 
 void Property::init() {
     m_defaultValue.subsets(*m_ownedElements);
-    m_class.subsets(m_namespace);
+    m_class.subsets(*m_namespace);
     m_class.subsets(m_featuringClassifier);
     m_class.opposite(&Class::getOwnedAttributes);
-    m_dataType.subsets(m_namespace);
+    m_dataType.subsets(*m_namespace);
     m_dataType.subsets(m_featuringClassifier);
     m_dataType.opposite(&DataType::getOwnedAttributesSet);
     m_association.opposite(&Association::getMemberEnds);
-    m_owningAssociation.subsets(m_namespace);
+    m_owningAssociation.subsets(*m_namespace);
     m_owningAssociation.subsets(m_featuringClassifier);
     m_owningAssociation.subsets(m_association);
     m_owningAssociation.opposite(&Association::getOwnedEnds);
-    m_interface.subsets(m_namespace);
+    m_interface.subsets(*m_namespace);
     m_interface.subsets(m_featuringClassifier);
     m_interface.opposite(&Interface::getOwnedAttributes);
     m_redefinedProperties.subsets(m_redefinedElement);

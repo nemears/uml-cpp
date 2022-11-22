@@ -30,7 +30,7 @@ void Parameter::referenceErased(ID id) {
 }
 
 void Parameter::init() {
-    m_operation.subsets(m_namespace);
+    m_operation.subsets(*m_namespace);
     m_operation.opposite(&Operation::getOwnedParameters);
     m_defaultValue.subsets(*m_ownedElements);
     m_parameterSets.opposite(&ParameterSet::getParameters);

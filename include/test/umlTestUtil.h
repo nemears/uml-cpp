@@ -13,15 +13,15 @@ namespace UML {
         // ASSERT_TRUE(el.getMemberNamespace().count(nmspc.getID()));
         ASSERT_TRUE(el.getOwner());
         ASSERT_EQ(*el.getOwner(), nmspc);
-        ASSERT_TRUE(nmspc.getOwnedMembers().count(el.getID()));
-        ASSERT_TRUE(nmspc.getMembers().count(el.getID()));
-        ASSERT_TRUE(nmspc.getOwnedElements().count(el.getID()));
+        ASSERT_TRUE(nmspc.getOwnedMembers().contains(el.getID()));
+        ASSERT_TRUE(nmspc.getMembers().contains(el.getID()));
+        ASSERT_TRUE(nmspc.getOwnedElements().contains(el.getID()));
     }
 
     inline void ASSERT_RESTORED_OWNING_PACKAGE(PackageableElement& el, Package& pckg) {
         ASSERT_TRUE(el.getOwningPackage());
         ASSERT_EQ(*el.getOwningPackage(), pckg);
-        ASSERT_TRUE(pckg.getPackagedElements().count(el.getID()));
+        ASSERT_TRUE(pckg.getPackagedElements().contains(el.getID()));
         ASSERT_RESTORED_NAMESPACE(el, pckg);
     }
 

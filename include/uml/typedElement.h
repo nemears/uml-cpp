@@ -2,6 +2,7 @@
 #define _UML_TYPED_ELEMENT_H_
 
 #include "namedElement.h"
+#include "set/singleton.h"
 
 namespace UML{
 

@@ -13,7 +13,7 @@ namespace UML {
         protected:
             ElementPtr aquire(ID id, AbstractManager* manager) {
                 if (!std::filesystem::exists(m_mountBase / "mount" / (id.string() + ".yml"))) {
-                    throw ID_doesNotExistException(id);
+                    throw ManagerStateException("No id of " + id.string() + " found on system");
                 }
                 Parsers::ParserMetaData data;
                 data.m_manager = manager;

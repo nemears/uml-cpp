@@ -32,13 +32,14 @@ void NamedElement::referenceErased(ID id) {
 }
 
 TypedSet<Namespace, NamedElement>& NamedElement::getNamespaceSingleton() {
-    return m_namespace;
+    return *m_namespace;
 }
 
 void NamedElement::init() {
-    m_namespace.subsets(*m_owner);
-    m_namespace.opposite(&Namespace::getOwnedMembers);
-    m_namespace.m_readOnly = true;
+    m_namespace = new CustomSingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy, RemoveQualifiedNamePolicy>(this);
+    m_namespace->subsets(*m_owner);
+    m_namespace->opposite(&Namespace::getOwnedMembers);
+    m_namespace->m_readOnly = true;
     m_clientDependencies = new CustomSet<Dependency, NamedElement>(this);
     m_clientDependencies->opposite(&Dependency::getClients);
 }
@@ -48,6 +49,7 @@ NamedElement::NamedElement() : Element(ElementType::NAMED_ELEMENT) {
 }
 
 NamedElement::~NamedElement() {
+    delete m_namespace;
     delete m_clientDependencies;
 }
 
@@ -77,7 +79,7 @@ void NamedElement::updateQualifiedName(std::string absoluteNamespace) {
 }
 
 NamespacePtr NamedElement::getNamespace() const {
-    return m_namespace.get();
+    return m_namespace->get();
 }
 
 Set<Dependency, NamedElement>& NamedElement::getClientDependencies() {

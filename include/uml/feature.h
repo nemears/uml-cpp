@@ -2,6 +2,7 @@
 #define _UML_FEATURE_H_
 
 #include "redefinableElement.h"
+#include "set/singleton.h"
 
 namespace UML {
 

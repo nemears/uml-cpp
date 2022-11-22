@@ -40,13 +40,11 @@ namespace UML {
             virtual void save() = 0;
         protected:
             virtual Element* get(Element* me, ID theID);
-            virtual ElementPtr createPtr(ID id) = 0; // TODO maybe return ElementPtr?
+            virtual ElementPtr createPtr(ID id) = 0;
             virtual void removePtr(AbstractUmlPtr& ptr) = 0;
             virtual void destroyPtr(AbstractUmlPtr& ptr) = 0;
             virtual void assignPtr(AbstractUmlPtr& ptr) = 0;
             virtual void restorePtr(AbstractUmlPtr& ptr) = 0;
-            virtual void addToSet(Element& el, AbstractSet& set) = 0;
-            virtual void removeFromSet(ID id, AbstractSet& set) = 0;
             virtual SetLock lockEl(Element& el) = 0;
     };
 

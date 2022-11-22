@@ -1,6 +1,6 @@
 #pragma once
 
-#include "uml/element.h"
+#include "uml/namedElement.h"
 #include "uml/umlPtr.h"
 #include "setLock.h"
 #include "doNothingPolicy.h"
@@ -49,7 +49,7 @@ namespace UML {
             virtual void runAddPolicy(Element& el) = 0;
             virtual void runRemovePolicy(Element& el) = 0;
 
-            std::unordered_set<AbstractSet*> getAllSuperSets() {
+            std::unordered_set<AbstractSet*> getAllSuperSets() const {
                 std::unordered_set<AbstractSet*> allSuperSets;
                 std::list<AbstractSet*> queue;
                 for (auto superSet : this->m_superSets) {
@@ -66,7 +66,7 @@ namespace UML {
                 return allSuperSets;
             }
 
-            std::unordered_set<AbstractSet*> getAllSubSets() {
+            std::unordered_set<AbstractSet*> getAllSubSets() const {
                 std::unordered_set<AbstractSet*> allSubSets;
                 std::list<AbstractSet*> queue;
                 for (auto subSet : this->m_subSets) {
@@ -121,7 +121,9 @@ namespace UML {
             }
 
             SetNode* create(UmlPtr<T> el) {
-                return create(*el);
+                SetNode* ret = new SetNode();
+                ret->m_ptr = el;
+                return ret;
             }
 
             void deleteNode(SetNode* node) {
@@ -139,6 +141,11 @@ namespace UML {
             virtual void removeOpposite(T& el) {}
     };
 
+    namespace Parsers {
+        void setNamespace(NamedElement& el, ID id);
+        void setOwner(Element& el, ID id);
+    }
+
     template <
                 class T, 
                 class U, 
@@ -152,6 +159,9 @@ namespace UML {
 
         friend AdditionPolicy;
         friend RemovalPolicy;
+
+        friend void Parsers::setNamespace(NamedElement& el, ID id);
+        friend void Parsers::setOwner(Element& el, ID id);
 
         protected:
             U& m_el;
@@ -201,6 +211,30 @@ namespace UML {
                     return ret;
                 }
             };
+
+            SetNode* search(std::string name, SetNode* node) const {
+                if (node->m_ptr->isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                    if (node->m_ptr->as<NamedElement>().getName() == name) {
+                        return node;
+                    }
+                }
+
+                if (node->m_left) {
+                    SetNode* ret = search(name, node->m_left);
+                    if (ret) {
+                        return ret;
+                    }
+                }
+
+                if (node->m_right) {
+                    SetNode* ret = search(name, node->m_right);
+                    if (ret) {
+                        return ret;
+                    }
+                }
+                
+                return 0;
+            }
 
             void runAddPolicy(Element& el) override {
                 AdditionPolicy::apply(el.as<T>(), m_el);
@@ -675,6 +709,21 @@ namespace UML {
                     m_opposite.removeOpposite(*el);
                 }
             }
+            /**
+             * Removes all elements from set
+             **/
+            void clear() {
+                if (m_readOnly) {
+                    throw SetStateException("Cannot clear read only set");
+                }
+                while (this->m_root) {
+                    SetNode* nodeToRemove = this->m_root;
+                    while (!nodeToRemove->m_ptr) {
+                        nodeToRemove = nodeToRemove->m_left;
+                    }
+                    remove(nodeToRemove->m_ptr.id());
+                }
+            }
             void reindexDFS(SetNode* node, AbstractSet* set) {
                 for (auto superSet : set->m_superSets) {
                     reindexDFS(node, superSet);
@@ -839,6 +888,22 @@ namespace UML {
                 throw SetStateException("Could not find element " + id.string() + " in set!");
             }
 
+            UmlPtr<T> get(std::string name) const {
+                SetLock myLck = m_el.lockEl(m_el);
+
+                if (!this->m_root) {
+                    throw SetStateException("Could not find named element of name " + name + " in set!");
+                }
+
+                SetNode* result = search(name, this->m_root);
+
+                if (result) {
+                    return result->m_ptr;
+                }
+                
+                throw SetStateException("Could not find named element of name " + name + " in set!");
+            }
+
             bool contains(ID id) const {
                 SetLock myLock = m_el.m_manager->lockEl(m_el);
                 
@@ -859,6 +924,18 @@ namespace UML {
                 return contains(el.id());
             }
 
+            bool contains(std::string name) const {
+                SetLock myLck = m_el.lockEl(m_el);
+
+                if (!this->m_root) {
+                    return false;
+                }
+
+                SetNode* result = search(name, this->m_root);
+
+                return result;
+            }
+
             size_t size() const {
                 return this->m_size;
             }
@@ -873,9 +950,10 @@ namespace UML {
     template <class T>
     class SetIterator {
 
+        template <class V> friend class ID_Set;
         template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomSet;
 
-        private:
+        protected:
             SetNode* root = 0;
             SetNode* curr = 0;
             std::unordered_set<AbstractSet*> validSets;
@@ -954,20 +1032,60 @@ namespace UML {
             }
     };
 
+    template <class T>
+    class SetID_Iterator : public SetIterator<T> {
+        public:
+            ID operator*() {
+                return this->curr->m_ptr.id();
+            }
+            UmlPtr<T> operator->() = delete;
+    };
+
+    template <class T>
+    class ID_Set {
+
+        template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomSet;
+        template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomOrderedSet;
+
+        private:
+            SetNode* root = 0;
+            std::unordered_set<AbstractSet*> validSets;
+        public:
+            SetID_Iterator<T> begin() {
+                SetID_Iterator<T> ret;
+                ret.curr = root;
+                ret.root = root;
+                ret.validSets = validSets;
+                return ret;
+            };
+            SetID_Iterator<T> end() {
+                return SetID_Iterator<T>();
+            };
+    };
+
     template <class T, class U>
     class Set : virtual public TypedSet<T,U> {
         public:
             virtual bool contains(ID id) const = 0;
             virtual bool contains(T& el) const = 0;
             virtual bool contains(UmlPtr<T> el) const = 0;
+            virtual bool contains(std::string name) const = 0;
+            virtual bool empty() const = 0;
+            virtual size_t size() const = 0;
+            virtual UmlPtr<T> get(ID id) const = 0;
+            virtual UmlPtr<T> get(std::string name) const = 0;
+            virtual UmlPtr<T> front() const = 0;
+            virtual UmlPtr<T> back() const = 0;
             virtual void add(ID id) = 0;
             virtual void add(UmlPtr<T> el) = 0;
             virtual void add(T& el) = 0;
             virtual void remove(ID id) = 0;
             virtual void remove(T& el) = 0;
             virtual void remove(UmlPtr<T> el) = 0;
+            virtual void clear() = 0;
             virtual SetIterator<T> begin() = 0;
             virtual SetIterator<T> end() = 0;
+            virtual ID_Set<T> ids() = 0;
     };
 
     template <
@@ -977,13 +1095,6 @@ namespace UML {
                 class RemovalPolicy = DoNothing<T, U>
             >
     class CustomSet : public PrivateSet<T,U, AdditionPolicy, RemovalPolicy> , public Set<T,U> {
-        // protected:
-        //     void innerAdd(T& el) override {
-        //         PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerAdd(el);
-        //     }
-        //     void innerRemove(ID id) override {
-        //         PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerRemove(id);
-        //     }
         public:
             CustomSet(U* el) : PrivateSet<T,U, AdditionPolicy, RemovalPolicy>(el) {}
             CustomSet(U& el) : PrivateSet<T,U, AdditionPolicy, RemovalPolicy>(el) {}
@@ -995,6 +1106,54 @@ namespace UML {
             }
             bool contains(UmlPtr<T> el) const override {
                 return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::contains(el);
+            }
+            bool contains(std::string name) const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::contains(name);
+            }
+            UmlPtr<T> get(ID id) const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::get(id);
+            }
+            UmlPtr<T> get(std::string name) const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::get(name);
+            }
+            UmlPtr<T> front() const override {
+                SetNode* curr = this->m_root;
+                if (!curr) {
+                    throw SetStateException("Cannot get front element because set is empty!");
+                }
+
+                while (!curr->m_ptr) {
+                    if (!curr->m_left) {
+                        throw SetStateException("Internal error while getting front element, contact developer!");
+                    }
+                    curr = curr->m_left;
+                }
+
+                return curr->m_ptr;
+            }
+            UmlPtr<T> back() const override {
+                SetNode* curr = this->m_root;
+                if (!curr) {
+                    throw SetStateException("Cannot get back element because set is empty!");
+                }
+
+                // go all the way right
+                while (curr->m_right) {
+                    curr = curr->m_right;
+                }
+
+                // now go all the way left
+                while (curr->m_left) {
+                    curr = curr->m_left;
+                }
+
+                return curr->m_ptr;
+            }
+            bool empty() const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::empty();
+            }
+            size_t size() const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::size();
             }
             void add(ID id) override {
                 PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::add(id);
@@ -1014,6 +1173,9 @@ namespace UML {
             void remove (UmlPtr<T> el) override {
                 remove(el.id());
             }
+            void clear() override {
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::clear();
+            }
             SetIterator<T> begin() override {
                 SetIterator<T> ret;
                 ret.curr = this->m_root;
@@ -1025,5 +1187,13 @@ namespace UML {
             SetIterator<T> end() override {
                 return SetIterator<T>();
             }
+
+            ID_Set<T> ids() override {
+                ID_Set<T> ret;
+                ret.root = this->m_root;
+                ret.validSets = this->getAllSuperSets();
+                ret.validSets.insert(this);
+                return ret;
+            };
     };
 }

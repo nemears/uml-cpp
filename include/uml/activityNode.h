@@ -2,6 +2,7 @@
 #define _UML_ACTIVITY_NODE_H_
 
 #include "redefinableElement.h"
+#include "set/singleton.h"
 
 namespace UML {
 

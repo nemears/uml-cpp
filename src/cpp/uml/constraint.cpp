@@ -26,7 +26,7 @@ void Constraint::referenceErased(ID id) {
 }
 
 void Constraint::init() {
-    m_context.subsets(m_namespace);
+    m_context.subsets(*m_namespace);
     m_context.opposite(&Namespace::getOwnedRules);
     m_specifications.subsets(*m_ownedElements);
 }

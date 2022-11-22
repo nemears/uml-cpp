@@ -2,6 +2,7 @@
 #define _UML_DEPLOYMENT_TARGET_H_
 
 #include "namedElement.h"
+#include "set/set.h"
 
 namespace UML {
 

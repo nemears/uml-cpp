@@ -30,7 +30,7 @@ TypedSet<Package, PackageableElement>& PackageableElement::getOwningPackageSingl
 }
 
 void PackageableElement::init() {
-    m_owningPackage.subsets(m_namespace);
+    m_owningPackage.subsets(*m_namespace);
     m_owningPackage.opposite(&Package::getPackagedElements);
 }
 

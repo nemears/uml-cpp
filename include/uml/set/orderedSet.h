@@ -31,11 +31,14 @@ namespace UML {
             UmlPtr<T> operator->() {
                 return curr->m_ptr;
             }
-            OrderedSetIterator operator++() {
+            OrderedSetIterator& operator++() {
                 do {
                     curr = curr->m_next;
                 } while (curr && !validSets.count(curr->set));
                 return *this;
+            }
+            OrderedSetIterator operator++(int) {
+                return ++(*this);
             }
             friend bool operator== (const OrderedSetIterator& lhs, const OrderedSetIterator& rhs) {
                 if (!lhs.curr && !lhs.curr) {
@@ -76,6 +79,19 @@ namespace UML {
                 }
                 return ret;
             }
+            SetNode* create(UmlPtr<T> el) {
+                OrderedSetNode* ret = new OrderedSetNode();
+                ret->m_ptr = el;
+                ret->m_prev = m_last;
+                if (ret->m_prev) {
+                    ret->m_prev->m_next = ret;
+                }
+                m_last = ret;
+                if (!m_first) {
+                    m_first = ret;
+                }
+                return ret;
+            }
             void deleteNode(SetNode* node) {
                 OrderedSetNode* orderedNode = static_cast<OrderedSetNode*>(node);
                 if (m_first == node) {
@@ -97,15 +113,27 @@ namespace UML {
     template <class T, class U>
     class OrderedSet : virtual public TypedSet<T,U> {
         public:
+            virtual bool contains(ID id) const = 0;
+            virtual bool contains(T& el) const = 0;
+            virtual bool contains(UmlPtr<T> el) const = 0;
+            virtual bool contains(std::string name) const = 0;
+            virtual UmlPtr<T> get(ID id) const = 0;
+            virtual UmlPtr<T> get(std::string name) const = 0;
+            virtual bool empty() const = 0;
+            virtual size_t size() const = 0;
+            virtual T& get(size_t index) const = 0;
             virtual UmlPtr<T> front() = 0;
             virtual UmlPtr<T> back() = 0;
             virtual void add(UmlPtr<T> el) = 0;
             virtual void add(T& el) = 0;
+            virtual void add(ID id) = 0;
             virtual void remove(ID id) = 0;
             virtual void remove(T& el) = 0;
             virtual void remove(UmlPtr<T> el) = 0;
-            virtual OrderedSetIterator<T> begin() = 0;
-            virtual OrderedSetIterator<T> end() = 0;
+            virtual void clear() = 0;
+            virtual OrderedSetIterator<T> begin() const = 0;
+            virtual OrderedSetIterator<T> end() const = 0;
+            virtual ID_Set<T> ids() = 0;
     };
 
     template <
@@ -118,6 +146,37 @@ namespace UML {
         public:
             CustomOrderedSet(U& el) : PrivateSet<T, U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>(el) {}
             CustomOrderedSet(U* el) : PrivateSet<T, U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>(el) {}
+            bool contains(ID id) const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::contains(id);
+            }
+            bool contains(T& el) const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::contains(el);
+            }
+            bool contains(UmlPtr<T> el) const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::contains(el);
+            }
+            bool contains(std::string name) const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::contains(name);
+            }
+            UmlPtr<T> get(ID id) const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::get(id);
+            }
+            UmlPtr<T> get(std::string name) const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::get(name);
+            }
+            bool empty() const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::empty();
+            }
+            size_t size() const override {
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::size();
+            }
+            T& get(size_t index) const override {
+                OrderedSetIterator it = this->begin();
+                for (size_t i = 0; i < index; i++) {
+                    it++;
+                }
+                return *it;
+            }
             UmlPtr<T> front() override {
                 SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (!this->m_first) {
@@ -138,6 +197,9 @@ namespace UML {
             void add(T& el) override {
                 this->PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::add(el);
             }
+            void add(ID id) override {
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::add(id);
+            }
             void remove(ID id) override {
                 this->PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::remove(id);
             }
@@ -147,17 +209,27 @@ namespace UML {
             void remove (UmlPtr<T> el) override {
                 remove(el.id());
             }
-
-            OrderedSetIterator<T> begin() override {
+            void clear() override {
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::clear();
+            }
+            OrderedSetIterator<T> begin() const override {
                 OrderedSetIterator<T> ret;
                 ret.curr = this->m_first;
                 ret.validSets = this->getAllSuperSets();
-                ret.validSets.insert(this);
+                ret.validSets.insert(const_cast<AbstractSet*>(static_cast<const AbstractSet*>(this))); // I <3 c++
                 return ret;
             }
 
-            OrderedSetIterator<T> end() override {
+            OrderedSetIterator<T> end() const override {
                 return OrderedSetIterator<T>();
             }
+
+            ID_Set<T> ids() override {
+                ID_Set<T> ret;
+                ret.root = this->m_root;
+                ret.validSets = this->getAllSuperSets();
+                ret.validSets.insert(this);
+                return ret;
+            };
     };
 }

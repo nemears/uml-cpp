@@ -48,12 +48,12 @@ TypedSet<Interface, Operation>& Operation::getInterfaceSingleton() {
 
 void Operation::init() {
     m_class.subsets(m_featuringClassifier);
-    m_class.subsets(m_namespace);
+    m_class.subsets(*m_namespace);
     m_class.opposite(&Class::getOwnedOperations);
     m_dataType.subsets(m_featuringClassifier);
-    m_dataType.subsets(m_namespace);
+    m_dataType.subsets(*m_namespace);
     m_dataType.opposite(&DataType::getOwnedOperations);
-    m_interface.subsets(m_namespace);
+    m_interface.subsets(*m_namespace);
     m_interface.subsets(m_featuringClassifier);
     m_interface.opposite(&Interface::getOwnedOperations);
     m_operationOwnedParameters.redefines(m_ownedParameters);

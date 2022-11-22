@@ -189,7 +189,7 @@ namespace {
 /**
  * Template helper functions for parsing
  **/
-template <class T = Element, class U = Element>
+template <class T, class U>
 bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string key, U& el, void (U::*elSignature)(T& el), void (U::*idSignature)(ID id)) {
     if (node[key]) {
         if (node[key].IsScalar()) {
@@ -228,7 +228,7 @@ bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
     return false;
 };
 
-template <class T = Element, class U = Element, class S = Set<T,U>>
+template <class T, class U, class S>
 void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, U& owner, S& (U::*signature)()) {
     if (node[key]) {
         if (node[key].IsSequence()) {
@@ -239,11 +239,11 @@ void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, 
                         ID id = ID::fromString(node[key][i].as<std::string>());
                         if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
                             T& t = data.m_manager->get(id)->as<T>();
-                            if ((owner.*signature)().getOpposite() && (t.*(owner.*signature)().getOpposite())().contains(owner)) {
-                                (owner.*signature)().add(id);
-                            } else {
+                            // if ((owner.*signature)().getOpposite() && (t.*(owner.*signature)().getOpposite())().contains(owner)) {
+                            //     (owner.*signature)().add(id);
+                            // } else {
                                 (owner.*signature)().add(t);
-                            }
+                            // }
                         } else {
                             (owner.*signature)().add(id);
                         }
@@ -267,7 +267,7 @@ void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, 
  * @param el, the element that owns the element being parsed
  * @param signature, the signature of the sequence to add the parsed element to
  **/
-template <class T = Element, class U = Element, class S = Set<T,U>>
+template <class T, class U, class S>
 void parseAndAddToSet(YAML::Node node, ParserMetaData& data, U& el, S& (U::* signature)()) {
     if (data.m_strategy == ParserStrategy::WHOLE) {
         ElementPtr packagedEl = parseExternalAddToManager(data, node.as<std::string>());
@@ -287,7 +287,7 @@ void parseAndAddToSet(YAML::Node node, ParserMetaData& data, U& el, S& (U::* sig
     }
 }
 
-template <class T = Element, class U = Element>
+template <class T, class U>
 void parseAndSetSingleton(YAML::Node node, ParserMetaData& data, U& el, void (U::*idSignature)(ID id)) {
     if (data.m_strategy == ParserStrategy::INDIVIDUAL) {
         std::string path = node.as<std::string>();
@@ -312,7 +312,7 @@ void parseAndSetSingleton(YAML::Node node, ParserMetaData& data, U& el, void (U:
  * @param sequenceSignature, the signature of the sequence we are adding to
  * @param parserSignature, the signature of the function we are using to parse it's children in WHOLE parser strategy mode
  **/
-template <class T = Element, class U = Element, class S = Set<T,U>>
+template <class T, class U, class S>
 void parseSetDefinitions(YAML::Node node, ParserMetaData& data, string key, U& owner, S& (U::*sequenceSignature)(), T& (*parserSignature)(YAML::Node, ParserMetaData&)) {
     if (node[key]) {
         if (node[key].IsSequence()) {
@@ -335,7 +335,7 @@ void parseSetDefinitions(YAML::Node node, ParserMetaData& data, string key, U& o
     }
 }
 
-template <class T = Element, class V = T> 
+template <class T, class V = T> 
 T& parseDefinition(YAML::Node node, ParserMetaData& data, string key, void (*parser)(YAML::Node, V&, ParserMetaData&)) {
     if (node[key].IsMap()) {
         UmlPtr<T> ret = data.m_manager->create<T>();
@@ -346,13 +346,13 @@ T& parseDefinition(YAML::Node node, ParserMetaData& data, string key, void (*par
     }
 }
 
-template <class T = Element, class U = Element>
+template <class T, class U>
 void parseSingletonDefinition(YAML::Node node, ParserMetaData& data, std::string key, U& owner, T& (*parser)(YAML::Node, ParserMetaData&), void (U::*elSignature)(T&), void (U::*idSignature)(ID)) {
     if (node[key]) {
         if (node[key].IsMap()) {
             (owner.*elSignature)((*parser)(node[key], data));
         } else {
-            parseAndSetSingleton(node[key], data, owner, idSignature);
+            parseAndSetSingleton<T,U>(node[key], data, owner, idSignature);
         }
     }
 };
@@ -721,18 +721,19 @@ ElementType elementTypeFromString(string eType) {
 }
 
 void setNamespace(NamedElement& el, ID id) {
+    SetLock elLck = el.lockEl(el);
     if (el.m_manager->loaded(id)) {
-        el.m_namespace.addReadOnly(el.m_manager->get(id)->as<Namespace>());
+        el.m_namespace->innerAdd(el.m_manager->get(id)->as<Namespace>());
     } else {
-        el.m_namespace.addReadOnly(id);
+        el.m_namespace->innerAdd(id);
     }
 }
 
 void setOwner(Element& el, ID id) {
     if (el.m_manager->loaded(id)) {
-        el.m_owner->addReadOnly(*el.m_manager->get(id));
+        el.m_owner->innerAdd(*el.m_manager->get(id));
     } else {
-        el.m_owner->addReadOnly(id);
+        el.m_owner->innerAdd(id);
     }
 }
 
@@ -1964,7 +1965,7 @@ void emitScope(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
         }
         if (el.isSubClassOf(ElementType::MANIFESTATION)) {
             if (!el.as<Manifestation>().getClients().empty()) {
-                emitter << YAML::Key << "client" << YAML::Value << el.as<Manifestation>().getClients().ids().front().string();
+                emitter << YAML::Key << "client" << YAML::Value << (*el.as<Manifestation>().getClients().ids().begin()).string();
                 return;
             }
         }
@@ -2931,7 +2932,7 @@ void emitPackage(YAML::Emitter& emitter, Package& pckg, EmitterMetaData& data) {
             }
         } else {
             for (const ID id : pckg.getPackagedElements().ids()) {
-                if (!pckg.getOwnedStereotypes().count(id)) {
+                if (!pckg.getOwnedStereotypes().contains(id)) {
                     emitter << YAML::Value << id.string() + ".yml";
                 }
             }
@@ -3315,7 +3316,7 @@ void emitTemplateSignature(YAML::Emitter& emitter, TemplateSignature& signature,
     if (signature.getParameters().size() > signature.getOwnedParameters().size()) {
         emitter << YAML::Key << "parameters" << YAML::Value << YAML::BeginSeq;
         for (ID id: signature.getParameters().ids()) {
-            if (!signature.getOwnedParameters().count(id)) {
+            if (!signature.getOwnedParameters().contains(id)) {
                 emitter << id.string();
             }
         }
@@ -3584,13 +3585,13 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
         emitter << YAML::Key << "ownedEnds" << YAML::Value << YAML::BeginSeq;
         if (data.m_strategy == EmitterStrategy::WHOLE) {
             for (auto& end : association.getOwnedEnds()) {
-                if (!association.getNavigableOwnedEnds().count(end.getID())) {
+                if (!association.getNavigableOwnedEnds().contains(end.getID())) {
                     emit(emitter, end, data);
                 }
             }
         } else {
             for (const ID id : association.getOwnedEnds().ids()) {
-                if (!association.getNavigableOwnedEnds().count(id)) {
+                if (!association.getNavigableOwnedEnds().contains(id)) {
                     emitter << YAML::Value << id.string() + ".yml";
                 }
             }
@@ -3601,7 +3602,7 @@ void emitAssociation(YAML::Emitter& emitter, Association& association, EmitterMe
     if (association.getMemberEnds().size() > association.getOwnedEnds().size() && !association.getMemberEnds().empty()) {
         emitter << YAML::Key << "memberEnds" << YAML::Value << YAML::BeginSeq;
         for (const ID id : association.getMemberEnds().ids()) {
-            if (!association.getOwnedEnds().count(id)) {
+            if (!association.getOwnedEnds().contains(id)) {
                 emitter << YAML::Value << id.string();
             }
         }

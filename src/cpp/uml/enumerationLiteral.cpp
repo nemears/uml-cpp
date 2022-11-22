@@ -13,7 +13,7 @@ TypedSet<Enumeration, EnumerationLiteral>& EnumerationLiteral::getEnumerationSin
 }
 
 void EnumerationLiteral::init() {
-    m_enumeration.subsets(m_namespace);
+    m_enumeration.subsets(*m_namespace);
     m_enumeration.opposite(&Enumeration::getOwnedLiterals);
 }
 

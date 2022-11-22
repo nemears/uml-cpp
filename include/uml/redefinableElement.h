@@ -2,6 +2,7 @@
 #define _UML_REDEFINABLE_ELEMENT_H_
 
 #include "namedElement.h"
+#include "set/set.h"
 
 namespace UML {
 

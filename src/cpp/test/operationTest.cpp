@@ -395,7 +395,7 @@ TEST_F(OperationTest, mountAndEditOperationTest) {
     ASSERT_TRUE(param3.getOperation());
     ASSERT_EQ(*param3.getOperation(), op3);
     ASSERT_EQ(op3.getOwnedParameters().size(), 1);
-    ASSERT_TRUE(op3.getOwnedParameters().count(paramID));
+    ASSERT_TRUE(op3.getOwnedParameters().contains(paramID));
     ASSERT_EQ(op3.getOwnedParameters().front(), param3);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(param3, op3));
 

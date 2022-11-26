@@ -30,10 +30,12 @@ namespace UML {
     };
 
     template <class T, class U> class TypedSet;
+    void recursiveSetContains(ID id, AbstractSet* set);
 
     class AbstractSet {
 
         template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
+        friend void recursiveSetContains(ID id, AbstractSet* set);
 
         protected:
             SetNode* m_root = 0;
@@ -95,6 +97,8 @@ namespace UML {
                     subsetOf.m_subSets.push_back(this);
                 }
             }
+
+            virtual bool contains(ID id) const = 0;
     };
 
     template <class T, class U, class AdditionPolicy, class RemovalPolicy>
@@ -724,6 +728,40 @@ namespace UML {
                     remove(nodeToRemove->m_ptr.id());
                 }
             }
+            void removeFromJustThisSet(ID id) {
+                // "lock" elements we are editing
+                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                T* el = 0;
+                try {
+                    el = &m_el.m_node->m_references.at(id).node->m_managerElementMemory->template as<T>(); // should be safe because we have a ptr
+                } catch (std::exception e) {
+                    throw SetStateException("Could not find el with id of " + id.string() + " in set");
+                }
+                SetLock elLock = m_el.m_manager->lockEl(*el);
+                if (m_readOnly) {
+                    throw SetStateException("Cannot remove from read only set!");
+                }
+                // remove
+                SetNode* node = search(id, this->m_root);
+                if (!node) {
+                    throw SetStateException("Could not find el with id of " + id.string() + "in set");
+                }
+                if (this->m_root == node) {
+                    this->m_root = 0;
+                }
+                if (this->m_superSets.size() == 0) {
+                    return;
+                }
+                if (this->m_superSets.size() == 1) {
+                    node->set = this->m_superSets[0];
+                    return;
+                }
+                for (auto superSet : this->m_superSets) {
+                    // create a copy
+                    // SetNode* copy = AllocationPolicy::createNode(node->m_ptr);
+                    // TODO replace;
+                }
+            }
             void reindexDFS(SetNode* node, AbstractSet* set) {
                 for (auto superSet : set->m_superSets) {
                     reindexDFS(node, superSet);
@@ -871,7 +909,7 @@ namespace UML {
             }
 
             // Shared Accessors, all of these can be used by subclasses
-            UmlPtr<T> get(ID id) const {
+            T& get(ID id) const {
                 // "lock" sets owner while we search
                 SetLock myLock = m_el.m_manager->lockEl(m_el);
                 
@@ -882,13 +920,13 @@ namespace UML {
                 SetNode* result = search(id, this->m_root);
 
                 if (result) {
-                    return result->m_ptr;
+                    return result->m_ptr->as<T>();
                 }
                 
                 throw SetStateException("Could not find element " + id.string() + " in set!");
             }
 
-            UmlPtr<T> get(std::string name) const {
+            T& get(std::string name) const {
                 SetLock myLck = m_el.lockEl(m_el);
 
                 if (!this->m_root) {
@@ -898,13 +936,13 @@ namespace UML {
                 SetNode* result = search(name, this->m_root);
 
                 if (result) {
-                    return result->m_ptr;
+                    return result->m_ptr->as<T>();
                 }
                 
                 throw SetStateException("Could not find named element of name " + name + " in set!");
             }
 
-            bool contains(ID id) const {
+            bool contains(ID id) const override {
                 SetLock myLock = m_el.m_manager->lockEl(m_el);
                 
                 // get
@@ -1012,6 +1050,9 @@ namespace UML {
                 } while (!curr->m_ptr);
                 return *this;
             }
+            SetIterator operator++(int) {
+                return ++(*this);
+            }
             friend bool operator== (const SetIterator& lhs, const SetIterator& rhs) {
                 if (!lhs.curr && !lhs.curr) {
                     return true;
@@ -1061,6 +1102,39 @@ namespace UML {
             SetID_Iterator<T> end() {
                 return SetID_Iterator<T>();
             };
+            ID front() const {
+                SetNode* curr = this->root;
+                if (!curr) {
+                    throw SetStateException("Cannot get front element because set is empty!");
+                }
+
+                while (!curr->m_ptr) {
+                    if (!curr->m_left) {
+                        throw SetStateException("Internal error while getting front element, contact developer!");
+                    }
+                    curr = curr->m_left;
+                }
+
+                return curr->m_ptr.id();
+            }
+            ID back() const {
+                SetNode* curr = this->root;
+                if (!curr) {
+                    throw SetStateException("Cannot get back element because set is empty!");
+                }
+
+                // go all the way right
+                while (curr->m_right) {
+                    curr = curr->m_right;
+                }
+
+                // now go all the way left
+                while (curr->m_left) {
+                    curr = curr->m_left;
+                }
+
+                return curr->m_ptr.id();
+            }
     };
 
     template <class T, class U>
@@ -1072,16 +1146,22 @@ namespace UML {
             virtual bool contains(std::string name) const = 0;
             virtual bool empty() const = 0;
             virtual size_t size() const = 0;
-            virtual UmlPtr<T> get(ID id) const = 0;
-            virtual UmlPtr<T> get(std::string name) const = 0;
-            virtual UmlPtr<T> front() const = 0;
-            virtual UmlPtr<T> back() const = 0;
+            virtual T& get(ID id) const = 0;
+            virtual T& get(std::string name) const = 0;
+            virtual T& front() const = 0;
+            virtual T& back() const = 0;
             virtual void add(ID id) = 0;
             virtual void add(UmlPtr<T> el) = 0;
             virtual void add(T& el) = 0;
+            template <class ... Ts>
+            void add(T& el, Ts&... els) {
+                add(el);
+                add(els...);
+            }
             virtual void remove(ID id) = 0;
             virtual void remove(T& el) = 0;
             virtual void remove(UmlPtr<T> el) = 0;
+            virtual void removeFromJustThisSet(ID id) = 0;
             virtual void clear() = 0;
             virtual SetIterator<T> begin() = 0;
             virtual SetIterator<T> end() = 0;
@@ -1110,13 +1190,13 @@ namespace UML {
             bool contains(std::string name) const override {
                 return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::contains(name);
             }
-            UmlPtr<T> get(ID id) const override {
+            T& get(ID id) const override {
                 return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::get(id);
             }
-            UmlPtr<T> get(std::string name) const override {
+            T& get(std::string name) const override {
                 return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::get(name);
             }
-            UmlPtr<T> front() const override {
+            T& front() const override {
                 SetNode* curr = this->m_root;
                 if (!curr) {
                     throw SetStateException("Cannot get front element because set is empty!");
@@ -1129,9 +1209,9 @@ namespace UML {
                     curr = curr->m_left;
                 }
 
-                return curr->m_ptr;
+                return curr->m_ptr->as<T>();
             }
-            UmlPtr<T> back() const override {
+            T& back() const override {
                 SetNode* curr = this->m_root;
                 if (!curr) {
                     throw SetStateException("Cannot get back element because set is empty!");
@@ -1147,7 +1227,7 @@ namespace UML {
                     curr = curr->m_left;
                 }
 
-                return curr->m_ptr;
+                return curr->m_ptr->as<T>();
             }
             bool empty() const override {
                 return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::empty();
@@ -1172,6 +1252,9 @@ namespace UML {
             }
             void remove (UmlPtr<T> el) override {
                 remove(el.id());
+            }
+            void removeFromJustThisSet(ID id) override {
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::removeFromJustThisSet(id);
             }
             void clear() override {
                 PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::clear();

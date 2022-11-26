@@ -333,7 +333,7 @@ TEST_F(InstanceSpecificationTest, emitSpecificationTest) {
 
 void ASSERT_RESTORE_SLOT_CORRECTLY(InstanceSpecification& inst, Slot& slot, size_t i) {
     ASSERT_EQ(inst.getSlots().size(), 1);
-    ASSERT_EQ(inst.getSlots().get(i), slot);
+    ASSERT_EQ(i == 0 ? inst.getSlots().front() : inst.getSlots().back(), slot);
     ASSERT_EQ(inst.getOwnedElements().size(), 1);
     ASSERT_TRUE(inst.getOwnedElements().contains(slot));
 }

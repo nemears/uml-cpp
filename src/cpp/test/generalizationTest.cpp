@@ -27,8 +27,8 @@ TEST_F(GeneralizationTest, basicSetSpecificAndGeneralTest) {
     ASSERT_EQ(r->getSources().size(), 1);
     ASSERT_EQ(r->getSources().front(), *s);
     ASSERT_EQ(r->getRelatedElements().size(), 2);
-    ASSERT_EQ(r->getRelatedElements().count(s->getID()), 1);
-    ASSERT_EQ(r->getRelatedElements().count(g->getID()), 1);
+    ASSERT_EQ(r->getRelatedElements().contains(s->getID()), 1);
+    ASSERT_EQ(r->getRelatedElements().contains(g->getID()), 1);
     ASSERT_TRUE(r->getOwner());
     ASSERT_EQ(r->getOwner(), s);
     ASSERT_EQ(s->getGeneralizations().size(), 1);
@@ -56,8 +56,8 @@ TEST_F(GeneralizationTest, addGeneralFunctorTest) {
     ASSERT_EQ(r->getSources().size(), 1);
     ASSERT_EQ(r->getSources().front(), s);
     ASSERT_EQ(r->getRelatedElements().size(), 2);
-    ASSERT_EQ(r->getRelatedElements().count(s.getID()), 1);
-    ASSERT_EQ(r->getRelatedElements().count(g.getID()), 1);
+    ASSERT_EQ(r->getRelatedElements().contains(s.getID()), 1);
+    ASSERT_EQ(r->getRelatedElements().contains(g.getID()), 1);
     ASSERT_EQ(*r->getOwner(), s);
     ASSERT_EQ(s.getGeneralizations().size(), 1);
     ASSERT_EQ(s.getGeneralizations().front(), *r);

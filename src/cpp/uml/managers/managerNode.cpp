@@ -54,10 +54,6 @@ void ManagerNode::restoreReference(Element* el) {
     m_managerElementMemory->restoreReference(el);
 }
 
-void ManagerNode::releaseReference(ID id) {
-    m_managerElementMemory->referencingReleased(id);
-}
-
 void ManagerNode::releasePtrs() {
     for (auto& ptr : m_ptrs) {
         ptr->releasePtr();

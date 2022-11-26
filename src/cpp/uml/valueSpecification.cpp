@@ -10,19 +10,9 @@
 
 using namespace UML;
 
-void ValueSpecification::referencingReleased(ID id) {
-    PackageableElement::referencingReleased(id);
-    TypedElement::referencingReleased(id);
-}
-
 void ValueSpecification::referenceReindexed(ID oldID, ID newID) {
     PackageableElement::referenceReindexed(oldID, newID);
     // TODO type
-}
-
-void ValueSpecification::reindexName(ID id, std::string newName) {
-    PackageableElement::reindexName(id, newName);
-    TypedElement::reindexName(id, newName);
 }
 
 void ValueSpecification::restoreReference(Element* el) {

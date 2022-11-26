@@ -265,8 +265,8 @@ TEST_F(ElementTest, readOnlySequenceTest) {
     Package& c1 = *m.create<Package>();
     Package& c2 = *m.create<Package>();
     ASSERT_NO_THROW(p.getPackagedElements().add(c1));
-    ASSERT_THROW(p.getOwnedElements().add(c2), ReadOnlySetException);
-    ASSERT_THROW(p.getOwnedElements().remove(c1), ReadOnlySetException);
+    ASSERT_THROW(p.getOwnedElements().add(c2), SetStateException);
+    ASSERT_THROW(p.getOwnedElements().remove(c1), SetStateException);
 }
 
 TEST_F(ElementTest, readOnlyRelatedElementsTest) {
@@ -277,8 +277,8 @@ TEST_F(ElementTest, readOnlyRelatedElementsTest) {
     Package& h = *mm.create<Package>();
     p.getPackageMerge().add(r);
     r.setMergedPackage(&m);
-    ASSERT_THROW(r.getRelatedElements().remove(p), ReadOnlySetException);
-    ASSERT_THROW(r.getRelatedElements().add(h), ReadOnlySetException);
+    ASSERT_THROW(r.getRelatedElements().remove(p), SetStateException);
+    ASSERT_THROW(r.getRelatedElements().add(h), SetStateException);
 }
 
 // TEST_F(ElementTest, checkAppliedStereotypeFunctorTest) {

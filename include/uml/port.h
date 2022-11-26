@@ -32,10 +32,8 @@ namespace UML {
             bool m_isBehavior = false;
             bool m_isConjugated = false;
             bool m_isService = true;
-            void referencingReleased(ID id) override;
             void restoreReference(Element* el) override;
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
             void referenceErased(ID id) override;
             void init();
             Port();

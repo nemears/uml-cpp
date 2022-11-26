@@ -137,9 +137,9 @@ namespace UML {
                         // el has been released there are no pointers
                         continue;
                     }
-                    if (e.second.node->m_managerElementMemory) {
-                        e.second.node->releaseReference(id);
-                    }
+                    // if (e.second.node->m_managerElementMemory) {
+                    //     e.second.node->releaseReference(id);
+                    // }
                 }
                 node->releasePtrs();
                 delete node->m_managerElementMemory;

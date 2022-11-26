@@ -400,11 +400,11 @@ TEST_F(PackageTest, emitMergedPackageTest) {
 void ASSERT_PROPER_DIRECTED_RELATIONSHIP_AQUIRE(DirectedRelationship& dr, Element& source, Element& target) {
     ASSERT_EQ(dr.getSources().size(), 1);
     ASSERT_EQ(&dr.getSources().front(), &source);
-    ASSERT_EQ(dr.getRelatedElements().count(source.getID()), 1);
+    ASSERT_EQ(dr.getRelatedElements().contains(source.getID()), 1);
     ASSERT_EQ(&dr.getRelatedElements().get(source.getID()), &source);
     ASSERT_EQ(dr.getTargets().size(), 1);
     ASSERT_EQ(&dr.getTargets().front(), &target);
-    ASSERT_EQ(dr.getRelatedElements().count(target.getID()), 1);
+    ASSERT_EQ(dr.getRelatedElements().contains(target.getID()), 1);
     ASSERT_EQ(&dr.getRelatedElements().get(target.getID()), &target);
 }
 
@@ -431,7 +431,7 @@ TEST_F(PackageTest, mountAndEditPackageTest) {
     ASSERT_EQ(*c2.getOwningPackage(), root);
     ASSERT_EQ(c2.getPackageMerge().size(), 1);
     ASSERT_EQ(&c2.getPackageMerge().front(), &merge);
-    ASSERT_TRUE(c2.getOwnedElements().count(merge.getID()));
+    ASSERT_TRUE(c2.getOwnedElements().contains(merge.getID()));
     ASSERT_EQ(c2.getOwnedElements().get(merge.getID()), merge);
     ASSERT_TRUE(merge.getReceivingPackage());
     ASSERT_EQ(*merge.getReceivingPackage(), c2);
@@ -441,7 +441,7 @@ TEST_F(PackageTest, mountAndEditPackageTest) {
     ASSERT_EQ(merge.getSources().front(), c2);
     ASSERT_EQ(c2.getProfileApplications().size(), 1);
     ASSERT_EQ(&c2.getProfileApplications().front(), &profileApplication);
-    ASSERT_TRUE(c2.getOwnedElements().count(profileApplication.getID()));
+    ASSERT_TRUE(c2.getOwnedElements().contains(profileApplication.getID()));
     ASSERT_EQ(c2.getOwnedElements().get(profileApplication.getID()), profileApplication);
     ASSERT_TRUE(profileApplication.getApplyingPackage());
     ASSERT_EQ(*profileApplication.getApplyingPackage(), c2);

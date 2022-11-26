@@ -54,7 +54,7 @@ TEST_F(ClassifierTest, addAttributeFunctorTest) {
   ASSERT_TRUE(c.getFeatures().size() == 1);
   ASSERT_TRUE(&c.getFeatures().front() == &p);
   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
-  ASSERT_TRUE(c.getMembers().count(p.getID()));
+  ASSERT_TRUE(c.getMembers().contains(p.getID()));
 }
 
 TEST_F(ClassifierTest, setClassifierTest) {
@@ -68,7 +68,7 @@ TEST_F(ClassifierTest, setClassifierTest) {
   ASSERT_TRUE(c.getFeatures().size() == 1);
   ASSERT_TRUE(&c.getFeatures().front() == &p);
   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
-  ASSERT_TRUE(c.getMembers().count(p.getID()));
+  ASSERT_TRUE(c.getMembers().contains(p.getID()));
 }
 
 TEST_F(ClassifierTest, removeAttributeFunctorTest) {

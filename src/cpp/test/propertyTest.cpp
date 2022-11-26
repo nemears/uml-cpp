@@ -329,8 +329,8 @@ TEST_F(PropertyTest, parseRedefinedPropertyTest) {
     Class& base = pckg.getPackagedElements().front().as<Class>();
     ASSERT_EQ(base.getOwnedAttributes().size(), 1);
     Property& redefined = base.getOwnedAttributes().front();
-    ASSERT_EQ(pckg.getPackagedElements().get(1).getElementType(), ElementType::CLASS);
-    Class& spec = pckg.getPackagedElements().get(1).as<Class>();
+    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
+    Class& spec = pckg.getPackagedElements().back().as<Class>();
     ASSERT_EQ(spec.getGenerals().size(), 1);
     ASSERT_EQ(spec.getGenerals().front().getID(), base.getID());
     ASSERT_EQ(spec.getOwnedAttributes().size(), 1);

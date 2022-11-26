@@ -12,19 +12,9 @@
 
 using namespace UML;
 
-void StructuralFeature::referencingReleased(ID id) {
-    Feature::referencingReleased(id);
-    TypedElement::referencingReleased(id);
-}
-
 void StructuralFeature::referenceReindexed(ID oldID, ID newID) {
     Feature::referenceReindexed(oldID, newID);
     TypedElement::referenceReindexed(oldID, newID);
-}
-
-void StructuralFeature::reindexName(ID id, std::string newName) {
-    Feature::reindexName(id, newName);
-    TypedElement::reindexName(id, newName);
 }
 
 void StructuralFeature::referenceErased(ID id) {

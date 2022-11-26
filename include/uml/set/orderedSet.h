@@ -117,15 +117,20 @@ namespace UML {
             virtual bool contains(T& el) const = 0;
             virtual bool contains(UmlPtr<T> el) const = 0;
             virtual bool contains(std::string name) const = 0;
-            virtual UmlPtr<T> get(ID id) const = 0;
-            virtual UmlPtr<T> get(std::string name) const = 0;
+            virtual T& get(ID id) const = 0;
+            virtual T& get(std::string name) const = 0;
             virtual bool empty() const = 0;
             virtual size_t size() const = 0;
             virtual T& get(size_t index) const = 0;
-            virtual UmlPtr<T> front() = 0;
-            virtual UmlPtr<T> back() = 0;
+            virtual T& front() = 0;
+            virtual T& back() = 0;
             virtual void add(UmlPtr<T> el) = 0;
             virtual void add(T& el) = 0;
+            template <class ... Ts>
+            void add(T& el, Ts&... els) {
+                add(el);
+                add(els...);
+            }
             virtual void add(ID id) = 0;
             virtual void remove(ID id) = 0;
             virtual void remove(T& el) = 0;
@@ -158,10 +163,10 @@ namespace UML {
             bool contains(std::string name) const override {
                 return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::contains(name);
             }
-            UmlPtr<T> get(ID id) const override {
+            T& get(ID id) const override {
                 return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::get(id);
             }
-            UmlPtr<T> get(std::string name) const override {
+            T& get(std::string name) const override {
                 return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::get(name);
             }
             bool empty() const override {
@@ -177,19 +182,19 @@ namespace UML {
                 }
                 return *it;
             }
-            UmlPtr<T> front() override {
+            T& front() override {
                 SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (!this->m_first) {
                     throw SetStateException("front is null");
                 }
-                return this->m_first->m_ptr;
+                return this->m_first->m_ptr->template as<T>();
             }
-            UmlPtr<T> back() override {
+            T& back() override {
                 SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (!this->m_last) {
                     throw SetStateException("last is null");
                 }
-                return this->m_last->m_ptr;
+                return this->m_last->m_ptr->template as<T>();
             }
             void add(UmlPtr<T> el) override {
                 add(*el);

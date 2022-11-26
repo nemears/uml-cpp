@@ -41,9 +41,9 @@ TEST_F(DirectedRelationshipTest, removeRelationshipFunctorTest) {
     dr.setMergedPackage(&b);
     dr.setMergedPackage(0);
     a.getPackageMerge().remove(dr);
-    ASSERT_FALSE(dr.getTargets().count(a.getID()));
-    ASSERT_FALSE(dr.getRelatedElements().count(a.getID()));
+    ASSERT_FALSE(dr.getTargets().contains(a.getID()));
+    ASSERT_FALSE(dr.getRelatedElements().contains(a.getID()));
     
-    ASSERT_FALSE(dr.getSources().count(b.getID()));
-    ASSERT_FALSE(dr.getRelatedElements().count(b.getID()));
+    ASSERT_FALSE(dr.getSources().contains(b.getID()));
+    ASSERT_FALSE(dr.getRelatedElements().contains(b.getID()));
 }

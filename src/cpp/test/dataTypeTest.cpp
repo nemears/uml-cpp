@@ -528,12 +528,12 @@ TEST_F(DataTypeTest, mountAndEditDataType) {
     ASSERT_EQ(*baseProp2.getNamespace(), baseType3);
     ASSERT_TRUE(baseProp2.getOwner());
     ASSERT_EQ(*baseProp2.getOwner(), baseType3);
-    ASSERT_TRUE(baseType3.getOwnedAttributes().count(baseProp2.getID()));
-    ASSERT_TRUE(baseType3.getAttributes().count(baseProp2.getID()));
-    ASSERT_TRUE(baseType3.getFeatures().count(baseProp2.getID()));
-    ASSERT_TRUE(baseType3.getOwnedMembers().count(baseProp2.getID()));
-    ASSERT_TRUE(baseType3.getMembers().count(baseProp2.getID()));
-    ASSERT_TRUE(baseType3.getOwnedElements().count(baseProp2.getID()));
+    ASSERT_TRUE(baseType3.getOwnedAttributes().contains(baseProp2.getID()));
+    ASSERT_TRUE(baseType3.getAttributes().contains(baseProp2.getID()));
+    ASSERT_TRUE(baseType3.getFeatures().contains(baseProp2.getID()));
+    ASSERT_TRUE(baseType3.getOwnedMembers().contains(baseProp2.getID()));
+    ASSERT_TRUE(baseType3.getMembers().contains(baseProp2.getID()));
+    ASSERT_TRUE(baseType3.getOwnedElements().contains(baseProp2.getID()));
     
     ID basePropID = baseProp2.getID();
     m.release(baseProp2, baseType3);
@@ -545,12 +545,12 @@ TEST_F(DataTypeTest, mountAndEditDataType) {
     ASSERT_EQ(*baseProp3.getNamespace(), baseType4);
     ASSERT_TRUE(baseProp3.getOwner());
     ASSERT_EQ(*baseProp3.getOwner(), baseType4);
-    ASSERT_TRUE(baseType4.getOwnedAttributes().count(baseProp3.getID()));
-    ASSERT_TRUE(baseType4.getAttributes().count(baseProp3.getID()));
-    ASSERT_TRUE(baseType4.getFeatures().count(baseProp3.getID()));
-    ASSERT_TRUE(baseType4.getOwnedMembers().count(baseProp3.getID()));
-    ASSERT_TRUE(baseType4.getMembers().count(baseProp3.getID()));
-    ASSERT_TRUE(baseType4.getOwnedElements().count(baseProp3.getID()));
+    ASSERT_TRUE(baseType4.getOwnedAttributes().contains(baseProp3.getID()));
+    ASSERT_TRUE(baseType4.getAttributes().contains(baseProp3.getID()));
+    ASSERT_TRUE(baseType4.getFeatures().contains(baseProp3.getID()));
+    ASSERT_TRUE(baseType4.getOwnedMembers().contains(baseProp3.getID()));
+    ASSERT_TRUE(baseType4.getMembers().contains(baseProp3.getID()));
+    ASSERT_TRUE(baseType4.getOwnedElements().contains(baseProp3.getID()));
 
     m.release(baseOp);
     Operation& baseOp2 = baseType4.getOwnedOperations().front();
@@ -562,10 +562,10 @@ TEST_F(DataTypeTest, mountAndEditDataType) {
     ASSERT_EQ(*baseOp2.getNamespace(), baseType4);
     ASSERT_TRUE(baseOp2.getOwner());
     ASSERT_EQ(*baseOp2.getOwner(), baseType4);
-    ASSERT_TRUE(baseType4.getFeatures().count(baseOp2.getID()));
-    ASSERT_TRUE(baseType4.getOwnedMembers().count(baseOp2.getID()));
-    ASSERT_TRUE(baseType4.getMembers().count(baseOp2.getID()));
-    ASSERT_TRUE(baseType4.getOwnedElements().count(baseOp2.getID()));
+    ASSERT_TRUE(baseType4.getFeatures().contains(baseOp2.getID()));
+    ASSERT_TRUE(baseType4.getOwnedMembers().contains(baseOp2.getID()));
+    ASSERT_TRUE(baseType4.getMembers().contains(baseOp2.getID()));
+    ASSERT_TRUE(baseType4.getOwnedElements().contains(baseOp2.getID()));
 
     ID baseOpID = baseOp2.getID();
     m.release(baseOp2, baseType4);
@@ -579,11 +579,11 @@ TEST_F(DataTypeTest, mountAndEditDataType) {
     ASSERT_EQ(*baseOp3.getNamespace(), baseType5);
     ASSERT_TRUE(baseOp3.getOwner());
     ASSERT_EQ(*baseOp3.getOwner(), baseType5);
-    ASSERT_TRUE(baseType5.getOwnedOperations().count(baseOp3.getID()));
-    ASSERT_TRUE(baseType5.getFeatures().count(baseOp3.getID()));
-    ASSERT_TRUE(baseType5.getOwnedMembers().count(baseOp3.getID()));
-    ASSERT_TRUE(baseType5.getMembers().count(baseOp3.getID()));
-    ASSERT_TRUE(baseType5.getOwnedElements().count(baseOp3.getID()));
+    ASSERT_TRUE(baseType5.getOwnedOperations().contains(baseOp3.getID()));
+    ASSERT_TRUE(baseType5.getFeatures().contains(baseOp3.getID()));
+    ASSERT_TRUE(baseType5.getOwnedMembers().contains(baseOp3.getID()));
+    ASSERT_TRUE(baseType5.getMembers().contains(baseOp3.getID()));
+    ASSERT_TRUE(baseType5.getOwnedElements().contains(baseOp3.getID()));
 }
 
 TEST_F(DataTypeTest, basicPrimitiveTypeTest) {

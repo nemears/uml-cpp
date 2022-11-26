@@ -95,15 +95,15 @@ namespace UML {
 
             void releaseNode(ManagerNode* node) {
                 ID id = node->m_managerElementMemory->getID();
-                for (auto& e : node->m_references) {
-                    if (!e.second.node) {
-                        // el has been released there are no pointers
-                        continue;
-                    }
-                    if (e.second.node->m_managerElementMemory) {
-                        e.second.node->releaseReference(id);
-                    }
-                }
+                // for (auto& e : node->m_references) {
+                //     if (!e.second.node) {
+                //         // el has been released there are no pointers
+                //         continue;
+                //     }
+                //     if (e.second.node->m_managerElementMemory) {
+                //         e.second.node->releaseReference(id);
+                //     }
+                // }
                 node->releasePtrs();
                 delete node->m_managerElementMemory;
                 node->m_managerElementMemory = 0;

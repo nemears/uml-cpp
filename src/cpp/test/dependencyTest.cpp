@@ -262,12 +262,12 @@ void ASSERT_RESTORE_DEPENDENCY(Dependency& dependency, NamedElement& client, Nam
     ASSERT_EQ(dependency.getClients().front(), client);
     ASSERT_EQ(dependency.getSources().size(), 1);
     ASSERT_EQ(dependency.getSources().front(), client);
-    ASSERT_TRUE(dependency.getRelatedElements().count(client.getID()));
+    ASSERT_TRUE(dependency.getRelatedElements().contains(client.getID()));
     ASSERT_EQ(dependency.getSuppliers().size(), 1);
     ASSERT_EQ(dependency.getSuppliers().front(), supplier);
     ASSERT_EQ(dependency.getTargets().size(), 1);
     ASSERT_EQ(dependency.getTargets().front(), supplier);
-    ASSERT_TRUE(dependency.getRelatedElements().count(supplier.getID()));
+    ASSERT_TRUE(dependency.getRelatedElements().contains(supplier.getID()));
 }
 
 TEST_F(DependencyTest, mountAndEditDependencyTest) {

@@ -18,8 +18,6 @@ namespace UML {
             CustomSet<Classifier, ClassifierTemplateParameter> m_constrainingClassifiers = CustomSet<Classifier, ClassifierTemplateParameter>(this);
             TypedSet<Classifier, ClassifierTemplateParameter>& getParameteredElementSingleton();
             void referenceReindexed(ID oldID, ID newID) override;
-            void reindexName(ID id, std::string newName) override;
-            void referencingReleased(ID id) override;
             void referenceErased(ID id) override;
             void init();
             ClassifierTemplateParameter();

@@ -74,8 +74,8 @@ TEST_F(CommentTest, mountAndEditCommentTest) {
     Comment& comment2 = root.getOwnedComments().front();
     ASSERT_TRUE(comment2.getOwner());
     ASSERT_EQ(*comment2.getOwner(), root);
-    ASSERT_TRUE(root.getOwnedComments().count(comment2.getID()));
-    ASSERT_TRUE(root.getOwnedElements().count(comment2.getID()));
+    ASSERT_TRUE(root.getOwnedComments().contains(comment2.getID()));
+    ASSERT_TRUE(root.getOwnedElements().contains(comment2.getID()));
 
     ID commentID = comment2.getID();
     m.release(comment2, root);
@@ -83,6 +83,6 @@ TEST_F(CommentTest, mountAndEditCommentTest) {
     Package& root2 = comment3.getOwner()->as<Package>();
     ASSERT_TRUE(comment3.getOwner());
     ASSERT_EQ(*comment3.getOwner(), root2);
-    ASSERT_TRUE(root2.getOwnedComments().count(comment3.getID()));
-    ASSERT_TRUE(root2.getOwnedElements().count(comment3.getID()));
+    ASSERT_TRUE(root2.getOwnedComments().contains(comment3.getID()));
+    ASSERT_TRUE(root2.getOwnedElements().contains(comment3.getID()));
 }

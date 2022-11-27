@@ -46,6 +46,9 @@ namespace UML {
 
             bool m_rootRedefinedSet = true;
 
+            // m_guard lets us know the set's scope quickly, a subset must have a higher guard than its superset. root sets always have guards of 0
+            size_t m_guard = 0;
+
             size_t m_size = 0;
 
             virtual void runAddPolicy(Element& el) = 0;
@@ -95,6 +98,9 @@ namespace UML {
                 if (std::find(this->m_superSets.begin(), this->m_superSets.end(), &subsetOf) == this->m_superSets.end()) {
                     this->m_superSets.push_back(&subsetOf);
                     subsetOf.m_subSets.push_back(this);
+                    if (subsetOf.m_guard >= m_guard) {
+                        m_guard = subsetOf.m_guard + 1;
+                    }
                 }
             }
 
@@ -138,11 +144,24 @@ namespace UML {
     template <class T>
     class OppositeInterface {
         public:
-            virtual bool enabled() {
+            virtual ~OppositeInterface() = default;
+            virtual bool enabled() = 0;
+            virtual void addOpposite(T& el) = 0;
+            virtual void removeOpposite(T& el) = 0;
+    };
+
+    template <class T>
+    class NoOpposite : public OppositeInterface<T> {
+        public:
+            bool enabled() override {
                 return false;
             }
-            virtual void addOpposite(T& el) {}
-            virtual void removeOpposite(T& el) {}
+            void addOpposite(T& el) override {
+                el.getID();
+            }
+            void removeOpposite(T& el) override {
+                el.getID();
+            }
     };
 
     namespace Parsers {
@@ -157,7 +176,7 @@ namespace UML {
                 class RemovalPolicy = DoNothing<T,U>,
                 class AllocationPolicy = SetAllocationPolicy<T>
             >
-    class PrivateSet : virtual public TypedSet<T, U> , public AllocationPolicy {
+    class PrivateSet : virtual public TypedSet<T, U> , virtual protected AllocationPolicy {
 
         FRIEND_ALL_UML()
 
@@ -170,7 +189,7 @@ namespace UML {
         protected:
             U& m_el;
             bool m_readOnly = false;
-            OppositeInterface<T> m_opposite = OppositeInterface<T>();
+            OppositeInterface<T>* m_opposite = new NoOpposite<T>();
 
             /**
              * Searches the tree for the node with given id from the node supplied
@@ -255,15 +274,35 @@ namespace UML {
                     for (auto redefinedSet : this->m_redefines) {
                         if (redefinedSet->m_rootRedefinedSet) {
                             node->set = redefinedSet;
+                            this->m_size++;
                             break;
                         }
                     }
                 }
-                innerAddDFS(node, node->set);
+                
+                std::unordered_set<AbstractSet*> allSuperSetsAndMe = this->getAllSuperSets();
+                allSuperSetsAndMe.insert(node->set);
+                std::unordered_set<AbstractSet*> allSubSets = this->getAllSubSets();
 
-                AdditionPolicy::apply(el, m_el);
-                for (auto superSet : this->getAllSuperSets()) { // TODO calling getSuperSets twice, maybe call it once and pass it down into innerAddDfs
+                innerAddDFS(node, node->set, allSuperSetsAndMe, allSubSets);
+
+                for (auto superSet : allSuperSetsAndMe) {
+                    superSet->m_size++;
+                }
+
+                for (auto redefinedSet : this->m_redefines) {
+                    if (redefinedSet->m_rootRedefinedSet) {
+                        continue;
+                    }
+                    redefinedSet->m_size++;
+                }
+
+                for (auto superSet : allSuperSetsAndMe) {
                     superSet->runAddPolicy(el);
+                }
+
+                for (auto redefinedSet : this-> m_redefines) {
+                    redefinedSet->runAddPolicy(el);
                 }
             }
 
@@ -274,18 +313,28 @@ namespace UML {
                     for (auto redefinedSet : this->m_redefines) {
                         if (redefinedSet->m_rootRedefinedSet) {
                             node->set = redefinedSet;
+                            this->m_size++;
                             break;
                         }
                     }
                 }
-                innerAddDFS(node, node->set);
+                
+                std::unordered_set<AbstractSet*> allSuperSetsAndMe = this->getAllSuperSets();
+                allSuperSetsAndMe.insert(node->set);
+                std::unordered_set<AbstractSet*> allSubSets = this->getAllSubSets();
 
-                // if (m_addFunctor) {
-                //     (*m_addFunctor)(el);
-                // }
-                // for (auto superSet : this->getAllSuperSets()) { // TODO calling getSuperSets twice, maybe call it once and pass it down into innerAddDfs
-                //     superSet->runAddFunctor(el);
-                // }
+                innerAddDFS(node, node->set, allSuperSetsAndMe, allSubSets);
+
+                for (auto superSet : allSuperSetsAndMe) {
+                    superSet->m_size++;
+                }
+
+                for (auto redefinedSet : this->m_redefines) {
+                    if (redefinedSet->m_rootRedefinedSet) {
+                        continue;
+                    }
+                    redefinedSet->m_size++;
+                }
             }
 
             template<class V, class W>
@@ -298,10 +347,10 @@ namespace UML {
              * @param node: the node being placed
              * @param set: the current set we are checking
             */
-            void innerAddDFS(SetNode* node, AbstractSet* set) {
+            void innerAddDFS(SetNode* node, AbstractSet* set, std::unordered_set<AbstractSet*> allSuperSetsAndMe, std::unordered_set<AbstractSet*> allSubSets) {
                 // place in supersets
                 for (AbstractSet* superSet : set->m_superSets) {
-                    innerAddDFS(node, superSet);
+                    innerAddDFS(node, superSet, allSuperSetsAndMe, allSubSets);
                 }
 
                 // adjust redefines
@@ -309,15 +358,12 @@ namespace UML {
                     if (!redefinedSet->m_root) {
                         redefinedSet->m_root = node;
                     }
-                    redefinedSet->m_size++;
+                    // redefinedSet->m_size++;
                 }
                 
                 if (set->m_superSets.size() == 0 && set->m_rootRedefinedSet) {
                     // root set, place the node in the tree
                     // gather our set's supersets and subsets
-                    std::unordered_set<AbstractSet*> allSuperSetsAndMe = this->getAllSuperSets();
-                    allSuperSetsAndMe.insert(node->set);
-                    std::unordered_set<AbstractSet*> allSubSets = this->getAllSubSets();
                     SetNode* currNode = set->m_root;
                     // handle divider nodes
                     while (currNode && ((!allSuperSetsAndMe.count(currNode->set) && !allSubSets.count(currNode->set)) || (!currNode->m_ptr && currNode->m_right))) {
@@ -392,9 +438,13 @@ namespace UML {
                     }
                     while (currNode) {
 
-                        if (currNode->m_ptr.id() == node->m_ptr.id() && currNode->set != this) {
-                            // node is allready in supersets, adjust node to be in lower sets
-                            // TODO
+                        if (currNode->m_ptr.id() == node->m_ptr.id()) {
+                            if (currNode->set != this) {
+                                // node is allready in supersets, adjust node to be in lower sets
+                                // TODO
+                            } else {
+                                throw SetStateException("Node already in this set!");
+                            }
                         }
 
                         if (allSubSets.count(currNode->set)) {
@@ -402,12 +452,14 @@ namespace UML {
                             node->m_parent = currNode->m_parent;
                             node->m_left = currNode;
                             currNode->m_parent = node;
-                            if (node->m_parent->m_left == currNode) {
-                                node->m_parent->m_left = node;
-                            } else if (node->m_parent->m_right == currNode) {
-                                node->m_parent->m_right = node;
+                            if (node->m_parent) {
+                                if (node->m_parent->m_left == currNode) {
+                                    node->m_parent->m_left = node;
+                                } else if (node->m_parent->m_right == currNode) {
+                                    node->m_parent->m_right = node;
+                                }
                             }
-
+                            
                             // adjust roots
                             for (auto superSet : allSuperSetsAndMe) {
                                 if (superSet->m_root == currNode) {
@@ -442,9 +494,6 @@ namespace UML {
                         } else {
                             currNode = currNode->m_right;
                         }
-                    }
-                    for (auto superSet : allSuperSetsAndMe) {
-                        superSet->m_size++;
                     }
                 }
 
@@ -611,13 +660,22 @@ namespace UML {
                     }
                     superSet->m_size--;
                 }
-                for (auto subSet : this->m_subSets) {
+
+                // adjust subsets
+                for (auto subSet : this->getAllSubSets()) {
+                    if (subSet->m_guard < node->set->m_guard) {
+                        continue;
+                    }
+                    subSet->m_size--;
                     if (subSet->m_root == node) {
                         subSet->m_root = node->m_left;
                     }
                 }
                 for (auto superSet : allSuperSets) {
                     superSet->runRemovePolicy(*node->m_ptr);
+                }
+                for (auto redefinedSet : this-> m_redefines) {
+                    redefinedSet->runRemovePolicy(*node->m_ptr);
                 }
                 AllocationPolicy::deleteNode(node);
             }
@@ -629,8 +687,8 @@ namespace UML {
 
             void add(T& el) {
                 // "lock" elements we are editing
-                SetLock elLock = m_el.m_manager->lockEl(el);
-                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                [[maybe_unused]] SetLock elLock = m_el.m_manager->lockEl(el);
+                [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 if (m_readOnly) {
                     throw SetStateException("Cannot add to read only set!");
                 }
@@ -639,27 +697,27 @@ namespace UML {
                 el.m_node->setReference(m_el);
                 m_el.m_node->setReference(el);
                 // handle opposites
-                if (m_opposite.enabled()) {
-                    m_opposite.addOpposite(el);
+                if (m_opposite->enabled()) {
+                    m_opposite->addOpposite(el);
                 }
             }
             void addReadOnly(T& el) {
                 // "lock" elements we are editing
-                SetLock elLock = m_el.m_manager->lockEl(el);
-                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                [[maybe_unused]] SetLock elLock = m_el.m_manager->lockEl(el);
+                [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 // add
                 innerAdd(el);
                 el.m_node->setReference(m_el);
                 m_el.m_node->setReference(el);
                 // handle opposites
-                if (m_opposite.enabled()) {
-                    m_opposite.addOpposite(el);
+                if (m_opposite->enabled()) {
+                    m_opposite->addOpposite(el);
                 }
             }
             void add(ID id) {
                 // "lock" elements we are editing
                 // SetLock elLock = m_el.m_manager->lockEl(el);
-                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 if (m_readOnly) {
                     throw SetStateException("Cannot add to read only set!");
                 }
@@ -674,14 +732,14 @@ namespace UML {
             }
             void remove(ID id) {
                 // "lock" elements we are editing
-                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 T* el = 0;
                 try {
                     el = &m_el.m_node->m_references.at(id).node->m_managerElementMemory->template as<T>(); // should be safe because we have a ptr
                 } catch (std::exception e) {
                     throw SetStateException("Could not find el with id of " + id.string() + " in set");
                 }
-                SetLock elLock = m_el.m_manager->lockEl(*el);
+                [[maybe_unused]] SetLock elLock = m_el.m_manager->lockEl(*el);
                 if (m_readOnly) {
                     throw SetStateException("Cannot remove from read only set!");
                 }
@@ -690,27 +748,27 @@ namespace UML {
                 el->m_node->removeReference(m_el);
                 m_el.m_node->removeReference(*el);
                 // handle opposites
-                if (m_opposite.enabled()) {
-                    m_opposite.removeOpposite(*el);
+                if (m_opposite->enabled()) {
+                    m_opposite->removeOpposite(*el);
                 }
             }
             void removeReadOnly(ID id) {
                 // "lock" elements we are editing
-                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 T* el = 0;
                 try {
                     el = &m_el.m_node->m_references.at(id).node->m_managerElementMemory->template as<T>(); // should be safe because we have a ptr
                 } catch (std::exception e) {
                     throw SetStateException("Could not find el with id of " + id.string() + " in set");
                 }
-                SetLock elLock = m_el.m_manager->lockEl(*el);
+                [[maybe_unused]] SetLock elLock = m_el.m_manager->lockEl(*el);
                 // remove
                 innerRemove(id);
                 el->m_node->removeReference(m_el);
                 m_el.m_node->removeReference(*el);
                 // handle opposites
-                if (m_opposite.enabled()) {
-                    m_opposite.removeOpposite(*el);
+                if (m_opposite->enabled()) {
+                    m_opposite->removeOpposite(*el);
                 }
             }
             /**
@@ -730,14 +788,14 @@ namespace UML {
             }
             void removeFromJustThisSet(ID id) {
                 // "lock" elements we are editing
-                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 T* el = 0;
                 try {
                     el = &m_el.m_node->m_references.at(id).node->m_managerElementMemory->template as<T>(); // should be safe because we have a ptr
                 } catch (std::exception e) {
                     throw SetStateException("Could not find el with id of " + id.string() + " in set");
                 }
-                SetLock elLock = m_el.m_manager->lockEl(*el);
+                [[maybe_unused]] SetLock elLock = m_el.m_manager->lockEl(*el);
                 if (m_readOnly) {
                     throw SetStateException("Cannot remove from read only set!");
                 }
@@ -756,11 +814,11 @@ namespace UML {
                     node->set = this->m_superSets[0];
                     return;
                 }
-                for (auto superSet : this->m_superSets) {
+                // for (auto superSet : this->m_superSets) {
                     // create a copy
                     // SetNode* copy = AllocationPolicy::createNode(node->m_ptr);
                     // TODO replace;
-                }
+                // }
             }
             void reindexDFS(SetNode* node, AbstractSet* set) {
                 for (auto superSet : set->m_superSets) {
@@ -805,14 +863,18 @@ namespace UML {
 
             }
             virtual ~PrivateSet() {
+                delete m_opposite;
                 if (!this->m_rootRedefinedSet) {
                     return;
                 }
-                SetLock myLock = m_el.m_manager->lockEl(m_el); 
+                [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el); 
 
                 // TODO lock all of the elements in the set lock?
 
                 std::unordered_set<AbstractSet*> allSuperSets = this->getAllSuperSets();
+                if (allSuperSets.empty()) {
+                    allSuperSets.insert(this); // edge case, need someone to find parent from
+                }
 
                 // start from bottom left
                 SetNode* currNode = this->m_root;
@@ -832,14 +894,18 @@ namespace UML {
                             // this is owned by a superset which will be deleted after us (probably, not necessarily guaranteed)
                             break;
                         }
-                        if (currNode->m_parent) {
-                            if (currNode->m_parent->m_left == currNode) {
-                                currNode->m_parent->m_left = 0;
-                            } else if (currNode->m_parent->m_right == currNode) {
-                                currNode->m_parent->m_right = 0;
-                            } else {
-                                // throw SetStateException("Bad state could not find node in right or left of parent when deleting!");
-                            }
+                        // fix all parents
+                        for (auto superSet : allSuperSets) {
+                            SetNode* parent = getParent(nodeToDelete, superSet->m_root);
+                            if (parent) {
+                                if (parent->m_left == currNode) {
+                                    parent->m_left = 0;
+                                } else if (parent->m_right == currNode) {
+                                    parent->m_right = 0;
+                                } else {
+                                    // throw SetStateException("Bad state could not find node in right or left of parent when deleting!");
+                                }
+                            }   
                         }
                         
                         if (this->m_root == currNode) {
@@ -886,7 +952,7 @@ namespace UML {
                         }
                 };
 
-                m_opposite = OppositeInterfaceAdapter(m_el, oppositeSignature);
+                m_opposite = new OppositeInterfaceAdapter(m_el, oppositeSignature);
             }
             /**
              * makes sure that the set we are redefining is the same tree as ours and vice versa
@@ -911,7 +977,7 @@ namespace UML {
             // Shared Accessors, all of these can be used by subclasses
             T& get(ID id) const {
                 // "lock" sets owner while we search
-                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 
                 // get
                 if (!this->m_root) {
@@ -927,7 +993,7 @@ namespace UML {
             }
 
             T& get(std::string name) const {
-                SetLock myLck = m_el.lockEl(m_el);
+                [[maybe_unused]] SetLock myLck = m_el.lockEl(m_el);
 
                 if (!this->m_root) {
                     throw SetStateException("Could not find named element of name " + name + " in set!");
@@ -943,7 +1009,7 @@ namespace UML {
             }
 
             bool contains(ID id) const override {
-                SetLock myLock = m_el.m_manager->lockEl(m_el);
+                [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 
                 // get
                 if (!this->m_root) {
@@ -963,7 +1029,7 @@ namespace UML {
             }
 
             bool contains(std::string name) const {
-                SetLock myLck = m_el.lockEl(m_el);
+                [[maybe_unused]] SetLock myLck = m_el.lockEl(m_el);
 
                 if (!this->m_root) {
                     return false;
@@ -1265,6 +1331,9 @@ namespace UML {
                 ret.root = this->m_root;
                 ret.validSets = this->getAllSuperSets();
                 ret.validSets.insert(this);
+                if (!ret.curr->m_ptr) {
+                    ++ret;
+                }
                 return ret;
             }
             SetIterator<T> end() override {

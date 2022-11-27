@@ -54,12 +54,12 @@ TEST_F(SetTest, basicRemoveTest) {
     size_t numPackages = constNumPackages;
     UmlPtr<TestPackageSetElement> testEl = m.create<TestPackageSetElement>();
     std::vector<ID> packages;
-    for (int i = 0; i < numPackages; i++) {
+    for (size_t i = 0; i < numPackages; i++) {
         Package& temp = *m.create<Package>();
         packages.push_back(temp.getID());
         testEl->set.add(temp);
     }
-    for (int i = 0; i < constNumPackages / 2; i++) {
+    for (size_t i = 0; i < constNumPackages / 2; i++) {
         int index = rand() % numPackages;
         testEl->set.remove(packages[index]);
         packages.erase(std::remove(packages.begin(), packages.end(), packages[index]), packages.end()) - packages.begin();
@@ -113,6 +113,9 @@ class Test2SubsetsElement : public Element {
         Test2SubsetsElement() : Element(ElementType::ELEMENT) {
             sub.subsets(set1);
             sub.subsets(set2);
+        }
+        virtual ~Test2SubsetsElement() {
+            getID();
         }
 };
 
@@ -211,7 +214,7 @@ TEST_F(SetTest, removeFromSubsettedSequenceTest) {
 
 TEST_F(SetTest, getFromSetByNameTest) {
     BasicManager m;
-    UmlPtr<TestSubsetsElement> testEl = m.create<Test2SubsetsElement>();
+    UmlPtr<TestSubsetsElement> testEl = m.create<TestSubsetsElement>();
     Package& one = *m.create<Package>();
     Package& two = *m.create<Package>();
     one.setName("1");
@@ -225,7 +228,7 @@ TEST_F(SetTest, getFromSetByNameTest) {
     ASSERT_EQ(testEl->root.get("1"), one);
     ASSERT_EQ(testEl->root.get("2"), two);
     ASSERT_EQ(testEl->sub.get("1"), one);
-    ASSERT_THROW(testEl->sub.get("2"), ManagerStateException);
+    ASSERT_THROW(testEl->sub.get("2"), SetStateException);
 }
 
 TEST_F(SetTest, addToSetTwice) {
@@ -269,6 +272,9 @@ class RedefinedTestElement : public Element {
         CustomSet<Package, RedefinedTestElement> redefiningSet = CustomSet<Package, RedefinedTestElement>(this);
         RedefinedTestElement() : Element(ElementType::ELEMENT) {
             redefiningSet.redefines(rootSet);
+        }
+        virtual ~RedefinedTestElement() {
+            getID();
         }
 };
 

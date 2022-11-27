@@ -18,16 +18,16 @@ namespace UML {
             CustomSingleton(U& el) : PrivateSet<T, U, AdditionPolicy, RemovalPolicy>(el) {}
             CustomSingleton(U* el) : PrivateSet<T, U, AdditionPolicy, RemovalPolicy>(el) {}
             UmlPtr<T> get() const {
-                SetLock myLck = this->m_el.m_manager->lockEl(this->m_el);
+                [[maybe_unused]] SetLock myLck = this->m_el.m_manager->lockEl(this->m_el);
                 if (this->m_root) {
                     return this->m_root->m_ptr;
                 }
                 return UmlPtr<T>();
             }
             void set(T* el) {
-                SetLock myLck = this->m_el.m_manager->lockEl(this->m_el);
+                [[maybe_unused]] SetLock myLck = this->m_el.m_manager->lockEl(this->m_el);
                 if (this->m_root && (!el || el->getID() != this->m_root->m_ptr.id())) {
-                    SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
+                    [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
                     if (this->m_readOnly) {
                         throw SetStateException("Cannot remove from read only set!");
                     }
@@ -38,12 +38,12 @@ namespace UML {
                     // remove
                     this->innerRemove(this->m_root->m_ptr.id());
                     // handle opposites
-                    if (this->m_opposite.enabled()) {
-                        this->m_opposite.removeOpposite(elToRemove);
+                    if (this->m_opposite->enabled()) {
+                        this->m_opposite->removeOpposite(elToRemove);
                     }
                 }
                 if (el) {
-                    SetLock elLock = this->m_el.m_manager->lockEl(*el);
+                    [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*el);
                     if (this->m_readOnly) {
                         throw SetStateException("Cannot add to read only set!");
                     }
@@ -52,17 +52,17 @@ namespace UML {
                     el->m_node->setReference(this->m_el);
                     this->m_el.m_node->setReference(*el);
                     // handle opposites
-                    if (this->m_opposite.enabled()) {
-                        this->m_opposite.addOpposite(*el);
+                    if (this->m_opposite->enabled()) {
+                        this->m_opposite->addOpposite(*el);
                     }
                 }
             }
             void set(ID id) {
                 // "lock" elements we are editing
                 // SetLock elLock = m_el.m_manager->lockEl(el);
-                SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
+                [[maybe_unused]] SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (this->m_root && (id == ID::nullID() || id != this->m_root->m_ptr.id())) {
-                    SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
+                    [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
                     if (this->m_readOnly) {
                         throw SetStateException("Cannot remove from read only set!");
                     }
@@ -74,8 +74,8 @@ namespace UML {
                     // remove
                     this->innerRemove(this->m_root->m_ptr.id());
                     // handle opposites
-                    if (this->m_opposite.enabled()) {
-                        this->m_opposite.removeOpposite(elToRemove);
+                    if (this->m_opposite->enabled()) {
+                        this->m_opposite->removeOpposite(elToRemove);
                     }
                 }
                 if (id != ID::nullID()) {

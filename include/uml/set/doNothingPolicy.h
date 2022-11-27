@@ -5,7 +5,8 @@ namespace UML {
     class DoNothing {
         public:
             static void apply(T& el, U& me) {
-
+                (void) el;
+                (void) me;
             }
     };
 }

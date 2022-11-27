@@ -183,14 +183,14 @@ namespace UML {
                 return *it;
             }
             T& front() override {
-                SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
+                [[maybe_unused]] SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (!this->m_first) {
                     throw SetStateException("front is null");
                 }
                 return this->m_first->m_ptr->template as<T>();
             }
             T& back() override {
-                SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
+                [[maybe_unused]] SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (!this->m_last) {
                     throw SetStateException("last is null");
                 }

@@ -73,7 +73,7 @@ namespace UML {
             //     return set.getEl();
             // }
 
-            void setPtr(ElementPtr ptr, ID id, AbstractManager* manager, const ManagerNode* node) {
+            void setPtr(ElementPtr& ptr, ID id, AbstractManager* manager, const ManagerNode* node) {
                 ptr.m_id = id;
                 ptr.m_manager = manager;
                 ptr.m_node = const_cast<ManagerNode*>(node);

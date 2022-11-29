@@ -57,8 +57,8 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         ID elID = ID::fromString((node["DELETE"] ? node["DELETE"] : node["delete"]).as<std::string>());
         try {
             ThreadSafeManagerNode* node = static_cast<ThreadSafeManagerNode*>(getNode(*get(elID)));
-            std::lock_guard<std::mutex> lck(node->m_mtx);
-            std::vector<std::unique_lock<std::mutex>> referenceLocks = lockReferences(*node);
+            // std::lock_guard<std::mutex> lck(node->m_mtx);
+            // std::vector<std::unique_lock<std::mutex>> referenceLocks = lockReferences(*node);
             Element& elToErase = *node->m_managerElementMemory;
             erase(elToErase);
             log("erased element " + elID.string());
@@ -131,9 +131,9 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         data.m_manager = this;
         data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
         try {
-            ThreadSafeManagerNode& node = *static_cast<ThreadSafeManagerNode*>(getNode(*get(elID)));
-            std::lock_guard<std::mutex> lck(node.m_mtx);
-            std::vector<std::unique_lock<std::mutex>> refLcks = lockReferences(node);
+            // ThreadSafeManagerNode& node = *static_cast<ThreadSafeManagerNode*>(getNode(*get(elID)));
+            // std::lock_guard<std::mutex> lck(node.m_mtx);
+            // std::vector<std::unique_lock<std::mutex>> refLcks = lockReferences(node);
             ElementPtr el = Parsers::parseYAML(putNode["element"], data);
             if (el) {
                 // restore references

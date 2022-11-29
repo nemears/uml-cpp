@@ -42,13 +42,65 @@ TEST_F(SetTest, basicSetTest) {
         ids[i+1] = p.getID();
         testEl->set.add(p);
     }
+    size_t i = 0;
     for (const ID id : ids) {
-        ASSERT_TRUE(testEl->set.contains(id));
+        ASSERT_TRUE(testEl->set.contains(id)) << "index at " << i;
         ASSERT_EQ(testEl->set.get(id).getID(), id);
+        i++;
     }
 }
 
 TEST_F(SetTest, basicRemoveTest) {
+    BasicManager m;
+    UmlPtr<TestPackageSetElement> testEl = m.create<TestPackageSetElement>();
+    PackagePtr pckg1 = m.create<Package>();
+    PackagePtr pckg2 = m.create<Package>();
+    PackagePtr pckg3 = m.create<Package>();
+    PackagePtr pckg4 = m.create<Package>();
+    PackagePtr pckg5 = m.create<Package>();
+    testEl->set.add(pckg1);
+    testEl->set.add(pckg2);
+    testEl->set.add(pckg3);
+    testEl->set.add(pckg4);
+    testEl->set.add(pckg5);
+    testEl->set.remove(pckg1);
+    ASSERT_EQ(testEl->set.size(), 4);
+    ASSERT_FALSE(testEl->set.contains(pckg1));
+    ASSERT_TRUE(testEl->set.contains(pckg2));
+    ASSERT_TRUE(testEl->set.contains(pckg3));
+    ASSERT_TRUE(testEl->set.contains(pckg4));
+    ASSERT_TRUE(testEl->set.contains(pckg5));
+    testEl->set.remove(pckg5);
+    ASSERT_EQ(testEl->set.size(), 3);
+    ASSERT_FALSE(testEl->set.contains(pckg1));
+    ASSERT_TRUE(testEl->set.contains(pckg2));
+    ASSERT_TRUE(testEl->set.contains(pckg3));
+    ASSERT_TRUE(testEl->set.contains(pckg4));
+    ASSERT_FALSE(testEl->set.contains(pckg5));
+    testEl->set.remove(pckg2);
+    ASSERT_EQ(testEl->set.size(), 2);
+    ASSERT_FALSE(testEl->set.contains(pckg1));
+    ASSERT_FALSE(testEl->set.contains(pckg2));
+    ASSERT_TRUE(testEl->set.contains(pckg3));
+    ASSERT_TRUE(testEl->set.contains(pckg4));
+    ASSERT_FALSE(testEl->set.contains(pckg5));
+    testEl->set.remove(pckg4);
+    ASSERT_EQ(testEl->set.size(), 1);
+    ASSERT_FALSE(testEl->set.contains(pckg1));
+    ASSERT_FALSE(testEl->set.contains(pckg2));
+    ASSERT_TRUE(testEl->set.contains(pckg3));
+    ASSERT_FALSE(testEl->set.contains(pckg4));
+    ASSERT_FALSE(testEl->set.contains(pckg5));
+    testEl->set.remove(pckg3);
+    ASSERT_EQ(testEl->set.size(), 0);
+    ASSERT_FALSE(testEl->set.contains(pckg1));
+    ASSERT_FALSE(testEl->set.contains(pckg2));
+    ASSERT_FALSE(testEl->set.contains(pckg3));
+    ASSERT_FALSE(testEl->set.contains(pckg4));
+    ASSERT_FALSE(testEl->set.contains(pckg5));
+}
+
+TEST_F(SetTest, basicRandomRemoveTest) {
     BasicManager m;
     const size_t constNumPackages = 8;
     size_t numPackages = constNumPackages;
@@ -583,6 +635,9 @@ class TestTwoRootSubSetElement : public Element {
             sub.subsets(root1);
             sub.subsets(root2);
         }
+        virtual ~TestTwoRootSubSetElement() {
+            getID();
+        }
 };
 
 TEST_F(SetTest, multiRootWithinRootTest) {
@@ -863,7 +918,15 @@ TEST_F(SetTest, tripleRemovePlacholder) {
     pckg3.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
 
     testEl->set1.add(pckg1);
+    ASSERT_EQ(testEl->root.size(), 1);
+    ASSERT_EQ(testEl->set1.size(), 1);
+    ASSERT_TRUE(testEl->root.contains(pckg1));
+    ASSERT_TRUE(testEl->set1.contains(pckg1));
     testEl->set2.add(pckg2);
+    ASSERT_EQ(testEl->root.size(), 2);
+    ASSERT_EQ(testEl->set2.size(), 1);
+    ASSERT_TRUE(testEl->root.contains(pckg2));
+    ASSERT_TRUE(testEl->set2.contains(pckg2));
     testEl->set3.add(pckg3);
 
     ASSERT_EQ(testEl->root.size(), 3);

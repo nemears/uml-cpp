@@ -20,6 +20,10 @@ namespace UML {
             }
             
             void reindexNoReplace(ID oldID, ID newID, ManagerNode* newDisc) {
+                newDisc->m_managerElementMemory->m_node = newDisc;
+                for (auto& ptr : newDisc->m_ptrs) {
+                    ptr->reindex(newID, newDisc->m_managerElementMemory);
+                }
                 for (auto& ref : newDisc->m_references) {
                     if (!ref.second.node) {
                         // reference is relased currently with no ptrs
@@ -33,10 +37,6 @@ namespace UML {
                         get(ref.first);
                     }
                     ref.second.node->m_managerElementMemory->referenceReindexed(oldID, newID);
-                }
-                newDisc->m_managerElementMemory->m_node = newDisc;
-                for (auto& ptr : newDisc->m_ptrs) {
-                    ptr->reindex(newID, newDisc->m_managerElementMemory);
                 }
             }
 

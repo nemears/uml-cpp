@@ -156,12 +156,8 @@ namespace UML {
             bool enabled() override {
                 return false;
             }
-            void addOpposite(T& el) override {
-                el.getID();
-            }
-            void removeOpposite(T& el) override {
-                el.getID();
-            }
+            void addOpposite(__attribute__((unused)) T& el) override {}
+            void removeOpposite(__attribute__((unused)) T& el) override {}
     };
 
     namespace Parsers {
@@ -233,7 +229,7 @@ namespace UML {
                     }
                     return ret;
                 }
-            };
+            }
 
             SetNode* search(std::string name, SetNode* node) const {
                 if (node->m_ptr->isSubClassOf(ElementType::NAMED_ELEMENT)) {
@@ -385,7 +381,9 @@ namespace UML {
                                 } else if (allSubSets.count(currNode->m_right->set) || currNode->m_right->set == this) {
                                     currNode = currNode->m_right;
                                 } else {
-                                    throw SetStateException("INTERNAL ERROR please report! Could not navigate through divider node");
+                                    // neither is a perfect match choose left (// TODO make better decision on side for divider than just left, see if left or right is already a divider node)
+                                    currNode = currNode->m_left;
+                                    // throw SetStateException("INTERNAL ERROR please report! Could not navigate through divider node");
                                 }
                             }
                         }
@@ -413,6 +411,11 @@ namespace UML {
                                 }
                             }
                             dividerNode->set = dividerNodeScope;
+                            dividerNode->m_parent = currNode->m_parent;
+                            if (dividerNode->m_parent) {
+                                // adjust parent
+                                dividerNode->m_parent->m_left == currNode ? dividerNode->m_parent->m_left = dividerNode : dividerNode->m_parent->m_right = dividerNode;
+                            }
                             currNode->m_parent = dividerNode;
                             dividerNode->m_left = currNode;
 
@@ -489,7 +492,7 @@ namespace UML {
                         }
 
                         // two children, pick side to recurse
-                        if (node->m_ptr.id() > currNode->m_left->m_ptr.id()) {
+                        if (node->m_ptr.id() > currNode->m_right->m_ptr.id()) {
                             currNode = currNode->m_left;
                         } else {
                             currNode = currNode->m_right;
@@ -634,22 +637,47 @@ namespace UML {
                         } else {
                             if (node->m_left) {
                                 node->m_left->m_parent = 0;
-                                if (node->m_right) {
-                                    // place right
-                                    node->m_right->m_parent = 0;
-                                    SetNode* currNode = node->m_left;
-                                    while (currNode) {
-                                        if (!currNode->m_left) {
+
+                                // place right in left
+                                SetNode* currNode = node->m_left;
+                                while (currNode) {
+                                    if (!currNode->m_left) {
+                                        currNode->m_left = node->m_right;
+                                        break;
+                                    } else if (!currNode->m_right) {
+                                        if (node->m_right->m_ptr.id() > currNode->m_left->m_ptr.id()) {
+                                            currNode->m_right = currNode->m_left;
                                             currNode->m_left = node->m_right;
-                                            node->m_right->m_parent = currNode;
-                                        } else if (!currNode->m_right) {
+                                        } else {
                                             currNode->m_right = node->m_right;
-                                            node->m_right->m_parent = currNode;
-                                        } else if (node->m_right->m_ptr.id() > currNode->m_right->m_ptr.id()) {
+                                        }
+                                        node->m_right->m_parent = currNode;
+                                        break;
+                                    } else {
+                                        if (node->m_right->m_ptr.id() > currNode->m_right->m_ptr.id()) {
                                             currNode = currNode->m_left;
                                         } else {
                                             currNode = currNode->m_right;
                                         }
+                                    }
+                                }
+
+                                // balance the tree
+                                if (node->m_right && !node->m_left->m_right) {
+                                    currNode = node->m_left;
+                                    SetNode* nodeToMove = node->m_right->m_right ? node->m_right->m_right : node->m_right->m_left;
+                                    while (nodeToMove) {
+                                        currNode->m_right = nodeToMove;
+                                        SetNode* nodeToMoveParent = nodeToMove->m_parent;
+                                        if (nodeToMoveParent->m_right == nodeToMove) {
+                                            nodeToMoveParent->m_right = 0;
+                                        } else {
+                                            nodeToMoveParent->m_left = nodeToMoveParent->m_right;
+                                            nodeToMoveParent->m_right = 0;
+                                        }
+                                        nodeToMove->m_parent = currNode;
+                                        currNode = nodeToMoveParent;
+                                        nodeToMove = currNode->m_left->m_right;
                                     }
                                 }
                             }
@@ -804,6 +832,7 @@ namespace UML {
                 if (!node) {
                     throw SetStateException("Could not find el with id of " + id.string() + "in set");
                 }
+                this->m_size--;
                 if (this->m_root == node) {
                     this->m_root = 0;
                 }
@@ -865,6 +894,12 @@ namespace UML {
             virtual ~PrivateSet() {
                 delete m_opposite;
                 if (!this->m_rootRedefinedSet) {
+                    for (auto superSet : this->m_superSets) {
+                        superSet->m_subSets.erase(std::find(superSet->m_subSets.begin(), superSet->m_subSets.end(), this));
+                    }
+                    for (auto subSet : this->m_subSets) {
+                        subSet->m_superSets.erase(std::find(subSet->m_superSets.begin(), subSet->m_superSets.end(), this));
+                    }
                     return;
                 }
                 [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el); 
@@ -1244,6 +1279,7 @@ namespace UML {
         public:
             CustomSet(U* el) : PrivateSet<T,U, AdditionPolicy, RemovalPolicy>(el) {}
             CustomSet(U& el) : PrivateSet<T,U, AdditionPolicy, RemovalPolicy>(el) {}
+            virtual ~CustomSet() = default;
             bool contains(ID id) const override {
                 return PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::contains(id);
             }
@@ -1305,7 +1341,11 @@ namespace UML {
                 PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::add(id);
             }
             void add(UmlPtr<T> el) override {
-                PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::add(el.id());
+                if (el.loaded()) {
+                    PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::add(*el);
+                } else {
+                    PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::add(el.id());
+                }
             }
             void add(T& el) override {
                 PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::add(el);
@@ -1327,6 +1367,9 @@ namespace UML {
             }
             SetIterator<T> begin() override {
                 SetIterator<T> ret;
+                if (!this->m_root) {
+                    return ret;
+                }
                 ret.curr = this->m_root;
                 ret.root = this->m_root;
                 ret.validSets = this->getAllSuperSets();

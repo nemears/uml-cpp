@@ -29,9 +29,9 @@ void Association::RemoveMemberEndPolicy::apply(Property& el, Association& me) {
     }
 }
 
-void Association::referenceReindexed(ID oldID, ID newID) {
-    Classifier::referenceReindexed(oldID, newID);
-    Relationship::referenceReindexed(oldID, newID);
+void Association::referenceReindexed(ID newID) {
+    Classifier::referenceReindexed(newID);
+    Relationship::referenceReindexed(newID);
 }
 
 void Association::restoreReferences() {

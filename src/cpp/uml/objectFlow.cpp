@@ -21,8 +21,8 @@ TypedSet<Behavior, ObjectFlow>& ObjectFlow::getSelectionSingleton() {
     return m_selection;
 }
 
-void ObjectFlow::referenceReindexed(ID oldID, ID newID) {
-    ActivityEdge::referenceReindexed(oldID, newID);
+void ObjectFlow::referenceReindexed(ID newID) {
+    ActivityEdge::referenceReindexed(newID);
     m_transformation.reindex(newID);
     m_selection.reindex(newID);
 }

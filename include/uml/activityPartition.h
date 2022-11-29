@@ -23,7 +23,7 @@ namespace UML {
             TypedSet<Element, ActivityPartition>& getRepresentsSingleton();
             TypedSet<Activity, ActivityPartition>& getInActivitySingleton();
             TypedSet<ActivityPartition, ActivityPartition>& getSuperPartitionSingleton();
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             ActivityPartition();

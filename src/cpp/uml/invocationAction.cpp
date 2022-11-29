@@ -20,8 +20,8 @@ TypedSet<Port, InvocationAction>& InvocationAction::getOnPortSingleton() {
     return m_onPort;
 }
 
-void InvocationAction::referenceReindexed(ID oldID, ID newID) {
-    Action::referenceReindexed(oldID, newID);
+void InvocationAction::referenceReindexed(ID newID) {
+    Action::referenceReindexed(newID);
     m_onPort.reindex(newID);
 }
 

@@ -33,7 +33,7 @@ namespace UML {
             CustomSingleton<DataType, Operation> m_dataType = CustomSingleton<DataType, Operation>(this);
             CustomSingleton<Interface, Operation> m_interface = CustomSingleton<Interface, Operation>(this);
             CustomOrderedSet<Parameter, Operation> m_operationOwnedParameters = CustomOrderedSet<Parameter, Operation>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
             TypedSet<Type, Operation>& getTypeSingleton();

@@ -24,7 +24,7 @@ namespace UML {
             CustomOrderedSet<Property, Association> m_ownedEnds = CustomOrderedSet<Property, Association>(this);
             CustomSet<Property, Association> m_navigableOwnedEnds = CustomSet<Property, Association>(this);
             CustomSet<Type, Association> m_endTypes = CustomSet<Type, Association>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void restoreReferences() override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;

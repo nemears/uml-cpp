@@ -20,7 +20,7 @@ namespace UML {
         protected:
             CustomSingleton<TemplateParameter, ParameterableElement> m_templateParameter = CustomSingleton<TemplateParameter, ParameterableElement>(this);
             CustomSingleton<TemplateParameter, ParameterableElement> m_owningTemplateParameter = CustomSingleton<TemplateParameter, ParameterableElement>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
             TypedSet<TemplateParameter, ParameterableElement>& getTemplateParameterSingleton();

@@ -16,8 +16,8 @@
 
 using namespace UML;
 
-void InstanceSpecification::referenceReindexed(ID oldID, ID newID) {
-    PackageableElement::referenceReindexed(oldID, newID);
+void InstanceSpecification::referenceReindexed(ID newID) {
+    PackageableElement::referenceReindexed(newID);
     m_classifiers.reindex(newID);
 }
 

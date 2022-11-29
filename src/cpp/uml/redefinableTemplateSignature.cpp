@@ -83,9 +83,9 @@ TypedSet<Classifier, RedefinableTemplateSignature>& RedefinableTemplateSignature
     return m_classifier;
 }
 
-void RedefinableTemplateSignature::referenceReindexed(ID oldID, ID newID) {
-    RedefinableElement::referenceReindexed(oldID, newID);
-    TemplateSignature::referenceReindexed(oldID, newID);
+void RedefinableTemplateSignature::referenceReindexed(ID newID) {
+    RedefinableElement::referenceReindexed(newID);
+    TemplateSignature::referenceReindexed(newID);
 }
 
 void RedefinableTemplateSignature::referenceErased(ID id) {

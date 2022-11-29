@@ -15,8 +15,8 @@
 
 using namespace UML;
 
-void Slot::referenceReindexed(ID oldID, ID newID) {
-    Element::referenceReindexed(oldID, newID);
+void Slot::referenceReindexed(ID newID) {
+    Element::referenceReindexed(newID);
     m_definingFeature.reindex(newID);
 }
 

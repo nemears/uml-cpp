@@ -24,7 +24,7 @@ namespace UML {
             CustomSingleton<TemplateBinding, TemplateParameterSubstitution> m_templateBinding = CustomSingleton<TemplateBinding, TemplateParameterSubstitution>(this);
             CustomSingleton<ParameterableElement, TemplateParameterSubstitution> m_actual = CustomSingleton<ParameterableElement, TemplateParameterSubstitution>(this);
             CustomSingleton<ParameterableElement, TemplateParameterSubstitution> m_ownedActual = CustomSingleton<ParameterableElement, TemplateParameterSubstitution>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             TypedSet<TemplateParameter, TemplateParameterSubstitution>& getFormalSingleton();

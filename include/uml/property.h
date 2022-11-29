@@ -66,7 +66,7 @@ namespace UML{
             CustomSingleton<Interface, Property> m_interface = CustomSingleton<Interface, Property>(this);
             CustomSet<Property, Property, AddRedefinedPropertyPolicy, RemoveRedefinedPropertyPolicy> m_redefinedProperties = CustomSet<Property, Property, AddRedefinedPropertyPolicy, RemoveRedefinedPropertyPolicy>(this);
             void setComposite(bool composite);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
             TypedSet<ValueSpecification, Property>& getDefaultValueSingleton();

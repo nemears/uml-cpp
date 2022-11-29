@@ -26,7 +26,7 @@ namespace UML {
             CustomSet<ActivityPartition, ActivityNode> m_inPartitions = CustomSet<ActivityPartition, ActivityNode>(this);
             CustomSet<InterruptibleActivityRegion, ActivityNode> m_interruptibleRegions = CustomSet<InterruptibleActivityRegion, ActivityNode>(this);
             TypedSet<Activity, ActivityNode>& getActivitySingleton();
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
         public:

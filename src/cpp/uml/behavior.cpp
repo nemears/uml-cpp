@@ -11,8 +11,8 @@
 
 using namespace UML;
 
-void Behavior::referenceReindexed(ID oldID, ID newID) {
-    Class::referenceReindexed(oldID, newID);
+void Behavior::referenceReindexed(ID newID) {
+    Class::referenceReindexed(newID);
     m_specification.reindex(newID);
 }
 

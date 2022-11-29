@@ -11,9 +11,9 @@
 
 using namespace UML;
 
-void Operation::referenceReindexed(ID oldID, ID newID) {
-    BehavioralFeature::referenceReindexed(oldID, newID);
-    ParameterableElement::referenceReindexed(oldID, newID);
+void Operation::referenceReindexed(ID newID) {
+    BehavioralFeature::referenceReindexed(newID);
+    ParameterableElement::referenceReindexed(newID);
 }
 
 void Operation::referenceErased(ID id) {

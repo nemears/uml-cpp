@@ -106,8 +106,8 @@ void Port::restoreReference(Element* el) {
     }
 }
 
-void Port::referenceReindexed(ID oldID, ID newID) {
-    Property::referenceReindexed(oldID, newID);
+void Port::referenceReindexed(ID newID) {
+    Property::referenceReindexed(newID);
     m_required.reindex(newID);
     m_provided.reindex(newID);
 }

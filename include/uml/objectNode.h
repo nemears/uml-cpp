@@ -29,7 +29,7 @@ namespace UML {
             ObjectNodeOrderingKind m_ordering = ObjectNodeOrderingKind::FIFO;
             TypedSet<ValueSpecification, ObjectNode>& getUpperBoundSingleton();
             TypedSet<Behavior, ObjectNode>& getSelectionSingleton();
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             ObjectNode();

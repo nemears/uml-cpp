@@ -40,9 +40,9 @@ void Property::RemoveRedefinedPropertyPolicy::apply(Property& el, Property& me) 
     }
 }
 
-void Property::referenceReindexed(ID oldID, ID newID) {
-    StructuralFeature::referenceReindexed(oldID, newID);
-    ConnectableElement::referenceReindexed(oldID, newID);
+void Property::referenceReindexed(ID newID) {
+    StructuralFeature::referenceReindexed(newID);
+    ConnectableElement::referenceReindexed(newID);
     m_association.reindex(newID);
 }
 

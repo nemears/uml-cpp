@@ -11,8 +11,8 @@
 
 using namespace UML;
 
-void ParameterSet::referenceReindexed(ID oldID, ID newID) {
-    NamedElement::referenceReindexed(oldID, newID);
+void ParameterSet::referenceReindexed(ID newID) {
+    NamedElement::referenceReindexed(newID);
     m_parameters.reindex(newID);
 }
 

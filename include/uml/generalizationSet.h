@@ -19,7 +19,7 @@ namespace UML {
             bool m_disjoint = false;
             CustomSingleton<Classifier, GeneralizationSet> m_powerType = CustomSingleton<Classifier, GeneralizationSet>(this);
             CustomSet<Generalization, GeneralizationSet> m_generalizations = CustomSet<Generalization, GeneralizationSet>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<Classifier, GeneralizationSet>& getPowerTypeSingleton();
             void init();

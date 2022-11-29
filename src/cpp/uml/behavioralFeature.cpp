@@ -9,9 +9,9 @@
 
 using namespace UML;
 
-void BehavioralFeature::referenceReindexed(ID oldID, ID newID) {
-    Feature::referenceReindexed(oldID, newID);
-    Namespace::referenceReindexed(oldID, newID);
+void BehavioralFeature::referenceReindexed(ID newID) {
+    Feature::referenceReindexed(newID);
+    Namespace::referenceReindexed(newID);
     m_methods.reindex(newID);
     m_raisedExceptions.reindex(newID);
 }

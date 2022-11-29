@@ -9,9 +9,9 @@
 
 using namespace UML;
 
-void ConnectableElement::referenceReindexed(ID oldID, ID newID) {
-    TypedElement::referenceReindexed(oldID, newID);
-    ParameterableElement::referenceReindexed(oldID, newID);
+void ConnectableElement::referenceReindexed(ID newID) {
+    TypedElement::referenceReindexed(newID);
+    ParameterableElement::referenceReindexed(newID);
     m_ends.reindex(newID);
 }
 

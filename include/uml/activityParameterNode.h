@@ -15,7 +15,7 @@ namespace UML {
         protected:
             CustomSingleton<Parameter, ActivityParameterNode> m_parameter = CustomSingleton<Parameter, ActivityParameterNode>(this);
             TypedSet<Parameter, ActivityParameterNode>& getParameterSingleton();
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             ActivityParameterNode();

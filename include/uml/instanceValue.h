@@ -14,7 +14,7 @@ namespace UML {
 
         protected:
             CustomSingleton<InstanceSpecification, InstanceValue> m_instance = CustomSingleton<InstanceSpecification, InstanceValue>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
             TypedSet<InstanceSpecification, InstanceValue>& getInstanceSingleton();

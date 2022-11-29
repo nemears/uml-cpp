@@ -15,7 +15,7 @@ namespace UML {
         protected:
             CustomSet<Constraint, ParameterSet> m_conditions = CustomSet<Constraint, ParameterSet>(this);
             CustomSet<Parameter, ParameterSet> m_parameters = CustomSet<Parameter, ParameterSet>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             ParameterSet();

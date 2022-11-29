@@ -9,8 +9,8 @@
 
 using namespace UML;
 
-void InstanceValue::referenceReindexed(ID oldID, ID newID) {
-    ValueSpecification::referenceReindexed(oldID, newID);
+void InstanceValue::referenceReindexed(ID newID) {
+    ValueSpecification::referenceReindexed(newID);
     m_instance.reindex(newID);
 }
 

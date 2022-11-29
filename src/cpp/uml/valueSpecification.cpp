@@ -10,8 +10,8 @@
 
 using namespace UML;
 
-void ValueSpecification::referenceReindexed(ID oldID, ID newID) {
-    PackageableElement::referenceReindexed(oldID, newID);
+void ValueSpecification::referenceReindexed(ID newID) {
+    PackageableElement::referenceReindexed(newID);
     // TODO type
 }
 

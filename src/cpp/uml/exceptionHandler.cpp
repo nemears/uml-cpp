@@ -30,8 +30,8 @@ TypedSet<ObjectNode, ExceptionHandler>& ExceptionHandler::getExceptionInputSingl
     return m_exceptionInput;
 }
 
-void ExceptionHandler::referenceReindexed(ID oldID, ID newID) {
-    Element::referenceReindexed(oldID, newID);
+void ExceptionHandler::referenceReindexed(ID newID) {
+    Element::referenceReindexed(newID);
     m_handlerBody.reindex(newID);
     m_exceptionInput.reindex(newID);
     m_exceptionTypes.reindex(newID);

@@ -68,7 +68,7 @@ namespace UML {
             CustomSingleton<ClassifierTemplateParameter, Classifier> m_classifierTemplateParameter = CustomSingleton<ClassifierTemplateParameter, Classifier>(this);
             TypedSet<RedefinableTemplateSignature, Classifier>& getOwnedTemplateSignatureSingleton();
             TypedSet<ClassifierTemplateParameter, Classifier>& getTemplateParameterSingleton();
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void restoreReferences() override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;

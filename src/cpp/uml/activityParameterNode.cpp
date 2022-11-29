@@ -18,8 +18,8 @@ TypedSet<Parameter, ActivityParameterNode>& ActivityParameterNode::getParameterS
     return m_parameter;
 }
 
-void ActivityParameterNode::referenceReindexed(ID oldID, ID newID) {
-    ObjectNode::referenceReindexed(oldID, newID);
+void ActivityParameterNode::referenceReindexed(ID newID) {
+    ObjectNode::referenceReindexed(newID);
     m_parameter.reindex(newID);
 }
 

@@ -2,8 +2,8 @@
 
 using namespace UML;
 
-void Relationship::referenceReindexed(ID oldID, ID newID) {
-    Element::referenceReindexed(oldID, newID);
+void Relationship::referenceReindexed(ID newID) {
+    Element::referenceReindexed(newID);
     m_relatedElements.reindex(newID);
 }
 

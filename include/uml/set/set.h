@@ -882,7 +882,9 @@ namespace UML {
             }
 
             void eraseElement(ID id) {
-                remove(id);
+                if (contains(id)) { // TODO we are searching set twice, can be quicker
+                    removeReadOnly(id);
+                }
             }
         public:
             PrivateSet(U& el) : m_el(el) {

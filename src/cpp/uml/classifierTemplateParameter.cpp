@@ -18,8 +18,8 @@ TypedSet<Classifier, ClassifierTemplateParameter>& ClassifierTemplateParameter::
     return m_classifierParameteredElement;
 }
 
-void ClassifierTemplateParameter::referenceReindexed(ID oldID, ID newID) {
-    TemplateParameter::referenceReindexed(oldID, newID);
+void ClassifierTemplateParameter::referenceReindexed(ID newID) {
+    TemplateParameter::referenceReindexed(newID);
     m_constrainingClassifiers.reindex(newID);
 }
 

@@ -16,7 +16,7 @@ namespace UML {
         protected:
             CustomSingleton<Classifier, Feature> m_featuringClassifier = CustomSingleton<Classifier, Feature>(this);
             bool m_static = false;
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<Classifier, Feature>& getFeaturingClassifierSingleton();
             void init();

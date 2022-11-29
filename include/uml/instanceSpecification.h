@@ -25,7 +25,7 @@ namespace UML{
             CustomSet<Classifier, InstanceSpecification> m_classifiers = CustomSet<Classifier, InstanceSpecification>(this);
             CustomSet<Slot, InstanceSpecification> m_slots = CustomSet<Slot, InstanceSpecification>(this);
             CustomSingleton <ValueSpecification, InstanceSpecification> m_specification = CustomSingleton<ValueSpecification, InstanceSpecification>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<ValueSpecification, InstanceSpecification>& getSpecificationSingleton();
             void init();

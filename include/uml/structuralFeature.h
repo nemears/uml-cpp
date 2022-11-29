@@ -9,7 +9,7 @@ namespace UML {
     class StructuralFeature : virtual public TypedElement, public MultiplicityElement, public Feature {
         protected:
             bool m_readOnly = false;
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
             StructuralFeature();

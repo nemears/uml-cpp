@@ -93,9 +93,9 @@ TypedSet<ClassifierTemplateParameter, Classifier>& Classifier::getTemplateParame
 }
 
 
-void Classifier::referenceReindexed(ID oldID, ID newID) {
-    Namespace::referenceReindexed(oldID, newID);
-    PackageableElement::referenceReindexed(oldID, newID); // todo non super call meth
+void Classifier::referenceReindexed(ID newID) {
+    Namespace::referenceReindexed(newID);
+    PackageableElement::referenceReindexed(newID); // todo non super call meth
     m_generals.reindex(newID);
     m_powerTypeExtent.reindex(newID);
 }

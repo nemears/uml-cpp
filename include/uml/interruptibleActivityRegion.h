@@ -11,7 +11,7 @@ namespace UML {
         protected:
             CustomSet<ActivityNode, InterruptibleActivityRegion> m_nodes = CustomSet<ActivityNode, InterruptibleActivityRegion>(this);
             CustomSet<ActivityEdge, InterruptibleActivityRegion> m_interruptingEdges = CustomSet<ActivityEdge, InterruptibleActivityRegion>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             InterruptibleActivityRegion();

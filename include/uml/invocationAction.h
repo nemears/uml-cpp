@@ -14,7 +14,7 @@ namespace UML {
             CustomSingleton<Port, InvocationAction> m_onPort = CustomSingleton<Port, InvocationAction>(this);
             TypedSet<InputPin, InvocationAction>& getArgumentsSet();
             TypedSet<Port, InvocationAction>& getOnPortSingleton();
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             InvocationAction();

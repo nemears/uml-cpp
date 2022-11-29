@@ -11,7 +11,7 @@ namespace UML {
     class ConnectableElement : virtual public TypedElement, virtual public ParameterableElement {
         protected:
             CustomSet<ConnectorEnd, ConnectableElement> m_ends = CustomSet<ConnectorEnd, ConnectableElement>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             ConnectableElement();

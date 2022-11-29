@@ -15,8 +15,8 @@ TypedSet<Signal, Reception>& Reception::getSignalSingleton() {
     return m_signal;
 }
 
-void Reception::referenceReindexed(ID oldID, ID newID) {
-    BehavioralFeature::referenceReindexed(oldID, newID);
+void Reception::referenceReindexed(ID newID) {
+    BehavioralFeature::referenceReindexed(newID);
     m_signal.reindex(newID);
 }
 

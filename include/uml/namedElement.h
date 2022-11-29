@@ -46,7 +46,7 @@ namespace UML{
             CustomSet<Dependency, NamedElement, DoNothing<Dependency,NamedElement>, DoNothing<Dependency,NamedElement>>* m_clientDependencies;
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             void updateQualifiedName(std::string absoluteNamespace);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<Namespace, NamedElement>& getNamespaceSingleton();
             void init();

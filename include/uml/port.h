@@ -33,7 +33,7 @@ namespace UML {
             bool m_isConjugated = false;
             bool m_isService = true;
             void restoreReference(Element* el) override;
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             Port();

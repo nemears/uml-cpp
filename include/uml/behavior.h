@@ -15,7 +15,7 @@ namespace UML {
         protected:
             CustomSet<Parameter, Behavior> m_ownedParameters = CustomSet<Parameter, Behavior>(this);
             CustomSingleton<BehavioralFeature, Behavior> m_specification = CustomSingleton<BehavioralFeature, Behavior>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<BehavioralFeature, Behavior>& getSpecificationSingleton();
             void init();

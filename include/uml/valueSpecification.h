@@ -9,7 +9,7 @@ namespace UML {
     class ValueSpecification : public TypedElement , public PackageableElement {
 
         protected:
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             ValueSpecification();

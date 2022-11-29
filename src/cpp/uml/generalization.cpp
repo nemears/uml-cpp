@@ -26,8 +26,8 @@ void Generalization::RemoveGeneralPolicy::apply(Classifier& el, Generalization& 
     // el.removeReference(m_el.getID());
 }
 
-void Generalization::referenceReindexed(ID oldID, ID newID) {
-    DirectedRelationship::referenceReindexed(oldID, newID);
+void Generalization::referenceReindexed(ID newID) {
+    DirectedRelationship::referenceReindexed(newID);
     m_generalizationSets.reindex(newID);
 }
 

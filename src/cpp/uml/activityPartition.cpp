@@ -25,8 +25,8 @@ TypedSet<ActivityPartition, ActivityPartition>& ActivityPartition::getSuperParti
     return m_superPartition;
 }
 
-void ActivityPartition::referenceReindexed(ID oldID, ID newID) {
-    ActivityGroup::referenceReindexed(oldID, newID);
+void ActivityPartition::referenceReindexed(ID newID) {
+    ActivityGroup::referenceReindexed(newID);
     m_represents.reindex(newID);
 }
 

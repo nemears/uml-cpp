@@ -20,8 +20,8 @@ TypedSet<Behavior, CallBehaviorAction>& CallBehaviorAction::getBehaviorSingleton
     return m_behavior;
 }
 
-void CallBehaviorAction::referenceReindexed(ID oldID, ID newID) {
-    CallAction::referenceReindexed(oldID, newID);
+void CallBehaviorAction::referenceReindexed(ID newID) {
+    CallAction::referenceReindexed(newID);
     m_behavior.reindex(newID);
 }
 

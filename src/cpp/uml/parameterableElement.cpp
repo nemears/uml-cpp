@@ -4,7 +4,7 @@
 
 using namespace UML;
 
-void ParameterableElement::referenceReindexed(ID oldID, ID newID) {
+void ParameterableElement::referenceReindexed(ID newID) {
     m_templateParameter.reindex(newID);
 }
 

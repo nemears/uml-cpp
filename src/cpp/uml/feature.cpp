@@ -12,9 +12,9 @@
 
 using namespace UML;
 
-void Feature::referenceReindexed(ID oldID, ID newID) {
-    RedefinableElement::referenceReindexed(oldID, newID);
-    NamedElement::referenceReindexed(oldID, newID);
+void Feature::referenceReindexed(ID newID) {
+    RedefinableElement::referenceReindexed(newID);
+    NamedElement::referenceReindexed(newID);
     m_featuringClassifier.reindex(newID);
 }
 

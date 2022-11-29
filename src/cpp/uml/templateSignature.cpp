@@ -6,8 +6,8 @@
 
 using namespace UML;
 
-void TemplateSignature::referenceReindexed(ID oldID, ID newID) {
-    Element::referenceReindexed(oldID, newID);
+void TemplateSignature::referenceReindexed(ID newID) {
+    Element::referenceReindexed(newID);
     m_parameters.reindex(newID);
 }
 

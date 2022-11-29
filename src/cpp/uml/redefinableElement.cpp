@@ -12,7 +12,7 @@
 using namespace UML;
 
 
-void RedefinableElement::referenceReindexed(ID oldID, ID newID) {
+void RedefinableElement::referenceReindexed(ID newID) {
     m_redefinedElement.reindex(newID);
     m_redefinitionContext.reindex(newID);
 }

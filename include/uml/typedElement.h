@@ -15,7 +15,7 @@ namespace UML{
 
         protected:
             CustomSingleton<Type, TypedElement> m_type = CustomSingleton<Type, TypedElement>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
             TypedSet<Type, TypedElement>& getTypeSingleton();

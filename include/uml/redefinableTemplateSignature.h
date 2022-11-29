@@ -26,7 +26,7 @@ namespace UML {
             CustomSet<RedefinableTemplateSignature, RedefinableTemplateSignature, AddExtendedSignaturePolicy, RemoveExtendedSignaturePolicy> m_extendedSignatures = CustomSet<RedefinableTemplateSignature, RedefinableTemplateSignature, AddExtendedSignaturePolicy, RemoveExtendedSignaturePolicy>(this);
             CustomSet<TemplateParameter, RedefinableTemplateSignature> m_inheritedParameters = CustomSet<TemplateParameter, RedefinableTemplateSignature>(this);
             TypedSet<Classifier, RedefinableTemplateSignature>& getClassifierSingleton();
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             RedefinableTemplateSignature();

@@ -41,7 +41,7 @@ void Element::removeReference(ID referencing) {
     }
 }
 
-void Element::referenceReindexed(ID oldID, ID newID) {
+void Element::referenceReindexed(ID newID) {
     m_ownedElements->reindex(newID);
     m_owner->reindex(newID);
     m_ownedComments->reindex(newID);

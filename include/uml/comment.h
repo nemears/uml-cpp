@@ -12,7 +12,7 @@ namespace UML {
         protected:
             CustomSet<Element, Comment> m_annotatedElements = CustomSet<Element, Comment>(this);
             std::string m_body; // TODO move to literal string?
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             Comment();

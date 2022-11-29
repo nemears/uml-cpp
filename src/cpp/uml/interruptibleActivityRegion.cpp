@@ -12,8 +12,8 @@
 
 using namespace UML;
 
-void InterruptibleActivityRegion::referenceReindexed(ID oldID, ID newID) {
-    ActivityGroup::referenceReindexed(oldID, newID);
+void InterruptibleActivityRegion::referenceReindexed(ID newID) {
+    ActivityGroup::referenceReindexed(newID);
     m_interruptingEdges.reindex(newID);
 }
 

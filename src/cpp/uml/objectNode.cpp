@@ -21,9 +21,9 @@ TypedSet<Behavior, ObjectNode>& ObjectNode::getSelectionSingleton() {
     return m_selection;
 }
 
-void ObjectNode::referenceReindexed(ID oldID, ID newID) {
-    ActivityNode::referenceReindexed(oldID, newID);
-    TypedElement::referenceReindexed(oldID, newID);
+void ObjectNode::referenceReindexed(ID newID) {
+    ActivityNode::referenceReindexed(newID);
+    TypedElement::referenceReindexed(newID);
     m_selection.reindex(newID);
 }
 

@@ -18,7 +18,7 @@ namespace UML {
             CustomSingleton<Behavior, ObjectFlow> m_selection = CustomSingleton<Behavior, ObjectFlow>(this);
             TypedSet<Behavior, ObjectFlow>& getTransformationSingleton();
             TypedSet<Behavior, ObjectFlow>& getSelectionSingleton();
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
             void init();

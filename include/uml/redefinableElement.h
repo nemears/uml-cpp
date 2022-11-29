@@ -12,7 +12,7 @@ namespace UML {
         protected:
             CustomSet<RedefinableElement, RedefinableElement> m_redefinedElement = CustomSet<RedefinableElement, RedefinableElement>(this);
             CustomSet<Classifier, RedefinableElement> m_redefinitionContext = CustomSet<Classifier, RedefinableElement>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             RedefinableElement();

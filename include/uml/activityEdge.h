@@ -38,7 +38,7 @@ namespace UML {
             TypedSet<ValueSpecification, ActivityEdge>& getGuardSingleton();
             TypedSet<ValueSpecification, ActivityEdge>& getWeightSingleton();
             TypedSet<InterruptibleActivityRegion, ActivityEdge>& getInterruptsSingleton();
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
         public:

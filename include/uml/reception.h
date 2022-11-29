@@ -16,7 +16,7 @@ namespace UML {
         protected:
             CustomSingleton<Signal, Reception> m_signal = CustomSingleton<Signal, Reception>(this);
             TypedSet<Signal, Reception>& getSignalSingleton();
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             Reception();

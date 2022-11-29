@@ -22,7 +22,7 @@ namespace UML {
             CustomSet<PackageMerge, Package> m_packageMerge = CustomSet<PackageMerge, Package>(this);
             CustomSet<Stereotype, Package> m_ownedStereotypes = CustomSet<Stereotype, Package>(this);
             CustomSet<ProfileApplication, Package> m_profileApplications = CustomSet<ProfileApplication, Package>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             Package();

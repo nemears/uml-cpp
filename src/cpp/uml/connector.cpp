@@ -51,8 +51,8 @@ TypedSet<Association, Connector>& Connector::getTypeSingleton() {
     return m_type;
 }
 
-void Connector::referenceReindexed(ID oldID, ID newID) {
-    Feature::referenceReindexed(oldID, newID);
+void Connector::referenceReindexed(ID newID) {
+    Feature::referenceReindexed(newID);
     m_type.reindex(newID);
     m_contracts.reindex(newID);
 }

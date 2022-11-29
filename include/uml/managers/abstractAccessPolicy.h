@@ -36,7 +36,7 @@ namespace UML {
                     if (!ref.second.node->m_managerElementMemory) {
                         get(ref.first);
                     }
-                    ref.second.node->m_managerElementMemory->referenceReindexed(oldID, newID);
+                    ref.second.node->m_managerElementMemory->referenceReindexed(newID);
                 }
             }
 

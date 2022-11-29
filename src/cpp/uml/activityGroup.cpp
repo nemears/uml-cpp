@@ -21,8 +21,8 @@ TypedSet<ActivityGroup, ActivityGroup>& ActivityGroup::getSuperGroupSingleton() 
     return m_superGroup;
 }
 
-void ActivityGroup::referenceReindexed(ID oldID, ID newID) {
-    NamedElement::referenceReindexed(oldID, newID);
+void ActivityGroup::referenceReindexed(ID newID) {
+    NamedElement::referenceReindexed(newID);
     m_containedNodes.reindex(newID);
     m_containedEdges.reindex(newID);
 }

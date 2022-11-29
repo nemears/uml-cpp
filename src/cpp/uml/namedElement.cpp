@@ -21,8 +21,8 @@ void NamedElement::RemoveQualifiedNamePolicy::apply(Namespace& el, NamedElement&
     me.updateQualifiedName("");
 }
 
-void NamedElement::referenceReindexed(ID oldID, ID newID) {
-    Element::referenceReindexed(oldID, newID);
+void NamedElement::referenceReindexed(ID newID) {
+    Element::referenceReindexed(newID);
     m_clientDependencies->reindex(newID);
 }
 

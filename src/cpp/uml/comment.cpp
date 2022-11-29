@@ -2,8 +2,8 @@
 
 using namespace UML;
 
-void Comment::referenceReindexed(ID oldID, ID newID) {
-    Element::referenceReindexed(oldID, newID);
+void Comment::referenceReindexed(ID newID) {
+    Element::referenceReindexed(newID);
     m_annotatedElements.reindex(newID);
 }
 

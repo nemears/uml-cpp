@@ -10,8 +10,8 @@
 
 using namespace UML;
 
-void TypedElement::referenceReindexed(ID oldID, ID newID) {
-    NamedElement::referenceReindexed(oldID, newID);
+void TypedElement::referenceReindexed(ID newID) {
+    NamedElement::referenceReindexed(newID);
     m_type.reindex(newID);
 }
 

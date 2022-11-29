@@ -6,8 +6,8 @@
 
 using namespace UML;
 
-void TemplateParameter::referenceReindexed(ID oldID, ID newID) {
-    Element::referenceReindexed(oldID, newID);
+void TemplateParameter::referenceReindexed(ID newID) {
+    Element::referenceReindexed(newID);
     m_parameteredElement.reindex(newID);
     m_default.reindex(newID);
 }

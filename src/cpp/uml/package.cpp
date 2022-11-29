@@ -9,9 +9,9 @@
 
 using namespace UML;
 
-void Package::referenceReindexed(ID oldID, ID newID) {
-    Namespace::referenceReindexed(oldID, newID);
-    PackageableElement::referenceReindexed(oldID, newID);
+void Package::referenceReindexed(ID newID) {
+    Namespace::referenceReindexed(newID);
+    PackageableElement::referenceReindexed(newID);
 }
 
 void Package::referenceErased(ID id) {

@@ -26,7 +26,7 @@ namespace UML {
             CustomSingleton<ParameterableElement, TemplateParameter> m_ownedParameteredElement = CustomSingleton<ParameterableElement, TemplateParameter>(this);
             CustomSingleton<ParameterableElement, TemplateParameter> m_default = CustomSingleton<ParameterableElement, TemplateParameter>(this);
             CustomSingleton<ParameterableElement, TemplateParameter> m_ownedDefault = CustomSingleton<ParameterableElement, TemplateParameter>(this);
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<TemplateSignature, TemplateParameter>& getSignatureSingleton();
             TypedSet<ParameterableElement, TemplateParameter>& getParameteredElementSingleton();

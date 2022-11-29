@@ -18,7 +18,7 @@ namespace UML {
             CustomSet<Element, Constraint> m_constrainedElements = CustomSet<Element, Constraint>(this);
             CustomSet<ValueSpecification, Constraint> m_specifications = CustomSet<ValueSpecification, Constraint>(this);
             TypedSet<Namespace, Constraint>& getContextSingleton();
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             Constraint();

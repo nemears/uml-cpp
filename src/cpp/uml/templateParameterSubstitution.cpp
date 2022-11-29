@@ -8,8 +8,8 @@
 
 using namespace UML;
 
-void TemplateParameterSubstitution::referenceReindexed(ID oldID, ID newID) {
-    Element::referenceReindexed(oldID, newID);
+void TemplateParameterSubstitution::referenceReindexed(ID newID) {
+    Element::referenceReindexed(newID);
     m_formal.reindex(newID);
     m_actual.reindex(newID);
 }

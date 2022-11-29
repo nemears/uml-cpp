@@ -46,7 +46,7 @@ namespace UML {
             ParameterEffectKind m_effect = ParameterEffectKind::NONE;
             TypedSet<Operation, Parameter>& getOperationSingleton();
             TypedSet<ValueSpecification, Parameter>& getDefaultValueSingleton();
-            void referenceReindexed(ID oldID, ID newID) override;
+            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void init();
             Parameter();

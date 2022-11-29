@@ -10,7 +10,7 @@ class PackageTest : public ::testing::Test {
         std::string ymlPath = YML_FILES_PATH;
 };
 
-UML_SET_INTEGRATION_TEST(PackagePackagedElements, Package, Package, &Package::getPackagedElements);
+UML_SET_INTEGRATION_TEST(PackagePackagedElements, DataType, Package, &Package::getPackagedElements);
 UML_SINGLETON_INTEGRATION_TEST(PackageableElementOwningPackage, Package, Package, &PackageableElement::getOwningPackage, &PackageableElement::setOwningPackage);
 UML_SET_INTEGRATION_TEST(PackagePackageMerges, PackageMerge, Package, &Package::getPackageMerge);
 UML_SINGLETON_INTEGRATION_TEST(PackageMergeReceivingPackage, Package, PackageMerge, &PackageMerge::getReceivingPackage, &PackageMerge::setReceivingPackage);

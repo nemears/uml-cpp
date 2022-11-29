@@ -68,7 +68,6 @@ TEST_F(ElementTest, UmlPtrReleaseTest) {
     PackagePtr pckg = m.create<Package>();
     PackagePtr child = m.create<Package>();
     ID pckgID = pckg->getID();
-    ID childID = child->getID();
     pckg->getPackagedElements().add(*child);
     ASSERT_TRUE(m.loaded(pckgID));
     pckg.release();
@@ -175,8 +174,8 @@ TEST_F(ElementTest, getOwnedElementByNameTest) {
     ASSERT_NO_THROW(e.getPackagedElements().add(b));
     ASSERT_NO_THROW(e.getPackagedElements().add(n));
     ASSERT_EQ(e.getOwnedElements().get("name"), n);
-    ASSERT_NO_THROW(&e.getOwnedElements().get(n.getID()) == &n);
-    ASSERT_NO_THROW(&e.getOwnedElements().get(b.getID()) == &b);
+    ASSERT_NO_THROW(&e.getOwnedElements().get(n.getID()));
+    ASSERT_NO_THROW(&e.getOwnedElements().get(b.getID()));
 }
 
 TEST_F(ElementTest, reIndexID_Test) {

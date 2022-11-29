@@ -56,6 +56,7 @@ namespace UML {
             virtual bool oppositeEnabled() = 0;
             virtual void oppositeAdd(Element& el) = 0;
             virtual void oppositeRemove(Element& el) = 0;
+            virtual void handleOppositeRemove(Element& el) = 0;
 
             std::unordered_set<AbstractSet*> getAllSuperSets() const {
                 std::unordered_set<AbstractSet*> allSuperSets;
@@ -589,7 +590,8 @@ namespace UML {
                         if (node->m_parent) {
                             SetNode* parent = getParent(node, superSet->m_root);
                             if (!parent) {
-                                throw SetStateException("Could not remove element of id " + id.string() + " from set because we could not identify it's parent");
+                                continue;
+                                // throw SetStateException("Could not remove element of id " + id.string() + " from set because we could not identify it's parent");
                             }
                             if (!parent->m_ptr) {
                                 // check if we need to get rid of the divider node
@@ -701,12 +703,12 @@ namespace UML {
                             }
                         }
                     }
+                }
+                for (auto superSet : allSuperSets) {
                     if (superSet->m_root == node) {
                         superSet->m_root = node->m_left;
                     }
                     superSet->m_size--;
-                }
-                for (auto superSet : allSuperSets) {
                     superSet->runRemovePolicy(*node->m_ptr);
                 }
                 AllocationPolicy::deleteNode(node);
@@ -715,6 +717,22 @@ namespace UML {
             template <class V, class W>
             void innerRemoveFromOtherSet(TypedSet<V,W>& set, ID id) {
                 set.innerRemove(id);
+            }
+
+            void handleOppositeAdd(T& el) {
+                std::list<AbstractSet*> queue;
+                queue.push_back(this);
+                while (!queue.empty()) {
+                    AbstractSet* front = queue.front();
+                    queue.pop_front();
+                    if (front->oppositeEnabled()) {
+                        front->oppositeAdd(el);
+                        break;
+                    }
+                    for (auto superSet : front->m_superSets) {
+                        queue.push_back(superSet);
+                    }
+                }
             }
 
             void add(T& el) {
@@ -728,20 +746,7 @@ namespace UML {
                 innerAdd(el);
                 el.m_node->setReference(m_el);
                 m_el.m_node->setReference(el);
-                // handle opposites
-                std::list<AbstractSet*> queue;
-                queue.push_back(this);
-                while (!queue.empty()) {
-                    AbstractSet* front = queue.front();
-                    queue.pop_front();
-                    if (front->oppositeEnabled()) {
-                        front->oppositeAdd(el);
-                        break;
-                    }
-                    for (auto superSet : front->m_superSets) {
-                        queue.push_back(superSet);
-                    }
-                }
+                handleOppositeAdd(el);
             }
             void addReadOnly(T& el) {
                 // "lock" elements we are editing
@@ -751,20 +756,7 @@ namespace UML {
                 innerAdd(el);
                 el.m_node->setReference(m_el);
                 m_el.m_node->setReference(el);
-                // handle opposites
-                std::list<AbstractSet*> queue;
-                queue.push_back(this);
-                while (!queue.empty()) {
-                    AbstractSet* front = queue.front();
-                    queue.pop_front();
-                    if (front->oppositeEnabled()) {
-                        front->oppositeAdd(el);
-                        break;
-                    }
-                    for (auto superSet : front->m_superSets) {
-                        queue.push_back(superSet);
-                    }
-                }
+                handleOppositeAdd(el);
             }
             void add(ID id) {
                 // "lock" elements we are editing
@@ -777,6 +769,21 @@ namespace UML {
                 innerAdd(id);
                 // el.m_node->setReference(m_el);
                 m_el.m_node->setReference(id);
+            }
+            void handleOppositeRemove(Element& el) override {
+                std::list<AbstractSet*> queue;
+                queue.push_back(this);
+                while (!queue.empty()) {
+                    AbstractSet* front = queue.front();
+                    queue.pop_front();
+                    if (front->oppositeEnabled()) {
+                        front->oppositeRemove(el);
+                        break;
+                    }
+                    for (auto superSet : front->m_superSets) {
+                        queue.push_back(superSet);
+                    }
+                }
             }
             void remove(ID id) {
                 // "lock" elements we are editing
@@ -792,23 +799,14 @@ namespace UML {
                     throw SetStateException("Cannot remove from read only set!");
                 }
                 // remove
+                if (!this->m_root) {
+                    throw SetStateException("Could not find el with id of " + id.string() + " in set");
+                }
+                AbstractSet* setThatNodeWasAdded = search(id, this->m_root)->set;
                 innerRemove(id);
                 el->m_node->removeReference(m_el);
                 m_el.m_node->removeReference(*el);
-                // handle opposites
-                std::list<AbstractSet*> queue;
-                queue.push_back(this);
-                while (!queue.empty()) {
-                    AbstractSet* front = queue.front();
-                    queue.pop_front();
-                    if (front->oppositeEnabled()) {
-                        front->oppositeRemove(*el);
-                        break;
-                    }
-                    for (auto superSet : front->m_superSets) {
-                        queue.push_back(superSet);
-                    }
-                }
+                setThatNodeWasAdded->handleOppositeRemove(*el);
             }
             void removeReadOnly(ID id) {
                 // "lock" elements we are editing
@@ -821,23 +819,14 @@ namespace UML {
                 }
                 [[maybe_unused]] SetLock elLock = m_el.m_manager->lockEl(*el);
                 // remove
+                if (!this->m_root) {
+                    throw SetStateException("Could not find el with id of " + id.string() + " in set");
+                }
+                AbstractSet* setThatNodeWasAdded = search(id, this->m_root)->set;
                 innerRemove(id);
                 el->m_node->removeReference(m_el);
                 m_el.m_node->removeReference(*el);
-                // handle opposites
-                std::list<AbstractSet*> queue;
-                queue.push_back(this);
-                while (!queue.empty()) {
-                    AbstractSet* front = queue.front();
-                    queue.pop_front();
-                    if (front->oppositeEnabled()) {
-                        front->oppositeRemove(*el);
-                        break;
-                    }
-                    for (auto superSet : front->m_superSets) {
-                        queue.push_back(superSet);
-                    }
-                }
+                setThatNodeWasAdded->handleOppositeRemove(*el);
             }
             /**
              * Removes all elements from set
@@ -895,6 +884,9 @@ namespace UML {
                 }
                 if (set->m_superSets.size() == 0) {
                     SetNode* parent = getParent(node, this->m_root);
+                    if (!parent) {
+                        return;
+                    }
                     if (parent->m_left == node) {
                         if (parent->m_right && parent->m_right->m_ptr.id() > node->m_ptr.id()) {
                             parent->m_left = parent->m_right;

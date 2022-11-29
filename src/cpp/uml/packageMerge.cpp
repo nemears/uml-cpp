@@ -22,6 +22,7 @@ TypedSet<Package, PackageMerge>& PackageMerge::getMergedPackageSingleton() {
 void PackageMerge::init() {
     m_receivingPackage.subsets(*m_owner);
     m_receivingPackage.subsets(m_sources);
+    m_receivingPackage.opposite(&Package::getPackageMerge);
     m_mergedPackage.subsets(m_targets);
 }
 

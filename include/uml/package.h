@@ -16,9 +16,22 @@ namespace UML {
     class Package : public PackageableElement, public Namespace, public TemplateableElement {
 
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        friend class PackageImport;
 
         protected:
-            CustomSet<PackageableElement, Package> m_packagedElements = CustomSet<PackageableElement, Package>(this);
+            class AddPackageableElementPolicy {
+                friend class PackageImport;
+                protected:
+                    std::unordered_set<UmlPtr<PackageImport>> packageImportsAdd;
+                    void apply(PackageableElement& el, Package& me);
+            };
+            class RemovePackageableElementPolicy {
+                friend class PackageImport;
+                protected:
+                    std::unordered_set<UmlPtr<PackageImport>> packageImportsRemove;
+                    void apply(PackageableElement& el, Package& me);
+            };
+            CustomSet<PackageableElement, Package, AddPackageableElementPolicy, RemovePackageableElementPolicy> m_packagedElements = CustomSet<PackageableElement, Package, AddPackageableElementPolicy, RemovePackageableElementPolicy>(this);
             CustomSet<PackageMerge, Package> m_packageMerge = CustomSet<PackageMerge, Package>(this);
             CustomSet<Stereotype, Package> m_ownedStereotypes = CustomSet<Stereotype, Package>(this);
             CustomSet<ProfileApplication, Package> m_profileApplications = CustomSet<ProfileApplication, Package>(this);

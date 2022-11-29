@@ -43,7 +43,7 @@ namespace UML{
             };
             CustomSingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy, RemoveQualifiedNamePolicy>* m_namespace;
         protected:
-            CustomSet<Dependency, NamedElement, DoNothing<Dependency,NamedElement>, DoNothing<Dependency,NamedElement>>* m_clientDependencies;
+            CustomSet<Dependency, NamedElement, DoNothingAdd<Dependency,NamedElement>, DoNothingRemove<Dependency,NamedElement>>* m_clientDependencies;
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             void updateQualifiedName(std::string absoluteNamespace);
             void referenceReindexed(ID newID) override;

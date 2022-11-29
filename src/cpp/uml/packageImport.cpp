@@ -14,64 +14,36 @@
 using namespace UML;
 
 void PackageImport::AddImportedPackagePolicy::apply(Package& el, PackageImport& me) {
-    // // add special functor(s) TODO
-    // PackageAddPackageableElementFunctor* addFunctor = new PackageAddPackageableElementFunctor(&el);
-    // addFunctor->m_import = &m_el.as<PackageImport>();
-    // el.as<Package>().getPackagedElements().m_addFunctors.insert(addFunctor);
-    // PackageRemovePackageableElementFunctor* removeFunctor = new PackageRemovePackageableElementFunctor(&el);
-    // removeFunctor->m_import = &m_el.as<PackageImport>();
-    // el.as<Package>().getPackagedElements().m_removeFunctors.insert(removeFunctor);
+    el.m_packagedElements.packageImportsAdd.insert(UmlPtr<PackageImport>(&me));
+    el.m_packagedElements.packageImportsRemove.insert(UmlPtr<PackageImport>(&me));
 
-    // if (m_el.as<PackageImport>().getImportingNamespace()) {
-    //     for (auto& pckgedEl : el.as<Package>().getPackagedElements()) {
-    //         if (!m_el.as<PackageImport>().getImportingNamespace()->getImportedMembers().contains(pckgedEl)) {
-    //             m_el.as<PackageImport>().getImportingNamespace()->getImportedMembers().addReadOnly(pckgedEl);
-    //         }
-    //     }
-    // }
+    if (me.getImportingNamespace()) {
+        for (auto& pckgedEl : el.getPackagedElements()) {
+            if (!me.getImportingNamespace()->getImportedMembers().contains(pckgedEl)) {
+                me.getImportingNamespace()->getImportedMembers().addReadOnly(pckgedEl);
+            }
+        }
+    }
 }
 
 void PackageImport::RemoveImportedPackagePolicy::apply(Package& el, PackageImport& me) {
-    // // remove functor(s)
-    // for (auto& functor : el.as<Package>().getPackagedElements().m_addFunctors) {
-    //     if (sizeof(functor) == sizeof(PackageAddPackageableElementFunctor)) { // compare type
-    //         el.as<Package>().getPackagedElements().m_addFunctors.erase(functor);
-    //         delete functor;
-    //         break;
-    //     }
-    // }
-    // for (auto& functor : el.as<Package>().getPackagedElements().m_removeFunctors) {
-    //     if (sizeof(functor) == sizeof(PackageRemovePackageableElementFunctor)) {
-    //         el.as<Package>().getPackagedElements().m_removeFunctors.erase(functor);
-    //         delete functor;
-    //         break;
-    //     }
-    // }
+    std::unordered_set<UmlPtr<PackageImport>>::iterator addIt = el.m_packagedElements.packageImportsAdd.find(UmlPtr<PackageImport>(&me));
+    if (addIt != el.m_packagedElements.packageImportsAdd.end()) {
+        el.m_packagedElements.packageImportsAdd.erase(addIt);
+    }
+    std::unordered_set<UmlPtr<PackageImport>>::iterator removeIt = el.m_packagedElements.packageImportsRemove.find(UmlPtr<PackageImport>(&me));
+    if (removeIt != el.m_packagedElements.packageImportsRemove.end()) {
+        el.m_packagedElements.packageImportsRemove.erase(removeIt);
+    }
 
-    // if (m_el.as<PackageImport>().getImportingNamespace()) {
-    //     for (auto& pckgedEl : el.as<Package>().getPackagedElements()) {
-    //         if (m_el.as<PackageImport>().getImportingNamespace()->getImportedMembers().contains(pckgedEl)) {
-    //             m_el.as<PackageImport>().getImportingNamespace()->getImportedMembers().removeReadOnly(pckgedEl.getID());
-    //         }
-    //     }
-    // }
+    if (me.getImportingNamespace()) {
+        for (auto& pckgedEl : el.getPackagedElements()) {
+            if (me.getImportingNamespace()->getImportedMembers().contains(pckgedEl)) {
+                me.getImportingNamespace()->getImportedMembers().removeReadOnly(pckgedEl.getID());
+            }
+        }
+    }
 }
-
-// void PackageImport::PackageAddPackageableElementFunctor::operator()(Element& el) const {
-//     if (m_import->getImportingNamespace()) {
-//         if (!m_import->getImportingNamespace()->getImportedMembers().contains(el.getID())) {
-//             m_import->getImportingNamespace()->getImportedMembers().addReadOnly(el.as<PackageableElement>());
-//         }
-//     }
-// }
-
-// void PackageImport::PackageRemovePackageableElementFunctor::operator()(Element& el) const {
-//     if (m_import->getImportingNamespace()) {
-//         if (m_import->getImportingNamespace()->getImportedMembers().contains(el.getID())) {
-//             m_import->getImportingNamespace()->getImportedMembers().removeReadOnly(el.getID());
-//         }
-//     }
-// }
 
 void PackageImport::init() {
     m_importedPackage.subsets(m_targets);

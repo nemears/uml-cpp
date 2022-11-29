@@ -5,6 +5,13 @@
 #include "managers/abstractManager.h"
 #include "managers/managerNode.h"
 
+namespace std {
+    template <class T> 
+    struct hash<UML::UmlPtr<T>> {
+        std::size_t operator()(const UML::UmlPtr<T>& ptr) const;
+    };
+}
+
 namespace UML {
 
     struct NullPtrException : public std::exception {
@@ -23,6 +30,7 @@ namespace UML {
         friend class AbstractAccessPolicy;
         template <class T> friend class UmlPtr;
         friend struct ManagerNode;
+        template <class T> friend size_t std::hash<UmlPtr<T>>::operator ()(const UmlPtr<T>&) const;
 
         protected:
             ID m_id = ID::nullID();
@@ -215,6 +223,20 @@ namespace UML {
                 }
             }
     };
+}
+
+// hash operator injection
+namespace std {
+    template <class T> 
+    std::size_t hash<UML::UmlPtr<T>>::operator()(const UML::UmlPtr<T>& ptr) const {
+
+        /**
+         * TODO better hashing
+         **/
+
+        hash<string> hasher;
+        return hasher(ptr.id().string() /*+ to_string(ptr.m_ptrId)*/);
+    }
 }
 
 #endif

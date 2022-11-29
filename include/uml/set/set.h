@@ -178,16 +178,16 @@ namespace UML {
     template <
                 class T, 
                 class U, 
-                class AdditionPolicy = DoNothing<T,U>,
-                class RemovalPolicy = DoNothing<T,U>,
+                class AdditionPolicy = DoNothingAdd<T,U>,
+                class RemovalPolicy = DoNothingRemove<T,U>,
                 class AllocationPolicy = SetAllocationPolicy<T>
             >
-    class PrivateSet : virtual public TypedSet<T, U> , virtual protected AllocationPolicy {
+    class PrivateSet :  virtual public TypedSet<T, U>, 
+                        virtual protected AllocationPolicy, 
+                        protected AdditionPolicy, 
+                        protected RemovalPolicy {
 
         FRIEND_ALL_UML()
-
-        friend AdditionPolicy;
-        friend RemovalPolicy;
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);
@@ -615,7 +615,6 @@ namespace UML {
                                         }
                                     }
                                     delete parent;
-                                    superSet->m_size--;
                                     continue;
                                 }
                             }
@@ -1288,6 +1287,7 @@ namespace UML {
             virtual void add(ID id) = 0;
             virtual void add(UmlPtr<T> el) = 0;
             virtual void add(T& el) = 0;
+            virtual void addReadOnly(T& el) = 0;
             template <class ... Ts>
             void add(T& el, Ts&... els) {
                 add(el);
@@ -1297,6 +1297,7 @@ namespace UML {
             virtual void remove(T& el) = 0;
             virtual void remove(UmlPtr<T> el) = 0;
             virtual void removeFromJustThisSet(ID id) = 0;
+            virtual void removeReadOnly(ID id) = 0;
             virtual void clear() = 0;
             virtual SetIterator<T> begin() = 0;
             virtual SetIterator<T> end() = 0;
@@ -1306,8 +1307,8 @@ namespace UML {
     template <
                 class T, 
                 class U,
-                class AdditionPolicy = DoNothing<T, U>,
-                class RemovalPolicy = DoNothing<T, U>
+                class AdditionPolicy = DoNothingAdd<T, U>,
+                class RemovalPolicy = DoNothingRemove<T, U>
             >
     class CustomSet : public PrivateSet<T,U, AdditionPolicy, RemovalPolicy> , public Set<T,U> {
         public:
@@ -1384,6 +1385,9 @@ namespace UML {
             void add(T& el) override {
                 PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::add(el);
             }
+            void addReadOnly(T& el) override {
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::addReadOnly(el);
+            }
             void remove(ID id) override {
                 PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::remove(id);
             }
@@ -1395,6 +1399,9 @@ namespace UML {
             }
             void removeFromJustThisSet(ID id) override {
                 PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::removeFromJustThisSet(id);
+            }
+            void removeReadOnly(ID id) override {
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::removeReadOnly(id);
             }
             void clear() override {
                 PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::clear();

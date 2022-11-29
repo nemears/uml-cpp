@@ -9,6 +9,26 @@
 
 using namespace UML;
 
+void Package::AddPackageableElementPolicy::apply(PackageableElement& el, __attribute__((unused)) Package& me) {
+    for (const UmlPtr<PackageImport>& import : packageImportsAdd) {
+        if (import->getImportingNamespace()) {
+            if (!import->getImportingNamespace()->getImportedMembers().contains(el.getID())) {
+                import->getImportingNamespace()->getImportedMembers().addReadOnly(el);
+            }
+        }
+    }
+}
+
+void Package::RemovePackageableElementPolicy::apply(PackageableElement& el, __attribute__((unused)) Package& me) {
+    for (const UmlPtr<PackageImport>& import : packageImportsRemove) {
+        if (import->getImportingNamespace()) {
+            if (import->getImportingNamespace()->getImportedMembers().contains(el.getID())) {
+                import->getImportingNamespace()->getImportedMembers().removeReadOnly(el.getID());
+            }
+        }
+    }
+}
+
 void Package::referenceReindexed(ID newID) {
     Namespace::referenceReindexed(newID);
     PackageableElement::referenceReindexed(newID);

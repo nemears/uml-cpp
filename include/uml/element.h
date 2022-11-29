@@ -262,13 +262,13 @@ namespace UML {
             const ElementType m_elementType;
 
             // owner
-            CustomSingleton<Element, Element, DoNothing<Element, Element>, DoNothing<Element, Element>>* m_owner;
+            CustomSingleton<Element, Element, DoNothingAdd<Element, Element>, DoNothingRemove<Element, Element>>* m_owner;
             TypedSet<Element, Element>& getOwnerSingleton();
             
             // ownedElements
-            CustomSet<Element, Element, DoNothing<Element, Element>, DoNothing<Element, Element>>* m_ownedElements;
-            CustomSet<Comment, Element, DoNothing<Comment, Element>, DoNothing<Comment, Element>>* m_ownedComments;
-            CustomSet<InstanceSpecification, Element, DoNothing<InstanceSpecification, Element>, DoNothing<InstanceSpecification, Element>>* m_appliedStereotype;
+            CustomSet<Element, Element, DoNothingAdd<Element, Element>, DoNothingRemove<Element, Element>>* m_ownedElements;
+            CustomSet<Comment, Element, DoNothingAdd<Comment, Element>, DoNothingRemove<Comment, Element>>* m_ownedComments;
+            CustomSet<InstanceSpecification, Element, DoNothingAdd<InstanceSpecification, Element>, DoNothingRemove<InstanceSpecification, Element>>* m_appliedStereotype;
             void setOwner(Element* el);
             void setOwnerByID(ID id);
             void setReference(Element* referencing);

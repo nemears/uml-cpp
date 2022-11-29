@@ -32,7 +32,7 @@ TEST_F(NamedElementTest, reIndexNameTest) {
     Package& e1 = *m.create<Package>();
     Package& e2 = *m.create<Package>();
     e1.getPackagedElements().add(e2);
-    e2.setOwningPackage(&e1);
+    // e2.setOwningPackage(&e1); // TODO do we want this to work?
     e2.setName("test");
     ASSERT_NO_THROW(e1.getOwnedElements().get("test"));
     ASSERT_EQ(e1.getOwnedElements().get("test"), e2);

@@ -7,8 +7,8 @@ namespace UML {
     template <
                 class T, 
                 class U,
-                class AdditionPolicy = DoNothing<T, U>,
-                class RemovalPolicy = DoNothing<T, U>
+                class AdditionPolicy = DoNothingAdd<T, U>,
+                class RemovalPolicy = DoNothingRemove<T, U>
             >
     class CustomSingleton : public PrivateSet<T, U, AdditionPolicy, RemovalPolicy> {
 

@@ -381,7 +381,7 @@ class PolicyTestElement : public Element {
     template<typename AccessPolicy, typename PersistencePolciy> friend class Manager;
 
     public:
-        CustomSet<Package, PolicyTestElement, TestPolicy, TestPolicy> policySet = CustomSet<Package, PolicyTestElement, TestPolicy, TestPolicy>(this);
+        CustomSet<Package, PolicyTestElement, TestPolicy> policySet = CustomSet<Package, PolicyTestElement, TestPolicy>(this);
         CustomSet<Package, PolicyTestElement> redefinedSet = CustomSet<Package, PolicyTestElement>(this);
         PolicyTestElement() : Element(ElementType::ELEMENT) {
             redefinedSet.redefines(policySet);

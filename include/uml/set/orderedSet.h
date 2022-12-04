@@ -60,12 +60,43 @@ namespace UML {
             }
     };
 
+    class OrderedSetNodeAllocationPolicyInterface : virtual public AbstractSet {
+
+        template <class T> friend class OrderedSetNodeAllocationPolicy;
+
+        protected:
+            virtual OrderedSetNode* getFront() const = 0;
+            virtual OrderedSetNode* getBack() const = 0;
+            virtual void setFront(OrderedSetNode* front) = 0;
+            virtual void setBack(OrderedSetNode* back) = 0;
+    };
+
     template <class T>
-    class OrderedSetNodeAllocationPolicy {
+    class OrderedSetNodeAllocationPolicy : public OrderedSetNodeAllocationPolicyInterface {
         // this policy implements a linked list on top of the regular set tree
         protected:
             OrderedSetNode* m_first = 0;
             OrderedSetNode* m_last = 0;
+
+            OrderedSetNode* getFront() const override {
+                return m_first;
+            }
+
+            OrderedSetNode* getBack() const override {
+                return m_last;
+            }
+
+            void setFront(OrderedSetNode* front) override {
+                m_first = front;
+            }
+
+            void setBack(OrderedSetNode* back) override {
+                m_last = back;
+            }
+
+            SetType setType() const override {
+                return SetType::ORDERED_SET;
+            }
             SetNode* create(T& el) {
                 OrderedSetNode* ret = new OrderedSetNode();
                 ret->m_ptr = &el;
@@ -91,6 +122,19 @@ namespace UML {
                     m_first = ret;
                 }
                 return ret;
+            }
+            void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*> allSuperSetsAndMe) override {
+                for (AbstractSet* set: allSuperSetsAndMe) {
+                    if (set->setType() == SetType::ORDERED_SET) {
+                        OrderedSetNodeAllocationPolicyInterface* orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(set);
+                        if (!orderedSet->getFront()) {
+                            orderedSet->setFront(static_cast<OrderedSetNode*>(node));
+                        }
+                        if (!orderedSet->getBack()) {
+                            orderedSet->setBack(static_cast<OrderedSetNode*>(node));
+                        }
+                    }
+                }
             }
             void deleteNode(SetNode* node) {
                 OrderedSetNode* orderedNode = static_cast<OrderedSetNode*>(node);
@@ -220,7 +264,7 @@ namespace UML {
             OrderedSetIterator<T> begin() const override {
                 OrderedSetIterator<T> ret;
                 ret.curr = this->m_first;
-                ret.validSets = this->getAllSuperSets();
+                ret.validSets = this->getAllSubSets();
                 ret.validSets.insert(const_cast<AbstractSet*>(static_cast<const AbstractSet*>(this))); // I <3 c++
                 return ret;
             }
@@ -232,7 +276,7 @@ namespace UML {
             ID_Set<T> ids() override {
                 ID_Set<T> ret;
                 ret.root = this->m_root;
-                ret.validSets = this->getAllSuperSets();
+                ret.validSets = this->getAllSubSets();
                 ret.validSets.insert(this);
                 return ret;
             };

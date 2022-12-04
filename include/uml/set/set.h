@@ -32,10 +32,18 @@ namespace UML {
     template <class T, class U> class TypedSet;
     void recursiveSetContains(ID id, AbstractSet* set);
 
+    enum class SetType {
+        SET,
+        ORDERED_SET,
+        BAG,
+        LIST
+    };
+
     class AbstractSet {
 
         template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
         friend void recursiveSetContains(ID id, AbstractSet* set);
+        template <class T> friend class OrderedSetNodeAllocationPolicy;
 
         protected:
             SetNode* m_root = 0;
@@ -57,6 +65,11 @@ namespace UML {
             virtual void oppositeAdd(Element& el) = 0;
             virtual void oppositeRemove(Element& el) = 0;
             virtual void handleOppositeRemove(Element& el) = 0;
+            virtual SetType setType() const = 0;
+            virtual void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*> allSuperSetsAndMe) = 0;
+            virtual SetNode* createNode(Element& el) = 0;
+            virtual SetNode* createNode(ID id) = 0;
+
 
             std::unordered_set<AbstractSet*> getAllSuperSets() const {
                 std::unordered_set<AbstractSet*> allSuperSets;
@@ -121,7 +134,7 @@ namespace UML {
     class CustomSingleton;
 
     template <class T, class U>
-    class TypedSet : public AbstractSet {
+    class TypedSet : virtual public AbstractSet {
 
         template <class V, class W, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
         template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomSingleton;
@@ -140,11 +153,17 @@ namespace UML {
                 return ret;
             }
 
+            SetType setType() const {
+                return SetType::SET;
+            }
+
             SetNode* create(UmlPtr<T> el) {
                 SetNode* ret = new SetNode();
                 ret->m_ptr = el;
                 return ret;
             }
+
+            void adjustSuperSets(__attribute__((unused)) SetNode* node, __attribute__((unused)) std::unordered_set<AbstractSet*> allSuperSetsAndMe) {}
 
             void deleteNode(SetNode* node) {
                 delete node;
@@ -283,21 +302,23 @@ namespace UML {
 
             void innerAdd(T& el) override {
                 // add
-                SetNode* node = AllocationPolicy::create(el);
-                node->set = this;
+                AbstractSet* instantiationgSet = this;
                 if (!this->m_rootRedefinedSet) {
                     for (auto redefinedSet : this->m_redefines) {
                         if (redefinedSet->m_rootRedefinedSet) {
-                            node->set = redefinedSet;
+                            instantiationgSet = redefinedSet;
                             this->m_size++;
                             break;
                         }
                     }
                 }
+                SetNode* node = instantiationgSet->createNode(el);
                 
                 std::unordered_set<AbstractSet*> allSuperSetsAndMe = this->getAllSuperSets();
                 allSuperSetsAndMe.insert(node->set);
                 std::unordered_set<AbstractSet*> allSubSets = this->getAllSubSets();
+
+                node->set->adjustSuperSets(node, allSuperSetsAndMe);
 
                 innerAddDFS(node, node->set, allSuperSetsAndMe, allSubSets);
 
@@ -316,27 +337,30 @@ namespace UML {
                     superSet->runAddPolicy(el);
                 }
 
-                for (auto redefinedSet : this-> m_redefines) {
+                for (auto redefinedSet : this->m_redefines) {
                     redefinedSet->runAddPolicy(el);
                 }
             }
 
             void innerAdd(ID id) {
-                SetNode* node = AllocationPolicy::create(m_el.m_manager->createPtr(id));
-                node->set = this;
+                // add
+                AbstractSet* instantiationgSet = this;
                 if (!this->m_rootRedefinedSet) {
                     for (auto redefinedSet : this->m_redefines) {
                         if (redefinedSet->m_rootRedefinedSet) {
-                            node->set = redefinedSet;
+                            instantiationgSet = redefinedSet;
                             this->m_size++;
                             break;
                         }
                     }
                 }
+                SetNode* node = instantiationgSet->createNode(id);
                 
                 std::unordered_set<AbstractSet*> allSuperSetsAndMe = this->getAllSuperSets();
                 allSuperSetsAndMe.insert(node->set);
                 std::unordered_set<AbstractSet*> allSubSets = this->getAllSubSets();
+
+                node->set->adjustSuperSets(node, allSuperSetsAndMe);
 
                 innerAddDFS(node, node->set, allSuperSetsAndMe, allSubSets);
 
@@ -461,9 +485,11 @@ namespace UML {
                     while (currNode) {
 
                         if (currNode->m_ptr.id() == node->m_ptr.id()) {
-                            if (currNode->set != this) {
+                            if (std::find(this->m_redefines.begin(), this->m_redefines.end(), currNode->set) != this->m_redefines.end()) {
+                                break;
+                            } else if (currNode->set != this) {
                                 // node is allready in supersets, adjust node to be in lower sets
-                                // TODO
+                                throw SetStateException("TODO node in superset!");
                             } else {
                                 throw SetStateException("Node already in this set!");
                             }
@@ -916,6 +942,24 @@ namespace UML {
                 if (contains(id)) { // TODO we are searching set twice, can be quicker
                     removeReadOnly(id);
                 }
+            }
+
+            SetType setType() const override {
+                return AllocationPolicy::setType();
+            }
+
+            void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*> allSuperSetsAndMe) override {
+                AllocationPolicy::adjustSuperSets(node, allSuperSetsAndMe);
+            }
+            SetNode* createNode (Element& el) override {
+                SetNode* ret = AllocationPolicy::create(el.as<T>());
+                ret->set = this;
+                return ret;
+            }
+            SetNode* createNode (ID id) override {
+                SetNode* ret = AllocationPolicy::create(m_el.m_manager->createPtr(id));
+                ret->set = this;
+                return ret;
             }
         public:
             PrivateSet(U& el) : m_el(el) {

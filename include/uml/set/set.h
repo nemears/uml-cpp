@@ -320,7 +320,12 @@ namespace UML {
 
                 node->set->adjustSuperSets(node, allSuperSetsAndMe);
 
-                innerAddDFS(node, node->set, allSuperSetsAndMe, allSubSets);
+                std::unordered_map<AbstractSet*, bool> visited;
+                for (auto set : allSuperSetsAndMe) {
+                    visited[set] = false;
+                }
+
+                innerAddDFS(node, node->set, allSuperSetsAndMe, allSubSets, visited);
 
                 for (auto superSet : allSuperSetsAndMe) {
                     superSet->m_size++;
@@ -362,7 +367,12 @@ namespace UML {
 
                 node->set->adjustSuperSets(node, allSuperSetsAndMe);
 
-                innerAddDFS(node, node->set, allSuperSetsAndMe, allSubSets);
+                std::unordered_map<AbstractSet*, bool> visited;
+                for (auto set : allSuperSetsAndMe) {
+                    visited[set] = false;
+                }
+
+                innerAddDFS(node, node->set, allSuperSetsAndMe, allSubSets, visited);
 
                 for (auto superSet : allSuperSetsAndMe) {
                     superSet->m_size++;
@@ -386,10 +396,23 @@ namespace UML {
              * @param node: the node being placed
              * @param set: the current set we are checking
             */
-            void innerAddDFS(SetNode* node, AbstractSet* set, std::unordered_set<AbstractSet*> allSuperSetsAndMe, std::unordered_set<AbstractSet*> allSubSets) {
+            void innerAddDFS(   
+                                SetNode* node, 
+                                AbstractSet* set, 
+                                std::unordered_set<AbstractSet*>& allSuperSetsAndMe, 
+                                std::unordered_set<AbstractSet*>& allSubSets,
+                                std::unordered_map<AbstractSet*, bool>& visited
+                            ) {
+
+                if (visited[set]) {
+                    return;
+                }
+
+                visited[set] = true;
+
                 // place in supersets
                 for (AbstractSet* superSet : set->m_superSets) {
-                    innerAddDFS(node, superSet, allSuperSetsAndMe, allSubSets);
+                    innerAddDFS(node, superSet, allSuperSetsAndMe, allSubSets, visited);
                 }
 
                 // adjust redefines
@@ -397,7 +420,6 @@ namespace UML {
                     if (!redefinedSet->m_root) {
                         redefinedSet->m_root = node;
                     }
-                    // redefinedSet->m_size++;
                 }
                 
                 if (set->m_superSets.size() == 0 && set->m_rootRedefinedSet) {
@@ -547,6 +569,7 @@ namespace UML {
 
                 if (!set->m_root) {
                     set->m_root = node;
+                    // redefinedSet->m_size++;
                 }
             }
 

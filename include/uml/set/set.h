@@ -519,6 +519,27 @@ namespace UML {
 
                         if (allSubSets.count(currNode->set)) {
                             // this is a subsets node, we must place it below ours
+                            // adjust roots
+                            std::unordered_set<AbstractSet*> currNodesSubSets = currNode->set->getAllSubSets();
+                            currNodesSubSets.insert(currNode->set);
+                            for (auto redefinedSet : currNode->set->m_redefines) {
+                                currNodesSubSets.insert(redefinedSet);
+                            }
+                            for (auto subSet : set->getAllSubSets()) {
+                                if (currNodesSubSets.count(subSet)) {
+                                    continue;
+                                }
+                                if (subSet->m_root == currNode) {
+                                    subSet->m_root = node;
+                                }
+                            }
+                            if (set->m_root == currNode) {
+                                set->m_root = node;
+                            }
+                            
+                            if (currNode->m_parent == node) {
+                                break;
+                            }
                             node->m_parent = currNode->m_parent;
                             node->m_left = currNode;
                             currNode->m_parent = node;
@@ -530,12 +551,23 @@ namespace UML {
                                 }
                             }
                             
-                            // adjust roots
-                            for (auto superSet : allSuperSetsAndMe) {
-                                if (superSet->m_root == currNode) {
-                                    superSet->m_root = node;
-                                }
-                            }
+                            // // adjust roots
+                            // std::unordered_set<AbstractSet*> currNodesSubSets = currNode->set->getAllSubSets();
+                            // currNodesSubSets.insert(currNode->set);
+                            // for (auto redefinedSet : currNode->set->m_redefines) {
+                            //     currNodesSubSets.insert(redefinedSet);
+                            // }
+                            // for (auto subSet : set->getAllSubSets()) {
+                            //     if (currNodesSubSets.count(subSet)) {
+                            //         continue;
+                            //     }
+                            //     if (subSet->m_root == currNode) {
+                            //         subSet->m_root = node;
+                            //     }
+                            // }
+                            // if (set->m_root == currNode) {
+                            //     set->m_root = node;
+                            // }
                             break;
                         }
                         

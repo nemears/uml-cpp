@@ -52,6 +52,8 @@ namespace UML {
             std::vector<AbstractSet*> m_subSets;
             std::vector<AbstractSet*> m_redefines;
 
+            AbstractSet* m_setToInstantiate = 0;
+
             bool m_rootRedefinedSet = true;
 
             // m_guard lets us know the set's scope quickly, a subset must have a higher guard than its superset. root sets always have guards of 0
@@ -66,7 +68,7 @@ namespace UML {
             virtual void oppositeRemove(Element& el) = 0;
             virtual void handleOppositeRemove(Element& el) = 0;
             virtual SetType setType() const = 0;
-            virtual void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*> allSuperSetsAndMe) = 0;
+            virtual void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*>& allSuperSetsAndMe) = 0;
             virtual SetNode* createNode(Element& el) = 0;
             virtual SetNode* createNode(ID id) = 0;
 
@@ -124,6 +126,12 @@ namespace UML {
                     if (subsetOf.m_guard >= m_guard) {
                         m_guard = subsetOf.m_guard + 1;
                     }
+                    // Handle ordered set, TODO other set types
+                    if (!m_setToInstantiate && subsetOf.setType() == SetType::ORDERED_SET && setType() != SetType::ORDERED_SET) {
+                        m_setToInstantiate = &subsetOf;
+                    } else if (subsetOf.m_setToInstantiate) {
+                        m_setToInstantiate = subsetOf.m_setToInstantiate;
+                    }
                 }
             }
 
@@ -163,7 +171,7 @@ namespace UML {
                 return ret;
             }
 
-            void adjustSuperSets(__attribute__((unused)) SetNode* node, __attribute__((unused)) std::unordered_set<AbstractSet*> allSuperSetsAndMe) {}
+            void adjustSuperSets(__attribute__((unused)) SetNode* node, __attribute__((unused)) std::unordered_set<AbstractSet*>& allSuperSetsAndMe) {}
 
             void deleteNode(SetNode* node) {
                 delete node;
@@ -536,7 +544,7 @@ namespace UML {
                             if (set->m_root == currNode) {
                                 set->m_root = node;
                             }
-                            
+
                             if (currNode->m_parent == node) {
                                 break;
                             }
@@ -550,24 +558,6 @@ namespace UML {
                                     node->m_parent->m_right = node;
                                 }
                             }
-                            
-                            // // adjust roots
-                            // std::unordered_set<AbstractSet*> currNodesSubSets = currNode->set->getAllSubSets();
-                            // currNodesSubSets.insert(currNode->set);
-                            // for (auto redefinedSet : currNode->set->m_redefines) {
-                            //     currNodesSubSets.insert(redefinedSet);
-                            // }
-                            // for (auto subSet : set->getAllSubSets()) {
-                            //     if (currNodesSubSets.count(subSet)) {
-                            //         continue;
-                            //     }
-                            //     if (subSet->m_root == currNode) {
-                            //         subSet->m_root = node;
-                            //     }
-                            // }
-                            // if (set->m_root == currNode) {
-                            //     set->m_root = node;
-                            // }
                             break;
                         }
                         
@@ -809,6 +799,12 @@ namespace UML {
                         front->oppositeAdd(el);
                         break;
                     }
+                    for (auto redefinedSet : front->m_redefines) {
+                        if (redefinedSet->oppositeEnabled()) {
+                            redefinedSet->oppositeAdd(el);
+                            return;
+                        }
+                    }
                     for (auto superSet : front->m_superSets) {
                         queue.push_back(superSet);
                     }
@@ -1003,16 +999,16 @@ namespace UML {
                 return AllocationPolicy::setType();
             }
 
-            void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*> allSuperSetsAndMe) override {
-                AllocationPolicy::adjustSuperSets(node, allSuperSetsAndMe);
+            void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*>& allSuperSetsAndMe) override {
+                this->m_setToInstantiate ? this->m_setToInstantiate->adjustSuperSets(node, allSuperSetsAndMe) : AllocationPolicy::adjustSuperSets(node, allSuperSetsAndMe);
             }
             SetNode* createNode (Element& el) override {
-                SetNode* ret = AllocationPolicy::create(el.as<T>());
+                SetNode* ret = this->m_setToInstantiate ? this->m_setToInstantiate->createNode(el) : AllocationPolicy::create(el.as<T>());
                 ret->set = this;
                 return ret;
             }
             SetNode* createNode (ID id) override {
-                SetNode* ret = AllocationPolicy::create(m_el.m_manager->createPtr(id));
+                SetNode* ret = this->m_setToInstantiate ? this->m_setToInstantiate->createNode(id) : AllocationPolicy::create(m_el.m_manager->createPtr(id));
                 ret->set = this;
                 return ret;
             }
@@ -1125,7 +1121,7 @@ namespace UML {
              * makes sure that the set we are redefining is the same tree as ours and vice versa
              * @param redefined, the set that this set is redefining
              **/
-            template <class V = Element, class W = Element> 
+            template <class V, class W> 
             void redefines(TypedSet<V, W>& redefined) {
                 if (this->m_root) {
                     throw SetStateException("WARNING redefines set after set was used, must make sure redefining is done during configuration, before use!");
@@ -1133,6 +1129,9 @@ namespace UML {
                 this->m_redefines.push_back(&redefined);
                 redefined.m_redefines.push_back(this);
                 redefined.m_rootRedefinedSet = false;
+                if (!this->m_setToInstantiate && redefined.setType() == SetType::ORDERED_SET && this->setType() != SetType::ORDERED_SET) {
+                        this->m_setToInstantiate = &redefined;
+                    }
                 for (auto set : redefined.m_superSets) {
                     this->subsets(*set);
                 }

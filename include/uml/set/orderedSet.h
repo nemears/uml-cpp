@@ -123,16 +123,20 @@ namespace UML {
                 }
                 return ret;
             }
-            void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*> allSuperSetsAndMe) override {
+            void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*>& allSuperSetsAndMe) override {
+                if (!m_first) {
+                    node = m_first;
+                }
+                m_last = static_cast<OrderedSetNode*>(node);
                 for (AbstractSet* set: allSuperSetsAndMe) {
                     if (set->setType() == SetType::ORDERED_SET) {
                         OrderedSetNodeAllocationPolicyInterface* orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(set);
                         if (!orderedSet->getFront()) {
                             orderedSet->setFront(static_cast<OrderedSetNode*>(node));
                         }
-                        if (!orderedSet->getBack()) {
+                        // if (!orderedSet->getBack()) {
                             orderedSet->setBack(static_cast<OrderedSetNode*>(node));
-                        }
+                        // }
                     }
                 }
             }

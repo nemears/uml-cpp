@@ -32,32 +32,28 @@ namespace UML {
         protected:
             class AddGeneralizationPolicy {
                 public:
-                    static void apply(Generalization& el, Classifier& m_el);
+                    void apply(Generalization& el, Classifier& m_el);
             };
             class RemoveGeneralizationPolicy {
                 public:
-                    static void apply(Generalization& el, Classifier& m_el);
+                    void apply(Generalization& el, Classifier& m_el);
             };
             class AddGeneralPolicy {
                 public:
-                    static void apply(Classifier& el, Classifier& m_el);
+                    void apply(Classifier& el, Classifier& m_el);
             };
             class RemoveGeneralPolicy {
                 public:
-                    static void apply(Classifier& el, Classifier& m_el);
+                    void apply(Classifier& el, Classifier& m_el);
             };
-            // class AddOwnedMemberFunctor : public SetFunctor {
-            //     private:
-            //         void operator()(Element& el) const override;
-            //     public:
-            //         AddOwnedMemberFunctor(Element* el) : SetFunctor(el) {};
-            // };
-            // class RemoveOwnedMemberFunctor : public SetFunctor {
-            //     private:
-            //         void operator()(Element& el) const override;
-            //     public:
-            //         RemoveOwnedMemberFunctor(Element* el) : SetFunctor(el) {};
-            // };
+            class AddOwnedMemberPolicy {
+                public:
+                    void apply(NamedElement& el, Classifier& me);
+            };
+            class RemoveOwnedMemberPolicy {
+                public:
+                    void apply(NamedElement& el, Classifier& me);
+            };
             CustomSet<Feature, Classifier> m_features = CustomSet<Feature, Classifier>(this);
             CustomSet<Property, Classifier> m_attributes = CustomSet<Property, Classifier>(this);
             CustomSet<Generalization, Classifier, AddGeneralizationPolicy, RemoveGeneralizationPolicy> m_generalizations = CustomSet<Generalization, Classifier, AddGeneralizationPolicy, RemoveGeneralizationPolicy>(this);
@@ -66,6 +62,7 @@ namespace UML {
             CustomSet<GeneralizationSet, Classifier> m_powerTypeExtent = CustomSet<GeneralizationSet, Classifier>(this);
             CustomSingleton<RedefinableTemplateSignature, Classifier> m_classifierOwnedTemplateSignature = CustomSingleton<RedefinableTemplateSignature, Classifier>(this);
             CustomSingleton<ClassifierTemplateParameter, Classifier> m_classifierTemplateParameter = CustomSingleton<ClassifierTemplateParameter, Classifier>(this);
+            CustomSet<NamedElement, Classifier, AddOwnedMemberPolicy, RemoveOwnedMemberPolicy> m_classifierOwnedMembers = CustomSet<NamedElement, Classifier, AddOwnedMemberPolicy, RemoveOwnedMemberPolicy>(this);
             TypedSet<RedefinableTemplateSignature, Classifier>& getOwnedTemplateSignatureSingleton();
             TypedSet<ClassifierTemplateParameter, Classifier>& getTemplateParameterSingleton();
             void referenceReindexed(ID newID) override;

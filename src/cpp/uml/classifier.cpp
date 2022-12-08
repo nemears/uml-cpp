@@ -43,7 +43,10 @@ void Classifier::AddGeneralPolicy::apply(Classifier& el, Classifier& me) {
     }
     for (auto& mem : el.m_members) {
         if (mem.getVisibility() != VisibilityKind::PRIVATE) {
-            me.m_inheritedMembers.add(mem);
+            [[maybe_unused]] SetLock memLck = me.lockEl(mem);
+            me.m_inheritedMembers.innerAdd(mem);
+            me.m_node->setReference(mem);
+            mem.m_node->setReference(me);
         }
     }
 }
@@ -51,38 +54,41 @@ void Classifier::AddGeneralPolicy::apply(Classifier& el, Classifier& me) {
 void Classifier::RemoveGeneralPolicy::apply(Classifier& el, Classifier& me) {
     for (NamedElement& mem : el.m_members) {
         if (mem.getVisibility() != VisibilityKind::PRIVATE && me.m_inheritedMembers.contains(mem)) {
-            me.m_inheritedMembers.remove(mem.getID());
+            [[maybe_unused]] SetLock memLck = me.lockEl(mem);
+            me.m_inheritedMembers.innerRemove(mem.getID());
+            me.m_node->removeReference(mem);
+            mem.m_node->removeReference(me);
         }
     }
 }
 
-// void Classifier::AddOwnedMemberFunctor::operator()(Element& el) const {
-//     if (el.as<NamedElement>().getVisibility() != VisibilityKind::PRIVATE) {
-//         for (auto& pair : m_el.m_node->m_references) {
-//             if (pair.second.node && 
-//                 pair.second.node->m_managerElementMemory && 
-//                 pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
-//                 pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(m_el.getID())) {
-//                     pair.second.node->m_managerElementMemory->as<Classifier>().getInheritedMembers().nonOppositeAdd(el.as<NamedElement>());
-//             }
-//         }
-//     }
-// }
+void Classifier::AddOwnedMemberPolicy::apply(NamedElement& el, Classifier& me) {
+    if (el.getVisibility() != VisibilityKind::PRIVATE) {
+        for (auto& pair : me.m_node->m_references) {
+            if (pair.second.node && 
+                pair.second.node->m_managerElementMemory && 
+                pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
+                pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(me.getID())) {
+                    pair.second.node->m_managerElementMemory->as<Classifier>().m_inheritedMembers.innerAdd(el);
+            }
+        }
+    }
+}
 
-// void Classifier::RemoveOwnedMemberFunctor::operator()(Element& el) const {
-//     if (el.as<NamedElement>().getVisibility() != VisibilityKind::PRIVATE) {
-//         for (auto& pair : m_el.m_node->m_references) {
-//             if (!pair.second.node && m_el.m_manager->loaded(pair.first)) {
-//                 pair.second.node = m_el.m_manager->get(pair.first).ptr()->m_node;
-//             }
-//             if (pair.second.node->m_managerElementMemory && 
-//                 pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
-//                 pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(m_el.getID())) {
-//                     pair.second.node->m_managerElementMemory->as<Classifier>().m_inheritedMembers.nonOppositeRemove(el.getID());
-//             }
-//         }
-//     }
-// }
+void Classifier::RemoveOwnedMemberPolicy::apply(NamedElement& el, Classifier& me) {
+    if (el.getVisibility() != VisibilityKind::PRIVATE) {
+        for (auto& pair : me.m_node->m_references) {
+            if (!pair.second.node && me.m_manager->loaded(pair.first)) {
+                pair.second.node = me.m_manager->get(pair.first).ptr()->m_node;
+            }
+            if (pair.second.node->m_managerElementMemory && 
+                pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
+                pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(me.getID())) {
+                    pair.second.node->m_managerElementMemory->as<Classifier>().m_inheritedMembers.innerRemove(el.getID());
+            }
+        }
+    }
+}
 
 TypedSet<RedefinableTemplateSignature, Classifier>& Classifier::getOwnedTemplateSignatureSingleton() {
     return m_classifierOwnedTemplateSignature;
@@ -103,7 +109,7 @@ void Classifier::referenceReindexed(ID newID) {
 void Classifier::restoreReferences() {
     // Namespace::restoreReferences();
     // PackageableElement::restoreReferences();
-    for (auto& _generalization : m_generalizations) {
+    for ([[maybe_unused]] auto& _generalization : m_generalizations) {
         // load through loop
     }
 }
@@ -136,6 +142,7 @@ void Classifier::init() {
     m_classifierOwnedTemplateSignature.opposite(&RedefinableTemplateSignature::getClassifierSingleton);
     m_classifierTemplateParameter.redefines(m_templateParameter);
     m_classifierTemplateParameter.opposite(&ClassifierTemplateParameter::getParameteredElementSingleton);
+    m_classifierOwnedMembers.redefines(m_ownedMembers);
 }
 
 Classifier::Classifier() : Element(ElementType::CLASSIFIER) {

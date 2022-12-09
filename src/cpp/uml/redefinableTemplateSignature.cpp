@@ -16,68 +16,68 @@
 using namespace UML;
 
 void RedefinableTemplateSignature::AddExtendedSignaturePolicy::apply(RedefinableTemplateSignature& el, RedefinableTemplateSignature& me) {
-    // AddParameterInExtendedSignatureFunctor* addFunctor = new AddParameterInExtendedSignatureFunctor(&el);
-    // addFunctor->m_sig = &m_el.as<RedefinableTemplateSignature>();
-    // el.as<RedefinableTemplateSignature>().getParameters().m_addFunctors.insert(addFunctor);
-    // RemoveParameterInExtendedSignatureFunctor* removeFunctor = new RemoveParameterInExtendedSignatureFunctor(&el);
-    // removeFunctor->m_sig = &m_el.as<RedefinableTemplateSignature>();
-    // el.as<RedefinableTemplateSignature>().getParameters().m_removeFunctors.insert(removeFunctor);
-    // for (auto& param : el.as<RedefinableTemplateSignature>().getParameters()) {
-    //     if (!m_el.as<RedefinableTemplateSignature>().m_inheritedParameters.contains(param)) {
-    //         m_el.as<RedefinableTemplateSignature>().m_inheritedParameters.addReadOnly(param);
-    //     }
-    // }
+    el.m_redefinableTemplateSignatureParameters.addSignatures.insert(UmlPtr<RedefinableTemplateSignature>(&me));
+    el.m_redefinableTemplateSignatureParameters.removeSignatures.insert(UmlPtr<RedefinableTemplateSignature>(&me));
+    for (auto& param : el.getParameters()) {
+        if (!me.m_inheritedParameters.contains(param)) {
+            [[maybe_unused]] SetLock paramLck = me.lockEl(param);
+            me.m_inheritedParameters.innerAdd(param);
+            me.m_node->setReference(param);
+            param.m_node->setReference(me);
+        }
+    }
 }
 
 void RedefinableTemplateSignature::RemoveExtendedSignaturePolicy::apply(RedefinableTemplateSignature& el, RedefinableTemplateSignature& me) {
-    // for (auto& functor : el.as<RedefinableTemplateSignature>().getParameters().m_addFunctors) {
-    //     if (sizeof(functor) == sizeof(AddParameterInExtendedSignatureFunctor)) { // compare type
-    //         el.as<RedefinableTemplateSignature>().getParameters().m_addFunctors.erase(functor);
-    //         delete functor;
-    //         break;
-    //     }
-    // }
-    // for (auto& functor : el.as<RedefinableTemplateSignature>().getParameters().m_removeFunctors) {
-    //     if (sizeof(functor) == sizeof(RemoveParameterInExtendedSignatureFunctor)) { // compare type
-    //         el.as<RedefinableTemplateSignature>().getParameters().m_removeFunctors.erase(functor);
-    //         delete functor;
-    //         break;
-    //     }
-    // }
-    // std::unordered_set<ID> parametersToKeep;
-    // for (auto& sig : m_el.as<RedefinableTemplateSignature>().getExtendedSignatures()) {
-    //     if (sig != el) {
-    //         for (ID id : sig.getParameters().ids()) {
-    //             parametersToKeep.insert(id);
-    //         }
-    //     }
-    // }
-    // for (auto& param : el.as<RedefinableTemplateSignature>().getParameters()) {
-    //     if (m_el.as<RedefinableTemplateSignature>().m_inheritedParameters.contains(param) && !parametersToKeep.count(param.getID())) {
-    //         m_el.as<RedefinableTemplateSignature>().m_inheritedParameters.removeReadOnly(param.getID());
-    //     }
-    // }
+    el.m_redefinableTemplateSignatureParameters.addSignatures.erase(UmlPtr<RedefinableTemplateSignature>(&me));
+    el.m_redefinableTemplateSignatureParameters.removeSignatures.erase(UmlPtr<RedefinableTemplateSignature>(&me));
+    std::unordered_set<ID> parametersToKeep;
+    for (auto& sig : me.getExtendedSignatures()) {
+        if (sig != el) {
+            for (ID id : sig.getParameters().ids()) {
+                parametersToKeep.insert(id);
+            }
+        }
+    }
+    for (auto& param : el.getParameters()) {
+        if (me.m_inheritedParameters.contains(param) && !parametersToKeep.count(param.getID())) {
+            [[maybe_unused]] SetLock paramLck = me.lockEl(param);
+            me.m_inheritedParameters.innerRemove(param.getID());
+            me.m_node->removeReference(param);
+            param.m_node->removeReference(me);
+        }
+    }
 }
 
-// void RedefinableTemplateSignature::AddParameterInExtendedSignatureFunctor::operator()(Element& el) const {
-//     if (!m_sig->getInheritedParameters().contains(el.getID())) {
-//         m_sig->getInheritedParameters().addReadOnly(el.as<TemplateParameter>());
-//     }
-// }
+void RedefinableTemplateSignature::AddParameterPolicy::apply(TemplateParameter& el, RedefinableTemplateSignature& me) {
+    for (auto sig : addSignatures) {
+        if (!sig->getInheritedParameters().contains(el.getID())) {
+            [[maybe_unused]] SetLock sigLock = me.lockEl(*sig);
+            sig->m_inheritedParameters.innerAdd(el.as<TemplateParameter>());
+            sig->m_node->setReference(me);
+            me.m_node->setReference(*sig);
+        }   
+    }
+}
 
-// void RedefinableTemplateSignature::RemoveParameterInExtendedSignatureFunctor::operator()(Element& el) const {
-//     std::unordered_set<ID> parametersToKeep;
-//     for (auto& sig : m_sig->getExtendedSignatures()) {
-//         if (sig != m_el) {
-//             for (ID id : sig.getParameters().ids()) {
-//                 parametersToKeep.insert(id);
-//             }
-//         }
-//     }
-//     if (m_sig->getInheritedParameters().contains(el.getID()) && !parametersToKeep.count(el.getID())) {
-//         m_sig->getInheritedParameters().removeReadOnly(el.getID());
-//     }
-// }
+void RedefinableTemplateSignature::RemoveParameterPolicy::apply(TemplateParameter& el, RedefinableTemplateSignature& me) {
+    for (auto ogSig : removeSignatures) {
+        std::unordered_set<ID> parametersToKeep;
+        for (auto& sig : ogSig->getExtendedSignatures()) {
+            if (sig != me) {
+                for (ID id : sig.getParameters().ids()) {
+                    parametersToKeep.insert(id);
+                }
+            }
+        }
+        if (ogSig->getInheritedParameters().contains(el.getID()) && !parametersToKeep.count(el.getID())) {
+            [[maybe_unused]] SetLock ogSigLock = me.lockEl(*ogSig);
+            ogSig->m_inheritedParameters.innerRemove(el.getID());
+            ogSig->m_node->removeReference(me);
+            me.m_node->removeReference(*ogSig);
+        }
+    }
+}
 
 TypedSet<Classifier, RedefinableTemplateSignature>& RedefinableTemplateSignature::getClassifierSingleton() {
     return m_classifier;
@@ -97,7 +97,8 @@ void RedefinableTemplateSignature::init() {
     m_classifier.redefines(m_template);
     m_classifier.opposite(&Classifier::getOwnedTemplateSignatureSingleton);
     m_extendedSignatures.subsets(m_redefinedElement);
-    m_inheritedParameters.subsets(m_parameters);
+    m_redefinableTemplateSignatureParameters.redefines(m_parameters);
+    m_inheritedParameters.subsets(m_redefinableTemplateSignatureParameters);
     m_inheritedParameters.m_readOnly = true;
 }
 

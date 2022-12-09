@@ -16,14 +16,25 @@ namespace UML {
         protected:
             class AddExtendedSignaturePolicy {
                 public:
-                    static void apply(RedefinableTemplateSignature& el, RedefinableTemplateSignature& me);
+                    void apply(RedefinableTemplateSignature& el, RedefinableTemplateSignature& me);
             };
             class RemoveExtendedSignaturePolicy {
                 public:
-                    static void apply(RedefinableTemplateSignature& el, RedefinableTemplateSignature& me);
+                    void apply(RedefinableTemplateSignature& el, RedefinableTemplateSignature& me);
+            };
+            class AddParameterPolicy {
+                public:
+                    std::unordered_set<UmlPtr<RedefinableTemplateSignature>> addSignatures;
+                    void apply(TemplateParameter& el, RedefinableTemplateSignature& me);
+            };
+            class RemoveParameterPolicy {
+                public:
+                    std::unordered_set<UmlPtr<RedefinableTemplateSignature>> removeSignatures;
+                    void apply(TemplateParameter& el, RedefinableTemplateSignature& me);
             };
             CustomSingleton<Classifier, RedefinableTemplateSignature> m_classifier = CustomSingleton<Classifier, RedefinableTemplateSignature>(this);
             CustomSet<RedefinableTemplateSignature, RedefinableTemplateSignature, AddExtendedSignaturePolicy, RemoveExtendedSignaturePolicy> m_extendedSignatures = CustomSet<RedefinableTemplateSignature, RedefinableTemplateSignature, AddExtendedSignaturePolicy, RemoveExtendedSignaturePolicy>(this);
+            CustomSet<TemplateParameter, RedefinableTemplateSignature, AddParameterPolicy, RemoveParameterPolicy> m_redefinableTemplateSignatureParameters = CustomSet<TemplateParameter, RedefinableTemplateSignature, AddParameterPolicy, RemoveParameterPolicy>(this);
             CustomSet<TemplateParameter, RedefinableTemplateSignature> m_inheritedParameters = CustomSet<TemplateParameter, RedefinableTemplateSignature>(this);
             TypedSet<Classifier, RedefinableTemplateSignature>& getClassifierSingleton();
             void referenceReindexed(ID newID) override;

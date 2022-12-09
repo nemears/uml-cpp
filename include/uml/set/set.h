@@ -985,7 +985,7 @@ namespace UML {
                 T* el = 0;
                 try {
                     el = &m_el.m_node->m_references.at(id).node->m_managerElementMemory->template as<T>(); // should be safe because we have a ptr
-                } catch (std::exception e) {
+                } catch (std::exception& e) {
                     throw SetStateException("Could not find el with id of " + id.string() + " in set");
                 }
                 [[maybe_unused]] SetLock elLock = m_el.m_manager->lockEl(*el);
@@ -1078,7 +1078,7 @@ namespace UML {
                     return;
                 }
                 SetNode* node = search(newID, this->m_root);
-                if (!node->m_parent) {
+                if (!node || !node->m_parent) {
                     return;
                 } 
                 reindexDFS(node, this);

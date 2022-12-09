@@ -185,6 +185,7 @@ namespace UML {
     class BehavioredClassifier;
     class InterfaceRealization;
     class Usage;
+    class RedefinableTemplateSignature;
     template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomSet;
     template <class T, class U> class Set;
     template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomSingleton;
@@ -193,8 +194,6 @@ namespace UML {
     template< class T, class U> class TypedSet;
     template <class T> class UmlPtr;
     typedef UmlPtr<Element> ElementPtr;
-    class SetReferenceFunctor;
-    class RemoveReferenceFunctor;
     namespace Parsers {
         struct EmitterMetaData;
         class ParserMetaData;
@@ -240,6 +239,7 @@ namespace UML {
         friend class BehavioredClassifier;
         friend class InterfaceRealization;
         friend class Usage;
+        friend class RedefinableTemplateSignature;
         template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomSingleton;
         template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomSet;
         template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomOrderedSet;
@@ -250,8 +250,6 @@ namespace UML {
         friend void Parsers::setOwner(Element& el, ID id);
         friend void Parsers::emitToFile(Element& el, Parsers::EmitterMetaData& data, std::string path, std::string fileName);
         friend ElementPtr Parsers::parse(Parsers::ParserMetaData& data);
-        friend class SetReferenceFunctor;
-        friend class RemoveReferenceFunctor;
 
         private:
         protected:

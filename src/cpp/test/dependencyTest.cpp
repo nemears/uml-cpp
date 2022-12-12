@@ -120,11 +120,11 @@ TEST_F(DependencyTest, basicDependencyEmitTest) {
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
     - package:
-        id: uONNU0sKPVjLALJuw2pHcNqljgkg
-    - package:
         id: "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         clientDependencies:
-          - "tAps&UBn21dKnQ5z7qaAzKBZqR7S")"""";
+          - "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
+    - package:
+        id: uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     std::cout << generatedEmit << '\n';
@@ -251,10 +251,42 @@ TEST_F(DependencyTest, emitAllDependencySubClassesTest) {
           - "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
           - ouZEty1jCLeAk_tZzWBKblwwBdGm
           - V5lXdO3DLF2UCpqipGloE976L6QN)"""";
+    std::string expectedEmit3 = R""""(package:
+  id: "oT59r8w9_ZlGzo2NFpN&vJgH_4YJ"
+  packagedElements:
+    - abstraction:
+        id: "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
+        name: test
+        clients:
+          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
+        suppliers:
+          - uONNU0sKPVjLALJuw2pHcNqljgkg
+    - realization:
+        id: V5lXdO3DLF2UCpqipGloE976L6QN
+        name: r
+        clients:
+          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
+        suppliers:
+          - uONNU0sKPVjLALJuw2pHcNqljgkg
+    - usage:
+        id: ouZEty1jCLeAk_tZzWBKblwwBdGm
+        name: u
+        clients:
+          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
+        suppliers:
+          - uONNU0sKPVjLALJuw2pHcNqljgkg
+    - package:
+        id: "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
+        clientDependencies:
+          - "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
+          - ouZEty1jCLeAk_tZzWBKblwwBdGm
+          - V5lXdO3DLF2UCpqipGloE976L6QN
+    - package:
+        id: uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     std::cout << generatedEmit << '\n';
-    ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit);
+    ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit || expectedEmit3 == generatedEmit);
 }
 
 void ASSERT_RESTORE_DEPENDENCY(Dependency& dependency, NamedElement& client, NamedElement& supplier) {

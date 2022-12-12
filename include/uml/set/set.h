@@ -791,12 +791,79 @@ namespace UML {
                                 } else {
                                     // left is empty, so we need to put right in left
                                     parent->m_left = parent->m_right;
-                                    parent->m_right = 0;
+
+                                    // balance right
+                                    SetNode* currNode = parent->m_right;
+                                    while (currNode) {
+                                        if (currNode->m_right) {
+                                            if (currNode->m_right->m_ptr.id() > parent->m_left->m_ptr.id()) {
+                                                parent->m_right = parent->m_left;
+                                                parent->m_left = currNode->m_right;
+                                                parent->m_left->m_parent = parent;
+                                            } else {
+                                                parent->m_right = currNode->m_right;
+                                                parent->m_right->m_parent = parent;
+                                            }
+                                            currNode->m_right = 0;
+                                            break;
+                                        } else if (currNode->m_left) {
+                                            if (currNode->m_left->m_ptr.id() > parent->m_left->m_ptr.id()) {
+                                                parent->m_right = parent->m_left;
+                                                parent->m_left = currNode->m_left;
+                                                parent->m_left->m_parent = parent;
+                                            } else {
+                                                parent->m_right = currNode->m_left;
+                                                parent->m_right->m_parent = parent;
+                                            }
+                                            currNode->m_left = 0;
+                                            parent = currNode;
+                                            currNode = currNode->m_left;
+                                        } else {
+                                            parent->m_right = 0;
+                                            break;
+                                        }
+                                    }
                                 }
                             } else if (parent->m_right == node) {
                                 parent->m_right = node->m_left;
                                 if (parent->m_right) {
-                                    parent->m_right->m_parent = parent;
+                                    if (parent->m_right->m_ptr.id() > parent->m_left->m_ptr.id()) {
+                                        parent->m_right = parent->m_left;
+                                        parent->m_left = node->m_left;
+                                    } else {
+                                        parent->m_right->m_parent = parent;
+                                    }
+                                    node->m_left->m_parent = parent;
+                                } else {
+                                    // balance tree
+                                    SetNode* currNode = parent->m_left;
+                                    while (currNode) {
+                                        if (currNode->m_right) {
+                                            if (currNode->m_right->m_ptr.id() > parent->m_left->m_ptr.id()) {
+                                                parent->m_right = parent->m_left;
+                                                parent->m_left = currNode->m_right;
+                                            } else {
+                                                parent->m_right = currNode->m_right;
+                                            }
+                                            currNode->m_right->m_parent = parent;
+                                            currNode->m_right = 0;
+                                            parent = currNode;
+                                            currNode = currNode->m_left;
+                                        } else if (currNode->m_left) {
+                                            if (currNode->m_left->m_ptr.id() > parent->m_left->m_ptr.id()) {
+                                                parent->m_right = parent->m_left;
+                                                parent->m_left = currNode->m_left;
+                                            } else {
+                                                parent->m_right = currNode->m_left;
+                                            }
+                                            currNode->m_left->m_parent = parent;
+                                            currNode->m_left = 0;
+                                            parent = currNode;
+                                            currNode = currNode->m_right;
+                                        } else {
+                                            break;
+                                        }
+                                    }
                                 }
                             } else {
                                 throw SetStateException("Could not remove element of id " + id.string() + " from set because of an internal error");
@@ -810,9 +877,16 @@ namespace UML {
                                 if (!currNode->m_left) {
                                     currNode->m_left = node->m_right;
                                     node->m_right->m_parent = currNode;
+                                    break;
                                 } else if (!currNode->m_right) {
-                                    currNode->m_right = node->m_right;
+                                    if (node->m_right->m_ptr.id() > currNode->m_left->m_ptr.id()) {
+                                        currNode->m_right = currNode->m_left;
+                                        currNode->m_left = node->m_right;
+                                    } else {
+                                        currNode->m_right = node->m_right;
+                                    }
                                     node->m_right->m_parent = currNode;
+                                    break;
                                 } else if (node->m_right->m_ptr.id() > currNode->m_right->m_ptr.id()) {
                                     currNode = currNode->m_left;
                                 } else {
@@ -825,44 +899,54 @@ namespace UML {
 
                                 // place right in left
                                 SetNode* currNode = node->m_left;
-                                while (currNode) {
+                                SetNode* nodeToMove = node->m_right;
+
+                                while (currNode && nodeToMove) {
                                     if (!currNode->m_left) {
-                                        currNode->m_left = node->m_right;
-                                        break;
-                                    } else if (!currNode->m_right) {
-                                        if (node->m_right->m_ptr.id() > currNode->m_left->m_ptr.id()) {
-                                            currNode->m_right = currNode->m_left;
-                                            currNode->m_left = node->m_right;
+                                        currNode->m_left = nodeToMove;
+                                        nodeToMove->m_parent = currNode;
+                                        // determine how to handle nodeToMove's children
+                                        if (nodeToMove->m_right) {
+                                            if (nodeToMove->m_right->m_ptr.id() > currNode->m_left->m_ptr.id()) {
+                                                currNode->m_right = currNode->m_left;
+                                                currNode->m_left = nodeToMove->m_right;
+                                            } else {
+                                                currNode->m_right = nodeToMove->m_right;
+                                            }
+                                            nodeToMove->m_right->m_parent = currNode;
+                                            nodeToMove->m_right = 0;
+
+                                            SetNode* temp = nodeToMove;
+                                            nodeToMove = nodeToMove->m_left;
+                                            temp->m_left = 0;
+                                        } else if (nodeToMove->m_left) {
+                                            if (nodeToMove->m_left->m_ptr.id() > currNode->m_left->m_ptr.id()) {
+                                                currNode->m_right = currNode->m_left;
+                                                currNode->m_left = nodeToMove->m_left;
+                                            } else {
+                                                currNode->m_right = nodeToMove->m_left;
+                                            }
+                                            nodeToMove->m_left->m_parent = currNode;
+                                            nodeToMove->m_left = 0;
+                                            break;
                                         } else {
-                                            currNode->m_right = node->m_right;
+                                            break;
                                         }
-                                        node->m_right->m_parent = currNode;
+                                    } else if (!currNode->m_right) {
+                                        if (nodeToMove->m_ptr.id() > currNode->m_left->m_ptr.id()) {
+                                            currNode->m_right = currNode->m_left;
+                                            currNode->m_left = nodeToMove;
+                                        } else {
+                                            currNode->m_right = nodeToMove;
+                                        }
+                                        nodeToMove->m_parent = currNode;
                                         break;
                                     } else {
-                                        if (node->m_right->m_ptr.id() > currNode->m_right->m_ptr.id()) {
+                                        if (nodeToMove->m_ptr.id() > currNode->m_right->m_ptr.id()) {
                                             currNode = currNode->m_left;
                                         } else {
                                             currNode = currNode->m_right;
                                         }
-                                    }
-                                }
-
-                                // balance the tree
-                                if (node->m_right && !node->m_left->m_right) {
-                                    currNode = node->m_left;
-                                    SetNode* nodeToMove = node->m_right->m_right ? node->m_right->m_right : node->m_right->m_left;
-                                    while (nodeToMove) {
-                                        currNode->m_right = nodeToMove;
-                                        SetNode* nodeToMoveParent = nodeToMove->m_parent;
-                                        if (nodeToMoveParent->m_right == nodeToMove) {
-                                            nodeToMoveParent->m_right = 0;
-                                        } else {
-                                            nodeToMoveParent->m_left = nodeToMoveParent->m_right;
-                                            nodeToMoveParent->m_right = 0;
-                                        }
-                                        nodeToMove->m_parent = currNode;
-                                        currNode = nodeToMoveParent;
-                                        nodeToMove = currNode->m_left->m_right;
                                     }
                                 }
                             }

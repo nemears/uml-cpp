@@ -269,7 +269,7 @@ namespace UML {
             }
 
             SetNode* search(std::string name, SetNode* node) const {
-                if (node->m_ptr->isSubClassOf(ElementType::NAMED_ELEMENT)) {
+                if (node->m_ptr && node->m_ptr->isSubClassOf(ElementType::NAMED_ELEMENT)) {
                     if (node->m_ptr->as<NamedElement>().getName() == name) {
                         return node;
                     }
@@ -484,8 +484,8 @@ namespace UML {
                                 }
                             }
                             dividerNode->set = dividerNodeScope;
-                            dividerNode->m_parent = currNode->m_parent;
-                            if (dividerNode->m_parent) {
+                            if (currNode->m_parent && (currNode->m_parent->set == set || set->getAllSubSets().count(currNode->m_parent->set))) { // getAllSubsets slow
+                                dividerNode->m_parent = currNode->m_parent;
                                 // adjust parent
                                 dividerNode->m_parent->m_left == currNode ? dividerNode->m_parent->m_left = dividerNode : dividerNode->m_parent->m_right = dividerNode;
                             }
@@ -1199,6 +1199,7 @@ namespace UML {
 
             }
             virtual ~PrivateSet() {
+                [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el); 
                 delete m_opposite;
                 if (!this->m_rootRedefinedSet) {
                     for (auto superSet : this->m_superSets) {
@@ -1209,9 +1210,6 @@ namespace UML {
                     }
                     return;
                 }
-                [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el); 
-
-                // TODO lock all of the elements in the set lock?
 
                 std::unordered_set<AbstractSet*> allSuperSets = this->getAllSuperSets();
                 if (allSuperSets.empty()) {
@@ -1238,6 +1236,9 @@ namespace UML {
                         }
                         // fix all parents
                         for (auto superSet : allSuperSets) {
+                            if (superSet->m_superSets.size() != 0 || !superSet->m_rootRedefinedSet) {
+                                continue;
+                            }
                             SetNode* parent = getParent(nodeToDelete, superSet->m_root);
                             if (parent) {
                                 if (parent->m_left == currNode) {

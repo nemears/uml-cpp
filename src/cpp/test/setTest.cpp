@@ -367,7 +367,7 @@ TEST_F(SetTest, longerBasicRemoveTest) {
 
 TEST_F(SetTest, basicRandomRemoveTest) {
     BasicManager m;
-    const size_t constNumPackages = 40;
+    const size_t constNumPackages = 8;
     // TODO bug change 40 to 50 or higher
     size_t numPackages = constNumPackages;
     UmlPtr<TestPackageSetElement> testEl = m.create<TestPackageSetElement>();

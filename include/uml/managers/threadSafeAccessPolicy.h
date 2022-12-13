@@ -32,7 +32,7 @@ namespace UML {
             std::mutex m_graphMtx;
 
             void clear() {
-                std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                // std::lock_guard<std::mutex> graphLock(m_graphMtx);
                 for (auto& pair : m_graph) {
                     delete pair.second.m_managerElementMemory;
                     pair.second.erase();

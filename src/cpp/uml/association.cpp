@@ -12,8 +12,8 @@ using namespace UML;
 void Association::AddMemberEndPolicy::apply(Property& el, Association& me) {
     if (el.getType()) {
         if (el.getType().loaded() && !me.getEndTypes().contains(el.getType().id())) {
-            SetLock typeLock = me.lockEl(*el.getType());
-            me.m_memberEnds.innerAddToOtherSet<Type, Association>(me.m_endTypes, *el.getType());
+            [[maybe_unused]] SetLock typeLock = me.lockEl(*el.getType());
+            me.m_endTypes.innerAdd(*el.getType());
             el.getType()->setReference(&me);
         }
     }
@@ -22,8 +22,8 @@ void Association::AddMemberEndPolicy::apply(Property& el, Association& me) {
 void Association::RemoveMemberEndPolicy::apply(Property& el, Association& me) {
     if (el.getType()) {
         if (me.getEndTypes().contains(el.getType().id())) {
-            SetLock typeLock = me.lockEl(*el.getType());
-            me.m_memberEnds.innerRemoveFromOtherSet<Type, Association>(me.m_endTypes, el.getType().id());
+            [[maybe_unused]] SetLock typeLock = me.lockEl(*el.getType());
+            me.m_endTypes.innerRemove(el.getType().id());
             el.getType()->removeReference(me.getID());
         }
     }

@@ -28,15 +28,15 @@ using namespace UML;
 
 void Property::AddRedefinedPropertyPolicy::apply(Property& el, Property& me) {
     if (me.getFeaturingClassifier() && !me.m_redefinitionContext.contains(me.getFeaturingClassifier().id())) {
-        SetLock lock = me.lockEl(*me.getFeaturingClassifier());
-        me.m_redefinedProperties.innerAddToOtherSet(me.m_redefinitionContext ,*me.getFeaturingClassifier());
+        [[maybe_unused]] SetLock lock = me.lockEl(*me.getFeaturingClassifier());
+        me.m_redefinitionContext.innerAdd(*me.getFeaturingClassifier());
     }
 }
 
 void Property::RemoveRedefinedPropertyPolicy::apply(Property& el, Property& me) {
     if (me.m_redefinedElement.empty() && me.getFeaturingClassifier() && !me.m_redefinitionContext.empty()) {
-        SetLock lock = me.lockEl(*me.getFeaturingClassifier());
-        me.m_redefinedProperties.innerRemoveFromOtherSet(me.m_redefinitionContext, me.getFeaturingClassifier().id());
+        [[maybe_unused]] SetLock lock = me.lockEl(*me.getFeaturingClassifier());
+        me.m_redefinitionContext.innerRemove(me.getFeaturingClassifier().id());
     }
 }
 
@@ -52,8 +52,8 @@ void Property::restoreReference(Element* el) {
     if (m_redefinedProperties.contains(el->getID())) {
         el->setReference(this);
         if (m_featuringClassifier.get() && !m_redefinitionContext.contains(m_featuringClassifier.get().id())) {
-            // TODO lock featuring classigier
-            // m_redefinitionContext.innerAdd(m_featuringClassifier.get().id());
+            [[maybe_unused]] SetLock lock = lockEl(*m_featuringClassifier.get());
+            m_redefinitionContext.innerAdd(m_featuringClassifier.get().id());
         }
     }
 }
@@ -133,7 +133,6 @@ void Property::setComposite(bool composite) {
     m_composite = composite;
     if (m_composite) {
         if (m_featuringClassifier.get() && m_featuringClassifier.get()->isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
-            // m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.nonOppositeAdd(*this);
             m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.innerAdd(*this);
         }
     }

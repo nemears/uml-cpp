@@ -395,11 +395,6 @@ namespace UML {
                 }
             }
 
-            template<class V, class W>
-            void innerAddToOtherSet(TypedSet<V,W>& set, V& el) {
-                set.innerAdd(el);
-            }
-
             /**
              * searches superSet structure by finding the roots first and checking if it was placed
              * @param node: the node being placed
@@ -876,11 +871,6 @@ namespace UML {
                     superSet->runRemovePolicy(*node->m_ptr);
                 }
                 AllocationPolicy::deleteNode(node);
-            }
-            
-            template <class V, class W>
-            void innerRemoveFromOtherSet(TypedSet<V,W>& set, ID id) {
-                set.innerRemove(id);
             }
 
             void handleOppositeAdd(T& el) {

@@ -38,7 +38,7 @@ TEST_F(ActivityNodeTest, reindexID_test) {
     Activity& a = *m.create<Activity>();
     ActivityNode& n = *m.create<ActivityNode>();
     a.getNodes().add(n);
-    n.setActivity(&a);
+    n.setActivity(&a); // Maybe this should be allowed
     n.setID("c3rcWoyTgxLfFl5jf2Ms6CMa_sWe");
     ASSERT_NO_THROW(a.getNodes().get(n.getID()));
     ASSERT_NO_THROW(a.getOwnedElements().get(n.getID()));

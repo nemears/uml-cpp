@@ -128,8 +128,13 @@ namespace UML {
                         m_guard = subsetOf.m_guard + 1;
                     }
                     // Handle ordered set, TODO other set types
-                    if (!m_setToInstantiate && subsetOf.setType() == SetType::ORDERED_SET && setType() != SetType::ORDERED_SET) {
-                        m_setToInstantiate = &subsetOf;
+                    if (!m_setToInstantiate && subsetOf.setType() == SetType::ORDERED_SET /**&& setType() != SetType::ORDERED_SET**/) {
+                        if (subsetOf.m_setToInstantiate) {
+                            // we want highest up the tree orderedSet
+                            m_setToInstantiate = subsetOf.m_setToInstantiate;
+                        } else {
+                            m_setToInstantiate = &subsetOf;
+                        }
                     } else if (subsetOf.m_setToInstantiate) {
                         m_setToInstantiate = subsetOf.m_setToInstantiate;
                     }
@@ -350,10 +355,6 @@ namespace UML {
                 for (auto superSet : allSuperSetsAndMe) {
                     superSet->runAddPolicy(el);
                 }
-
-                // for (auto redefinedSet : this->m_redefines) {
-                //     redefinedSet->runAddPolicy(el);
-                // }
             }
 
             void innerAdd(ID id) {
@@ -920,14 +921,12 @@ namespace UML {
             }
             void add(ID id) {
                 // "lock" elements we are editing
-                // SetLock elLock = m_el.m_manager->lockEl(el);
                 [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 if (m_readOnly) {
                     throw SetStateException("Cannot add to read only set!");
                 }
                 // add
                 innerAdd(id);
-                // el.m_node->setReference(m_el);
                 m_el.m_node->setReference(id);
             }
             void handleOppositeRemove(Element& el) override {

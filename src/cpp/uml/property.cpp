@@ -10,21 +10,21 @@
 
 using namespace UML;
 
-// void Property::AddEndTypeFunctor::operator()(Element& el) const {
-//     if (m_el.as<Property>().getAssociation()) {
-//         m_el.as<Property>().getAssociation()->getEndTypes().add(el.as<Type>());
-//         el.setReference(m_el.as<Property>().getAssociation().ptr());
-//     }
-// }
+void Property::SetPropertyTypePolicy::apply(Type& el, Property& me) {
+    if (me.getAssociation()) {
+        [[maybe_unused]] SetLock assocLock = me.lockEl(*me.getAssociation());
+        me.getAssociation()->m_endTypes.innerAdd(el);
+    }
+}
 
-// void Property::RemoveEndTypeFunctor::operator()(Element& el) const {
-//     if (m_el.as<Property>().getAssociation()) {
-//         if (m_el.as<Property>().getAssociation()->getEndTypes().contains(el.getID())) {
-//             m_el.as<Property>().getAssociation()->getEndTypes().remove(el.getID());
-//             el.removeReference(m_el.as<Property>().getAssociation().id());
-//         }
-//     }
-// }
+void Property::RemovePropertyTypePolicy::apply(Type& el, Property& me) {
+    if (me.getAssociation()) {
+        if (me.getAssociation()->getEndTypes().contains(el.getID())) {
+            [[maybe_unused]] SetLock assocLock = me.lockEl(*me.getAssociation());
+            me.getAssociation()->m_endTypes.innerRemove(el.getID());
+        }
+    }
+}
 
 void Property::AddRedefinedPropertyPolicy::apply(Property& el, Property& me) {
     if (me.getFeaturingClassifier() && !me.m_redefinitionContext.contains(me.getFeaturingClassifier().id())) {
@@ -105,6 +105,7 @@ void Property::init() {
     m_interface.subsets(m_featuringClassifier);
     m_interface.opposite(&Interface::getOwnedAttributes);
     m_redefinedProperties.subsets(m_redefinedElement);
+    m_propertyType.redefines(m_type);
 }
 
 Property::Property() : Element(ElementType::PROPERTY) {

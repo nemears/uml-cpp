@@ -38,25 +38,21 @@ namespace UML{
         protected:
             AggregationKind m_aggregation = AggregationKind::NONE;
             bool m_composite = false;
-            // class AddEndTypeFunctor : public SetFunctor {
-            //     private:
-            //         void operator()(Element& el) const override;
-            //     public:
-            //         AddEndTypeFunctor(Element* el) : SetFunctor(el) {};
-            // };
-            // class RemoveEndTypeFunctor : public SetFunctor {
-            //     private:
-            //         void operator()(Element& el) const override;
-            //     public:
-            //         RemoveEndTypeFunctor(Element* el) : SetFunctor(el) {};
-            // };
+            class SetPropertyTypePolicy {
+                public:
+                    void apply(Type& el, Property& me);
+            };
+            class RemovePropertyTypePolicy {
+                public:
+                    void apply(Type& el, Property& me);
+            };
             class AddRedefinedPropertyPolicy {
                 public:
-                    static void apply(Property& el, Property& me);
+                    void apply(Property& el, Property& me);
             };
             class RemoveRedefinedPropertyPolicy {
                 public:
-                    static void apply(Property& el, Property& me);
+                    void apply(Property& el, Property& me);
             };
             CustomSingleton<ValueSpecification, Property> m_defaultValue = CustomSingleton<ValueSpecification, Property>(this);
             CustomSingleton<DataType, Property> m_dataType = CustomSingleton<DataType, Property>(this);
@@ -65,6 +61,7 @@ namespace UML{
             CustomSingleton<Association, Property> m_owningAssociation = CustomSingleton<Association, Property>(this);
             CustomSingleton<Interface, Property> m_interface = CustomSingleton<Interface, Property>(this);
             CustomSet<Property, Property, AddRedefinedPropertyPolicy, RemoveRedefinedPropertyPolicy> m_redefinedProperties = CustomSet<Property, Property, AddRedefinedPropertyPolicy, RemoveRedefinedPropertyPolicy>(this);
+            CustomSingleton<Type, Property, SetPropertyTypePolicy, RemovePropertyTypePolicy> m_propertyType = CustomSingleton<Type, Property, SetPropertyTypePolicy, RemovePropertyTypePolicy>(this);
             void setComposite(bool composite);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;

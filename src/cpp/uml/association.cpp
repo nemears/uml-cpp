@@ -15,6 +15,7 @@ void Association::AddMemberEndPolicy::apply(Property& el, Association& me) {
             [[maybe_unused]] SetLock typeLock = me.lockEl(*el.getType());
             me.m_endTypes.innerAdd(*el.getType());
             el.getType()->setReference(&me);
+            me.setReference(el.getType().ptr());
         }
     }
 }
@@ -25,6 +26,7 @@ void Association::RemoveMemberEndPolicy::apply(Property& el, Association& me) {
             [[maybe_unused]] SetLock typeLock = me.lockEl(*el.getType());
             me.m_endTypes.innerRemove(el.getType().id());
             el.getType()->removeReference(me.getID());
+            me.removeReference(el.getType().id());
         }
     }
 }
@@ -38,7 +40,7 @@ void Association::restoreReferences() {
     Classifier::restoreReferences();
     Relationship::restoreReferences();
     for (auto& prop : m_memberEnds) {
-        if (prop.getType()) {
+        if (prop.getType() && !m_endTypes.contains(prop.getType().id())) {
             m_endTypes.add(prop.getType().id());
         }
     }

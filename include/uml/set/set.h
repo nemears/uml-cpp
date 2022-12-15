@@ -1018,9 +1018,9 @@ namespace UML {
                     throw SetStateException("Could not find el with id of " + id.string() + " in set");
                 }
                 [[maybe_unused]] SetLock elLock = m_el.m_manager->lockEl(*el);
-                if (m_readOnly) {
-                    throw SetStateException("Cannot remove from read only set!");
-                }
+                // if (m_readOnly) {
+                //     throw SetStateException("Cannot remove from read only set!");
+                // }
                 // remove
                 SetNode* node = search(id, this->m_root);
                 if (!node) {

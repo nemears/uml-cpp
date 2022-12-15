@@ -14,6 +14,7 @@ void Property::SetPropertyTypePolicy::apply(Type& el, Property& me) {
     if (me.getAssociation()) {
         [[maybe_unused]] SetLock assocLock = me.lockEl(*me.getAssociation());
         me.getAssociation()->m_endTypes.innerAdd(el);
+        me.getAssociation()->setReference(&el);
     }
 }
 
@@ -22,6 +23,7 @@ void Property::RemovePropertyTypePolicy::apply(Type& el, Property& me) {
         if (me.getAssociation()->getEndTypes().contains(el.getID())) {
             [[maybe_unused]] SetLock assocLock = me.lockEl(*me.getAssociation());
             me.getAssociation()->m_endTypes.innerRemove(el.getID());
+            me.getAssociation()->removeReference(el.getID());
         }
     }
 }
@@ -128,7 +130,7 @@ void Property::setComposite(bool composite) {
     if (!composite && m_composite) {
         if (m_featuringClassifier.get() && m_featuringClassifier.get()->isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
             // TODO make this happen
-            // m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.removeFromJustThisSet(m_id);
+            m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.removeFromJustThisSet(m_id);
         }
     }
     m_composite = composite;

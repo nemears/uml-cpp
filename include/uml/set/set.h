@@ -330,6 +330,9 @@ namespace UML {
                 
                 std::unordered_set<AbstractSet*> allSuperSetsAndMe = this->getAllSuperSets();
                 allSuperSetsAndMe.insert(node->set);
+                for (auto redefinedSet : this->m_redefines) {
+                    allSuperSetsAndMe.insert(redefinedSet);
+                }
                 std::unordered_set<AbstractSet*> allSubSets = this->getAllSubSets();
 
                 node->set->adjustSuperSets(node, allSuperSetsAndMe);
@@ -345,12 +348,12 @@ namespace UML {
                     superSet->m_size++;
                 }
 
-                for (auto redefinedSet : this->m_redefines) {
-                    if (redefinedSet->m_rootRedefinedSet) {
-                        continue;
-                    }
-                    redefinedSet->m_size++;
-                }
+                // for (auto redefinedSet : this->m_redefines) {
+                //     if (redefinedSet->m_rootRedefinedSet) {
+                //         continue;
+                //     }
+                //     redefinedSet->m_size++;
+                // }
 
                 for (auto superSet : allSuperSetsAndMe) {
                     superSet->runAddPolicy(el);
@@ -373,6 +376,9 @@ namespace UML {
                 
                 std::unordered_set<AbstractSet*> allSuperSetsAndMe = this->getAllSuperSets();
                 allSuperSetsAndMe.insert(node->set);
+                for (auto redefinedSet : this->m_redefines) {
+                    allSuperSetsAndMe.insert(redefinedSet);
+                }
                 std::unordered_set<AbstractSet*> allSubSets = this->getAllSubSets();
 
                 node->set->adjustSuperSets(node, allSuperSetsAndMe);
@@ -388,12 +394,12 @@ namespace UML {
                     superSet->m_size++;
                 }
 
-                for (auto redefinedSet : this->m_redefines) {
-                    if (redefinedSet->m_rootRedefinedSet) {
-                        continue;
-                    }
-                    redefinedSet->m_size++;
-                }
+                // for (auto redefinedSet : this->m_redefines) {
+                //     if (redefinedSet->m_rootRedefinedSet) {
+                //         continue;
+                //     }
+                //     redefinedSet->m_size++;
+                // }
             }
 
             /**
@@ -1229,6 +1235,10 @@ namespace UML {
                     throw SetStateException("WARNING redefines set after set was used, must make sure redefining is done during configuration, before use!");
                 }
                 this->m_redefines.push_back(&redefined);
+                for (auto redefinedSet : redefined.m_redefines) {
+                    this->m_redefines.push_back(redefinedSet);
+                    redefinedSet->m_rootRedefinedSet = false;
+                }
                 redefined.m_redefines.push_back(this);
                 redefined.m_rootRedefinedSet = false;
                 if (!this->m_setToInstantiate && redefined.setType() == SetType::ORDERED_SET && this->setType() != SetType::ORDERED_SET) {

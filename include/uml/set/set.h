@@ -351,9 +351,9 @@ namespace UML {
                     superSet->runAddPolicy(el);
                 }
 
-                for (auto redefinedSet : this->m_redefines) {
-                    redefinedSet->runAddPolicy(el);
-                }
+                // for (auto redefinedSet : this->m_redefines) {
+                //     redefinedSet->runAddPolicy(el);
+                // }
             }
 
             void innerAdd(ID id) {
@@ -1087,12 +1087,22 @@ namespace UML {
                 this->m_setToInstantiate ? this->m_setToInstantiate->adjustSuperSets(node, allSuperSetsAndMe) : AllocationPolicy::adjustSuperSets(node, allSuperSetsAndMe);
             }
             SetNode* createNode (Element& el) override {
-                SetNode* ret = this->m_setToInstantiate ? this->m_setToInstantiate->createNode(el) : AllocationPolicy::create(el.as<T>());
+                SetNode* ret = 0;
+                if (this->m_setToInstantiate) {
+                    ret = this->m_setToInstantiate->createNode(el);
+                } else {
+                    ret = AllocationPolicy::create(el.as<T>());
+                }
                 ret->set = this;
                 return ret;
             }
             SetNode* createNode (ID id) override {
-                SetNode* ret = this->m_setToInstantiate ? this->m_setToInstantiate->createNode(id) : AllocationPolicy::create(m_el.m_manager->createPtr(id));
+                SetNode* ret = 0;
+                if (this->m_setToInstantiate) {
+                    ret = this->m_setToInstantiate->createNode(id);
+                } else {
+                    ret = AllocationPolicy::create(m_el.m_manager->createPtr(id));
+                }
                 ret->set = this;
                 return ret;
             }

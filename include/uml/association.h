@@ -28,8 +28,6 @@ namespace UML {
             void restoreReferences() override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
-            // Set<Property, Association>& getMemberEndsSet();
-            // Set<Property, Association>& getOwnedEndsSet();
             void init();
             Association();
         public:

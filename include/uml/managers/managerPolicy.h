@@ -385,11 +385,31 @@ namespace UML {
 
             ElementPtr open(std::string path) override {
                 setRoot(PersistencePolicy::parse(path, this).ptr());
+                std::list<ElementPtr> queue;
+                queue.push_back(m_root);
+                while (!queue.empty()) {
+                    ElementPtr front = queue.front();
+                    queue.pop_front();
+                    AccessPolicy::restoreNode(front.m_node);
+                    for (auto& el : front->getOwnedElements()) {
+                        queue.push_back(&el);
+                    }
+                }
                 return m_root;
             }
 
             ElementPtr open() override {
                 setRoot(PersistencePolicy::parse(this).ptr());
+                std::list<ElementPtr> queue;
+                queue.push_back(m_root);
+                while (!queue.empty()) {
+                    ElementPtr front = queue.front();
+                    queue.pop_front();
+                    AccessPolicy::restoreNode(front.m_node);
+                    for (auto& el : front->getOwnedElements()) {
+                        queue.push_back(&el);
+                    }
+                }
                 return m_root;
             }
 

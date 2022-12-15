@@ -12,18 +12,6 @@
 
 using namespace UML;
 
-// Set<Property, Class>& Class::getOwnedAttributesSet() {
-//     return m_classOwnedAttrubutes;
-// }
-
-// Set<Operation, Class>& Class::getOwnedOperationsSet() {
-//     return m_ownedOperations;
-// }
-
-// Set<Classifier, Class>& Class::getNestedClassifiersSet() {
-//     return m_nestedClassifiers;
-// }
-
 void Class::init() {
     m_classOwnedAttrubutes.redefines(m_ownedAttributes);
     m_classOwnedAttrubutes.opposite(&Property::getClassSingleton);

@@ -71,6 +71,7 @@ namespace UML {
             virtual void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*>& allSuperSetsAndMe) = 0;
             virtual SetNode* createNode(Element& el) = 0;
             virtual SetNode* createNode(ID id) = 0;
+            virtual void innerRemove(ID id) = 0;
 
 
             std::unordered_set<AbstractSet*> getAllSuperSets() const {
@@ -524,96 +525,10 @@ namespace UML {
                                     // TODO different behavior with Bag and List
                                     throw SetStateException("Node already in set TODO bags and list");
                                 }
-                                // replace node with this one
-                                for (auto superSet : currNode->set->getAllSuperSets()) {
-                                    if (superSet->m_superSets.size() == 0) {
-                                        if (currNode->m_parent) {
-                                            SetNode* parent = getParent(currNode, superSet->m_root);
-                                            if (parent->m_left == currNode) {
-                                                if (parent->m_right) {
-                                                    if (!currNode->m_left) {
-                                                        parent->m_left = parent->m_right;
-                                                        // balance tree TODO
-                                                        if (parent->m_right->m_left) {
-                                                            throw SetStateException("TODO balance tree, bug lazy dev!");
-                                                        }
-                                                    }
-                                                    if (currNode->m_left->m_ptr.id() > parent->m_right->m_ptr.id()) {
-                                                        parent->m_left = currNode->m_left;
-                                                    } else {
-                                                        parent->m_left = parent->m_right;
-                                                        parent->m_right = currNode->m_left;
-                                                    }
-                                                } else {
-                                                    parent->m_left = currNode->m_left;
-                                                }
-                                            } else {
-                                                parent->m_right = currNode->m_left;
-                                            }
-                                        }
-                                    }
-                                    if (superSet->m_root == currNode) {
-                                        superSet->m_root = currNode->m_left;
-                                    }
-                                    superSet->m_size--;
-                                }
-                                currNode->set->m_size--;
-                                // place right
-                                if (currNode->m_right) {
-                                    SetNode* currNode2 = currNode->m_left;
-                                    while (currNode2) {
-                                        // no children, place to left
-                                        if (!currNode2->m_left) {
-                                            currNode2->m_left = currNode->m_right;
-                                            currNode->m_right->m_parent = currNode2;
-                                            break;
-                                        }
-
-                                        // one child determine where to place
-                                        if (!currNode2->m_right) {
-                                            if (currNode->m_right->m_ptr.id() > currNode2->m_left->m_ptr.id()) {
-                                                currNode2->m_right = currNode2->m_left;
-                                                currNode2->m_left = currNode->m_right;
-                                            } else {
-                                                currNode2->m_right = currNode->m_right;
-                                            }
-                                            currNode->m_right->m_parent = currNode2;
-                                            break;
-                                        }
-
-                                        // two children, pick side to recurse
-                                        if (currNode->m_right->m_ptr.id() > currNode2->m_right->m_ptr.id()) {
-                                            currNode2 = currNode2->m_left;
-                                        } else {
-                                            currNode2 = currNode2->m_right;
-                                        }
-                                    }
-                                }
-                                if (currNode->m_left) {
-                                    currNode->m_left->m_parent = currNode->m_parent;
-                                    SetNode* currNodeLeft = currNode->m_left;
-                                    delete currNode;
-                                    currNode = currNodeLeft;
-                                    continue;
-                                } else {
-                                    if (currNode->m_parent) {
-                                        for (auto superSet : currNode->set->getAllSuperSets()) {
-                                            if (superSet->m_superSets.size() == 0) {
-                                                SetNode* parent = getParent(currNode, superSet->m_root);
-                                                if (parent->m_left == currNode) {
-                                                    parent->m_left = node;
-                                                } else {
-                                                    parent->m_right = node;
-                                                }
-                                            }
-                                            if (superSet->m_root == currNode) {
-                                                superSet->m_root = node;
-                                            }
-                                        }
-                                    }
-                                    delete currNode;
-                                    break;
-                                }
+                                SetNode* nextCurrNode = getParent(currNode, currNode->set->m_root);
+                                currNode->set->innerRemove(currNode->m_ptr.id());
+                                currNode = nextCurrNode;
+                                continue;
                             } else {
                                 // TODO may be valid in some edge cases
                                 throw SetStateException("Node already in this set!");
@@ -1216,6 +1131,8 @@ namespace UML {
                     allSuperSets.insert(this); // edge case, need someone to find parent from
                 }
 
+                std::unordered_set<AbstractSet*> allSubSets = this->getAllSubSets(); // should be empty or small
+
                 // start from bottom left
                 SetNode* currNode = this->m_root;
                 while (currNode && currNode->m_left) {
@@ -1256,6 +1173,12 @@ namespace UML {
                                 if (superSet->m_root == currNode) {
                                     superSet->m_root = 0;
                                 }
+                            }
+                        }
+
+                        for (auto subSet : allSubSets) {
+                            if (subSet->m_root == currNode) {
+                                subSet->m_root = 0;
                             }
                         }
 

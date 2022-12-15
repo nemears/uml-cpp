@@ -10,15 +10,13 @@ using namespace UML;
 
 void Namespace::AddElementImportPolicy::apply(ElementImport& el, Namespace& me) {
     if (el.getImportedElement() && !me.getImportedMembers().contains(el.getImportedElement().id())) {
-        // me.getImportedMembers().addReadOnly(*el.getImportedElement());
-        me.m_elementImports.innerAddToOtherSet(me.m_importedMembers, *el.getImportedElement());
+        me.m_importedMembers.innerAdd(*el.getImportedElement());
     }
 }
 
 void Namespace::RemoveElementImportPolicy::apply(ElementImport& el, Namespace& me) {
     if (el.getImportedElement() && me.getImportedMembers().contains(el.getImportedElement().id())) {
-        // me.getImportedMembers().removeReadOnly(el.getImportedElement().id());
-        me.m_elementImports.innerRemoveFromOtherSet(me.m_importedMembers, el.getImportedElement().id());
+        me.m_importedMembers.innerRemove(el.getImportedElement().id());
     }
 }
 
@@ -26,8 +24,7 @@ void Namespace::AddPackageImportPolicy::apply(PackageImport& el, Namespace& me) 
     if (el.getImportedPackage()) {
         for (auto& pckgMember : el.getImportedPackage()->getPackagedElements()) {
             if (!me.getImportedMembers().contains(pckgMember)) {
-                // me.getImportedMembers().addReadOnly(pckgMember);
-                me.m_packageImports.innerAddToOtherSet(me.m_importedMembers, pckgMember);
+                me.m_importedMembers.innerAdd(pckgMember);
             }
         }
     }
@@ -37,8 +34,7 @@ void Namespace::RemovePackageImportPolicy::apply(PackageImport& el, Namespace& m
     if (el.getImportedPackage()) {
         for (auto& pckgMember : el.getImportedPackage()->getPackagedElements()) {
             if (me.getImportedMembers().contains(pckgMember)) {
-                // me.getImportedMembers().removeReadOnly(pckgMember.getID());
-                me.m_packageImports.innerRemoveFromOtherSet(me.m_importedMembers, pckgMember.getID());
+                me.m_importedMembers.innerRemove(pckgMember.getID());
             }
         }
     }

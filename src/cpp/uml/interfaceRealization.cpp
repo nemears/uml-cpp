@@ -20,14 +20,14 @@ void InterfaceRealization::RemoveContractPolicy::apply(Interface& el, InterfaceR
             if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
                 pair.second.node->m_managerElementMemory->as<Port>().getType().id() == me.m_implementingClassifier.get().id()) {
                     Port& port = pair.second.node->m_managerElementMemory->as<Port>();
-                    SetLock portLck = me.lockEl(port);
+                    [[maybe_unused]] SetLock portLck = me.lockEl(port);
                     if (port.isConjugated()) {
                         if (port.getRequired().contains(el.getID())) {
-                            me.m_contract.innerRemoveFromOtherSet(port.getRequired(), el.getID());
+                            port.m_required.innerRemove(el.getID());
                         }
                     } else {
                         if (port.getProvided().contains(el.getID())) {
-                            me.m_contract.innerRemoveFromOtherSet(port.getProvided(), el.getID());
+                            port.m_provided.innerRemove(el.getID());
                         }
                     }
             }
@@ -45,14 +45,14 @@ void InterfaceRealization::SetContractPolicy::apply(Interface& el, InterfaceReal
             if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
                 pair.second.node->m_managerElementMemory->as<Port>().getType().id() == me.m_implementingClassifier.get().id()) {
                     Port& port = pair.second.node->m_managerElementMemory->as<Port>();
-                    SetLock portLck = me.lockEl(port);
+                    [[maybe_unused]] SetLock portLck = me.lockEl(port);
                     if (port.isConjugated()) {
                         if (!port.getRequired().contains(el.getID())) {
-                            me.m_contract.innerAddToOtherSet(port.getRequired(), el);
+                            port.m_required.innerAdd(el);
                         }
                     } else {
                         if (!port.getProvided().contains(el.getID())) {
-                             me.m_contract.innerAddToOtherSet(port.getProvided(), el);
+                             port.m_provided.innerAdd(el);
                         }
                     }
             }

@@ -14,6 +14,9 @@ namespace UML{
      * A Namespace is an Element in a model that contains a set of NamedElements that can be identified by name
      **/
     class Namespace : virtual public NamedElement {
+
+        friend class ElementImport;
+
         protected:
             class AddElementImportPolicy {
                 public:

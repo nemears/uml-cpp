@@ -64,7 +64,10 @@ namespace UML {
             }
             void set(T* el) {
                 [[maybe_unused]] SetLock myLck = this->m_el.m_manager->lockEl(this->m_el);
-                if (this->m_root && (!el || el->getID() != this->m_root->m_ptr.id())) {
+                if (this->m_root /**&& (!el || el->getID() != this->m_root->m_ptr.id())**/) {
+                    if (el && el->getID() == this->m_root->m_ptr.id()) {
+                        return;
+                    }
                     [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
                     if (this->m_readOnly) {
                         throw SetStateException("Cannot remove from read only set!");

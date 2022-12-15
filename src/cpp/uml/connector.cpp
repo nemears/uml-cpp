@@ -17,7 +17,7 @@ void Connector::SetTypePolicy::apply(Association& el, Connector& me) {
             for (auto& assocEnd : el.getMemberEnds()) {
                 if (assocEnd.getType().id() == end.getRole()->getType().id()) {
                     SetLock assocEndLock = me.lockEl(assocEnd);
-                    me.m_type.innerAddToOtherSet(end.m_definingEnd, assocEnd);
+                    end.m_definingEnd.innerAdd(assocEnd);
                     break;
                 }
             }
@@ -35,7 +35,7 @@ void Connector::AddEndPolicy::apply(ConnectorEnd& el, Connector& me) {
             for (auto& assocEnd : me.getType()->getMemberEnds()) {
                 if (assocEnd.getType().id() == el.getRole()->getType().id()) {
                     SetLock assocEndLck = me.lockEl(assocEnd);
-                    me.m_ends.innerAddToOtherSet(el.m_definingEnd, assocEnd);
+                    el.m_definingEnd.innerAdd(assocEnd);
                     break;
                 }
             }

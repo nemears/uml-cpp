@@ -15,15 +15,15 @@ using namespace UML;
 
 void ElementImport::AddImportedElementPolicy::apply(PackageableElement& el, ElementImport& me) {
     if (me.getImportingNamespace()) {
-        SetLock importingNamespaceLock = me.lockEl(*me.getImportingNamespace());
-        me.m_importedElement.innerAddToOtherSet(me.getImportingNamespace()->getImportedMembers(), el);
+        [[maybe_unused]] SetLock importingNamespaceLock = me.lockEl(*me.getImportingNamespace());
+        me.getImportingNamespace()->m_importedMembers.innerAdd(el);
     }
 }
 
 void ElementImport::RemoveImportedElementPolicy::apply(PackageableElement& el, ElementImport& me) {
     if (me.getImportingNamespace()) {
-        SetLock importingNamespaceLock = me.lockEl(*me.getImportingNamespace());
-        me.m_importedElement.innerRemoveFromOtherSet(me.getImportingNamespace()->getImportedMembers(), el.getID());
+        [[maybe_unused]] SetLock importingNamespaceLock = me.lockEl(*me.getImportingNamespace());
+        me.getImportingNamespace()->m_importedMembers.innerRemove(el.getID());
     }
 }
 

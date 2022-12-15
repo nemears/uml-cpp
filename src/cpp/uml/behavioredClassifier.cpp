@@ -23,13 +23,11 @@ void BehavioredClassifier::RemoveInterfaceRealizationPolicy::apply(InterfaceReal
                     if (front->getID() == port.getType().id()) {
                         if (port.isConjugated()) {
                             if (port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
-                                // port.getRequired().removeReadOnly(el.as<InterfaceRealization>().getContract().id());
-                                me.m_interfaceRealizations.innerRemoveFromOtherSet(port.getRequired(), el.getContract().id());
+                                port.m_required.innerRemove(el.getContract().id());
                             }
                         } else {
                             if (port.getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
-                                // port.getProvided().removeReadOnly(el.as<InterfaceRealization>().getContract().id());
-                                me.m_interfaceRealizations.innerRemoveFromOtherSet(port.getProvided(), el.getContract().id());
+                                port.m_provided.innerRemove(el.getContract().id());
                             }
                         }
                     }
@@ -58,13 +56,11 @@ void BehavioredClassifier::AddInterfaceRealizationPolicy::apply(InterfaceRealiza
                     if (port.getType().id() == front->m_id) {
                         if (port.isConjugated()) {
                             if (!port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
-                                // port.getRequired().nonOppositeAdd(*el.as<InterfaceRealization>().getContract());
-                                me.m_interfaceRealizations.innerAddToOtherSet(port.getRequired(), *el.getContract());
+                                port.m_required.innerAdd(*el.getContract());
                             }
                         } else {
                             if (!port.getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
-                                // port.getProvided().nonOppositeAdd(*el.as<InterfaceRealization>().getContract());
-                                me.m_interfaceRealizations.innerAddToOtherSet(port.getProvided(), *el.getContract());
+                                port.m_provided.innerAdd(*el.getContract());
                             }
                         }
                     }

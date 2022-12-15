@@ -125,7 +125,7 @@ namespace UML {
             }
             void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*>& allSuperSetsAndMe) override {
                 if (!m_first) {
-                    node = m_first;
+                    m_first = static_cast<OrderedSetNode*>(node);
                 }
                 m_last = static_cast<OrderedSetNode*>(node);
                 for (AbstractSet* set: allSuperSetsAndMe) {
@@ -134,9 +134,7 @@ namespace UML {
                         if (!orderedSet->getFront()) {
                             orderedSet->setFront(static_cast<OrderedSetNode*>(node));
                         }
-                        // if (!orderedSet->getBack()) {
-                            orderedSet->setBack(static_cast<OrderedSetNode*>(node));
-                        // }
+                        orderedSet->setBack(static_cast<OrderedSetNode*>(node));
                     }
                 }
             }

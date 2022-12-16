@@ -5,8 +5,12 @@
 #include "managers/abstractManager.h"
 #include "managers/managerNode.h"
 
+namespace UML {
+    template <class T> class UmlPtr;
+}
+
 namespace std {
-    template <class T> 
+    template <class T>
     struct hash<UML::UmlPtr<T>> {
         std::size_t operator()(const UML::UmlPtr<T>& ptr) const;
     };
@@ -20,17 +24,12 @@ namespace UML {
         };
     };
 
-    // template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomSingleton;
-    template <class T> class UmlPtr;
-
     class AbstractUmlPtr {
 
-        // template <class T, class U> friend class Singleton;
         template <class AccessPolicy, class PersistencePolicy> friend class Manager;
         friend class AbstractAccessPolicy;
         template <class T> friend class UmlPtr;
         friend struct ManagerNode;
-        template <class T> friend size_t std::hash<UmlPtr<T>>::operator ()(const UmlPtr<T>&) const;
 
         protected:
             ID m_id = ID::nullID();

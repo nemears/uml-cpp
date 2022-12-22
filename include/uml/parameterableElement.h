@@ -21,6 +21,7 @@ namespace UML {
             CustomSingleton<TemplateParameter, ParameterableElement> m_templateParameter = CustomSingleton<TemplateParameter, ParameterableElement>(this);
             CustomSingleton<TemplateParameter, ParameterableElement> m_owningTemplateParameter = CustomSingleton<TemplateParameter, ParameterableElement>(this);
             void referenceReindexed(ID newID) override;
+            void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             TypedSet<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
             TypedSet<TemplateParameter, ParameterableElement>& getTemplateParameterSingleton();

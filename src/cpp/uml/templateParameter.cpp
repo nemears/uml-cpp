@@ -48,7 +48,7 @@ void TemplateParameter::init() {
     m_default.opposite(&ParameterableElement::getTemplateParameterSingleton);
     m_ownedDefault.subsets(m_default);
     m_ownedDefault.subsets(*m_ownedElements);
-    // m_ownedDefault.opposite(&ParameterableElement::getOwningTemplateParameterSingleton);
+    m_ownedDefault.opposite(&ParameterableElement::getOwningTemplateParameterSingleton); //?
 }
 
 TemplateParameter::TemplateParameter() : Element(ElementType::TEMPLATE_PARAMETER) {

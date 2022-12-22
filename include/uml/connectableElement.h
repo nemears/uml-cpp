@@ -13,6 +13,7 @@ namespace UML {
             CustomSet<ConnectorEnd, ConnectableElement> m_ends = CustomSet<ConnectorEnd, ConnectableElement>(this);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
+            void restoreReference(Element* el) override;
             void init();
             ConnectableElement();
         public:

@@ -15,13 +15,13 @@ void ConnectableElement::referenceReindexed(ID newID) {
     m_ends.reindex(newID);
 }
 
-// void ConnectableElement::restoreReference(Element* el) {
-//     TypedElement::restoreReference(el);
-//     ParameterableElement::restoreReference(el);
-//     if (m_ends.contains(el->getID())) {
-//         el->setReference(this);
-//     }
-// }
+void ConnectableElement::restoreReference(Element* el) {
+    TypedElement::restoreReference(el);
+    ParameterableElement::restoreReference(el);
+    if (m_ends.contains(el->getID())) {
+        el->setReference(this);
+    }
+}
 
 void ConnectableElement::referenceErased(ID id) {
     TypedElement::referenceErased(id);

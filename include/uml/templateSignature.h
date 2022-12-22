@@ -22,7 +22,7 @@ namespace UML {
         protected:
             CustomSingleton<TemplateableElement, TemplateSignature> m_template = CustomSingleton<TemplateableElement, TemplateSignature>(this);
             CustomOrderedSet<TemplateParameter, TemplateSignature> m_parameters = CustomOrderedSet<TemplateParameter, TemplateSignature>(this);
-            CustomOrderedSet<TemplateParameter, TemplateSignature> m_ownedParameters =  CustomOrderedSet<TemplateParameter, TemplateSignature>(this);
+            CustomOrderedSet<TemplateParameter, TemplateSignature> m_ownedParameters = CustomOrderedSet<TemplateParameter, TemplateSignature>(this);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<TemplateableElement, TemplateSignature>& getTemplateSingleton();

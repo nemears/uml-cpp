@@ -97,8 +97,8 @@ void RedefinableTemplateSignature::init() {
     m_classifier.redefines(m_template);
     m_classifier.opposite(&Classifier::getOwnedTemplateSignatureSingleton);
     m_extendedSignatures.subsets(m_redefinedElement);
-    m_redefinableTemplateSignatureParameters.redefines(m_parameters);
     m_inheritedParameters.subsets(m_redefinableTemplateSignatureParameters);
+    m_parameters.redefines(m_redefinableTemplateSignatureParameters);
     m_inheritedParameters.m_readOnly = true;
 }
 

@@ -8,14 +8,14 @@ void ParameterableElement::referenceReindexed(ID newID) {
     m_templateParameter.reindex(newID);
 }
 
-// void ParameterableElement::restoreReference(Element* el) {
-//     m_templateParameter.restore(el);
-//     if (el->isSubClassOf(ElementType::TEMPLATE_PARAMETER) && el->as<TemplateParameter>().m_ownedDefault.get().id() == m_id) {
-//         if (m_templateParameter.empty()) {
-//             m_templateParameter.set(el->getID());
-//         }
-//     }
-// }
+void ParameterableElement::restoreReference(Element* el) {
+    // m_templateParameter.restore(el);
+    if (el->isSubClassOf(ElementType::TEMPLATE_PARAMETER) && el->as<TemplateParameter>().m_ownedDefault.get().id() == m_id) {
+        if (m_templateParameter.empty()) {
+            m_templateParameter.set(el->getID());
+        }
+    }
+}
 
 void ParameterableElement::referenceErased(ID id) {
     m_templateParameter.eraseElement(id);

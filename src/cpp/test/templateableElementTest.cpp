@@ -224,8 +224,8 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
     TemplateSignature& sig = *m.create<TemplateSignature>();
     TemplateParameter& p1 = *m.create<TemplateParameter>();
     TemplateParameter& p2 = *m.create<TemplateParameter>();
-    PrimitiveType& d1 = *m.create<PrimitiveType>();
-    PrimitiveType& d2 = *m.create<PrimitiveType>();
+    Package& d1 = *m.create<Package>();
+    Package& d2 = *m.create<Package>();
     Package& c2 = *m.create<Package>();
     TemplateBinding& b = *m.create<TemplateBinding>();
     TemplateParameterSubstitution& ps1 = *m.create<TemplateParameterSubstitution>();
@@ -266,7 +266,7 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
     std::string expectedEmit = R""""(package:
   id: b4EasFCBjochdruOQfxBubQw3VlD
   packagedElements:
-    - primitiveType:
+    - package:
         id: a2arTP9Z2LteDWsjTS0ziALCWlXU
         templateParameter: Km4WF5rf3ohUeLTr99POiW7VMb_4
     - primitiveType:
@@ -280,7 +280,7 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
               - templateParameter:
                   id: OLULeTlF1Rzf4U5IpNQVW1nYd29c
                   ownedDefault:
-                    primitiveType:
+                    package:
                       id: GZaiGksTjm4GeM2GdJ5BXuajWnGU
                       templateParameter: OLULeTlF1Rzf4U5IpNQVW1nYd29c
               - templateParameter:
@@ -306,7 +306,7 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
     std::string expectedEmit2 = R""""(package:
   id: b4EasFCBjochdruOQfxBubQw3VlD
   packagedElements:
-    - primitiveType:
+    - package:
         id: a2arTP9Z2LteDWsjTS0ziALCWlXU
         templateParameter: Km4WF5rf3ohUeLTr99POiW7VMb_4
     - package:
@@ -318,7 +318,7 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
               - templateParameter:
                   id: OLULeTlF1Rzf4U5IpNQVW1nYd29c
                   ownedDefault:
-                    primitiveType:
+                    package:
                       id: GZaiGksTjm4GeM2GdJ5BXuajWnGU
                       templateParameter: OLULeTlF1Rzf4U5IpNQVW1nYd29c
               - templateParameter:

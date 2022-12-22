@@ -62,7 +62,7 @@ namespace UML {
 
     class OrderedSetNodeAllocationPolicyInterface : virtual public AbstractSet {
 
-        template <class T> friend class OrderedSetNodeAllocationPolicy;
+        friend class OrderedSetNodeAllocationPolicy;
 
         protected:
             virtual OrderedSetNode* getFront() const = 0;
@@ -71,7 +71,6 @@ namespace UML {
             virtual void setBack(OrderedSetNode* back) = 0;
     };
 
-    template <class T>
     class OrderedSetNodeAllocationPolicy : public OrderedSetNodeAllocationPolicyInterface {
         // this policy implements a linked list on top of the regular set tree
         protected:
@@ -97,7 +96,7 @@ namespace UML {
             SetType setType() const override {
                 return SetType::ORDERED_SET;
             }
-            SetNode* create(T& el) {
+            SetNode* create(Element& el) {
                 OrderedSetNode* ret = new OrderedSetNode();
                 ret->m_ptr = &el;
                 ret->m_prev = m_last;
@@ -110,6 +109,7 @@ namespace UML {
                 }
                 return ret;
             }
+            template <class T>
             SetNode* create(UmlPtr<T> el) {
                 OrderedSetNode* ret = new OrderedSetNode();
                 ret->m_ptr = el;
@@ -193,33 +193,33 @@ namespace UML {
                 class AdditionPolicy = DoNothingAdd<T, U>,
                 class RemovalPolicy = DoNothingRemove<T, U>
             >
-    class CustomOrderedSet : public PrivateSet<T, U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>> , public OrderedSet<T,U> {
+    class CustomOrderedSet : public PrivateSet<T, U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy> , public OrderedSet<T,U> {
         public:
-            CustomOrderedSet(U& el) : PrivateSet<T, U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>(el) {}
-            CustomOrderedSet(U* el) : PrivateSet<T, U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>(el) {}
+            CustomOrderedSet(U& el) : PrivateSet<T, U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>(el) {}
+            CustomOrderedSet(U* el) : PrivateSet<T, U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>(el) {}
             bool contains(ID id) const override {
-                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::contains(id);
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>::contains(id);
             }
             bool contains(T& el) const override {
-                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::contains(el);
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>::contains(el);
             }
             bool contains(UmlPtr<T> el) const override {
-                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::contains(el);
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>::contains(el);
             }
             bool contains(std::string name) const override {
-                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::contains(name);
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>::contains(name);
             }
             T& get(ID id) const override {
-                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::get(id);
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>::get(id);
             }
             T& get(std::string name) const override {
-                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::get(name);
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>::get(name);
             }
             bool empty() const override {
-                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::empty();
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>::empty();
             }
             size_t size() const override {
-                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::size();
+                return PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>::size();
             }
             T& get(size_t index) const override {
                 OrderedSetIterator it = this->begin();
@@ -246,13 +246,13 @@ namespace UML {
                 add(*el);
             }
             void add(T& el) override {
-                this->PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::add(el);
+                this->PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>::add(el);
             }
             void add(ID id) override {
-                PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::add(id);
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>::add(id);
             }
             void remove(ID id) override {
-                this->PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::remove(id);
+                this->PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>::remove(id);
             }
             void remove(T& el) override {
                 remove(el.getID());
@@ -261,7 +261,7 @@ namespace UML {
                 remove(el.id());
             }
             void clear() override {
-                PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy<T>>::clear();
+                PrivateSet<T,U, AdditionPolicy, RemovalPolicy, OrderedSetNodeAllocationPolicy>::clear();
             }
             OrderedSetIterator<T> begin() const override {
                 OrderedSetIterator<T> ret;

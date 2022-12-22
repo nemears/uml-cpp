@@ -43,7 +43,7 @@ namespace UML {
 
         template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
         friend void recursiveSetContains(ID id, AbstractSet* set);
-        template <class T> friend class OrderedSetNodeAllocationPolicy;
+        friend class OrderedSetNodeAllocationPolicy;
 
         protected:
             SetNode* m_root = 0;
@@ -115,6 +115,9 @@ namespace UML {
             }
 
         public:
+
+            AbstractSet& operator=(AbstractSet&&) = delete;
+
             /**
              * this set subsets the set supplied, meaning all elements within this set will be contained within the set supplied
              * but this set will not necessarily have all of the elements within the set supplied
@@ -126,6 +129,9 @@ namespace UML {
                     subsetOf.m_subSets.push_back(this);
                     if (subsetOf.m_guard >= m_guard) {
                         m_guard = subsetOf.m_guard + 1;
+                    }
+                    for (auto redefinedSet : subsetOf.m_redefines) {
+                        subsets(*redefinedSet);
                     }
                     // Handle ordered set, TODO other set types
                     if (!m_setToInstantiate && subsetOf.setType() == SetType::ORDERED_SET /**&& setType() != SetType::ORDERED_SET**/) {
@@ -158,10 +164,9 @@ namespace UML {
             virtual void innerRemove(ID id) = 0;
     };
 
-    template <class T>
     class SetAllocationPolicy {
         protected:
-            SetNode* create(T& el) {
+            SetNode* create(Element& el) {
                 SetNode* ret = new SetNode();
                 ret->m_ptr = &el;
                 return ret;
@@ -170,7 +175,7 @@ namespace UML {
             SetType setType() const {
                 return SetType::SET;
             }
-
+            template <class T>
             SetNode* create(UmlPtr<T> el) {
                 SetNode* ret = new SetNode();
                 ret->m_ptr = el;
@@ -213,7 +218,7 @@ namespace UML {
                 class U, 
                 class AdditionPolicy = DoNothingAdd<T,U>,
                 class RemovalPolicy = DoNothingRemove<T,U>,
-                class AllocationPolicy = SetAllocationPolicy<T>
+                class AllocationPolicy = SetAllocationPolicy
             >
     class PrivateSet :  virtual public TypedSet<T, U>, 
                         virtual protected AllocationPolicy, 
@@ -393,13 +398,6 @@ namespace UML {
                 for (auto superSet : allSuperSetsAndMe) {
                     superSet->m_size++;
                 }
-
-                // for (auto redefinedSet : this->m_redefines) {
-                //     if (redefinedSet->m_rootRedefinedSet) {
-                //         continue;
-                //     }
-                //     redefinedSet->m_size++;
-                // }
             }
 
             /**
@@ -428,7 +426,7 @@ namespace UML {
 
                 // adjust redefines
                 for (AbstractSet* redefinedSet : set->m_redefines) {
-                    if (!redefinedSet->m_root) {
+                    if (!redefinedSet->m_root && !redefinedSet->m_rootRedefinedSet) {
                         redefinedSet->m_root = node;
                     }
                 }
@@ -603,7 +601,6 @@ namespace UML {
 
                 if (!set->m_root) {
                     set->m_root = node;
-                    // redefinedSet->m_size++;
                 }
             }
 
@@ -1096,7 +1093,7 @@ namespace UML {
                 if (this->m_setToInstantiate) {
                     ret = this->m_setToInstantiate->createNode(el);
                 } else {
-                    ret = AllocationPolicy::create(el.as<T>());
+                    ret = AllocationPolicy::create(el);
                 }
                 ret->set = this;
                 return ret;

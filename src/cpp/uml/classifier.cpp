@@ -142,7 +142,7 @@ void Classifier::init() {
     m_classifierOwnedTemplateSignature.opposite(&RedefinableTemplateSignature::getClassifierSingleton);
     m_classifierTemplateParameter.redefines(m_templateParameter);
     m_classifierTemplateParameter.opposite(&ClassifierTemplateParameter::getParameteredElementSingleton);
-    m_classifierOwnedMembers.redefines(m_ownedMembers);
+    m_ownedMembers.redefines(m_classifierOwnedMembers);
 }
 
 Classifier::Classifier() : Element(ElementType::CLASSIFIER) {

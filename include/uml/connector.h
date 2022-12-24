@@ -14,6 +14,7 @@ namespace UML {
     class Connector : public Feature {
 
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        friend class StructuredClassifier;
 
         protected:
             class SetTypePolicy {
@@ -35,7 +36,9 @@ namespace UML {
             CustomSingleton<Association, Connector> m_type = CustomSingleton<Association, Connector>(this);
             CustomSet<Behavior, Connector> m_contracts = CustomSet<Behavior, Connector>(this);
             CustomOrderedSet<ConnectorEnd, Connector> m_ends = CustomOrderedSet<ConnectorEnd, Connector>(this);
+            CustomSingleton<StructuredClassifier, Connector> m_structuredClassifier = CustomSingleton<StructuredClassifier, Connector>(this);
             TypedSet<Association, Connector>& getTypeSingleton();
+            TypedSet<StructuredClassifier, Connector>& getStructuredClassifierSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;

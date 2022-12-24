@@ -44,6 +44,7 @@ void StructuredClassifier::init() {
     m_parts.m_readOnly = true;
     m_ownedConnectors.subsets(m_ownedMembers);
     m_ownedConnectors.subsets(m_features);
+    m_ownedConnectors.opposite(&Connector::getStructuredClassifierSingleton);
 }
 
 StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_CLASSIFIER) {

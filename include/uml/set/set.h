@@ -1149,7 +1149,8 @@ namespace UML {
                     } else {
                         // we are probably going to delete this node
                         SetNode* nodeToDelete = currNode;
-                        if (allSuperSets.count(nodeToDelete->set)) {
+                        if (allSuperSets.count(nodeToDelete->set) && 
+                            nodeToDelete->set != (this->m_setToInstantiate ? this->m_setToInstantiate : this)) {
                             // this is owned by a superset which will be deleted after us (probably, not necessarily guaranteed)
                             break;
                         }
@@ -1219,7 +1220,7 @@ namespace UML {
                             (el.*signature)().innerRemove(me.getID());
                         }
                 };
-
+                delete m_opposite;
                 m_opposite = new OppositeInterfaceAdapter(m_el, oppositeSignature);
             }
             /**

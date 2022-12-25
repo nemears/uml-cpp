@@ -81,6 +81,9 @@ void Classifier::RemoveOwnedMemberPolicy::apply(NamedElement& el, Classifier& me
             if (!pair.second.node && me.m_manager->loaded(pair.first)) {
                 pair.second.node = me.m_manager->get(pair.first).ptr()->m_node;
             }
+            if (!pair.second.node) {
+                continue;
+            }
             if (pair.second.node->m_managerElementMemory && 
                 pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
                 pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(me.getID())) {

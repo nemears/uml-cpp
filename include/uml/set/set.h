@@ -568,6 +568,10 @@ namespace UML {
                                     node->m_parent->m_right = node;
                                 }
                             }
+                            // mark all parents as being visited allready
+                            for (auto superSet : allSuperSetsAndMe) {
+                                visited[superSet] = true;
+                            }
                             break;
                         }
                         
@@ -575,6 +579,12 @@ namespace UML {
                         if (!currNode->m_left) {
                             currNode->m_left = node;
                             node->m_parent = currNode;
+                            
+                            // mark all parents as being visited allready
+                            for (auto superSet : currNode->set->getAllSuperSets()) {
+                                visited[superSet] = true;
+                            }
+
                             break;
                         }
 
@@ -587,6 +597,12 @@ namespace UML {
                                 currNode->m_right = node;
                             }
                             node->m_parent = currNode;
+
+                            // mark all parents as being visited allready
+                            for (auto superSet : currNode->set->getAllSuperSets()) {
+                                visited[superSet] = true;
+                            }
+
                             break;
                         }
 
@@ -1372,7 +1388,11 @@ namespace UML {
                             temp = last->m_parent;
                             if (temp->m_right) {
                                 if (temp->m_right->m_ptr.id() != last->m_ptr.id()) {
-                                    found = true;
+                                    if (!validSets.count(temp->m_right->set)) {
+                                        curr = 0;
+                                    } else {
+                                        found = true;
+                                    }
                                     break;
                                 }
                             }

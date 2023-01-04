@@ -68,14 +68,11 @@ void Connector::restoreReference(Element* el) {
         m_featuringClassifier.get().id() == el->getID()) 
     {
         if (el->isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
+            // TODO lock
             m_structuredClassifier.innerAdd(el->as<StructuredClassifier>());
         }
     }
-    if (m_type.get().id() == el->getID()) {
-        el->setReference(this);
-    } else if (m_contracts.contains(el->getID())) {
-        el->setReference(this);
-    }
+    
 }
 
 void Connector::referenceErased(ID id) {

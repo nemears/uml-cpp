@@ -353,13 +353,6 @@ namespace UML {
                     superSet->m_size++;
                 }
 
-                // for (auto redefinedSet : this->m_redefines) {
-                //     if (redefinedSet->m_rootRedefinedSet) {
-                //         continue;
-                //     }
-                //     redefinedSet->m_size++;
-                // }
-
                 for (auto superSet : allSuperSetsAndMe) {
                     superSet->runAddPolicy(el);
                 }
@@ -555,6 +548,14 @@ namespace UML {
                                 set->m_root = node;
                             }
 
+                            // mark all parents as being visited allready and check their roots
+                            for (auto superSet : allSuperSetsAndMe) {
+                                visited[superSet] = true;
+                                if (superSet->m_root == currNode) {
+                                    superSet->m_root = node;
+                                }
+                            }
+
                             if (currNode->m_parent == node) {
                                 break;
                             }
@@ -567,10 +568,6 @@ namespace UML {
                                 } else if (node->m_parent->m_right == currNode) {
                                     node->m_parent->m_right = node;
                                 }
-                            }
-                            // mark all parents as being visited allready
-                            for (auto superSet : allSuperSetsAndMe) {
-                                visited[superSet] = true;
                             }
                             break;
                         }
@@ -627,7 +624,10 @@ namespace UML {
                             if (search->m_left == match) {
                                 return search;
                             }
-                            return getParent(match, search->m_left);
+                            if (search->m_left) {
+                                return getParent(match, search->m_left);
+                            }
+                            return 0;
                         } else {
                             if (search->m_right == match) {
                                 return search;
@@ -638,6 +638,9 @@ namespace UML {
                         if (search->m_left == match) {
                             return search;
                         } else {
+                            if (search->m_left) {
+                                return getParent(match, search->m_left);
+                            }
                             return 0;
                         }
                     } else {

@@ -10,6 +10,8 @@
 #include "uml/interface.h"
 #include "uml/deployment.h"
 
+#include <iostream>
+
 using namespace UML;
 
 void Class::init() {
@@ -28,7 +30,7 @@ Class::Class() : Element(ElementType::CLASS) {
 }
 
 Class::~Class() {
-    mountAndRelease();
+    
 }
 
 OrderedSet<Property, Class>& Class::getOwnedAttributes() {

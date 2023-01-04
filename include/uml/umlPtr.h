@@ -61,7 +61,6 @@ namespace UML {
                 m_ptr = 0;
             }
             void erasePtr() override {
-                m_id = ID::nullID();
                 m_ptr = 0;
                 m_node = 0;
             }

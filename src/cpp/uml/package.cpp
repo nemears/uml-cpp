@@ -6,6 +6,7 @@
 #include "uml/profileApplication.h"
 #include "uml/interface.h"
 #include "uml/deployment.h"
+#include <iostream>
 
 using namespace UML;
 
@@ -54,7 +55,7 @@ Package::Package() : Element(ElementType::PACKAGE) {
 }
 
 Package::~Package() {
-    mountAndRelease();
+    
 }
 
 Set<PackageableElement, Package>& Package::getPackagedElements() {

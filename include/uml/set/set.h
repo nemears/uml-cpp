@@ -1646,6 +1646,9 @@ namespace UML {
                 ret.root = this->m_root;
                 ret.validSets = this->getAllSuperSets();
                 ret.validSets.insert(this);
+                for (auto subSet : this->getAllSubSets()) {
+                    ret.validSets.insert(subSet);
+                }
                 if (!ret.curr->m_ptr) {
                     ++ret;
                 }
@@ -1660,6 +1663,9 @@ namespace UML {
                 ret.root = this->m_root;
                 ret.validSets = this->getAllSuperSets();
                 ret.validSets.insert(this);
+                for (auto subSet : this->getAllSubSets()) {
+                    ret.validSets.insert(subSet);
+                }
                 return ret;
             };
     };

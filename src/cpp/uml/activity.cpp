@@ -15,7 +15,7 @@
 
 using namespace UML;
 
-void Activity::init() {
+Activity::Activity() : Element(ElementType::ACTIVITY) {
     m_nodes.subsets(*m_ownedElements);
     m_nodes.opposite(&ActivityNode::getActivitySingleton);
     m_edges.subsets(*m_ownedElements);
@@ -24,10 +24,6 @@ void Activity::init() {
     m_groups.opposite(&ActivityGroup::getInActivitySingleton);
     m_partitions.subsets(m_groups);
     m_partitions.opposite(&ActivityPartition::getInActivitySingleton);
-}
-
-Activity::Activity() : Element(ElementType::ACTIVITY) {
-    init();
 }
 
 Activity::~Activity() {

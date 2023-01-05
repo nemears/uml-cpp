@@ -19,7 +19,6 @@ namespace UML {
             TypedSet<Classifier, ClassifierTemplateParameter>& getParameteredElementSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             ClassifierTemplateParameter();
         public:
             virtual ~ClassifierTemplateParameter();

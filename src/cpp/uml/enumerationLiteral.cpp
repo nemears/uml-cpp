@@ -12,17 +12,13 @@ TypedSet<Enumeration, EnumerationLiteral>& EnumerationLiteral::getEnumerationSin
     return m_enumeration;
 }
 
-void EnumerationLiteral::init() {
+EnumerationLiteral::EnumerationLiteral() : Element(ElementType::ENUMERATION_LITERAL) {
     m_enumeration.subsets(*m_namespace);
     m_enumeration.opposite(&Enumeration::getOwnedLiterals);
 }
 
-EnumerationLiteral::EnumerationLiteral() : Element(ElementType::ENUMERATION_LITERAL) {
-    init();
-}
-
 EnumerationLiteral::~EnumerationLiteral() {
-    mountAndRelease();
+    
 }
 
 EnumerationPtr EnumerationLiteral::getEnumeration() const {

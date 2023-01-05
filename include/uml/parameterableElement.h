@@ -25,7 +25,6 @@ namespace UML {
             void referenceErased(ID id) override;
             TypedSet<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
             TypedSet<TemplateParameter, ParameterableElement>& getTemplateParameterSingleton();
-            void init();
             ParameterableElement();
         public:
             ~ParameterableElement();

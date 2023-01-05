@@ -25,7 +25,6 @@ namespace UML {
             TypedSet<ActivityPartition, ActivityPartition>& getSuperPartitionSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             ActivityPartition();
         public:
             virtual ~ActivityPartition();

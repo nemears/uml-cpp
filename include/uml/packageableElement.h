@@ -19,7 +19,6 @@ namespace UML {
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             TypedSet<Package, PackageableElement>& getOwningPackageSingleton();
-            void init();
             PackageableElement();
         public:
             virtual ~PackageableElement() {};

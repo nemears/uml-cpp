@@ -27,7 +27,6 @@ namespace UML {
             CustomSet<Property, StructuredClassifier> m_parts = CustomSet<Property, StructuredClassifier>(this);
             CustomSet<Connector, StructuredClassifier> m_ownedConnectors = CustomSet<Connector, StructuredClassifier>(this);
             void restoreReferences() override;
-            void init();
             StructuredClassifier();
         public:
             virtual ~StructuredClassifier();

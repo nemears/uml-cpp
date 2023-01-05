@@ -22,13 +22,9 @@ void RedefinableElement::referenceErased(ID id) {
     m_redefinitionContext.eraseElement(id);
 }
 
-void RedefinableElement::init() {
+RedefinableElement::RedefinableElement() : Element(ElementType::REDEFINABLE_ELEMENT) {
     m_redefinedElement.m_readOnly = true;
     m_redefinitionContext.m_readOnly = true;
-}
-
-RedefinableElement::RedefinableElement() : Element(ElementType::REDEFINABLE_ELEMENT) {
-    init();
 }
 
 RedefinableElement::~RedefinableElement() {

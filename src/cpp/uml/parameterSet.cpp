@@ -21,13 +21,9 @@ void ParameterSet::referenceErased(ID id) {
     m_parameters.eraseElement(id);
 }
 
-void ParameterSet::init() {
+ParameterSet::ParameterSet() : Element(ElementType::PARAMETER_SET) {
     m_conditions.subsets(*m_ownedElements);
     m_parameters.opposite(&Parameter::getParameterSets);
-}
-
-ParameterSet::ParameterSet() : Element(ElementType::PARAMETER_SET) {
-    init();
 }
 
 ParameterSet::~ParameterSet() {

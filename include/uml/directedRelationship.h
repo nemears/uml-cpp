@@ -8,7 +8,6 @@ namespace UML {
         protected:
             CustomSet<Element, DirectedRelationship> m_targets = CustomSet<Element, DirectedRelationship>(this);
             CustomSet<Element, DirectedRelationship> m_sources = CustomSet<Element, DirectedRelationship>(this);
-            void init();
             DirectedRelationship();
         public:
             virtual ~DirectedRelationship();

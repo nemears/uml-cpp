@@ -12,7 +12,7 @@ Realization::Realization() : Element(ElementType::REALIZATION) {
 }
 
 Realization::~Realization() {
-    mountAndRelease();
+    
 }
 
 bool Realization::isSubClassOf(ElementType eType) const {

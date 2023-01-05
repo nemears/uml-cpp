@@ -10,7 +10,7 @@
 
 using namespace UML;
 
-void Artifact::init() {
+Artifact::Artifact() : Element(ElementType::ARTIFACT) {
     m_nestedArtifacts.subsets(m_ownedMembers);
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_ownedMembers);
@@ -20,12 +20,8 @@ void Artifact::init() {
     m_manifestations.subsets(*m_clientDependencies);
 }
 
-Artifact::Artifact() : Element(ElementType::ARTIFACT) {
-    init();
-}
-
 Artifact::~Artifact() {
-    mountAndRelease();
+    
 }
 
 OrderedSet<Property, Artifact>& Artifact::getOwnedAttributes() {

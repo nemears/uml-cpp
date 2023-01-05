@@ -28,13 +28,9 @@ void ClassifierTemplateParameter::referenceErased(ID id) {
     m_constrainingClassifiers.eraseElement(id);
 }
 
-void ClassifierTemplateParameter::init() {
+ClassifierTemplateParameter::ClassifierTemplateParameter() : Element(ElementType::CLASSIFIER_TEMPLATE_PARAMETER) {
     m_classifierParameteredElement.redefines(m_parameteredElement);
     m_classifierParameteredElement.opposite(&Classifier::getTemplateParameterSingleton);
-}
-
-ClassifierTemplateParameter::ClassifierTemplateParameter() : Element(ElementType::CLASSIFIER_TEMPLATE_PARAMETER) {
-    init();
 }
 
 ClassifierTemplateParameter::~ClassifierTemplateParameter() {

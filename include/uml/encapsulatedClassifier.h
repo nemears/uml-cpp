@@ -23,7 +23,6 @@ namespace UML {
             //         RemoveOwnedAttributeFunctor(Element* el) : SetFunctor(el) {};
             // };
             CustomSet<Port, EncapsulatedClassifier> m_ownedPorts = CustomSet<Port, EncapsulatedClassifier>(this);
-            void init();
             EncapsulatedClassifier();
         public:
             virtual ~EncapsulatedClassifier();

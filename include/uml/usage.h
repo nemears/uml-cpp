@@ -25,7 +25,6 @@ namespace UML {
             //     public:
             //         SetClientFunctor(Element* el) : SetFunctor(el) {};
             // };
-            void init();
             Usage();
         public:
             virtual ~Usage();

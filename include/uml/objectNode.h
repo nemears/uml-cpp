@@ -31,7 +31,6 @@ namespace UML {
             TypedSet<Behavior, ObjectNode>& getSelectionSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             ObjectNode();
         public:
             virtual ~ObjectNode();

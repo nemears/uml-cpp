@@ -18,7 +18,6 @@ namespace UML {
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<BehavioralFeature, Behavior>& getSpecificationSingleton();
-            void init();
             Behavior();
         public:
             virtual ~Behavior();

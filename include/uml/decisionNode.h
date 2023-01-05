@@ -21,7 +21,6 @@ namespace UML {
             TypedSet<Behavior, DecisionNode>& getDecisionInputSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             DecisionNode();
         public:
             virtual ~DecisionNode();

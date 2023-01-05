@@ -26,7 +26,6 @@ namespace UML {
             void restoreReference(Element* el) override;
             TypedSet<TemplateableElement, TemplateBinding>& getBoundElementSingleton();
             TypedSet<TemplateSignature, TemplateBinding>& getSignatureSingleton();
-            void init();
             TemplateBinding();
         public:
             ~TemplateBinding();

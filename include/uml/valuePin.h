@@ -11,7 +11,6 @@ namespace UML {
         protected:
             CustomSingleton<ValueSpecification, ValuePin> m_value = CustomSingleton<ValueSpecification, ValuePin>(this);
             TypedSet<ValueSpecification, ValuePin>& getValueSingleton();
-            void init();
             ValuePin();
         public:
             virtual ~ValuePin();

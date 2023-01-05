@@ -29,13 +29,9 @@ TypedSet<Package, PackageableElement>& PackageableElement::getOwningPackageSingl
     return m_owningPackage;
 }
 
-void PackageableElement::init() {
+PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEMENT) {
     m_owningPackage.subsets(*m_namespace);
     m_owningPackage.opposite(&Package::getPackagedElements);
-}
-
-PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEMENT) {
-    init();
 }
 
 PackagePtr PackageableElement::getOwningPackage() const {

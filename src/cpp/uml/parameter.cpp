@@ -29,20 +29,15 @@ void Parameter::referenceErased(ID id) {
     m_parameterSets.eraseElement(id);
 }
 
-void Parameter::init() {
+Parameter::Parameter() : Element(ElementType::PARAMETER) {
     m_operation.subsets(*m_namespace);
     m_operation.opposite(&Operation::getOwnedParameters);
     m_defaultValue.subsets(*m_ownedElements);
     m_parameterSets.opposite(&ParameterSet::getParameters);
 }
 
-Parameter::Parameter() : Element(ElementType::PARAMETER) {
-    init();
-}
-
-
 Parameter::~Parameter() {
-    mountAndRelease();
+
 }
 
 OperationPtr Parameter::getOperation() const {

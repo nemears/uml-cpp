@@ -13,16 +13,12 @@ TypedSet<ExtensionEnd, Extension>& Extension::getOwnedEndSingleton() {
     return m_ownedEnd;
 }
 
-void Extension::init() {
+Extension::Extension() : Element(ElementType::EXTENSION) {
     m_ownedEnd.redefines(m_ownedEnds);
 }
 
-Extension::Extension() : Element(ElementType::EXTENSION) {
-    init();
-}
-
 Extension::~Extension() {
-    mountAndRelease();
+    
 }
 
 void Extension::setMetaClass(ElementType metaClass) {

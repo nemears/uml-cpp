@@ -36,7 +36,7 @@ class ActivityNodeTest : public ::testing::Test {
 TEST_F(ActivityNodeTest, reindexID_test) {
     BasicManager m;
     Activity& a = *m.create<Activity>();
-    ActivityNode& n = *m.create<ActivityNode>();
+    OpaqueAction& n = *m.create<OpaqueAction>();
     a.getNodes().add(n);
     n.setActivity(&a); // Maybe this should be allowed
     n.setID("c3rcWoyTgxLfFl5jf2Ms6CMa_sWe");
@@ -47,7 +47,7 @@ TEST_F(ActivityNodeTest, reindexID_test) {
 TEST_F(ActivityNodeTest, reindexNameTest) {
     BasicManager m;
     Activity& a = *m.create<Activity>();
-    ActivityNode& n = *m.create<ActivityNode>();
+    OpaqueAction& n = *m.create<OpaqueAction>();
     a.getNodes().add(n);
     n.setActivity(&a);
     n.setName("test");
@@ -56,8 +56,8 @@ TEST_F(ActivityNodeTest, reindexNameTest) {
 
 TEST_F(ActivityNodeTest, addIncomingFunctorTest) {
     BasicManager m;
-    ActivityNode& n = *m.create<ActivityNode>();
-    ActivityEdge& e = *m.create<ActivityEdge>();
+    OpaqueAction& n = *m.create<OpaqueAction>();
+    ControlFlow& e = *m.create<ControlFlow>();
     n.getIncoming().add(e);
     ASSERT_EQ(n.getIncoming().size(), 1);
     ASSERT_EQ(n.getIncoming().front(), e);
@@ -67,8 +67,8 @@ TEST_F(ActivityNodeTest, addIncomingFunctorTest) {
 
 TEST_F(ActivityNodeTest, setTargetTest) {
     BasicManager m;
-    ActivityNode& n = *m.create<ActivityNode>();
-    ActivityEdge& e = *m.create<ActivityEdge>();
+    OpaqueAction& n = *m.create<OpaqueAction>();
+    ControlFlow& e = *m.create<ControlFlow>();
     e.setTarget(&n);
     ASSERT_EQ(n.getIncoming().size(), 1);
     ASSERT_EQ(n.getIncoming().front(), e);
@@ -78,8 +78,8 @@ TEST_F(ActivityNodeTest, setTargetTest) {
 
 TEST_F(ActivityNodeTest, addOutgoingFunctorTest) {
     BasicManager m;
-    ActivityNode& n = *m.create<ActivityNode>();
-    ActivityEdge& e = *m.create<ActivityEdge>();
+    OpaqueAction& n = *m.create<OpaqueAction>();
+    ControlFlow& e = *m.create<ControlFlow>();
     n.getOutgoing().add(e);
     ASSERT_EQ(n.getOutgoing().size(), 1);
     ASSERT_EQ(n.getOutgoing().front(), e);
@@ -89,8 +89,8 @@ TEST_F(ActivityNodeTest, addOutgoingFunctorTest) {
 
 TEST_F(ActivityNodeTest, setSourceTest) {
     BasicManager m;
-    ActivityNode& n = *m.create<ActivityNode>();
-    ActivityEdge& e = *m.create<ActivityEdge>();
+    OpaqueAction& n = *m.create<OpaqueAction>();
+    ControlFlow& e = *m.create<ControlFlow>();
     e.setSource(&n);
     ASSERT_EQ(n.getOutgoing().size(), 1);
     ASSERT_EQ(n.getOutgoing().front(), e);

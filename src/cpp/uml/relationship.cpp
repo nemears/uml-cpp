@@ -12,12 +12,8 @@ void Relationship::referenceErased(ID id) {
     m_relatedElements.eraseElement(id);
 }
 
-void Relationship::init() {
-    m_relatedElements.m_readOnly = true;
-}
-
 Relationship::Relationship() : Element(ElementType::RELATIONSHIP) {
-    init();
+    m_relatedElements.m_readOnly = true;
 }
 
 Relationship::~Relationship() {

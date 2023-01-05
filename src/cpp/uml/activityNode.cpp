@@ -34,7 +34,7 @@ void ActivityNode::referenceErased(ID id) {
     m_inGroups.eraseElement(id);
 }
 
-void ActivityNode::init() {
+ActivityNode::ActivityNode() : Element(ElementType::ACTIVITY_NODE) {
     m_activity.subsets(*m_owner);
     m_activity.opposite(&Activity::getNodes);
     m_incoming.opposite(&ActivityEdge::getTargetSingleton);
@@ -45,10 +45,6 @@ void ActivityNode::init() {
     m_inPartitions.opposite(&ActivityPartition::getNodes);
     m_interruptibleRegions.subsets(m_inGroups);
     m_interruptibleRegions.opposite(&InterruptibleActivityRegion::getNodes);
-}
-
-ActivityNode::ActivityNode() : Element(ElementType::ACTIVITY_NODE) {
-    init();
 }
 
 ActivityNode::~ActivityNode() {

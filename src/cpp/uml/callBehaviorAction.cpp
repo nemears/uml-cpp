@@ -30,10 +30,8 @@ void CallBehaviorAction::referenceErased(ID id) {
     m_behavior.eraseElement(id);
 }
 
-void CallBehaviorAction::init() {}
-
 CallBehaviorAction::CallBehaviorAction() : Element(ElementType::CALL_BEHAVIOR_ACTION) {
-    init();
+    
 }
 
 CallBehaviorAction::~CallBehaviorAction() {

@@ -7,17 +7,13 @@
 
 using namespace UML;
 
-void Enumeration::init() {
+Enumeration::Enumeration() : Element(ElementType::ENUMERATION) {
     m_ownedLiterals.subsets(m_ownedMembers);
     m_ownedLiterals.opposite(&EnumerationLiteral::getEnumerationSingleton);
 }
 
-Enumeration::Enumeration() : Element(ElementType::ENUMERATION) {
-    init();
-}
-
 Enumeration::~Enumeration() {
-    mountAndRelease();
+    
 }
 
 OrderedSet<EnumerationLiteral, Enumeration>& Enumeration::getOwnedLiterals() {

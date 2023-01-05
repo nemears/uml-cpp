@@ -25,14 +25,10 @@ void Constraint::referenceErased(ID id) {
     m_constrainedElements.eraseElement(id);
 }
 
-void Constraint::init() {
+Constraint::Constraint() : Element(ElementType::CONSTRAINT) {
     m_context.subsets(*m_namespace);
     m_context.opposite(&Namespace::getOwnedRules);
     m_specifications.subsets(*m_ownedElements);
-}
-
-Constraint::Constraint() : Element(ElementType::CONSTRAINT) {
-    init();
 }
 
 Constraint::~Constraint() {

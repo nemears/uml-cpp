@@ -23,14 +23,10 @@ void BehavioralFeature::referenceErased(ID id) {
     m_raisedExceptions.eraseElement(id);
 }
 
-void BehavioralFeature::init() {
+BehavioralFeature::BehavioralFeature() : Element(ElementType::BEHAVIORAL_FEATURE) {
     m_methods.opposite(&Behavior::getSpecificationSingleton);
     m_ownedParameters.subsets(m_ownedMembers);
     m_ownedParameterSets.subsets(*m_ownedElements);
-}
-
-BehavioralFeature::BehavioralFeature() : Element(ElementType::BEHAVIORAL_FEATURE) {
-    init();
 }
 
 BehavioralFeature::~BehavioralFeature() {

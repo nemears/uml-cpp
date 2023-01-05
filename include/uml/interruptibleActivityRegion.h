@@ -13,7 +13,6 @@ namespace UML {
             CustomSet<ActivityEdge, InterruptibleActivityRegion> m_interruptingEdges = CustomSet<ActivityEdge, InterruptibleActivityRegion>(this);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             InterruptibleActivityRegion();
         public:
             virtual ~InterruptibleActivityRegion();

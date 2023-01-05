@@ -20,12 +20,8 @@ TypedSet<Action, ActionInputPin>& ActionInputPin::getFromActionSingleton() {
     return m_fromAction;
 }
 
-void ActionInputPin::init() {
-    m_fromAction.subsets(*m_ownedElements);
-}
-
 ActionInputPin::ActionInputPin() : Element(ElementType::ACTION_INPUT_PIN) {
-    init();
+    m_fromAction.subsets(*m_ownedElements);
 }
 
 ActionInputPin::~ActionInputPin() {

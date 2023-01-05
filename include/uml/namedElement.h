@@ -35,11 +35,11 @@ namespace UML{
             std::string m_absoluteNamespace;
             class UpdateQualifiedNamePolicy {
                 public:
-                    static void apply(Namespace& el, NamedElement& me);
+                    void apply(Namespace& el, NamedElement& me);
             };
             class RemoveQualifiedNamePolicy {
                 public:
-                    static void apply(Namespace& el, NamedElement& me);
+                    void apply(Namespace& el, NamedElement& me);
             };
             CustomSingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy, RemoveQualifiedNamePolicy>* m_namespace;
         protected:
@@ -49,7 +49,6 @@ namespace UML{
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<Namespace, NamedElement>& getNamespaceSingleton();
-            void init();
             NamedElement();
         public:
             virtual ~NamedElement();

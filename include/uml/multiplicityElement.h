@@ -18,25 +18,24 @@ namespace UML {
             int m_upper = -1;
             class AddLowerPolicy {
                 public:
-                    static void apply(ValueSpecification& el, MultiplicityElement& me);
+                    void apply(ValueSpecification& el, MultiplicityElement& me);
             };
             class RemoveLowerPolicy {
                 public:
-                    static void apply(ValueSpecification& el, MultiplicityElement& me);
+                    void apply(ValueSpecification& el, MultiplicityElement& me);
             };
             class AddUpperPolicy {
                 public:
-                    static void apply(ValueSpecification& el, MultiplicityElement& me);
+                    void apply(ValueSpecification& el, MultiplicityElement& me);
             };
             class RemoveUpperPolicy {
                 public:
-                    static void apply(ValueSpecification& el, MultiplicityElement& me);
+                    void apply(ValueSpecification& el, MultiplicityElement& me);
             };
             CustomSingleton<ValueSpecification, MultiplicityElement, AddLowerPolicy, RemoveLowerPolicy> m_lowVal = CustomSingleton<ValueSpecification, MultiplicityElement, AddLowerPolicy, RemoveLowerPolicy>(this);
             CustomSingleton<ValueSpecification, MultiplicityElement, AddUpperPolicy, RemoveUpperPolicy> m_upVal = CustomSingleton<ValueSpecification, MultiplicityElement, AddUpperPolicy, RemoveUpperPolicy>(this);
             TypedSet<ValueSpecification, MultiplicityElement>& getLowerValueSingleton();
             TypedSet<ValueSpecification, MultiplicityElement>& getUpperValueSingleton();
-            void init();
             MultiplicityElement();
         private:
             bool m_multiplicityIsSpecified = false;

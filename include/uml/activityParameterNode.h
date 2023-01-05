@@ -17,7 +17,6 @@ namespace UML {
             TypedSet<Parameter, ActivityParameterNode>& getParameterSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             ActivityParameterNode();
         public:
             virtual ~ActivityParameterNode();

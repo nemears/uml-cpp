@@ -15,16 +15,12 @@ TypedSet<PackageableElement, Manifestation>& Manifestation::getUtilizedElementSi
     return m_utilizedElement;
 }
 
-void Manifestation::init() {
+Manifestation::Manifestation() : Element(ElementType::MANIFESTATION) {
     m_utilizedElement.subsets(m_suppliers);
 }
 
-Manifestation::Manifestation() : Element(ElementType::MANIFESTATION) {
-    init();
-}
-
 Manifestation::~Manifestation() {
-    mountAndRelease();
+    
 }
 
 PackageableElementPtr Manifestation::getUtilizedElement() const {

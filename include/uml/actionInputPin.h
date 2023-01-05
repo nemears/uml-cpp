@@ -15,7 +15,6 @@ namespace UML {
         protected:
             CustomSingleton<Action, ActionInputPin> m_fromAction = CustomSingleton<Action, ActionInputPin>(this);
             TypedSet<Action, ActionInputPin>& getFromActionSingleton();
-            void init();
             ActionInputPin();
         public:
             virtual ~ActionInputPin();

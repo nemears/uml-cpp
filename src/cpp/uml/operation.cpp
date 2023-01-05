@@ -42,11 +42,7 @@ TypedSet<Interface, Operation>& Operation::getInterfaceSingleton() {
     return m_interface;
 }
 
-// Set<Parameter, Operation>& Operation::getOwnedParametersSet() {
-//     return m_operationOwnedParameters;
-// }
-
-void Operation::init() {
+Operation::Operation() : Element(ElementType::OPERATION) {
     m_class.subsets(m_featuringClassifier);
     m_class.subsets(*m_namespace);
     m_class.opposite(&Class::getOwnedOperations);
@@ -60,12 +56,8 @@ void Operation::init() {
     m_operationOwnedParameters.opposite(&Parameter::getOperationSingleton);
 }
 
-Operation::Operation() : Element(ElementType::OPERATION) {
-    init();
-}
-
 Operation::~Operation() {
-    mountAndRelease();
+    
 }
 
 TypePtr Operation::getType() const {

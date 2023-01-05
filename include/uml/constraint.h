@@ -5,9 +5,6 @@
 #include "valueSpecification.h"
 
 namespace UML {
-
-    // class ValueSpecification;
-
     class Constraint : public PackageableElement {
 
         friend class Namespace;
@@ -20,7 +17,6 @@ namespace UML {
             TypedSet<Namespace, Constraint>& getContextSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             Constraint();
         public:
             virtual ~Constraint();

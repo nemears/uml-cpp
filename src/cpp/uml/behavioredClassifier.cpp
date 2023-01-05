@@ -78,15 +78,11 @@ TypedSet<Behavior, BehavioredClassifier>& BehavioredClassifier::getClassifierBeh
     return m_classifierBehavior;
 }
 
-void BehavioredClassifier::init() {
+BehavioredClassifier::BehavioredClassifier() : Element(ElementType::BEHAVIORED_CLASSIFIER) {
     m_ownedBehaviors.subsets(m_ownedMembers);
     m_classifierBehavior.subsets(m_ownedBehaviors);
     m_interfaceRealizations.subsets(*m_ownedElements);
     m_interfaceRealizations.opposite(&InterfaceRealization::getImplementingClassifierSingleton);
-}
-
-BehavioredClassifier::BehavioredClassifier() : Element(ElementType::BEHAVIORED_CLASSIFIER) {
-    init();
 }
 
 BehavioredClassifier::~BehavioredClassifier() {

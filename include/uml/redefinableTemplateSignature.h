@@ -39,7 +39,6 @@ namespace UML {
             TypedSet<Classifier, RedefinableTemplateSignature>& getClassifierSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             RedefinableTemplateSignature();
         public:
             virtual ~RedefinableTemplateSignature();

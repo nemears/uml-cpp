@@ -33,7 +33,6 @@ namespace UML {
             TypedSet<ParameterableElement, TemplateParameter>& getOwnedParameteredElementSingleton();
             TypedSet<ParameterableElement, TemplateParameter>& getDefaultSingleton();
             TypedSet<ParameterableElement, TemplateParameter>& getOwnedDefaultSingleton();
-            void init();
             TemplateParameter();
         public:
             virtual ~TemplateParameter();

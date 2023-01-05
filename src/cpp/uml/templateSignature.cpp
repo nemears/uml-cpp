@@ -20,7 +20,7 @@ TypedSet<TemplateableElement, TemplateSignature>& TemplateSignature::getTemplate
     return m_template;
 }
 
-void TemplateSignature::init() {
+TemplateSignature::TemplateSignature() : Element(ElementType::TEMPLATE_SIGNATURE) {
     m_template.subsets(*m_owner);
     m_template.opposite(&TemplateableElement::getOwnedTemplateSignatureSingleton);
     m_ownedParameters.subsets(m_parameters);
@@ -28,12 +28,8 @@ void TemplateSignature::init() {
     m_ownedParameters.opposite(&TemplateParameter::getSignatureSingleton);
 }
 
-TemplateSignature::TemplateSignature() : Element(ElementType::TEMPLATE_SIGNATURE) {
-    init();
-}
-
 TemplateSignature::~TemplateSignature() {
-    mountAndRelease();
+    
 }
 
 TemplateableElementPtr TemplateSignature::getTemplate() const {

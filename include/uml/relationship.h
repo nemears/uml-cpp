@@ -9,7 +9,6 @@ namespace UML {
             CustomSet<Element, Relationship> m_relatedElements = CustomSet<Element, Relationship>(this);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             Relationship();
         public:
             virtual ~Relationship();

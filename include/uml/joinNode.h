@@ -15,7 +15,6 @@ namespace UML {
         protected:
             CustomSingleton<ValueSpecification, JoinNode> m_joinSpec = CustomSingleton<ValueSpecification, JoinNode>(this);
             TypedSet<ValueSpecification, JoinNode>& getJoinSpecSingleton();
-            void init();
             JoinNode();
         public:
             ~JoinNode();

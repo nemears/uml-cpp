@@ -33,7 +33,7 @@ void ActivityGroup::referenceErased(ID id) {
     m_containedEdges.eraseElement(id);
 }
 
-void ActivityGroup::init() {
+ActivityGroup::ActivityGroup() : Element(ElementType::ACTIVITY_GROUP) {
     m_inActivity.subsets(*m_owner);
     m_inActivity.opposite(&Activity::getGroups);
     m_superGroup.subsets(*m_owner);
@@ -46,10 +46,6 @@ void ActivityGroup::init() {
     m_subGroups.subsets(*m_ownedElements);
     m_subGroups.opposite(&ActivityGroup::getSuperGroupSingleton);
     m_subGroups.m_readOnly = true;
-}
-
-ActivityGroup::ActivityGroup() : Element(ElementType::ACTIVITY_GROUP) {
-    init();
 }
 
 ActivityGroup::~ActivityGroup() {

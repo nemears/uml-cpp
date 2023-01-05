@@ -19,7 +19,6 @@ namespace UML {
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<Classifier, Feature>& getFeaturingClassifierSingleton();
-            void init();
             Feature();
         public:
             ClassifierPtr getFeaturingClassifier() const;

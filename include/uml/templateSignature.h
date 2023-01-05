@@ -26,7 +26,6 @@ namespace UML {
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<TemplateableElement, TemplateSignature>& getTemplateSingleton();
-            void init();
             TemplateSignature();
         public:
             virtual ~TemplateSignature();

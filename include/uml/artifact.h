@@ -18,7 +18,6 @@ namespace UML {
             CustomOrderedSet<Property, Artifact> m_ownedAttributes = CustomOrderedSet<Property, Artifact>(this);
             CustomOrderedSet<Operation, Artifact> m_ownedOperations = CustomOrderedSet<Operation, Artifact>(this);
             CustomSet<Manifestation, Artifact> m_manifestations =  CustomSet<Manifestation, Artifact>(this);
-            void init();
             Artifact();
         public:
             virtual ~Artifact();

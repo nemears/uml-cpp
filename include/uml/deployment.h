@@ -21,7 +21,6 @@ namespace UML {
             CustomSet<DeployedArtifact, Deployment> m_deployedArtifacts = CustomSet<DeployedArtifact, Deployment>(this);
             CustomSingleton<DeploymentTarget, Deployment> m_location = CustomSingleton<DeploymentTarget, Deployment>(this);
             TypedSet<DeploymentTarget, Deployment>& getLocationSingleton();
-            void init();
             Deployment();
         public:
             virtual ~Deployment();

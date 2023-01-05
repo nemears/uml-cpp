@@ -14,19 +14,15 @@ TypedSet<DeploymentTarget, Deployment>& Deployment::getLocationSingleton() {
     return m_location;
 }
 
-void Deployment::init() {
+Deployment::Deployment() : Element(ElementType::DEPLOYMENT) {
     m_location.subsets(m_clients);
     m_location.subsets(*m_owner);
     m_location.opposite(&DeploymentTarget::getDeployments);
     m_deployedArtifacts.subsets(m_suppliers);
 }
 
-Deployment::Deployment() : Element(ElementType::DEPLOYMENT) {
-    init();
-}
-
 Deployment::~Deployment() {
-    mountAndRelease();
+    
 }
 
 Set<DeployedArtifact, Deployment>& Deployment::getDeployedArtifacts() {

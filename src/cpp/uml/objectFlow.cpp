@@ -37,10 +37,8 @@ void ObjectFlow::restoreReference(Element* el) {
     NamedElement::restoreReference(el);
 }
 
-void ObjectFlow::init() {}
-
 ObjectFlow::ObjectFlow() : Element(ElementType::OBJECT_FLOW) {
-    init();
+    
 }
 
 ObjectFlow::~ObjectFlow() {

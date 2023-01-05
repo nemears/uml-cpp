@@ -32,7 +32,6 @@ namespace UML {
             void restoreReference(Element* el) override;
             TypedSet<Classifier, Generalization>& getGeneralSingleton();
             TypedSet<Classifier, Generalization>& getSpecificSingleton();
-            void init();
             Generalization();
         public:
             virtual ~Generalization();

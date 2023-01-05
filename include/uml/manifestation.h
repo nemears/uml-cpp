@@ -14,7 +14,6 @@ namespace UML {
         protected:
             CustomSingleton<PackageableElement, Manifestation> m_utilizedElement = CustomSingleton<PackageableElement, Manifestation>(this);
             TypedSet<PackageableElement, Manifestation>& getUtilizedElementSingleton();
-            void init();
             Manifestation();
         public:
             virtual ~Manifestation();

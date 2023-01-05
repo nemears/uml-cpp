@@ -22,14 +22,10 @@ void InterruptibleActivityRegion::referenceErased(ID id) {
     m_interruptingEdges.eraseElement(id);
 }
 
-void InterruptibleActivityRegion::init() {
+InterruptibleActivityRegion::InterruptibleActivityRegion() : Element(ElementType::INTERRUPTIBLE_ACTIVITY_REGION) {
     m_nodes.subsets(m_containedNodes);
     m_nodes.opposite(&ActivityNode::getInterruptibleRegions);
     m_interruptingEdges.opposite(&ActivityEdge::getInterruptsSingleton);
-}
-
-InterruptibleActivityRegion::InterruptibleActivityRegion() : Element(ElementType::INTERRUPTIBLE_ACTIVITY_REGION) {
-    init();
 }
 
 InterruptibleActivityRegion::~InterruptibleActivityRegion() {

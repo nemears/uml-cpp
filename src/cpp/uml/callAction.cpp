@@ -16,12 +16,8 @@
 
 using namespace UML;
 
-void CallAction::init() {
-    m_results.subsets(m_outputs);
-}
-
 CallAction::CallAction() : Element(ElementType::CALL_ACTION) {
-    init();
+    m_results.subsets(m_outputs);
 }
 
 CallAction::~CallAction() {

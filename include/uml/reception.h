@@ -18,7 +18,6 @@ namespace UML {
             TypedSet<Signal, Reception>& getSignalSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             Reception();
         public:
             virtual ~Reception();

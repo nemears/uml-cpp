@@ -20,7 +20,7 @@ TypedSet<Operation, DataType>& DataType::getOwnedOperationsSet() {
     return m_ownedOperations;
 }
 
-void DataType::init() {
+DataType::DataType() : Element(ElementType::DATA_TYPE) {
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedAttributes.opposite(&Property::getDataTypeSingleton);
@@ -29,12 +29,8 @@ void DataType::init() {
     m_ownedOperations.opposite(&Operation::getDataTypeSingleton);
 }
 
-DataType::DataType() : Element(ElementType::DATA_TYPE) {
-    init();
-}
-
 DataType::~DataType() {
-    mountAndRelease();
+    
 }
 
 OrderedSet<Property, DataType>& DataType::getOwnedAttributes() {

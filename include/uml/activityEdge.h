@@ -40,9 +40,8 @@ namespace UML {
             TypedSet<InterruptibleActivityRegion, ActivityEdge>& getInterruptsSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
-        public:
             ActivityEdge();
+        public:
             virtual ~ActivityEdge();
             ActivityPtr getActivity() const;
             void setActivity(Activity& activity);

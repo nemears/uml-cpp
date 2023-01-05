@@ -8,16 +8,12 @@
 
 namespace UML {
 
-void OpaqueBehavior::init() {
+OpaqueBehavior::OpaqueBehavior() : Element(ElementType::OPAQUE_BEHAVIOR) {
     m_bodies.subsets(*m_ownedElements);
 }
 
-OpaqueBehavior::OpaqueBehavior() : Element(ElementType::OPAQUE_BEHAVIOR) {
-    init();
-}
-
 OpaqueBehavior::~OpaqueBehavior() {
-    mountAndRelease();
+    
 }
 
 OrderedSet<LiteralString, OpaqueBehavior>& OpaqueBehavior::getBodies() {

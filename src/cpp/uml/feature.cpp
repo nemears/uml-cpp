@@ -33,12 +33,8 @@ TypedSet<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
     return m_featuringClassifier;
 }
 
-void Feature::init() {
-    m_featuringClassifier.opposite(&Classifier::getFeatures);
-}
-
 Feature::Feature() : Element(ElementType::FEATURE) {
-    init();
+    m_featuringClassifier.opposite(&Classifier::getFeatures);
 }
 
 ClassifierPtr Feature::getFeaturingClassifier() const {

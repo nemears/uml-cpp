@@ -29,7 +29,7 @@ class ActivityTest : public ::testing::Test {
 TEST_F(ActivityTest, addNodeFunctorTest) {
     BasicManager m;
     Activity& a = *m.create<Activity>();
-    ActivityNode& n = *m.create<ActivityNode>();
+    OpaqueAction& n = *m.create<OpaqueAction>();
     a.getNodes().add(n);
     ASSERT_EQ(a.getNodes().size(), 1);
     ASSERT_EQ(a.getNodes().front(), n);
@@ -43,7 +43,7 @@ TEST_F(ActivityTest, addNodeFunctorTest) {
 TEST_F(ActivityTest, setNodeActivityTest) {
     BasicManager m;
     Activity& a = *m.create<Activity>();
-    ActivityNode& n = *m.create<ActivityNode>();
+    OpaqueAction& n = *m.create<OpaqueAction>();
     n.setActivity(a);
     ASSERT_EQ(a.getNodes().size(), 1);
     ASSERT_EQ(a.getNodes().front(), n);
@@ -57,7 +57,7 @@ TEST_F(ActivityTest, setNodeActivityTest) {
 TEST_F(ActivityTest, addEdgeFunctorTest) {
     BasicManager m;
     Activity& a = *m.create<Activity>();
-    ActivityEdge& e = *m.create<ActivityEdge>();
+    ControlFlow& e = *m.create<ControlFlow>();
     a.getEdges().add(e);
     ASSERT_EQ(a.getEdges().size(), 1);
     ASSERT_EQ(a.getEdges().front(), e);
@@ -71,7 +71,7 @@ TEST_F(ActivityTest, addEdgeFunctorTest) {
 TEST_F(ActivityTest, setEdgeActivityTest) {
     BasicManager m;
     Activity& a = *m.create<Activity>();
-    ActivityEdge& e = *m.create<ActivityEdge>();
+    ControlFlow& e = *m.create<ControlFlow>();
     e.setActivity(&a);
     ASSERT_EQ(a.getEdges().size(), 1);
     ASSERT_EQ(a.getEdges().front(), e);

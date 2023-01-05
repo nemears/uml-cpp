@@ -276,7 +276,6 @@ namespace UML {
             virtual void restoreReferences();
             virtual void restoreReference(Element* el);
             virtual void referenceErased(ID id);
-            void mountAndRelease();
             SetLock lockEl(Element& el);
             Element(ElementType elementType);
         public:

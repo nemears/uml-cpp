@@ -13,17 +13,13 @@ TypedSet<Profile, Stereotype>& Stereotype::getProfileSingleton() {
     return m_profile;
 }
 
-void Stereotype::init() {
+Stereotype::Stereotype() : Element(ElementType::STEREOTYPE) {
     m_profile.subsets(m_owningPackage);
     m_profile.opposite(&Profile::getOwnedStereotypes);
 }
 
-Stereotype::Stereotype() : Element(ElementType::STEREOTYPE) {
-    init();
-}
-
 Stereotype::~Stereotype() {
-    mountAndRelease();
+    
 }
 
 ProfilePtr Stereotype::getProfile() const {

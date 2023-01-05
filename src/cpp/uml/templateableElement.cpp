@@ -10,15 +10,11 @@ TypedSet<TemplateSignature, TemplateableElement>& TemplateableElement::getOwnedT
     return m_ownedTemplateSignature;
 }
 
-void TemplateableElement::init() {
+TemplateableElement::TemplateableElement() : Element(ElementType::TEMPLATEABLE_ELEMENT) {
     m_ownedTemplateSignature.subsets(*m_ownedElements);
     m_ownedTemplateSignature.opposite(&TemplateSignature::getTemplateSingleton);
     m_templateBindings.subsets(*m_ownedElements);
     m_templateBindings.opposite(&TemplateBinding::getBoundElementSingleton);
-}
-
-TemplateableElement::TemplateableElement() : Element(ElementType::TEMPLATEABLE_ELEMENT) {
-    init();
 }
 
 TemplateableElement::~TemplateableElement() {

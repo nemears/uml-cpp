@@ -23,7 +23,6 @@ namespace UML {
             TypedSet<Property, ConnectorEnd>& getDefiningEndSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             ConnectorEnd();
         public:
             virtual ~ConnectorEnd();

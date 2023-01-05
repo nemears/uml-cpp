@@ -9,7 +9,7 @@
 
 using namespace UML;
 
-void Interface::init() {
+Interface::Interface() : Element(ElementType::INTERFACE_UML) {
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.opposite(&Property::getInterfaceSingleton);
@@ -19,12 +19,8 @@ void Interface::init() {
     m_nestedClassifiers.subsets(m_ownedMembers);
 }
 
-Interface::Interface() : Element(ElementType::INTERFACE_UML) {
-    init();
-}
-
 Interface::~Interface() {
-    mountAndRelease();
+    
 }
 
 OrderedSet<Property, Interface>& Interface::getOwnedAttributes() {

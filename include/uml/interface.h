@@ -15,10 +15,6 @@ namespace UML {
             CustomOrderedSet<Property, Interface> m_ownedAttributes = CustomOrderedSet<Property, Interface>(this);
             CustomOrderedSet<Operation, Interface> m_ownedOperations = CustomOrderedSet<Operation, Interface>(this);
             CustomOrderedSet<Classifier, Interface> m_nestedClassifiers = CustomOrderedSet<Classifier, Interface>(this);
-            // Set<Property, Interface>& getOwnedAttributesSet();
-            // Set<Operation, Interface>& getOwnedOperationsSet();
-            // Set<Classifier, Interface>& getNestedClassifiersSet();
-            void init();
             Interface();
         public:
             virtual ~Interface();

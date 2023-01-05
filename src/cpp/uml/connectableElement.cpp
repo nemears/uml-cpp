@@ -28,12 +28,8 @@ void ConnectableElement::referenceErased(ID id) {
     ParameterableElement::referenceErased(id);
 }
 
-void ConnectableElement::init() {
-    m_ends.m_readOnly = true;
-}
-
 ConnectableElement::ConnectableElement() : Element(ElementType::CONNECTABLE_ELEMENT) {
-    init();
+    m_ends.m_readOnly = true;
 }
 
 ConnectableElement::~ConnectableElement() {

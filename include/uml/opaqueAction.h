@@ -14,7 +14,6 @@ namespace UML {
             CustomSet<InputPin, OpaqueAction> m_inputValues = CustomSet<InputPin, OpaqueAction>(this);
             CustomSet<OutputPin, OpaqueAction> m_outputValues = CustomSet<OutputPin, OpaqueAction>(this);
             CustomOrderedSet<LiteralString, OpaqueAction> m_bodies = CustomOrderedSet<LiteralString, OpaqueAction>(this); // TODO change to sequence when we make that
-            void init();
             OpaqueAction();
         public:
             virtual ~OpaqueAction();

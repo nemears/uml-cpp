@@ -118,17 +118,13 @@ void Port::referenceErased(ID id) {
     m_provided.eraseElement(id);
 }
 
-void Port::init() {
+Port::Port() : Element(ElementType::PORT) {
     m_required.m_readOnly = true;
     m_provided.m_readOnly = true;
 }
 
-Port::Port() : Element(ElementType::PORT) {
-    init();
-}
-
 Port::~Port() {
-    mountAndRelease();
+    
 }
 
 bool Port::isBehavior() const {

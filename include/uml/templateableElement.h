@@ -20,7 +20,6 @@ namespace UML {
             CustomSingleton<TemplateSignature, TemplateableElement> m_ownedTemplateSignature = CustomSingleton<TemplateSignature, TemplateableElement>(this);
             CustomSet<TemplateBinding, TemplateableElement> m_templateBindings = CustomSet<TemplateBinding, TemplateableElement>(this);
             TypedSet<TemplateSignature, TemplateableElement>& getOwnedTemplateSignatureSingleton();
-            void init();
             TemplateableElement();
         public:
             virtual ~TemplateableElement();

@@ -16,14 +16,10 @@
 
 using namespace UML;
 
-void OpaqueAction::init() {
+OpaqueAction::OpaqueAction() : Element(ElementType::OPAQUE_ACTION) {
     m_inputValues.subsets(m_inputs);
     m_outputValues.subsets(m_outputs);
     m_bodies.subsets(*m_ownedElements);
-}
-
-OpaqueAction::OpaqueAction() : Element(ElementType::OPAQUE_ACTION) {
-    init();
 }
 
 OpaqueAction::~OpaqueAction() {

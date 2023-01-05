@@ -19,19 +19,15 @@ TypedSet<Package, PackageMerge>& PackageMerge::getMergedPackageSingleton() {
     return m_mergedPackage;
 }
 
-void PackageMerge::init() {
+PackageMerge::PackageMerge() : Element(ElementType::PACKAGE_MERGE) {
     m_receivingPackage.subsets(*m_owner);
     m_receivingPackage.subsets(m_sources);
     m_receivingPackage.opposite(&Package::getPackageMerge);
     m_mergedPackage.subsets(m_targets);
 }
 
-PackageMerge::PackageMerge() : Element(ElementType::PACKAGE_MERGE) {
-    init();
-}
-
 PackageMerge::~PackageMerge() {
-    mountAndRelease();
+    
 }
 
 PackagePtr PackageMerge::getReceivingPackage() const {

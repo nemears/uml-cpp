@@ -29,7 +29,7 @@ TypedSet<TemplateSignature, TemplateBinding>& TemplateBinding::getSignatureSingl
     return m_signature;
 }
 
-void TemplateBinding::init() {
+TemplateBinding::TemplateBinding() : Element(ElementType::TEMPLATE_BINDING) {
     m_boundElement.subsets(m_sources);
     m_boundElement.subsets(*m_owner);
     m_boundElement.opposite(&TemplateableElement::getTemplateBindings);
@@ -38,12 +38,8 @@ void TemplateBinding::init() {
     m_parameterSubstitutions.opposite(&TemplateParameterSubstitution::getTemplateBindingSingleton);
 }
 
-TemplateBinding::TemplateBinding() : Element(ElementType::TEMPLATE_BINDING) {
-    init();
-}
-
 TemplateBinding::~TemplateBinding() {
-    mountAndRelease();
+    
 }
 
 TemplateableElementPtr TemplateBinding::getBoundElement() const {

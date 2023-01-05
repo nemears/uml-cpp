@@ -16,17 +16,13 @@
 
 using namespace UML;
 
-void Action::init() {
+Action::Action() : Element(ElementType::ACTION) {
     m_inputs.subsets(*m_ownedElements);
     m_inputs.m_readOnly = true;
     m_outputs.subsets(*m_ownedElements);
     m_outputs.m_readOnly = true;
     m_localPreconditions.subsets(*m_ownedElements);
     m_localPostconditions.subsets(*m_ownedElements);
-}
-
-Action::Action() : Element(ElementType::ACTION) {
-    init();
 }
 
 Action::~Action() {

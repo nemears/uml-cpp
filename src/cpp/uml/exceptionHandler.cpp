@@ -44,13 +44,9 @@ void ExceptionHandler::referenceErased(ID id) {
     m_exceptionTypes.eraseElement(id);
 }
 
-void ExceptionHandler::init() {
+ExceptionHandler::ExceptionHandler() : Element(ElementType::EXCEPTION_HANDLER) {
     m_protectedNode.subsets(*m_owner);
     m_protectedNode.opposite(&ExecutableNode::getHandlers);
-}
-
-ExceptionHandler::ExceptionHandler() : Element(ElementType::EXCEPTION_HANDLER) {
-    init();
 }
 
 ExceptionHandler::~ExceptionHandler() {

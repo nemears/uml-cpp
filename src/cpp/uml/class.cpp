@@ -10,11 +10,9 @@
 #include "uml/interface.h"
 #include "uml/deployment.h"
 
-#include <iostream>
-
 using namespace UML;
 
-void Class::init() {
+Class::Class() : Element(ElementType::CLASS) {
     m_classOwnedAttrubutes.redefines(m_ownedAttributes);
     m_classOwnedAttrubutes.opposite(&Property::getClassSingleton);
     m_ownedOperations.subsets(m_features);
@@ -25,12 +23,8 @@ void Class::init() {
     m_ownedReceptions.subsets(m_ownedMembers);
 }
 
-Class::Class() : Element(ElementType::CLASS) {
-    init();
-}
-
 Class::~Class() {
-    
+
 }
 
 OrderedSet<Property, Class>& Class::getOwnedAttributes() {

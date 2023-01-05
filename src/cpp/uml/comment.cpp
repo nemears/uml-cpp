@@ -12,16 +12,12 @@ void Comment::referenceErased(ID id) {
     m_annotatedElements.eraseElement(id);
 }
 
-void Comment::init() {
+Comment::Comment() : Element(ElementType::COMMENT) {
     
 }
 
-Comment::Comment() : Element(ElementType::COMMENT) {
-    init();
-}
-
 Comment::~Comment() {
-    mountAndRelease();
+    
 }
 
 std::string Comment::getBody() {

@@ -81,19 +81,15 @@ void Connector::referenceErased(ID id) {
     m_contracts.eraseElement(id);
 }
 
-void Connector::init() {
+Connector::Connector() : Element(ElementType::CONNECTOR) {
     m_ends.subsets(*m_ownedElements);
     m_structuredClassifier.subsets(m_featuringClassifier);
     m_structuredClassifier.subsets(*m_namespace);
     m_structuredClassifier.opposite(&StructuredClassifier::getOwnedConnectors);
 }
 
-Connector::Connector() : Element(ElementType::CONNECTOR) {
-    init();
-}
-
 Connector::~Connector() {
-    mountAndRelease();
+    
 }
 
 AssociationPtr Connector::getType() const {

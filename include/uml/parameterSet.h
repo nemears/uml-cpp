@@ -17,7 +17,6 @@ namespace UML {
             CustomSet<Parameter, ParameterSet> m_parameters = CustomSet<Parameter, ParameterSet>(this);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             ParameterSet();
         public:
             virtual ~ParameterSet();

@@ -22,7 +22,6 @@ namespace UML {
             CustomSingleton<ExtensionEnd, Extension> m_ownedEnd = CustomSingleton<ExtensionEnd, Extension>(this);
             bool m_setFlag = false;
             TypedSet<ExtensionEnd, Extension>& getOwnedEndSingleton();
-            void init();
             Extension();
         public:
             virtual ~Extension();

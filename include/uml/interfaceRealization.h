@@ -17,17 +17,16 @@ namespace UML {
         protected:
             class RemoveContractPolicy {
                 public:
-                    static void apply(Interface& el, InterfaceRealization& me);
+                    void apply(Interface& el, InterfaceRealization& me);
             };
             class SetContractPolicy {
                 public:
-                    static void apply(Interface& el, InterfaceRealization& me);
+                    void apply(Interface& el, InterfaceRealization& me);
             };
             CustomSingleton<Interface, InterfaceRealization, SetContractPolicy, RemoveContractPolicy> m_contract = CustomSingleton<Interface, InterfaceRealization, SetContractPolicy, RemoveContractPolicy>(this);
             CustomSingleton<BehavioredClassifier, InterfaceRealization> m_implementingClassifier = CustomSingleton<BehavioredClassifier, InterfaceRealization>(this);
             TypedSet<Interface, InterfaceRealization>& getContractSingleton();
             TypedSet<BehavioredClassifier, InterfaceRealization>& getImplementingClassifierSingleton();
-            void init();
             InterfaceRealization();
         public:
             virtual ~InterfaceRealization();

@@ -46,19 +46,15 @@ TypedSet<ParameterableElement, TemplateParameterSubstitution>& TemplateParameter
     return m_ownedActual;
 }
 
-void TemplateParameterSubstitution::init() {
+TemplateParameterSubstitution::TemplateParameterSubstitution() : Element(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION) {
     m_templateBinding.subsets(*m_owner);
     m_templateBinding.opposite(&TemplateBinding::getParameterSubstitutions);
     m_ownedActual.subsets(*m_ownedElements);
     m_ownedActual.subsets(m_actual);
 }
 
-TemplateParameterSubstitution::TemplateParameterSubstitution() : Element(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION) {
-    init();
-}
-
 TemplateParameterSubstitution::~TemplateParameterSubstitution() {
-    mountAndRelease();
+    
 }
 
 TemplateParameterPtr TemplateParameterSubstitution::getFormal() const {

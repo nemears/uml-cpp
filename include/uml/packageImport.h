@@ -27,7 +27,6 @@ namespace UML {
             };
             DEFINE_SINGLETON_W_POLICIES(ImportedPackage, m_importedPackage, Package, PackageImport, AddImportedPackagePolicy, RemoveImportedPackagePolicy)
             DEFINE_SINGLETON(ImportingNamespace, m_importingNamespace, Namespace, PackageImport)
-            void init();
             PackageImport();
         public:
             virtual ~PackageImport();

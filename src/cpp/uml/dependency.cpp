@@ -26,18 +26,14 @@ void Dependency::referenceErased(ID id) {
     DirectedRelationship::referenceErased(id);
 }
 
-void Dependency::init() {
+Dependency::Dependency() : Element(ElementType::DEPENDENCY) {
     m_clients.subsets(m_sources);
     m_clients.opposite(&NamedElement::getClientDependencies);
     m_suppliers.subsets(m_targets);
 }
 
-Dependency::Dependency() : Element(ElementType::DEPENDENCY) {
-    init();
-}
-
 Dependency::~Dependency() {
-    mountAndRelease();
+    
 }
 
 Set<NamedElement, Dependency>& Dependency::getClients() {

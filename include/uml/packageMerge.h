@@ -20,7 +20,6 @@ namespace UML {
             CustomSingleton<Package, PackageMerge> m_mergedPackage = CustomSingleton<Package, PackageMerge>(this);
             TypedSet<Package, PackageMerge>& getReceivingPackageSingleton();
             TypedSet<Package, PackageMerge>& getMergedPackageSingleton();
-            void init();
             PackageMerge();
         public:
             virtual ~PackageMerge();

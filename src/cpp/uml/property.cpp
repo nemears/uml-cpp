@@ -90,7 +90,7 @@ TypedSet<Interface, Property>& Property::getInterfaceSingleton() {
     return m_interface;
 }
 
-void Property::init() {
+Property::Property() : Element(ElementType::PROPERTY) {
     m_defaultValue.subsets(*m_ownedElements);
     m_class.subsets(*m_namespace);
     m_class.subsets(m_featuringClassifier);
@@ -110,12 +110,8 @@ void Property::init() {
     m_propertyType.redefines(m_type);
 }
 
-Property::Property() : Element(ElementType::PROPERTY) {
-    init();
-}
-
 Property::~Property() {
-    mountAndRelease();
+
 }
 
 AggregationKind Property::getAggregation() {

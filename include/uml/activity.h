@@ -23,9 +23,8 @@ namespace UML {
             CustomSet<ActivityEdge, Activity> m_edges = CustomSet<ActivityEdge, Activity>(this);
             CustomSet<ActivityGroup, Activity> m_groups = CustomSet<ActivityGroup, Activity>(this);
             CustomSet<ActivityPartition, Activity> m_partitions = CustomSet<ActivityPartition, Activity>(this);
-            void init();
-        public:
             Activity();
+        public:
             virtual ~Activity();
             Set<ActivityNode, Activity>& getNodes();
             Set<ActivityEdge, Activity>& getEdges();

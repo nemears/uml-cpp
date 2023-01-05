@@ -16,7 +16,6 @@ namespace UML {
             TypedSet<Port, InvocationAction>& getOnPortSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             InvocationAction();
         public:
             virtual ~InvocationAction();

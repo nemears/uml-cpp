@@ -11,7 +11,6 @@ namespace UML {
 
         protected:
             CustomSet<Stereotype, Profile> m_profileOwnedStereotypes = CustomSet<Stereotype, Profile>(this);
-            void init();
             Profile();
         public:
             virtual ~Profile();

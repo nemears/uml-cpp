@@ -31,17 +31,13 @@ void ConnectorEnd::referenceErased(ID id) {
     m_definingEnd.eraseElement(id);
 }
 
-void ConnectorEnd::init() {
+ConnectorEnd::ConnectorEnd() : Element(ElementType::CONNECTOR_END) {
     m_role.opposite(&ConnectableElement::getEnds);
     m_definingEnd.m_readOnly = true;
 }
 
-ConnectorEnd::ConnectorEnd() : Element(ElementType::CONNECTOR_END) {
-    init();
-}
-
 ConnectorEnd::~ConnectorEnd() {
-    mountAndRelease();
+    
 }
 
 ConnectableElementPtr ConnectorEnd::getRole() const {

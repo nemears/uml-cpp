@@ -28,13 +28,13 @@ void ActivityParameterNode::referenceErased(ID id) {
     m_parameter.eraseElement(id);
 }
 
-void ActivityParameterNode::init() {}
-
 ActivityParameterNode::ActivityParameterNode() : Element(ElementType::ACTIVITY_PARAMETER_NODE) {
-    init();
+    
 }
 
-ActivityParameterNode::~ActivityParameterNode() {}
+ActivityParameterNode::~ActivityParameterNode() {
+    
+}
 
 ParameterPtr ActivityParameterNode::getParameter() const {
     return m_parameter.get();

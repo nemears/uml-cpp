@@ -50,7 +50,7 @@ void Namespace::referenceErased(ID id) {
     m_members.eraseElement(id);
 }
 
-void Namespace::init() {
+Namespace::Namespace() : Element(ElementType::NAMESPACE) {
     m_members.m_readOnly = true;
     m_ownedMembers.subsets(*m_ownedElements);
     m_ownedMembers.subsets(m_members);
@@ -64,10 +64,6 @@ void Namespace::init() {
     m_elementImports.opposite(&ElementImport::getImportingNamespaceSingleton);
     m_packageImports.subsets(*m_ownedElements);
     m_packageImports.opposite(&PackageImport::getImportingNamespaceSingleton);
-}
-
-Namespace::Namespace() : Element(ElementType::NAMESPACE) {
-    init();
 }
 
 Namespace::~Namespace() {

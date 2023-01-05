@@ -28,7 +28,6 @@ namespace UML {
             TypedSet<ObjectNode, ExceptionHandler>& getExceptionInputSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             ExceptionHandler();
         public:
             virtual ~ExceptionHandler();

@@ -20,12 +20,8 @@ TypedSet<ValueSpecification, ValuePin>& ValuePin::getValueSingleton() {
     return m_value;
 }
 
-void ValuePin::init() {
-    m_value.subsets(*m_ownedElements);
-}
-
 ValuePin::ValuePin() : Element(ElementType::VALUE_PIN) {
-    init();
+    m_value.subsets(*m_ownedElements);
 }
 
 ValuePin::~ValuePin() {

@@ -17,20 +17,20 @@ class ActivityEdgeTest : public ::testing::Test {
 
 TEST_F(ActivityEdgeTest, GetNullTargetTest) {
     BasicManager m;
-    ActivityEdge& a = *m.create<ActivityEdge>();
+    ControlFlow& a = *m.create<ControlFlow>();
     ASSERT_TRUE(!a.getTarget());
 }
 
 TEST_F(ActivityEdgeTest, GetNullSourceTest) {
     BasicManager m;
-    ActivityEdge& a = *m.create<ActivityEdge>();
+    ControlFlow& a = *m.create<ControlFlow>();
     ASSERT_TRUE(!a.getSource());
 }
 
 TEST_F(ActivityEdgeTest, SetRegularTargetTest) {
     BasicManager m;
-    ActivityEdge& e = *m.create<ActivityEdge>();
-    ActivityNode& n = *m.create<ActivityNode>();
+    ControlFlow& e = *m.create<ControlFlow>();
+    OpaqueAction& n = *m.create<OpaqueAction>();
     e.setTarget(n);
     ASSERT_TRUE(e.getTarget());
     ASSERT_EQ(*e.getTarget(), n);
@@ -40,8 +40,8 @@ TEST_F(ActivityEdgeTest, SetRegularTargetTest) {
 
 TEST_F(ActivityEdgeTest, SetRegularSourceTest) {
     BasicManager m;
-    ActivityEdge& e = *m.create<ActivityEdge>();
-    ActivityNode& n = *m.create<ActivityNode>();
+    ControlFlow& e = *m.create<ControlFlow>();
+    OpaqueAction& n = *m.create<OpaqueAction>();
     e.setSource(n);
     ASSERT_TRUE(e.getSource());
     ASSERT_EQ(*e.getSource(), n);
@@ -52,8 +52,8 @@ TEST_F(ActivityEdgeTest, SetRegularSourceTest) {
 TEST_F(ActivityEdgeTest, reindexID_Test) {
     BasicManager m;
     Activity& a = *m.create<Activity>();
-    ActivityEdge& e = *m.create<ActivityEdge>();
-    ActivityNode& n = *m.create<ActivityNode>();
+    ControlFlow& e = *m.create<ControlFlow>();
+    OpaqueAction& n = *m.create<OpaqueAction>();
     e.setSource(n);
     e.setTarget(n);
     a.getNodes().add(n);
@@ -68,8 +68,8 @@ TEST_F(ActivityEdgeTest, reindexID_Test) {
 TEST_F(ActivityEdgeTest, reindexNameTest) {
     BasicManager m;
     Activity& a = *m.create<Activity>();
-    ActivityEdge& e = *m.create<ActivityEdge>();
-    ActivityNode& n = *m.create<ActivityNode>();
+    ControlFlow& e = *m.create<ControlFlow>();
+    OpaqueAction& n = *m.create<OpaqueAction>();
     e.setSource(n);
     e.setTarget(n);
     a.getNodes().add(n);
@@ -83,9 +83,9 @@ TEST_F(ActivityEdgeTest, reindexNameTest) {
 
 TEST_F(ActivityEdgeTest, overwriteIncomingTest) {
     BasicManager m;
-    ActivityNode& p1 = *m.create<ActivityNode>();
-    ActivityNode& p2 = *m.create<ActivityNode>();
-    ActivityEdge& c = *m.create<ActivityEdge>();
+    OpaqueAction& p1 = *m.create<OpaqueAction>();
+    OpaqueAction& p2 = *m.create<OpaqueAction>();
+    ControlFlow& c = *m.create<ControlFlow>();
     p1.getIncoming().add(c);
     c.setTarget(p2);
     ASSERT_EQ(p2.getIncoming().size(), 1);
@@ -97,9 +97,9 @@ TEST_F(ActivityEdgeTest, overwriteIncomingTest) {
 
 TEST_F(ActivityEdgeTest, overwriteIncomingByIncomingAddTest) {
     BasicManager m;
-    ActivityNode& p1 = *m.create<ActivityNode>();
-    ActivityNode& p2 = *m.create<ActivityNode>();
-    ActivityEdge& c = *m.create<ActivityEdge>();
+    OpaqueAction& p1 = *m.create<OpaqueAction>();
+    OpaqueAction& p2 = *m.create<OpaqueAction>();
+    ControlFlow& c = *m.create<ControlFlow>();
     p1.getIncoming().add(c);
     p2.getIncoming().add(c);
     ASSERT_EQ(p2.getIncoming().size(), 1);
@@ -111,9 +111,9 @@ TEST_F(ActivityEdgeTest, overwriteIncomingByIncomingAddTest) {
 
 TEST_F(ActivityEdgeTest, overwriteOutgoingTest) {
     BasicManager m;
-    ActivityNode& p1 = *m.create<ActivityNode>();
-    ActivityNode& p2 = *m.create<ActivityNode>();
-    ActivityEdge& c = *m.create<ActivityEdge>();
+    OpaqueAction& p1 = *m.create<OpaqueAction>();
+    OpaqueAction& p2 = *m.create<OpaqueAction>();
+    ControlFlow& c = *m.create<ControlFlow>();
     p1.getOutgoing().add(c);
     c.setSource(p2);
     ASSERT_EQ(p2.getOutgoing().size(), 1);
@@ -125,9 +125,9 @@ TEST_F(ActivityEdgeTest, overwriteOutgoingTest) {
 
 TEST_F(ActivityEdgeTest, overwriteOutgoingByOutgoingAddTest) {
     BasicManager m;
-    ActivityNode& p1 = *m.create<ActivityNode>();
-    ActivityNode& p2 = *m.create<ActivityNode>();
-    ActivityEdge& c = *m.create<ActivityEdge>();
+    OpaqueAction& p1 = *m.create<OpaqueAction>();
+    OpaqueAction& p2 = *m.create<OpaqueAction>();
+    ControlFlow& c = *m.create<ControlFlow>();
     p1.getOutgoing().add(c);
     p2.getOutgoing().add(c);
     ASSERT_EQ(p2.getOutgoing().size(), 1);

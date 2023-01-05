@@ -14,7 +14,6 @@ namespace UML {
             std::string m_body; // TODO move to literal string?
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             Comment();
         public:
             virtual ~Comment();

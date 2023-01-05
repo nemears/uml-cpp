@@ -12,7 +12,7 @@ Abstraction::Abstraction() : Element(ElementType::ABSTRACTION) {
 }
 
 Abstraction::~Abstraction() {
-    mountAndRelease();
+    
 }
 
 bool Abstraction::isSubClassOf(ElementType eType) const {

@@ -22,7 +22,6 @@ namespace UML {
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<Classifier, GeneralizationSet>& getPowerTypeSingleton();
-            void init();
             GeneralizationSet();
         public:
             virtual ~GeneralizationSet();

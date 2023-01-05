@@ -13,8 +13,6 @@ namespace UML {
 
         protected:
             CustomOrderedSet<LiteralString, OpaqueBehavior> m_bodies = CustomOrderedSet<LiteralString, OpaqueBehavior>(this);
-            // Set<LiteralString, OpaqueBehavior>& getBodiesSet();
-            void init();
             OpaqueBehavior();
         public:
             virtual ~OpaqueBehavior();

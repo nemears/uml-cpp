@@ -33,12 +33,8 @@ void ObjectNode::referenceErased(ID id) {
     m_selection.eraseElement(id);
 }
 
-void ObjectNode::init() {
-    m_upperBound.subsets(*m_ownedElements);
-}
-
 ObjectNode::ObjectNode() : Element(ElementType::OBJECT_NODE) {
-    init();
+    m_upperBound.subsets(*m_ownedElements);
 }
 
 ObjectNode::~ObjectNode() {

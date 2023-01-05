@@ -23,13 +23,9 @@ using namespace UML;
 //     }
 // }
 
-void EncapsulatedClassifier::init() {
+EncapsulatedClassifier::EncapsulatedClassifier() : Element(ElementType::ENCAPSULATED_CLASSIFIER) {
     m_ownedPorts.subsets(m_ownedAttributes);
     m_ownedPorts.m_readOnly = true;
-}
-
-EncapsulatedClassifier::EncapsulatedClassifier() : Element(ElementType::ENCAPSULATED_CLASSIFIER) {
-    init();
 }
 
 EncapsulatedClassifier::~EncapsulatedClassifier() {

@@ -26,7 +26,6 @@ namespace UML {
             CallConcurrencyKind m_concurrency = CallConcurrencyKind::Sequential;
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             BehavioralFeature();
         public:
             virtual ~BehavioralFeature();

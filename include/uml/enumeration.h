@@ -14,7 +14,6 @@ namespace UML {
 
         protected:
             CustomOrderedSet<EnumerationLiteral, Enumeration> m_ownedLiterals = CustomOrderedSet<EnumerationLiteral, Enumeration>(this);
-            void init();
             Enumeration();
         public:
             virtual ~Enumeration();

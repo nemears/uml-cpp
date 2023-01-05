@@ -69,15 +69,6 @@ void Element::referenceErased(ID id) {
     m_appliedStereotype->eraseElement(id);
 }
 
-void Element::mountAndRelease() {
-    // if (!m_copiedElementFlag && !m_createVal) {
-    //     m_manager->mountEl(*this);
-    //     m_manager->releaseNode(*this);
-    //     m_manager->m_graph.erase(m_id);
-    //     m_createVal = true;
-    // }
-}
-
 SetLock Element::lockEl(Element& el) {
     return m_manager->lockEl(el);
 }

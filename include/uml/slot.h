@@ -25,7 +25,6 @@ namespace UML {
             void restoreReference(Element* el) override;
             TypedSet<StructuralFeature, Slot>& getDefiningFeatureSingleton();
             TypedSet<InstanceSpecification, Slot>& getOwningInstanceSingleton();
-            void init();
             Slot();
         public:
             virtual ~Slot();

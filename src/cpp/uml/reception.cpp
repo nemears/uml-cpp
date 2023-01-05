@@ -25,14 +25,12 @@ void Reception::referenceErased(ID id) {
     m_signal.eraseElement(id);
 }
 
-void Reception::init() {}
-
 Reception::Reception() : Element(ElementType::RECEPTION) {
-    init();
+    
 }
 
 Reception::~Reception() {
-    mountAndRelease();
+    
 }
 
 SignalPtr Reception::getSignal() const {

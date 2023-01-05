@@ -17,19 +17,15 @@ TypedSet<Package, ProfileApplication>& ProfileApplication::getApplyingPackageSin
     return m_applyingPackage;
 }
 
-void ProfileApplication::init() {
+ProfileApplication::ProfileApplication() : Element(ElementType::PROFILE_APPLICATION) {
     m_appliedProfile.subsets(m_targets);
     m_applyingPackage.subsets(*m_owner);
     m_applyingPackage.subsets(m_sources);
     m_applyingPackage.opposite(&Package::getProfileApplications);
 }
 
-ProfileApplication::ProfileApplication() : Element(ElementType::PROFILE_APPLICATION) {
-    init();
-}
-
 ProfileApplication::~ProfileApplication() {
-    mountAndRelease();
+    
 }
 
 ProfilePtr ProfileApplication::getAppliedProfile() const {

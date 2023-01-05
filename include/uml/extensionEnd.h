@@ -15,7 +15,6 @@ namespace UML {
         private:
             CustomSingleton<Stereotype, ExtensionEnd> m_extensionType = CustomSingleton<Stereotype, ExtensionEnd>(this);
             TypedSet<Stereotype, ExtensionEnd>& getTypeSingleton();
-            void init();
             ExtensionEnd();
         public:
             virtual ~ExtensionEnd();

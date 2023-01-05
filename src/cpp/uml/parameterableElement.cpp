@@ -29,16 +29,11 @@ TypedSet<TemplateParameter, ParameterableElement>& ParameterableElement::getTemp
     return m_templateParameter;
 }
 
-void ParameterableElement::init() {
+ParameterableElement::ParameterableElement() : Element(ElementType::PARAMETERABLE_ELEMENT) {
     m_templateParameter.opposite(&TemplateParameter::getParameteredElementSingleton);
     m_owningTemplateParameter.subsets(m_templateParameter);
     m_owningTemplateParameter.subsets(*m_owner);
     m_owningTemplateParameter.opposite(&TemplateParameter::getOwnedParameteredElementSingleton);
-}
-
-
-ParameterableElement::ParameterableElement() : Element(ElementType::PARAMETERABLE_ELEMENT) {
-    init();
 }
 
 ParameterableElement::~ParameterableElement() {

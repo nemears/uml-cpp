@@ -2,15 +2,11 @@
 
 using namespace UML;
 
-void DirectedRelationship::init() {
+DirectedRelationship::DirectedRelationship() : Element(ElementType::DIRECTED_RELATIONSHIP) {
     m_sources.subsets(m_relatedElements);
     m_sources.m_readOnly = true;
     m_targets.subsets(m_relatedElements);
     m_targets.m_readOnly = true;
-}
-
-DirectedRelationship::DirectedRelationship() : Element(ElementType::DIRECTED_RELATIONSHIP) {
-    init();
 }
 
 DirectedRelationship::~DirectedRelationship() {

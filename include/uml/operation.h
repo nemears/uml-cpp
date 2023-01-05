@@ -40,8 +40,6 @@ namespace UML {
             TypedSet<Class, Operation>& getClassSingleton();
             TypedSet<DataType, Operation>& getDataTypeSingleton();
             TypedSet<Interface, Operation>& getInterfaceSingleton();
-            // Set<Parameter, Operation>& getOwnedParametersSet();
-            void init();
             Operation();
         public:
             virtual ~Operation();

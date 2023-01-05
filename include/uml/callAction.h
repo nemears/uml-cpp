@@ -8,7 +8,6 @@ namespace UML {
         protected:
             CustomOrderedSet<OutputPin, CallAction> m_results = CustomOrderedSet<OutputPin, CallAction>(this);
             bool m_isSynchronous = true;
-            void init();
             CallAction();
         public:
             virtual ~CallAction();

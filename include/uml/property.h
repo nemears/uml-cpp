@@ -72,7 +72,6 @@ namespace UML{
             TypedSet<Association, Property>& getAssociationSingleton();
             TypedSet<Association, Property>& getOwningAssociationSingleton();
             TypedSet<Interface, Property>& getInterfaceSingleton();
-            void init();
             Property();
         public:
             virtual ~Property();

@@ -29,12 +29,8 @@ TypedSet<ValueSpecification, JoinNode>& JoinNode::getJoinSpecSingleton() {
     return m_joinSpec;
 }
 
-void JoinNode::init() {
-    m_joinSpec.subsets(*m_ownedElements);
-}
-
 JoinNode::JoinNode() : Element(ElementType::JOIN_NODE) {
-    init();
+    m_joinSpec.subsets(*m_ownedElements);
 }
 
 JoinNode::~JoinNode() {

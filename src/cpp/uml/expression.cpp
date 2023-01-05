@@ -7,16 +7,12 @@
 
 using namespace UML;
 
-void Expression::init() {
+Expression::Expression() : Element(ElementType::EXPRESSION) {
     m_operands.subsets(*m_ownedElements);
 }
 
-Expression::Expression() : Element(ElementType::EXPRESSION) {
-    init();
-}
-
 Expression::~Expression() {
-    mountAndRelease();
+    
 }
 
 OrderedSet<ValueSpecification, Expression>& Expression::getOperands() {

@@ -17,7 +17,6 @@ namespace UML {
         protected:
             CustomSingleton<Enumeration, EnumerationLiteral> m_enumeration = CustomSingleton<Enumeration, EnumerationLiteral>(this);
             TypedSet<Enumeration, EnumerationLiteral>& getEnumerationSingleton();
-            void init();
             EnumerationLiteral();
         public:
             virtual ~EnumerationLiteral();

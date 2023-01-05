@@ -15,7 +15,6 @@ namespace UML {
             CustomSet<NamedElement, Dependency> m_suppliers = CustomSet<NamedElement, Dependency>(this);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             Dependency();
         public:
             virtual ~Dependency();

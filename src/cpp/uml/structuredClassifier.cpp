@@ -34,7 +34,7 @@ void StructuredClassifier::restoreReferences() {
     }
 }
 
-void StructuredClassifier::init() {
+StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_CLASSIFIER) {
     m_roles.subsets(m_members);
     m_roles.m_readOnly = true;
     m_ownedAttributes.subsets(m_ownedMembers);
@@ -45,10 +45,6 @@ void StructuredClassifier::init() {
     m_ownedConnectors.subsets(m_ownedMembers);
     m_ownedConnectors.subsets(m_features);
     m_ownedConnectors.opposite(&Connector::getStructuredClassifierSingleton);
-}
-
-StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_CLASSIFIER) {
-    init();
 }
 
 StructuredClassifier::~StructuredClassifier() {

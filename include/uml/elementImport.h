@@ -28,7 +28,6 @@ namespace UML {
             CustomSingleton<Namespace, ElementImport> m_importingNamespace = CustomSingleton<Namespace, ElementImport>(this);
             TypedSet<PackageableElement, ElementImport>& getImportedElementSingleton();
             TypedSet<Namespace, ElementImport>& getImportingNamespaceSingleton();
-            void init();
             ElementImport();
         public:
             virtual ~ElementImport();

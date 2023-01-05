@@ -54,7 +54,7 @@ TypedSet<Classifier, Generalization>& Generalization::getSpecificSingleton() {
     return m_specific;
 }
 
-void Generalization::init() {
+Generalization::Generalization() : Element(ElementType::GENERALIZATION) {
     m_general.subsets(m_targets);
     m_specific.subsets(*m_owner);
     m_specific.subsets(m_sources);
@@ -62,12 +62,8 @@ void Generalization::init() {
     m_generalizationSets.opposite(&GeneralizationSet::getGeneralizations);
 }
 
-Generalization::Generalization() : Element(ElementType::GENERALIZATION) {
-    init();
-}
-
 Generalization::~Generalization() {
-    mountAndRelease();
+
 }
 
 ClassifierPtr Generalization::getGeneral() const {

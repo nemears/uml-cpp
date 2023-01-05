@@ -30,12 +30,8 @@ void InvocationAction::referenceErased(ID id) {
     m_onPort.eraseElement(id);
 }
 
-void InvocationAction::init() {
-    m_arguments.subsets(m_inputs);
-}
-
 InvocationAction::InvocationAction() : Element(ElementType::INVOCATION_ACTION) {
-    init();
+    m_arguments.subsets(m_inputs);
 }
 
 InvocationAction::~InvocationAction() {

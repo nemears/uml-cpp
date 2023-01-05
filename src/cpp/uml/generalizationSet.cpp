@@ -28,17 +28,13 @@ TypedSet<Classifier, GeneralizationSet>& GeneralizationSet::getPowerTypeSingleto
     return m_powerType;
 }
 
-void GeneralizationSet::init() {
+GeneralizationSet::GeneralizationSet() : Element(ElementType::GENERALIZATION_SET) {
     m_generalizations.opposite(&Generalization::getGeneralizationSets);
     m_powerType.opposite(&Classifier::getPowerTypeExtent);
 }
 
-GeneralizationSet::GeneralizationSet() : Element(ElementType::GENERALIZATION_SET) {
-    init();
-}
-
 GeneralizationSet::~GeneralizationSet() {
-    mountAndRelease();
+    
 }
 
 bool GeneralizationSet::isCovering() const {

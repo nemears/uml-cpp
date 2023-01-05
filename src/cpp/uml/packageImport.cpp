@@ -45,15 +45,11 @@ void PackageImport::RemoveImportedPackagePolicy::apply(Package& el, PackageImpor
     }
 }
 
-void PackageImport::init() {
+PackageImport::PackageImport() : Element(ElementType::PACKAGE_IMPORT) {
     m_importedPackage.subsets(m_targets);
     m_importingNamespace.subsets(*m_owner);
     m_importingNamespace.subsets(m_sources);
     m_importingNamespace.opposite(&Namespace::getPackageImports);
-}
-
-PackageImport::PackageImport() : Element(ElementType::PACKAGE_IMPORT) {
-    init();
 }
 
 PackageImport::~PackageImport() {

@@ -16,7 +16,6 @@ namespace UML {
             CustomOrderedSet<Operation, DataType> m_ownedOperations = CustomOrderedSet<Operation, DataType>(this);
             TypedSet<Property, DataType>& getOwnedAttributesSet();
             TypedSet<Operation, DataType>& getOwnedOperationsSet();
-            void init();
             DataType();
         public:
             ~DataType();

@@ -14,7 +14,6 @@ namespace UML {
             TypedSet<Behavior, CallBehaviorAction>& getBehaviorSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             CallBehaviorAction();
         public:
             virtual ~CallBehaviorAction();

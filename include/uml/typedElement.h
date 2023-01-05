@@ -19,7 +19,6 @@ namespace UML{
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
             TypedSet<Type, TypedElement>& getTypeSingleton();
-            void init();
             TypedElement();
         public:
             virtual ~TypedElement();

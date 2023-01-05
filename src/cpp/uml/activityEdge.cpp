@@ -54,7 +54,7 @@ void ActivityEdge::referenceErased(ID id) {
     m_inGroups.eraseElement(id);
 }
 
-void ActivityEdge::init() {
+ActivityEdge::ActivityEdge() : Element(ElementType::ACTIVITY_EDGE) {
     m_activity.subsets(*m_owner);
     m_activity.opposite(&Activity::getEdges);
     m_source.opposite(&ActivityNode::getOutgoing);
@@ -67,10 +67,6 @@ void ActivityEdge::init() {
     m_inPartitions.opposite(&ActivityPartition::getEdges);
     m_interrupts.subsets(m_inGroups);
     m_interrupts.opposite(&InterruptibleActivityRegion::getInterruptingEdges);
-}
-
-ActivityEdge::ActivityEdge() : Element(ElementType::ACTIVITY_EDGE) {
-    init();
 }
 
 ActivityEdge::~ActivityEdge() {

@@ -14,7 +14,6 @@ namespace UML {
 
         protected:
             CustomSet<Deployment, DeploymentTarget> m_deployments = CustomSet<Deployment, DeploymentTarget>(this);
-            void init();
             DeploymentTarget();
         public:
             virtual ~DeploymentTarget();

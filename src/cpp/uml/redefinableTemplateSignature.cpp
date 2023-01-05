@@ -93,17 +93,13 @@ void RedefinableTemplateSignature::referenceErased(ID id) {
     TemplateSignature::referenceErased(id);
 }
 
-void RedefinableTemplateSignature::init() {
+RedefinableTemplateSignature::RedefinableTemplateSignature() : Element(ElementType::REDEFINABLE_TEMPLATE_SIGNATURE) {
     m_classifier.redefines(m_template);
     m_classifier.opposite(&Classifier::getOwnedTemplateSignatureSingleton);
     m_extendedSignatures.subsets(m_redefinedElement);
     m_inheritedParameters.subsets(m_redefinableTemplateSignatureParameters);
     m_parameters.redefines(m_redefinableTemplateSignatureParameters);
     m_inheritedParameters.m_readOnly = true;
-}
-
-RedefinableTemplateSignature::RedefinableTemplateSignature() : Element(ElementType::REDEFINABLE_TEMPLATE_SIGNATURE) {
-    init();
 }
 
 RedefinableTemplateSignature::~RedefinableTemplateSignature() {

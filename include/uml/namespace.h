@@ -20,19 +20,19 @@ namespace UML{
         protected:
             class AddElementImportPolicy {
                 public:
-                    static void apply(ElementImport& el, Namespace& me);
+                    void apply(ElementImport& el, Namespace& me);
             };
             class RemoveElementImportPolicy {
                 public:
-                    static void apply(ElementImport& el, Namespace& me);
+                    void apply(ElementImport& el, Namespace& me);
             };
             class AddPackageImportPolicy {
                 public:
-                    static void apply(PackageImport& el, Namespace& me);
+                    void apply(PackageImport& el, Namespace& me);
             };
             class RemovePackageImportPolicy {
                 public:
-                    static void apply(PackageImport& el, Namespace& me);
+                    void apply(PackageImport& el, Namespace& me);
             };
             CustomSet<NamedElement, Namespace> m_members = CustomSet<NamedElement, Namespace>(this);
             CustomSet<NamedElement, Namespace> m_ownedMembers = CustomSet<NamedElement, Namespace>(this);
@@ -42,7 +42,6 @@ namespace UML{
             CustomSet<PackageableElement, Namespace> m_importedMembers = CustomSet<PackageableElement, Namespace>(this);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             Namespace();
         public:
             virtual ~Namespace();

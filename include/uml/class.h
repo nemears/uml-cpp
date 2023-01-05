@@ -23,10 +23,6 @@ namespace UML{
             CustomOrderedSet<Operation, Class> m_ownedOperations = CustomOrderedSet<Operation, Class>(this);
             CustomOrderedSet<Classifier, Class> m_nestedClassifiers = CustomOrderedSet<Classifier, Class>(this);
             CustomSet<Reception, Class> m_ownedReceptions = CustomSet<Reception, Class>(this);
-            // Set<Property, Class>& getOwnedAttributesSet();
-            // Set<Operation, Class>& getOwnedOperationsSet();
-            // Set<Classifier, Class>& getNestedClassifiersSet();
-            void init();
             Class();
         public:
             virtual ~Class();

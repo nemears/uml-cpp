@@ -16,13 +16,9 @@
 
 using namespace UML;
 
-void ExecutableNode::init() {
+ExecutableNode::ExecutableNode() : Element(ElementType::EXECUTABLE_NODE) {
     m_handlers.subsets(*m_ownedElements);
     m_handlers.opposite(&ExceptionHandler::getProtectedNodeSingleton);
-}
-
-ExecutableNode::ExecutableNode() : Element(ElementType::EXECUTABLE_NODE) {
-    init();
 }
 
 ExecutableNode::~ExecutableNode() {

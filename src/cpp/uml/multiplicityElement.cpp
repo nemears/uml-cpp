@@ -57,13 +57,9 @@ TypedSet<ValueSpecification, MultiplicityElement>& MultiplicityElement::getUpper
     return m_upVal;
 }
 
-void MultiplicityElement::init() {
+MultiplicityElement::MultiplicityElement() : Element(ElementType::MULTIPLICITY_ELEMENT) {
     m_lowVal.subsets(*m_ownedElements);
     m_upVal.subsets(*m_ownedElements);
-}
-
-MultiplicityElement::MultiplicityElement() : Element(ElementType::MULTIPLICITY_ELEMENT) {
-    init();
 }
 
 MultiplicityElement::~MultiplicityElement() {

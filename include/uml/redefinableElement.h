@@ -14,7 +14,6 @@ namespace UML {
             CustomSet<Classifier, RedefinableElement> m_redefinitionContext = CustomSet<Classifier, RedefinableElement>(this);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             RedefinableElement();
         public:
             virtual ~RedefinableElement();

@@ -10,17 +10,13 @@
 
 using namespace UML;
 
-void Signal::init() {
+Signal::Signal() : Element(ElementType::SIGNAL) {
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_ownedMembers);
 }
 
-Signal::Signal() : Element(ElementType::SIGNAL) {
-    init();
-}
-
 Signal::~Signal() {
-    mountAndRelease();
+    
 }
 
 OrderedSet<Property, Signal>& Signal::getOwnedAttributes() {

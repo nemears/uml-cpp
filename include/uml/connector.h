@@ -42,7 +42,6 @@ namespace UML {
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
-            void init();
             Connector();
         public:
             virtual ~Connector();

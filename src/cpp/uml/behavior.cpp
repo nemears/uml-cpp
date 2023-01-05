@@ -25,13 +25,9 @@ TypedSet<BehavioralFeature, Behavior>& Behavior::getSpecificationSingleton() {
     return m_specification;
 }
 
-void Behavior::init() {
+Behavior::Behavior() : Element(ElementType::BEHAVIOR) {
     m_ownedParameters.subsets(m_ownedMembers);
     m_specification.opposite(&BehavioralFeature::getMethods);
-}
-
-Behavior::Behavior() : Element(ElementType::BEHAVIOR) {
-    init();
 }
 
 Behavior::~Behavior() {

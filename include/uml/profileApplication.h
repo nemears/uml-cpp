@@ -21,7 +21,6 @@ namespace UML {
             CustomSingleton<Package, ProfileApplication> m_applyingPackage = CustomSingleton<Package, ProfileApplication>(this);
             TypedSet<Profile, ProfileApplication>& getAppliedProfileSingleton();
             TypedSet<Package, ProfileApplication>& getApplyingPackageSingleton();
-            void init();
             ProfileApplication();
         public:
             virtual ~ProfileApplication();

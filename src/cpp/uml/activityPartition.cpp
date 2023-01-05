@@ -35,7 +35,7 @@ void ActivityPartition::referenceErased(ID id) {
     m_represents.eraseElement(id);
 }
 
-void ActivityPartition::init() {
+ActivityPartition::ActivityPartition() : Element(ElementType::ACTIVITY_PARTITION) {
     m_partitionInActivity.redefines(m_inActivity);
     m_partitionInActivity.opposite(&Activity::getPartitions);
     m_superPartition.subsets(m_superGroup);
@@ -46,10 +46,6 @@ void ActivityPartition::init() {
     m_edges.opposite(&ActivityEdge::getInPartitions);
     m_subPartitions.subsets(m_subGroups);
     m_subPartitions.opposite(&ActivityPartition::getSuperPartitionSingleton);
-}
-
-ActivityPartition::ActivityPartition() : Element(ElementType::ACTIVITY_PARTITION) {
-    init();
 }
 
 ActivityPartition::~ActivityPartition() {

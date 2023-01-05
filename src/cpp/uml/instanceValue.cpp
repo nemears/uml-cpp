@@ -28,16 +28,12 @@ TypedSet<InstanceSpecification, InstanceValue>& InstanceValue::getInstanceSingle
     return m_instance;
 }
 
-void InstanceValue::init() {
+InstanceValue::InstanceValue() : Element(ElementType::INSTANCE_VALUE) {
     
 }
 
-InstanceValue::InstanceValue() : Element(ElementType::INSTANCE_VALUE) {
-    init();
-}
-
 InstanceValue::~InstanceValue() {
-    mountAndRelease();
+    
 }
 
 InstanceSpecificationPtr  InstanceValue::getInstance() const {

@@ -48,7 +48,6 @@ namespace UML {
             TypedSet<ValueSpecification, Parameter>& getDefaultValueSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             Parameter();
         public:
             virtual ~Parameter();

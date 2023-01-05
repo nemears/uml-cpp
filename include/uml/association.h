@@ -28,7 +28,6 @@ namespace UML {
             void restoreReferences() override;
             void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
-            void init();
             Association();
         public:
             virtual ~Association();

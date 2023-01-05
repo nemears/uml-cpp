@@ -34,10 +34,8 @@ void DecisionNode::referenceErased(ID id) {
     m_decisionInput.eraseElement(id);
 }
 
-void DecisionNode::init() {}
-
 DecisionNode::DecisionNode() : Element(ElementType::DECISION_NODE) {
-    init();
+    
 }
 
 DecisionNode::~DecisionNode() {

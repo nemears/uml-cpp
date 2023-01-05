@@ -130,7 +130,7 @@ void Classifier::referenceErased(ID id) {
     m_powerTypeExtent.eraseElement(id);
 }
 
-void Classifier::init() {
+Classifier::Classifier() : Element(ElementType::CLASSIFIER) {
     m_features.subsets(m_members);
     m_features.opposite(&Feature::getFeaturingClassifierSingleton);
     m_features.m_readOnly = true;
@@ -146,10 +146,6 @@ void Classifier::init() {
     m_classifierTemplateParameter.redefines(m_templateParameter);
     m_classifierTemplateParameter.opposite(&ClassifierTemplateParameter::getParameteredElementSingleton);
     m_ownedMembers.redefines(m_classifierOwnedMembers);
-}
-
-Classifier::Classifier() : Element(ElementType::CLASSIFIER) {
-    init();
 }
 
 Classifier::~Classifier() {

@@ -28,9 +28,8 @@ namespace UML {
             TypedSet<Activity, ActivityNode>& getActivitySingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
-        public:
             ActivityNode();
+        public:
             virtual ~ActivityNode();
             Set<ActivityEdge, ActivityNode>& getIncoming();
             Set<ActivityEdge, ActivityNode>& getOutgoing();

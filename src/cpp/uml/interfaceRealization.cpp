@@ -68,19 +68,15 @@ TypedSet<BehavioredClassifier, InterfaceRealization>& InterfaceRealization::getI
     return m_implementingClassifier;
 }
 
-void InterfaceRealization::init() {
+InterfaceRealization::InterfaceRealization() : Element(ElementType::INTERFACE_REALIZATION) {
     m_contract.subsets(m_suppliers);
     m_implementingClassifier.subsets(m_clients);
     m_implementingClassifier.subsets(*m_owner);
     m_implementingClassifier.opposite(&BehavioredClassifier::getInterfaceRealizations);
 }
 
-InterfaceRealization::InterfaceRealization() : Element(ElementType::INTERFACE_REALIZATION) {
-    init();
-}
-
 InterfaceRealization::~InterfaceRealization() {
-    mountAndRelease();
+    
 }
 
 InterfacePtr InterfaceRealization::getContract() const {

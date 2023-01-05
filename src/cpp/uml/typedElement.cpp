@@ -31,12 +31,8 @@ TypedSet<Type, TypedElement>& TypedElement::getTypeSingleton() {
     return m_type;
 }
 
-void TypedElement::init() {
-    
-}
-
 TypedElement::TypedElement() : Element(ElementType::TYPED_ELEMENT) {
-    init();
+    
 }
 
 TypedElement::~TypedElement() {

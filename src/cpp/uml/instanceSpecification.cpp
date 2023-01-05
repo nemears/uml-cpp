@@ -30,18 +30,14 @@ TypedSet<ValueSpecification, InstanceSpecification>& InstanceSpecification::getS
     return m_specification;
 }
 
-void InstanceSpecification::init() {
+InstanceSpecification::InstanceSpecification() : Element(ElementType::INSTANCE_SPECIFICATION) {
     m_specification.subsets(*m_ownedElements);
     m_slots.subsets(*m_ownedElements);
     m_slots.opposite(&Slot::getOwningInstanceSingleton);
 }
 
-InstanceSpecification::InstanceSpecification() : Element(ElementType::INSTANCE_SPECIFICATION) {
-    init();
-}
-
 InstanceSpecification::~InstanceSpecification() {
-    mountAndRelease();
+    
 }
 
 Set<Classifier, InstanceSpecification>& InstanceSpecification::getClassifiers() {

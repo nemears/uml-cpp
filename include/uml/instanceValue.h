@@ -18,7 +18,6 @@ namespace UML {
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
             TypedSet<InstanceSpecification, InstanceValue>& getInstanceSingleton();
-            void init();
             InstanceValue();
         public:
             virtual ~InstanceValue();

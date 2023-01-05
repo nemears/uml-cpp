@@ -19,7 +19,6 @@ namespace UML {
             CustomSet<Constraint, Action> m_localPostconditions = CustomSet<Constraint, Action>(this);
             // TODO context
             bool m_isLocallyReentrant = false;
-            void init();
             Action();
         public:
             virtual ~Action();

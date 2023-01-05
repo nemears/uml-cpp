@@ -28,7 +28,6 @@ namespace UML{
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<ValueSpecification, InstanceSpecification>& getSpecificationSingleton();
-            void init();
             InstanceSpecification();
         public:
             virtual ~InstanceSpecification();

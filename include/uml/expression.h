@@ -12,7 +12,6 @@ namespace UML {
         protected:
             std::string m_symbol = "";
             CustomOrderedSet<ValueSpecification, Expression> m_operands = CustomOrderedSet<ValueSpecification, Expression>(this);
-            void init();
             Expression();
         public:
             virtual ~Expression();

@@ -10,7 +10,6 @@ namespace UML {
     class ExecutableNode : public ActivityNode {
         protected:
             CustomSet<ExceptionHandler, ExecutableNode> m_handlers = CustomSet<ExceptionHandler, ExecutableNode>(this);
-            void init();
             ExecutableNode();
         public:
             virtual ~ExecutableNode();

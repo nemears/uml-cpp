@@ -24,7 +24,6 @@ namespace UML {
             CustomSingleton<Behavior, BehavioredClassifier> m_classifierBehavior = CustomSingleton<Behavior, BehavioredClassifier>(this);
             CustomSet<InterfaceRealization, BehavioredClassifier, AddInterfaceRealizationPolicy, RemoveInterfaceRealizationPolicy> m_interfaceRealizations = CustomSet<InterfaceRealization, BehavioredClassifier, AddInterfaceRealizationPolicy, RemoveInterfaceRealizationPolicy>(this);
             TypedSet<Behavior, BehavioredClassifier>& getClassifierBehaviorSingleton();
-            void init();
             BehavioredClassifier();
         public:
             virtual ~BehavioredClassifier();

@@ -35,15 +35,11 @@ TypedSet<Namespace, ElementImport>& ElementImport::getImportingNamespaceSingleto
     return m_importingNamespace;
 }
 
-void ElementImport::init() {
+ElementImport::ElementImport() : Element(ElementType::ELEMENT_IMPORT) {
     m_importedElement.subsets(m_targets);
     m_importingNamespace.subsets(*m_owner);
     m_importingNamespace.subsets(m_sources);
     m_importingNamespace.opposite(&Namespace::getElementImports);
-}
-
-ElementImport::ElementImport() : Element(ElementType::ELEMENT_IMPORT) {
-    init();
 }
 
 ElementImport::~ElementImport() {

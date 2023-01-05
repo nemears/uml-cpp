@@ -82,17 +82,12 @@ using namespace UML;
 //     }
 // }
 
-void Usage::init() {
-    // m_clients.m_addFunctors.insert(new SetClientFunctor(this));
-    // m_clients.m_removeFunctors.insert(new RemoveClientFunctor(this));
+Usage::Usage() : Element(ElementType::USAGE) {
+    
 }
 
-Usage::Usage() : Element(ElementType::USAGE) {
-    init();
-};
-
 Usage::~Usage() {
-    mountAndRelease();
+    
 }
 
 bool Usage::isSubClassOf(ElementType eType) const {

@@ -38,7 +38,7 @@ TypedSet<ParameterableElement, TemplateParameter>& TemplateParameter::getOwnedDe
     return m_ownedDefault;
 }
 
-void TemplateParameter::init() {
+TemplateParameter::TemplateParameter() : Element(ElementType::TEMPLATE_PARAMETER) {
     m_signature.subsets(*m_owner);
     m_signature.opposite(&TemplateSignature::getOwnedParameters);
     m_parameteredElement.opposite(&ParameterableElement::getTemplateParameterSingleton);
@@ -51,12 +51,8 @@ void TemplateParameter::init() {
     m_ownedDefault.opposite(&ParameterableElement::getOwningTemplateParameterSingleton); //?
 }
 
-TemplateParameter::TemplateParameter() : Element(ElementType::TEMPLATE_PARAMETER) {
-    init();
-}
-
 TemplateParameter::~TemplateParameter() {
-    mountAndRelease();
+    
 }
 
 TemplateSignaturePtr TemplateParameter::getSignature() const {

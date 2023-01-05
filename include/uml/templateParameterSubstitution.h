@@ -31,7 +31,6 @@ namespace UML {
             TypedSet<TemplateBinding, TemplateParameterSubstitution>& getTemplateBindingSingleton();
             TypedSet<ParameterableElement, TemplateParameterSubstitution>& getActualSingleton();
             TypedSet<ParameterableElement, TemplateParameterSubstitution>& getOwnedActualSingleton();
-            void init();
             TemplateParameterSubstitution();
         public:
             ~TemplateParameterSubstitution();

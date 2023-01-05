@@ -38,18 +38,14 @@ TypedSet<InstanceSpecification, Slot>& Slot::getOwningInstanceSingleton() {
     return m_owningInstance;
 }
 
-void Slot::init() {
+Slot::Slot() : Element(ElementType::SLOT) {
     m_owningInstance.subsets(*m_owner);
     m_owningInstance.opposite(&InstanceSpecification::getSlots);
     m_values.subsets(*m_ownedElements);
 }
 
-Slot::Slot() : Element(ElementType::SLOT) {
-    init();
-}
-
 Slot::~Slot() {
-    mountAndRelease();
+    
 }
 
 Set<ValueSpecification, Slot>& Slot::getValues() {

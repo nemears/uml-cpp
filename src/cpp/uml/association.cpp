@@ -58,7 +58,7 @@ void Association::referenceErased(ID id) {
     Relationship::referenceErased(id);
 }
 
-void Association::init() {
+Association::Association() : Element(ElementType::ASSOCIATION) {
     m_memberEnds.subsets(m_members);
     m_memberEnds.opposite(&Property::getAssociationSingleton);
     m_ownedEnds.subsets(m_memberEnds);
@@ -69,12 +69,8 @@ void Association::init() {
     m_endTypes.subsets(m_relatedElements);
 }
 
-Association::Association() : Element(ElementType::ASSOCIATION) {
-    init();
-}
-
 Association::~Association() {
-    mountAndRelease();
+    
 }
 
 OrderedSet<Property, Association>& Association::getMemberEnds() {

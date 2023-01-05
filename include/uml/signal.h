@@ -11,8 +11,6 @@ namespace UML {
 
         protected:
             CustomOrderedSet<Property, Signal> m_ownedAttributes = CustomOrderedSet<Property, Signal>(this);
-            // Set<Property, Signal>& getOwnedAttributesSet();
-            void init();
             Signal();
         public:
             virtual ~Signal();

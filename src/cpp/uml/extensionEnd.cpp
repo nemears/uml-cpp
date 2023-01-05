@@ -13,16 +13,12 @@ TypedSet<Stereotype, ExtensionEnd>& ExtensionEnd::getTypeSingleton() {
     return m_extensionType;
 }
 
-void ExtensionEnd::init() {
+ExtensionEnd::ExtensionEnd() : Element(ElementType::EXTENSION_END) {
     m_extensionType.redefines(m_type);
 }
 
-ExtensionEnd::ExtensionEnd() : Element(ElementType::EXTENSION_END) {
-    init();
-}
-
 ExtensionEnd::~ExtensionEnd() {
-    mountAndRelease();
+    
 }
 
 TypePtr ExtensionEnd::getType() const {

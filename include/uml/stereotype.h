@@ -17,7 +17,6 @@ namespace UML {
         private:
             CustomSingleton<Profile, Stereotype> m_profile = CustomSingleton<Profile, Stereotype>(this);
             TypedSet<Profile, Stereotype>& getProfileSingleton();
-            void init();
             Stereotype();
         public:
             virtual ~Stereotype();

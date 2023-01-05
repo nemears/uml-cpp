@@ -24,7 +24,6 @@ namespace UML {
             TypedSet<ActivityGroup, ActivityGroup>& getSuperGroupSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void init();
             ActivityGroup();
         public:
             virtual ~ActivityGroup();

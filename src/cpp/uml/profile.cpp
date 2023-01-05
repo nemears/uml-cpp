@@ -7,17 +7,13 @@
 
 using namespace UML;
 
-void Profile::init() {
+Profile::Profile() : Element(ElementType::PROFILE) {
     m_profileOwnedStereotypes.redefines(m_ownedStereotypes);
     m_profileOwnedStereotypes.opposite(&Stereotype::getProfileSingleton);
 }
 
-Profile::Profile() : Element(ElementType::PROFILE) {
-    init();
-}
-
 Profile::~Profile() {
-    mountAndRelease();
+    
 }
 
 Set<Stereotype, Profile>& Profile::getOwnedStereotypes() {

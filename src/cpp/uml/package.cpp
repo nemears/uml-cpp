@@ -6,7 +6,6 @@
 #include "uml/profileApplication.h"
 #include "uml/interface.h"
 #include "uml/deployment.h"
-#include <iostream>
 
 using namespace UML;
 
@@ -40,7 +39,7 @@ void Package::referenceErased(ID id) {
     PackageableElement::referenceErased(id);
 }
 
-void Package::init() {
+Package::Package() : Element(ElementType::PACKAGE) {
     m_packagedElements.subsets(m_ownedMembers);
     m_packagedElements.opposite(&PackageableElement::getOwningPackageSingleton);
     m_packageMerge.subsets(*m_ownedElements);
@@ -48,10 +47,6 @@ void Package::init() {
     m_ownedStereotypes.subsets(m_packagedElements);
     m_profileApplications.subsets(*m_ownedElements);
     m_profileApplications.opposite(&ProfileApplication::getApplyingPackageSingleton);
-}
-
-Package::Package() : Element(ElementType::PACKAGE) {
-    init();
 }
 
 Package::~Package() {

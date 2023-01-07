@@ -429,7 +429,14 @@ namespace UML {
                     // gather our set's supersets and subsets
                     SetNode* currNode = set->m_root;
                     // handle divider nodes
-                    while (currNode && ((!allSuperSetsAndMe.count(currNode->set) && !allSubSets.count(currNode->set)) || (!currNode->m_ptr && currNode->m_right))) {
+                    while (
+                            currNode && // there is a root
+                            (
+                                (!allSuperSetsAndMe.count(currNode->set) && !allSubSets.count(currNode->set)) || // we found an unrelated set in the tree
+                                (!currNode->m_ptr && currNode->m_right) // we found a full divider node ?
+                            )
+                        ) 
+                    {
                         bool createDividerNode = true;
                         if (!currNode->m_ptr) {
                             /**
@@ -487,18 +494,18 @@ namespace UML {
                             dividerNode->m_left = currNode;
 
                             // readjust roots if needed
-                            {
+                            {                                
                                 std::list<AbstractSet*> queue;
-                                queue.push_back(set);
+                                queue.push_back(currNode->set);
                                 while (!queue.empty()) {
                                     AbstractSet* front = queue.front();
                                     queue.pop_front();
-                                    std::list<AbstractSet*> frontQueue;
                                     if (front->m_root == currNode && allSuperSetsAndMe.count(front)) {
                                         front->m_root = dividerNode;
+                                        visited[front] = true;
                                     }
-                                    for (auto subSet : front->m_subSets) {
-                                        queue.push_back(subSet);
+                                    for (auto superSet : front->m_superSets) {
+                                        queue.push_back(superSet);
                                     }
                                 }
                             }
@@ -1168,14 +1175,16 @@ namespace UML {
                     } else {
                         // we are probably going to delete this node
                         SetNode* nodeToDelete = currNode;
+
                         if (allSuperSets.count(nodeToDelete->set) && 
                             nodeToDelete->set != (this->m_setToInstantiate ? this->m_setToInstantiate : this)) {
                             // this is owned by a superset which will be deleted after us (probably, not necessarily guaranteed)
                             break;
                         }
+
                         // fix all parents
                         for (auto superSet : allSuperSets) {
-                            if (superSet->m_superSets.size() != 0 || !superSet->m_rootRedefinedSet) {
+                            if (superSet->m_superSets.size() != 0 || !superSet->m_rootRedefinedSet || !superSet->m_root) {
                                 continue;
                             }
                             SetNode* parent = getParent(nodeToDelete, superSet->m_root);
@@ -1184,28 +1193,58 @@ namespace UML {
                                     parent->m_left = 0;
                                 } else if (parent->m_right == currNode) {
                                     parent->m_right = 0;
-                                } else {
-                                    // throw SetStateException("Bad state could not find node in right or left of parent when deleting!");
                                 }
                             }   
                         }
                         
-                        if (this->m_root == currNode) {
+                        // reset relevant roots
+                        if (currNode == this->m_root) {
+                            this->m_root = 0;
                             for (auto superSet : allSuperSets) {
                                 if (superSet->m_root == currNode) {
                                     superSet->m_root = 0;
                                 }
                             }
-                        }
-
-                        for (auto subSet : allSubSets) {
-                            if (subSet->m_root == currNode) {
-                                subSet->m_root = 0;
+                            for (auto subSet : allSubSets) {
+                                if (subSet->m_root == currNode) {
+                                    subSet->m_root = 0;
+                                }
                             }
                         }
 
                         currNode = currNode->m_parent;
                         delete nodeToDelete;
+
+                        while (currNode && !currNode->m_ptr && !currNode->m_left && !currNode->m_right) {
+                            // parent is a divider node with no children, lets get rid of it
+                            nodeToDelete = currNode;
+
+                            //adjust roots
+                            for (auto superSet : allSuperSets) {
+                                if (superSet->m_root == currNode) {
+                                    superSet->m_root = 0;
+                                }
+                            }
+
+                            // fix all parents
+                            for (auto superSet : allSuperSets) {
+                                if (superSet->m_superSets.size() != 0 || !superSet->m_rootRedefinedSet || !superSet->m_root) {
+                                    continue;
+                                }
+                                SetNode* parent = getParent(nodeToDelete, superSet->m_root);
+                                if (parent) {
+                                    if (parent->m_left == currNode) {
+                                        parent->m_left = 0;
+                                    } else if (parent->m_right == currNode) {
+                                        parent->m_right = 0;
+                                    }
+                                }   
+                            }
+
+                            currNode = currNode->m_parent;
+                            delete nodeToDelete;
+                        }
+
                         if (currNode && allSuperSets.count(currNode->set)) {
                             break;
                         }

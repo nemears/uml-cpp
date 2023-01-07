@@ -56,6 +56,8 @@ namespace UML {
                 return ElementType::CONNECTOR;
             };
     };
+
+    typedef UmlPtr<Connector> ConnectorPtr;
 }
 
 #endif

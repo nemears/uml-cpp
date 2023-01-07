@@ -950,10 +950,30 @@ TEST_F(ClassTest, partTest) {
     ASSERT_TRUE(p->getAggregation() == AggregationKind::COMPOSITE);
 }
 
+TEST_F(ClassTest, connectorAndAttributesTest) {
+  BasicManager m;
+  ClassPtr clazz = m.create<Class>();
+  PropertyPtr prop1 = m.create<Property>();
+  PropertyPtr prop2 = m.create<Property>();
+  ConnectorPtr connector = m.create<Connector>();
+  clazz->getOwnedAttributes().add(prop1);
+  clazz->getOwnedAttributes().add(prop2);
+  clazz->getOwnedConnectors().add(connector);
+  std::unordered_map<ID, bool> visitedEls;
+  visitedEls[prop1.id()] = false;
+  visitedEls[prop2.id()] = false;
+  visitedEls[connector.id()] = false;
+  for (auto& el : clazz->getMembers()) {
+    visitedEls[el.getID()] = true;
+  }
+  for (auto pair : visitedEls) {
+    ASSERT_TRUE(pair.second);
+  }
+}
+
 TEST_F(ClassTest, parseConnectorTest) {
     BasicManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "structuredClassifierTests/connector.yml"));
-
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& root = m.getRoot()->as<Package>();
     OpaqueBehavior& contract = root.getPackagedElements().get("contract").as<OpaqueBehavior>();

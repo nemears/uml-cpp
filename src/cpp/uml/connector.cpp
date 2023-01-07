@@ -73,6 +73,19 @@ void Connector::restoreReference(Element* el) {
         }
     }
     
+    if (
+            m_ends.contains(el->getID()) && 
+            el->as<ConnectorEnd>().getRole() && 
+            el->as<ConnectorEnd>().getRole()->getType() && 
+            m_type.get()
+        )
+    {
+        for (auto& assocEnd : m_type.get()->getMemberEnds()) {
+            if (assocEnd.getType().id() == el->as<ConnectorEnd>().getRole()->getType().id() && !el->as<ConnectorEnd>().getDefiningEnd()) {
+                el->as<ConnectorEnd>().m_definingEnd.innerAdd(assocEnd);
+            }
+        }
+    }
 }
 
 void Connector::referenceErased(ID id) {

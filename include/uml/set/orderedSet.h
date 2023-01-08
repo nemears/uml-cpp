@@ -278,8 +278,6 @@ namespace UML {
             ID_Set<T> ids() override {
                 ID_Set<T> ret;
                 ret.root = this->m_root;
-                ret.validSets = this->getAllSubSets();
-                ret.validSets.insert(this);
                 return ret;
             };
     };

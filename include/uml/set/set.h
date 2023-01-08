@@ -1394,12 +1394,11 @@ namespace UML {
         protected:
             SetNode* root = 0;
             SetNode* curr = 0;
-            std::unordered_set<AbstractSet*> validSets;
         public:
             SetIterator() {};
             SetIterator(SetIterator& rhs) {
+                root = rhs.root;
                 curr = rhs.curr;
-                validSets = rhs.validSets;
             }
             T& operator*() {
                 return curr->m_ptr->as<T>();
@@ -1428,18 +1427,17 @@ namespace UML {
                         bool found = false;
                         do {
                             temp = last->m_parent;
-                            if (temp->m_right) {
+                            if (temp->m_right && temp->m_left != root) {
                                 if (temp->m_right->m_ptr.id() != last->m_ptr.id()) {
-                                    if (!validSets.count(temp->m_right->set)) {
-                                        curr = 0;
-                                    } else {
-                                        found = true;
-                                    }
+                                    found = true;
+                                    break;
+                                } else if (temp == root) {
+                                    curr = 0;
                                     break;
                                 }
                             }
                             last = temp;
-                        } while (temp->m_parent && validSets.count(temp->m_parent->set));
+                        } while (temp->m_parent);
                         if (!found) {
                             curr = 0;
                             break;
@@ -1494,13 +1492,11 @@ namespace UML {
 
         private:
             SetNode* root = 0;
-            std::unordered_set<AbstractSet*> validSets;
         public:
             SetID_Iterator<T> begin() {
                 SetID_Iterator<T> ret;
                 ret.curr = root;
                 ret.root = root;
-                ret.validSets = validSets;
                 return ret;
             };
             SetID_Iterator<T> end() {
@@ -1683,11 +1679,6 @@ namespace UML {
                 }
                 ret.curr = this->m_root;
                 ret.root = this->m_root;
-                ret.validSets = this->getAllSuperSets();
-                ret.validSets.insert(this);
-                for (auto subSet : this->getAllSubSets()) {
-                    ret.validSets.insert(subSet);
-                }
                 if (!ret.curr->m_ptr) {
                     ++ret;
                 }
@@ -1700,11 +1691,6 @@ namespace UML {
             ID_Set<T> ids() override {
                 ID_Set<T> ret;
                 ret.root = this->m_root;
-                ret.validSets = this->getAllSuperSets();
-                ret.validSets.insert(this);
-                for (auto subSet : this->getAllSubSets()) {
-                    ret.validSets.insert(subSet);
-                }
                 return ret;
             };
     };

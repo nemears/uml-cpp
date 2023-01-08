@@ -45,10 +45,8 @@ TemplateParameter::TemplateParameter() : Element(ElementType::TEMPLATE_PARAMETER
     m_ownedParameteredElement.subsets(m_parameteredElement);
     m_ownedParameteredElement.subsets(*m_ownedElements);
     m_ownedParameteredElement.opposite(&ParameterableElement::getOwningTemplateParameterSingleton);
-    m_default.opposite(&ParameterableElement::getTemplateParameterSingleton);
     m_ownedDefault.subsets(m_default);
     m_ownedDefault.subsets(*m_ownedElements);
-    m_ownedDefault.opposite(&ParameterableElement::getOwningTemplateParameterSingleton); //?
 }
 
 TemplateParameter::~TemplateParameter() {

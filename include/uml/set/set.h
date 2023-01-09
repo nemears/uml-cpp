@@ -72,6 +72,7 @@ namespace UML {
             virtual SetNode* createNode(Element& el) = 0;
             virtual SetNode* createNode(ID id) = 0;
             virtual void innerRemove(ID id) = 0;
+            virtual void removeReadOnly(ID id) = 0;
 
 
             std::unordered_set<AbstractSet*> getAllSuperSets() const {
@@ -129,9 +130,6 @@ namespace UML {
                     subsetOf.m_subSets.push_back(this);
                     if (subsetOf.m_guard >= m_guard) {
                         m_guard = subsetOf.m_guard + 1;
-                    }
-                    for (auto redefinedSet : subsetOf.m_redefines) {
-                        subsets(*redefinedSet);
                     }
                     // Handle ordered set, TODO other set types
                     if (!m_setToInstantiate && subsetOf.setType() == SetType::ORDERED_SET /**&& setType() != SetType::ORDERED_SET**/) {
@@ -196,6 +194,7 @@ namespace UML {
             virtual bool enabled() = 0;
             virtual void addOpposite(T& el) = 0;
             virtual void removeOpposite(T& el) = 0;
+            bool skip = false;
     };
 
     template <class T>
@@ -527,6 +526,10 @@ namespace UML {
                                 }
                                 SetNode* nextCurrNode = getParent(currNode, currNode->set->m_root);
                                 currNode->set->innerRemove(currNode->m_ptr.id());
+                                if (currNode->m_ptr.loaded()) {
+                                    // TODO dont do opposite
+                                    m_opposite->skip = true;
+                                }
                                 currNode = nextCurrNode;
                                 continue;
                             } else {
@@ -904,20 +907,30 @@ namespace UML {
             }
 
             void handleOppositeAdd(T& el) {
+                if (m_opposite->skip) {
+                    m_opposite->skip = false;
+                    return;
+                }
                 std::list<AbstractSet*> queue;
                 queue.push_back(this);
                 while (!queue.empty()) {
                     AbstractSet* front = queue.front();
                     queue.pop_front();
+                    bool lookUpTree = true;
                     if (front->oppositeEnabled()) {
                         front->oppositeAdd(el);
-                        break;
-                    }
-                    for (auto redefinedSet : front->m_redefines) {
-                        if (redefinedSet->oppositeEnabled()) {
-                            redefinedSet->oppositeAdd(el);
-                            return;
+                        lookUpTree = false;
+                    } else {
+                        for (auto redefinedSet : front->m_redefines) {
+                            if (redefinedSet->oppositeEnabled() && lookUpTree) {
+                                redefinedSet->oppositeAdd(el);
+                                lookUpTree = false;
+                                break;
+                            }
                         }
+                    }
+                    if (!lookUpTree) {
+                        continue;
                     }
                     for (auto superSet : front->m_superSets) {
                         queue.push_back(superSet);
@@ -964,9 +977,21 @@ namespace UML {
                 while (!queue.empty()) {
                     AbstractSet* front = queue.front();
                     queue.pop_front();
+                    bool lookInTree = true;
                     if (front->oppositeEnabled()) {
                         front->oppositeRemove(el);
-                        break;
+                        lookInTree = false;
+                    } else {
+                        for (auto redefinedSet : front->m_redefines) {
+                            if (redefinedSet->oppositeEnabled() && lookInTree) {
+                                redefinedSet->oppositeRemove(el);
+                                lookInTree = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (!lookInTree) {
+                        continue;
                     }
                     for (auto superSet : front->m_superSets) {
                         queue.push_back(superSet);
@@ -996,7 +1021,7 @@ namespace UML {
                 m_el.m_node->removeReference(*el);
                 setThatNodeWasAdded->handleOppositeRemove(*el);
             }
-            void removeReadOnly(ID id) {
+            void removeReadOnly(ID id) override {
                 // "lock" elements we are editing
                 [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 T* el = 0;

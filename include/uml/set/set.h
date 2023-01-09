@@ -474,6 +474,7 @@ namespace UML {
                                     queue.pop_front();
                                     if (allSuperSetsAndMe.count(superSet)) {
                                         dividerNodeScope = superSet;
+                                        break;
                                     }
                                     for (auto superSuperSet : superSet->m_superSets) {
                                         queue.push_back(superSuperSet);
@@ -513,8 +514,13 @@ namespace UML {
                         }
                     }
                     while (currNode) {
-
-                        if (currNode->m_ptr.id() == node->m_ptr.id()) {
+                        
+                        if (
+                                currNode->m_ptr.id() == node->m_ptr.id() || 
+                                (currNode->m_left && currNode->m_left->m_ptr.id() == node->m_ptr.id())
+                            ) 
+                        {
+                            currNode = currNode->m_ptr.id() == node->m_ptr.id() ? currNode : currNode->m_left;
                             if (std::find(this->m_redefines.begin(), this->m_redefines.end(), currNode->set) != this->m_redefines.end()) {
                                 break;
                             } else if (allSuperSetsAndMe.count(currNode->set)) {
@@ -707,9 +713,9 @@ namespace UML {
                                 if (!node->m_left) {
                                     // nothing to place in divider node so we don't need the divider node anymore
                                     SetNode* newParent = parent->m_left == node ? parent->m_right : parent->m_left;
-                                    for (auto subSet : superSet->getAllSubSets()) {
-                                        if (subSet->m_root == parent) {
-                                            subSet->m_root = newParent;
+                                    for (auto otherSuperSet : allSuperSets) {
+                                        if (otherSuperSet->m_root == parent) {
+                                            otherSuperSet->m_root = newParent;
                                         }
                                     }
                                     if (superSet->m_root == parent) {

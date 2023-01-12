@@ -676,6 +676,7 @@ class TestOrderedSetElement : public Element {
     public:
         CustomOrderedSet<Package, TestOrderedSetElement> set = CustomOrderedSet<Package, TestOrderedSetElement>(this);
         TestOrderedSetElement() : Element(ElementType::ELEMENT) {}
+        ~TestOrderedSetElement() {}
 };
 
 TEST_F(SetTest, addToOrderedSetTest) {

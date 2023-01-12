@@ -955,6 +955,7 @@ class TestComplexSubsetElement : public Element {
             rightSet2.subsets(rightSet1);
             leftSet2.subsets(leftSet1);
         }
+        ~TestComplexSubsetElement() {}
 };
 
 TEST_F(SetTest, twoWayMultiSetSplitTest) {

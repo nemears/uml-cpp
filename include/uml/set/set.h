@@ -528,6 +528,7 @@ namespace UML {
                                 // TODO move to allocation policy
                                 if (currNode->set == this) {
                                     // TODO different behavior with Bag and List
+                                    delete node;
                                     throw SetStateException("Node already in set TODO bags and list");
                                 }
                                 SetNode* nextCurrNode = getParent(currNode, currNode->set->m_root);
@@ -1276,7 +1277,7 @@ namespace UML {
                             delete nodeToDelete;
                         }
 
-                        if (currNode && allSuperSets.count(currNode->set)) {
+                        if (currNode && allSuperSets.count(currNode->set) && this->m_superSets.size() != 0) {
                             break;
                         }
                     }

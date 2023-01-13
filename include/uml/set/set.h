@@ -210,6 +210,7 @@ namespace UML {
     namespace Parsers {
         void setNamespace(NamedElement& el, ID id);
         void setOwner(Element& el, ID id);
+        void addEnd(ConnectableElement& el, ID id);
     }
 
     template <
@@ -228,6 +229,7 @@ namespace UML {
 
         friend void Parsers::setNamespace(NamedElement& el, ID id);
         friend void Parsers::setOwner(Element& el, ID id);
+        friend void Parsers::addEnd(ConnectableElement& el, ID id);
 
         protected:
             U& m_el;

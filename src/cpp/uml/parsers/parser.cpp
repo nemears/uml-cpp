@@ -184,6 +184,8 @@ namespace {
     void emitClassifierTemplateParameter(YAML::Emitter& emitter, ClassifierTemplateParameter& templateParameter, EmitterMetaData& data);
     void parseParameterSet(YAML::Node node, ParameterSet& parameterSet, ParserMetaData& data);
     void emitParameterSet(YAML::Emitter& emitter, ParameterSet& parameterSet, EmitterMetaData& data);
+    void parseConnectableElement(YAML::Node node, ConnectableElement& el, ParserMetaData& data);
+    void emitConnectableElement(YAML::Emitter& emitter, ConnectableElement& el, EmitterMetaData& data);
 }
 
 /**
@@ -734,6 +736,15 @@ void setOwner(Element& el, ID id) {
         el.m_owner->innerAdd(*el.m_manager->get(id));
     } else {
         el.m_owner->innerAdd(id);
+    }
+}
+
+void addEnd(ConnectableElement& el, ID id) {
+    SetLock elLck = el.lockEl(el);
+    if (el.m_manager->loaded(id)) {
+        el.m_ends.innerAdd(el.m_manager->get(id)->as<ConnectorEnd>());
+    } else {
+        el.m_ends.innerAdd(id);
     }
 }
 
@@ -2628,11 +2639,9 @@ ValueSpecification& determineAndParseValueSpecification(YAML::Node node, ParserM
 
 void emitProperty(YAML::Emitter& emitter, Property& prop, EmitterMetaData& data) {
     emitElementDefenition(emitter, ElementType::PROPERTY, "property", prop);
-
-    emitTypedElement(emitter, prop, data);
+    emitConnectableElement(emitter, prop, data);
     emitMultiplicityElement(emitter, prop, data);
     emitDeploymentTarget(emitter, prop, data);
-    emitParameterableElement(emitter, prop, data);
 
     if (prop.isReadOnly()) {
         emitter << YAML::Key << "isReadOnly" << YAML::Value << true;
@@ -3892,10 +3901,9 @@ void parseInstanceSpecification(YAML::Node node, InstanceSpecification& inst, Pa
 }
 
 void parseProperty(YAML::Node node, Property& prop, ParserMetaData& data) {
-    parseTypedElement(node, prop, data);
+    parseConnectableElement(node, prop, data);
     parseMultiplicityElement(node, prop, data);
     parseDeploymentTarget(node, prop, data);
-    parseParameterableElement(node, prop, data);
     if (node["readOnly"]) {
         prop.setReadOnly(node["readOnly"].as<bool>());
     }
@@ -4789,6 +4797,28 @@ void emitParameterSet(YAML::Emitter& emitter, ParameterSet& parameterSet, Emitte
     emitSetDefinitions(emitter, "conditions", data, parameterSet, &ParameterSet::getConditions);
     emitSetReferences(emitter, "parameters", parameterSet, &ParameterSet::getParameters);
     emitElementDefenitionEnd(emitter, ElementType::PARAMETER_SET, parameterSet);
+}
+
+void parseConnectableElement(YAML::Node node, ConnectableElement& el, ParserMetaData& data) {
+    parseTypedElement(node, el, data);
+    parseParameterableElement(node, el, data);
+    if (node["ends"]) {
+        if (!node["ends"].IsSequence()) {
+            throw UmlParserException("wrong type for ends field", data.m_path.string(), node["ends"]);
+        }
+        for (size_t i = 0; i < node["ends"].size(); i++) {
+            if (!node["ends"][i].IsScalar()) {
+                throw UmlParserException("bad node type for ends enty", data.m_path.string(), node["ends"]);
+            }
+            addEnd(el, ID::fromString(node["ends"][i].as<std::string>()));
+        }
+    }
+}
+
+void emitConnectableElement(YAML::Emitter& emitter, ConnectableElement& el, EmitterMetaData& data) {
+    emitTypedElement(emitter, el, data);
+    emitParameterableElement(emitter, el, data);
+    emitSetReferences(emitter, "ends", el, &ConnectableElement::getEnds);
 }
 
 }

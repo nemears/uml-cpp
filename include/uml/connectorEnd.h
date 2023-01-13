@@ -15,6 +15,7 @@ namespace UML {
 
         template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
         friend class Connector;
+        friend class ConnectableElement;
 
         protected:
             CustomSingleton<ConnectableElement, ConnectorEnd> m_role = CustomSingleton<ConnectableElement, ConnectorEnd>(this);

@@ -198,20 +198,7 @@ bool parseSingletonReference(YAML::Node node, ParserMetaData& data, std::string 
             if (isValidID(node[key].as<std::string>())) {
                 // ID
                 ID id = ID::fromString(node[key].as<std::string>());
-                if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                    try {
-                        (el.*elSignature)(data.m_manager->get(id)->as<T>());
-                    } catch (SetStateException& e) {
-                        // nothing let (that part) fail
-                    }
-                    catch (std::exception& e) {
-                        throw UmlParserException("Unexpected Uml error: " + std::string(e.what()), data.m_path.string(), node[key]);
-                    }
-                } else {
-                    (el.*idSignature)(id);
-                }
-                // }
-                
+                (el.*idSignature)(id);
                 return true;
             } else {
                 // Path
@@ -239,16 +226,7 @@ void parseSetReferences(YAML::Node node, ParserMetaData& data, std::string key, 
                 if (node[key][i].IsScalar()) {
                     if (isValidID(node[key][i].as<std::string>())) {
                         ID id = ID::fromString(node[key][i].as<std::string>());
-                        if (data.m_manager->loaded(id) && data.m_strategy != ParserStrategy::INDIVIDUAL) {
-                            T& t = data.m_manager->get(id)->as<T>();
-                            // if ((owner.*signature)().getOpposite() && (t.*(owner.*signature)().getOpposite())().contains(owner)) {
-                            //     (owner.*signature)().add(id);
-                            // } else {
-                                (owner.*signature)().add(t);
-                            // }
-                        } else {
-                            (owner.*signature)().add(id);
-                        }
+                        (owner.*signature)().add(id);
                     }
                 } else {
                     throw UmlParserException("Invalid yaml node type for " + key + " entry, expected a scalar id", data.m_path.string(), node);

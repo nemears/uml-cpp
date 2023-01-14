@@ -461,7 +461,7 @@ namespace UML {
                     // handle divider nodes
                     while (shouldCreateDividerNode(currNode, allSuperSetsAndMe, allSubSets)) {
                         if (!currNode->m_ptr) {
-                            // determine whether create divider node here or further down the tree
+                            // determine whether to create a divider node here or further down the tree
                             if (
                                     shouldCreateDividerNode(currNode->m_right, allSuperSetsAndMe, allSubSets) && 
                                     shouldCreateDividerNode(currNode->m_left, allSuperSetsAndMe, allSubSets)
@@ -478,7 +478,8 @@ namespace UML {
                         }
 
                         SetNode* dividerNode = new SetNode();
-                        // find most similar set between node and currNode
+
+                        // find most similar set between node and currNode TODO delete?
                         if (currNode->m_parent && (currNode->m_parent->set == set || set->getAllSubSets().count(currNode->m_parent->set))) { // getAllSubsets slow
                             dividerNode->m_parent = currNode->m_parent;
                             // adjust parent
@@ -492,7 +493,7 @@ namespace UML {
                         if (currNode->m_ptr) {
                             queue.push_back(currNode->set);
                         } else {
-                            // divider node, we need to check it's children's sets
+                            // divider node, we need to check its children's sets
                             std::list<SetNode*> queuingQueue;
                             queuingQueue.push_back(currNode);
                             while (!queuingQueue.empty()) {

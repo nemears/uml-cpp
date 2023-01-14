@@ -1274,10 +1274,11 @@ namespace UML {
                                     superSet->m_root = 0;
                                 }
                             }
-                            for (auto subSet : allSubSets) {
-                                if (subSet->m_root == currNode) {
-                                    subSet->m_root = 0;
-                                }
+                        }
+                        // subset can always have root be any node in this set
+                        for (auto subSet : allSubSets) {
+                            if (subSet->m_root == currNode) {
+                                subSet->m_root = 0;
                             }
                         }
 

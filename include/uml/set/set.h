@@ -962,15 +962,29 @@ namespace UML {
                     AbstractSet* front = queue.front();
                     queue.pop_front();
                     bool lookUpTree = true;
-                    if (front->oppositeEnabled()) {
+                    if (front->oppositeEnabled() && front->m_rootRedefinedSet) {
                         front->oppositeAdd(el);
                         lookUpTree = false;
                     } else {
                         for (auto redefinedSet : front->m_redefines) {
-                            if (redefinedSet->oppositeEnabled() && lookUpTree) {
+                            if (redefinedSet->oppositeEnabled() && redefinedSet->m_rootRedefinedSet) {
                                 redefinedSet->oppositeAdd(el);
                                 lookUpTree = false;
                                 break;
+                            }
+                        }
+                    }
+                    if (lookUpTree) {
+                        if (front->oppositeEnabled()) {
+                            front->oppositeAdd(el);
+                            lookUpTree = false;
+                        } else {
+                            for (auto redefinedSet : front->m_redefines) {
+                                if (redefinedSet->oppositeEnabled() && lookUpTree) {
+                                    redefinedSet->oppositeAdd(el);
+                                    lookUpTree = false;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -1022,20 +1036,34 @@ namespace UML {
                 while (!queue.empty()) {
                     AbstractSet* front = queue.front();
                     queue.pop_front();
-                    bool lookInTree = true;
-                    if (front->oppositeEnabled()) {
+                    bool lookUpTree = true;
+                    if (front->oppositeEnabled() && front->m_rootRedefinedSet) {
                         front->oppositeRemove(el);
-                        lookInTree = false;
+                        lookUpTree = false;
                     } else {
                         for (auto redefinedSet : front->m_redefines) {
-                            if (redefinedSet->oppositeEnabled() && lookInTree) {
+                            if (redefinedSet->oppositeEnabled() && redefinedSet->m_rootRedefinedSet) {
                                 redefinedSet->oppositeRemove(el);
-                                lookInTree = false;
+                                lookUpTree = false;
                                 break;
                             }
                         }
                     }
-                    if (!lookInTree) {
+                    if (lookUpTree) {
+                        if (front->oppositeEnabled()) {
+                            front->oppositeRemove(el);
+                            lookUpTree = false;
+                        } else {
+                            for (auto redefinedSet : front->m_redefines) {
+                                if (redefinedSet->oppositeEnabled() && lookUpTree) {
+                                    redefinedSet->oppositeRemove(el);
+                                    lookUpTree = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (!lookUpTree) {
                         continue;
                     }
                     for (auto superSet : front->m_superSets) {

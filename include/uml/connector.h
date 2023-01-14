@@ -33,9 +33,9 @@ namespace UML {
                 public:
                     void apply(ConnectorEnd& end, Connector& me);
             };
-            CustomSingleton<Association, Connector> m_type = CustomSingleton<Association, Connector>(this);
+            CustomSingleton<Association, Connector, SetTypePolicy, RemoveTypePolicy> m_type = CustomSingleton<Association, Connector, SetTypePolicy, RemoveTypePolicy>(this);
             CustomSet<Behavior, Connector> m_contracts = CustomSet<Behavior, Connector>(this);
-            CustomOrderedSet<ConnectorEnd, Connector> m_ends = CustomOrderedSet<ConnectorEnd, Connector>(this);
+            CustomOrderedSet<ConnectorEnd, Connector, AddEndPolicy, RemoveEndPolicy> m_ends = CustomOrderedSet<ConnectorEnd, Connector, AddEndPolicy, RemoveEndPolicy>(this);
             CustomSingleton<StructuredClassifier, Connector> m_structuredClassifier = CustomSingleton<StructuredClassifier, Connector>(this);
             TypedSet<Association, Connector>& getTypeSingleton();
             TypedSet<StructuredClassifier, Connector>& getStructuredClassifierSingleton();

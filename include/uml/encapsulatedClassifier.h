@@ -10,19 +10,16 @@ namespace UML {
 
     class EncapsulatedClassifier : public StructuredClassifier {
         protected:
-            // class AddOwnedAttributeFunctor : public SetFunctor {
-            //     private:
-            //         void operator()(Element& el) const override;
-            //     public:
-            //         AddOwnedAttributeFunctor(Element* el) : SetFunctor(el) {};
-            // };
-            // class RemoveOwnedAttributeFunctor : public SetFunctor {
-            //     private:
-            //         void operator()(Element& el) const override;
-            //     public:
-            //         RemoveOwnedAttributeFunctor(Element* el) : SetFunctor(el) {};
-            // };
+            class AddOwnedAttributePolicy {
+                public:
+                    void apply(Property& el, EncapsulatedClassifier& me);
+            };
+            class RemoveOwnedAttributePolicy {
+                public:
+                    void apply(Property& el, EncapsulatedClassifier& me);
+            };
             CustomSet<Port, EncapsulatedClassifier> m_ownedPorts = CustomSet<Port, EncapsulatedClassifier>(this);
+            CustomSet<Property, EncapsulatedClassifier, AddOwnedAttributePolicy, RemoveOwnedAttributePolicy> m_encapsulatedClassifierOwnedAttributes = CustomSet<Property, EncapsulatedClassifier, AddOwnedAttributePolicy, RemoveOwnedAttributePolicy>(this);
             EncapsulatedClassifier();
         public:
             virtual ~EncapsulatedClassifier();

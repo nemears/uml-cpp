@@ -184,7 +184,8 @@ namespace UML {
             virtual void clear() = 0;
             virtual OrderedSetIterator<T> begin() const = 0;
             virtual OrderedSetIterator<T> end() const = 0;
-            virtual ID_Set<T> ids() = 0;
+            virtual ID_Set<T> ids() = 0; // TODO ordered ID set and ptr set
+            virtual PtrSet<T> ptrs() = 0; 
     };
 
     template <
@@ -280,5 +281,11 @@ namespace UML {
                 ret.root = this->m_root;
                 return ret;
             };
+
+            PtrSet<T> ptrs() override {
+                PtrSet<T> ret;
+                ret.root = this->m_root;
+                return ret;
+            }
     };
 }

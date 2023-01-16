@@ -227,7 +227,7 @@ TEST_F(InterfaceTest, parsePortW_InterfaceTest) {
     ASSERT_EQ(encapsulated.getOwnedPorts().size(), 1);
     Port& port = encapsulated.getOwnedPorts().front();
     ASSERT_TRUE(port.isConjugated());
-    ASSERT_EQ(port.getRequired().size(), 1);
+    ASSERT_EQ(port.getRequired().size(), 1); // TODO fix type reference when opening
     ASSERT_EQ(port.getRequired().front(), interface_uml);
 }
 

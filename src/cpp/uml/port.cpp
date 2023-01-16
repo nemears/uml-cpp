@@ -10,100 +10,92 @@
 
 using namespace UML;
 
-// void Port::setPortInterfaces(BehavioredClassifier& clazz) {
-//     for (auto& realization : clazz.getInterfaceRealizations()) {
-//         if (realization.getContract()) {
-//             if (isConjugated()) {
-//                 m_required.addReadOnly(*realization.getContract());
-//             } else {
-//                m_provided.addReadOnly(*realization.getContract());
-//             }
-//             realization.getContract()->setReference(this);
-//         }
-//     }
-//     for (auto& dependency : clazz.getClientDependencies()) {
-//         if (dependency.isSubClassOf(ElementType::USAGE)) {
-//             for (auto& supplier : dependency.getSuppliers()) {
-//                 if (supplier.isSubClassOf(ElementType::INTERFACE_UML)) {
-//                     if (isConjugated()) {
-//                        m_provided.nonOppositeAdd(supplier.as<Interface>());
-//                     } else {
-//                         m_required.nonOppositeAdd(supplier.as<Interface>());
-//                     }
-//                 }
-//             }
-//         }
-//     }
-//     for (auto& general : clazz.getGenerals()) {
-//         if (general.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
-//             setPortInterfaces(general.as<BehavioredClassifier>());
-//         }
-//     }
-// }
+void Port::setPortInterfaces(BehavioredClassifier& clazz) {
+    for (auto& realization : clazz.getInterfaceRealizations()) {
+        if (realization.getContract()) {
+            if (isConjugated()) {
+                m_required.addReadOnly(*realization.getContract());
+            } else {
+               m_provided.addReadOnly(*realization.getContract());
+            }
+        }
+    }
+    for (auto& dependency : clazz.getClientDependencies()) {
+        if (dependency.isSubClassOf(ElementType::USAGE)) {
+            for (auto& supplier : dependency.getSuppliers()) {
+                if (supplier.isSubClassOf(ElementType::INTERFACE_UML)) {
+                    if (isConjugated()) {
+                       m_provided.innerAdd(supplier.as<Interface>());
+                    } else {
+                        m_required.innerAdd(supplier.as<Interface>());
+                    }
+                }
+            }
+        }
+    }
+    for (auto& general : clazz.getGenerals()) {
+        if (general.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
+            setPortInterfaces(general.as<BehavioredClassifier>());
+        }
+    }
+}
 
-// void Port::SetTypeFunctor::operator()(Element& el) const {
-//     if (el.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
-//         m_el.as<Port>().setPortInterfaces(el.as<BehavioredClassifier>());
-//     } else if (el.isSubClassOf(ElementType::INTERFACE_UML)) {
-//         if (m_el.as<Port>().isConjugated()) {
-//             m_el.as<Port>().m_required.nonOppositeAdd(el.as<Interface>());
-//         } else {
-//             m_el.as<Port>().m_provided.nonOppositeAdd(el.as<Interface>());
-//         }
-//     }
-// }
+void Port::SetTypePolicy::apply(Type& el, Port& me) {
+    if (el.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
+        me.setPortInterfaces(el.as<BehavioredClassifier>());
+    } else if (el.isSubClassOf(ElementType::INTERFACE_UML)) {
+        if (me.isConjugated()) {
+            me.m_required.innerAdd(el.as<Interface>());
+        } else {
+            me.m_provided.innerAdd(el.as<Interface>());
+        }
+    }
+}
 
-// void Port::removePortInterfaces(BehavioredClassifier& clazz) {
-//     for (auto& realization : clazz.getInterfaceRealizations()) {
-//         if (realization.getContract()) {
-//             if (isConjugated()) {
-//                 m_required.removeReadOnly(realization.getContract().id());
-//             } else {
-//                m_provided.removeReadOnly(realization.getContract().id());
-//             }
-//             realization.getContract()->removeReference(m_id);
-//         }
-//     }
-//     for (auto& dependency : clazz.getClientDependencies()) {
-//         if (dependency.isSubClassOf(ElementType::USAGE)) {
-//             for (auto& supplier : dependency.getSuppliers()) {
-//                 if (supplier.isSubClassOf(ElementType::INTERFACE_UML)) {
-//                     if (isConjugated()) {
-//                        m_provided.removeReadOnly(supplier.getID());
-//                     } else {
-//                         m_required.removeReadOnly(supplier.getID());
-//                     }
-//                 }
-//             }
-//         }
-//     }
-//     for (auto& general : clazz.getGenerals()) {
-//         if (general.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
-//             removePortInterfaces(general.as<BehavioredClassifier>());
-//         }
-//     }
-// }
+void Port::removePortInterfaces(BehavioredClassifier& clazz) {
+    for (auto& realization : clazz.getInterfaceRealizations()) {
+        if (realization.getContract()) {
+            if (isConjugated()) {
+                m_required.innerRemove(realization.getContract().id());
+            } else {
+               m_provided.innerRemove(realization.getContract().id());
+            }
+        }
+    }
+    for (auto& dependency : clazz.getClientDependencies()) {
+        if (dependency.isSubClassOf(ElementType::USAGE)) {
+            for (auto& supplier : dependency.getSuppliers()) {
+                if (supplier.isSubClassOf(ElementType::INTERFACE_UML)) {
+                    if (isConjugated()) {
+                       m_provided.innerRemove(supplier.getID());
+                    } else {
+                        m_required.innerRemove(supplier.getID());
+                    }
+                }
+            }
+        }
+    }
+    for (auto& general : clazz.getGenerals()) {
+        if (general.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
+            removePortInterfaces(general.as<BehavioredClassifier>());
+        }
+    }
+}
 
-// void Port::RemoveTypeFunctor::operator()(Element& el) const {
-//     if (el.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
-//         m_el.as<Port>().removePortInterfaces(el.as<BehavioredClassifier>());
-//     } else if (el.isSubClassOf(ElementType::INTERFACE_UML)) {
-//         if (m_el.as<Port>().isComposite()) {
-//             m_el.as<Port>().m_required.removeReadOnly(el.getID());
-//         } else {
-//             m_el.as<Port>().m_provided.removeReadOnly(el.getID());
-//         }
-//     }
-// }
+void Port::RemoveTypePolicy::apply(Type& el, Port& me) {
+    if (el.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
+        me.removePortInterfaces(el.as<BehavioredClassifier>());
+    } else if (el.isSubClassOf(ElementType::INTERFACE_UML)) {
+        if (me.isConjugated()) {
+            me.m_required.removeReadOnly(el.getID());
+        } else {
+            me.m_provided.removeReadOnly(el.getID());
+        }
+    }
+}
 
 void Port::restoreReference(Element* el) {
     Property::restoreReference(el);
-    if (m_required.contains(el->getID())){
-        el->setReference(this);
-    }
-    if (m_provided.contains(el->getID())) {
-        el->setReference(this);
-    }
 }
 
 void Port::referenceReindexed(ID newID) {
@@ -121,6 +113,7 @@ void Port::referenceErased(ID id) {
 Port::Port() : Element(ElementType::PORT) {
     m_required.m_readOnly = true;
     m_provided.m_readOnly = true;
+    m_portType.redefines(m_type);
 }
 
 Port::~Port() {
@@ -140,36 +133,24 @@ bool Port::isConjugated() const {
 }
 
 void Port::setIsConjugated(bool isConjugated) {
-    // if (isConjugated != m_isConjugated) {
-    //     std::vector<ID> oldRequired;
-    //     std::vector<ID> oldProvided;
-    //     for (const ID required : m_required.ids()) {
-    //         oldRequired.push_back(required);
-    //     }
-    //     for (const ID provided : m_provided.ids()) {
-    //         oldProvided.push_back(provided);
-    //     }
-    //     for (auto& newProvidedID : oldRequired) {
-    //         if (m_required.loaded(newProvidedID)) {
-    //             Interface& newProvided = m_required.get(newProvidedID);
-    //             m_required.removeReadOnly(newProvidedID);
-    //             m_provided.nonOppositeAdd(newProvided);
-    //         } else {
-    //             m_required.forceRemove(newProvidedID);
-    //             m_provided.addReadOnly(newProvidedID);
-    //         }
-    //     }
-    //     for (auto& newRequiredID : oldProvided) {
-    //         if (m_provided.loaded(newRequiredID)) {
-    //             Interface& newRequired = m_provided.get(newRequiredID);
-    //             m_provided.removeReadOnly(newRequiredID);
-    //             m_required.nonOppositeAdd(newRequired);
-    //         } else {
-    //             m_provided.forceRemove(newRequiredID);
-    //             m_required.addReadOnly(newRequiredID);
-    //         }            
-    //     }
-    // }
+    if (isConjugated != m_isConjugated) {
+        std::vector<InterfacePtr> oldRequired;
+        std::vector<InterfacePtr> oldProvided;
+        for (const InterfacePtr required : m_required.ptrs()) {
+            oldRequired.push_back(required);
+        }
+        for (const InterfacePtr provided : m_provided.ptrs()) {
+            oldProvided.push_back(provided);
+        }
+        for (auto& newProvided : oldRequired) {
+            m_required.innerRemove(newProvided.id());
+            m_provided.innerAdd(*newProvided);
+        }
+        for (auto& newRequired : oldProvided) {
+            m_provided.innerRemove(newRequired.id());
+            m_required.innerAdd(*newRequired);
+        }
+    }
     m_isConjugated = isConjugated;
 }
 

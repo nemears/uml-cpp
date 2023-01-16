@@ -394,35 +394,6 @@ namespace UML {
                 }
             }
 
-            bool shouldCreateDividerNode(SetNode* currNode, std::unordered_set<AbstractSet*>& allSuperSetsAndMe, std::unordered_set<AbstractSet*>& allSubSets) {
-                if (!currNode) {
-                    return false;
-                }
-
-                if (currNode->m_ptr) {
-                    // check if the node is related
-                    return !allSuperSetsAndMe.count(currNode->set) && !allSubSets.count(currNode->set);
-                } else {
-                    // this is a divider node, check children
-                    std::list<SetNode*> queue;
-                    queue.push_back(currNode->m_left);
-                    queue.push_back(currNode->m_right);
-                    while (!queue.empty()) {
-                        SetNode* front = queue.front();
-                        queue.pop_front();
-                        if (front->m_ptr) {
-                            if (!allSuperSetsAndMe.count(front->set) && !allSubSets.count(front->set)) {
-                                return true;
-                            }
-                        } else {
-                            queue.push_back(front->m_left);
-                            queue.push_back(front->m_right);
-                        }
-                    }
-                    return false;
-                }
-            }
-
             /**
              * searches superSet structure by finding the roots first and checking if it was placed
              * @param node: the node being placed
@@ -458,38 +429,110 @@ namespace UML {
                     // root set, place the node in the tree
                     // gather our set's supersets and subsets
                     SetNode* currNode = set->m_root;
+
                     // handle divider nodes
-                    while (shouldCreateDividerNode(currNode, allSuperSetsAndMe, allSubSets)) {
+                    while (currNode) {
                         if (!currNode->m_ptr) {
-                            // determine whether to create a divider node here or further down the tree
-                            if (
-                                    shouldCreateDividerNode(currNode->m_right, allSuperSetsAndMe, allSubSets) && 
-                                    shouldCreateDividerNode(currNode->m_left, allSuperSetsAndMe, allSubSets)
-                                ) 
-                            {
-                                // make dividerNode
-                            } else if (!shouldCreateDividerNode(currNode->m_right, allSuperSetsAndMe, allSubSets)) {
-                                currNode = currNode->m_right;
-                                break;
+                            if (allSuperSetsAndMe.count(currNode->set)) {
+                                if (allSuperSetsAndMe.count(currNode->m_left->set) || allSubSets.count(currNode->m_left->set)) {
+                                    currNode = currNode->m_left;
+                                    continue;
+                                } else if (allSuperSetsAndMe.count(currNode->m_right->set) || allSubSets.count(currNode->m_right->set)) {
+                                    currNode = currNode->m_right;
+                                    continue;
+                                } else if (currNode->m_left->m_ptr && !currNode->m_right->m_ptr) {
+                                    currNode = currNode->m_left;
+                                } else if (currNode->m_right->m_ptr && !currNode->m_left->m_ptr) {
+                                    currNode = currNode->m_right;
+                                } else {
+                                    // special case, we are going to have to change currNode's set variable because 
+                                    // it is no longer valid as the scope for the divider node
+                                    
+                                    // find most similar set
+                                    AbstractSet* dividerNodeSet = 0;
+                                    std::unordered_set setsSubSets = set->getAllSubSets();
+                                    setsSubSets.insert(set);
+                                    std::list<AbstractSet*> queue;
+                                    std::unordered_set leftsSuperSets = currNode->m_left->set->getAllSuperSets();
+                                    queue.push_back(currNode->m_right->set);
+                                    while (!queue.empty()) {
+                                        AbstractSet* front = queue.front();
+                                        queue.pop_front();
+                                        if (leftsSuperSets.count(front) && front != currNode->set) {
+                                            dividerNodeSet = front;
+                                            break;
+                                        }
+                                        for (auto superSet : front->m_superSets) {
+                                            if (setsSubSets.count(superSet)) {
+                                                queue.push_back(superSet);
+                                            }
+                                        }
+                                    }
+
+                                    if (dividerNodeSet) {
+                                        currNode->set = dividerNodeSet;
+                                    }
+                                }
+                            }
+                        } else if (allSuperSetsAndMe.count(currNode->set) || allSubSets.count(currNode->set)) {
+                            // regular node, check if it is in related sets, else continue with loop and create divider node
+                            break;
+                        }
+
+                        // create divider node
+                        SetNode* dividerNode = new SetNode();
+
+                        // handle parent from this tree
+                        SetNode* parent = getParent(currNode, set->m_root);
+                        if (parent) {
+                            if (parent->m_left == currNode) {
+                                parent->m_left = dividerNode;
                             } else {
-                                currNode = currNode->m_left;
-                                continue;
+                                parent->m_right = parent->m_left;
+                                parent->m_left = dividerNode;
+                            }
+                            dividerNode->m_parent = parent;
+                        }
+
+                        // find most similar set
+                        AbstractSet* dividerNodeSet = 0;
+                        std::unordered_set setsSubSets = set->getAllSubSets();
+                        setsSubSets.insert(set);
+                        std::list<AbstractSet*> queue;
+                        queue.push_back(currNode->set);
+                        while (!queue.empty()) {
+                            AbstractSet* front = queue.front();
+                            queue.pop_front();
+                            if (allSuperSetsAndMe.count(front)) {
+                                dividerNodeSet = front;
+                                break;
+                            }
+                            for (auto superSet : front->m_superSets) {
+                                if (setsSubSets.count(superSet)) {
+                                    queue.push_back(superSet);
+                                }
                             }
                         }
 
-                        SetNode* dividerNode = new SetNode();
-
-                        // find most similar set between node and currNode TODO delete?
-                        if (currNode->m_parent && (currNode->m_parent->set == set || set->getAllSubSets().count(currNode->m_parent->set))) { // getAllSubsets slow
-                            dividerNode->m_parent = currNode->m_parent;
-                            // adjust parent
-                            dividerNode->m_parent->m_left == currNode ? dividerNode->m_parent->m_left = dividerNode : dividerNode->m_parent->m_right = dividerNode;
+                        if (dividerNodeSet == 0) {
+                            throw SetStateException("Bad state could not find similar node between");
                         }
-                        currNode->m_parent = dividerNode;
-                        dividerNode->m_left = currNode;
 
-                        // readjust roots if needed                          
-                        std::list<AbstractSet*> queue;
+                        dividerNode->set = dividerNodeSet;
+
+                        // add currNode and node below this divider node
+                        currNode->m_parent = dividerNode;
+                        node->m_parent = dividerNode;
+                        if (currNode->m_ptr.id() > node->m_ptr.id()) {
+                            dividerNode->m_left = currNode;
+                            dividerNode->m_right = node;
+                        } else {
+                            dividerNode->m_right = currNode;
+                            dividerNode->m_left = node;
+                        }
+
+                        // readjust roots if needed
+                        queue.clear();
                         if (currNode->m_ptr) {
                             queue.push_back(currNode->set);
                         } else {
@@ -511,17 +554,15 @@ namespace UML {
                         while (!queue.empty()) {
                             AbstractSet* front = queue.front();
                             queue.pop_front();
-                            if (front->m_root == currNode && allSuperSetsAndMe.count(front)) {
+                            if (front->m_root == currNode && allSuperSetsAndMe.count(front) && setsSubSets.count(front)) {
                                 front->m_root = dividerNode;
-                                visited[front] = true;
                             }
                             for (auto superSet : front->m_superSets) {
                                 queue.push_back(superSet);
                             }
                         }
 
-                        currNode = dividerNode;
-                        break;
+                        return;
                     }
                     while (currNode) {
                         
@@ -608,7 +649,6 @@ namespace UML {
                             for (auto superSet : currNode->set->getAllSuperSets()) {
                                 visited[superSet] = true;
                             }
-
                             break;
                         }
 

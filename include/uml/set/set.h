@@ -156,6 +156,7 @@ namespace UML {
 
         template <class V, class W, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
         template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomSingleton;
+        friend class Usage; // ??
 
         protected:
             virtual void innerAdd(T& el) = 0;
@@ -1528,11 +1529,13 @@ namespace UML {
     };
 
     template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomSet;
+    template <class T> class PtrSet;
 
     template <class T>
     class SetIterator {
 
         template <class V> friend class ID_Set;
+        template <class V> friend class PtrSet;
         template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomSet;
 
         protected:
@@ -1681,6 +1684,67 @@ namespace UML {
             }
     };
 
+    template <class T>
+    class SetPtrIterator : public SetIterator<T> {
+        public:
+            UmlPtr<T> operator*() {
+                return this->curr->m_ptr;
+            }
+    };
+
+    template <class T>
+    class PtrSet {
+
+        template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomSet;
+        template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomOrderedSet;
+
+        private:
+            SetNode* root = 0;
+        public:
+            SetPtrIterator<T> begin() {
+                SetPtrIterator<T> ret;
+                ret.curr = root;
+                ret.root = root;
+                return ret;
+            };
+            SetPtrIterator<T> end() {
+                return SetPtrIterator<T>();
+            };
+            UmlPtr<T> front() const {
+                SetNode* curr = this->root;
+                if (!curr) {
+                    throw SetStateException("Cannot get front element because set is empty!");
+                }
+
+                while (!curr->m_ptr) {
+                    if (!curr->m_left) {
+                        throw SetStateException("Internal error while getting front element, contact developer!");
+                    }
+                    curr = curr->m_left;
+                }
+
+                return curr->m_ptr;
+            }
+            UmlPtr<T> back() const {
+                SetNode* curr = this->root;
+                if (!curr) {
+                    throw SetStateException("Cannot get back element because set is empty!");
+                }
+
+                // go all the way right
+                while (curr->m_right) {
+                    curr = curr->m_right;
+                }
+
+                // now go all the way left
+                while (curr->m_left) {
+                    curr = curr->m_left;
+                }
+
+                return curr->m_ptr;
+            }
+    };
+
     template <class T, class U>
     class Set : virtual public TypedSet<T,U> {
         public:
@@ -1712,6 +1776,7 @@ namespace UML {
             virtual SetIterator<T> begin() = 0;
             virtual SetIterator<T> end() = 0;
             virtual ID_Set<T> ids() = 0;
+            virtual PtrSet<T> ptrs() = 0;
     };
 
     template <
@@ -1837,5 +1902,11 @@ namespace UML {
                 ret.root = this->m_root;
                 return ret;
             };
+
+            PtrSet<T> ptrs() override {
+                PtrSet<T> ret;
+                ret.root = this->m_root;
+                return ret;
+            }
     };
 }

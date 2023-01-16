@@ -11,21 +11,22 @@
 
 using namespace UML;
 
-// void EncapsulatedClassifier::AddOwnedAttributeFunctor::operator()(Element& el) const {
-//     if (el.isSubClassOf(ElementType::PORT)) {
-//         m_el.as<EncapsulatedClassifier>().m_ownedPorts.nonOppositeAdd(el.as<Port>());
-//     }
-// }
+void EncapsulatedClassifier::AddOwnedAttributePolicy::apply(Property& el, EncapsulatedClassifier& me) {
+    if (el.isSubClassOf(ElementType::PORT) && !me.m_ownedPorts.contains(el.getID())) {
+        me.m_ownedPorts.addReadOnly(el.as<Port>());
+    }
+}
 
-// void EncapsulatedClassifier::RemoveOwnedAttributeFunctor::operator()(Element& el) const {
-//     if (el.isSubClassOf(ElementType::PORT)) {
-//         m_el.as<EncapsulatedClassifier>().m_ownedPorts.nonOppositeRemove(el.getID());
-//     }
-// }
+void EncapsulatedClassifier::RemoveOwnedAttributePolicy::apply(Property& el, EncapsulatedClassifier& me) {
+    if (el.isSubClassOf(ElementType::PORT) && me.m_ownedPorts.contains(el.getID())) {
+        me.m_ownedPorts.removeReadOnly(el.getID());
+    }
+}
 
 EncapsulatedClassifier::EncapsulatedClassifier() : Element(ElementType::ENCAPSULATED_CLASSIFIER) {
     m_ownedPorts.subsets(m_ownedAttributes);
     m_ownedPorts.m_readOnly = true;
+    m_encapsulatedClassifierOwnedAttributes.redefines(m_ownedAttributes);
 }
 
 EncapsulatedClassifier::~EncapsulatedClassifier() {

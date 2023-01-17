@@ -3,6 +3,7 @@
 
 #include "uml/element.h"
 #include "uml/parsers/parser.h"
+#include <iostream>
 
 namespace UML {
     class FilePersistencePolicy {

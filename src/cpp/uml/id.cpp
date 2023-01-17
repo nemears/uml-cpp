@@ -967,7 +967,7 @@ ID ID::fromString(std::string id) {
             boolArr[i+4] = 1;
             boolArr[i+5] = 1;
         } else {
-            throw InvalidUmlID_Exception(c + " is not a base64 character");
+            throw InvalidUmlID_Exception(std::to_string(c) + " is not a base64 character");
         }
 
         i+=6;

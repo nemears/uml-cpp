@@ -98,7 +98,11 @@ namespace UML {
             virtual ~FilePersistencePolicy() {
                 // delete mount
                 if (!m_mountBase.empty()) {
-                    std::filesystem::remove_all(m_mountBase / "mount");
+                    try {
+                        std::filesystem::remove_all(m_mountBase / "mount");
+                    } catch (std::exception& e) {
+                        std::cout << "Persistence policy encountered error deleting mount: " << e.what() << std::endl;
+                    }
                 }
             }
     };

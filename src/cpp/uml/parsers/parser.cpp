@@ -364,24 +364,6 @@ ElementPtr parse(ParserMetaData& data) {
                 ret->setReference(id);
             }
         }
-    } else {
-        // if (!data.m_manager) {
-        //     std::cout << "TODO: m_manager2 restore all references we loaded" << std::endl;
-        //     return ret;
-        // }
-        // // we want to restore all of the references of what we loaded
-        // for (const ID id : data.m_manager->m_elements) {
-        //     ElementPtr el = &data.m_manager->get(id);
-        //     for (auto& refPair : el->m_node->m_references) {
-        //         ElementPtr reference = &data.m_manager->get(refPair.first);
-        //         el->restoreReference(reference.ptr());
-        //         if (!reference->m_node->m_references.count(el.id())) {
-        //             reference->setReference(el.id());
-        //         } else {
-        //             reference->restoreReference(el.ptr());
-        //         }
-        //     }
-        // }
     }
     return ret;
 }

@@ -120,11 +120,11 @@ TEST_F(DependencyTest, basicDependencyEmitTest) {
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
     - package:
+        id: uONNU0sKPVjLALJuw2pHcNqljgkg
+    - package:
         id: "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         clientDependencies:
-          - "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
-    - package:
-        id: uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
+          - "tAps&UBn21dKnQ5z7qaAzKBZqR7S")"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
     std::cout << generatedEmit << '\n';

@@ -110,6 +110,20 @@ void Port::referenceErased(ID id) {
     m_provided.eraseElement(id);
 }
 
+void Port::restoreReferences() {
+    if (m_type.get()) {
+        if (m_type.get()->isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
+            setPortInterfaces(m_type.get()->as<BehavioredClassifier>());
+        } else if (m_type.get()->isSubClassOf(ElementType::INTERFACE_UML)) {
+            if (isConjugated() && !m_required.contains(m_type.get().id())) {
+                m_required.innerAdd(m_type.get()->as<Interface>());
+            } else if (!isConjugated() && !m_provided.contains(m_type.get().id())) {
+                m_provided.innerAdd(m_type.get()->as<Interface>());
+            }
+        }
+    }
+}
+
 Port::Port() : Element(ElementType::PORT) {
     m_required.m_readOnly = true;
     m_provided.m_readOnly = true;

@@ -34,6 +34,7 @@ namespace UML {
             void restoreReference(Element* el) override;
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
+            void restoreReferences() override;
             Port();
         public:
             virtual ~Port();

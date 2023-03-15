@@ -1,3 +1,5 @@
+#ifndef NO_UML_CLIENT_SERVER
+
 #include "gtest/gtest.h"
 #include "uml/managers/umlServer.h"
 #include "uml/managers/umlClient.h"
@@ -148,3 +150,4 @@ TEST_F(RestfulTest, badReferenceTest) {
     ASSERT_EQ(clazz.id(), instClassifier.id());
     ASSERT_EQ(clazz.ptr(), instClassifier.ptr());
 }
+#endif

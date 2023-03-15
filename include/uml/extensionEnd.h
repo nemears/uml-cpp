@@ -10,7 +10,7 @@ namespace UML {
 
     class ExtensionEnd : public Property {
 
-        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         private:
             CustomSingleton<Stereotype, ExtensionEnd> m_extensionType = CustomSingleton<Stereotype, ExtensionEnd>(this);

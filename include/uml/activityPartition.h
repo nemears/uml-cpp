@@ -11,7 +11,7 @@ namespace UML {
     class ActivityPartition : public ActivityGroup {
 
         friend class Activity;
-        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             CustomSingleton<Element, ActivityPartition> m_represents = CustomSingleton<Element, ActivityPartition>(this);

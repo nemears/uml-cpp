@@ -15,7 +15,7 @@ class OperationTest : public ::testing::Test {
 };
 
 TEST_F(OperationTest, SetAndGetTypeTest) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
     ASSERT_NO_THROW(o.setType(&c));
@@ -23,7 +23,7 @@ TEST_F(OperationTest, SetAndGetTypeTest) {
 }
 
 TEST_F(OperationTest, reIndexID_Test) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
     o.setClass(&c);
@@ -33,7 +33,7 @@ TEST_F(OperationTest, reIndexID_Test) {
 }
 
 TEST_F(OperationTest, reIndexNameTest) {
-    BasicManager m;
+    Manager<> m;
     ClassPtr c = m.create<Class>();
     OperationPtr o = m.create<Operation>();
     o->setClass(*c);
@@ -43,7 +43,7 @@ TEST_F(OperationTest, reIndexNameTest) {
 }
 
 TEST_F(OperationTest, AddMethodFunctorTest) {
-    BasicManager mm;
+    Manager<> mm;
     Operation& o = *mm.create<Operation>();
     OpaqueBehavior& m = *mm.create<OpaqueBehavior>();
     o.getMethods().add(m);
@@ -59,7 +59,7 @@ TEST_F(OperationTest, AddMethodFunctorTest) {
 }
 
 TEST_F(OperationTest, SetSpecificationTest) {
-    BasicManager mm;
+    Manager<> mm;
     Operation& o = *mm.create<Operation>();
     OpaqueBehavior& m = *mm.create<OpaqueBehavior>();
     m.setSpecification(&o);
@@ -75,7 +75,7 @@ TEST_F(OperationTest, SetSpecificationTest) {
 }
 
 TEST_F(OperationTest, AddParameterFunctorForAbstractOperationTest) {
-    BasicManager mm;
+    Manager<> mm;
     Operation& o = *mm.create<Operation>();
     Parameter& p = *mm.create<Parameter>();
     o.getOwnedParameters().add(p);
@@ -91,7 +91,7 @@ TEST_F(OperationTest, AddParameterFunctorForAbstractOperationTest) {
 }
 
 TEST_F(OperationTest, SetOperationAbstractOperationTest) {
-    BasicManager mm;
+    Manager<> mm;
     Operation& o = *mm.create<Operation>();
     Parameter& p = *mm.create<Parameter>();
     p.setOperation(o);
@@ -130,7 +130,7 @@ TEST_F(OperationTest, SetOperationAbstractOperationTest) {
 // }
 
 // TEST_F(OperationTest, checkParameterFunctorTest) {
-//     BasicManager mm;
+//     Manager<> mm;
 //     Operation& o = mm.create<Operation>();
 //     Parameter& p = mm.create<Parameter>();
 //     Parameter& p2 = mm.create<Parameter>();
@@ -157,7 +157,7 @@ TEST_F(OperationTest, SetOperationAbstractOperationTest) {
 // }
 
 // TEST_F(OperationTest, setOperationReturnParameterExceptionTest) {
-//     BasicManager mm;
+//     Manager<> mm;
 //     Operation& o = mm.create<Operation>();
 //     Parameter& p = mm.create<Parameter>();
 //     Parameter& p2 = mm.create<Parameter>();
@@ -185,7 +185,7 @@ TEST_F(OperationTest, SetOperationAbstractOperationTest) {
 // }
 
 TEST_F(OperationTest, removeOwnedParameterFunctorTest) {
-    BasicManager mm;
+    Manager<> mm;
     Operation& o = *mm.create<Operation>();
     Parameter& p = *mm.create<Parameter>();
     o.getOwnedParameters().add(p);
@@ -201,7 +201,7 @@ TEST_F(OperationTest, removeOwnedParameterFunctorTest) {
 }
 
 TEST_F(OperationTest, removeOwnedParameterW_NullOperationTest) {
-    BasicManager mm;
+    Manager<> mm;
     Operation& o = *mm.create<Operation>();
     Parameter& p = *mm.create<Parameter>();
     o.getOwnedParameters().add(p);
@@ -217,7 +217,7 @@ TEST_F(OperationTest, removeOwnedParameterW_NullOperationTest) {
 }
 
 TEST_F(OperationTest, overrideParameterOperationTest) {
-    BasicManager mm;
+    Manager<> mm;
     Operation& o = *mm.create<Operation>();
     Parameter& p = *mm.create<Parameter>();
     Operation& o2 = *mm.create<Operation>();
@@ -244,7 +244,7 @@ TEST_F(OperationTest, overrideParameterOperationTest) {
 }
 
 TEST_F(OperationTest, reindexParameterDirectionTest) {
-    BasicManager mm;
+    Manager<> mm;
     Operation& o = *mm.create<Operation>();
     Parameter& p = *mm.create<Parameter>();
     Parameter& p2 = *mm.create<Parameter>();
@@ -276,7 +276,7 @@ TEST_F(OperationTest, reindexParameterDirectionTest) {
 }
 
 TEST_F(OperationTest, RemoveMethodFunctorTest) {
-    BasicManager mm;
+    Manager<> mm;
     Operation& o = *mm.create<Operation>();
     OpaqueBehavior& m = *mm.create<OpaqueBehavior>();
     o.getMethods().add(m);
@@ -287,7 +287,7 @@ TEST_F(OperationTest, RemoveMethodFunctorTest) {
 }
 
 TEST_F(OperationTest, SetNullSpecificationTest) {
-    BasicManager mm;
+    Manager<> mm;
     Operation& o = *mm.create<Operation>();
     OpaqueBehavior& m = *mm.create<OpaqueBehavior>();
     o.getMethods().add(m);
@@ -298,7 +298,7 @@ TEST_F(OperationTest, SetNullSpecificationTest) {
 }
 
 TEST_F(OperationTest, OverrideSpecificationTest) {
-    BasicManager mm;
+    Manager<> mm;
     Operation& o = *mm.create<Operation>();
     OpaqueBehavior& m = *mm.create<OpaqueBehavior>();
     Operation& o2 = *mm.create<Operation>();
@@ -311,13 +311,13 @@ TEST_F(OperationTest, OverrideSpecificationTest) {
 }
 
 TEST_F(OperationTest, properExceptions) {
-    BasicManager m;
-    ASSERT_THROW(m.open(ymlPath + "operationTests/invalidBehavior.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "operationTests/invalidMethodList.yml"), Parsers::UmlParserException);
+    Manager<> m;
+    ASSERT_THROW(m.open(ymlPath + "operationTests/invalidBehavior.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "operationTests/invalidMethodList.yml"), UmlParserException);
 }
 
 TEST_F(OperationTest, basicParamTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "operationTests/basicParameter.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
@@ -340,7 +340,7 @@ TEST_F(OperationTest, basicParamTest) {
 }
 
 TEST_F(OperationTest, mountAndEditOperationTest) {
-    BasicManager m;
+    Manager<> m;
     Class& clazz = *m.create<Class>();
     OpaqueBehavior& bhv = *m.create<OpaqueBehavior>();
     Operation& op = *m.create<Operation>();

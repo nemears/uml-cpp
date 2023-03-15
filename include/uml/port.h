@@ -9,7 +9,7 @@ namespace UML {
 
     class Port : public Property {
 
-        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class BehavioredClassifier;
         friend class InterfaceRealization;
 

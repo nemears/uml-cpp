@@ -10,7 +10,7 @@ namespace UML {
      **/
     class Usage : public Dependency {
 
-        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             class AddClientPolicy {

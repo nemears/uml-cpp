@@ -1,7 +1,7 @@
 #ifndef _UML_MANAGERS_SERVER_ACCESS_POLICY_H_
 #define _UML_MANAGERS_SERVER_ACCESS_POLICY_H_
 
-#include "simpleAccessPolicy.h"
+#include "uml/managers/simpleAccessPolicy.h"
 #include "abstractClient.h"
 
 namespace UML {

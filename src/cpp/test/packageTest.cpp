@@ -18,7 +18,7 @@ UML_SINGLETON_INTEGRATION_TEST(PackageMergeMergedPackage, Package, PackageMerge,
 UML_SET_INTEGRATION_TEST(PackageOwnedStereotypes, Stereotype, Package, &Package::getOwnedStereotypes);
 
 TEST_F(PackageTest, addPackagedElementTest) {
-    BasicManager m;
+    Manager<> m;
     Package& p = *m.create<Package>();
     Package& e = *m.create<Package>();
     ASSERT_NO_THROW(p.getPackagedElements().add(e));
@@ -36,7 +36,7 @@ TEST_F(PackageTest, addPackagedElementTest) {
 }
 
 TEST_F(PackageTest, setOwningPackageTest) {
-    BasicManager m;
+    Manager<> m;
     Package& p = *m.create<Package>();
     PackageableElement& e = *m.create<Package>();
     ASSERT_NO_THROW(e.setOwningPackage(&p));
@@ -52,7 +52,7 @@ TEST_F(PackageTest, setOwningPackageTest) {
 }
 
 TEST_F(PackageTest, overwriteOwningPackageTest) {
-    BasicManager m;
+    Manager<> m;
     Package& p1 = *m.create<Package>();
     Package& p2 = *m.create<Package>();
     PackageableElement& e = *m.create<Package>();
@@ -73,7 +73,7 @@ TEST_F(PackageTest, overwriteOwningPackageTest) {
 }
 
 TEST_F(PackageTest, packageMergeTest) {
-    BasicManager mm;
+    Manager<> mm;
     Package& p = *mm.create<Package>();
     PackageMerge& m = *mm.create<PackageMerge>();
     Package& mp = *mm.create<Package>();
@@ -94,7 +94,7 @@ TEST_F(PackageTest, packageMergeTest) {
 }
 
 TEST_F(PackageTest, removePackageMergeTest) {
-    BasicManager mm;
+    Manager<> mm;
     Package& p = *mm.create<Package>();
     PackageMerge& m = *mm.create<PackageMerge>();
     p.getPackageMerge().add(m);
@@ -107,7 +107,7 @@ TEST_F(PackageTest, removePackageMergeTest) {
 }
 
 TEST_F(PackageTest, addOwnedStereotype) {
-    BasicManager m;
+    Manager<> m;
     Profile& p = *m.create<Profile>();
     p.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
     Stereotype& s = *m.create<Stereotype>();
@@ -150,7 +150,7 @@ TEST_F(PackageTest, addOwnedStereotype) {
 }
 
 TEST_F(PackageTest, removeOwnedStereotype) {
-    BasicManager m;
+    Manager<> m;
     Profile& p = *m.create<Profile>();
     Stereotype& s = *m.create<Stereotype>();
     p.getOwnedStereotypes().add(s);
@@ -177,7 +177,7 @@ TEST_F(PackageTest, removeOwnedStereotype) {
 }
 
 TEST_F(PackageTest, inTreeRemoveOwnedStereotype) {
-    BasicManager m;
+    Manager<> m;
     Package& p = *m.create<Package>();
     Stereotype& s = *m.create<Stereotype>();
     PackageMerge& pm = *m.create<PackageMerge>();
@@ -223,7 +223,7 @@ TEST_F(PackageTest, inTreeRemoveOwnedStereotype) {
 }
 
 TEST_F(PackageTest, erasePackagedElementTest) {
-    BasicManager m;
+    Manager<> m;
     Package& parent = *m.create<Package>();
     Package& child = *m.create<Package>();
     parent.getPackagedElements().add(child);
@@ -235,7 +235,7 @@ TEST_F(PackageTest, erasePackagedElementTest) {
 }
 
 TEST_F(PackageTest, parse3PackagesTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "packageParserTests/3packages.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg1 = &m.getRoot()->as<Package>();
@@ -271,7 +271,7 @@ TEST_F(PackageTest, parse3PackagesTest) {
 }
 
 // TEST_F(PackageTest, NamedElementFeaturesTest) {
-//     BasicManager* m;
+//     Manager* m;
 //     ASSERT_NO_THROW(m = Parsers::parse(ymlPath + "packageParserTests/packageWithName.yml"));
 //     el = & m->get(ID::fromString("8q2Rht9aAZlY0EnMGtEKlw5Odr_u"));
 //     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
@@ -281,31 +281,31 @@ TEST_F(PackageTest, parse3PackagesTest) {
 // }
 
 TEST_F(PackageTest, ElementFeaturesTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "packageParserTests/packagewID.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     ASSERT_TRUE(m.getRoot()->getID() == ID::fromString("Hmq5HbrypUzqPYovV8oo3wnFE6Jl"));
 }
 
 TEST_F(PackageTest, ElementParserExceptionTest) {
-    BasicManager m;
-    ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperID.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "packageParserTests/otherImproperID.yml"), Parsers::UmlParserException);
+    Manager<> m;
+    ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperID.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "packageParserTests/otherImproperID.yml"), UmlParserException);
 }
 
 TEST_F(PackageTest, NamedElementParserExceptionTest) {
-    BasicManager m;
-    ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperName.yml"), Parsers::UmlParserException);
+    Manager<> m;
+    ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperName.yml"), UmlParserException);
 }
 
 TEST_F(PackageTest, properExceptions) {
-    BasicManager m;
-    ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperPackagedElement.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "packageParserTests/invalidPackagedElements.yml"), Parsers::UmlParserException);
+    Manager<> m;
+    ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperPackagedElement.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "packageParserTests/invalidPackagedElements.yml"), UmlParserException);
 }
 
 TEST_F(PackageTest, basicPackageMerge) {
-    BasicManager m2;
+    Manager<> m2;
     ASSERT_NO_THROW(m2.open(ymlPath + "packageParserTests/basicPackageMerge.yml"));
     ASSERT_TRUE(m2.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* bPckg = &m2.getRoot()->as<Package>();
@@ -321,7 +321,7 @@ TEST_F(PackageTest, basicPackageMerge) {
 }
 
 TEST_F(PackageTest, externalMergedPackageTest) {
-    BasicManager mm;
+    Manager<> mm;
     ASSERT_NO_THROW(mm.open(ymlPath + "packageParserTests/mergedPackage.yml"));
     ASSERT_TRUE(mm.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &mm.getRoot()->as<Package>();
@@ -343,7 +343,7 @@ TEST_F(PackageTest, externalMergedPackageTest) {
 }
 
 TEST_F(PackageTest, emitVerySimplePackageTest) {
-    BasicManager m;
+    Manager<> m;
     Package& p = *m.create<Package>();
     p.setID("_SljVdCSVuBAkmgXqFcopy8&D9oN");
     p.setName("package");
@@ -352,13 +352,16 @@ TEST_F(PackageTest, emitVerySimplePackageTest) {
   id: "_SljVdCSVuBAkmgXqFcopy8&D9oN"
   name: package
   visibility: PACKAGE)"""";
-    std::string generatedEmit = Parsers::emit(p);
+  std::string generatedEmit;
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(p, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(PackageTest, parsePackagedElementInDifferentFileTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "packageParserTests/subFolderTest.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -368,7 +371,7 @@ TEST_F(PackageTest, parsePackagedElementInDifferentFileTest) {
 }
 
 TEST_F(PackageTest, emitMergedPackageTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     PackageMerge& merge = *m.create<PackageMerge>();
     Package& mergin = *m.create<Package>();
@@ -392,7 +395,10 @@ TEST_F(PackageTest, emitMergedPackageTest) {
               mergedPackage: "orUaM2sY9dz&YP83TqfGaHO5SBY4"
     - package:
         id: "orUaM2sY9dz&YP83TqfGaHO5SBY4")"""";
-    std::string generatedEmit = Parsers::emit(pckg);
+    std::string generatedEmit;
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
@@ -409,7 +415,7 @@ void ASSERT_PROPER_DIRECTED_RELATIONSHIP_AQUIRE(DirectedRelationship& dr, Elemen
 }
 
 TEST_F(PackageTest, mountAndEditPackageTest) {
-    BasicManager m;
+    Manager<> m;
     Package& root = *m.create<Package>();
     Package& c1 = *m.create<Package>();
     Package& merged = *m.create<Package>();
@@ -499,7 +505,7 @@ TEST_F(PackageTest, mountAndEditPackageTest) {
 }
 
 // TEST_F(PackageTest, parseStringTest) {
-//     BasicManager m;
+//     Manager<> m;
 //     Package& p = *m.create<Package>();
 //     std::string ps = Parsers::emit(p);
 //     ID pid = p.getID();
@@ -511,7 +517,7 @@ TEST_F(PackageTest, mountAndEditPackageTest) {
 // }
 
 TEST_F(PackageTest, parseJsonTest) {
-    BasicManager m;
+    Manager<> m;
     ElementPtr parsed = m.open(ymlPath + "packageParserTests/jsonFileTest.json");
     ASSERT_EQ(parsed->getElementType(), ElementType::PACKAGE);
     PackagePtr root = parsed;
@@ -520,7 +526,7 @@ TEST_F(PackageTest, parseJsonTest) {
 }
 
 TEST_F(PackageTest, stereotypeWithExtensionTest) {
-  BasicManager m;
+  Manager<> m;
   m.open(ymlPath + "profileTests/stereotypeW_Extension.yml");
   ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PROFILE);
   Profile& profile = dynamic_cast<Profile&>(*m.getRoot());
@@ -537,7 +543,7 @@ TEST_F(PackageTest, stereotypeWithExtensionTest) {
 }
 
 TEST_F(PackageTest, internalProfileapplication) {
-  BasicManager m;
+  Manager<> m;
   ASSERT_NO_THROW(m.open(ymlPath + "profileTests/internalProfileApplication.yml"));
   ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
   Package& pckg = m.getRoot()->as<Package>();
@@ -552,7 +558,7 @@ TEST_F(PackageTest, internalProfileapplication) {
 }
 
 TEST_F(PackageTest, externalProfileApplicationTest) {
-  BasicManager m;
+  Manager<> m;
   ASSERT_NO_THROW(m.open(ymlPath + "profileTests/externalProfileApplication.yml"));
   ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
   Package& pckg = m.getRoot()->as<Package>();
@@ -563,7 +569,7 @@ TEST_F(PackageTest, externalProfileApplicationTest) {
 }
 
 TEST_F(PackageTest, emitProfileTest) {
-    BasicManager m;
+    Manager<> m;
     Profile& profile = *m.create<Profile>();
     Stereotype& stereotype = *m.create<Stereotype>();
     Extension& extension = *m.create<Extension>();
@@ -592,13 +598,15 @@ TEST_F(PackageTest, emitProfileTest) {
     - stereotype:
         id: 7PJxQhyjuuWylik9y2fgpNDXmMdv)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(profile));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(profile, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(PackageTest, emitProfileApplication) {
-    BasicManager m;
+    Manager<> m;
     Package& root = *m.create<Package>();
     Package& applying = *m.create<Package>();
     Profile& profile = *m.create<Profile>();
@@ -623,13 +631,15 @@ TEST_F(PackageTest, emitProfileApplication) {
     - profile:
         id: R12X_VJHWWUKmJS_F8JotXJZzsNB)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(root, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(PackageTest, parseAppliedStereotypeTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "profileTests/appliedStereotype.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& root = m.getRoot()->as<Package>();
@@ -656,7 +666,7 @@ TEST_F(PackageTest, parseAppliedStereotypeTest) {
 }
 
 TEST_F(PackageTest, emitAppliedStereotypeTest) {
-    BasicManager m;
+    Manager<> m;
     Package& root = *m.create<Package>();
     Package& applying = *m.create<Package>();
     ProfileApplication& application = *m.create<ProfileApplication>();
@@ -719,13 +729,15 @@ TEST_F(PackageTest, emitAppliedStereotypeTest) {
           - stereotype:
               id: x5r8XggyW2DI5c3RyAS8r_arWh79)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(root, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(PackageTest, mountProfileTest) {
-  BasicManager m;
+  Manager<> m;
   Profile& profile = *m.create<Profile>();
   Stereotype& stereotype = *m.create<Stereotype>();
   Extension& extension = *m.create<Extension>();

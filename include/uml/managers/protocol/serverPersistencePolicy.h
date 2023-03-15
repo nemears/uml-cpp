@@ -3,7 +3,7 @@
 
 #include "abstractClient.h"
 #include "uml/element.h"
-#include "abstractManager.h"
+#include "uml/managers/abstractManager.h"
 
 namespace UML {
     class ServerPersistencePolicy : virtual public AbstractClient {

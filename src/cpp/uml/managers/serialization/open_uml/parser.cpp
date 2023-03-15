@@ -3,6 +3,7 @@
 #include "uml/uml-stable.h"
 #include "uml/managers/manager.h"
 #include <iostream>
+#include <filesystem>
 
 using namespace std;
 
@@ -1391,41 +1392,41 @@ ElementPtr parseNode(YAML::Node node, ParserMetaData& data) {
     return ret;
 }
 
-ElementPtr parseExternalAddToManager(ParserMetaData& data, string path) {
-    if (filesystem::exists(data.m_path.parent_path() / path)) {
-        filesystem::path cPath = data.m_path;
-        data.m_path = cPath.parent_path() / path;
-        ElementPtr ret = parse(data);
-        data.m_manager->setLocation(ret->getID(), data.m_path.string());
+// ElementPtr parseExternalAddToManager(ParserMetaData& data, string path) {
+//     if (filesystem::exists(data.m_path.parent_path() / path)) {
+//         filesystem::path cPath = data.m_path;
+//         data.m_path = cPath.parent_path() / path;
+//         ElementPtr ret = parse(data);
+//         data.m_manager->setLocation(ret->getID(), data.m_path.string());
         
-        data.m_path = cPath;
-        return ret;
-    } else {
-        return 0;
-    }
-}
+//         data.m_path = cPath;
+//         return ret;
+//     } else {
+//         return 0;
+//     }
+// }
 
-void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
-    filesystem::path newPath;
-    switch (data.m_strategy) {
-        case EmitterStrategy::WHOLE : {
-            newPath = data.m_manager->getLocation(el.getID());
-            break;
-        }
-        case EmitterStrategy::INDIVIDUAL : {
-            newPath = data.m_path / (el.getID().string() + ".yml");
-            break;
-        }
-    }
-    if (newPath.empty() || (/**newPath.parent_path().compare(data.m_path) == 0 &&**/ newPath.filename().compare(data.m_fileName) == 0)) {
-        determineTypeAndEmit(emitter, el, data);
-    } else {
-        emitter << YAML::Value << newPath.filename().string();
-        if (data.m_strategy == EmitterStrategy::WHOLE) {
-            emitToFile(el, data, newPath.parent_path().string(), newPath.filename().string());
-        }
-    }
-}
+// void emit(YAML::Emitter& emitter, Element& el, EmitterMetaData& data) {
+//     filesystem::path newPath;
+//     switch (data.m_strategy) {
+//         case EmitterStrategy::WHOLE : {
+//             newPath = data.m_manager->getLocation(el.getID());
+//             break;
+//         }
+//         case EmitterStrategy::INDIVIDUAL : {
+//             newPath = data.m_path / (el.getID().string() + ".yml");
+//             break;
+//         }
+//     }
+//     if (newPath.empty() || (/**newPath.parent_path().compare(data.m_path) == 0 &&**/ newPath.filename().compare(data.m_fileName) == 0)) {
+//         determineTypeAndEmit(emitter, el, data);
+//     } else {
+//         emitter << YAML::Value << newPath.filename().string();
+//         if (data.m_strategy == EmitterStrategy::WHOLE) {
+//             emitToFile(el, data, newPath.parent_path().string(), newPath.filename().string());
+//         }
+//     }
+// }
 
 template <class T = Element, class V = T>
 void emitDefinition(YAML::Emitter& emitter, EmitterMetaData& data, std::string name, V& el, void (*emitSig)(YAML::Emitter&, T&, EmitterMetaData&)) {
@@ -3059,17 +3060,17 @@ void emitPackageMerge(YAML::Emitter& emitter, PackageMerge& merge, EmitterMetaDa
 
     emitElement(emitter, merge, data);
 
-    if (merge.getMergedPackage()) {
-        filesystem::path path = data.getPath(merge.getMergedPackage().id());
-        if (path == data.m_manager->getLocation() || path == data.m_path / data.m_fileName) {
-            emitter << YAML::Key << "mergedPackage" << YAML::Value << merge.getMergedPackage().id().string();
-        } else {
-            emitToFile(*merge.getMergedPackage(), data, path.parent_path().string(), path.filename().string());
-            if (data.m_path == path.parent_path()) {
-                emitter << YAML::Key << "mergedPackage" << YAML::Value << path.filename().string();
-            }
-        }
-    }
+    // if (merge.getMergedPackage()) {
+    //     filesystem::path path = data.getPath(merge.getMergedPackage().id());
+    //     if (path == data.m_manager->getLocation() || path == data.m_path / data.m_fileName) {
+    //         emitter << YAML::Key << "mergedPackage" << YAML::Value << merge.getMergedPackage().id().string();
+    //     } else {
+    //         emitToFile(*merge.getMergedPackage(), data, path.parent_path().string(), path.filename().string());
+    //         if (data.m_path == path.parent_path()) {
+    //             emitter << YAML::Key << "mergedPackage" << YAML::Value << path.filename().string();
+    //         }
+    //     }
+    // }
 
     emitElementDefenitionEnd(emitter, ElementType::PACKAGE_MERGE, merge);
 }
@@ -3616,15 +3617,15 @@ void emitProfileApplication(YAML::Emitter& emitter, ProfileApplication& applicat
     emitElement(emitter, application, data);
 
     if (application.getAppliedProfile()) {
-        filesystem::path path = data.getPath(application.getAppliedProfile().id());
-        if (path == data.m_manager->getLocation() || path == data.m_path / data.m_fileName) {
-            emitter << YAML::Key << "appliedProfile" << YAML::Value << application.getAppliedProfile().id().string();
-        } else {
-            //emit(emitter, *application.getAppliedProfile(), data);
-            if (data.m_path == path.parent_path()) {
-                emitter << YAML::Key << "appliedProfile" << YAML::Value << path.filename().string();
-            }
-        }
+        // filesystem::path path = data.getPath(application.getAppliedProfile().id());
+        // if (path == data.m_manager->getLocation() || path == data.m_path / data.m_fileName) {
+        //     emitter << YAML::Key << "appliedProfile" << YAML::Value << application.getAppliedProfile().id().string();
+        // } else {
+        //     //emit(emitter, *application.getAppliedProfile(), data);
+        //     if (data.m_path == path.parent_path()) {
+        //         emitter << YAML::Key << "appliedProfile" << YAML::Value << path.filename().string();
+        //     }
+        // }
     }
 
     emitElementDefenitionEnd(emitter, ElementType::PROFILE_APPLICATION, application);

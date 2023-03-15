@@ -17,7 +17,7 @@ class EnumerationTest : public ::testing::Test {
 };
 
 TEST_F(EnumerationTest, addOwnedLiteralTest) {
-    BasicManager m;
+    Manager<> m;
     Enumeration& e = *m.create<Enumeration>();
     EnumerationLiteral& l = *m.create<EnumerationLiteral>();
     ASSERT_NO_THROW(e.getOwnedLiterals().add(l));
@@ -36,7 +36,7 @@ TEST_F(EnumerationTest, addOwnedLiteralTest) {
 }
 
 TEST_F(EnumerationTest, setEnumerationTest) {
-    BasicManager m;
+    Manager<> m;
     Enumeration& e = *m.create<Enumeration>();
     EnumerationLiteral& l = *m.create<EnumerationLiteral>();
     ASSERT_NO_THROW(l.setEnumeration(&e));
@@ -55,7 +55,7 @@ TEST_F(EnumerationTest, setEnumerationTest) {
 }
 
 TEST_F(EnumerationTest, removeOwnedLiteralTest) {
-    BasicManager m;
+    Manager<> m;
     Enumeration& e = *m.create<Enumeration>();
     EnumerationLiteral& l = *m.create<EnumerationLiteral>();
     e.getOwnedLiterals().add(l);
@@ -71,7 +71,7 @@ TEST_F(EnumerationTest, removeOwnedLiteralTest) {
 }
 
 TEST_F(EnumerationTest, setNullEnumeration) {
-    BasicManager m;
+    Manager<> m;
     Enumeration& e = *m.create<Enumeration>();
     EnumerationLiteral& l = *m.create<EnumerationLiteral>();
     e.getOwnedLiterals().add(l);
@@ -87,7 +87,7 @@ TEST_F(EnumerationTest, setNullEnumeration) {
 }
 
 TEST_F(EnumerationTest, basicEnumerationTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "enumerationTests/basicEnumeration.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::ENUMERATION);
     Enumeration* e = &m.getRoot()->as<Enumeration>();
@@ -116,7 +116,7 @@ TEST_F(EnumerationTest, basicEnumerationTest) {
 }
 
 TEST_F(EnumerationTest, emitEnumerationWLiterals) {
-    BasicManager m;
+    Manager<> m;
     Enumeration& e = *m.create<Enumeration>();
     EnumerationLiteral& l1 = *m.create<EnumerationLiteral>();
     EnumerationLiteral& l2 = *m.create<EnumerationLiteral>();
@@ -139,13 +139,15 @@ TEST_F(EnumerationTest, emitEnumerationWLiterals) {
         id: "IFMeIYNqJzfzBIOMdbuxl&rBBLwR"
         name: two)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(e));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(e, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(EnumerationTest, mountEnumerationTest) {
-    BasicManager m;
+    Manager<> m;
     Enumeration& enumeration = *m.create<Enumeration>();
     EnumerationLiteral& enumerationLiteral = *m.create<EnumerationLiteral>();
     enumeration.getOwnedLiterals().add(enumerationLiteral);

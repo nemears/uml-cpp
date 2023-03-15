@@ -1,4 +1,4 @@
-#include "uml/managers/umlServer.h"
+#include "uml/managers/protocol/umlServer.h"
 #include "uml/uml-stable.h"
 #include <iostream>
 #ifndef WIN32

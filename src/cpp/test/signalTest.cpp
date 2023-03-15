@@ -14,7 +14,7 @@ class SignalTest : public ::testing::Test {
 };
 
 TEST_F(SignalTest, basicSignalAndReceptionTest) {
-    BasicManager m;
+    Manager<> m;
     Class& clazz = *m.create<Class>();
     Signal& signal = *m.create<Signal>();
     Reception& reception = *m.create<Reception>();
@@ -63,7 +63,7 @@ TEST_F(SignalTest, basicSignalAndReceptionTest) {
 }
 
 TEST_F(SignalTest, parseSignalTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "signalTests/basicSignal.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -77,7 +77,7 @@ TEST_F(SignalTest, parseSignalTest) {
 }
 
 TEST_F(SignalTest, emitSignalTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     Signal& signal = *m.create<Signal>();
     Property& attr = *m.create<Property>();
@@ -107,7 +107,9 @@ TEST_F(SignalTest, emitSignalTest) {
               id: Y2ANJRtpZRZNCwR7jFo2v_DVm8pZ
               signal: _sgqzW88lsR9bBTk8GyBRjYujfB5)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }

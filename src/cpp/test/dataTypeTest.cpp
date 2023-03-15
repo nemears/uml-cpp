@@ -21,7 +21,7 @@ class DataTypeTest : public ::testing::Test {
 };
 
 TEST_F(DataTypeTest, addOwnedAttributeTest) {
-    BasicManager m;
+    Manager<> m;
     DataType& d = *m.create<DataType>();
     Property& p = *m.create<Property>();
     d.getOwnedAttributes().add(p);
@@ -45,7 +45,7 @@ TEST_F(DataTypeTest, addOwnedAttributeTest) {
 }
 
 TEST_F(DataTypeTest, setDataTypeTest) {
-    BasicManager m;
+    Manager<> m;
     DataType& d = *m.create<DataType>();
     Property& p = *m.create<Property>();
     p.setDataType(d);
@@ -69,7 +69,7 @@ TEST_F(DataTypeTest, setDataTypeTest) {
 }
 
 TEST_F(DataTypeTest, removeOwnedAttributeFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     DataType& d = *m.create<DataType>();
     Property& p = *m.create<Property>();
     Property& p2 = *m.create<Property>();
@@ -130,7 +130,7 @@ TEST_F(DataTypeTest, removeOwnedAttributeFunctorTest) {
 }
 
 TEST_F(DataTypeTest, OverridePropertyDataTypeW_NullTest) {
-    BasicManager m;
+    Manager<> m;
     DataType& d = *m.create<DataType>();
     Property& p = *m.create<Property>();
     Property& p2 = *m.create<Property>();
@@ -163,7 +163,7 @@ TEST_F(DataTypeTest, OverridePropertyDataTypeW_NullTest) {
 }
 
 TEST_F(DataTypeTest, OverridePropertyDataTypeW_OtherTest) {
-    BasicManager m;
+    Manager<> m;
     DataType& d = *m.create<DataType>();
     Property& p = *m.create<Property>();
     Property& p2 = *m.create<Property>();
@@ -210,7 +210,7 @@ TEST_F(DataTypeTest, OverridePropertyDataTypeW_OtherTest) {
 }
 
 TEST_F(DataTypeTest, addOwnedOperationTest) {
-    BasicManager m;
+    Manager<> m;
     DataType& d = *m.create<DataType>();
     Operation& o = *m.create<Operation>();
     ASSERT_NO_THROW(d.getOwnedOperations().add(o));
@@ -229,7 +229,7 @@ TEST_F(DataTypeTest, addOwnedOperationTest) {
 }
 
 TEST_F(DataTypeTest, OperationSetDataTypeTest) {
-    BasicManager m;
+    Manager<> m;
     DataType& d = *m.create<DataType>();
     Operation& o = *m.create<Operation>();
     ASSERT_NO_THROW(o.setDataType(&d));
@@ -248,7 +248,7 @@ TEST_F(DataTypeTest, OperationSetDataTypeTest) {
 }
 
 TEST_F(DataTypeTest, RemoveOwnedOperationFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     DataType& d = *m.create<DataType>();
     Operation& o = *m.create<Operation>();
     Operation& o2 = *m.create<Operation>();
@@ -276,7 +276,7 @@ TEST_F(DataTypeTest, RemoveOwnedOperationFunctorTest) {
 }
 
 TEST_F(DataTypeTest, overwriteOperationDataTypeW_NullTest) {
-    BasicManager m;
+    Manager<> m;
     DataType& d = *m.create<DataType>();
     Operation& o = *m.create<Operation>();
     d.getOwnedOperations().add(o);
@@ -294,7 +294,7 @@ TEST_F(DataTypeTest, overwriteOperationDataTypeW_NullTest) {
 }
 
 TEST_F(DataTypeTest, overwriteOperationDataTypeW_OtherOperationTest) {
-    BasicManager m;
+    Manager<> m;
     DataType& d = *m.create<DataType>();
     Operation& o = *m.create<Operation>();
     DataType& d2 = *m.create<DataType>();
@@ -323,7 +323,7 @@ TEST_F(DataTypeTest, overwriteOperationDataTypeW_OtherOperationTest) {
 }
 
 TEST_F(DataTypeTest, reindexOwnedAttributeIDTest) {
-    BasicManager m;
+    Manager<> m;
     DataTypePtr d = m.create<DataType>();
     PropertyPtr p = m.create<Property>();
     d->getOwnedAttributes().add(*p);
@@ -338,7 +338,7 @@ TEST_F(DataTypeTest, reindexOwnedAttributeIDTest) {
 }
 
 TEST_F(DataTypeTest, reindexOwnedAttributeNameTest) {
-    BasicManager m;
+    Manager<> m;
     DataTypePtr d = m.create<DataType>();
     PropertyPtr p = m.create<Property>();
     p->setName("1");
@@ -353,7 +353,7 @@ TEST_F(DataTypeTest, reindexOwnedAttributeNameTest) {
 }
 
 TEST_F(DataTypeTest, reindexOwnedOperationIDTest) {
-    BasicManager m;
+    Manager<> m;
     DataType& d = *m.create<DataType>();
     Operation& o = *m.create<Operation>();
     d.getOwnedOperations().add(o);
@@ -367,7 +367,7 @@ TEST_F(DataTypeTest, reindexOwnedOperationIDTest) {
 }
 
 TEST_F(DataTypeTest, reindexOwnedOperationNameTest) {
-    BasicManager m;
+    Manager<> m;
     DataTypePtr d = m.create<DataType>();
     OperationPtr o = m.create<Operation>();
     o->setName("1");
@@ -381,7 +381,7 @@ TEST_F(DataTypeTest, reindexOwnedOperationNameTest) {
 }
 
 TEST_F(DataTypeTest, basicDataTypeTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "dataTypeTests/basicDataType.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::DATA_TYPE);
     DataType& d = m.getRoot()->as<DataType>();
@@ -407,7 +407,7 @@ TEST_F(DataTypeTest, basicDataTypeTest) {
 }
 
 TEST_F(DataTypeTest, emitDataTypeW_GeneralAndAttribute) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     DataType& t = *m.create<DataType>();
     DataType& g = *m.create<DataType>();
@@ -477,13 +477,15 @@ TEST_F(DataTypeTest, emitDataTypeW_GeneralAndAttribute) {
               name: generalProp
               type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
     std::cout << generatedEmit << '\n';
     ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit);
 }
 
 TEST_F(DataTypeTest, mountAndEditDataType) {
-    BasicManager m;
+    Manager<> m;
     DataType& baseType = *m.create<DataType>();
     DataType& specificType = *m.create<DataType>();
     Generalization& generalization = *m.create<Generalization>();
@@ -587,7 +589,7 @@ TEST_F(DataTypeTest, mountAndEditDataType) {
 }
 
 TEST_F(DataTypeTest, basicPrimitiveTypeTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "primitiveTypeTests/basicPrimitiveType.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PRIMITIVE_TYPE);
     DataType& d = m.getRoot()->as<DataType>();
@@ -613,7 +615,7 @@ TEST_F(DataTypeTest, basicPrimitiveTypeTest) {
 }
 
 TEST_F(DataTypeTest, emitPrimWGeneralAndAttribute) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     PrimitiveType& t = *m.create<PrimitiveType>();
     PrimitiveType& g = *m.create<PrimitiveType>();;
@@ -661,7 +663,9 @@ TEST_F(DataTypeTest, emitPrimWGeneralAndAttribute) {
               id: "Fpn&_P3zERcsyDCu8kN837WxY_90"
               general: bD3tGZ_XwovlDpB4NPqiaMl19DUV)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }

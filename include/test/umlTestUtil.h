@@ -1,8 +1,8 @@
 #ifndef _UML_UML_TEST_UTIL_H_
 #define _UML_UML_TEST_UTIL_H_
 
-#include "uml/managers/umlClient.h"
-#include "uml/managers/basicManager.h"
+#include "uml/managers/protocol/umlClient.h"
+#include "uml/managers/manager.h"
 #include "uml/package.h"
 
 namespace UML {
@@ -34,7 +34,7 @@ namespace UML {
 
     template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
     void setIntegrationTestBasic(S& (U::*acessor)()) {
-        BasicManager m;
+        Manager<> m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
         ASSERT_NO_THROW(((*u).*acessor)().add(*t));
@@ -53,7 +53,7 @@ namespace UML {
 
     template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
     void setIntegrationTestReindex(S& (U::*acessor)()) {
-        BasicManager m;
+        Manager<> m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
         ASSERT_NO_THROW(((*u).*acessor)().add(*t));
@@ -73,7 +73,7 @@ namespace UML {
 
     template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
     void setIntegrationTestMount(S& (U::*acessor)()) {
-        BasicManager m;
+        Manager<> m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
         UmlPtr<V> t2 = m.create<V>();
@@ -137,7 +137,7 @@ namespace UML {
 
     template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
     void setIntegrationTestErase(S& (U::*acessor)()) {
-        BasicManager m;
+        Manager<> m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
         ASSERT_NO_THROW(((*u).*acessor)().add(*t));
@@ -171,7 +171,7 @@ namespace UML {
 
     template <class V, class W, class T = Element, class U = Element>
     void singletonIntegrationTestBasic(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
-        BasicManager m;
+        Manager<> m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
         UmlPtr<V> t2 = m.create<V>();
@@ -186,7 +186,7 @@ namespace UML {
 
     template <class V, class W, class T = Element, class U = Element>
     void singletonIntegrationTestReindex(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
-        BasicManager m;
+        Manager<> m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
         ((*u).*mutator)(t.ptr());
@@ -198,7 +198,7 @@ namespace UML {
 
     template <class V, class W, class T = Element, class U = Element>
     void singletonIntegrationTestMount(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
-        BasicManager m;
+        Manager<> m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
         m.setRoot(u.ptr());
@@ -243,7 +243,7 @@ namespace UML {
 
     template <class V, class W, class T = Element, class U = Element>
     void singletonIntegrationTestErase(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
-        BasicManager m;
+        Manager<> m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
         ASSERT_NO_THROW(((*u).*mutator)(t.ptr()));

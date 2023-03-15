@@ -20,7 +20,7 @@ class AssociationTest : public ::testing::Test {
 };
 
 TEST_F(AssociationTest, addMemberEndFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Class& c = *m.create<Class>();
     Association& a = *m.create<Association>();
@@ -37,7 +37,7 @@ TEST_F(AssociationTest, addMemberEndFunctorTest) {
 }
 
 TEST_F(AssociationTest, setAssociationTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     p.setAssociation(a);
@@ -50,7 +50,7 @@ TEST_F(AssociationTest, setAssociationTest) {
 }
 
 TEST_F(AssociationTest, removeMemberEndFunctor) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     ASSERT_NO_THROW(p.setAssociation(&a));
@@ -61,7 +61,7 @@ TEST_F(AssociationTest, removeMemberEndFunctor) {
 }
 
 TEST_F(AssociationTest, overwriteAssociationW_NullTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     ASSERT_NO_THROW(a.getMemberEnds().add(p));
@@ -72,7 +72,7 @@ TEST_F(AssociationTest, overwriteAssociationW_NullTest) {
 }
 
 TEST_F(AssociationTest, overwriteAssociationW_OtherTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     Association& a2 = *m.create<Association>();
@@ -89,7 +89,7 @@ TEST_F(AssociationTest, overwriteAssociationW_OtherTest) {
 }
 
 TEST_F(AssociationTest, addOwnedEndTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     ASSERT_NO_THROW(a.getOwnedEnds().add(p));
@@ -112,7 +112,7 @@ TEST_F(AssociationTest, addOwnedEndTest) {
 }
 
 TEST_F(AssociationTest, setOwningAssociationTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     ASSERT_NO_THROW(p.setOwningAssociation(a));
@@ -135,7 +135,7 @@ TEST_F(AssociationTest, setOwningAssociationTest) {
 }
 
 TEST_F(AssociationTest, removeOwnedEndTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     a.getOwnedEnds().add(p);
@@ -155,7 +155,7 @@ TEST_F(AssociationTest, removeOwnedEndTest) {
 }
 
 TEST_F(AssociationTest, setOwningAssociationW_NullTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     a.getOwnedEnds().add(p);
@@ -175,7 +175,7 @@ TEST_F(AssociationTest, setOwningAssociationW_NullTest) {
 }
 
 TEST_F(AssociationTest, overwriteOwningAssociationTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     Association& a2 = *m.create<Association>();
@@ -207,7 +207,7 @@ TEST_F(AssociationTest, overwriteOwningAssociationTest) {
 }
 
 TEST_F(AssociationTest, addNavigableOwnedEndTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     a.getNavigableOwnedEnds().add(p);
@@ -232,7 +232,7 @@ TEST_F(AssociationTest, addNavigableOwnedEndTest) {
 }
 
 TEST_F(AssociationTest, removeNavigableOwnedEndTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     a.getNavigableOwnedEnds().add(p);
@@ -253,7 +253,7 @@ TEST_F(AssociationTest, removeNavigableOwnedEndTest) {
 }
 
 TEST_F(AssociationTest, navigableOwnedEndSetOwningAssociationW_NullTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     a.getNavigableOwnedEnds().add(p);
@@ -274,7 +274,7 @@ TEST_F(AssociationTest, navigableOwnedEndSetOwningAssociationW_NullTest) {
 }
 
 TEST_F(AssociationTest, navigableOwnedEndOverwriteOwningAssociationTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     Association& a2 = *m.create<Association>();
@@ -308,7 +308,7 @@ TEST_F(AssociationTest, navigableOwnedEndOverwriteOwningAssociationTest) {
 }
 
 TEST_F(AssociationTest, reindexTypeTest) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     Association& a = *m.create<Association>();
     Class& c = *m.create<Class>();
@@ -326,7 +326,7 @@ TEST_F(AssociationTest, reindexTypeTest) {
 }
 
 TEST_F(AssociationTest, reindexTypeIDTest) {
-    BasicManager m;
+    Manager<> m;
     DataType& t = *m.create<DataType>();
     Association& a = *m.create<Association>();
     Property& p = *m.create<Property>();
@@ -338,7 +338,7 @@ TEST_F(AssociationTest, reindexTypeIDTest) {
 }
 
 TEST_F(AssociationTest, parseNavigableOwnedEndAndMemberEndTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "associationTests/navigableEnd.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -367,7 +367,7 @@ TEST_F(AssociationTest, parseNavigableOwnedEndAndMemberEndTest) {
 }
 
 TEST_F(AssociationTest, parseOwnedEndAndMemberEndTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "associationTests/ownedEnd.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -395,7 +395,7 @@ TEST_F(AssociationTest, parseOwnedEndAndMemberEndTest) {
 }
 
 TEST_F(AssociationTest, emitAssociationTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     Class& clazz = *m.create<Class>();
     Property& prop = *m.create<Property>();
@@ -438,13 +438,15 @@ TEST_F(AssociationTest, emitAssociationTest) {
         memberEnds:
           - FqaulNq6bCe_8J5M0Ff2oCCaQD05)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(AssociationTest, mountAndEditAssociation) {
-    BasicManager m;
+    Manager<> m;
     Package& root = *m.create<Package>();
     Class& clazz = *m.create<Class>();
     Class& type = *m.create<Class>();

@@ -18,13 +18,13 @@ class GeneralizationSetTest : public ::testing::Test {
 };
 
 TEST_F(GeneralizationSetTest, testGetElementType) {
-    BasicManager m;
+    Manager<> m;
     GeneralizationSet& set = *m.create<GeneralizationSet>();
     ASSERT_EQ(set.getElementType(), ElementType::GENERALIZATION_SET);
 }
 
 TEST_F(GeneralizationSetTest, AddAndRemoveTosequencesTest) {
-    BasicManager m;
+    Manager<> m;
     GeneralizationSet& set = *m.create<GeneralizationSet>();
     Generalization& generalization = *m.create<Generalization>();
     Class& general = *m.create<Class>();
@@ -48,7 +48,7 @@ TEST_F(GeneralizationSetTest, AddAndRemoveTosequencesTest) {
 }
 
 TEST_F(GeneralizationSetTest, parseBasicGeneralizationSetTest) {
-  BasicManager m;
+  Manager<> m;
   ASSERT_NO_THROW(m.open(ymlPath + "generalizationSetTests/basicGeneralizationSet.yml"));
   ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
   Package& pckg = m.getRoot()->as<Package>();
@@ -74,7 +74,7 @@ TEST_F(GeneralizationSetTest, parseBasicGeneralizationSetTest) {
 }
 
 TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
-    BasicManager m;
+    Manager<> m;
     Package& root = *m.create<Package>();
     Class& general = *m.create<Class>();
     Class& specific = *m.create<Class>();
@@ -135,13 +135,15 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
               generalizationSets:
                 - uLHn5GsNBUhrk9cgTO&qLw5LO068)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(root, data));
     std::cout << generatedEmit << '\n';
     ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit);
 }
 
 TEST_F(GeneralizationSetTest, mountGeneralizationSet) {
-  BasicManager m;
+  Manager<> m;
   Package& root = *m.create<Package>();
   Class& general = *m.create<Class>();
   Class& specific = *m.create<Class>();

@@ -17,7 +17,7 @@ class ValueSpecificationTest : public ::testing::Test {
 };
 
 TEST_F(ValueSpecificationTest, LiteralStringTest) {
-    BasicManager m;
+    Manager<> m;
     string val = "test";
     Property& p = *m.create<Property>();
     PrimitiveType& prim = *m.create<PrimitiveType>();
@@ -29,7 +29,7 @@ TEST_F(ValueSpecificationTest, LiteralStringTest) {
 }
 
 TEST_F(ValueSpecificationTest, LiteralIntTest) {
-    BasicManager m;
+    Manager<> m;
     int val = -1;
     Property& p = *m.create<Property>();
     PrimitiveType& prim = *m.create<PrimitiveType>();
@@ -41,7 +41,7 @@ TEST_F(ValueSpecificationTest, LiteralIntTest) {
 }
 
 TEST_F(ValueSpecificationTest, LiteralRealTest) {
-    BasicManager m;
+    Manager<> m;
     double val = -3.14159;
     Property& p = *m.create<Property>();
     PrimitiveType& prim = *m.create<PrimitiveType>();
@@ -53,7 +53,7 @@ TEST_F(ValueSpecificationTest, LiteralRealTest) {
 }
 
 TEST_F(ValueSpecificationTest, LiteralBoolTest) {
-    BasicManager m;
+    Manager<> m;
     bool val = 0; // > 0 is true
     Property& p = *m.create<Property>();
     PrimitiveType& prim = *m.create<PrimitiveType>();
@@ -65,7 +65,7 @@ TEST_F(ValueSpecificationTest, LiteralBoolTest) {
 }
 
 TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
-    BasicManager m;
+    Manager<> m;
     LiteralBool& v = *m.create<LiteralBool>();
     Slot& s = *m.create<Slot>();
     s.getValues().add(v);
@@ -75,7 +75,7 @@ TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
 }
 
 TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
-    BasicManager m;
+    Manager<> m;
     LiteralInt& v = *m.create<LiteralInt>();
     Slot& s = *m.create<Slot>();
     s.getValues().add(v);
@@ -85,7 +85,7 @@ TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
 }
 
 TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
-    BasicManager m;
+    Manager<> m;
     Expression& e = *m.create<Expression>();
     LiteralBool& b = *m.create<LiteralBool>();
     e.getOperands().add(b);
@@ -96,7 +96,7 @@ TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
 }
 
 TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
-    BasicManager m;
+    Manager<> m;
     Expression& e = *m.create<Expression>();
     LiteralBool& b = *m.create<LiteralBool>();
     e.getOperands().add(b);
@@ -107,7 +107,7 @@ TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
 }
 
 TEST_F(ValueSpecificationTest, LiteralUnlimitedNaturalTest) {
-    BasicManager m;
+    Manager<> m;
     LiteralUnlimitedNatural& n = *m.create<LiteralUnlimitedNatural>();
     ASSERT_EQ(n.getNumberValue(), 0);
     ASSERT_EQ(n.isInfinite(), false);
@@ -120,7 +120,7 @@ TEST_F(ValueSpecificationTest, LiteralUnlimitedNaturalTest) {
 }
 
 TEST_F(ValueSpecificationTest, expressionTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "expressionTests/expression.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
@@ -158,7 +158,7 @@ TEST_F(ValueSpecificationTest, expressionTest) {
 }
 
 TEST_F(ValueSpecificationTest, mountExpressionTest) {
-    BasicManager m;
+    Manager<> m;
     Expression& expression = *m.create<Expression>();
     LiteralReal& first = *m.create<LiteralReal>();
     LiteralInt& last = *m.create<LiteralInt>();
@@ -211,7 +211,7 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
 }
 
 TEST_F(ValueSpecificationTest, testParsingSomeLiterals) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "literalsTests/someLiterals.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
@@ -231,7 +231,7 @@ TEST_F(ValueSpecificationTest, testParsingSomeLiterals) {
 }
 
 TEST_F(ValueSpecificationTest, testEmitLiteralUnlimitedNatural) {
-    BasicManager m;
+    Manager<> m;
     Package& p = *m.create<Package>();
     LiteralUnlimitedNatural& l1 = *m.create<LiteralUnlimitedNatural>();
     LiteralUnlimitedNatural& l2 = *m.create<LiteralUnlimitedNatural>();
@@ -264,7 +264,9 @@ TEST_F(ValueSpecificationTest, testEmitLiteralUnlimitedNatural) {
         id: "8&K_0aLhvQDM12ZeYg9nPiSrexHo"
         value: 9999)"""";
     string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(p));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(p, data));
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }

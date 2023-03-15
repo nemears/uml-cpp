@@ -18,7 +18,7 @@ class DeploymentTest : public ::testing::Test {
 };
 
 TEST_F(DeploymentTest, basicDeploymentTest) {
-    BasicManager m;
+    Manager<> m;
     Deployment& deployment = *m.create<Deployment>();
     DeploymentTarget& location = *m.create<DeploymentTarget>();
     DeployedArtifact& artifact = *m.create<DeployedArtifact>();
@@ -44,7 +44,7 @@ TEST_F(DeploymentTest, basicDeploymentTest) {
 }
 
 TEST_F(DeploymentTest, artifactOperationAndAttributeTest) {
-    BasicManager m;
+    Manager<> m;
     Artifact& artifact = *m.create<Artifact>();
     Property& prop = *m.create<Property>();
     Operation& op = *m.create<Operation>();
@@ -63,7 +63,7 @@ TEST_F(DeploymentTest, artifactOperationAndAttributeTest) {
 }
 
 TEST_F(DeploymentTest, artifactWithAttributeOperationAndNestedArtifact) {
-    BasicManager m;
+    Manager<> m;
     Artifact& artifact = *m.create<Artifact>();
     Property& property = *m.create<Property>();
     Operation& operation = *m.create<Operation>();
@@ -125,7 +125,7 @@ TEST_F(DeploymentTest, artifactWithAttributeOperationAndNestedArtifact) {
 }
 
 TEST_F(DeploymentTest, parseBasicDeploymentTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "deploymentTests/deployment.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -143,7 +143,7 @@ TEST_F(DeploymentTest, parseBasicDeploymentTest) {
 }
 
 TEST_F(DeploymentTest, basicArtifactTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "deploymentTests/artifact.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -167,7 +167,7 @@ TEST_F(DeploymentTest, basicArtifactTest) {
 }
 
 TEST_F(DeploymentTest, nestedArtifactTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "deploymentTests/nestedArtifact.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::ARTIFACT);
     Artifact& artifact = m.getRoot()->as<Artifact>();
@@ -177,7 +177,7 @@ TEST_F(DeploymentTest, nestedArtifactTest) {
 }
 
 TEST_F(DeploymentTest, emitDeploymentTest) {
-    BasicManager m;
+    Manager<> m;
     Deployment& d = *m.create<Deployment>();
     Artifact& a = *m.create<Artifact>();
     d.setID("RP9VhYnGYcgWOqXxLt4_Xb3RAAM8");
@@ -188,13 +188,15 @@ TEST_F(DeploymentTest, emitDeploymentTest) {
   deployedArtifacts:
     - bkwzmF3K0ddPG7CPwXVBZyyp8glc)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(d));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(d, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(DeploymentTest, emitDeploymentTargetTest) {
-    BasicManager m;
+    Manager<> m;
     Deployment& d = *m.create<Deployment>();
     Property& prop = *m.create<Property>();
     d.setID("hZ6hYVt147nLvdm70bATtgmwlQqN");
@@ -206,13 +208,15 @@ TEST_F(DeploymentTest, emitDeploymentTargetTest) {
     - deployment:
         id: hZ6hYVt147nLvdm70bATtgmwlQqN)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(prop));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(prop, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(DeploymentTest, emitArtifactTest) {
-    BasicManager m;
+    Manager<> m;
     Artifact& a = *m.create<Artifact>();
     Property& p = *m.create<Property>();
     Operation& o = *m.create<Operation>();
@@ -236,13 +240,15 @@ TEST_F(DeploymentTest, emitArtifactTest) {
     - artifact:
         id: KWkfV0HFADssmGEBNUj1AwPB4SeC)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(a));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(a, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(DeploymentTest, parseManifestationsTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "deploymentTests/manifestations.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -262,7 +268,7 @@ TEST_F(DeploymentTest, parseManifestationsTest) {
 }
 
 TEST_F(DeploymentTest, emitManifestationTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     Manifestation& man = *m.create<Manifestation>();
     Class& c = *m.create<Class>();
@@ -287,13 +293,15 @@ TEST_F(DeploymentTest, emitManifestationTest) {
               id: "UfyRMRUyPnad&lJcpSBOD17VSHtn"
               utilizedElement: 9mp2RmgjnYQrPtXIoOw9is1UUEyu)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(DeploymentTest, mountAndEditArtifactTest) {
-    BasicManager m;
+    Manager<> m;
     Package& root = *m.create<Package>();
     Artifact& artifact = *m.create<Artifact>();
     Property& prop = *m.create<Property>();
@@ -469,7 +477,7 @@ TEST_F(DeploymentTest, mountAndEditArtifactTest) {
 }
 
 TEST_F(DeploymentTest, mountDeploymentTest) {
-    BasicManager m;
+    Manager<> m;
     InstanceSpecification& deploymentTarget = *m.create<InstanceSpecification>();
     Deployment& deployment = *m.create<Deployment>();
     Artifact& artifact = *m.create<Artifact>();

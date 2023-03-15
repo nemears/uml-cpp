@@ -27,7 +27,7 @@ class ActivityTest : public ::testing::Test {
 };
 
 TEST_F(ActivityTest, addNodeFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     Activity& a = *m.create<Activity>();
     OpaqueAction& n = *m.create<OpaqueAction>();
     a.getNodes().add(n);
@@ -41,7 +41,7 @@ TEST_F(ActivityTest, addNodeFunctorTest) {
 }
 
 TEST_F(ActivityTest, setNodeActivityTest) {
-    BasicManager m;
+    Manager<> m;
     Activity& a = *m.create<Activity>();
     OpaqueAction& n = *m.create<OpaqueAction>();
     n.setActivity(a);
@@ -55,7 +55,7 @@ TEST_F(ActivityTest, setNodeActivityTest) {
 }
 
 TEST_F(ActivityTest, addEdgeFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     Activity& a = *m.create<Activity>();
     ControlFlow& e = *m.create<ControlFlow>();
     a.getEdges().add(e);
@@ -69,7 +69,7 @@ TEST_F(ActivityTest, addEdgeFunctorTest) {
 }
 
 TEST_F(ActivityTest, setEdgeActivityTest) {
-    BasicManager m;
+    Manager<> m;
     Activity& a = *m.create<Activity>();
     ControlFlow& e = *m.create<ControlFlow>();
     e.setActivity(&a);
@@ -83,7 +83,7 @@ TEST_F(ActivityTest, setEdgeActivityTest) {
 }
 
 TEST_F(ActivityTest, parseControlNodes) {
-    BasicManager m;
+    Manager<> m;
     m.open(ymlPath + "activityTests/controlNodes.yml");
     ElementPtr parsed = m.getRoot();
     ASSERT_EQ(parsed->getElementType(), ElementType::ACTIVITY);
@@ -112,7 +112,7 @@ TEST_F(ActivityTest, parseControlNodes) {
 }
 
 TEST_F(ActivityTest, objectNodeTest) {
-    BasicManager m;
+    Manager<> m;
     m.open(ymlPath + "activityTests/objectNode.yml");
     ElementPtr parsed = m.getRoot();
     ASSERT_EQ(parsed->getElementType(), ElementType::ACTIVITY);
@@ -135,7 +135,7 @@ TEST_F(ActivityTest, objectNodeTest) {
 }
 
 TEST_F(ActivityTest, emitActivityTest) {
-    BasicManager m;
+    Manager<> m;
     Activity& activity = *m.create<Activity>();
     CentralBufferNode& objectNode = *m.create<CentralBufferNode>();
     objectNode.setOrdering(ObjectNodeOrderingKind::UNORDERED);
@@ -150,13 +150,15 @@ TEST_F(ActivityTest, emitActivityTest) {
         isControlType: false
         ordering: unordered)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(activity));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(activity, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(ActivityTest, mountActivityTest) {
-    BasicManager m;
+    Manager<> m;
     ActivityPtr activity = m.create<Activity>();
     m.setRoot(activity.ptr());
     OpaqueActionPtr action = m.create<OpaqueAction>();

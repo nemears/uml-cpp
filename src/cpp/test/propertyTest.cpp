@@ -14,7 +14,7 @@ class PropertyTest : public ::testing::Test {
 };
 
 TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
-    BasicManager m;
+    Manager<> m;
     Property& p = *m.create<Property>();
     PrimitiveType& stringP = *m.create<PrimitiveType>();
     p.setType(&stringP);
@@ -27,7 +27,7 @@ TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
 }
 
 TEST_F(PropertyTest, reindexID_forClassiferTest) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     Property& p = *m.create<Property>();
     p.setAggregation(AggregationKind::COMPOSITE);
@@ -56,7 +56,7 @@ TEST_F(PropertyTest, reindexID_forClassiferTest) {
 }
 
 TEST_F(PropertyTest, reindexNameForClassifierTest) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     Property& p = *m.create<Property>();
     p.setAggregation(AggregationKind::COMPOSITE);
@@ -85,7 +85,7 @@ TEST_F(PropertyTest, reindexNameForClassifierTest) {
 }
 
 TEST_F(PropertyTest, overwriteClassifierTest) {
-    BasicManager m;
+    Manager<> m;
     Class& p1 = *m.create<Class>();
     Class& p2 = *m.create<Class>();
     Property& c = *m.create<Property>();
@@ -99,7 +99,7 @@ TEST_F(PropertyTest, overwriteClassifierTest) {
 }
 
 TEST_F(PropertyTest, overwriteClassifierByAttributesAddTest) {
-    BasicManager m;
+    Manager<> m;
     Class& p1 = *m.create<Class>();
     Class& p2 = *m.create<Class>();
     Property& c = *m.create<Property>();
@@ -113,7 +113,7 @@ TEST_F(PropertyTest, overwriteClassifierByAttributesAddTest) {
 }
 
 TEST_F(PropertyTest, redefinePropertyTest) {
-    BasicManager m;
+    Manager<> m;
     Property& prop = *m.create<Property>();
     prop.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
     Property& redefined = *m.create<Property>();
@@ -165,7 +165,7 @@ TEST_F(PropertyTest, redefinePropertyTest) {
 }
 
 TEST_F(PropertyTest, reindexRedefinedPropertyTest) {
-    BasicManager m;
+    Manager<> m;
     Class& b = *m.create<Class>();
     Class& s = *m.create<Class>();
     Generalization& g = *m.create<Generalization>();
@@ -198,7 +198,7 @@ TEST_F(PropertyTest, reindexRedefinedPropertyTest) {
 }
 
 TEST_F(PropertyTest, forwardTypeTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/forwardType.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
@@ -213,7 +213,7 @@ TEST_F(PropertyTest, forwardTypeTest) {
 }
 
 TEST_F(PropertyTest, backwardsTypeTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/backwardTypeTest.yml").ptr());
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
@@ -229,7 +229,7 @@ TEST_F(PropertyTest, backwardsTypeTest) {
 }
 
 TEST_F(PropertyTest, multiplicityTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/multiplicityTest.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PROPERTY);
     Property* prop = &m.getRoot()->as<Property>();
@@ -245,18 +245,18 @@ TEST_F(PropertyTest, multiplicityTest) {
 }
 
 TEST_F(PropertyTest, improperTypeTest) {
-    BasicManager m;
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType2.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType3.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/propertyNotMap.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/attributesNotSequence.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/invalidLower.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/invalidUpper.yml"), Parsers::UmlParserException);
+    Manager<> m;
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType2.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType3.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/propertyNotMap.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/attributesNotSequence.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/invalidLower.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/invalidUpper.yml"), UmlParserException);
 }
 
 TEST_F(PropertyTest, literalBoolDefaultValueTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/literalBool.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
@@ -275,7 +275,7 @@ TEST_F(PropertyTest, literalBoolDefaultValueTest) {
 }
 
 TEST_F(PropertyTest, literalsTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/defaultValue.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
@@ -320,7 +320,7 @@ TEST_F(PropertyTest, literalsTest) {
 }
 
 TEST_F(PropertyTest, parseRedefinedPropertyTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/redefinedProperty.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -340,7 +340,7 @@ TEST_F(PropertyTest, parseRedefinedPropertyTest) {
 }
 
 TEST_F(PropertyTest, emitRedefinedPropertyTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     Property& prop = *m.create<Property>();
     Property& redefined = *m.create<Property>();
@@ -380,13 +380,15 @@ TEST_F(PropertyTest, emitRedefinedPropertyTest) {
               redefinedProperties:
                 - 9m50Dir0MgpEaLu8ghn7cSlZ5Yzh)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(PropertyTest, mountPropertyTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     m.setRoot(&pckg);
     m.open(ymlPath + "uml/primitiveTypes.yml");

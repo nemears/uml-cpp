@@ -13,7 +13,7 @@ class SlotTest : public ::testing::Test {
 };
 
 TEST_F(SlotTest, addValueFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     Slot& s = *m.create<Slot>();
     LiteralString& l = *m.create<LiteralString>();
     s.getValues().add(l);
@@ -26,7 +26,7 @@ TEST_F(SlotTest, addValueFunctorTest) {
 }
 
 TEST_F(SlotTest, addValueFunctorTestW_Manager) {
-    BasicManager m;
+    Manager<> m;
     Slot& s = *m.create<Slot>();
     LiteralString& l = *m.create<LiteralString>();
     s.getValues().add(l);
@@ -39,7 +39,7 @@ TEST_F(SlotTest, addValueFunctorTestW_Manager) {
 }
 
 TEST_F(SlotTest, removeValueFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     Slot& s = *m.create<Slot>();
     LiteralString& l = *m.create<LiteralString>();
     s.getValues().add(l);
@@ -50,7 +50,7 @@ TEST_F(SlotTest, removeValueFunctorTest) {
 }
 
 TEST_F(SlotTest, overrideOwningSlotW_OtherSlotTest) {
-    BasicManager m;
+    Manager<> m;
     Slot& s = *m.create<Slot>();
     LiteralString& l = *m.create<LiteralString>();
     Slot& s2 = *m.create<Slot>();

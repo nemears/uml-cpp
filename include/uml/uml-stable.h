@@ -86,9 +86,9 @@
 #include "uml/usage.h"
 #include "uml/valuePin.h"
 
-#include "uml/managers/basicManager.h"
-#include "uml/managers/umlClient.h"
-#include "uml/parsers/parser.h"
+#include "uml/managers/manager.h"
+#include "uml/managers/protocol/umlClient.h"
+// #include "uml/managers/serialization/open_uml/parser.h"
 
 namespace UML {
     typedef UmlPtr<PrimitiveType> PrimitiveTypePtr;

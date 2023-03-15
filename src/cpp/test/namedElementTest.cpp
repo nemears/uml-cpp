@@ -2,6 +2,7 @@
 #include "uml/uml-stable.h"
 // #include "test/umlTestUtil.h"
 #include "test/uml-cpp-paths.h"
+#include <filesystem>
 
 using namespace UML;
 
@@ -14,21 +15,21 @@ public:
 };
 
 TEST_F(NamedElementTest, SetNameTest) {
-    BasicManager m;
+    Manager<> m;
     Package& namedEl = *m.create<Package>();
     namedEl.setName("test");
     EXPECT_EQ(namedEl.getName(), "test");
 }
 
 TEST_F(NamedElementTest, GetNullNameTest) {
-    BasicManager m;
+    Manager<> m;
     Package& ne = *m.create<Package>();
     ASSERT_NO_THROW(ne.getName());
     EXPECT_TRUE(ne.getName().compare("") == 0);
 }
 
 TEST_F(NamedElementTest, reIndexNameTest) {
-    BasicManager m;
+    Manager<> m;
     Package& e1 = *m.create<Package>();
     Package& e2 = *m.create<Package>();
     e1.getPackagedElements().add(e2);
@@ -39,7 +40,7 @@ TEST_F(NamedElementTest, reIndexNameTest) {
 }
 
 TEST_F(NamedElementTest, overwriteNamespaceTest) {
-    BasicManager m;
+    Manager<> m;
     Package& p1 = *m.create<Package>();
     Package& p2 = *m.create<Package>();
     Package& c = *m.create<Package>();
@@ -52,7 +53,7 @@ TEST_F(NamedElementTest, overwriteNamespaceTest) {
 }
 
 TEST_F(NamedElementTest, overwriteNamespaceByOwnedMemebersAddTest) {
-    BasicManager m;
+    Manager<> m;
     Package& p1 = *m.create<Package>();
     Package& p2 = *m.create<Package>();
     Package& c = *m.create<Package>();
@@ -65,7 +66,7 @@ TEST_F(NamedElementTest, overwriteNamespaceByOwnedMemebersAddTest) {
 }
 
 TEST_F(NamedElementTest, visibilityTest) {
-    BasicManager m;
+    Manager<> m;
     Package& n = *m.create<Package>();
     ASSERT_TRUE(n.getVisibility() == VisibilityKind::PUBLIC);
     ASSERT_NO_THROW(n.setVisibility(VisibilityKind::PRIVATE));
@@ -73,7 +74,7 @@ TEST_F(NamedElementTest, visibilityTest) {
 }
 
 TEST_F(NamedElementTest, singletonMethodsTest) {
-    BasicManager m;
+    Manager<> m;
     Package& p = *m.create<Package>();
     Package& c = *m.create<Package>();
     ASSERT_FALSE(c.getNamespace());
@@ -85,7 +86,7 @@ TEST_F(NamedElementTest, singletonMethodsTest) {
 }
 
 TEST_F(NamedElementTest, eraseNamepaceTest) {
-    BasicManager m;
+    Manager<> m;
     Package& package = *m.create<Package>();
     Package& nmspc = *m.create<Package>();
     nmspc.getPackagedElements().add(package);
@@ -100,7 +101,7 @@ TEST_F(NamedElementTest, eraseNamepaceTest) {
 }
 
 TEST_F(NamedElementTest, testQualifiedName) {
-    BasicManager m;
+    Manager<> m;
     Package& one = *m.create<Package>();
     Package& two = *m.create<Package>();
     Package& three = *m.create<Package>();

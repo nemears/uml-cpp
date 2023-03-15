@@ -23,7 +23,7 @@ class ClassTest : public ::testing::Test {
 };
 
 TEST_F(ClassTest, BasicOperationTest) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
     OpaqueBehavior& oB = *m.create<OpaqueBehavior>();
@@ -37,7 +37,7 @@ TEST_F(ClassTest, BasicOperationTest) {
 }
 
 TEST_F(ClassTest, addOperationFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
     c.getOwnedOperations().add(o);
@@ -56,7 +56,7 @@ TEST_F(ClassTest, addOperationFunctorTest) {
 }
 
 TEST_F(ClassTest, setClassTest) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
     o.setClass(c);
@@ -75,7 +75,7 @@ TEST_F(ClassTest, setClassTest) {
 }
 
 TEST_F(ClassTest, overwriteClassTest) {
-  BasicManager m;
+  Manager<> m;
   Class& p1 = *m.create<Class>();
   Class& p2 = *m.create<Class>();
   Operation& c = *m.create<Operation>();
@@ -100,7 +100,7 @@ TEST_F(ClassTest, overwriteClassTest) {
 }
 
 TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
-  BasicManager m;
+  Manager<> m;
   Class& p1 = *m.create<Class>();
   Class& p2 = *m.create<Class>();
   Operation& c = *m.create<Operation>();
@@ -125,7 +125,7 @@ TEST_F(ClassTest, overwriteClassByOperationsAddTest) {
 }
 
 TEST_F(ClassTest, removeOperationFunctorTest) {
-  BasicManager m;
+  Manager<> m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
   c.getOwnedOperations().add(o);
@@ -141,7 +141,7 @@ TEST_F(ClassTest, removeOperationFunctorTest) {
 }
 
 TEST_F(ClassTest, addOwnedAttributeTest) {
-  BasicManager m;
+  Manager<> m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
@@ -168,7 +168,7 @@ TEST_F(ClassTest, addOwnedAttributeTest) {
 }
 
 TEST_F(ClassTest, addOwnedAttributeAsStructuredClassifierTest) {
-  BasicManager m;
+  Manager<> m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   c.as<StructuredClassifier>().getOwnedAttributes().add(p);
@@ -195,7 +195,7 @@ TEST_F(ClassTest, addOwnedAttributeAsStructuredClassifierTest) {
 }
 
 TEST_F(ClassTest, setStructuredClassifierTest) {
-  BasicManager m;
+  Manager<> m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   ASSERT_NO_THROW(p.setClass(&c));
@@ -220,7 +220,7 @@ TEST_F(ClassTest, setStructuredClassifierTest) {
 }
 
 TEST_F(ClassTest, removeOwnedAttributeFunctorTest) {
-  BasicManager m;
+  Manager<> m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   c.getOwnedAttributes().add(p);
@@ -238,7 +238,7 @@ TEST_F(ClassTest, removeOwnedAttributeFunctorTest) {
 }
 
 TEST_F(ClassTest, setFeaturingClassifierNullTest) {
-  BasicManager m;
+  Manager<> m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   c.getOwnedAttributes().add(p);
@@ -257,7 +257,7 @@ TEST_F(ClassTest, setFeaturingClassifierNullTest) {
 }
 
 TEST_F(ClassTest, addCompositePropertyTest) {
-  BasicManager m;
+  Manager<> m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   p.setAggregation(AggregationKind::COMPOSITE);
@@ -286,7 +286,7 @@ TEST_F(ClassTest, addCompositePropertyTest) {
 }
 
 TEST_F(ClassTest, backwardsAddCompositePropertyTest) {
-  BasicManager m;
+  Manager<> m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   ASSERT_NO_THROW(c.getOwnedAttributes().add(p));
@@ -315,7 +315,7 @@ TEST_F(ClassTest, backwardsAddCompositePropertyTest) {
 }
 
 TEST_F(ClassTest, removePropertyFromParts) {
-  BasicManager m;
+  Manager<> m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   p.setAggregation(AggregationKind::COMPOSITE);
@@ -345,7 +345,7 @@ TEST_F(ClassTest, removePropertyFromParts) {
 }
 
 TEST_F(ClassTest, addAndRemoveNestedClassifierTest) {
-  BasicManager m;
+  Manager<> m;
   Class& c = *m.create<Class>();
   DataType& d = *m.create<DataType>();
   c.getNestedClassifiers().add(d);
@@ -362,7 +362,7 @@ TEST_F(ClassTest, addAndRemoveNestedClassifierTest) {
 }
 
 TEST_F(ClassTest, parseID_andName) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "classTests/class_w_id_and_name.yml").ptr());
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::CLASS);
     Class* clazz = &m.getRoot()->as<Class>();
@@ -371,7 +371,7 @@ TEST_F(ClassTest, parseID_andName) {
 }
 
 TEST_F(ClassTest, parseBasicProperty) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "classTests/classWithAttributes.yml").ptr());
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::CLASS);
     Class* clazz = &m.getRoot()->as<Class>();
@@ -391,7 +391,7 @@ TEST_F(ClassTest, parseBasicProperty) {
 }
 
 TEST_F(ClassTest, parseOperation) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "classTests/operation.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::CLASS);
     Class* clazz = &m.getRoot()->as<Class>();
@@ -407,13 +407,13 @@ TEST_F(ClassTest, parseOperation) {
 }
 
 TEST_F(ClassTest, properErrors) {
-    BasicManager m;
-    ASSERT_THROW(m.open(ymlPath + "classTests/improperOperationIdentifier.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "classTests/operationsNotSequence.yml"), Parsers::UmlParserException);
+    Manager<> m;
+    ASSERT_THROW(m.open(ymlPath + "classTests/improperOperationIdentifier.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "classTests/operationsNotSequence.yml"), UmlParserException);
 }
 
 TEST_F(ClassTest, basicGeneralizationTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "classTests/basicGeneralization.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
@@ -433,7 +433,7 @@ TEST_F(ClassTest, basicGeneralizationTest) {
 }
 
 TEST_F(ClassTest, inheritedMembersTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "classTests/inheritedMembers.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
@@ -469,7 +469,7 @@ TEST_F(ClassTest, inheritedMembersTest) {
 }
 
 TEST_F(ClassTest, emitClassWAttribute) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     Property& p = *m.create<Property>();
     c.setID("hWVMp5upOkVsWnkrfl0I6O5bQsbO");
@@ -487,13 +487,15 @@ TEST_F(ClassTest, emitClassWAttribute) {
         name: prop
         visibility: PRIVATE)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(c));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(c, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(ClassTest, emitClassWAttributeNOperation) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     Property& p = *m.create<Property>();
     Operation& o = *m.create<Operation>();
@@ -521,13 +523,15 @@ TEST_F(ClassTest, emitClassWAttributeNOperation) {
         name: op
         visibility: PROTECTED)"""";
     std::string generatedEmit;
-    generatedEmit = Parsers::emit(c);
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(c, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(ClassTest, emitFilledInOperation) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     Operation& o = *m.create<Operation>();
     OpaqueBehavior& b = *m.create<OpaqueBehavior>();
@@ -573,13 +577,15 @@ TEST_F(ClassTest, emitFilledInOperation) {
               id: "s2q_fjRnyV_Gst&gAQ4JTr3crFNU"
               name: pee)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(c));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(c, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(ClassTest, nestedClassifierParsingTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "classTests/nestedClassifiers.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::CLASS);
     Class& clazz = m.getRoot()->as<Class>();
@@ -601,7 +607,7 @@ TEST_F(ClassTest, nestedClassifierParsingTest) {
 }
 
 TEST_F(ClassTest, nestedClassifierEmitTest) {
-    BasicManager m;
+    Manager<> m;
     Class& clazz = *m.create<Class>();
     Artifact& artifact = *m.create<Artifact>();
     Association& association = *m.create<Association>();
@@ -643,13 +649,15 @@ TEST_F(ClassTest, nestedClassifierEmitTest) {
     - primitiveType:
         id: FTjeJqMozlqjetKextwOJiSIeZA7)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(clazz));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(clazz, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(ClassTest, mountFullClassTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     Class& base = *m.create<Class>();
     Class& spec = *m.create<Class>();
@@ -908,7 +916,7 @@ TEST_F(ClassTest, mountFullClassTest) {
 }
 
 TEST_F(ClassTest, parseOwnedAttributeTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "structuredClassifierTests/ownedAttributeTest.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::CLASS);
     Class& c = m.getRoot()->as<Class>();
@@ -929,7 +937,7 @@ TEST_F(ClassTest, parseOwnedAttributeTest) {
 }
 
 TEST_F(ClassTest, partTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "structuredClassifierTests/partTest.yml").ptr());
     Class& c = m.getRoot()->as<Class>();
     ASSERT_TRUE(c.getParts().size() == 1);
@@ -951,7 +959,7 @@ TEST_F(ClassTest, partTest) {
 }
 
 TEST_F(ClassTest, connectorAndAttributesTest) {
-  BasicManager m;
+  Manager<> m;
   ClassPtr clazz = m.create<Class>();
   PropertyPtr prop1 = m.create<Property>();
   PropertyPtr prop2 = m.create<Property>();
@@ -972,7 +980,7 @@ TEST_F(ClassTest, connectorAndAttributesTest) {
 }
 
 TEST_F(ClassTest, parseConnectorTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "structuredClassifierTests/connector.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& root = m.getRoot()->as<Package>();

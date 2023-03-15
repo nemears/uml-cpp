@@ -10,7 +10,7 @@ UML_SINGLETON_INTEGRATION_TEST(ExtensionOwnedEnd, ExtensionEnd, Extension, &Exte
 class ExtensionTest : public ::testing::Test {};
 
 TEST_F(ExtensionTest, basicExtensionTest) {
-    BasicManager m;
+    Manager<> m;
     Extension& ext = *m.create<Extension>();
     ExtensionEnd& end = *m.create<ExtensionEnd>();
     ext.setMetaClass(ElementType::PACKAGE);
@@ -25,7 +25,7 @@ TEST_F(ExtensionTest, basicExtensionTest) {
 }
 
 TEST_F(ExtensionTest, setOwnedEndToNullTest) {
-    BasicManager m;
+    Manager<> m;
     Extension& ext = *m.create<Extension>();
     ExtensionEnd& end = *m.create<ExtensionEnd>();
     ext.setMetaClass(ElementType::PACKAGE);
@@ -38,7 +38,7 @@ TEST_F(ExtensionTest, setOwnedEndToNullTest) {
 }
 
 TEST_F(ExtensionTest, setExtensionToNullTest) {
-    BasicManager m;
+    Manager<> m;
     Extension& ext = *m.create<Extension>();
     ExtensionEnd& end = *m.create<ExtensionEnd>();
     ext.setMetaClass(ElementType::PACKAGE);
@@ -51,7 +51,7 @@ TEST_F(ExtensionTest, setExtensionToNullTest) {
 }
 
 TEST_F(ExtensionTest, setEndTypeTest) {
-    BasicManager m;
+    Manager<> m;
     Extension& ext = *m.create<Extension>();
     ExtensionEnd& end = *m.create<ExtensionEnd>();
     Stereotype& t = *m.create<Stereotype>();
@@ -70,7 +70,7 @@ TEST_F(ExtensionTest, setEndTypeTest) {
 }
 
 TEST_F(ExtensionTest, setEndTypeNullTest) {
-    BasicManager m;
+    Manager<> m;
     Extension& ext = *m.create<Extension>();
     ExtensionEnd& end = *m.create<ExtensionEnd>();
     Stereotype& t = *m.create<Stereotype>();

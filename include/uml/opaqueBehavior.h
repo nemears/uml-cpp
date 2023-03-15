@@ -9,7 +9,7 @@ namespace UML {
 
     class OpaqueBehavior : public Behavior {
 
-        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             CustomOrderedSet<LiteralString, OpaqueBehavior> m_bodies = CustomOrderedSet<LiteralString, OpaqueBehavior>(this);

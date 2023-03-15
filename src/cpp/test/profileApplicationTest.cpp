@@ -11,7 +11,7 @@ UML_SINGLETON_INTEGRATION_TEST(ProfileApplicationApplyingPackage, Package, Profi
 class ProfileApplicationTest : public ::testing::Test {};
 
 TEST_F(ProfileApplicationTest, setProfileAndPackageTest) {
-    BasicManager m;
+    Manager<> m;
     Profile& profile = *m.create<Profile>();
     Package& pckg = *m.create<Package>();
     ProfileApplication& pa = *m.create<ProfileApplication>();
@@ -34,7 +34,7 @@ TEST_F(ProfileApplicationTest, setProfileAndPackageTest) {
 }
 
 TEST_F(ProfileApplicationTest, removeProfileApplication) {
-    BasicManager m;
+    Manager<> m;
     Profile& profile = *m.create<Profile>();
     Package& pckg = *m.create<Package>();
     ProfileApplication& pa = *m.create<ProfileApplication>();
@@ -53,7 +53,7 @@ TEST_F(ProfileApplicationTest, removeProfileApplication) {
 }
 
 TEST_F(ProfileApplicationTest, setApplyingPackageNull) {
-    BasicManager m;
+    Manager<> m;
     Profile& profile = *m.create<Profile>();
     Package& pckg = *m.create<Package>();
     ProfileApplication& pa = *m.create<ProfileApplication>();

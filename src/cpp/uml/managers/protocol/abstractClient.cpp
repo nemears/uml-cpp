@@ -1,4 +1,4 @@
-#include "uml/managers/abstractClient.h"
+#include "uml/managers/protocol/abstractClient.h"
 #ifndef WIN32
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -11,7 +11,7 @@
 #endif
 #include "uml/managers/abstractManager.h"
 #include <iostream>
-#include "uml/managers/umlServer.h"
+#include "uml/managers/protocol/umlServer.h"
 #include "uml/uml-stable.h"
 
 #define UML_CLIENT_MSG_SIZE 200

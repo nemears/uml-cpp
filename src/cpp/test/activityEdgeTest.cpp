@@ -16,19 +16,19 @@ class ActivityEdgeTest : public ::testing::Test {
 };
 
 TEST_F(ActivityEdgeTest, GetNullTargetTest) {
-    BasicManager m;
+    Manager<> m;
     ControlFlow& a = *m.create<ControlFlow>();
     ASSERT_TRUE(!a.getTarget());
 }
 
 TEST_F(ActivityEdgeTest, GetNullSourceTest) {
-    BasicManager m;
+    Manager<> m;
     ControlFlow& a = *m.create<ControlFlow>();
     ASSERT_TRUE(!a.getSource());
 }
 
 TEST_F(ActivityEdgeTest, SetRegularTargetTest) {
-    BasicManager m;
+    Manager<> m;
     ControlFlow& e = *m.create<ControlFlow>();
     OpaqueAction& n = *m.create<OpaqueAction>();
     e.setTarget(n);
@@ -39,7 +39,7 @@ TEST_F(ActivityEdgeTest, SetRegularTargetTest) {
 }
 
 TEST_F(ActivityEdgeTest, SetRegularSourceTest) {
-    BasicManager m;
+    Manager<> m;
     ControlFlow& e = *m.create<ControlFlow>();
     OpaqueAction& n = *m.create<OpaqueAction>();
     e.setSource(n);
@@ -50,7 +50,7 @@ TEST_F(ActivityEdgeTest, SetRegularSourceTest) {
 }
 
 TEST_F(ActivityEdgeTest, reindexID_Test) {
-    BasicManager m;
+    Manager<> m;
     Activity& a = *m.create<Activity>();
     ControlFlow& e = *m.create<ControlFlow>();
     OpaqueAction& n = *m.create<OpaqueAction>();
@@ -66,7 +66,7 @@ TEST_F(ActivityEdgeTest, reindexID_Test) {
 }
 
 TEST_F(ActivityEdgeTest, reindexNameTest) {
-    BasicManager m;
+    Manager<> m;
     Activity& a = *m.create<Activity>();
     ControlFlow& e = *m.create<ControlFlow>();
     OpaqueAction& n = *m.create<OpaqueAction>();
@@ -82,7 +82,7 @@ TEST_F(ActivityEdgeTest, reindexNameTest) {
 }
 
 TEST_F(ActivityEdgeTest, overwriteIncomingTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueAction& p1 = *m.create<OpaqueAction>();
     OpaqueAction& p2 = *m.create<OpaqueAction>();
     ControlFlow& c = *m.create<ControlFlow>();
@@ -96,7 +96,7 @@ TEST_F(ActivityEdgeTest, overwriteIncomingTest) {
 }
 
 TEST_F(ActivityEdgeTest, overwriteIncomingByIncomingAddTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueAction& p1 = *m.create<OpaqueAction>();
     OpaqueAction& p2 = *m.create<OpaqueAction>();
     ControlFlow& c = *m.create<ControlFlow>();
@@ -110,7 +110,7 @@ TEST_F(ActivityEdgeTest, overwriteIncomingByIncomingAddTest) {
 }
 
 TEST_F(ActivityEdgeTest, overwriteOutgoingTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueAction& p1 = *m.create<OpaqueAction>();
     OpaqueAction& p2 = *m.create<OpaqueAction>();
     ControlFlow& c = *m.create<ControlFlow>();
@@ -124,7 +124,7 @@ TEST_F(ActivityEdgeTest, overwriteOutgoingTest) {
 }
 
 TEST_F(ActivityEdgeTest, overwriteOutgoingByOutgoingAddTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueAction& p1 = *m.create<OpaqueAction>();
     OpaqueAction& p2 = *m.create<OpaqueAction>();
     ControlFlow& c = *m.create<ControlFlow>();

@@ -21,7 +21,7 @@ class InterfaceTest : public ::testing::Test {
 };
 
 TEST_F(InterfaceTest, basicInterfaceTest) {
-    BasicManager m;
+    Manager<> m;
     Interface& interface_uml = *m.create<Interface>();
     Property& property1 = *m.create<Property>();
     Property& property2 = *m.create<Property>();
@@ -121,7 +121,7 @@ TEST_F(InterfaceTest, basicInterfaceTest) {
 }
 
 TEST_F(InterfaceTest, parseBasicInterfaceTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "interfaceTests/basicInterface.yml"));
     Element* el = m.getRoot().ptr();
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
@@ -152,7 +152,7 @@ TEST_F(InterfaceTest, parseBasicInterfaceTest) {
 }
 
 TEST_F(InterfaceTest, emitInterfaceTest) {
-    BasicManager m;
+    Manager<> m;
     Package& root = *m.create<Package>();
     Interface& interface_uml = *m.create<Interface>();
     Property& prop = *m.create<Property>();
@@ -206,13 +206,15 @@ TEST_F(InterfaceTest, emitInterfaceTest) {
     - interface:
         id: msHdxlZxjCCYwm2GLlDyaIq3KX4o)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(root, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(InterfaceTest, parsePortW_InterfaceTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "interfaceTests/portW_Interface.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -232,7 +234,7 @@ TEST_F(InterfaceTest, parsePortW_InterfaceTest) {
 }
 
 TEST_F(InterfaceTest, emitPortWInterfaceTest) {
-    BasicManager m;
+    Manager<> m;
     Package& root = *m.create<Package>();
     Class& implementing = *m.create<Class>();
     Interface& interface_uml = *m.create<Interface>();
@@ -294,13 +296,15 @@ TEST_F(InterfaceTest, emitPortWInterfaceTest) {
     - interface:
         id: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY")"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(root));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(root, data));
     std::cout << generatedEmit << '\n';
     ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit);
 }
 
 TEST_F(InterfaceTest, mountInterfaceTest) {
-    BasicManager m;
+    Manager<> m;
     Package& root = *m.create<Package>();
     Interface& interface_uml = *m.create<Interface>();
     Property& prop = *m.create<Property>();

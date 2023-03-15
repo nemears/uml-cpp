@@ -10,7 +10,7 @@ class TypedElementTest : public ::testing::Test {
 };
 
 TEST_F(TypedElementTest, GetTypeTest) {
-	BasicManager m;
+	Manager<> m;
 	Property& p = *m.create<Property>();
 	Class& t = *m.create<Class>();
 	p.setType(t);
@@ -18,13 +18,13 @@ TEST_F(TypedElementTest, GetTypeTest) {
 }
 
 TEST_F(TypedElementTest, GetTypeReturnsNullTest) {
-	BasicManager m;
+	Manager<> m;
 	Property& t = *m.create<Property>();
     ASSERT_FALSE(t.getType());
 }
 
 TEST_F(TypedElementTest, reindexTypeTest) {
-	BasicManager m;
+	Manager<> m;
 	Class& t = *m.create<Class>();
 	Property& p = *m.create<Property>();
 	Class& c = *m.create<Class>();

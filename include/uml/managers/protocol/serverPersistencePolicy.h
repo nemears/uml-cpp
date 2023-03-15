@@ -2,7 +2,7 @@
 #define _UML_MANAGERS_SERVER_PERSISTENCE_POLICY_H_
 
 #include "abstractClient.h"
-#include "uml/element.h"
+#include "uml/types/element.h"
 #include "uml/managers/abstractManager.h"
 
 namespace UML {

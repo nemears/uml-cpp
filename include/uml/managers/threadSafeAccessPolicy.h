@@ -2,7 +2,7 @@
 #define _UML_MANAGERS_THREAD_SAFE_ACCESS_POLICY_H_
 
 #include <mutex>
-#include <uml/element.h>
+#include <uml/types/element.h>
 #include "managerNode.h"
 #include "abstractAccessPolicy.h"
 #include "uml/umlPtr.h"

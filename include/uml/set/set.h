@@ -1,6 +1,6 @@
 #pragma once
 
-#include "uml/namedElement.h"
+#include "uml/types/namedElement.h"
 #include "uml/umlPtr.h"
 #include "setLock.h"
 #include "doNothingPolicy.h"

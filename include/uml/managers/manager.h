@@ -38,11 +38,12 @@ namespace UML {
      *          - std::string getLocation(ID id) : get ID of signifier
      *          - void setLocation(ID id, std::string location) : set a signifier ID pair
      **/
-    template <typename AccessPolicy, typename PersistencePolicy>
-    class Manager : public AbstractManager , public AccessPolicy, public PersistencePolicy {
+    template <typename AccessPolicy, typename SerializationPolicy>
+    class Manager : public AbstractManager , public AccessPolicy, public SerializationPolicy {
         protected:
 
             ElementPtr m_root;
+            std::filesystem::path m_mountBase = ".";
 
             ElementPtr createPtr(ID id) override {
                 return AccessPolicy::createPtr(this, id);
@@ -324,12 +325,13 @@ namespace UML {
                 }
 
                 // not loaded or does not exist
-                ret = PersistencePolicy::aquire(id, this);
-                
-                if (!ret) {
-                    // Manager has no reference to an element of this id
-                    // throw ManagerPolicyStateException("unknown id!");
-                } else {
+                // ret = SerializationPolicy::aquire(id, this);
+                if (!std::filesystem::exists(m_mountBase / "mount" / (id.string() + SerializationPolicy::extensionName()))) {
+                    throw ManagerStateException("No id of " + id.string() + " found on system");
+                }
+                ret = SerializationPolicy::parseIndividualFile(m_mountBase / "mount" / (id.string() + SerializationPolicy::extensionName()));
+
+                if (ret) {
                     AccessPolicy::restoreNode(ret.m_node);
                 }
 
@@ -341,7 +343,7 @@ namespace UML {
             }
 
             void release(Element& el) override {
-                PersistencePolicy::write(el, this);
+                SerializationPolicy::write(el, this);
                 AccessPolicy::releaseNode(el.m_node);
             }
 
@@ -352,7 +354,7 @@ namespace UML {
             }
 
             void erase(Element& el) override {
-                PersistencePolicy::eraseEl(el);
+                SerializationPolicy::eraseEl(el);
                 AccessPolicy::eraseNode(el.m_node, this);
             };
 
@@ -366,7 +368,7 @@ namespace UML {
                     AccessPolicy::reindex(oldID, newID);
                 }
                 // TODO persistence policy reindex?
-                PersistencePolicy::reindex(oldID, newID, this);
+                SerializationPolicy::reindex(oldID, newID, this);
             }
 
             void removeNode(ID id) override {
@@ -374,7 +376,7 @@ namespace UML {
             }
 
             ElementPtr open(std::string path) override {
-                setRoot(PersistencePolicy::parse(path, this).ptr());
+                setRoot(SerializationPolicy::parse(path, this).ptr());
                 std::list<ElementPtr> queue;
                 queue.push_back(m_root);
                 while (!queue.empty()) {
@@ -389,7 +391,7 @@ namespace UML {
             }
 
             ElementPtr open() override {
-                setRoot(PersistencePolicy::parse(this).ptr());
+                setRoot(SerializationPolicy::parse(this).ptr());
                 std::list<ElementPtr> queue;
                 queue.push_back(m_root);
                 while (!queue.empty()) {
@@ -404,11 +406,11 @@ namespace UML {
             }
 
             void save(std::string location) override {
-                PersistencePolicy::write(location, this);
+                SerializationPolicy::write(location, this);
             }
 
             void save() override {
-                PersistencePolicy::write(this);
+                SerializationPolicy::write(this);
             }
 
             void setRoot(Element* root) override {
@@ -420,15 +422,15 @@ namespace UML {
             }
 
             std::string getLocation(ID id) override {
-                return PersistencePolicy::getLocation(id);
+                return SerializationPolicy::getLocation(id);
             }
 
             std::string getLocation() override {
-                return PersistencePolicy::getLocation();
+                return SerializationPolicy::getLocation();
             }
 
             void setLocation(ID id, std::string location) override {
-                PersistencePolicy::setLocation(id, location);
+                SerializationPolicy::setLocation(id, location);
             }
     };
 }

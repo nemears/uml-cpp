@@ -1,4 +1,4 @@
-#include "uml/parsers/emitterMetaData.h"
+#include "uml/managers/serialization/open_uml/emitterMetaData.h"
 #include "uml/managers/abstractManager.h"
 
 namespace UML {

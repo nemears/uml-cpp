@@ -19,11 +19,11 @@ set(umlSources  element.cpp id.cpp namedElement.cpp namespace.cpp package.cpp pa
                 elementImport.cpp packageImport.cpp redefinableTemplateSignature.cpp classifierTemplateParameter.cpp 
                 parameterSet.cpp
 
-                #parsers
-                parsers/parser.cpp parsers/emitterMetaData.cpp
-
                 #managers
                 managers/abstractManager.cpp managers/managerNode.cpp
+
+                #serialization
+                managers/serialization/open_uml/parser.cpp managers/serialization/open_uml/emitterMetaData.cpp
 
                 #CMAKE option for set
                 PARENT_SCOPE)

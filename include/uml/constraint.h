@@ -8,7 +8,7 @@ namespace UML {
     class Constraint : public PackageableElement {
 
         friend class Namespace;
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
 
         protected:
             CustomSingleton<Namespace, Constraint> m_context = CustomSingleton<Namespace, Constraint>(this);

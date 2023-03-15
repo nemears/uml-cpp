@@ -56,10 +56,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     if (node["DELETE"] || node["delete"]) {
         ID elID = ID::fromString((node["DELETE"] ? node["DELETE"] : node["delete"]).as<std::string>());
         try {
-            ThreadSafeManagerNode* node = static_cast<ThreadSafeManagerNode*>(getNode(*get(elID)));
-            // std::lock_guard<std::mutex> lck(node->m_mtx);
-            // std::vector<std::unique_lock<std::mutex>> referenceLocks = lockReferences(*node);
-            Element& elToErase = *node->m_managerElementMemory;
+            Element& elToErase = *get(elID);
             erase(elToErase);
             log("erased element " + elID.string());
             std::lock_guard<std::mutex> garbageLck(m_garbageMtx);

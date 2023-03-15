@@ -7,7 +7,7 @@ namespace UML {
     class Profile : public Package {
 
         friend class Stereotype;
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
 
         protected:
             CustomSet<Stereotype, Profile> m_profileOwnedStereotypes = CustomSet<Stereotype, Profile>(this);

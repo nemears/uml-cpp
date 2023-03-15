@@ -27,7 +27,7 @@ namespace UML{
 
     class Property: public StructuralFeature, public ConnectableElement , public DeploymentTarget {
 
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
         friend class Class;
         friend class Classifier;
         friend class StructuredClassifier;

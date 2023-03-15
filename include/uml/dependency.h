@@ -8,7 +8,7 @@
 namespace UML {
     class Dependency : public DirectedRelationship, public PackageableElement {
 
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
 
         protected:
             CustomSet<NamedElement, Dependency> m_clients = CustomSet<NamedElement, Dependency>(this);

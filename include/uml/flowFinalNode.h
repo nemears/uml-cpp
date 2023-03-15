@@ -6,7 +6,7 @@
 namespace UML {
     class FlowFinalNode : public FinalNode {
 
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
 
         protected:
             FlowFinalNode();

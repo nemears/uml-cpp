@@ -6,7 +6,7 @@
 namespace UML {
     class CentralBufferNode : public ObjectNode {
 
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
 
         protected:
             CentralBufferNode();

@@ -26,7 +26,7 @@ namespace UML {
 
     class AbstractUmlPtr {
 
-        template <class AccessPolicy, class PersistencePolicy> friend class Manager;
+        template <class AccessPolicy, class SerializationPolicy> friend class Manager;
         friend class AbstractAccessPolicy;
         template <class T> friend class UmlPtr;
         friend struct ManagerNode;
@@ -44,7 +44,7 @@ namespace UML {
     class UmlPtr : public AbstractUmlPtr {
 
         template <class U, class V> friend class Singleton;
-        template <class AccessPolicy, class PersistencePolicy> friend class Manager;
+        template <class AccessPolicy, class SerializationPolicy> friend class Manager;
         friend class AbstractAccessPolicy;
         template <class U> friend class UmlPtr;
 

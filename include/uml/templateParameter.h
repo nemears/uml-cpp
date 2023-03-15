@@ -15,7 +15,7 @@ namespace UML {
 
     class TemplateParameter : virtual public Element {
 
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
         friend class TemplateParameterSubstitution;
         friend class TemplateSignature;
         friend class ParameterableElement;

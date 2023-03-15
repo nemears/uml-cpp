@@ -13,7 +13,7 @@ namespace UML {
 
     class Slot : public Element {
         
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
         friend class InstanceSpecification;
         
         protected:

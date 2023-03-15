@@ -17,20 +17,20 @@ class ParameterTest : public ::testing::Test {
 };
 
 TEST_F(ParameterTest, TestSetDirection) {
-    BasicManager m;
+    Manager<> m;
     Parameter& p = *m.create<Parameter>();
     p.setDirection(ParameterDirectionKind::IN_UML);
     ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::IN_UML);
 }
 
 TEST_F(ParameterTest, TestGetNotSetDirection) {
-    BasicManager m;
+    Manager<> m;
     Parameter& p = *m.create<Parameter>();
     ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::NONE);
 }
 
 TEST_F(ParameterTest, reindexID_ownerTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueBehavior& a = *m.create<OpaqueBehavior>();
     Parameter& p = *m.create<Parameter>();
     a.getOwnedParameters().add(p);
@@ -41,13 +41,13 @@ TEST_F(ParameterTest, reindexID_ownerTest) {
 }
 
 TEST_F(ParameterTest, properExceptions) {
-    BasicManager m;
-    ASSERT_THROW(m.open(ymlPath + "parameterTests/invalidDirection.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "parameterTests/invalidDirection2.yml"), Parsers::UmlParserException);
+    Manager<> m;
+    ASSERT_THROW(m.open(ymlPath + "parameterTests/invalidDirection.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "parameterTests/invalidDirection2.yml"), UmlParserException);
 }
 
 TEST_F(ParameterTest, emitParameterWMultiplicityTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueBehavior& b = *m.create<OpaqueBehavior>();
     Parameter& p = *m.create<Parameter>();
     b.setID("SeJ_0hSPaIa4EYap3sXgRQm4LuSn");
@@ -75,7 +75,9 @@ TEST_F(ParameterTest, emitParameterWMultiplicityTest) {
             id: "sGGXJFNinAvKyKVSgc&JAlMWsbw5"
             value: 5)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(b));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(b, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }

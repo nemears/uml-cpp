@@ -3,8 +3,8 @@
 
 #include <exception>
 #include "yaml-cpp/yaml.h"
-#include "uml/parsers/parserMetaData.h"
-#include "uml/parsers/emitterMetaData.h"
+#include "parserMetaData.h"
+#include "emitterMetaData.h"
 #include "uml/umlPtr.h"
 #include "uml/set/set.h"
 #include "uml/set/singleton.h"

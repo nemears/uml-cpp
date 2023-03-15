@@ -6,7 +6,7 @@ using namespace UML;
 class PortTest : public ::testing::Test {};
 
 TEST_F(PortTest, portWInterfaceType) {
-    BasicManager m;
+    Manager<> m;
     Interface& type = *m.create<Interface>();
     Class& encapsulatedClassifier = *m.create<Class>();
     Port& port = *m.create<Port>();
@@ -36,7 +36,7 @@ TEST_F(PortTest, portWInterfaceType) {
 }
 
 TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
-    BasicManager m;
+    Manager<> m;
     Interface& realizedInterface = *m.create<Interface>();
     Interface& usedInterface = *m.create<Interface>();
     InterfaceRealization& realization = *m.create<InterfaceRealization>();

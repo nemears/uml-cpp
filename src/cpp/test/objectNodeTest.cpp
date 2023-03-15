@@ -8,13 +8,13 @@ class ObjectNodeTest : public ::testing::Test {
 };
 
 TEST_F(ObjectNodeTest, getNullUpperBoundTest) {
-    BasicManager m;
+    Manager<> m;
     ObjectNode& o = *m.create<ObjectNode>();
     ASSERT_FALSE(o.getUpperBound());
 }
 
 TEST_F(ObjectNodeTest, setUpperBoundTest) {
-    BasicManager m;
+    Manager<> m;
     ObjectNode& o = *m.create<ObjectNode>();
     LiteralBool& b = *m.create<LiteralBool>();
     b.setValue(true);

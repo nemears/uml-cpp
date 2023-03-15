@@ -1,9 +1,8 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
 #include "test/uml-cpp-paths.h"
-#include "uml/parsers/parser.h"
 #include "test/umlTestUtil.h"
-#include "uml/managers/basicManager.h"
+#include "uml/managers/manager.h"
 #include "uml/managers/threadSafeManager.h"
 
 using namespace std;
@@ -18,13 +17,13 @@ class UmlManagerTest : public ::testing::Test {
 };
 
 TEST_F(UmlManagerTest, FactoryTest) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     ASSERT_TRUE(c.getElementType() == ElementType::CLASS);
 }
 
 TEST_F(UmlManagerTest, openAndSaveTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "umlManagerTests/simpleModel.yml"));
     ASSERT_EQ(m.getRoot()->getID(), ID::fromString("GAfdua&ubXfsR1EgdB3HeVglkaor"));
     ASSERT_EQ(m.getRoot()->as<NamedElement>().getName(), "test");
@@ -46,7 +45,7 @@ TEST_F(UmlManagerTest, openAndSaveTest) {
 }
 
 TEST_F(UmlManagerTest, multipleFileTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "umlManagerTests/multipleFiles.yml"));
     ASSERT_TRUE(m.getRoot());
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
@@ -94,7 +93,7 @@ TEST_F(UmlManagerTest, multipleFileTest) {
 // }
 
 // TEST_F(UmlManagerTest, releaseTest) {
-//     UmlManager m;
+//     UmlManager<> m;
 //     Package& p = *m.create<Package>();
 //     Package& c = *m.create<Package>();
 //     p.getPackagedElements().add(c);
@@ -112,7 +111,7 @@ TEST_F(UmlManagerTest, multipleFileTest) {
 // }
 
 TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
-    BasicManager m;
+    Manager<> m;
     Package& p = *m.create<Package>();
     Class& c = *m.create<Class>();
     InstanceSpecification& i = *m.create<InstanceSpecification>();
@@ -163,7 +162,7 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
 }
 
 TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     m.setRoot(&pckg);
     m.mount(ymlPath + "umlManagerTests");
@@ -174,7 +173,7 @@ TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {
 
 TEST_F(UmlManagerTest, ManagerMountStressTest) {
     const size_t numElements = 20;
-    BasicManager m;
+    Manager<> m;
     Package& root = *m.create<Package>();
     ID rootID = root.getID();
     m.setRoot(&root);
@@ -210,7 +209,7 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
 }
 
 TEST_F(UmlManagerTest, basicEraseFunctionalityTest) {
-    BasicManager m;
+    Manager<> m;
     Package& package = *m.create<Package>();
     Package& child = *m.create<Package>();
     package.getPackagedElements().add(child);
@@ -218,13 +217,13 @@ TEST_F(UmlManagerTest, basicEraseFunctionalityTest) {
     m.mount(ymlPath + "umlManagerTests");
     ID childID = child.getID();
     m.erase(child);
-    ASSERT_FALSE(filesystem::exists((ymlPath + "umlManagerTests/" + childID.string() + ".yml")));
+    // ASSERT_FALSE(std::filesystem::exists(std::filesystem::path(ymlPath + "umlManagerTests/" + childID.string() + ".yml")));
     ASSERT_TRUE(package.getOwnedElements().empty());
     ASSERT_FALSE(m.loaded(childID));
 }
 
 TEST_F(UmlManagerTest, eraseReferenceWhileReleasedTest) {
-    BasicManager m;
+    Manager<> m;
     ClassPtr c = m.create<Class>();
     InstanceSpecificationPtr i = m.create<InstanceSpecification>();
     i->getClassifiers().add(*c);
@@ -238,7 +237,7 @@ TEST_F(UmlManagerTest, eraseReferenceWhileReleasedTest) {
 }
 
 TEST_F(UmlManagerTest, policyManagerTest) {
-    BasicManager m;
+    Manager<> m;
     PackagePtr p = m.create<Package>();
     m.mount(".");
     m.release(*p);
@@ -266,7 +265,7 @@ TEST_F(UmlManagerTest, threadSafeManagerTest) {
 }
 
 TEST_F(UmlManagerTest, overwriteRootTest) {
-    BasicManager m;
+    Manager<> m;
     m.setRoot(m.create<Package>().ptr());
     m.mount(".");
     m.getRoot().release();

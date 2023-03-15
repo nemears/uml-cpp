@@ -29,7 +29,7 @@ class TemplateableElementTest : public ::testing::Test {
 };
 
 TEST_F(TemplateableElementTest, reindexTemplateableElementsTest) {
-    BasicManager m;
+    Manager<> m;
     Class& templateClass = *m.create<Class>();
     RedefinableTemplateSignature& classSignature = *m.create<RedefinableTemplateSignature>();
     TemplateBinding& classBinding = *m.create<TemplateBinding>();
@@ -48,7 +48,7 @@ TEST_F(TemplateableElementTest, reindexTemplateableElementsTest) {
     ASSERT_NO_THROW(ASSERT_EQ(classBinding.getBoundElement()->getID(), classID));
 }
 TEST_F(TemplateableElementTest, basicTemplateSignature) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/classW_emptySignature.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::CLASS);
     Class* c = &m.getRoot()->as<Class>();
@@ -58,7 +58,7 @@ TEST_F(TemplateableElementTest, basicTemplateSignature) {
 }
 
 TEST_F(TemplateableElementTest, singleEmptyTemplateParameterTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/classW_SingleTemplateParameter.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::CLASS);
     Class * c = &m.getRoot()->as<Class>();
@@ -70,7 +70,7 @@ TEST_F(TemplateableElementTest, singleEmptyTemplateParameterTest) {
 }
 
 // TEST_F(TemplateableElementTest, multipleParametersTest) {
-//     BasicManager m;
+//     Manager<> m;
 //     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/clasW_multipleParameters.yml"));
 //     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::CLASS);
 //     Class* c = &m.getRoot()->as<Class>();
@@ -97,7 +97,7 @@ TEST_F(TemplateableElementTest, singleEmptyTemplateParameterTest) {
 // }
 
 TEST_F(TemplateableElementTest, referencedParameterTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/operationW_referencedParameter.yml"));
     ASSERT_EQ(m.getRoot()->getElementType() , ElementType::CLASS);
     Class& c = m.getRoot()->as<Class>();
@@ -116,7 +116,7 @@ TEST_F(TemplateableElementTest, referencedParameterTest) {
 }
 
 TEST_F(TemplateableElementTest, referenceParameteredElementTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/operationW_referenceParameteredElement.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::CLASS);
     Class& c = m.getRoot()->as<Class>();
@@ -134,7 +134,7 @@ TEST_F(TemplateableElementTest, referenceParameteredElementTest) {
 }
 
 TEST_F(TemplateableElementTest, basicTemplateBindingTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/templateBinding.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -152,7 +152,7 @@ TEST_F(TemplateableElementTest, basicTemplateBindingTest) {
 }
 
 TEST_F(TemplateableElementTest, parameterSubstitutionW_formalTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/parameterSubstitutionW_Formal.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -176,7 +176,7 @@ TEST_F(TemplateableElementTest, parameterSubstitutionW_formalTest) {
 }
 
 TEST_F(TemplateableElementTest, parameterSubstitutionW_OwnedActualTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/parameterSubstitutionW_OwnedActual.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -197,7 +197,7 @@ TEST_F(TemplateableElementTest, parameterSubstitutionW_OwnedActualTest) {
 }
 
 TEST_F(TemplateableElementTest, parameterSubstitutionW_Actual) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/parameterSubstitutionW_backwardsActual.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -218,7 +218,7 @@ TEST_F(TemplateableElementTest, parameterSubstitutionW_Actual) {
 }
 
 TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     Package& c1 = *m.create<Package>();
     TemplateSignature& sig = *m.create<TemplateSignature>();
@@ -341,13 +341,15 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
   //                   formal: Km4WF5rf3ohUeLTr99POiW7VMb_4
   //                   actual: 4gA4RgL9vKTRYd61D99y1d_Yggj6)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 // TEST_F(TemplateableElementTest, mountClassWithTemplateSignature) {
-//     BasicManager m;
+//     Manager<> m;
 //     Package& root = *m.create<Package>();
 //     Class& clazz = *m.create<Class>();
 //     Class& otherClazz = *m.create<Class>();

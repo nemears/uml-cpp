@@ -10,7 +10,7 @@ UML_SET_INTEGRATION_TEST(ElementAppliedStereotypes, InstanceSpecification, Enume
 class ElementTest : public ::testing::Test {};
 
 TEST_F(ElementTest, UmlPtrTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     Package& child = *m.create<Package>();
     pckg.getPackagedElements().add(child);
@@ -26,7 +26,7 @@ TEST_F(ElementTest, UmlPtrTest) {
 }
 
 TEST_F(ElementTest, UmlPtrComparisonTest) {
-    BasicManager m;
+    Manager<> m;
     PackagePtr pckg = m.create<Package>();
     PackagePtr child = m.create<Package>();
     pckg->getPackagedElements().add(*child);
@@ -41,7 +41,7 @@ TEST_F(ElementTest, UmlPtrComparisonTest) {
 }
 
 // TEST_F(ElementTest, UmlPtrScopeTest) {
-//     BasicManager m;
+//     Manager<> m;
 //     m.mount(".");
 //     // m.lossless(false);
 //     m.lazy(false);
@@ -63,7 +63,7 @@ TEST_F(ElementTest, UmlPtrComparisonTest) {
 // }
 
 TEST_F(ElementTest, UmlPtrReleaseTest) {
-    BasicManager m;
+    Manager<> m;
     m.mount(".");
     PackagePtr pckg = m.create<Package>();
     PackagePtr child = m.create<Package>();
@@ -79,7 +79,7 @@ TEST_F(ElementTest, UmlPtrReleaseTest) {
 }
 
 TEST_F(ElementTest, AcessReleasedPtrTest) {
-    BasicManager m;
+    Manager<> m;
     m.mount(".");
     // m.lazy(false);
     // m.lossless(false);
@@ -91,7 +91,7 @@ TEST_F(ElementTest, AcessReleasedPtrTest) {
 }
 
 TEST_F(ElementTest, reassignPtrTest) { // TODO recreate managermountstresstest error
-    BasicManager m;
+    Manager<> m;
     PackagePtr pckg = m.create<Package>();
     PackagePtr ogPckg = pckg;
     ID ogID = pckg.id();    
@@ -114,7 +114,7 @@ TEST_F(ElementTest, reassignPtrTest) { // TODO recreate managermountstresstest e
 }
 
 TEST_F(ElementTest, OverrideID_Test) {
-    BasicManager m;
+    Manager<> m;
     PackagePtr el = m.create<Package>();
     el->setID("7d18ee4282c64f528ec4fab67a75");
     ID id = ID::fromString("7d18ee4282c64f528ec4fab67a75");
@@ -122,7 +122,7 @@ TEST_F(ElementTest, OverrideID_Test) {
 }
 
 TEST_F(ElementTest, GetOwnedElementsTest) {
-  BasicManager m;
+  Manager<> m;
   Package& el2 = *m.create<Package>();
   Package& el3 = *m.create<Package>();
   el2.getPackagedElements().add(el3);
@@ -131,14 +131,14 @@ TEST_F(ElementTest, GetOwnedElementsTest) {
 }
 
 TEST_F(ElementTest, InvalidID_Test) {
-    BasicManager m;
+    Manager<> m;
     Package& el3 = *m.create<Package>();
     EXPECT_THROW(el3.setID("not a uuid4"), InvalidID_Exception);
     EXPECT_NO_THROW(el3.setID("7d18ee4282c64f528ec4fab67a75"));
 }
 
 TEST_F(ElementTest, getNullOwnerTest) {
-    BasicManager m;
+    Manager<> m;
     PackagePtr e = m.create<Package>();
     ASSERT_THROW(e->getOwner()->getID(), NullPtrException);
     ASSERT_FALSE(e->getOwner());
@@ -148,7 +148,7 @@ TEST_F(ElementTest, getNullOwnerTest) {
 }
 
 TEST_F(ElementTest, setAndGetOwnerTest) {
-    BasicManager m;
+    Manager<> m;
     Package& e = *m.create<Package>();
     Package& c = *m.create<Package>();
     c.setOwningPackage(e);
@@ -158,7 +158,7 @@ TEST_F(ElementTest, setAndGetOwnerTest) {
 }
 
 TEST_F(ElementTest, getOwnedElementsBasicTest) {
-    BasicManager m;
+    Manager<> m;
     Package& e = *m.create<Package>();
     Package& c = *m.create<Package>();
     ASSERT_NO_THROW(e.getPackagedElements().add(c));
@@ -166,7 +166,7 @@ TEST_F(ElementTest, getOwnedElementsBasicTest) {
 }
 
 TEST_F(ElementTest, getOwnedElementByNameTest) {
-    BasicManager m;
+    Manager<> m;
     Package& e = *m.create<Package>();
     Package& n = *m.create<Package>();
     n.setName("name");
@@ -179,7 +179,7 @@ TEST_F(ElementTest, getOwnedElementByNameTest) {
 }
 
 TEST_F(ElementTest, reIndexID_Test) {
-    BasicManager m;
+    Manager<> m;
     Package& e1 = *m.create<Package>();
     Package& e2 = *m.create<Package>();
     e1.getPackagedElements().add(e2);
@@ -188,7 +188,7 @@ TEST_F(ElementTest, reIndexID_Test) {
 }
 
 TEST_F(ElementTest, basicRelationshipTest) {
-  BasicManager m;
+  Manager<> m;
   Package& e = *m.create<Package>();
   Package& a = *m.create<Package>();
   PackageMerge& r = *m.create<PackageMerge>();
@@ -202,7 +202,7 @@ TEST_F(ElementTest, basicRelationshipTest) {
 }
 
 TEST_F(ElementTest, reindexRelationshipID_test) {
-    BasicManager m;
+    Manager<> m;
     Package& e = *m.create<Package>();
     Package& a = *m.create<Package>();
     PackageMerge& r = *m.create<PackageMerge>();
@@ -215,7 +215,7 @@ TEST_F(ElementTest, reindexRelationshipID_test) {
 }
 
 TEST_F(ElementTest, setOwnerFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     Package& e = *m.create<Package>();
     Package& c = *m.create<Package>();
     e.getPackagedElements().add(c);
@@ -224,7 +224,7 @@ TEST_F(ElementTest, setOwnerFunctorTest) {
 }
 
 TEST_F(ElementTest, setOwnerTest) {
-    BasicManager m;
+    Manager<> m;
     Package& e = *m.create<Package>();
     Package& c = *m.create<Package>();
     c.setOwningPackage(&e);
@@ -233,7 +233,7 @@ TEST_F(ElementTest, setOwnerTest) {
 }
 
 TEST_F(ElementTest, overwriteOwnerTest) {
-  BasicManager m;
+  Manager<> m;
   Package& p1 = *m.create<Package>();
   Package& p2 = *m.create<Package>();
   Package& c = *m.create<Package>();
@@ -246,7 +246,7 @@ TEST_F(ElementTest, overwriteOwnerTest) {
 }
 
 TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
-  BasicManager m;
+  Manager<> m;
   Package& p1 = *m.create<Package>();
   Package& p2 = *m.create<Package>();
   Package& c = *m.create<Package>();
@@ -259,7 +259,7 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
 }
 
 TEST_F(ElementTest, readOnlySequenceTest) {
-    BasicManager m;
+    Manager<> m;
     Package& p = *m.create<Package>();
     Package& c1 = *m.create<Package>();
     Package& c2 = *m.create<Package>();
@@ -269,7 +269,7 @@ TEST_F(ElementTest, readOnlySequenceTest) {
 }
 
 TEST_F(ElementTest, readOnlyRelatedElementsTest) {
-    BasicManager mm;
+    Manager<> mm;
     Package& p = *mm.create<Package>();
     Package& m = *mm.create<Package>();
     PackageMerge& r = *mm.create<PackageMerge>();
@@ -281,14 +281,14 @@ TEST_F(ElementTest, readOnlyRelatedElementsTest) {
 }
 
 // TEST_F(ElementTest, checkAppliedStereotypeFunctorTest) {
-//   BasicManager m;
+//   Manager<> m;
 //   Class& c = m.create<Class>();
 //   InstanceSpecification& s = m.create<InstanceSpecification>();
 //   ASSERT_THROW(c.getAppliedStereotypes().add(s), InvalidAppliedStereotypeException());
 // }
 
 TEST_F(ElementTest, AddAndRemoveAppliedStereotypetest) {
-  BasicManager m;
+  Manager<> m;
   Class& c = *m.create<Class>();
   InstanceSpecification& i = *m.create<InstanceSpecification>();
   Stereotype& s = *m.create<Stereotype>();
@@ -300,24 +300,25 @@ TEST_F(ElementTest, AddAndRemoveAppliedStereotypetest) {
 }
 
 TEST_F(ElementTest, asFuncTest) {
-  BasicManager m;
+  Manager<> m;
   UmlPtr<Classifier> classifier = m.create<Class>();
   Class& clazz = classifier->as<Class>();
   ASSERT_EQ(classifier->getID(), clazz.getID());
 }
 
 TEST_F(ElementTest, emitJSON_test) {
-    BasicManager m;
+    Manager<> m;
     PackagePtr p = m.create<Package>();
     PackagePtr c = m.create<Package>();
     p->getPackagedElements().add(*c);
     p->setID(ID::fromString("Wmhz0dIdjUbcWmTn7EL4Zz261oy6"));
     c->setID(ID::fromString("GcJO3kDBnbRcT4f&Kwf9arl6YOmS"));
-    Parsers::EmitterMetaData data = Parsers::getData(*p);
-    data.m_isJSON = true;
-    data.m_strategy = Parsers::EmitterStrategy::WHOLE;
-    std::string generatedEmit = Parsers::emitString(data, *p);
-    std::cout << generatedEmit << std::endl;
-    std::string expectedEmit = "{\"package\": {\"id\": \"Wmhz0dIdjUbcWmTn7EL4Zz261oy6\", \"packagedElements\": [{\"package\": {\"id\": \"GcJO3kDBnbRcT4f&Kwf9arl6YOmS\"}}]}}";
-    ASSERT_EQ(generatedEmit, expectedEmit);
+    ASSERT_TRUE(false);
+    // Parsers::EmitterMetaData data = Parsers::getData(*p);
+    // data.m_isJSON = true;
+    // data.m_strategy = Parsers::EmitterStrategy::WHOLE;
+    // std::string generatedEmit = Parsers::emitString(data, *p);
+    // std::cout << generatedEmit << std::endl;
+    // std::string expectedEmit = "{\"package\": {\"id\": \"Wmhz0dIdjUbcWmTn7EL4Zz261oy6\", \"packagedElements\": [{\"package\": {\"id\": \"GcJO3kDBnbRcT4f&Kwf9arl6YOmS\"}}]}}";
+    // ASSERT_EQ(generatedEmit, expectedEmit);
 }

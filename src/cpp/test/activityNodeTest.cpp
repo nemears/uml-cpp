@@ -34,7 +34,7 @@ class ActivityNodeTest : public ::testing::Test {
 };
 
 TEST_F(ActivityNodeTest, reindexID_test) {
-    BasicManager m;
+    Manager<> m;
     Activity& a = *m.create<Activity>();
     OpaqueAction& n = *m.create<OpaqueAction>();
     a.getNodes().add(n);
@@ -45,7 +45,7 @@ TEST_F(ActivityNodeTest, reindexID_test) {
 }
 
 TEST_F(ActivityNodeTest, reindexNameTest) {
-    BasicManager m;
+    Manager<> m;
     Activity& a = *m.create<Activity>();
     OpaqueAction& n = *m.create<OpaqueAction>();
     a.getNodes().add(n);
@@ -55,7 +55,7 @@ TEST_F(ActivityNodeTest, reindexNameTest) {
 }
 
 TEST_F(ActivityNodeTest, addIncomingFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueAction& n = *m.create<OpaqueAction>();
     ControlFlow& e = *m.create<ControlFlow>();
     n.getIncoming().add(e);
@@ -66,7 +66,7 @@ TEST_F(ActivityNodeTest, addIncomingFunctorTest) {
 }
 
 TEST_F(ActivityNodeTest, setTargetTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueAction& n = *m.create<OpaqueAction>();
     ControlFlow& e = *m.create<ControlFlow>();
     e.setTarget(&n);
@@ -77,7 +77,7 @@ TEST_F(ActivityNodeTest, setTargetTest) {
 }
 
 TEST_F(ActivityNodeTest, addOutgoingFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueAction& n = *m.create<OpaqueAction>();
     ControlFlow& e = *m.create<ControlFlow>();
     n.getOutgoing().add(e);
@@ -88,7 +88,7 @@ TEST_F(ActivityNodeTest, addOutgoingFunctorTest) {
 }
 
 TEST_F(ActivityNodeTest, setSourceTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueAction& n = *m.create<OpaqueAction>();
     ControlFlow& e = *m.create<ControlFlow>();
     e.setSource(&n);
@@ -99,7 +99,7 @@ TEST_F(ActivityNodeTest, setSourceTest) {
 }
 
 // TEST_F(ActivityNodeTest, DuplicateEdgeExceptionIncomingTest) {
-//     UmlManager m;
+//     UmlManager<> m;
 //     ActivityNode& n = *m.create<ActivityNode>();
 //     ActivityEdge& e = *m.create<ActivityEdge>();
 //     n.getIncoming().add(e);
@@ -110,7 +110,7 @@ TEST_F(ActivityNodeTest, setSourceTest) {
 // }
 
 // TEST_F(ActivityNodeTest, DuplicateEdgeExceptionOutgoingTest) {
-//     UmlManager m;
+//     UmlManager<> m;
 //     ActivityNode n = m.create<ActivityNode>();
 //     ActivityEdge e = m.create<ActivityEdge>();
 //     n.getOutgoing().add(e);

@@ -19,7 +19,7 @@ class InstanceSpecificationTest : public ::testing::Test {
 };
 
 TEST_F(InstanceSpecificationTest, setClassifierAsClass) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     InstanceSpecification& i = *m.create<InstanceSpecification>();
     ASSERT_NO_THROW(i.getClassifiers().add(c));
@@ -27,7 +27,7 @@ TEST_F(InstanceSpecificationTest, setClassifierAsClass) {
 }
 
 TEST_F(InstanceSpecificationTest, setStringValueSlots) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     Property& stringP = *m.create<Property>();
     PrimitiveType& stringPrim = *m.create<PrimitiveType>();
@@ -46,7 +46,7 @@ TEST_F(InstanceSpecificationTest, setStringValueSlots) {
 }
 
 TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
-    BasicManager m;
+    Manager<> m;
     Class& c = *m.create<Class>();
     c.setName("typeA");
     Class& b = *m.create<Class>();
@@ -72,7 +72,7 @@ TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
 
 
 TEST_F(InstanceSpecificationTest, reindexSlotID_Test) {
-    BasicManager m;
+    Manager<> m;
     InstanceSpecification& i = *m.create<InstanceSpecification>();
     Slot& s = *m.create<Slot>();
     i.getSlots().add(s);
@@ -83,7 +83,7 @@ TEST_F(InstanceSpecificationTest, reindexSlotID_Test) {
 }
 
 TEST_F(InstanceSpecificationTest, addSlotFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     InstanceSpecification& i = *m.create<InstanceSpecification>();
     Slot& s = *m.create<Slot>();
     i.getSlots().add(s);
@@ -96,7 +96,7 @@ TEST_F(InstanceSpecificationTest, addSlotFunctorTest) {
 }
 
 TEST_F(InstanceSpecificationTest, SetOwningInstanceFunctionalityTest) {
-    BasicManager m;
+    Manager<> m;
     InstanceSpecification& i = *m.create<InstanceSpecification>();
     Slot& s = *m.create<Slot>();
     s.setOwningInstance(i);
@@ -109,7 +109,7 @@ TEST_F(InstanceSpecificationTest, SetOwningInstanceFunctionalityTest) {
 }
 
 TEST_F(InstanceSpecificationTest, removeSlotFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     InstanceSpecification& i = *m.create<InstanceSpecification>();
     Slot& s = *m.create<Slot>();
     s.setOwningInstance(&i);
@@ -121,7 +121,7 @@ TEST_F(InstanceSpecificationTest, removeSlotFunctorTest) {
 }
 
 TEST_F(InstanceSpecificationTest, setAndRemoveSpecificationTest) {
-    BasicManager m;
+    Manager<> m;
     InstanceSpecification& inst = *m.create<InstanceSpecification>();
     LiteralString& str = *m.create<LiteralString>();
     inst.setSpecification(&str);
@@ -138,7 +138,7 @@ TEST_F(InstanceSpecificationTest, setAndRemoveSpecificationTest) {
 }
 
 // TEST_F(InstanceSpecificationTest, reindexClassifierTest) {
-//     BasicManager m;
+//     Manager<> m;
 //     Class& c = *m.create<Class>();
 //     InstanceSpecification& i = *m.create<InstanceSpecification>();
 //     Package& root = *m.create<Package>();
@@ -159,7 +159,7 @@ TEST_F(InstanceSpecificationTest, setAndRemoveSpecificationTest) {
 
 TEST_F(InstanceSpecificationTest, forwardClassifierTest) {
     Element* el = 0;
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "instanceSpecificationTests/forwardClassifier.yml"));
     el = m.getRoot().ptr();
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
@@ -174,7 +174,7 @@ TEST_F(InstanceSpecificationTest, forwardClassifierTest) {
 }
 
 TEST_F(InstanceSpecificationTest, backwardsClassifierTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "instanceSpecificationTests/backwardsClassifier.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
@@ -188,7 +188,7 @@ TEST_F(InstanceSpecificationTest, backwardsClassifierTest) {
 }
 
 TEST_F(InstanceSpecificationTest, basicSlotTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "instanceSpecificationTests/basicSlot.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
@@ -208,7 +208,7 @@ TEST_F(InstanceSpecificationTest, basicSlotTest) {
 }
 
 TEST_F(InstanceSpecificationTest, backwardsSlotTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "instanceSpecificationTests/backwardsSlot.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
@@ -229,7 +229,7 @@ TEST_F(InstanceSpecificationTest, backwardsSlotTest) {
 
 TEST_F(InstanceSpecificationTest, instanceValueSlot) {
     Element* el = 0;
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "instanceSpecificationTests/instanceSlot.yml"));
     el = m.getRoot().ptr();
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
@@ -262,7 +262,7 @@ TEST_F(InstanceSpecificationTest, instanceValueSlot) {
 }
 
 TEST_F(InstanceSpecificationTest, simpleInstanceEmitTest) {
-    BasicManager m;
+    Manager<> m;
     InstanceSpecification& inst = *m.create<InstanceSpecification>();
     inst.setID("3XvQFHIrqSmU7WAXA7fVzkw1v2U3");
     inst.setName("simple");
@@ -272,13 +272,15 @@ TEST_F(InstanceSpecificationTest, simpleInstanceEmitTest) {
   name: simple
   visibility: PROTECTED)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(inst));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(inst, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(InstanceSpecificationTest, simpleSlotTest) {
-    BasicManager m;
+    Manager<> m;
     InstanceSpecification& inst = *m.create<InstanceSpecification>();
     inst.setID("yaogA9yjaFoD_RdGQzRrwe1826Aj");
     inst.setName("slot");
@@ -294,14 +296,16 @@ TEST_F(InstanceSpecificationTest, simpleSlotTest) {
     - slot:
         id: "w6arMVW4Plw0aLOBWLE9_8Xo_UL&")"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(inst));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(inst, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(InstanceSpecificationTest, parseSpecificationTest) {
     Element* el = 0;
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "instanceSpecificationTests/specification.yml"));
     el = m.getRoot().ptr();
     ASSERT_EQ(el->getElementType(), ElementType::INSTANCE_SPECIFICATION);
@@ -312,7 +316,7 @@ TEST_F(InstanceSpecificationTest, parseSpecificationTest) {
 }
 
 TEST_F(InstanceSpecificationTest, emitSpecificationTest) {
-    BasicManager m;
+    Manager<> m;
     InstanceSpecification& inst = *m.create<InstanceSpecification>();
     LiteralString& str = *m.create<LiteralString>();
     inst.setID("fsU5Fw&5REaNv4NCvC0d4qZnXg4C");
@@ -326,7 +330,9 @@ TEST_F(InstanceSpecificationTest, emitSpecificationTest) {
       id: nVzJ8mHx1yrRlct0ot34p7uBaVvC
       value: ooga)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(inst));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(inst, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
@@ -339,7 +345,7 @@ void ASSERT_RESTORE_SLOT_CORRECTLY(InstanceSpecification& inst, Slot& slot, size
 }
 
 TEST_F(InstanceSpecificationTest, mountAndEditInstanceTest) {
-    BasicManager m;
+    Manager<> m;
     Package& root = *m.create<Package>();
     Class& classifier = *m.create<Class>();
     Property& attribute = *m.create<Property>();

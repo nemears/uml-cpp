@@ -17,7 +17,7 @@ class BehaviorTest : public ::testing::Test {
 };
 
 TEST_F(BehaviorTest, removeParameterFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueBehavior& b = *m.create<OpaqueBehavior>();
     Parameter& p = *m.create<Parameter>();
     Operation& o = *m.create<Operation>();
@@ -31,7 +31,7 @@ TEST_F(BehaviorTest, removeParameterFunctorTest) {
 }
 
 TEST_F(BehaviorTest, reindexBehaviorID_Test) {
-    BasicManager m;
+    Manager<> m;
     OpaqueBehavior& behavior = *m.create<OpaqueBehavior>();
     Parameter& param = *m.create<Parameter>();
     Class& owner = *m.create<Class>();
@@ -52,7 +52,7 @@ TEST_F(BehaviorTest, reindexBehaviorID_Test) {
 }
 
 TEST_F(BehaviorTest, parseMultipleSimpleBodies) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "opaqueBehaviorTests/multipleSimpleBodies.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::OPAQUE_BEHAVIOR);
     OpaqueBehavior* bhv = &m.getRoot()->as<OpaqueBehavior>();
@@ -65,7 +65,7 @@ TEST_F(BehaviorTest, parseMultipleSimpleBodies) {
 }
 
 TEST_F(BehaviorTest, parseParameter) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "opaqueBehaviorTests/param.yml").ptr());
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::OPAQUE_BEHAVIOR);
     OpaqueBehavior* bhv = &m.getRoot()->as<OpaqueBehavior>();
@@ -76,15 +76,15 @@ TEST_F(BehaviorTest, parseParameter) {
 }
 
 TEST_F(BehaviorTest, properParameters) {
-    BasicManager m;
-    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/improperParameters.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodyNotLiteralString.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodiesEntryIsSequence.yml"), Parsers::UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodiesNotSequence.yml"), Parsers::UmlParserException);
+    Manager<> m;
+    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/improperParameters.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodyNotLiteralString.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodiesEntryIsSequence.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodiesNotSequence.yml"), UmlParserException);
 }
 
 TEST_F(BehaviorTest, emitBasicOpaqueBehavior) {
-    BasicManager m;
+    Manager<> m;
     OpaqueBehavior& b = *m.create<OpaqueBehavior>();
     Property& p = *m.create<Property>();
     Operation& o = *m.create<Operation>();
@@ -112,7 +112,9 @@ TEST_F(BehaviorTest, emitBasicOpaqueBehavior) {
         name: op
         visibility: PROTECTED)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(b));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(b, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }

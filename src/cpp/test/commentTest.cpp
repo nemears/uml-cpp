@@ -17,7 +17,7 @@ class CommentTest : public ::testing::Test {
 };
 
 TEST_F(CommentTest, annotatedElementTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     Package& annotated = *m.create<Package>();
     Comment& comment = *m.create<Comment>();
@@ -34,7 +34,7 @@ TEST_F(CommentTest, annotatedElementTest) {
 }
 
 TEST_F(CommentTest, testBasicComment) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "commentTests/comment.yml").ptr());
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -44,7 +44,7 @@ TEST_F(CommentTest, testBasicComment) {
 }
 
 TEST_F(CommentTest, commentEmitTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     Comment& comment = *m.create<Comment>();
     pckg.setID("zN&UM2AHrXX07rAiNxTmmMwLYI1O");
@@ -56,13 +56,15 @@ TEST_F(CommentTest, commentEmitTest) {
     - comment:
         id: FqaulNq6bCe_8J5M0Ff2oCCaQD05)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(CommentTest, mountAndEditCommentTest) {
-    BasicManager m;
+    Manager<> m;
     Package& root = *m.create<Package>();
     Comment& comment = *m.create<Comment>();
     root.getOwnedComments().add(comment);

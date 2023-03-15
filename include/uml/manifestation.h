@@ -9,7 +9,7 @@ namespace UML {
 
     class Manifestation : public Abstraction {
 
-        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         
         protected:
             CustomSingleton<PackageableElement, Manifestation> m_utilizedElement = CustomSingleton<PackageableElement, Manifestation>(this);

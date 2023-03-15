@@ -17,7 +17,7 @@ class BehavioredClassifierTest : public ::testing::Test {
 };
 
 TEST_F(BehavioredClassifierTest, addAndRemoveOwnedBehaviorTest) {
-    BasicManager m;
+    Manager<> m;
     Class& clazz = *m.create<Class>();
     OpaqueBehavior& bhv = *m.create<OpaqueBehavior>();
     clazz.getOwnedBehaviors().add(bhv);
@@ -33,7 +33,7 @@ TEST_F(BehavioredClassifierTest, addAndRemoveOwnedBehaviorTest) {
 }
 
 TEST_F(BehavioredClassifierTest, setAndRemoveClassifierBehaviorTest) {
-    BasicManager m;
+    Manager<> m;
     Class& clazz = *m.create<Class>();
     OpaqueBehavior& bhv = *m.create<OpaqueBehavior>();
     clazz.setClassifierBehavior(bhv);
@@ -63,7 +63,7 @@ TEST_F(BehavioredClassifierTest, setAndRemoveClassifierBehaviorTest) {
 }
 
 TEST_F(BehavioredClassifierTest, setClassifierBehaviorTest) {
-    BasicManager m;
+    Manager<> m;
     Class& a = *m.create<Class>();
     OpaqueBehavior& ab = *m.create<OpaqueBehavior>();
     a.setClassifierBehavior(ab);
@@ -126,7 +126,7 @@ TEST_F(BehavioredClassifierTest, setClassifierBehaviorTest) {
 }
 
 TEST_F(BehavioredClassifierTest, simpleClassTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "behavioredClassifierTests/simpleClass.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::CLASS);
     Class& clazz = m.getRoot()->as<Class>();
@@ -138,7 +138,7 @@ TEST_F(BehavioredClassifierTest, simpleClassTest) {
 }
 
 TEST_F(BehavioredClassifierTest, simpleClassEmitTest) {
-    BasicManager m;
+    Manager<> m;
     Class& clazz = *m.create<Class>();
     OpaqueBehavior& bhv = *m.create<OpaqueBehavior>();
     clazz.setID("E0q8HmS9yU_Qk9ct2XLjnuJOXxwc");
@@ -151,13 +151,15 @@ TEST_F(BehavioredClassifierTest, simpleClassEmitTest) {
         id: C1cleV_7fGQEgHdOfOYZ319RoCNu
   classifierBehavior: C1cleV_7fGQEgHdOfOYZ319RoCNu)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(clazz));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(clazz, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(BehavioredClassifierTest, mountFullBehavioredClassifierTest) {
-    BasicManager m;
+    Manager<> m;
     Class& clazz = *m.create<Class>();
     OpaqueBehavior& classifierBehavior = *m.create<OpaqueBehavior>();
     OpaqueBehavior& ownedBehavior = *m.create<OpaqueBehavior>();

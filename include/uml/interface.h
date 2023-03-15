@@ -7,7 +7,7 @@
 namespace UML {
     class Interface : public Classifier {
 
-        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Property;
         friend class Operation;
 

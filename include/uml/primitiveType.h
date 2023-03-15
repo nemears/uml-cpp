@@ -6,7 +6,7 @@
 namespace UML{
     class PrimitiveType : public DataType {
 
-        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             PrimitiveType();

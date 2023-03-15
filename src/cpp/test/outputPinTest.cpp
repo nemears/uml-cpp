@@ -8,7 +8,7 @@ class OutputPinTest : public ::testing::Test {
 };
 
 TEST_F(OutputPinTest, reindexIDTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueAction& a = *m.create<OpaqueAction>();
     OutputPin& i = *m.create<OutputPin>();
     a.getOutputValues().add(i);
@@ -18,7 +18,7 @@ TEST_F(OutputPinTest, reindexIDTest) {
 }
 
 TEST_F(OutputPinTest, reindexNameTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueAction& a = *m.create<OpaqueAction>();
     OutputPin& i = *m.create<OutputPin>();
     a.getOutputValues().add(i);
@@ -28,7 +28,7 @@ TEST_F(OutputPinTest, reindexNameTest) {
 }
 
 TEST_F(OutputPinTest, AddPinFunctorTest) {
-    BasicManager m;
+    Manager<> m;
     OpaqueAction& a = *m.create<OpaqueAction>();
     OutputPin& i = *m.create<OutputPin>();
     a.getOutputValues().add(i);

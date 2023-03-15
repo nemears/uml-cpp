@@ -18,7 +18,7 @@ class DependencyTest : public ::testing::Test {
 };
 
 TEST_F(DependencyTest, addClientAndSupplierTest) {
-    BasicManager m;
+    Manager<> m;
     Package& client = *m.create<Package>();
     Package& supplier = *m.create<Package>();
     Dependency& dep = *m.create<Dependency>();
@@ -37,7 +37,7 @@ TEST_F(DependencyTest, addClientAndSupplierTest) {
 }
 
 TEST_F(DependencyTest, removeClientAndSupplierTest) {
-    BasicManager m;
+    Manager<> m;
     Package& client = *m.create<Package>();
     Package& supplier = *m.create<Package>();
     Dependency& dep = *m.create<Dependency>();
@@ -61,7 +61,7 @@ TEST_F(DependencyTest, removeClientAndSupplierTest) {
 }
 
 TEST_F(DependencyTest, setAndRemoveFromClientTest) {
-    BasicManager m;
+    Manager<> m;
     Package& client = *m.create<Package>();
     Dependency& dependency = *m.create<Dependency>();
     client.getClientDependencies().add(dependency);
@@ -80,7 +80,7 @@ TEST_F(DependencyTest, setAndRemoveFromClientTest) {
     ASSERT_EQ(dependency.getRelatedElements().size(), 0);
 }
 TEST_F(DependencyTest, basicDependencyTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "dependencyTests/basicDependency.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -94,7 +94,7 @@ TEST_F(DependencyTest, basicDependencyTest) {
 }
 
 TEST_F(DependencyTest, basicDependencyEmitTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     Dependency& dependency = *m.create<Dependency>();
     Package& client = *m.create<Package>();
@@ -126,13 +126,15 @@ TEST_F(DependencyTest, basicDependencyEmitTest) {
         clientDependencies:
           - "tAps&UBn21dKnQ5z7qaAzKBZqR7S")"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(DependencyTest, parseAllTheSubclassesTest) {
-    BasicManager m;
+    Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "dependencyTests/allSubClasses.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -160,7 +162,7 @@ TEST_F(DependencyTest, parseAllTheSubclassesTest) {
 }
 
 TEST_F(DependencyTest, emitAllDependencySubClassesTest) {
-    BasicManager m;
+    Manager<> m;
     Package& pckg = *m.create<Package>();
     Abstraction& abstraction = *m.create<Abstraction>();
     Realization& realization = *m.create<Realization>();
@@ -284,7 +286,9 @@ TEST_F(DependencyTest, emitAllDependencySubClassesTest) {
     - package:
         id: uONNU0sKPVjLALJuw2pHcNqljgkg)"""";
     std::string generatedEmit;
-    ASSERT_NO_THROW(generatedEmit = Parsers::emit(pckg));
+    EmitterData data;
+    data.mode = SerializationMode::WHOLE;
+    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
     std::cout << generatedEmit << '\n';
     ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit || expectedEmit3 == generatedEmit);
 }
@@ -303,7 +307,7 @@ void ASSERT_RESTORE_DEPENDENCY(Dependency& dependency, NamedElement& client, Nam
 }
 
 TEST_F(DependencyTest, mountAndEditDependencyTest) {
-  BasicManager m;
+  Manager<> m;
   Package& root = *m.create<Package>();
   Package& supplier = *m.create<Package>();
   Package& client = *m.create<Package>();

@@ -21,9 +21,10 @@ set(umlSources  element.cpp id.cpp namedElement.cpp namespace.cpp package.cpp pa
 
                 #managers
                 managers/abstractManager.cpp managers/managerNode.cpp
+                managers/filePersistencePolicy.cpp
 
                 #serialization
-                managers/serialization/open_uml/parser.cpp managers/serialization/open_uml/emitterMetaData.cpp
-
+                managers/serialization/open_uml/openUmlSerializationPolicy.cpp
+                
                 #CMAKE option for set
                 PARENT_SCOPE)

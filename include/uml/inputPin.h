@@ -7,7 +7,7 @@
 namespace UML {
     class InputPin : public Pin {
 
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
 
         protected:
             InputPin();

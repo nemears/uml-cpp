@@ -11,7 +11,7 @@ namespace UML {
 
     class Artifact : public Classifier, public DeployedArtifact {
 
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
 
         protected:
             CustomSet<Artifact, Artifact> m_nestedArtifacts = CustomSet<Artifact, Artifact>(this);

@@ -11,7 +11,7 @@ namespace UML {
     class RedefinableTemplateSignature : public RedefinableElement, public TemplateSignature {
 
         friend class Classifier;
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
 
         protected:
             class AddExtendedSignaturePolicy {

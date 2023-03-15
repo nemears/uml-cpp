@@ -1,0 +1,171 @@
+---
+  package:
+    id: m3ixuPETCXTA2EgBYEEQP4nBGhoG #eventually maybe replace id so not every projects model is same id
+    name: Model
+    packagedElements:
+      - package:
+          id: UML_r67OnwwyTHCtCmWnZsd8ePh5
+          name: UML
+          packagedElements:
+            - package:
+                id: Primitive_Types_WZcyDDLemQ97
+                name: Primitive_Types
+                packagedElements:
+                  - primitiveType:
+                      id: "bool_bzkcabSy3CiFd&HmJOtnVRK"
+                      name: bool
+                  - primitiveType:
+                      id: "real_aZG&w6yl61bXVWutgeyScN9"
+                      name: real
+                  - primitiveType:
+                      id: "string_L&R5eAEq6f3LUNtUmzHzT"
+                      name: string
+                  - primitiveType:
+                      id: int_r9nNbBukx47IomXrT2raqtc4
+                      name: int
+            - package:
+                id: Standard_Profile_IlesiZnrVGR
+                name: Open-UML Profile
+                packagedElements:
+                  - class:
+                      id: fppmrPcasKJDUBoKnMA3rNU22SFk
+                      name: PresentationElement
+                      ownedAttributes:
+                        - property:
+                            id: "5aQ4hcDk32eSc3R&84uIyACddmu0"
+                            name: elementID
+                            type: "string_L&R5eAEq6f3LUNtUmzHzT"
+                  - class:
+                      id: "&7qxHqMCh5Cwd3&s053vQD&xPsAK"
+                      name: ShapeElement
+                      generalizations:
+                        - generalization:
+                            id: v5WUo7Gu_B7JtsMFgtglJTt8AiAJ
+                            general: fppmrPcasKJDUBoKnMA3rNU22SFk
+                      ownedAttributes:
+                        - property:
+                            id: XH6q5l6Dpf8QoqUeqb0wlBcF3LVN
+                            name: x
+                            type: int_r9nNbBukx47IomXrT2raqtc4
+                        - property:
+                            id: "MbxzX87yGS4s8kl&FehOVttIWs2q"
+                            name: width
+                            type: int_r9nNbBukx47IomXrT2raqtc4
+                        - property:
+                            id: 3df71o06GbM0LYLmcrv7yIehbxFG
+                            name: y
+                            type: int_r9nNbBukx47IomXrT2raqtc4
+                        - property:
+                            id: pmvMVFeRTg6QF87n8ey97MIyopwb
+                            name: height
+                            type: int_r9nNbBukx47IomXrT2raqtc4
+                  - class:
+                      id: NKE5JxXD2Cp82Gw0CzsnlgtanuSp
+                      name: PathElement
+                      generalizations:
+                        - generalization:
+                            id: KLxKdrkoSZbd4LhjhQokgqbo22Qn
+                            general: fppmrPcasKJDUBoKnMA3rNU22SFk
+                      ownedAttributes:
+                        - property:
+                            id: JZd_DbxP5H2otheX0ucXKgeGxB3b
+                            name: waypoints
+                            type: Wd18iwR4ijeaG7WrKZJX966ySqPg
+                        - property:
+                            id: nW89s4ZaRhGlrwbri3wIQ6AG5PcY
+                            name: source
+                            type: "&7qxHqMCh5Cwd3&s053vQD&xPsAK"
+                        - property:
+                            id: "KrQkyKfJLEoLHucoJlsUn&06GdTi"
+                            name: target
+                            type: "&7qxHqMCh5Cwd3&s053vQD&xPsAK"
+                  - class:
+                      id: Wd18iwR4ijeaG7WrKZJX966ySqPg
+                      name: Point
+                      ownedAttributes:
+                        - property:
+                            id: "TL9YRNP&uSq5O&ZX0BNUqSl3uHTO"
+                            name: x
+                            type: int_r9nNbBukx47IomXrT2raqtc4
+                        - property:
+                            id: WQEwSh2OYmb1Yj2Hu5Fdk_S6qFP5
+                            name: y
+                            type: int_r9nNbBukx47IomXrT2raqtc4
+                  - extension:
+                      id: "CLUbrvbx1qIuFyoG1O&ULzByyPAP"
+                      metaClass: CLASS
+                      ownedEnd:
+                        extensionEnd:
+                          id: "&sSE4laBvC8nVkvXWrGa3wrsD3dB"
+                          type: Diagram_nuc1IC2Cavgoa4zMBlVq
+                          association: "CLUbrvbx1qIuFyoG1O&ULzByyPAP"
+                ownedStereotypes:
+                  - stereotype:
+                      id: Diagram_nuc1IC2Cavgoa4zMBlVq
+                      name: Diagram
+                      ownedAttributes:
+                        - property:
+                            id: s1uJq8oidNVLz52qsZCsdcecIoZs
+                            name: presentationElements
+                            type: fppmrPcasKJDUBoKnMA3rNU22SFk
+                        - property:
+                            id: Nktd1JglePYIY3SN0akm0TklcGd0
+                            name: shapesPackage
+                            type: "zvAhfu&WNCI1cNXd3BkqhxywHAYY"
+                            lowerValue:
+                              literalInt:
+                                id: 27qjUIDYyZOx_z9PQy_ZjnPwWVlM
+                                value: 0
+                            upperValue:
+                              literalInt:
+                                id: "9&HlAYeeLZdmnSPDfvOjWUZx5ILR"
+                                value: 1
+            - package:
+                id: y7LiHxyNJEQt9UaAj68FATLdgf18
+                name: UML2 Metamodel
+                packagedElements:
+                  - class:
+                      id: "zvAhfu&WNCI1cNXd3BkqhxywHAYY"
+                      name: Package
+                      generalizations:
+                        - generalization:
+                            id: cyWbAa159c48tfqsoWTZJMWOE0LO
+                            general: pUg_kaODi6D0KMi6MXAJcMWMG3G_
+                        - generalization:
+                            id: "ZvHd7GYQP&Tsoat31w5et4Hmel_n"
+                            general: "&ve0WKXZ2Hn47xMl&Dl&lXPTMHD9"
+                  - class:
+                      id: pUg_kaODi6D0KMi6MXAJcMWMG3G_
+                      name: Namespace
+                      generalizations:
+                        - generalization:
+                            id: SCQQKRDwxHNk5usTlqBa1whibNRn
+                            general: Ox30_bFSsGtPZorPYOkDTLeXquIN
+                  - class:
+                      id: "&ve0WKXZ2Hn47xMl&Dl&lXPTMHD9"
+                      name: PackageableElement
+                      generalizations:
+                        - generalization:
+                            id: "feIy&LrRjB4RegILZ4WEHtSvSJJJ"
+                            general: Ox30_bFSsGtPZorPYOkDTLeXquIN
+                  - class:
+                      id: Ox30_bFSsGtPZorPYOkDTLeXquIN
+                      name: NamedElement
+                      generalizations:
+                        - generalization:
+                            id: nPgccF4Kz_icaR9cEyrGqpjKSgpc
+                            general: XI35viryLd5YduwnSbWpxSs3npcu
+                      ownedAttributes:
+                        - property:
+                            id: OATEs8WJeyqHKy7Os_9aWi5HGCDU
+                            name: name
+                            type: "string_L&R5eAEq6f3LUNtUmzHzT"
+                  - class:
+                      id: XI35viryLd5YduwnSbWpxSs3npcu
+                      name: Element
+                      ownedAttributes:
+                        - property:
+                            id: 3gx55nLEvmzDt2kKK7gYgxsTBD6M
+                            name: id
+                            type: "string_L&R5eAEq6f3LUNtUmzHzT"
+...

@@ -6,7 +6,7 @@
 namespace UML {
     class ForkNode : public ControlNode {
 
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
         
         protected:
             ForkNode();

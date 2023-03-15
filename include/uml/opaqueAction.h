@@ -8,7 +8,7 @@
 namespace UML {
     class OpaqueAction : public Action {
 
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
 
         protected:
             CustomSet<InputPin, OpaqueAction> m_inputValues = CustomSet<InputPin, OpaqueAction>(this);

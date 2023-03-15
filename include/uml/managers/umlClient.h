@@ -1,7 +1,7 @@
 #ifndef _UML_UML_CLIENT_H_
 #define _UML_UML_CLIENT_H_
 
-#include "managerPolicy.h"
+#include "manager.h"
 #include "serverAccessPolicy.h"
 #include "serverPersistencePolicy.h"
 

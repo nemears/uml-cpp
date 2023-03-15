@@ -20,7 +20,7 @@ namespace UML {
     };
 
     class ObjectNode : public ActivityNode, public TypedElement {
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
 
         protected:
             CustomSingleton<ValueSpecification, ObjectNode> m_upperBound = CustomSingleton<ValueSpecification, ObjectNode>(this);

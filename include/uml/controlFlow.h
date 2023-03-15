@@ -6,7 +6,7 @@
 namespace UML {
     class ControlFlow : public ActivityEdge {
         
-        template <typename AccessPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy> friend class Manager;
 
         protected:
             ControlFlow();

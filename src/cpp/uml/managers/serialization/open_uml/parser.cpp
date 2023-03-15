@@ -1,7 +1,7 @@
-#include "uml/parsers/parser.h"
+#include "uml/managers/serialization/open_uml/parser.h"
 #include <fstream>
 #include "uml/uml-stable.h"
-#include "uml/managers/managerPolicy.h"
+#include "uml/managers/manager.h"
 #include <iostream>
 
 using namespace std;

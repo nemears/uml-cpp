@@ -14,7 +14,7 @@ namespace UML{
 
     class Class : public EncapsulatedClassifier , public BehavioredClassifier {
 
-        template <class AccessPolicy, class PersistencePolicy> friend class Manager;
+        template <class AccessPolicy, class SerializationPolicy> friend class Manager;
         friend class Property;
         friend class Operation;
 

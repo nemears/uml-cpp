@@ -1,7 +1,7 @@
 #ifndef _UML_MANAGERS_ABSTRACT_MANAGER_H_
 #define _UML_MANAGERS_ABSTRACT_MANAGER_H_
 
-#include "uml/element.h"
+#include "uml/types/element.h"
 #include "uml/set/setLock.h"
 
 namespace UML {

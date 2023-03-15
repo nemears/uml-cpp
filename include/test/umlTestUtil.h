@@ -3,7 +3,7 @@
 
 #include "uml/managers/protocol/umlClient.h"
 #include "uml/managers/manager.h"
-#include "uml/package.h"
+#include "uml/types/package.h"
 
 namespace UML {
 

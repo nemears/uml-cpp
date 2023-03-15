@@ -1,7 +1,7 @@
 #ifndef _UML_UML_PTR_H_
 #define _UML_UML_PTR_H_
 
-#include "element.h"
+#include "types/element.h"
 #include "managers/abstractManager.h"
 #include "managers/managerNode.h"
 

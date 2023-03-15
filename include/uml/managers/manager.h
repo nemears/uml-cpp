@@ -1,7 +1,7 @@
 #ifndef _UML_MANAGERS_MANAGER_POLICY_H_
 #define _UML_MANAGERS_MANAGER_POLICY_H_
 
-#include "uml/element.h"
+#include "uml/types/element.h"
 #include "abstractManager.h"
 #include "abstractAccessPolicy.h"
 #include "simpleAccessPolicy.h"

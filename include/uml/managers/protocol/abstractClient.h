@@ -1,7 +1,7 @@
 #ifndef _UML_MANAGERS_ABSTRACT_CLIENT_H_
 #define _UML_MANAGERS_ABSTRACT_CLIENT_H_
 
-#include "uml/element.h"
+#include "uml/types/element.h"
 #ifdef WIN32
 #include "winsock2.h"
 #include <ws2tcpip.h>

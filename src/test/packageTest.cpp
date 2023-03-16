@@ -289,19 +289,19 @@ TEST_F(PackageTest, ElementFeaturesTest) {
 
 TEST_F(PackageTest, ElementParserExceptionTest) {
     Manager<> m;
-    ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperID.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "packageParserTests/otherImproperID.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperID.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "packageParserTests/otherImproperID.yml"), SerializationError);
 }
 
 TEST_F(PackageTest, NamedElementParserExceptionTest) {
     Manager<> m;
-    ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperName.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperName.yml"), SerializationError);
 }
 
 TEST_F(PackageTest, properExceptions) {
     Manager<> m;
-    ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperPackagedElement.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "packageParserTests/invalidPackagedElements.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperPackagedElement.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "packageParserTests/invalidPackagedElements.yml"), SerializationError);
 }
 
 TEST_F(PackageTest, basicPackageMerge) {

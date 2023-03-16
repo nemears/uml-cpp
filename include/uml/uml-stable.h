@@ -96,6 +96,7 @@ namespace UML {
     typedef UmlPtr<OpaqueAction> OpaqueActionPtr;
     typedef UmlPtr<ElementImport> ElementImportPtr;
     typedef UmlPtr<PackageImport> PackageImportPtr;
+    typedef UmlPtr<EnumerationLiteral> EnumerationLiteralPtr;
 }
 
 #endif

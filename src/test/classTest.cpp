@@ -408,8 +408,8 @@ TEST_F(ClassTest, parseOperation) {
 
 TEST_F(ClassTest, properErrors) {
     Manager<> m;
-    ASSERT_THROW(m.open(ymlPath + "classTests/improperOperationIdentifier.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "classTests/operationsNotSequence.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "classTests/improperOperationIdentifier.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "classTests/operationsNotSequence.yml"), SerializationError);
 }
 
 TEST_F(ClassTest, basicGeneralizationTest) {

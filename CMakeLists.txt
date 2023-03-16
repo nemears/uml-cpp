@@ -63,8 +63,9 @@ add_library(uml STATIC
     src/uml/managers/filePersistencePolicy.cpp
     ## serialization
     src/uml/managers/serialization/open_uml/openUmlSerializationPolicy.cpp
+    src/uml/managers/serialization/open_uml/emit.cpp src/uml/managers/serialization/open_uml/parse.cpp
 
-    #types
+    # types
     src/uml/types/element.cpp  src/uml/types/namedElement.cpp src/uml/types/namespace.cpp src/uml/types/package.cpp 
     src/uml/types/packageableElement.cpp src/uml/types/templateableElement.cpp src/uml/types/parameterableElement.cpp 
     src/uml/types/relationship.cpp src/uml/types/directedRelationship.cpp src/uml/types/packageMerge.cpp

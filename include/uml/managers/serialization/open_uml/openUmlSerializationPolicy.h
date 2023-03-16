@@ -12,7 +12,14 @@ namespace UML {
     class EmitterData {
         public:
             SerializationMode mode = SerializationMode::INDIVIDUAL;
-            std::string path = "";
+            bool isJSON = false;
+            bool emitReferences = true;
+    };
+
+    class ParserData {
+        public:
+            SerializationMode mode = SerializationMode::INDIVIDUAL;
+            AbstractManager* manager = 0;
     };
 
     class OpenUmlSerializationPolicy {
@@ -24,24 +31,19 @@ namespace UML {
             std::string emitWhole(Element& el, AbstractManager& manager);
     };
 
-    std::string emit(Element& el, EmitterData& data);
+    class EmitterData;
+    class ParserData;
 
-    class UmlParserException : public std::exception {
+    std::string emit(Element& el, EmitterData& data);
+    ElementPtr parse(std::string data, ParserData& metaData);
+
+    class SerializationError : public std::exception {
         private:
             std::string m_msg;
-
-            public:
-                UmlParserException(const std::string msg, const std::string path, size_t line) : 
-                    m_msg(msg + " path " + path + " line number " + std::to_string(line))
-                    {};
-                UmlParserException(std::string msg, std::string path) :
-                    m_msg(msg) 
-                    {};
-                UmlParserException(std::string msg) :
-                    m_msg(msg) 
-                    {};
-                virtual const char* what() const throw() {
-                    return m_msg.c_str();
-                }
+        public:
+            SerializationError(std::string msg) : m_msg(msg) {};
+            virtual const char* what() const throw() {
+                return m_msg.c_str();
+            }
     };
 }

@@ -312,8 +312,8 @@ TEST_F(OperationTest, OverrideSpecificationTest) {
 
 TEST_F(OperationTest, properExceptions) {
     Manager<> m;
-    ASSERT_THROW(m.open(ymlPath + "operationTests/invalidBehavior.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "operationTests/invalidMethodList.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "operationTests/invalidBehavior.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "operationTests/invalidMethodList.yml"), SerializationError);
 }
 
 TEST_F(OperationTest, basicParamTest) {

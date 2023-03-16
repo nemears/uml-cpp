@@ -246,13 +246,13 @@ TEST_F(PropertyTest, multiplicityTest) {
 
 TEST_F(PropertyTest, improperTypeTest) {
     Manager<> m;
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType2.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType3.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/propertyNotMap.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/attributesNotSequence.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/invalidLower.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "propertyTests/invalidUpper.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType2.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType3.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/propertyNotMap.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/attributesNotSequence.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/invalidLower.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "propertyTests/invalidUpper.yml"), SerializationError);
 }
 
 TEST_F(PropertyTest, literalBoolDefaultValueTest) {

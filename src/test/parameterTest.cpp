@@ -42,8 +42,8 @@ TEST_F(ParameterTest, reindexID_ownerTest) {
 
 TEST_F(ParameterTest, properExceptions) {
     Manager<> m;
-    ASSERT_THROW(m.open(ymlPath + "parameterTests/invalidDirection.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "parameterTests/invalidDirection2.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "parameterTests/invalidDirection.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "parameterTests/invalidDirection2.yml"), SerializationError);
 }
 
 TEST_F(ParameterTest, emitParameterWMultiplicityTest) {

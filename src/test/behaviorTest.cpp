@@ -77,10 +77,10 @@ TEST_F(BehaviorTest, parseParameter) {
 
 TEST_F(BehaviorTest, properParameters) {
     Manager<> m;
-    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/improperParameters.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodyNotLiteralString.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodiesEntryIsSequence.yml"), UmlParserException);
-    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodiesNotSequence.yml"), UmlParserException);
+    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/improperParameters.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodyNotLiteralString.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodiesEntryIsSequence.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodiesNotSequence.yml"), SerializationError);
 }
 
 TEST_F(BehaviorTest, emitBasicOpaqueBehavior) {

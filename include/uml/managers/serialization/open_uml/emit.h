@@ -6,18 +6,28 @@
 
 namespace UML {
     // general functions for emitting
-    void emitElementBody(YAML::Emitter& emitter, Element& el, EmitterData& data);
-    void emitScope(YAML::Emitter& emitter, Element& el, EmitterData& data);
+    void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data);
 
     // emit features of element types
-    void emitElement(YAML::Emitter& emitter, Element& el, EmitterData& data);
+    void emitDataTypeFeatures(YAML::Emitter& emitter, DataType& dataType, EmitterData& data);
+    void emitElementFeatures(YAML::Emitter& emitter, Element& el, EmitterData& data);
     void emitInstanceSpecificationFeatures(YAML::Emitter& emitter, InstanceSpecification& specification, EmitterData& data);
-    void emitNamedElement(YAML::Emitter& emitter, NamedElement& el, EmitterData& data);
+    void emitNamedElementFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterData& data);
+    void emitPackageFeatures(YAML::Emitter& emitter, Package& package, EmitterData& data);
+
+    // emit scopes of element types
+    bool emitElementScope(YAML::Emitter& emitter, Element& el, EmitterData& data);
+    bool emitEnumerationLiteralScope(YAML::Emitter& emitter, EnumerationLiteral& literal, EmitterData& data);
+    bool emitPackageableElementScope(YAML::Emitter& emitter, PackageableElement& el, EmitterData& data);
+
 
     // emitting elements
+    void emitDataType(YAML::Emitter& emitter, DataType& dataType, EmitterData& data);
     void emitEnumerationLiteral(YAML::Emitter& emitter, EnumerationLiteral& literal, EmitterData& data);
     void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst, EmitterData& data);
+    void emitPackage(YAML::Emitter& emitter, Package& package, EmitterData& data);
 
     // emitting sets
     void determineAndEmitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst, EmitterData& data);
+    void determineAndEmitPackageableElements(YAML::Emitter& emitter, PackageableElement& el, EmitterData& data);
 }

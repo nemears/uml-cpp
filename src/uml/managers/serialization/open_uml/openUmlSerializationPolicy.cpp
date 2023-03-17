@@ -47,8 +47,7 @@ std::string emit(Element& el, EmitterData& data) {
         emitter << YAML::BeginDoc;
     }
     emitter << YAML::BeginMap;
-    emitScope(emitter, el, data);
-    emitElementBody(emitter, el, data);
+    emitElementData(emitter, el, data);
     emitter << YAML::EndMap;
     if (data.emitReferences) {
         if (data.isJSON) {

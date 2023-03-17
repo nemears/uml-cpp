@@ -7,6 +7,7 @@
 namespace UML {
     // general functions for emitting
     void emitElementBody(YAML::Emitter& emitter, Element& el, EmitterData& data);
+    void emitScope(YAML::Emitter& emitter, Element& el, EmitterData& data);
 
     // emit features of element types
     void emitElement(YAML::Emitter& emitter, Element& el, EmitterData& data);

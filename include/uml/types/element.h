@@ -193,15 +193,8 @@ namespace UML {
     template< class T, class U> class TypedSet;
     template <class T> class UmlPtr;
     typedef UmlPtr<Element> ElementPtr;
-    namespace Parsers {
-        struct EmitterMetaData;
-        class ParserMetaData;
-        EmitterMetaData getData(Element& el);
-        void setOwner(Element& el, ID id);
-        void emitToFile(Element& el, EmitterMetaData& data, std::string path, std::string fileName);
-        ElementPtr parse(ParserMetaData& data);
-        ElementPtr parseYAML(YAML::Node node, ParserMetaData& data);
-    }
+    class EmitterData;
+    class ParserData;
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -244,11 +237,9 @@ namespace UML {
         template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomOrderedSet;
         template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
         template <class T> friend class UmlPtr;
-        friend Parsers::EmitterMetaData Parsers::getData(Element& el);
-        friend ElementPtr Parsers::parseYAML(YAML::Node node, Parsers::ParserMetaData& data);
-        friend void Parsers::setOwner(Element& el, ID id);
-        friend void Parsers::emitToFile(Element& el, Parsers::EmitterMetaData& data, std::string path, std::string fileName);
-        friend ElementPtr Parsers::parse(Parsers::ParserMetaData& data);
+        friend std::string emit(Element& el, EmitterData& data);
+        friend ElementPtr parse(std::string data, ParserData& metaData);
+        friend bool parseElementScope(YAML::Node node, Element& el, ParserData& data);
 
         private:
         protected:
@@ -314,6 +305,8 @@ namespace UML {
             inline friend bool operator!=(const Element& lhs, const Element& rhs) {
                 return lhs.m_id != rhs.m_id;
             };
+        private:
+            void setOwner(ID id);
     };
 
     //Exceptions

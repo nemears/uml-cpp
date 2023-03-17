@@ -14,6 +14,11 @@ namespace UML {
     void parseInstanceSpecificationFeatures(YAML::Node node, InstanceSpecification& inst, ParserData& data);
     void parseNamedElementFeatures(YAML::Node node, NamedElement& el, ParserData& data);
 
+    // parsing scopes of element types
+    bool parseElementScope(YAML::Node node, Element& el, ParserData& data);
+    bool parseEnumerationLiteralScope(YAML::Node node, EnumerationLiteral& literal, ParserData& data);
+    // TODO
+
     // parsing elements
     EnumerationLiteralPtr createAndParseEnumerationLiteral(YAML::Node node, ParserData& data);
     InstanceSpecificationPtr createAndParseInstanceSpecification(YAML::Node node, ParserData& data);

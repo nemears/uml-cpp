@@ -58,6 +58,13 @@ void emitElementBody(YAML::Emitter& emitter, Element& el, EmitterData& data) {
     }
 }
 
+void emitScope(YAML::Emitter& emitter, Element& el, EmitterData& data) {
+    if (el.getOwner()) {
+        emitter << "owner" << YAML::Value << el.getOwner().id().string();
+        return;
+    }
+}
+
 void emitElement(YAML::Emitter& emitter, Element& el, EmitterData& data) {
     emitter << "id" << YAML::Value << el.getID().string();
     emitOwnedSet(emitter, el, data, "appliedStereotypes", &Element::getAppliedStereotypes, determineAndEmitInstanceSpecification);

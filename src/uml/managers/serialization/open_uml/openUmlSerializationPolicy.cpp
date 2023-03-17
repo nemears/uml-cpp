@@ -3,6 +3,8 @@
 #include "uml/managers/serialization/open_uml/parse.h"
 #include "yaml-cpp/yaml.h"
 
+using namespace std;
+
 namespace UML {
 
 std::string OpenUmlSerializationPolicy::extensionName() {
@@ -45,10 +47,20 @@ std::string emit(Element& el, EmitterData& data) {
         emitter << YAML::BeginDoc;
     }
     emitter << YAML::BeginMap;
-    // TODO emit scope
+    emitScope(emitter, el, data);
     emitElementBody(emitter, el, data);
     emitter << YAML::EndMap;
     if (data.emitReferences) {
+        if (data.isJSON) {
+            emitter << YAML::EndMap << YAML::BeginMap;
+        } else {
+            emitter << YAML::EndDoc << YAML::BeginDoc;
+        }
+        emitter << YAML::BeginSeq;
+        for (auto reference : el.m_node->m_references) {
+            emitter << reference.first.string();
+        }
+        emitter << YAML::EndSeq;
         if (data.isJSON) {
             emitter << YAML::EndMap;
         } else {
@@ -68,7 +80,18 @@ ElementPtr parse(std::string data, ParserData& metaData) {
         ret = parseNode(rootNodes[0], metaData);
         // TODO parseScope
         if (rootNodes.size() == 2) {
-            // TODO set references from list
+            YAML::Node references = rootNodes[1];
+            if (!references.IsSequence()) {
+                throw SerializationError("reference list is not a list!" + getLineNumber(references));
+            }
+            for (size_t i = 0; i < references.size(); i++) {
+                ID referenceID = ID::fromString(references[i].as<string>());
+                if (metaData.manager->loaded(referenceID)) {
+                    ElementPtr referencedEl = metaData.manager->get(referenceID);
+                    ret->m_node->setReference(*referencedEl);
+                    referencedEl->m_node->setReference(*ret);
+                }
+            }
         }
     } else {
         ret = parseNode(rootNodes[0], metaData);

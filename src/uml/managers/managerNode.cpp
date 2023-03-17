@@ -23,6 +23,7 @@ void ManagerNode::setReference(Element& el) {
         m_references[el.getID()] = {el.m_node, 1};
     } else {
         reference->second.count++;
+        reference->second.node = el.m_node;
     }
 }
 

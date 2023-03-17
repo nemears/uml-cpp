@@ -63,6 +63,20 @@ void parseSet(YAML::Node node, U& el, ParserData& data, string key, S& (U::*sequ
     }
 }
 
+template <class T, class U>
+void parseSingleton(YAML::Node node, U& el, ParserData& data, string key, void (U::*idMutator)(ID), void (U::*elMutator)(T&)) {
+    if (node[key]) {
+        if (node[key].IsMap()) {
+            // assuming this is an owned singleton and we are parsing a project serialized in whole
+            (el.*elMutator)(parseNode(node[key], data)->as<T>());
+        } else if (node[key].IsScalar()) {
+            (el.*idMutator)(ID::fromString(node[key].as<string>()));
+        } else {
+            throw SerializationError("Singleton " + key + " for element type " + Element::elementTypeToString(U::elementType()) + " could not be serialized because it was not a map or scalar " + getLineNumber(node[key]));
+        }
+    }
+}
+
 string getLineNumber(YAML::Node node) {
     return "line number " + to_string(node.Mark().line);
 }
@@ -105,7 +119,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
     } else if (node["property"]) {
         ret = createAndParse<Property>(node["property"], data,
                     parseElementFeatures,
-                    parseNamedElementFeatures);
+                    parseNamedElementFeatures,
+                    parseTypedElementFeatures);
         parseScope(node, ret->as<Property>(), data, parsePropertyScope, parseElementScope);
     }
     return ret;
@@ -144,6 +159,10 @@ void parseNamedElementFeatures(YAML::Node node, NamedElement& el, ParserData& da
 
 void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data) {
     parseSet<InstanceSpecification>(node, pckg, data, "packagedElements", &Package::getPackagedElements);
+}
+
+void parseTypedElementFeatures(YAML::Node node, TypedElement& typedElement, ParserData& data) {
+    parseSingleton<Type>(node, typedElement, data, "type", &TypedElement::setType, &TypedElement::setType);
 }
 
 bool parseElementScope(YAML::Node node, Element& el, ParserData& data) {

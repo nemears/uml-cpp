@@ -51,6 +51,13 @@ void emitOwnedSet(YAML::Emitter& emitter, U& el, EmitterData& data, string key, 
     }
 }
 
+template <class T, class U>
+void emitSingleton(YAML::Emitter& emitter, U& el, string key, UmlPtr<T> (U::*acessor)() const) {
+    if ((el.*acessor)()) {
+        emitter << key << YAML::Value << (el.*acessor)().id().string();
+    }
+}
+
 void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
     switch (el.getElementType()) {
         case ElementType::ABSTRACTION : {
@@ -100,7 +107,8 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, property, data, emitPropertyScope, emitElementScope);
             emitElementTypeAndData(emitter, property, data, "property",
                         emitElementFeatures,
-                        emitNamedElementFeatures);
+                        emitNamedElementFeatures,
+                        emitTypedElementFeatures);
             break;
         }
     }
@@ -127,6 +135,10 @@ void emitNamedElementFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterD
 
 void emitPackageFeatures(YAML::Emitter& emitter, Package& package, EmitterData& data) {
     emitOwnedSet<PackageableElement>(emitter, package, data, "packagedElements", &Package::getPackagedElements);
+}
+
+void emitTypedElementFeatures(YAML::Emitter& emitter, TypedElement& typedElement, EmitterData& data) {
+    emitSingleton<Type>(emitter, typedElement, "type", &TypedElement::getType);
 }
 
 bool emitElementScope(YAML::Emitter& emitter, Element& el, EmitterData& data) {

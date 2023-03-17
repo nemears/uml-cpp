@@ -15,6 +15,7 @@ namespace UML {
     void parseInstanceSpecificationFeatures(YAML::Node node, InstanceSpecification& inst, ParserData& data);
     void parseNamedElementFeatures(YAML::Node node, NamedElement& el, ParserData& data);
     void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
+    void parseTypedElementFeatures(YAML::Node node, TypedElement& typedElement, ParserData& data);
 
     // parsing scopes of element types
     bool parseElementScope(YAML::Node node, Element& el, ParserData& data);

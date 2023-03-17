@@ -42,7 +42,7 @@ void parseScope(YAML::Node node, T& el, ParserData& data, bool (*parser)(YAML::N
 } 
 
 template <class T, class U, class S>
-void parseSet(YAML::Node node, U& el, ParserData& data, string key, S& (U::*sequenceSignature)(), UmlPtr<T> (*parserSignature)(YAML::Node, ParserData&)) {
+void parseSet(YAML::Node node, U& el, ParserData& data, string key, S& (U::*sequenceSignature)()) {
     if (node[key]) {
         if (!node[key].IsSequence()) {
             throw SerializationError("Could not parse set " + key + "because it's data was not a sequence! " + getLineNumber(node[key]));
@@ -57,7 +57,7 @@ void parseSet(YAML::Node node, U& el, ParserData& data, string key, S& (U::*sequ
                     (el.*sequenceSignature)().add(ID::fromString(node[key][i].as<string>().substr(0, 29)));
                 }
             } else if (node[key][i].IsMap()) {
-                (el.*sequenceSignature)().add((*parserSignature)(node[key][i], data));
+                (el.*sequenceSignature)().add(parseNode(node[key][i], data));
             }
         }
     }
@@ -74,23 +74,45 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
     }
     // TODO
     else if (node["dataType"] && node["dataType"].IsMap()) {
-        ret = createAndParseDataType(node, data);
+        ret = createAndParse<DataType>(node["dataType"], data, 
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseDataTypeFeatures);
+        parseScope(node, ret->as<DataType>(), data, parsePackageableElementScope, parseElementScope);
+    return ret;
     } else if (node["enumerationLiteral"]) {
-        ret = createAndParseEnumerationLiteral(node, data);
+        ret = createAndParse<DataType>(node["dataType"], data, 
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseDataTypeFeatures);
+        parseScope(node, ret->as<EnumerationLiteral>(), data, parsePackageableElementScope, parseElementScope);
     }
     // TODO
     else if (node["instanceSpecification"]) {
-        ret = createAndParseInstanceSpecification(node, data);
+        ret = createAndParse<InstanceSpecification>(node["instanceSpecification"], data, 
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseInstanceSpecificationFeatures);
+        parseScope(node, ret->as<InstanceSpecification>(), data, parseElementScope);
     }
     // TODO
     else if (node["package"]) {
-        ret = createAndParsePackage(node, data);
+        ret = createAndParse<Package>(node["package"], data, 
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parsePackageFeatures);
+        parseScope(node, ret->as<Package>(), data, parsePackageableElementScope, parseElementScope);
+    } else if (node["property"]) {
+        ret = createAndParse<Property>(node["property"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures);
+        parseScope(node, ret->as<Property>(), data, parsePropertyScope, parseElementScope);
     }
     return ret;
 }
 
 void parseDataTypeFeatures(YAML::Node node, DataType& dataType, ParserData& data) {
-    // parseSet(node, el, data, "ownedAttributes", )
+    parseSet<Property>(node, dataType, data, "ownedAttributes", &DataType::getOwnedAttributes);
 }
 
 void parseElementFeatures(YAML::Node node, Element& el, ParserData& data) {
@@ -104,7 +126,7 @@ void parseElementFeatures(YAML::Node node, Element& el, ParserData& data) {
         }
         el.setID(idString);
     }
-    parseSet(node, el, data, "appliedStereotypes", &Element::getAppliedStereotypes, determineAndParseInstanceSpecification);
+    parseSet<InstanceSpecification>(node, el, data, "appliedStereotypes", &Element::getAppliedStereotypes);
 }
 
 void parseInstanceSpecificationFeatures(YAML::Node node, InstanceSpecification& inst, ParserData& data) {
@@ -121,7 +143,7 @@ void parseNamedElementFeatures(YAML::Node node, NamedElement& el, ParserData& da
 }
 
 void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data) {
-    parseSet(node, pckg, data, "packagedElements", &Package::getPackagedElements, determineAndParsePackageableElement);
+    parseSet<InstanceSpecification>(node, pckg, data, "packagedElements", &Package::getPackagedElements);
 }
 
 bool parseElementScope(YAML::Node node, Element& el, ParserData& data) {
@@ -154,62 +176,17 @@ bool parsePackageableElementScope(YAML::Node node, PackageableElement& el, Parse
     return false;
 }
 
-DataTypePtr createAndParseDataType(YAML::Node node, ParserData& data) {
-    DataTypePtr ret = createAndParse<DataType>(node["dataType"], data, 
-                    parseElementFeatures,
-                    parseNamedElementFeatures,
-                    parseDataTypeFeatures);
-    parseScope(node, *ret, data, parsePackageableElementScope, parseElementScope);
-    return ret;
-}
-
-EnumerationLiteralPtr createAndParseEnumerationLiteral(YAML::Node node, ParserData& data) {
-    EnumerationLiteralPtr ret = createAndParse<EnumerationLiteral>(node["enumerationLiteral"], data, 
-                    parseElementFeatures,
-                    parseNamedElementFeatures,
-                    parseInstanceSpecificationFeatures);
-    parseScope(node, *ret, data, parseEnumerationLiteralScope, parseElementScope);
-    return ret;
-}
-
-InstanceSpecificationPtr createAndParseInstanceSpecification(YAML::Node node, ParserData& data) {
-    InstanceSpecificationPtr ret = createAndParse<InstanceSpecification>(node["instanceSpecification"], data, 
-                    parseElementFeatures,
-                    parseNamedElementFeatures,
-                    parseInstanceSpecificationFeatures);
-    parseScope(node, *ret, data, parseElementScope);
-    return ret;
-}
-
-PackagePtr createAndParsePackage(YAML::Node node, ParserData& data) {
-    PackagePtr ret = createAndParse<Package>(node["package"], data, 
-                    parseElementFeatures,
-                    parseNamedElementFeatures,
-                    parsePackageFeatures);
-    parseScope(node, *ret, data, parsePackageableElementScope, parseElementScope);
-    return ret;
-}
-
-InstanceSpecificationPtr determineAndParseInstanceSpecification(YAML::Node node, ParserData& data) {
-    if (node["enumerationLiteral"]) {
-        return createAndParseEnumerationLiteral(node, data);
-    } else if (node["instanceSpecification"]) {
-        return createAndParseInstanceSpecification(node["instanceSpecification"], data);
+bool parsePropertyScope(YAML::Node node, Property& property, ParserData& data) {
+    if (node["class"] && node["class"].IsScalar()) {
+        property.setClass(ID::fromString(node["class"].as<string>()));
+        return true;
+    } else if (node["dataType"] && node["dataType"].IsScalar()) {
+        property.setDataType(ID::fromString(node["dataType"].as<string>()));
+        return true;
+    } else if (node["interface"] && node["interface"].IsScalar()) {
+        property.setInterface(ID::fromString(node["interface"].as<string>()));
     }
-}
-
-PackageableElementPtr determineAndParsePackageableElement(YAML::Node node, ParserData& data) {
-    if (node["dataType"]) {
-        return createAndParseDataType(node, data);
-    } else if (node["enumerationLiteral"]) {
-        return createAndParseEnumerationLiteral(node, data);
-    } else if (node["instanceSpecification"]) {
-        return createAndParseInstanceSpecification(node["instanceSpecification"], data);
-    }
-    // TODO
-    else if (node["package"]) {
-        return createAndParsePackage(node, data);
-    }
+    return false;
 }
 
 }

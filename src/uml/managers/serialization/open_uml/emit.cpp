@@ -35,12 +35,12 @@ void emitScope(YAML::Emitter& emitter, T& el, EmitterData& data, bool (*emitterF
 }
 
 template<class T, class U, class S>
-void emitOwnedSet(YAML::Emitter& emitter, U& el, EmitterData& data, string key, S& (U::*signature)(), void (*emitterFunc)(YAML::Emitter&, T&, EmitterData&)) {
+void emitOwnedSet(YAML::Emitter& emitter, U& el, EmitterData& data, string key, S& (U::*signature)()) {
     if (!(el.*signature)().empty()) {
         emitter << key << YAML::Value << YAML::BeginSeq;
         if (data.mode == SerializationMode::WHOLE) {
             for (auto& child : (el.*signature)()) {
-                (*emitterFunc)(emitter, child, data);
+                emitElementData(emitter, child, data);
             }
         } else {
             for (ID id : (el.*signature)().ids()) {
@@ -58,33 +58,61 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             break;
         }
         case ElementType::DATA_TYPE : {
-            emitDataType(emitter, el.as<DataType>(), data);
+            DataType& dataType = el.as<DataType>();
+            emitScope(emitter, dataType, data, emitPackageableElementScope, emitElementScope);
+            emitElementTypeAndData(emitter, dataType, data, "dataType",
+                emitElementFeatures,
+                emitNamedElementFeatures,
+                emitDataTypeFeatures);
             break;
         }
         // TODO
         case ElementType::ENUMERATION_LITERAL : {
-            emitEnumerationLiteral(emitter, el.as<EnumerationLiteral>(), data);
+            EnumerationLiteral& literal = el.as<EnumerationLiteral>();
+            emitScope(emitter, literal, data, emitEnumerationLiteralScope, emitPackageableElementScope, emitElementScope);
+            emitElementTypeAndData(emitter, literal, data, "enumerationLiteral", 
+                        emitElementFeatures, 
+                        emitNamedElementFeatures, 
+                        emitInstanceSpecificationFeatures);
             break;
         }
         // TODO
         case ElementType::INSTANCE_SPECIFICATION : {
-            emitInstanceSpecification(emitter, el.as<InstanceSpecification>(), data);
+            InstanceSpecification& inst = el.as<InstanceSpecification>();
+            emitScope(emitter, inst, data, emitPackageableElementScope, emitElementScope);
+            emitElementTypeAndData(emitter, inst, data, "instanceSpecification", 
+                        emitElementFeatures, 
+                        emitNamedElementFeatures, 
+                        emitInstanceSpecificationFeatures);
             break;
         }
         case ElementType::PACKAGE : {
-            emitPackage(emitter, el.as<Package>(), data);
+            Package& package = el.as<Package>();
+            emitScope(emitter, package, data, emitPackageableElementScope, emitElementScope);
+            emitElementTypeAndData(emitter, package, data, "package",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitPackageFeatures);
+            break;
+        }
+        case ElementType::PROPERTY : {
+            Property& property = el.as<Property>();
+            emitScope(emitter, property, data, emitPropertyScope, emitElementScope);
+            emitElementTypeAndData(emitter, property, data, "property",
+                        emitElementFeatures,
+                        emitNamedElementFeatures);
             break;
         }
     }
 }
 
 void emitDataTypeFeatures(YAML::Emitter& emitter, DataType& dataType, EmitterData& data) {
-    // TODO emit owned attributes
+    emitOwnedSet<Property>(emitter, dataType, data, "ownedAttributes", &DataType::getOwnedAttributes);
 }
 
 void emitElementFeatures(YAML::Emitter& emitter, Element& el, EmitterData& data) {
     emitter << "id" << YAML::Value << el.getID().string();
-    emitOwnedSet(emitter, el, data, "appliedStereotypes", &Element::getAppliedStereotypes, determineAndEmitInstanceSpecification);
+    emitOwnedSet<InstanceSpecification>(emitter, el, data, "appliedStereotypes", &Element::getAppliedStereotypes);
 }
 
 void emitInstanceSpecificationFeatures(YAML::Emitter& emitter, InstanceSpecification& specification, EmitterData& data) {
@@ -98,7 +126,7 @@ void emitNamedElementFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterD
 }
 
 void emitPackageFeatures(YAML::Emitter& emitter, Package& package, EmitterData& data) {
-    emitOwnedSet(emitter, package, data, "packagedElements", &Package::getPackagedElements, determineAndEmitPackageableElements);
+    emitOwnedSet<PackageableElement>(emitter, package, data, "packagedElements", &Package::getPackagedElements);
 }
 
 bool emitElementScope(YAML::Emitter& emitter, Element& el, EmitterData& data) {
@@ -125,72 +153,18 @@ bool emitPackageableElementScope(YAML::Emitter& emitter, PackageableElement& el,
     return false;
 }
 
-void emitDataType(YAML::Emitter& emitter, DataType& dataType, EmitterData& data) {
-    emitScope(emitter, dataType, data, emitPackageableElementScope, emitElementScope);
-    emitElementTypeAndData(emitter, dataType, data, "dataType",
-                emitElementFeatures,
-                emitNamedElementFeatures,
-                emitDataTypeFeatures);
-}
-
-void emitEnumerationLiteral(YAML::Emitter& emitter, EnumerationLiteral& literal, EmitterData& data) {
-    emitScope(emitter, literal, data, emitEnumerationLiteralScope, emitPackageableElementScope, emitElementScope);
-    emitElementTypeAndData(emitter, literal, data, "enumerationLiteral", 
-                emitElementFeatures, 
-                emitNamedElementFeatures, 
-                emitInstanceSpecificationFeatures);
-}
-
-void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst, EmitterData& data) {
-    emitScope(emitter, inst, data, emitPackageableElementScope, emitElementScope);
-    emitElementTypeAndData(emitter, inst, data, "instanceSpecification", 
-                emitElementFeatures, 
-                emitNamedElementFeatures, 
-                emitInstanceSpecificationFeatures);
-}
-
-void emitPackage(YAML::Emitter& emitter, Package& package, EmitterData& data) {
-    emitScope(emitter, package, data, emitPackageableElementScope, emitElementScope);
-    emitElementTypeAndData(emitter, package, data, "package",
-                emitElementFeatures,
-                emitNamedElementFeatures,
-                emitPackageFeatures);
-}
-
-void determineAndEmitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst, EmitterData& data) {
-    switch (inst.getElementType()) {
-        case ElementType::ENUMERATION_LITERAL : {
-            emitEnumerationLiteral(emitter, inst.as<EnumerationLiteral>(), data);
-            break;
-        }
-        case ElementType::INSTANCE_SPECIFICATION : {
-            emitInstanceSpecification(emitter, inst, data);
-            break;
-        }
-        default : {
-            throw SerializationError("cannot serialize instance specification, element type cannot be used: " + Element::elementTypeToString(inst.getElementType()));
-        }
+bool emitPropertyScope(YAML::Emitter& emitter, Property& property, EmitterData& data) {
+    if (property.getClass()) {
+        emitter << "class" << YAML::Value << property.getClass().id().string();
+        return true;
+    } else if (property.getDataType()) {
+        emitter << "dataType" << YAML::Value << property.getDataType().id().string();
+        return true;
+    } else if (property.getInterface()) {
+        emitter << "interface" << YAML::Value << property.getInterface().id().string();
+        return true;
     }
-}
-
-void determineAndEmitPackageableElements(YAML::Emitter& emitter, PackageableElement& el, EmitterData& data) {
-    switch (el.getElementType()) {
-        case ElementType::ENUMERATION_LITERAL : {
-            emitEnumerationLiteral(emitter, el.as<EnumerationLiteral>(), data);
-            break;
-        }
-        case ElementType::INSTANCE_SPECIFICATION : {
-            emitInstanceSpecification(emitter, el.as<InstanceSpecification>(), data);
-            break;
-        }
-        case ElementType::PACKAGE : {
-            emitPackage(emitter, el.as<Package>(), data);
-            break;
-        }
-        default : {
-            throw SerializationError("cannot serialize packageableElement, element type cannot be used: " + Element::elementTypeToString(el.getElementType()));
-        }
-    }
+    return false;
 }
     
 }

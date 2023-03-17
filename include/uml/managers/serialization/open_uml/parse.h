@@ -20,15 +20,5 @@ namespace UML {
     bool parseElementScope(YAML::Node node, Element& el, ParserData& data);
     bool parseEnumerationLiteralScope(YAML::Node node, EnumerationLiteral& literal, ParserData& data);
     bool parsePackageableElementScope(YAML::Node node, PackageableElement& el, ParserData& data);
-    // TODO
-
-    // parsing elements
-    DataTypePtr createAndParseDataType(YAML::Node node, ParserData& data);
-    EnumerationLiteralPtr createAndParseEnumerationLiteral(YAML::Node node, ParserData& data);
-    InstanceSpecificationPtr createAndParseInstanceSpecification(YAML::Node node, ParserData& data);
-    PackagePtr createAndParsePackage(YAML::Node node, ParserData& data);
-
-    // parsing sets
-    InstanceSpecificationPtr determineAndParseInstanceSpecification(YAML::Node node, ParserData& data);
-    PackageableElementPtr determineAndParsePackageableElement(YAML::Node node, ParserData& data);
+    bool parsePropertyScope(YAML::Node node, Property& property, ParserData& data);
 }

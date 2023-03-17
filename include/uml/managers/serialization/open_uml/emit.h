@@ -19,15 +19,5 @@ namespace UML {
     bool emitElementScope(YAML::Emitter& emitter, Element& el, EmitterData& data);
     bool emitEnumerationLiteralScope(YAML::Emitter& emitter, EnumerationLiteral& literal, EmitterData& data);
     bool emitPackageableElementScope(YAML::Emitter& emitter, PackageableElement& el, EmitterData& data);
-
-
-    // emitting elements
-    void emitDataType(YAML::Emitter& emitter, DataType& dataType, EmitterData& data);
-    void emitEnumerationLiteral(YAML::Emitter& emitter, EnumerationLiteral& literal, EmitterData& data);
-    void emitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst, EmitterData& data);
-    void emitPackage(YAML::Emitter& emitter, Package& package, EmitterData& data);
-
-    // emitting sets
-    void determineAndEmitInstanceSpecification(YAML::Emitter& emitter, InstanceSpecification& inst, EmitterData& data);
-    void determineAndEmitPackageableElements(YAML::Emitter& emitter, PackageableElement& el, EmitterData& data);
+    bool emitPropertyScope(YAML::Emitter& emitter, Property& property, EmitterData& data);
 }

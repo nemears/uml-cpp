@@ -15,8 +15,9 @@ std::string FilePersistencePolicy::loadElementData(ID id) {
 void FilePersistencePolicy::saveElementData(std::string data, ID id) {
     std::string dataPath = "mount/" + id.string() + ".yml"; // TODO extension from serialization policy?
     std::ofstream file(dataPath);
-    file.open(dataPath, std::ios::trunc);
+    // file.open(dataPath, std::ios::trunc);
     file << data;
+    file.close();
 }
 
 void FilePersistencePolicy::eraseEl(ID id) {
@@ -27,7 +28,8 @@ void FilePersistencePolicy::eraseEl(ID id) {
 void FilePersistencePolicy::reindex(ID oldID, ID newID) {
     std::string oldDataPath = "mount/" + oldID.string() + ".yml"; // TODO extension from serialization policy?
     std::string newDataPath = "mount/" + newID.string() + ".yml"; // TODO extension from serialization policy?
-    std::filesystem::rename(oldDataPath, newDataPath);
+    if (std::filesystem::exists(newDataPath))
+        std::filesystem::rename(newDataPath, oldDataPath);
 }
 
 std::string FilePersistencePolicy::getProjectData(std::string path) {

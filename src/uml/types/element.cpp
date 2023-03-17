@@ -515,4 +515,9 @@ Set<Comment, Element>& Element::getOwnedComments() {
 //     el.removeReference(m_el.getID());
 // }
 
+void Element::setOwner(ID id) {
+    m_owner->innerAdd(id);
+    m_node->setReference(id);
+}
+
 }

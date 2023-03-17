@@ -29,6 +29,18 @@ UmlPtr<T> createAndParse(YAML::Node node, ParserData& data, Funcs... funcs) {
     }
 }
 
+template <class T, class V = T>
+void parseScope(YAML::Node node, T& el, ParserData& data, bool (*parser)(YAML::Node, V&, ParserData&)) {
+    parser(node, el, data);
+}
+
+template <class T, class V = T, class ... Funcs>
+void parseScope(YAML::Node node, T& el, ParserData& data, bool (*parser)(YAML::Node, V&, ParserData&), Funcs... funcs) {
+    if (parser(node, el, data)) {
+        parseScope(node, el, data, funcs...);
+    }
+} 
+
 template <class T, class U, class S>
 void parseSet(YAML::Node node, U& el, ParserData& data, string key, S& (U::*sequenceSignature)(), UmlPtr<T> (*parserSignature)(YAML::Node, ParserData&)) {
     if (node[key]) {
@@ -62,14 +74,11 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
     }
     // TODO
     else if (node["enumerationLiteral"]) {
-        ret = createAndParseEnumerationLiteral(node["enumerationLiteral"], data);
+        ret = createAndParseEnumerationLiteral(node, data);
     }
     // TODO
     else if (node["instanceSpecification"]) {
-        ret = createAndParse<InstanceSpecification>(node["instanceSpecification"], data, 
-                    parseElementFeatures,
-                    parseNamedElementFeatures,
-                    parseInstanceSpecificationFeatures);
+        ret = createAndParseInstanceSpecification(node, data);
     }
     return ret;
 }
@@ -89,7 +98,7 @@ void parseElementFeatures(YAML::Node node, Element& el, ParserData& data) {
 }
 
 void parseInstanceSpecificationFeatures(YAML::Node node, InstanceSpecification& inst, ParserData& data) {
-    
+
 }
 
 void parseNamedElementFeatures(YAML::Node node, NamedElement& el, ParserData& data) {
@@ -101,23 +110,39 @@ void parseNamedElementFeatures(YAML::Node node, NamedElement& el, ParserData& da
     }
 }
 
+bool parseElementScope(YAML::Node node, Element& el, ParserData& data) {
+    if (node["owner"]) {
+        el.setOwner(ID::fromString(node["owner"].as<string>()));
+        return true;
+    }
+    return false;
+}
+
+bool parseEnumerationLiteralScope(YAML::Node node, EnumerationLiteral& literal, ParserData& data) {
+    return false;
+}
+
 EnumerationLiteralPtr createAndParseEnumerationLiteral(YAML::Node node, ParserData& data) {
-    return createAndParse<EnumerationLiteral>(node, data, 
+    EnumerationLiteralPtr ret = createAndParse<EnumerationLiteral>(node["enumerationLiteral"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseInstanceSpecificationFeatures);
+    parseScope(node, *ret, data, parseEnumerationLiteralScope, parseElementScope);
+    return ret;
 }
 
 InstanceSpecificationPtr createAndParseInstanceSpecification(YAML::Node node, ParserData& data) {
-    return createAndParse<InstanceSpecification>(node, data, 
+    InstanceSpecificationPtr ret = createAndParse<InstanceSpecification>(node["instanceSpecification"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseInstanceSpecificationFeatures);
+    parseScope(node, *ret, data, parseElementScope);
+    return ret;
 }
 
 InstanceSpecificationPtr determineAndParseInstanceSpecification(YAML::Node node, ParserData& data) {
     if (node["enumerationLiteral"]) {
-        return createAndParseEnumerationLiteral(node["enumerationLiteral"], data);
+        return createAndParseEnumerationLiteral(node, data);
     } else if (node["instanceSpecification"]) {
         return createAndParseInstanceSpecification(node["instanceSpecification"], data);
     }

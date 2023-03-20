@@ -107,3 +107,8 @@ bool NamedElement::isSubClassOf(ElementType eType) const {
 
     return ret;
 }
+
+void NamedElement::setNamespace(ID id) {
+    m_namespace->innerAdd(id);
+    m_node->setReference(id);
+}

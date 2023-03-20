@@ -24,6 +24,8 @@ namespace UML {
                 public:
                     static void apply(PackageableElement& el, ElementImport& me);
             };
+            std::string m_alias = "";
+            VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             CustomSingleton<PackageableElement, ElementImport, AddImportedElementPolicy, RemoveImportedElementPolicy> m_importedElement = CustomSingleton<PackageableElement, ElementImport, AddImportedElementPolicy, RemoveImportedElementPolicy>(this);
             CustomSingleton<Namespace, ElementImport> m_importingNamespace = CustomSingleton<Namespace, ElementImport>(this);
             TypedSet<PackageableElement, ElementImport>& getImportedElementSingleton();
@@ -41,6 +43,10 @@ namespace UML {
             void setImportingNamespace(Namespace& importingNamespace);
             void setImportingNamespace(NamespacePtr importingNamespace);
             void setImportingNamespace(ID id);
+            std::string getAlias() const;
+            void setAlias(std::string alias);
+            VisibilityKind getVisibility() const;
+            void setVisibility(VisibilityKind visibility);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ELEMENT_IMPORT;

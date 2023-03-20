@@ -25,11 +25,14 @@ namespace UML {
                 public:
                     static void apply(Package& el, PackageImport& me);
             };
+            VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             DEFINE_SINGLETON_W_POLICIES(ImportedPackage, m_importedPackage, Package, PackageImport, AddImportedPackagePolicy, RemoveImportedPackagePolicy)
             DEFINE_SINGLETON(ImportingNamespace, m_importingNamespace, Namespace, PackageImport)
             PackageImport();
         public:
             virtual ~PackageImport();
+            VisibilityKind getVisibility() const;
+            void setVisibility(VisibilityKind visibility);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PACKAGE_IMPORT;

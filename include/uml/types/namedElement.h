@@ -28,7 +28,7 @@ namespace UML{
     class NamedElement : virtual public Element {
 
         friend class Namespace;
-        friend void Parsers::setNamespace(NamedElement& el, ID id);
+        friend bool parseNamedElementScope(YAML::Node node, NamedElement& namedElement, ParserData& data);
 
         protected:
             std::string m_name;
@@ -63,6 +63,8 @@ namespace UML{
             static ElementType elementType() {
                 return ElementType::NAMED_ELEMENT;
             };
+        private:
+            void setNamespace(ID id);
     };
 }
 

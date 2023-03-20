@@ -86,6 +86,21 @@ void ElementImport::setImportingNamespace(ID id) {
     m_importingNamespace.set(id);
 }
 
+std::string ElementImport::getAlias() const {
+    return m_alias;
+}
+void ElementImport::setAlias(std::string alias) {
+    m_alias = alias;
+}
+
+VisibilityKind ElementImport::getVisibility() const {
+    return m_visibility;
+}
+
+void ElementImport::setVisibility(VisibilityKind visibility) {
+    m_visibility = visibility;
+}
+
 bool ElementImport::isSubClassOf(ElementType eType) const {
     bool ret = DirectedRelationship::isSubClassOf(eType);
 

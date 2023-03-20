@@ -5,7 +5,7 @@ namespace UML {
     class FilePersistencePolicy {
         private:
             std::string m_projectPath = "project.yml";
-            std::string m_mountPath = ".";
+            std::string m_mountPath = "mount";
         protected:
             std::string loadElementData(ID id);
             void saveElementData(std::string data, ID id);

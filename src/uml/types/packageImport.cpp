@@ -59,6 +59,13 @@ PackageImport::~PackageImport() {
 IMPLEMENT_SINGLETON(ImportedPackage, m_importedPackage, Package, PackageImport);
 IMPLEMENT_SINGLETON(ImportingNamespace, m_importingNamespace, Namespace, PackageImport);
 
+VisibilityKind PackageImport::getVisibility() const {
+    return m_visibility;
+}
+void PackageImport::setVisibility(VisibilityKind visibility) {
+    m_visibility = visibility;
+}
+
 bool PackageImport::isSubClassOf(ElementType eType) const {
     bool ret = DirectedRelationship::isSubClassOf(eType);
 

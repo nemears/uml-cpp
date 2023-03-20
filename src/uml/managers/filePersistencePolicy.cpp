@@ -7,13 +7,13 @@
 namespace UML {
 
 std::string FilePersistencePolicy::loadElementData(ID id) {
-    std::string dataPath = "mount/" + id.string() + ".yml"; // TODO extension from serialization policy?
+    std::string dataPath = m_mountPath + "/mount/" + id.string() + ".yml"; // TODO extension from serialization policy?
     std::ifstream file(dataPath);
     return std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
 }
 
 void FilePersistencePolicy::saveElementData(std::string data, ID id) {
-    std::string dataPath = "mount/" + id.string() + ".yml"; // TODO extension from serialization policy?
+    std::string dataPath = m_mountPath + "/mount/" + id.string() + ".yml"; // TODO extension from serialization policy?
     std::ofstream file(dataPath);
     // file.open(dataPath, std::ios::trunc);
     file << data;
@@ -21,14 +21,14 @@ void FilePersistencePolicy::saveElementData(std::string data, ID id) {
 }
 
 void FilePersistencePolicy::eraseEl(ID id) {
-    std::string dataPath = "mount/" + id.string() + ".yml"; // TODO extension from serialization policy?
+    std::string dataPath = m_mountPath + "/mount/" + id.string() + ".yml"; // TODO extension from serialization policy?
     std::filesystem::remove(dataPath);
 }
 
 void FilePersistencePolicy::reindex(ID oldID, ID newID) {
-    std::string oldDataPath = "mount/" + oldID.string() + ".yml"; // TODO extension from serialization policy?
-    std::string newDataPath = "mount/" + newID.string() + ".yml"; // TODO extension from serialization policy?
-    if (std::filesystem::exists(newDataPath))
+    std::string oldDataPath = m_mountPath + "/mount/" + oldID.string() + ".yml"; // TODO extension from serialization policy?
+    std::string newDataPath = m_mountPath + "/mount/" + newID.string() + ".yml"; // TODO extension from serialization policy?
+    if (std::filesystem::exists(oldDataPath))
         std::filesystem::rename(newDataPath, oldDataPath);
 }
 

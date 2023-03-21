@@ -13,11 +13,14 @@ namespace UML {
     void parseClassFeatures(YAML::Node node, Class& clazz, ParserData& data);
     void parseClassifierFeatures(YAML::Node node, Classifier& classifier, ParserData& data);
     void parseCommentFeatures(YAML::Node node, Comment& comment, ParserData& data);
+    void parseConstraintFeatures(YAML::Node node, Constraint& constraint, ParserData& data);
     void parseDataTypeFeatures(YAML::Node node, DataType& dataType, ParserData& data);
+    void parseDependencyFeatures(YAML::Node node, Dependency& dependency, ParserData& data);
     void parseElementFeatures(YAML::Node node, Element& el, ParserData& data);
     void parseElementImportFeatures(YAML::Node node, ElementImport& elementImport, ParserData& data);
     void parseEnumerationFeatures(YAML::Node node, Enumeration& enumeration, ParserData& data);
     void parseInstanceSpecificationFeatures(YAML::Node node, InstanceSpecification& inst, ParserData& data);
+    void parseMultiplicityElementFeatures(YAML::Node node, MultiplicityElement& multiplicityElement, ParserData& data);
     void parseNamedElementFeatures(YAML::Node node, NamedElement& el, ParserData& data);
     void parseNamespaceFeatures(YAML::Node node, Namespace& nmspc, ParserData& data);
     void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
@@ -32,6 +35,7 @@ namespace UML {
     void parseTypedElementFeatures(YAML::Node node, TypedElement& typedElement, ParserData& data);
 
     // parsing scopes of element types
+    bool parseConstraintScope(YAML::Node node, Constraint& constraint, ParserData& data);
     bool parseElementScope(YAML::Node node, Element& el, ParserData& data);
     bool parseElementImportScope(YAML::Node node, ElementImport& elementImport, ParserData& data);
     bool parseEnumerationLiteralScope(YAML::Node node, EnumerationLiteral& literal, ParserData& data);

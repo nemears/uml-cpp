@@ -5,32 +5,42 @@
 #include "valueSpecification.h"
 
 namespace UML {
-    class Constraint : public PackageableElement {
+
+    typedef UmlPtr<ValueSpecification> ValueSpecificationPtr;
+
+    class Constraint : public PackageableElement
+    {
 
         friend class Namespace;
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy>
+        friend class Manager;
 
-        protected:
-            CustomSingleton<Namespace, Constraint> m_context = CustomSingleton<Namespace, Constraint>(this);
-            CustomSet<Element, Constraint> m_constrainedElements = CustomSet<Element, Constraint>(this);
-            CustomSet<ValueSpecification, Constraint> m_specifications = CustomSet<ValueSpecification, Constraint>(this);
-            TypedSet<Namespace, Constraint>& getContextSingleton();
-            void referenceReindexed(ID newID) override;
-            void referenceErased(ID id) override;
-            Constraint();
-        public:
-            virtual ~Constraint();
-            NamespacePtr getContext() const;
-            void setContext(Namespace* context);
-            void setContext(Namespace& context);
-            void setContext(NamespacePtr context);
-            void setContext(ID id);
-            Set<Element, Constraint>& getConstrainedElements();
-            Set<ValueSpecification, Constraint>& getSpecifications();
-            bool isSubClassOf(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::CONSTRAINT;
-            }
+    protected:
+        CustomSingleton<Namespace, Constraint> m_context = CustomSingleton<Namespace, Constraint>(this);
+        CustomSet<Element, Constraint> m_constrainedElements = CustomSet<Element, Constraint>(this);
+        CustomSingleton<ValueSpecification, Constraint> m_specification = CustomSingleton<ValueSpecification, Constraint>(this);
+        TypedSet<Namespace, Constraint> &getContextSingleton();
+        void referenceReindexed(ID newID) override;
+        void referenceErased(ID id) override;
+        Constraint();
+
+    public:
+        virtual ~Constraint();
+        NamespacePtr getContext() const;
+        void setContext(Namespace *context);
+        void setContext(Namespace &context);
+        void setContext(NamespacePtr context);
+        void setContext(ID id);
+        Set<Element, Constraint> &getConstrainedElements();
+        ValueSpecificationPtr getSpecification() const;
+        void setSpecification(ValueSpecification *specification);
+        void setSpecification(ValueSpecification &specification);
+        void setSpecification(ID id);
+        bool isSubClassOf(ElementType eType) const override;
+        static ElementType elementType()
+        {
+            return ElementType::CONSTRAINT;
+        }
     };
 }
 

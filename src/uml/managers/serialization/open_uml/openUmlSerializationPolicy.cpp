@@ -89,6 +89,8 @@ ElementPtr parse(std::string data, ParserData& metaData) {
                     ElementPtr referencedEl = metaData.manager->get(referenceID);
                     ret->m_node->setReference(*referencedEl);
                     referencedEl->m_node->setReference(*ret);
+                } else {
+                    ret->m_node->setReference(referenceID);
                 }
             }
         }

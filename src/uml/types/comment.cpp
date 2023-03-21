@@ -20,11 +20,11 @@ Comment::~Comment() {
     
 }
 
-std::string Comment::getBody() {
+std::string Comment::getBody() const {
     return m_body;
 }
 
-void Comment::setBody(std::string body) {
+void Comment::setBody(const std::string& body) {
     m_body = body;
 }
 

@@ -13,7 +13,7 @@ namespace UML {
             LiteralString();
         public:
             std::string getValue();
-            void setValue(std::string val);
+            void setValue(const std::string& val);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::LITERAL_STRING;

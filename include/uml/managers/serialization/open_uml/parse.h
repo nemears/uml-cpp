@@ -19,7 +19,13 @@ namespace UML {
     void parseElementFeatures(YAML::Node node, Element& el, ParserData& data);
     void parseElementImportFeatures(YAML::Node node, ElementImport& elementImport, ParserData& data);
     void parseEnumerationFeatures(YAML::Node node, Enumeration& enumeration, ParserData& data);
+    void parseExpressionFeatures(YAML::Node node, Expression& expression, ParserData& data);
     void parseInstanceSpecificationFeatures(YAML::Node node, InstanceSpecification& inst, ParserData& data);
+    void parseLiteralBoolFeatures(YAML::Node node, LiteralBool& literalBool, ParserData& data);
+    void parseLiteralIntegerFeatures(YAML::Node node, LiteralInt& literalInt, ParserData& data);
+    void parseLiteralRealFeatures(YAML::Node node, LiteralReal& literalReal, ParserData& data);
+    void parseLiteralStringFeatures(YAML::Node node, LiteralString& literalString, ParserData& data);
+    void parseLiteralUnlimitedNaturalfeatures(YAML::Node node, LiteralUnlimitedNatural& literalUnlimitedNatural, ParserData& data);
     void parseMultiplicityElementFeatures(YAML::Node node, MultiplicityElement& multiplicityElement, ParserData& data);
     void parseNamedElementFeatures(YAML::Node node, NamedElement& el, ParserData& data);
     void parseNamespaceFeatures(YAML::Node node, Namespace& nmspc, ParserData& data);

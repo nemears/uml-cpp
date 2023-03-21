@@ -48,16 +48,12 @@ void parseSet(YAML::Node node, U& el, ParserData& data, string key, S& (U::*sequ
             throw SerializationError("Could not parse set " + key + "because it's data was not a sequence! " + getLineNumber(node[key]));
         }
         for (size_t i = 0; i < node[key].size(); i++) {
-            if (node[key][i].IsScalar()) {
-                if (data.mode == SerializationMode::WHOLE) {
-                    // TODO either throw error or parse another path
-                    throw SerializationError("TODO parse external paths, this may be because of a bad id in your file/data! " + 
-                                                getLineNumber(node[key][i]));
-                } else {
-                    (el.*sequenceSignature)().add(ID::fromString(node[key][i].as<string>().substr(0, 29)));
-                }
-            } else if (node[key][i].IsMap()) {
+            if (node[key][i].IsMap()) {
                 (el.*sequenceSignature)().add(parseNode(node[key][i], data));
+            } else if (node[key][i].IsScalar()) {
+                (el.*sequenceSignature)().add(ID::fromString(node[key][i].as<string>()));
+            } else {
+                throw SerializationError("cannot parse entry of set! " + getLineNumber(node[key][i]));
             }
         }
     }
@@ -96,6 +92,26 @@ void parseInt(YAML::Node node, T& el, string key, void (T::*mutator)(int)) {
             throw SerializationError("Could not parse integer value for property " + key + " for element type " + Element::elementTypeToString(T::elementType()) + " " + getLineNumber(node[key]));
         }
         (el.*mutator)(node[key].as<int>());
+    }
+}
+
+template <class T>
+void parseDouble(YAML::Node node, T& el, string key, void (T::*mutator)(double)) {
+    if (node[key]) {
+        if (!node[key].IsScalar()) {
+            throw SerializationError("Could not parse double value for property " + key + " for element type " + Element::elementTypeToString(T::elementType()) + " " + getLineNumber(node[key]));
+        }
+        (el.*mutator)(node[key].as<int>());
+    }
+}
+
+template <class T>
+void parseString(YAML::Node node, T& el, string key, void (T::*mutator)(const string&)) {
+    if (node[key]) {
+        if (!node[key].IsScalar()) {
+            throw SerializationError("Could not parse string value for property " + key + " for element type " + Element::elementTypeToString(T::elementType()) + " " + getLineNumber(node[key]));
+        }
+        (el.*mutator)(node[key].as<string>());
     }
 }
 
@@ -209,9 +225,19 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    }
-    // TODO
-    else if (node["instanceSpecification"]) {
+    } else if (node["expression"]) {
+        ret = createAndParse<Expression>(node["expression"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseTypedElementFeatures,
+                    parseExpressionFeatures);
+        parseScope(node, ret->as<Expression>(), data,
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["instanceSpecification"]) {
         ret = createAndParse<InstanceSpecification>(node["instanceSpecification"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
@@ -222,9 +248,73 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    }
-    // TODO
-    else if (node["package"]) {
+    } else if (node["literalBool"]) {
+        ret = createAndParse<LiteralBool>(node["literalBool"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseTypedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseLiteralBoolFeatures);
+        parseScope(node, ret->as<LiteralBool>(), data, 
+                    parsePackageableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["literalInt"]) {
+        ret = createAndParse<LiteralInt>(node["literalInt"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseTypedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseLiteralIntegerFeatures);
+        parseScope(node, ret->as<LiteralInt>(), data, 
+                    parsePackageableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["literalNull"]) {
+        ret = createAndParse<LiteralNull>(node["literalNull"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseTypedElementFeatures,
+                    parseParameterableElementFeatures);
+        parseScope(node, ret->as<LiteralNull>(), data,
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["literalReal"]) {
+        ret = createAndParse<LiteralReal>(node["literalReal"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseTypedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseLiteralRealFeatures);
+        parseScope(node, ret->as<LiteralReal>(), data, 
+                    parsePackageableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["literalString"]) {
+        ret = createAndParse<LiteralString>(node["literalString"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseTypedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseLiteralStringFeatures);
+        parseScope(node, ret->as<LiteralString>(), data, 
+                    parsePackageableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["literalUnlimitedNatural"]) {
+        ret = createAndParse<LiteralUnlimitedNatural>(node["literalUnlimitedNatural"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseTypedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseLiteralUnlimitedNaturalfeatures);
+        parseScope(node, ret->as<LiteralUnlimitedNatural>(), data, 
+                    parsePackageableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["package"]) {
         ret = createAndParse<Package>(node["package"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
@@ -336,11 +426,7 @@ void parseClassifierFeatures(YAML::Node node, Classifier& classifier, ParserData
 
 void parseCommentFeatures(YAML::Node node, Comment& comment, ParserData& data) {
     parseSet<Element>(node, comment, data, "annotatedElements", &Comment::getAnnotatedElements);
-    if (node["body"]) {
-        if (!node["body"].IsScalar()) {
-            comment.setBody(node["body"].as<string>());
-        }
-    }
+    parseString(node, comment, "body", &Comment::setBody);
 }
 
 void parseConstraintFeatures(YAML::Node node, Constraint& constraint, ParserData& data) {
@@ -391,12 +477,7 @@ void parseVisibilty(YAML::Node node, T& elWithVisibility) {
 
 void parseElementImportFeatures(YAML::Node node, ElementImport& elementImport, ParserData& data) {
     parseSingleton<PackageableElement>(node, elementImport, data, "importedElement", &ElementImport::setImportedElement, &ElementImport::setImportedElement);
-    if (node["alias"]) {
-        if (!node["alias"].IsScalar()) {
-            throw SerializationError("Could not parse elementImport alias because it was not a string! " + getLineNumber(node["alias"]));
-        }
-        elementImport.setAlias(node["alias"].as<string>());
-    }
+    parseString(node, elementImport, "alias", &ElementImport::setAlias);
     parseVisibilty(node, elementImport);
 }
 
@@ -404,8 +485,44 @@ void parseEnumerationFeatures(YAML::Node node, Enumeration& enumeration, ParserD
     parseSet<EnumerationLiteral>(node, enumeration, data, "ownedLiterals", &Enumeration::getOwnedLiterals);
 }
 
+void parseExpressionFeatures(YAML::Node node, Expression& expression, ParserData& data) {
+    parseSet<ValueSpecification>(node, expression, data, "operands", &Expression::getOperands);
+    parseString(node, expression, "symbol", &Expression::setSymbol);
+}
+
 void parseInstanceSpecificationFeatures(YAML::Node node, InstanceSpecification& inst, ParserData& data) {
 
+}
+
+void parseLiteralBoolFeatures(YAML::Node node, LiteralBool& literalBool, ParserData& data) {
+    parseBoolean(node, literalBool, "value", &LiteralBool::setValue);
+}
+
+void parseLiteralIntegerFeatures(YAML::Node node, LiteralInt& literalInt, ParserData& data) {
+    parseInt(node, literalInt, "value", &LiteralInt::setValue);
+}
+
+void parseLiteralRealFeatures(YAML::Node node, LiteralReal& literalReal, ParserData& data) {
+    parseDouble(node, literalReal, "value", &LiteralReal::setValue);
+}
+
+void parseLiteralStringFeatures(YAML::Node node, LiteralString& literalString, ParserData& data) {
+    parseString(node, literalString, "value", &LiteralString::setValue);
+}
+
+void parseLiteralUnlimitedNaturalfeatures(YAML::Node node, LiteralUnlimitedNatural& literalUnlimitedNatural, ParserData& data) {
+    // special parsing
+    if (node["value"]) {
+        if (!node["value"].IsScalar()) {
+            throw SerializationError("could not parse unlimited natural value from property " + getLineNumber(node["value"]));
+        }
+        string nodeStringValue = node["value"].as<string>();
+        if (nodeStringValue == "*") {
+            literalUnlimitedNatural.setInfinite();
+        } else {
+            literalUnlimitedNatural.setNumberValue(node["value"].as<unsigned long>());
+        }
+    }
 }
 
 void parseMultiplicityElementFeatures(YAML::Node node, MultiplicityElement& multiplicityElement, ParserData& data) {
@@ -418,12 +535,7 @@ void parseMultiplicityElementFeatures(YAML::Node node, MultiplicityElement& mult
 }
 
 void parseNamedElementFeatures(YAML::Node node, NamedElement& el, ParserData& data) {
-    if (node["name"]) {
-        if (!node["name"].IsScalar()) {
-            throw SerializationError("data for name is not in a valid format! It must be a scalar string! " + getLineNumber(node["name"]));
-        }
-        el.setName(node["name"].as<string>());
-    }
+    parseString(node, el, "name", &NamedElement::setName);
     parseVisibilty(node, el);
     parseSet<Dependency>(node, el, data, "clientDependencies", &NamedElement::getClientDependencies);
 }

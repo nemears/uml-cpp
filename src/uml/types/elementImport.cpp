@@ -89,7 +89,7 @@ void ElementImport::setImportingNamespace(ID id) {
 std::string ElementImport::getAlias() const {
     return m_alias;
 }
-void ElementImport::setAlias(std::string alias) {
+void ElementImport::setAlias(const std::string& alias) {
     m_alias = alias;
 }
 

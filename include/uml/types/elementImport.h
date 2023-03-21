@@ -44,7 +44,7 @@ namespace UML {
             void setImportingNamespace(NamespacePtr importingNamespace);
             void setImportingNamespace(ID id);
             std::string getAlias() const;
-            void setAlias(std::string alias);
+            void setAlias(const std::string& alias);
             VisibilityKind getVisibility() const;
             void setVisibility(VisibilityKind visibility);
             bool isSubClassOf(ElementType eType) const override;

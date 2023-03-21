@@ -28,7 +28,7 @@ void Constraint::referenceErased(ID id) {
 Constraint::Constraint() : Element(ElementType::CONSTRAINT) {
     m_context.subsets(*m_namespace);
     m_context.opposite(&Namespace::getOwnedRules);
-    m_specifications.subsets(*m_ownedElements);
+    m_specification.subsets(*m_ownedElements);
 }
 
 Constraint::~Constraint() {
@@ -59,9 +59,22 @@ Set<Element, Constraint>& Constraint::getConstrainedElements() {
     return m_constrainedElements;
 }
 
-Set<ValueSpecification, Constraint>& Constraint::getSpecifications() {
-    return m_specifications;
+ValueSpecificationPtr Constraint::getSpecification() const {
+    return m_specification.get();
 }
+
+void Constraint::setSpecification(ValueSpecification* specification) {
+    m_specification.set(specification);
+}
+
+void Constraint::setSpecification(ValueSpecification& specification) {
+    m_specification.set(specification);
+}
+
+void Constraint::setSpecification(ID id) {
+    m_specification.set(id);
+}
+
 
 bool Constraint::isSubClassOf(ElementType eType) const {
     bool ret = PackageableElement::isSubClassOf(eType);

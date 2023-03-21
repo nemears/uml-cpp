@@ -12,11 +12,14 @@ namespace UML {
     void emitClassFeatures(YAML::Emitter& emitter, Class& clazz, EmitterData& data);
     void emitClassifierFeatures(YAML::Emitter& emitter, Classifier& classifier, EmitterData& data);
     void emitCommentFeatures(YAML::Emitter& emitter, Comment& comment, EmitterData& data);
+    void emitConstraintFeatures(YAML::Emitter& emitter, Constraint& constraint, EmitterData& data);
     void emitDataTypeFeatures(YAML::Emitter& emitter, DataType& dataType, EmitterData& data);
+    void emitDependencyFeatures(YAML::Emitter& emitter, Dependency& dependency, EmitterData& data);
     void emitElementFeatures(YAML::Emitter& emitter, Element& el, EmitterData& data);
     void emitElementImportFeatures(YAML::Emitter& emitter, ElementImport& elementImport, EmitterData& data);
     void emitEnumerationFeatures(YAML::Emitter& emitter, Enumeration& enumeration, EmitterData& data);
     void emitInstanceSpecificationFeatures(YAML::Emitter& emitter, InstanceSpecification& specification, EmitterData& data);
+    void emitMultiplicityElementFeatures(YAML::Emitter& emitter, MultiplicityElement& multiplicityElement, EmitterData& data);
     void emitNamedElementFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterData& data);
     void emitNamespaceFeatures(YAML::Emitter& emitter, Namespace& nmspc, EmitterData& data);
     void emitPackageFeatures(YAML::Emitter& emitter, Package& package, EmitterData& data);
@@ -31,6 +34,7 @@ namespace UML {
     void emitTypedElementFeatures(YAML::Emitter& emitter, TypedElement& typedElement, EmitterData& data);
 
     // emit scopes of element types
+    bool emitConstraintScope(YAML::Emitter& emitter, Constraint& constraint, EmitterData& data);
     bool emitElementScope(YAML::Emitter& emitter, Element& el, EmitterData& data);
     bool emitElementImportScope(YAML::Emitter& emitter, ElementImport& elementImport, EmitterData& data);
     bool emitEnumerationLiteralScope(YAML::Emitter& emitter, EnumerationLiteral& literal, EmitterData& data);

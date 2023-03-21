@@ -79,6 +79,26 @@ bool parseSingleton(YAML::Node node, U& el, ParserData& data, string key, void (
     return false;
 }
 
+template <class T>
+void parseBoolean(YAML::Node node, T& el, string key, void (T::*mutator)(bool)) {
+    if (node[key]) {
+        if (!node[key].IsScalar()) {
+            throw SerializationError("Could not parse boolean value for property " + key + " for element type " + Element::elementTypeToString(T::elementType()) + " " + getLineNumber(node[key]));
+        }
+        (el.*mutator)(node[key].as<bool>());
+    }
+}
+
+template <class T>
+void parseInt(YAML::Node node, T& el, string key, void (T::*mutator)(int)) {
+    if (node[key]) {
+        if (!node[key].IsScalar()) {
+            throw SerializationError("Could not parse integer value for property " + key + " for element type " + Element::elementTypeToString(T::elementType()) + " " + getLineNumber(node[key]));
+        }
+        (el.*mutator)(node[key].as<int>());
+    }
+}
+
 string getLineNumber(YAML::Node node) {
     return "line number " + to_string(node.Mark().line);
 }
@@ -86,7 +106,18 @@ string getLineNumber(YAML::Node node) {
 ElementPtr parseNode(YAML::Node node, ParserData& data) {
     ElementPtr ret;
     if (node["abstraction"]) {
-        // TODO
+        ret = createAndParse<Abstraction>(node["abstraction"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseDependencyFeatures //,
+                    // parseAbstractionFeatures
+                    );
+        parseScope(node, ret->as<Abstraction>(), data,
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
     }
     // TODO
     else if (node["class"] && node["class"].IsMap()) {
@@ -109,6 +140,18 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseElementFeatures,
                     parseCommentFeatures);
         parseScope(node, ret->as<Comment>(), data, parseElementScope);
+    } else if (node["constraint"]) {
+        ret = createAndParse<Constraint>(node["constraint"], data, 
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseConstraintFeatures);
+        parseScope(node, ret->as<Constraint>(), data,
+                    parseConstraintScope,
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
     } else if (node["dataType"] && node["dataType"].IsMap()) {
         ret = createAndParse<DataType>(node["dataType"], data, 
                     parseElementFeatures,
@@ -120,6 +163,17 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseDataTypeFeatures);
         parseScope(node, ret->as<DataType>(), data, 
                     parsePackageableElementScope, 
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["dependency"]) {
+        ret = createAndParse<Dependency>(node["dependency"], data, 
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseDependencyFeatures);
+        parseScope(node, ret->as<Dependency>(), data,
+                    parsePackageableElementScope,
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
@@ -209,9 +263,22 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseTypedElementFeatures,
+                    parseMultiplicityElementFeatures,
                     parseParameterableElementFeatures);
         parseScope(node, ret->as<Property>(), data, 
                     parsePropertyScope, 
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["realization"]) {
+        ret = createAndParse<Realization>(node["realization"], data, 
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseDependencyFeatures);
+                    // TODO abstraction features
+        parseScope(node, ret->as<Realization>(), data,
+                    parsePackageableElementScope,
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
@@ -239,6 +306,19 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
         parseScope(node, ret->as<TemplateSignature>(), data,
                     parseTemplateSignatureScope,
                     parseElementScope);
+    } else if (node["usage"]) {
+        ret = createAndParse<Usage>(node, data, 
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseDependencyFeatures);
+        parseScope(node, ret->as<Usage>(), data,
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else {
+        throw SerializationError("Could not identify an element type to parse in data provided for parsing " + getLineNumber(node));
     }
     return ret;
 }
@@ -263,9 +343,19 @@ void parseCommentFeatures(YAML::Node node, Comment& comment, ParserData& data) {
     }
 }
 
+void parseConstraintFeatures(YAML::Node node, Constraint& constraint, ParserData& data) {
+    parseSet<Element>(node, constraint, data, "constrainedElements", &Constraint::getConstrainedElements);
+    parseSingleton<ValueSpecification>(node, constraint, data, "specification", &Constraint::setSpecification, &Constraint::setSpecification);
+}
+
 void parseDataTypeFeatures(YAML::Node node, DataType& dataType, ParserData& data) {
     parseSet<Property>(node, dataType, data, "ownedAttributes", &DataType::getOwnedAttributes);
     parseSet<Operation>(node, dataType, data, "ownedOperations", &DataType::getOwnedOperations);
+}
+
+void parseDependencyFeatures(YAML::Node node, Dependency& dependency, ParserData& data) {
+    parseSet<NamedElement>(node, dependency, data, "suppliers", &Dependency::getSuppliers);
+    parseSet<NamedElement>(node, dependency, data, "clients", &Dependency::getClients);
 }
 
 void parseElementFeatures(YAML::Node node, Element& el, ParserData& data) {
@@ -318,6 +408,15 @@ void parseInstanceSpecificationFeatures(YAML::Node node, InstanceSpecification& 
 
 }
 
+void parseMultiplicityElementFeatures(YAML::Node node, MultiplicityElement& multiplicityElement, ParserData& data) {
+    parseBoolean(node, multiplicityElement, "isOrdered", &MultiplicityElement::setIsOrdered);
+    parseBoolean(node, multiplicityElement, "isUnique", &MultiplicityElement::setIsUnique);
+    parseSingleton<ValueSpecification>(node, multiplicityElement, data, "lowerValue", &MultiplicityElement::setLowerValue, &MultiplicityElement::setLowerValue);
+    parseInt(node, multiplicityElement, "lower", &MultiplicityElement::setLower);
+    parseSingleton<ValueSpecification>(node, multiplicityElement, data, "upperValue", &MultiplicityElement::setUpperValue, &MultiplicityElement::setUpperValue);
+    parseInt(node, multiplicityElement, "upper", &MultiplicityElement::setUpper);
+}
+
 void parseNamedElementFeatures(YAML::Node node, NamedElement& el, ParserData& data) {
     if (node["name"]) {
         if (!node["name"].IsScalar()) {
@@ -326,6 +425,7 @@ void parseNamedElementFeatures(YAML::Node node, NamedElement& el, ParserData& da
         el.setName(node["name"].as<string>());
     }
     parseVisibilty(node, el);
+    parseSet<Dependency>(node, el, data, "clientDependencies", &NamedElement::getClientDependencies);
 }
 
 void parseNamespaceFeatures(YAML::Node node, Namespace& nmspc, ParserData& data) {
@@ -381,6 +481,10 @@ void parseTemplateSignatureFeatures(YAML::Node node, TemplateSignature& template
 
 void parseTypedElementFeatures(YAML::Node node, TypedElement& typedElement, ParserData& data) {
     parseSingleton<Type>(node, typedElement, data, "type", &TypedElement::setType, &TypedElement::setType);
+}
+
+bool parseConstraintScope(YAML::Node node, Constraint& constraint, ParserData& data) {
+    return parseSingleton<Namespace>(node, constraint, data, "context", &Constraint::setContext, &Constraint::setContext);
 }
 
 bool parseElementScope(YAML::Node node, Element& el, ParserData& data) {

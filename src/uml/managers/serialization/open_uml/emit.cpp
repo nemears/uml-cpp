@@ -125,7 +125,18 @@ void emitOwnedSingleton(YAML::Emitter& emitter, U& el, EmitterData& data, string
 void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
     switch (el.getElementType()) {
         case ElementType::ABSTRACTION : {
-
+            Abstraction& abstraction = el.as<Abstraction>();
+            emitScope(emitter, abstraction, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, abstraction, data, "abstraction",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitDependencyFeatures);
+                        // TODO emitAbstractionFeatures;
             break;
         }
         case ElementType::CLASS : {
@@ -152,6 +163,18 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitElementTypeAndData(emitter, comment, data, "comment", emitElementFeatures, emitCommentFeatures);
             break;
         }
+        case ElementType::CONSTRAINT : {
+            Constraint& constraint = el.as<Constraint>();
+            emitScope(emitter, constraint, data, 
+                        emitConstraintScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, constraint, data, "constraint",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitConstraintFeatures);
+            break;
+        }
         case ElementType::DATA_TYPE : {
             DataType& dataType = el.as<DataType>();
             emitScope(emitter, dataType, data, 
@@ -167,6 +190,20 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitClassifierFeatures,
                         emitDataTypeFeatures);
+            break;
+        }
+        case ElementType::DEPENDENCY : {
+            Dependency& dependency = el.as<Dependency>();
+            emitScope(emitter, dependency, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, dependency, data, "dependency",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitDependencyFeatures);
             break;
         }
         case ElementType::ELEMENT_IMPORT : {
@@ -280,7 +317,23 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitTypedElementFeatures,
+                        emitMultiplicityElementFeatures,
                         emitParameterableElementFeatures);
+            break;
+        }
+        case ElementType::REALIZATION : {
+            Realization& realization = el.as<Realization>();
+            emitScope(emitter, realization, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, realization, data, "realization",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitDependencyFeatures);
+                        // TODO emitAbstractionFeatures;
             break;
         }
         case ElementType::TEMPLATE_BINDING : {
@@ -321,6 +374,20 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTemplateSignatureFeatures);
             break;
         }
+        case ElementType::USAGE : {
+            Usage& usage = el.as<Usage>();
+            emitScope(emitter, usage, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, usage, data, "usage",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitDependencyFeatures);
+            break;
+        }
     }
 }
 
@@ -342,9 +409,19 @@ void emitCommentFeatures(YAML::Emitter& emitter, Comment& comment, EmitterData& 
     }
 }
 
+void emitConstraintFeatures(YAML::Emitter& emitter, Constraint& constraint, EmitterData& data) {
+    emitSet<Element>(emitter, constraint, "constrainedElements", &Constraint::getConstrainedElements);
+    emitOwnedSingleton<ValueSpecification>(emitter, constraint, data, "specification", &Constraint::getSpecification);
+}
+
 void emitDataTypeFeatures(YAML::Emitter& emitter, DataType& dataType, EmitterData& data) {
     emitOwnedSet<Property>(emitter, dataType, data, "ownedAttributes", &DataType::getOwnedAttributes);
     emitOwnedSet<Operation>(emitter, dataType, data, "ownedOperations", &DataType::getOwnedOperations);
+}
+
+void emitDependencyFeatures(YAML::Emitter& emitter, Dependency& dependency, EmitterData& data) {
+    emitSet<NamedElement>(emitter, dependency, "suppliers", &Dependency::getSuppliers);
+    emitSet<NamedElement>(emitter, dependency, "clients", &Dependency::getClients);
 }
 
 void emitElementFeatures(YAML::Emitter& emitter, Element& el, EmitterData& data) {
@@ -387,6 +464,25 @@ void emitEnumerationFeatures(YAML::Emitter& emitter, Enumeration& enumeration, E
 
 void emitInstanceSpecificationFeatures(YAML::Emitter& emitter, InstanceSpecification& specification, EmitterData& data) {
 
+}
+
+void emitMultiplicityElementFeatures(YAML::Emitter& emitter, MultiplicityElement& multiplicityElement, EmitterData& data) {
+    if (multiplicityElement.isOrdered()) {
+        emitter << "isOrdered" << YAML::Value << true;
+    }
+    if (multiplicityElement.isUnique()) {
+        emitter << "isUnique" << YAML::Value << true;
+    }
+    if (!emitSingleton<ValueSpecification>(emitter, multiplicityElement, "lowerValue", &MultiplicityElement::getLowerValue)) {
+        if (multiplicityElement.getLower() != -1) {
+            emitter << "lower" << YAML::Value << multiplicityElement.getLower();
+        }
+    }
+    if (!emitSingleton<ValueSpecification>(emitter, multiplicityElement, "upperValue", &MultiplicityElement::getUpperValue)) {
+        if (multiplicityElement.getUpper() != -1) {
+            emitter << "lower" << YAML::Value << multiplicityElement.getUpper();
+        }
+    }
 }
 
 void emitNamedElementFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterData& data) {
@@ -454,6 +550,10 @@ void emitTemplateSignatureFeatures(YAML::Emitter& emitter, TemplateSignature& si
 
 void emitTypedElementFeatures(YAML::Emitter& emitter, TypedElement& typedElement, EmitterData& data) {
     emitSingleton<Type>(emitter, typedElement, "type", &TypedElement::getType);
+}
+
+bool emitConstraintScope(YAML::Emitter& emitter, Constraint& constraint, EmitterData& data) {
+    return emitSingleton<Namespace>(emitter, constraint, "context", &Constraint::getContext);
 }
 
 bool emitElementScope(YAML::Emitter& emitter, Element& el, EmitterData& data) {

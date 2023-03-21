@@ -17,8 +17,8 @@ namespace UML {
             Comment();
         public:
             virtual ~Comment();
-            std::string getBody();
-            void setBody(std::string body);
+            std::string getBody() const;
+            void setBody(const std::string& body);
             Set<Element, Comment>& getAnnotatedElements();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

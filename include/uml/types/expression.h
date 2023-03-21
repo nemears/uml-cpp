@@ -17,7 +17,7 @@ namespace UML {
             virtual ~Expression();
             OrderedSet<ValueSpecification, Expression>& getOperands();
             std::string getSymbol();
-            void setSymbol(std::string sym);
+            void setSymbol(const std::string& sym);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::EXPRESSION;

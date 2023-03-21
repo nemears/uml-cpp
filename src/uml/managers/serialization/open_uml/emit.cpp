@@ -249,7 +249,21 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitInstanceSpecificationFeatures);
             break;
         }
-        // TODO
+        case ElementType::EXPRESSION : {
+            Expression& expression = el.as<Expression>();
+            emitScope(emitter, expression, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, expression, data, "expression",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitTypedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitExpressionFeatures);
+            break;
+        }
         case ElementType::INSTANCE_SPECIFICATION : {
             InstanceSpecification& inst = el.as<InstanceSpecification>();
             emitScope(emitter, inst, data, 
@@ -262,6 +276,81 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitNamedElementFeatures, 
                         emitParameterableElementFeatures,
                         emitInstanceSpecificationFeatures);
+            break;
+        }
+        case ElementType::LITERAL_BOOL : {
+            LiteralBool& literalBool = el.as<LiteralBool>();
+            emitScope(emitter, literalBool, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, literalBool, data, "literalBool",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitTypedElementFeatures,
+                        emitLiteralBoolFeatures);
+            break;
+        }
+        case ElementType::LITERAL_INT : {
+            LiteralInt& literalInt = el.as<LiteralInt>();
+            emitScope(emitter, literalInt, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, literalInt, data, "literalInt",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitTypedElementFeatures,
+                        emitLiteralIntFeatures);
+            break;
+        }
+        case ElementType::LITERAL_REAL : {
+            LiteralReal& literalReal = el.as<LiteralReal>();
+            emitScope(emitter, literalReal, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, literalReal, data, "literalReal",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitTypedElementFeatures,
+                        emitLiteralRealFeatures);
+            break;
+        }
+        case ElementType::LITERAL_STRING : {
+            LiteralString& literalString = el.as<LiteralString>();
+            emitScope(emitter, literalString, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, literalString, data, "literalString",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitTypedElementFeatures,
+                        emitLiteralStringFeatures);
+            break;
+        }
+        case ElementType::LITERAL_UNLIMITED_NATURAL : {
+            LiteralUnlimitedNatural& literalUnlimitedNatural = el.as<LiteralUnlimitedNatural>();
+            emitScope(emitter, literalUnlimitedNatural, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, literalUnlimitedNatural, data, "literalUnlimitedNatural",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitTypedElementFeatures,
+                        emitLiteralUnlimitedNaturalFeatures);
             break;
         }
         case ElementType::PACKAGE : {
@@ -388,6 +477,9 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitDependencyFeatures);
             break;
         }
+        default : {
+            throw SerializationError("No strategy to serialize element of type " + Element::elementTypeToString(el.getElementType()));
+        }
     }
 }
 
@@ -462,8 +554,42 @@ void emitEnumerationFeatures(YAML::Emitter& emitter, Enumeration& enumeration, E
     emitOwnedSet<EnumerationLiteral>(emitter, enumeration, data, "ownedLiterals", &Enumeration::getOwnedLiterals);
 }
 
+void emitExpressionFeatures(YAML::Emitter& emitter, Expression& expression, EmitterData& data) {
+    if (!expression.getSymbol().empty()) {
+        emitter << expression.getSymbol();
+    }
+    emitOwnedSet<ValueSpecification>(emitter, expression, data, "operands", &Expression::getOperands);
+}
+
 void emitInstanceSpecificationFeatures(YAML::Emitter& emitter, InstanceSpecification& specification, EmitterData& data) {
 
+}
+
+void emitLiteralBoolFeatures(YAML::Emitter& emitter, LiteralBool& literalBool, EmitterData& data) {
+    emitter << "value" << YAML::Value << literalBool.getValue();
+}
+
+void emitLiteralIntFeatures(YAML::Emitter& emitter, LiteralInt& literalInt, EmitterData& data) {
+    emitter << "value" << YAML::Value << literalInt.getValue();
+}
+
+void emitLiteralRealFeatures(YAML::Emitter& emitter, LiteralReal& literalReal, EmitterData& data) {
+    emitter << "value" << YAML::Value << literalReal.getValue();
+}
+
+void emitLiteralStringFeatures(YAML::Emitter& emitter, LiteralString& literalString, EmitterData& data) {
+    if (!literalString.getValue().empty()) {
+        emitter << "value" << YAML::Value << literalString.getValue();
+    }
+}
+
+void emitLiteralUnlimitedNaturalFeatures(YAML::Emitter& emitter, LiteralUnlimitedNatural& literalUnlimitedNatural, EmitterData& data) {
+    emitter << "value" << YAML::Value;
+    if (literalUnlimitedNatural.isInfinite()) {
+        emitter << "*";
+    } else {
+        emitter << literalUnlimitedNatural.getNumberValue();
+    }
 }
 
 void emitMultiplicityElementFeatures(YAML::Emitter& emitter, MultiplicityElement& multiplicityElement, EmitterData& data) {

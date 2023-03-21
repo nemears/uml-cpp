@@ -18,7 +18,7 @@ std::string LiteralString::getValue() {
     return m_value;
 }
 
-void LiteralString::setValue(std::string val) {
+void LiteralString::setValue(const std::string& val) {
     m_value = val;
 }
 

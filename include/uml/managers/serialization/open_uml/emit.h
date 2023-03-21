@@ -18,7 +18,13 @@ namespace UML {
     void emitElementFeatures(YAML::Emitter& emitter, Element& el, EmitterData& data);
     void emitElementImportFeatures(YAML::Emitter& emitter, ElementImport& elementImport, EmitterData& data);
     void emitEnumerationFeatures(YAML::Emitter& emitter, Enumeration& enumeration, EmitterData& data);
+    void emitExpressionFeatures(YAML::Emitter& emitter, Expression& expression, EmitterData& data);
     void emitInstanceSpecificationFeatures(YAML::Emitter& emitter, InstanceSpecification& specification, EmitterData& data);
+    void emitLiteralBoolFeatures(YAML::Emitter& emitter, LiteralBool& literalBool, EmitterData& data);
+    void emitLiteralIntFeatures(YAML::Emitter& emitter, LiteralInt& literalInt, EmitterData& data);
+    void emitLiteralRealFeatures(YAML::Emitter& emitter, LiteralReal& literalReal, EmitterData& data);
+    void emitLiteralStringFeatures(YAML::Emitter& emitter, LiteralString& literalString, EmitterData& data);
+    void emitLiteralUnlimitedNaturalFeatures(YAML::Emitter& emitter, LiteralUnlimitedNatural& literalUnlimitedNatural, EmitterData& data);
     void emitMultiplicityElementFeatures(YAML::Emitter& emitter, MultiplicityElement& multiplicityElement, EmitterData& data);
     void emitNamedElementFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterData& data);
     void emitNamespaceFeatures(YAML::Emitter& emitter, Namespace& nmspc, EmitterData& data);

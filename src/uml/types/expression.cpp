@@ -23,7 +23,7 @@ std::string Expression::getSymbol() {
     return m_symbol;
 }
 
-void Expression::setSymbol(std::string sym) {
+void Expression::setSymbol(const std::string& sym) {
     m_symbol = sym;
 }
 

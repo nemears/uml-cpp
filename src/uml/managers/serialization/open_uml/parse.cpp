@@ -151,6 +151,14 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope, 
                     parseElementScope);
+    } else if (node["classifierTemplateParameter"]) {
+        ret = createAndParse<ClassifierTemplateParameter>(node["classifierTemplateParameter"], data,
+                    parseElementFeatures,
+                    parseTemplateParameterFeatures,
+                    parseClassifierTemplateParameterFeatures);
+        parseScope(node, ret->as<ClassifierTemplateParameter>(), data, 
+                    parseTemplateParameterScope,
+                    parseElementScope);
     } else if (node["comment"]) {
         ret = createAndParse<Comment>(node["comment"], data,
                     parseElementFeatures,
@@ -237,6 +245,24 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
+    } else if (node["generalization"]) {
+        ret = createAndParse<Generalization>(node["generalization"], data, 
+                    parseElementFeatures,
+                    parseGeneralizationFeatures);
+        parseScope(node, ret->as<Generalization>(), data, 
+                    parseGeneralizationScope,
+                    parseElementScope);
+    } else if (node["generalizationSet"]) {
+        ret = createAndParse<GeneralizationSet>(node["generalizationSet"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseGeneralizationSetFeatures);
+        parseScope(node, ret->as<GeneralizationSet>(), data,
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
     } else if (node["instanceSpecification"]) {
         ret = createAndParse<InstanceSpecification>(node["instanceSpecification"], data, 
                     parseElementFeatures,
@@ -245,6 +271,18 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseInstanceSpecificationFeatures);
         parseScope(node, ret->as<InstanceSpecification>(), data, 
                     parsePackageableElementScope, 
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["instanceValue"]) {
+        ret = createAndParse<InstanceValue>(node["instanceValue"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseTypedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseInstanceValueFeatures);
+        parseScope(node, ret->as<InstanceValue>(), data,
+                    parsePackageableElementScope,
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
@@ -257,6 +295,7 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseLiteralBoolFeatures);
         parseScope(node, ret->as<LiteralBool>(), data, 
                     parsePackageableElementScope,
+                    parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
     } else if (node["literalInt"]) {
@@ -268,6 +307,7 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseLiteralIntegerFeatures);
         parseScope(node, ret->as<LiteralInt>(), data, 
                     parsePackageableElementScope,
+                    parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
     } else if (node["literalNull"]) {
@@ -314,6 +354,19 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parsePackageableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
+    } else if (node["operation"]) {
+        ret = createAndParse<Operation>(node["operation"], data, 
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseTemplateableElementFeatures,
+                    parseFeatureFeatures,
+                    parseBehavioralFeatureFeatures);
+        parseScope(node, ret->as<Operation>(), data, 
+                    parseOperationScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
     } else if (node["package"]) {
         ret = createAndParse<Package>(node["package"], data, 
                     parseElementFeatures,
@@ -334,6 +387,24 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
         parseScope(node, ret->as<PackageImport>(), data, 
                     parsePackageImportScope,
                     parseElementScope);
+    } else if (node["parameter"]) {
+        ret = createAndParse<Parameter>(node, data, 
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseTypedElementFeatures, // parseConnectableElements
+                    parseMultiplicityElementFeatures,
+                    parseParameterFeatures);
+        parseScope(node, ret->as<Parameter>(), data, 
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["parameterSet"]) {
+        ret = createAndParse<ParameterSet>(node["parameterSet"], data, 
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseParameterSetFeatures);
+        parseScope(node, ret->as<ParameterSet>(), data,
+                    parseNamedElementScope,
+                    parseElementScope);
     } else if (node["primitivType"]) {
         ret = createAndParse<PrimitiveType>(node["primitiveType"], data,
                     parseElementFeatures,
@@ -352,9 +423,12 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
         ret = createAndParse<Property>(node["property"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
+                    parseFeatureFeatures,
                     parseTypedElementFeatures,
+                    parseStructuralFeatureFeatures,
                     parseMultiplicityElementFeatures,
-                    parseParameterableElementFeatures);
+                    parseParameterableElementFeatures,
+                    parsePropertyFeatures);
         parseScope(node, ret->as<Property>(), data, 
                     parsePropertyScope, 
                     parseParameterableElementScope,
@@ -371,6 +445,22 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parsePackageableElementScope,
                     parseParameterableElementScope,
                     parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["redefinableTemplateSignature"]) {
+        ret = createAndParse<RedefinableTemplateSignature>(node["redefinableTemplateSignature"], data,
+                    parseElementFeatures,
+                    parseTemplateSignatureFeatures,
+                    parseRedefinableTemplateSignatureFeatures);
+        parseScope(node, ret->as<RedefinableTemplateSignature>(), data,
+                    parseRedefinableTemplateSignatureScope,
+                    parseTemplateSignatureScope,
+                    parseElementScope);
+    } else if (node["slot"]) {
+        ret = createAndParse<Slot>(node["slot"], data, 
+                    parseElementFeatures,
+                    parseSlotFeatures);
+        parseScope(node, ret->as<Slot>(), data, 
+                    parseSlotScope,
                     parseElementScope);
     } else if (node["templateBinding"]) {
         ret = createAndParse<TemplateBinding>(node["templateBinding"], data,
@@ -413,6 +503,25 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
     return ret;
 }
 
+void parseBehavioralFeatureFeatures(YAML::Node node, BehavioralFeature& behavioralFeature, ParserData& data) {
+    if (node["concurrency"]) {
+        string concurrencyValue = node["concurrency"].as<string>();
+        if (concurrencyValue == "sequential") {
+            behavioralFeature.setConcurrency(CallConcurrencyKind::Sequential);
+        } else if (concurrencyValue == "guarded") {
+            behavioralFeature.setConcurrency(CallConcurrencyKind::Guarded);
+        } else if (concurrencyValue == "concurrent") {
+            behavioralFeature.setConcurrency(CallConcurrencyKind::Concurrent);
+        } else {
+            throw SerializationError("Could not parse concurrency, must be sequential, guarded or concurrent! " + getLineNumber(node["concurrency"]));
+        }
+    }
+    parseSet<Type>(node, behavioralFeature, data, "raisedExceptions", &BehavioralFeature::getRaisedExceptions);
+    parseSet<Behavior>(node, behavioralFeature, data, "methods", &BehavioralFeature::getMethods);
+    parseSet<Parameter>(node, behavioralFeature, data, "ownedParameters", &BehavioralFeature::getOwnedParameters);
+    parseSet<ParameterSet>(node, behavioralFeature, data, "ownedParameterSets", &BehavioralFeature::getOwnedParameterSets);
+}
+
 void parseClassFeatures(YAML::Node node, Class& clazz, ParserData& data) {
     parseSet<Classifier>(node, clazz, data, "nestedClassifiers", &Class::getNestedClassifiers);
     parseSet<Property>(node, clazz, data, "ownedAttributes", &Class::getOwnedAttributes);
@@ -422,6 +531,11 @@ void parseClassFeatures(YAML::Node node, Class& clazz, ParserData& data) {
 
 void parseClassifierFeatures(YAML::Node node, Classifier& classifier, ParserData& data) {
     parseSet<Generalization>(node, classifier, data, "generalizations", &Classifier::getGeneralizations);
+    parseSet<GeneralizationSet>(node, classifier, data, "powertypeExtent", &Classifier::getPowerTypeExtent);
+}
+
+void parseClassifierTemplateParameterFeatures(YAML::Node node, ClassifierTemplateParameter& classifierTemplateParameter, ParserData& data) {
+    parseSet<Classifier>(node, classifierTemplateParameter, data, "constrainingClassifiers", &ClassifierTemplateParameter::getConstrainingClassifiers);
 }
 
 void parseCommentFeatures(YAML::Node node, Comment& comment, ParserData& data) {
@@ -490,8 +604,30 @@ void parseExpressionFeatures(YAML::Node node, Expression& expression, ParserData
     parseString(node, expression, "symbol", &Expression::setSymbol);
 }
 
-void parseInstanceSpecificationFeatures(YAML::Node node, InstanceSpecification& inst, ParserData& data) {
+void parseFeatureFeatures(YAML::Node node, Feature& feature, ParserData& data) {
+    parseBoolean(node, feature, "isStatic", &Feature::setStatic);
+}
 
+void parseGeneralizationFeatures(YAML::Node node, Generalization& generalization, ParserData& data) {
+    parseSingleton<Classifier>(node, generalization, data, "general", &Generalization::setGeneral, &Generalization::setGeneral);
+    parseSet<GeneralizationSet>(node, generalization, data, "generalizationSets", &Generalization::getGeneralizationSets);
+}
+
+void parseGeneralizationSetFeatures(YAML::Node node, GeneralizationSet& generalizationSet, ParserData& data) {
+    parseSingleton<Classifier>(node, generalizationSet, data, "powertype", &GeneralizationSet::setPowerType, &GeneralizationSet::setPowerType);
+    parseSet<Generalization>(node, generalizationSet, data, "generalizations", &GeneralizationSet::getGeneralizations);
+    parseBoolean(node, generalizationSet, "isCovering", &GeneralizationSet::setCovering);
+    parseBoolean(node, generalizationSet, "isDisjoint", &GeneralizationSet::setDisjoint);
+}
+
+void parseInstanceSpecificationFeatures(YAML::Node node, InstanceSpecification& inst, ParserData& data) {
+    parseSet<Slot>(node, inst, data, "slots", &InstanceSpecification::getSlots);
+    parseSingleton<ValueSpecification>(node, inst, data, "specification", &InstanceSpecification::setSpecification, &InstanceSpecification::setSpecification);
+    parseSet<Classifier>(node, inst, data, "classifiers", &InstanceSpecification::getClassifiers);
+}
+
+void parseInstanceValueFeatures(YAML::Node node, InstanceValue& instanceValue, ParserData& data) {
+    parseSingleton<InstanceSpecification>(node, instanceValue, data, "instance", &InstanceValue::setInstance, &InstanceValue::setInstance);
 }
 
 void parseLiteralBoolFeatures(YAML::Node node, LiteralBool& literalBool, ParserData& data) {
@@ -555,8 +691,80 @@ void parsePackageImportFeatures(YAML::Node node, PackageImport& packageImport, P
     parseVisibilty(node, packageImport);
 }
 
+void parseParameterFeatures(YAML::Node node, Parameter& parameter, ParserData& data) {
+    // TODO string default
+    if (node["direction"]) {
+        string directionVal = node["direction"].as<string>();
+        if (directionVal == "in") {
+            parameter.setDirection(ParameterDirectionKind::IN_UML);
+        } else if (directionVal == "inout") {
+            parameter.setDirection(ParameterDirectionKind::INOUT);
+        } else if (directionVal == "out") {
+            parameter.setDirection(ParameterDirectionKind::OUT_UML);
+        } else if (directionVal == "return") {
+            parameter.setDirection(ParameterDirectionKind::RETURN);
+        } else {
+            throw SerializationError("could not parse parameter direction value " + getLineNumber(node["direction"]));
+        }
+    }
+    if (node["effect"]) {
+        string effectVal = node["effect"].as<string>();
+        if (effectVal == "create") {
+            parameter.setEffect(ParameterEffectKind::CREATE);
+        } else if (effectVal == "read") {
+            parameter.setEffect(ParameterEffectKind::READ);
+        } else if (effectVal == "update") {
+            parameter.setEffect(ParameterEffectKind::UPDATE);
+        } else if (effectVal == "delete") {
+            parameter.setEffect(ParameterEffectKind::DELETE_UML);
+        } else {
+            throw SerializationError("Could not parse parameter effect value " + getLineNumber(node["effect"]));
+        }
+    }
+    parseBoolean(node, parameter, "isException", &Parameter::setIsException);
+    parseBoolean(node, parameter, "isStream", &Parameter::setIsStream);
+    parseSingleton<ValueSpecification>(node, parameter, data, "defaultValue", &Parameter::setDefaultValue, &Parameter::setDefaultValue);
+    parseSet<ParameterSet>(node, parameter, data, "parameterSets", &Parameter::getParameterSets);
+}
+
 void parseParameterableElementFeatures(YAML::Node node, ParameterableElement& parameterableElement, ParserData& data) {
     parseSingleton<TemplateParameter>(node, parameterableElement, data, "templateParameter", &ParameterableElement::setTemplateParameter, &ParameterableElement::setTemplateParameter);
+}
+
+void parseParameterSetFeatures(YAML::Node node, ParameterSet& parameterSet, ParserData& data) {
+    parseSet<Parameter>(node, parameterSet, data, "parameters", &ParameterSet::getParameters);
+    parseSet<Constraint>(node, parameterSet, data, "conditions", &ParameterSet::getConditions);
+}
+
+void parsePropertyFeatures(YAML::Node node, Property& property, ParserData& data) {
+    if (node["aggregation"]) {
+        string aggregationVal = node["aggregation"].as<string>();
+        if (aggregationVal == "composite") {
+            property.setAggregation(AggregationKind::COMPOSITE);
+        } else if (aggregationVal == "none") {
+            property.setAggregation(AggregationKind::NONE);
+        } else if (aggregationVal == "shared") {
+            property.setAggregation(AggregationKind::SHARED);
+        }
+    }
+    parseBoolean(node, property, "isComposite", &Property::setComposite);
+    // TODO flags
+    parseSingleton<ValueSpecification>(node, property, data, "defaultValue", &Property::setDefaultValue, &Property::setDefaultValue);
+    parseSingleton<Association>(node, property, data, "association", &Property::setAssociation, &Property::setAssociation);
+    parseSet<Property>(node, property, data, "redefinedProperties", &Property::getRedefinedProperties);
+}
+
+void parseRedefinableTemplateSignatureFeatures(YAML::Node node, RedefinableTemplateSignature& redefinableTemplateSignature, ParserData& data) {
+    parseSet<RedefinableTemplateSignature>(node, redefinableTemplateSignature, data, "extendedSignature", &RedefinableTemplateSignature::getExtendedSignatures);
+}
+
+void parseSlotFeatures(YAML::Node node, Slot& slot, ParserData& data) {
+    parseSet<ValueSpecification>(node, slot, data, "values", &Slot::getValues);
+    parseSingleton<StructuralFeature>(node, slot, data, "definingFeature", &Slot::setDefiningFeature, &Slot::setDefiningFeature);
+}
+
+void parseStructuralFeatureFeatures(YAML::Node node, StructuralFeature& structuralFeature, ParserData& data) {
+    parseBoolean(node, structuralFeature, "isReadOnly", &StructuralFeature::setReadOnly);
 }
 
 void parseStructuredClassifierFeatures(YAML::Node node, StructuredClassifier& structuredClassifier, ParserData& data) {
@@ -622,9 +830,24 @@ bool parseEnumerationLiteralScope(YAML::Node node, EnumerationLiteral& literal, 
     return false;
 }
 
+bool parseGeneralizationScope(YAML::Node node, Generalization& generalization, ParserData& data) {
+    return parseSingleton<Classifier>(node, generalization, data, "specific", &Generalization::setSpecific, &Generalization::setSpecific);
+}
+
 bool parseNamedElementScope(YAML::Node node, NamedElement& namedElement, ParserData& data) {
     if (node["namespace"]) {
         namedElement.setNamespace(ID::fromString(node["namespace"].as<string>()));
+        return true;
+    }
+    return false;
+}
+
+bool parseOperationScope(YAML::Node node, Operation& operation, ParserData& data) {
+    if (parseSingleton<Class>(node, operation, data, "class", &Operation::setClass, &Operation::setClass)) {
+        return true;
+    } else if (parseSingleton<DataType>(node, operation, data, "dataType", &Operation::setDataType, &Operation::setDataType)) {
+        return true;
+    } else if (parseSingleton<Interface>(node, operation, data, "interface", &Operation::setInterface, &Operation::setInterface)) {
         return true;
     }
     return false;
@@ -651,8 +874,20 @@ bool parsePropertyScope(YAML::Node node, Property& property, ParserData& data) {
         return true;
     } else if (node["interface"] && node["interface"].IsScalar()) {
         property.setInterface(ID::fromString(node["interface"].as<string>()));
+        return true;
+    } else if (node["owningAssociation"]) {
+        property.setOwningAssociation(ID::fromString(node["owningAssociation"].as<string>()));
+        return true;
     }
     return false;
+}
+
+bool parseRedefinableTemplateSignatureScope(YAML::Node node, RedefinableTemplateSignature& redefinableTemplateSignature, ParserData& data) {
+    return parseSingleton<Classifier>(node, redefinableTemplateSignature, data, "classifier", &RedefinableTemplateSignature::setClassifier, &RedefinableTemplateSignature::setClassifier);
+}
+
+bool parseSlotScope(YAML::Node node, Slot& slot, ParserData& data) {
+    return parseSingleton<InstanceSpecification>(node, slot, data, "owningInstance", &Slot::setOwningInstance, &Slot::setOwningInstance);
 }
 
 bool parseTemplateBindingScope(YAML::Node node, TemplateBinding& templateBinding, ParserData& data) {

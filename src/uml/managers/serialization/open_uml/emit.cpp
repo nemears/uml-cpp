@@ -157,6 +157,17 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitClassFeatures);
             break;
         }
+        case ElementType::CLASSIFIER_TEMPLATE_PARAMETER : {
+            ClassifierTemplateParameter& classifierTemplateParameter = el.as<ClassifierTemplateParameter>();
+            emitScope(emitter, classifierTemplateParameter, data,
+                        emitTemplateParameterScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, classifierTemplateParameter, data, "classifierTemplateParameter", 
+                        emitElementFeatures,
+                        emitTemplateParameterFeatures,
+                        emitClassifierTemplateParameter);
+            break;
+        }
         case ElementType::COMMENT : {
             Comment& comment = el.as<Comment>();
             emitScope(emitter, comment, data, emitElementScope);
@@ -264,6 +275,30 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitExpressionFeatures);
             break;
         }
+        case ElementType::GENERALIZATION : {
+            Generalization& generalization = el.as<Generalization>();
+            emitScope(emitter, generalization, data,
+                        emitGeneralizationScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, generalization, data, "generalization",
+                        emitElementFeatures,
+                        emitGeneralizationFeatures);
+            break;
+        }
+        case ElementType::GENERALIZATION_SET : {
+            GeneralizationSet& generalizationSet = el.as<GeneralizationSet>();
+            emitScope(emitter, generalizationSet, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, generalizationSet, data, "generalizationSet",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitGeneralizationSetFeatures);
+            break;
+        }
         case ElementType::INSTANCE_SPECIFICATION : {
             InstanceSpecification& inst = el.as<InstanceSpecification>();
             emitScope(emitter, inst, data, 
@@ -276,6 +311,21 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitNamedElementFeatures, 
                         emitParameterableElementFeatures,
                         emitInstanceSpecificationFeatures);
+            break;
+        }
+        case ElementType::INSTANCE_VALUE : {
+            InstanceValue& instanceValue = el.as<InstanceValue>();
+            emitScope(emitter, instanceValue, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, instanceValue, data, "instanceValue",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitTypedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitInstanceValueFeatures);
             break;
         }
         case ElementType::LITERAL_BOOL : {
@@ -353,6 +403,22 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitLiteralUnlimitedNaturalFeatures);
             break;
         }
+        case ElementType::OPERATION : {
+            Operation& operation = el.as<Operation>();
+            emitScope(emitter, operation, data,
+                        emitOperationScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, operation, data, "operation", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitTemplateableElementFeatures,
+                        emitFeatureFeatures,
+                        emitBehavioralFeatureFeatures);
+            break;
+        }
         case ElementType::PACKAGE : {
             Package& package = el.as<Package>();
             emitScope(emitter, package, data, 
@@ -376,6 +442,30 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitElementTypeAndData(emitter, packageImport, data, "packageImport",
                         emitPackageImportFeatures,
                         emitElementFeatures);
+            break;
+        }
+        case ElementType::PARAMETER : {
+            Parameter& parameter = el.as<Parameter>();
+            emitScope(emitter, parameter, data,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, parameter, data, "paramter", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitTypedElementFeatures,
+                        emitMultiplicityElementFeatures,
+                        emitParameterFeatures);
+            break;
+        }
+        case ElementType::PARAMETER_SET : {
+            ParameterSet& parameterSet = el.as<ParameterSet>();
+            emitScope(emitter, parameterSet, data, 
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, parameterSet, data, "parameterSet",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterSetFeatures);
             break;
         }
         case ElementType::PRIMITIVE_TYPE : {
@@ -405,9 +495,24 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitElementTypeAndData(emitter, property, data, "property",
                         emitElementFeatures,
                         emitNamedElementFeatures,
+                        emitFeatureFeatures,
                         emitTypedElementFeatures,
+                        emitStructuralFeatureFeatures,
                         emitMultiplicityElementFeatures,
-                        emitParameterableElementFeatures);
+                        emitParameterableElementFeatures,
+                        emitPropertyFeatures);
+            break;
+        }
+        case ElementType::REDEFINABLE_TEMPLATE_SIGNATURE : {
+            RedefinableTemplateSignature& redefinableTemplateSignature = el.as<RedefinableTemplateSignature>();
+            emitScope(emitter, redefinableTemplateSignature, data,
+                        emitRedefinableTemplateSignatureScope,
+                        emitTemplateSignatureScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, redefinableTemplateSignature, data, "redefinableTemplateSignature",
+                        emitElementFeatures,
+                        emitTemplateSignatureFeatures,
+                        emitRedefinableTemplateSignatureFeatures);
             break;
         }
         case ElementType::REALIZATION : {
@@ -423,6 +528,16 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitDependencyFeatures);
                         // TODO emitAbstractionFeatures;
+            break;
+        }
+        case ElementType::SLOT : {
+            Slot& slot = el.as<Slot>();
+            emitScope(emitter, slot, data,
+                        emitSlotScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, slot, data, "slot", 
+                        emitElementFeatures,
+                        emitSlotFeatures);
             break;
         }
         case ElementType::TEMPLATE_BINDING : {
@@ -483,6 +598,26 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
     }
 }
 
+void emitBehavioralFeatureFeatures(YAML::Emitter& emitter, BehavioralFeature& behavioralFeature, EmitterData& data) {
+    if (behavioralFeature.getConcurrency() != CallConcurrencyKind::Sequential) {
+        emitter << "concurrency" << YAML::Value;
+        switch (behavioralFeature.getConcurrency()) {
+            case CallConcurrencyKind::Concurrent : {
+                emitter << "concurrent";
+                break;
+            }
+            case CallConcurrencyKind::Guarded : {
+                emitter << "guarded";
+                break;
+            }
+        }
+    }
+    emitSet<Type>(emitter, behavioralFeature, "raisedExceptions", &BehavioralFeature::getRaisedExceptions);
+    emitSet<Behavior>(emitter, behavioralFeature, "methods", &BehavioralFeature::getMethods);
+    emitOwnedSet<Parameter>(emitter, behavioralFeature, data, "ownedParameters", &BehavioralFeature::getOwnedParameters);
+    emitOwnedSet<ParameterSet>(emitter, behavioralFeature, data, "ownedParameterSets", &BehavioralFeature::getOwnedParameterSets);
+}
+
 void emitClassFeatures(YAML::Emitter& emitter, Class& clazz, EmitterData& data) {
     emitOwnedSet<Classifier>(emitter, clazz, data, "nestedClassifiers", &Class::getNestedClassifiers);
     emitOwnedSet<Property>(emitter, clazz, data, "ownedAttributes", &Class::getOwnedAttributes);
@@ -492,6 +627,11 @@ void emitClassFeatures(YAML::Emitter& emitter, Class& clazz, EmitterData& data) 
 
 void emitClassifierFeatures(YAML::Emitter& emitter, Classifier& classifier, EmitterData& data) {
     emitOwnedSet<Generalization>(emitter, classifier, data, "generalizations", &Classifier::getGeneralizations);
+    emitSet<GeneralizationSet>(emitter, classifier, "powertypeExtent", &Classifier::getPowerTypeExtent);
+}
+
+void emitClassifierTemplateParameter(YAML::Emitter& emitter, ClassifierTemplateParameter& classifierTemplateParameter, EmitterData& data) {
+    emitSet<Classifier>(emitter, classifierTemplateParameter, "constrainingClassifiers", &ClassifierTemplateParameter::getConstrainingClassifiers);
 }
 
 void emitCommentFeatures(YAML::Emitter& emitter, Comment& comment, EmitterData& data) {
@@ -561,8 +701,32 @@ void emitExpressionFeatures(YAML::Emitter& emitter, Expression& expression, Emit
     emitOwnedSet<ValueSpecification>(emitter, expression, data, "operands", &Expression::getOperands);
 }
 
-void emitInstanceSpecificationFeatures(YAML::Emitter& emitter, InstanceSpecification& specification, EmitterData& data) {
+void emitFeatureFeatures(YAML::Emitter& emitter, Feature& feature, EmitterData& data) {
+    if (feature.isStatic()) {
+        emitter << "isStatic" << YAML::Value << true;
+    }
+}
 
+void emitGeneralizationFeatures(YAML::Emitter& emitter, Generalization& generalization, EmitterData& data) {
+    emitSingleton<Classifier>(emitter, generalization, "general", &Generalization::getGeneral);
+    emitSet<GeneralizationSet>(emitter, generalization, "generalizationSets", &Generalization::getGeneralizationSets);
+}
+
+void emitGeneralizationSetFeatures(YAML::Emitter& emitter, GeneralizationSet& generalizationSet, EmitterData& data) {
+    emitter << "isCovering" << YAML::Value << generalizationSet.isCovering();
+    emitter << "isDisjoint" << YAML::Value << generalizationSet.isDisjoint();
+    emitSingleton<Classifier>(emitter, generalizationSet, "powertype", &GeneralizationSet::getPowerType);
+    emitSet<Generalization>(emitter, generalizationSet, "generalizations", &GeneralizationSet::getGeneralizations);
+}
+
+void emitInstanceSpecificationFeatures(YAML::Emitter& emitter, InstanceSpecification& specification, EmitterData& data) {
+    emitOwnedSet<Slot>(emitter, specification, data, "slots", &InstanceSpecification::getSlots);
+    emitOwnedSingleton<ValueSpecification>(emitter, specification, data, "specification", &InstanceSpecification::getSpecification);
+    emitSet<Classifier>(emitter, specification, "classifiers", &InstanceSpecification::getClassifiers);
+}
+
+void emitInstanceValueFeatures(YAML::Emitter& emitter, InstanceValue& instanceValue, EmitterData& data) {
+    emitSingleton<InstanceSpecification>(emitter, instanceValue, "instance", &InstanceValue::getInstance);
 }
 
 void emitLiteralBoolFeatures(YAML::Emitter& emitter, LiteralBool& literalBool, EmitterData& data) {
@@ -633,9 +797,85 @@ void emitPackageImportFeatures(YAML::Emitter& emitter, PackageImport& packageImp
     emitVisibilityKind(emitter, packageImport);
 }
 
+void emitParameterFeatures(YAML::Emitter& emitter, Parameter& parameter, EmitterData& data) {
+    if (parameter.getDirection() != ParameterDirectionKind::NONE) {
+        emitter << "direction" << YAML::Value;
+        switch (parameter.getDirection()) {
+            case ParameterDirectionKind::IN_UML : {
+                emitter << "in";
+                break;
+            }
+            case ParameterDirectionKind::INOUT : {
+                emitter << "inout";
+                break;
+            }
+            case ParameterDirectionKind::OUT_UML : {
+                emitter << "out";
+                break;
+            }
+            case ParameterDirectionKind::RETURN : {
+                emitter << "return";
+            }
+            default : {
+                throw SerializationError(" bad direction");
+            }
+        }
+    }
+    if (parameter.isException()) {
+        emitter << "isException" << YAML::Value << true;
+    }
+    if (parameter.isStream()) {
+        emitter << "isStream" << YAML::Value << true;
+    }
+    emitOwnedSingleton<ValueSpecification>(emitter, parameter, data, "defaultValue", &Parameter::getDefaultValue);
+    emitSet<ParameterSet>(emitter, parameter, "parameterSets", &Parameter::getParameterSets);
+}
+
 void emitParameterableElementFeatures(YAML::Emitter& emitter, ParameterableElement& parameterableElement, EmitterData& data) {
     if (!parameterableElement.getOwningTemplateParameter()) {
         emitSingleton<TemplateParameter>(emitter, parameterableElement, "templateParameter", &ParameterableElement::getTemplateParameter);
+    }
+}
+
+void emitParameterSetFeatures(YAML::Emitter& emitter, ParameterSet& parameterSet, EmitterData& data) {
+    emitSet<Parameter>(emitter, parameterSet, "parameters", &ParameterSet::getParameters);
+    emitOwnedSet<Constraint>(emitter, parameterSet, data, "conditions", &ParameterSet::getConditions);
+}
+
+void emitPropertyFeatures(YAML::Emitter& emitter, Property& property, EmitterData& data) {
+    if (property.getAggregation() != AggregationKind::NONE) {
+        emitter << "aggregation" << YAML::Value;
+        switch (property.getAggregation()) {
+            case AggregationKind::COMPOSITE : {
+                emitter << "composite";
+                break;
+            }
+            case AggregationKind::SHARED : {
+                emitter << "shared";
+                break;
+            }
+        }
+    }
+    if (property.isComposite()) {
+        emitter << "isComposite" << YAML::Value << true;
+    }
+    emitOwnedSingleton<ValueSpecification>(emitter, property, data, "defaultValue", &Property::getDefaultValue);
+    emitSingleton<Association>(emitter, property, "association", &Property::getAssociation);
+    emitSet<Property>(emitter, property, "redefinedProperties", &Property::getRedefinedProperties);
+}
+
+void emitRedefinableTemplateSignatureFeatures(YAML::Emitter& emitter, RedefinableTemplateSignature& redefinableTemplateSignature, EmitterData& data) {
+    emitSet<RedefinableTemplateSignature>(emitter, redefinableTemplateSignature, "extendedSignatures", &RedefinableTemplateSignature::getExtendedSignatures);
+}
+
+void emitSlotFeatures(YAML::Emitter& emitter, Slot& slot, EmitterData& data) {
+    emitOwnedSet<ValueSpecification>(emitter, slot, data, "values", &Slot::getValues);
+    emitSingleton<StructuralFeature>(emitter, slot, "definingFeature", &Slot::getDefiningFeature);
+}
+
+void emitStructuralFeatureFeatures(YAML::Emitter& emitter, StructuralFeature& structuralFeature, EmitterData& data) {
+    if (structuralFeature.isReadOnly()) {
+        emitter << "isReadOnly" << YAML::Value << true;
     }
 }
 
@@ -694,8 +934,23 @@ bool emitEnumerationLiteralScope(YAML::Emitter& emitter, EnumerationLiteral& lit
     return emitSingleton<Enumeration>(emitter, literal, "enumeration", &EnumerationLiteral::getEnumeration);
 }
 
+bool emitGeneralizationScope(YAML::Emitter& emitter, Generalization& generalization, EmitterData& data) {
+    return emitSingleton<Classifier>(emitter, generalization, "specific", &Generalization::getSpecific);
+}
+
 bool emitNamedElementScope(YAML::Emitter& emitter, NamedElement& namedElement, EmitterData& data) {
     return emitSingleton<Namespace>(emitter, namedElement, "namespace", &NamedElement::getNamespace);
+}
+
+bool emitOperationScope(YAML::Emitter& emitter, Operation& operation, EmitterData& data) {
+    if (emitSingleton<Class>(emitter, operation, "class", &Operation::getClass)) {
+        return true;
+    } else if (emitSingleton<DataType>(emitter, operation, "dataType", &Operation::getDataType)) {
+        return true;
+    } else if (emitSingleton<Interface>(emitter, operation, "interface", &Operation::getInterface)) {
+        return true;
+    }
+    return false;
 }
 
 bool emitPackageableElementScope(YAML::Emitter& emitter, PackageableElement& el, EmitterData& data) {
@@ -717,8 +972,18 @@ bool emitPropertyScope(YAML::Emitter& emitter, Property& property, EmitterData& 
         return true;
     } else if (emitSingleton<Interface>(emitter, property, "interface", &Property::getInterface)) {
         return true;
+    } else if (emitSingleton<Association>(emitter, property, "owningAssociation", &Property::getOwningAssociation)) {
+        return true;
     }
     return false;
+}
+
+bool emitRedefinableTemplateSignatureScope(YAML::Emitter& emitter, RedefinableTemplateSignature& redefinableTemplateSignature, EmitterData& data) {
+    return emitSingleton<Classifier>(emitter, redefinableTemplateSignature, "classifier", &RedefinableTemplateSignature::getClassifier);
+}
+
+bool emitSlotScope(YAML::Emitter& emitter, Slot& slot, EmitterData& data) {
+    return emitSingleton<InstanceSpecification>(emitter, slot, "owningInstance", &Slot::getOwningInstance);
 }
 
 bool emitTemplateBindingScope(YAML::Emitter& emitter, TemplateBinding& templateBinding, EmitterData& data) {

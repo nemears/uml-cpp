@@ -67,6 +67,11 @@ bool subsetContains(U& el, T& addedEl, S& (U::*signature)()) {
     return (el.*signature)().contains(addedEl);
 }
 
+template <class T, class U>
+bool subsetContains(U& el, T& addedEl, UmlPtr<T> (U::*signature)() const) {
+    return (el.*signature)().id() == addedEl.getID();
+}
+
 template <class T, class U, class S, class ... Subsets>
 bool subsetContains(U& el, T& addedEl, S& (U::*signature)(), Subsets ... subsets) {
     if (!(el.*signature)().contains(addedEl)) {
@@ -154,6 +159,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitClassifierFeatures,
                         emitStructuredClassifierFeatures,
+                        emitBehavioredClassifierFeatures,
                         emitClassFeatures);
             break;
         }
@@ -326,6 +332,40 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTypedElementFeatures,
                         emitParameterableElementFeatures,
                         emitInstanceValueFeatures);
+            break;
+        }
+        case ElementType::INTERFACE_UML : {
+            Interface& interface = el.as<Interface>();
+            emitScope(emitter, interface, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, interface, data, "interface", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitNamespaceFeatures,
+                        emitTemplateableElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitClassifierFeatures,
+                        emitInterfaceFeatures);
+            break;
+        }
+        case ElementType::INTERFACE_REALIZATION : {
+            InterfaceRealization& interfaceRealization = el.as<InterfaceRealization>();
+            emitScope(emitter, interfaceRealization, data,
+                        emitInterfaceRealizationScope,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, interfaceRealization, data, "interfaceRealization",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitDependencyFeatures,
+                        // TODO emitAbstractionFeatures;
+                        emitInterfaceRealizationFeatures);
             break;
         }
         case ElementType::LITERAL_BOOL : {
@@ -503,6 +543,19 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitPropertyFeatures);
             break;
         }
+        case ElementType::RECEPTION : {
+            Reception& reception = el.as<Reception>();
+            emitScope(emitter, reception, data,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, reception, data, "reception",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitFeatureFeatures,
+                        emitBehavioralFeatureFeatures,
+                        emitReceptionFeatures);
+            break;
+        }
         case ElementType::REDEFINABLE_TEMPLATE_SIGNATURE : {
             RedefinableTemplateSignature& redefinableTemplateSignature = el.as<RedefinableTemplateSignature>();
             emitScope(emitter, redefinableTemplateSignature, data,
@@ -528,6 +581,23 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitDependencyFeatures);
                         // TODO emitAbstractionFeatures;
+            break;
+        }
+        case ElementType::SIGNAL : {
+            Signal& signal = el.as<Signal>();
+            emitScope(emitter, signal, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, signal, data, "signal", 
+                        emitSignalFeatures,
+                        emitClassifierFeatures,
+                        emitTemplateableElementFeatures,
+                        emitNamespaceFeatures,
+                        emitParameterableElementFeatures,
+                        emitNamedElementFeatures,
+                        emitElementFeatures);
             break;
         }
         case ElementType::SLOT : {
@@ -616,6 +686,11 @@ void emitBehavioralFeatureFeatures(YAML::Emitter& emitter, BehavioralFeature& be
     emitSet<Behavior>(emitter, behavioralFeature, "methods", &BehavioralFeature::getMethods);
     emitOwnedSet<Parameter>(emitter, behavioralFeature, data, "ownedParameters", &BehavioralFeature::getOwnedParameters);
     emitOwnedSet<ParameterSet>(emitter, behavioralFeature, data, "ownedParameterSets", &BehavioralFeature::getOwnedParameterSets);
+}
+
+void emitBehavioredClassifierFeatures(YAML::Emitter& emitter, BehavioredClassifier& behavioredClassifier, EmitterData& data) {
+    emitOwnedSingleton<Behavior>(emitter, behavioredClassifier, data, "classifierBehavior", &BehavioredClassifier::getClassifierBehavior);
+    emitOwnedSet<Behavior>(emitter, behavioredClassifier, data, "ownedBehaviors", &Behavior::getOwnedBehaviors, &BehavioredClassifier::getClassifierBehavior);
 }
 
 void emitClassFeatures(YAML::Emitter& emitter, Class& clazz, EmitterData& data) {
@@ -727,6 +802,18 @@ void emitInstanceSpecificationFeatures(YAML::Emitter& emitter, InstanceSpecifica
 
 void emitInstanceValueFeatures(YAML::Emitter& emitter, InstanceValue& instanceValue, EmitterData& data) {
     emitSingleton<InstanceSpecification>(emitter, instanceValue, "instance", &InstanceValue::getInstance);
+}
+
+void emitInterfaceFeatures(YAML::Emitter& emitter, Interface& interface, EmitterData& data) {
+    emitOwnedSet<Property>(emitter, interface, data, "ownedAttributes", &Interface::getOwnedAttributes);
+    emitOwnedSet<Operation>(emitter, interface, data, "ownedOperations", &Interface::getOwnedOperations);
+    // emitOwnedSet<Reception>(emitter, interface, data, "ownedReception", &Interface::getOwnedReception);
+    emitOwnedSet<Classifier>(emitter, interface, data, "nestedClassifiers", &Interface::getNestedClassifiers);
+    // emitSet<Interface>(emitter, interface, data, "redefinedInterfaces", &Interface::getRedefinedInterfaces);
+}
+
+void emitInterfaceRealizationFeatures(YAML::Emitter& emitter, InterfaceRealization& interfaceRealization, EmitterData& data) {
+    emitSingleton<Interface>(emitter, interfaceRealization, "contract", &InterfaceRealization::getContract);
 }
 
 void emitLiteralBoolFeatures(YAML::Emitter& emitter, LiteralBool& literalBool, EmitterData& data) {
@@ -864,8 +951,16 @@ void emitPropertyFeatures(YAML::Emitter& emitter, Property& property, EmitterDat
     emitSet<Property>(emitter, property, "redefinedProperties", &Property::getRedefinedProperties);
 }
 
+void emitReceptionFeatures(YAML::Emitter& emitter, Reception& reception, EmitterData& data) {
+    emitSingleton<Signal>(emitter, reception, "signal", &Reception::getSignal);
+}
+
 void emitRedefinableTemplateSignatureFeatures(YAML::Emitter& emitter, RedefinableTemplateSignature& redefinableTemplateSignature, EmitterData& data) {
     emitSet<RedefinableTemplateSignature>(emitter, redefinableTemplateSignature, "extendedSignatures", &RedefinableTemplateSignature::getExtendedSignatures);
+}
+
+void emitSignalFeatures(YAML::Emitter& emitter, Signal& signal, EmitterData& data) {
+    emitOwnedSet<Property>(emitter, signal, data, "ownedAttributes", &Signal::getOwnedAttributes);
 }
 
 void emitSlotFeatures(YAML::Emitter& emitter, Slot& slot, EmitterData& data) {
@@ -936,6 +1031,10 @@ bool emitEnumerationLiteralScope(YAML::Emitter& emitter, EnumerationLiteral& lit
 
 bool emitGeneralizationScope(YAML::Emitter& emitter, Generalization& generalization, EmitterData& data) {
     return emitSingleton<Classifier>(emitter, generalization, "specific", &Generalization::getSpecific);
+}
+
+bool emitInterfaceRealizationScope(YAML::Emitter& emitter, InterfaceRealization& interfaceRealization, EmitterData& data) {
+    return emitSingleton<BehavioredClassifier>(emitter, interfaceRealization, "implementingClassifier", &InterfaceRealization::getImplementingClassifier);
 }
 
 bool emitNamedElementScope(YAML::Emitter& emitter, NamedElement& namedElement, EmitterData& data) {

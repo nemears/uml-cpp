@@ -62,7 +62,6 @@ namespace UML{
             CustomSingleton<Interface, Property> m_interface = CustomSingleton<Interface, Property>(this);
             CustomSet<Property, Property, AddRedefinedPropertyPolicy, RemoveRedefinedPropertyPolicy> m_redefinedProperties = CustomSet<Property, Property, AddRedefinedPropertyPolicy, RemoveRedefinedPropertyPolicy>(this);
             CustomSingleton<Type, Property, SetPropertyTypePolicy, RemovePropertyTypePolicy> m_propertyType = CustomSingleton<Type, Property, SetPropertyTypePolicy, RemovePropertyTypePolicy>(this);
-            void setComposite(bool composite);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
@@ -77,6 +76,7 @@ namespace UML{
             virtual ~Property();
             AggregationKind getAggregation();
             bool isComposite();
+            void setComposite(bool composite);
             void setAggregation(AggregationKind aggregation);
             void setDefaultValue(ValueSpecification* val);
             void setDefaultValue(ValueSpecification& val);

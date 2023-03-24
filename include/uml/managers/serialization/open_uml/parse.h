@@ -11,6 +11,7 @@ namespace UML {
 
     // parsing features of element types
     void parseBehavioralFeatureFeatures(YAML::Node node, BehavioralFeature& behavioralFeature, ParserData& data);
+    void parseBehavioredClassifierFeatures(YAML::Node node, BehavioredClassifier& behavioredClassifier, ParserData& data);
     void parseClassFeatures(YAML::Node node, Class& clazz, ParserData& data);
     void parseClassifierFeatures(YAML::Node node, Classifier& classifier, ParserData& data);
     void parseClassifierTemplateParameterFeatures(YAML::Node node, ClassifierTemplateParameter& classifierTemplateParameter, ParserData& data);
@@ -27,6 +28,8 @@ namespace UML {
     void parseGeneralizationSetFeatures(YAML::Node node, GeneralizationSet& generalizationSet, ParserData& data);
     void parseInstanceSpecificationFeatures(YAML::Node node, InstanceSpecification& inst, ParserData& data);
     void parseInstanceValueFeatures(YAML::Node node, InstanceValue& instanceValue, ParserData& data);
+    void parseInterfaceFeatures(YAML::Node node, Interface& interface, ParserData& data);
+    void parseInterfaceRealizationFeatures(YAML::Node node, InterfaceRealization& interfaceRealization, ParserData& data);
     void parseLiteralBoolFeatures(YAML::Node node, LiteralBool& literalBool, ParserData& data);
     void parseLiteralIntegerFeatures(YAML::Node node, LiteralInt& literalInt, ParserData& data);
     void parseLiteralRealFeatures(YAML::Node node, LiteralReal& literalReal, ParserData& data);
@@ -41,7 +44,9 @@ namespace UML {
     void parseParameterableElementFeatures(YAML::Node node, ParameterableElement& parameterableElement, ParserData& data);
     void parseParameterSetFeatures(YAML::Node node, ParameterSet& parameterSet, ParserData& data);
     void parsePropertyFeatures(YAML::Node node, Property& property, ParserData& data);
+    void parseReceptionFeatures(YAML::Node node, Reception& reception, ParserData& data);
     void parseRedefinableTemplateSignatureFeatures(YAML::Node node, RedefinableTemplateSignature& redefinableTemplateSignature, ParserData& data);
+    void parseSignalFeatures(YAML::Node node, Signal& signal, ParserData& data);
     void parseSlotFeatures(YAML::Node node, Slot& slot, ParserData& data);
     void parseStructuralFeatureFeatures(YAML::Node node, StructuralFeature& structuralFeature, ParserData& data);
     void parseStructuredClassifierFeatures(YAML::Node node, StructuredClassifier& structuredClassifier, ParserData& data);
@@ -58,6 +63,7 @@ namespace UML {
     bool parseElementImportScope(YAML::Node node, ElementImport& elementImport, ParserData& data);
     bool parseEnumerationLiteralScope(YAML::Node node, EnumerationLiteral& literal, ParserData& data);
     bool parseGeneralizationScope(YAML::Node node, Generalization& generalization, ParserData& data);
+    bool parseInterfaceRealizationScope(YAML::Node node , InterfaceRealization& interfaceRealization, ParserData& data);
     bool parseNamedElementScope(YAML::Node node, NamedElement& namedElement, ParserData& data);
     bool parseOperationScope(YAML::Node node, Operation& operation, ParserData& data);
     bool parsePackageableElementScope(YAML::Node node, PackageableElement& el, ParserData& data);

@@ -145,6 +145,7 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementFeatures,
                     parseClassifierFeatures,
                     parseStructuredClassifierFeatures,
+                    parseBehavioredClassifierFeatures,
                     parseClassFeatures);
         parseScope(node, ret->as<Class>(), data, 
                     parsePackageableElementScope, 
@@ -282,6 +283,34 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementFeatures,
                     parseInstanceValueFeatures);
         parseScope(node, ret->as<InstanceValue>(), data,
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["interface"]) {
+        ret = createAndParse<Interface>(node["interface"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseNamespaceFeatures,
+                    parseTemplateableElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseClassifierFeatures,
+                    parseInterfaceFeatures);
+        parseScope(node, ret->as<Interface>(), data, 
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["interfaceRealization"]) {
+        ret = createAndParse<InterfaceRealization>(node["interfaceRealization"], data, 
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseDependencyFeatures,
+                    // TODO abstraction features
+                    parseInterfaceRealizationFeatures);
+        parseScope(node, ret->as<InterfaceRealization>(), data,
+                    parseInterfaceRealizationScope, 
                     parsePackageableElementScope,
                     parseParameterableElementScope,
                     parseNamedElementScope,
@@ -434,6 +463,16 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
+    } else if (node["reception"]) {
+        ret = createAndParse<Reception>(node["reception"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseFeatureFeatures,
+                    parseBehavioralFeatureFeatures,
+                    parseReceptionFeatures);
+        parseScope(node, ret->as<Reception>(), data, 
+                    parseNamedElementScope,
+                    parseElementScope);
     } else if (node["realization"]) {
         ret = createAndParse<Realization>(node["realization"], data, 
                     parseElementFeatures,
@@ -454,6 +493,20 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
         parseScope(node, ret->as<RedefinableTemplateSignature>(), data,
                     parseRedefinableTemplateSignatureScope,
                     parseTemplateSignatureScope,
+                    parseElementScope);
+    } else if (node["signal"]) {
+        ret = createAndParse<Signal>(node["signal"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseTemplateableElementFeatures,
+                    parseNamespaceFeatures,
+                    parseClassifierFeatures,
+                    parseSignalFeatures);
+        parseScope(node, ret->as<Signal>(), data, 
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
                     parseElementScope);
     } else if (node["slot"]) {
         ret = createAndParse<Slot>(node["slot"], data, 
@@ -520,6 +573,11 @@ void parseBehavioralFeatureFeatures(YAML::Node node, BehavioralFeature& behavior
     parseSet<Behavior>(node, behavioralFeature, data, "methods", &BehavioralFeature::getMethods);
     parseSet<Parameter>(node, behavioralFeature, data, "ownedParameters", &BehavioralFeature::getOwnedParameters);
     parseSet<ParameterSet>(node, behavioralFeature, data, "ownedParameterSets", &BehavioralFeature::getOwnedParameterSets);
+}
+
+void parseBehavioredClassifierFeatures(YAML::Node node, BehavioredClassifier& behavioredClassifier, ParserData& data) {
+    parseSingleton<Behavior>(node, behavioredClassifier, data, "classifierBehavior", &BehavioredClassifier::setClassifierBehavior, &BehavioredClassifier::setClassifierBehavior);
+    parseSet<Behavior>(node, behavioredClassifier, data, "ownedBehaviors", &BehavioredClassifier::getOwnedBehaviors);
 }
 
 void parseClassFeatures(YAML::Node node, Class& clazz, ParserData& data) {
@@ -628,6 +686,18 @@ void parseInstanceSpecificationFeatures(YAML::Node node, InstanceSpecification& 
 
 void parseInstanceValueFeatures(YAML::Node node, InstanceValue& instanceValue, ParserData& data) {
     parseSingleton<InstanceSpecification>(node, instanceValue, data, "instance", &InstanceValue::setInstance, &InstanceValue::setInstance);
+}
+
+void parseInterfaceFeatures(YAML::Node node, Interface& interface, ParserData& data) {
+    parseSet<Property>(node, interface, data, "ownedAttributes", &Interface::getOwnedAttributes);
+    parseSet<Operation>(node, interface, data, "ownedOpterations", &Interface::getOwnedOperations);
+    // parseSet<Reception>(node, interface, data, "ownedReceptions", &Interface::getOwnedReceptions);
+    parseSet<Classifier>(node, interface, data, "nestedClassifiers", &Interface::getNestedClassifiers);
+    // parseSet<Interface>(node, interface, data, "redefinedInterfaces", &Interface::getRedefinedInterfaces);
+}
+
+void parseInterfaceRealizationFeatures(YAML::Node node, InterfaceRealization& interfaceRealization, ParserData& data) {
+    parseSingleton<Interface>(node, interfaceRealization, data, "contract", &InterfaceRealization::setContract, &InterfaceRealization::setContract);
 }
 
 void parseLiteralBoolFeatures(YAML::Node node, LiteralBool& literalBool, ParserData& data) {
@@ -754,8 +824,16 @@ void parsePropertyFeatures(YAML::Node node, Property& property, ParserData& data
     parseSet<Property>(node, property, data, "redefinedProperties", &Property::getRedefinedProperties);
 }
 
+void parseReceptionFeatures(YAML::Node node, Reception& reception, ParserData& data) {
+    parseSingleton<Signal>(node, reception, data, "signal", &Reception::setSignal, &Reception::setSignal);
+}
+
 void parseRedefinableTemplateSignatureFeatures(YAML::Node node, RedefinableTemplateSignature& redefinableTemplateSignature, ParserData& data) {
     parseSet<RedefinableTemplateSignature>(node, redefinableTemplateSignature, data, "extendedSignature", &RedefinableTemplateSignature::getExtendedSignatures);
+}
+
+void parseSignalFeatures(YAML::Node node, Signal& signal, ParserData& data) {
+    parseSet<Property>(node, signal, data, "ownedAttributes", &Signal::getOwnedAttributes);
 }
 
 void parseSlotFeatures(YAML::Node node, Slot& slot, ParserData& data) {
@@ -832,6 +910,10 @@ bool parseEnumerationLiteralScope(YAML::Node node, EnumerationLiteral& literal, 
 
 bool parseGeneralizationScope(YAML::Node node, Generalization& generalization, ParserData& data) {
     return parseSingleton<Classifier>(node, generalization, data, "specific", &Generalization::setSpecific, &Generalization::setSpecific);
+}
+
+bool parseInterfaceRealizationScope(YAML::Node node , InterfaceRealization& interfaceRealization, ParserData& data) {
+    return parseSingleton<BehavioredClassifier>(node, interfaceRealization, data, "implementingClassifier", &InterfaceRealization::setImplementingClassifier, &InterfaceRealization::setImplementingClassifier);
 }
 
 bool parseNamedElementScope(YAML::Node node, NamedElement& namedElement, ParserData& data) {

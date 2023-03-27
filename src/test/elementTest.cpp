@@ -313,7 +313,14 @@ TEST_F(ElementTest, emitJSON_test) {
     p->getPackagedElements().add(*c);
     p->setID(ID::fromString("Wmhz0dIdjUbcWmTn7EL4Zz261oy6"));
     c->setID(ID::fromString("GcJO3kDBnbRcT4f&Kwf9arl6YOmS"));
-    ASSERT_TRUE(false);
+    EmitterData data;
+    data.isJSON = true;
+    data.emitReferences = false;
+    data.mode = SerializationMode::WHOLE;
+    std::string generatedEmit = emit(*p, data);
+    std::string expectedEmit = "{\"package\": {\"id\": \"Wmhz0dIdjUbcWmTn7EL4Zz261oy6\", \"packagedElements\": [{\"package\": {\"id\": \"GcJO3kDBnbRcT4f&Kwf9arl6YOmS\"}}]}}";
+    ASSERT_EQ(generatedEmit, expectedEmit);
+    // ASSERT_TRUE(false);
     // Parsers::EmitterMetaData data = Parsers::getData(*p);
     // data.m_isJSON = true;
     // data.m_strategy = Parsers::EmitterStrategy::WHOLE;

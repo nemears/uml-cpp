@@ -1,8 +1,7 @@
 ---
   class:
-    ownedBehaviors:
-      - opaqueBehavior:
-          id: XAl&QqW5GrH2xaiAS5Yw9kp_qwE7
-          name: test
-    classifierBehavior: XAl&QqW5GrH2xaiAS5Yw9kp_qwE7
+    classifierBehavior:
+      opaqueBehavior:
+        id: XAl&QqW5GrH2xaiAS5Yw9kp_qwE7
+        name: test
 ...

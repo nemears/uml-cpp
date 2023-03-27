@@ -13,7 +13,7 @@ namespace UML {
         public:
             SerializationMode mode = SerializationMode::INDIVIDUAL;
             bool isJSON = false;
-            bool emitReferences = true;
+            bool emitReferences = false;
     };
 
     class ParserData {

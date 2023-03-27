@@ -79,12 +79,14 @@ friend class NamedElement; \
 friend class Namespace; \
 friend class ObjectFlow; \
 friend class ObjectNode; \
+friend class Package; \
 friend class PackageImport; \
 friend class PackageMerge; \
 friend class ParameterableElement; \
 friend class Parameter; \
 friend class ParameterSet; \
 friend class Port; \
+friend class Profile; \
 friend class ProfileApplication; \
 friend class Property; \
 friend class Reception; \
@@ -92,6 +94,7 @@ friend class RedefinableElement; \
 friend class RedefinableTemplateSignature; \
 friend class Relationship; \
 friend class Slot; \
+friend class Stereotype; \
 friend class StructuredClassifier; \
 friend class TypedElement; \
 friend class TemplateBinding;  \

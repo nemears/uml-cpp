@@ -49,8 +49,9 @@ void FilePersistencePolicy::saveProjectData(std::string data, std::string path) 
 
 void FilePersistencePolicy::saveProjectData(std::string data) {
     std::ofstream file(m_projectPath);
-    file.open(m_projectPath, std::ios::trunc);
+    // file.open(m_projectPath, std::ios::trunc);
     file << data;
+    file.close();
 }
 
 void FilePersistencePolicy::mount(std::string mountPath) {

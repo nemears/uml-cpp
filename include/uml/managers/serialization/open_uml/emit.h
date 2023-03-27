@@ -9,12 +9,17 @@ namespace UML {
     void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data);
 
     // emit features of element types
+    void emitActivityFeatures(YAML::Emitter& emitter, Activity& activity, EmitterData& data);
+    void emitAssociationFeatures(YAML::Emitter& emitter, Association& association, EmitterData& data);
+    void emitBehaviorFeatures(YAML::Emitter& emitter, Behavior& behavior, EmitterData& data);
     void emitBehavioralFeatureFeatures(YAML::Emitter& emitter, BehavioralFeature& behavioralFeature, EmitterData& data);
     void emitBehavioredClassifierFeatures(YAML::Emitter& emitter, BehavioredClassifier& behavioredClassifier, EmitterData& data);
     void emitClassFeatures(YAML::Emitter& emitter, Class& clazz, EmitterData& data);
     void emitClassifierFeatures(YAML::Emitter& emitter, Classifier& classifier, EmitterData& data);
     void emitClassifierTemplateParameter(YAML::Emitter& emitter, ClassifierTemplateParameter& classifierTemplateParameter, EmitterData& data);
     void emitCommentFeatures(YAML::Emitter& emitter, Comment& comment, EmitterData& data);
+    void emitConnectorFeatures(YAML::Emitter& emitter, Connector& connector, EmitterData& data);
+    void emitConnectorEndFeatures(YAML::Emitter& emitter, ConnectorEnd& connectorEnd, EmitterData& data);
     void emitConstraintFeatures(YAML::Emitter& emitter, Constraint& constraint, EmitterData& data);
     void emitDataTypeFeatures(YAML::Emitter& emitter, DataType& dataType, EmitterData& data);
     void emitDependencyFeatures(YAML::Emitter& emitter, Dependency& dependency, EmitterData& data);
@@ -22,6 +27,7 @@ namespace UML {
     void emitElementImportFeatures(YAML::Emitter& emitter, ElementImport& elementImport, EmitterData& data);
     void emitEnumerationFeatures(YAML::Emitter& emitter, Enumeration& enumeration, EmitterData& data);
     void emitExpressionFeatures(YAML::Emitter& emitter, Expression& expression, EmitterData& data);
+    void emitExtensionFeatures(YAML::Emitter& emitter, Extension& extension, EmitterData& data);
     void emitFeatureFeatures(YAML::Emitter& emitter, Feature& feature, EmitterData& data);
     void emitGeneralizationFeatures(YAML::Emitter& emitter, Generalization& generalization, EmitterData& data);
     void emitGeneralizationSetFeatures(YAML::Emitter& emitter, GeneralizationSet& generalizationSet, EmitterData& data);
@@ -34,14 +40,19 @@ namespace UML {
     void emitLiteralRealFeatures(YAML::Emitter& emitter, LiteralReal& literalReal, EmitterData& data);
     void emitLiteralStringFeatures(YAML::Emitter& emitter, LiteralString& literalString, EmitterData& data);
     void emitLiteralUnlimitedNaturalFeatures(YAML::Emitter& emitter, LiteralUnlimitedNatural& literalUnlimitedNatural, EmitterData& data);
+    void emitModelFeatures(YAML::Emitter& emitter, Model& model, EmitterData& data);
     void emitMultiplicityElementFeatures(YAML::Emitter& emitter, MultiplicityElement& multiplicityElement, EmitterData& data);
     void emitNamedElementFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterData& data);
     void emitNamespaceFeatures(YAML::Emitter& emitter, Namespace& nmspc, EmitterData& data);
+    void emitOpaqueBehaviorFeatures(YAML::Emitter& emitter, OpaqueBehavior& opaqueBehavior, EmitterData& data);
     void emitPackageFeatures(YAML::Emitter& emitter, Package& package, EmitterData& data);
     void emitPackageImportFeatures(YAML::Emitter& emitter, PackageImport& packageImport, EmitterData& data);
+    void emitPackageMergeFeatures(YAML::Emitter& emitter, PackageMerge& packageMerge, EmitterData& data);
     void emitParameterFeatures(YAML::Emitter& emitter, Parameter& parameter, EmitterData& data);
     void emitParameterableElementFeatures(YAML::Emitter& emitter, ParameterableElement& parameterableElement, EmitterData& data);
     void emitParameterSetFeatures(YAML::Emitter& emitter, ParameterSet& parameterSet, EmitterData& data);
+    void emitPortFeatures(YAML::Emitter& emitter, Port& port, EmitterData& data);
+    void emitProfileApplicationFeatures(YAML::Emitter& emitter, ProfileApplication& profileApplication, EmitterData& data);
     void emitPropertyFeatures(YAML::Emitter& emitter, Property& property, EmitterData& data);
     void emitReceptionFeatures(YAML::Emitter& emitter, Reception& reception, EmitterData& data);
     void emitRedefinableTemplateSignatureFeatures(YAML::Emitter& emitter, RedefinableTemplateSignature& redefinableTemplateSignature, EmitterData& data);
@@ -67,7 +78,9 @@ namespace UML {
     bool emitOperationScope(YAML::Emitter& emitter, Operation& operation, EmitterData& data);
     bool emitPackageableElementScope(YAML::Emitter& emitter, PackageableElement& el, EmitterData& data);
     bool emitPackageImportScope(YAML::Emitter& emitter, PackageImport& packageImport, EmitterData& data);
+    bool emitPackageMergeScope(YAML::Emitter& emitter, PackageMerge& packageMerge, EmitterData& data);
     bool emitParameterableElementScope(YAML::Emitter& emitter, ParameterableElement& el, EmitterData& data);
+    bool emitProfileApplicationScope(YAML::Emitter& emitter, ProfileApplication& profileApplication, EmitterData& data);
     bool emitPropertyScope(YAML::Emitter& emitter, Property& property, EmitterData& data);
     bool emitRedefinableTemplateSignatureScope(YAML::Emitter& emitter, RedefinableTemplateSignature& redefinableTemplateSignature, EmitterData& data);
     bool emitSlotScope(YAML::Emitter& emitter, Slot& slot, EmitterData& data);

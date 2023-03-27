@@ -37,6 +37,7 @@ namespace UML {
             CustomSet<ProfileApplication, Package> m_profileApplications = CustomSet<ProfileApplication, Package>(this);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
+            void restoreReference(Element* el) override;
             Package();
         public:
             virtual ~Package();

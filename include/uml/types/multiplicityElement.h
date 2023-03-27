@@ -64,6 +64,8 @@ namespace UML {
                     }
             } multiplicityNotSpecifiedException;
             bool multiplicitySpecified();
+            bool lowSpecified() const;
+            bool upSpecified() const;
             bool isOrdered() const;
             void setIsOrdered(bool isOrdered);
             bool isUnique() const;

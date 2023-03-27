@@ -134,9 +134,34 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    }
-    // TODO
-    else if (node["class"] && node["class"].IsMap()) {
+    } else if (node["activity"]) {
+        ret = createAndParse<Activity>(node["activity"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseNamespaceFeatures,
+                    parseParameterableElementFeatures,
+                    parseTemplateableElementFeatures,
+                    parseClassifierFeatures,
+                    parseStructuredClassifierFeatures,
+                    parseBehavioredClassifierFeatures,
+                    parseClassFeatures,
+                    parseBehaviorFeatures,
+                    parseActivityFeatures);
+    } else if (node["association"]) {
+        ret = createAndParse<Association>(node["association"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseNamespaceFeatures,
+                    parseTemplateableElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseClassifierFeatures,
+                    parseAssociationFeatures);
+        parseScope(node, ret->as<Association>(), data,
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["class"] && node["class"].IsMap()) {
         ret = createAndParse<Class>(node["class"], data,
                     parseElementFeatures,
                     parseNamespaceFeatures,
@@ -165,6 +190,22 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseElementFeatures,
                     parseCommentFeatures);
         parseScope(node, ret->as<Comment>(), data, parseElementScope);
+    } else if (node["connector"]) {
+        ret = createAndParse<Connector>(node["connector"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseFeatureFeatures,
+                    parseConnectorFeatures);
+        parseScope(node, ret->as<Connector>(), data,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["connectorEnd"]) {
+        ret = createAndParse<ConnectorEnd>(node["connectorEnd"], data,
+                    parseElementFeatures,
+                    parseMultiplicityElementFeatures,
+                    parseConnectorEndFeatures);
+        parseScope(node, ret->as<ConnectorEnd>(), data,
+                    parseElementScope);
     } else if (node["constraint"]) {
         ret = createAndParse<Constraint>(node["constraint"], data, 
                     parseElementFeatures,
@@ -243,6 +284,34 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseExpressionFeatures);
         parseScope(node, ret->as<Expression>(), data,
                     parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["extension"]) {
+        ret = createAndParse<Extension>(node["extension"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseNamespaceFeatures,
+                    parseParameterableElementFeatures,
+                    parseTemplateableElementFeatures,
+                    parseClassifierFeatures,
+                    parseExtensionFeatures);
+        parseScope(node, ret->as<Extension>(), data,
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["extensionEnd"]) {
+        ret = createAndParse<ExtensionEnd>(node["extensionEnd"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseTypedElementFeatures,
+                    parseFeatureFeatures,
+                    parseStructuralFeatureFeatures,
+                    parseParameterableElementFeatures,
+                    parsePropertyFeatures);
+        parseScope(node, ret->as<ExtensionEnd>(), data,
+                    parsePropertyScope,
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
@@ -378,9 +447,39 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseNamedElementFeatures,
                     parseTypedElementFeatures,
                     parseParameterableElementFeatures,
-                    parseLiteralUnlimitedNaturalfeatures);
+                    parseLiteralUnlimitedNaturalFeatures);
         parseScope(node, ret->as<LiteralUnlimitedNatural>(), data, 
                     parsePackageableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["model"]) {
+        ret = createAndParse<Model>(node["model"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseNamespaceFeatures,
+                    parseParameterableElementFeatures,
+                    parseTemplateableElementFeatures,
+                    parsePackageFeatures,
+                    parseModelFeatures);
+        parseScope(node, ret->as<Model>(), data, 
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["opaqueBehavior"]) {
+        ret = createAndParse<OpaqueBehavior>(node["opaqueBehavior"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseNamespaceFeatures,
+                    parseParameterableElementFeatures,
+                    parseTemplateableElementFeatures,
+                    parseClassifierFeatures,
+                    parseClassFeatures,
+                    parseBehaviorFeatures,
+                    parseOpaqueBehaviorFeatures);
+        parseScope(node, ret->as<OpaqueBehavior>(), data, 
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
     } else if (node["operation"]) {
@@ -416,6 +515,13 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
         parseScope(node, ret->as<PackageImport>(), data, 
                     parsePackageImportScope,
                     parseElementScope);
+    } else if (node["packageMerge"]) {
+        ret = createAndParse<PackageMerge>(node["packageMerge"], data,
+                    parseElementFeatures,
+                    parsePackageMergeFeatures);
+        parseScope(node, ret->as<PackageMerge>(), data,
+                    parsePackageMergeScope,
+                    parseElementScope);
     } else if (node["parameter"]) {
         ret = createAndParse<Parameter>(node, data, 
                     parseElementFeatures,
@@ -434,6 +540,22 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
         parseScope(node, ret->as<ParameterSet>(), data,
                     parseNamedElementScope,
                     parseElementScope);
+    } else if (node["port"]) {
+        ret = createAndParse<Port>(node["port"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseFeatureFeatures,
+                    parseTypedElementFeatures,
+                    parseStructuralFeatureFeatures,
+                    parseMultiplicityElementFeatures,
+                    parseParameterableElementFeatures,
+                    parsePropertyFeatures,
+                    parsePortFeatures);
+        parseScope(node, ret->as<Port>(), data, 
+                    parsePropertyScope, 
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
     } else if (node["primitivType"]) {
         ret = createAndParse<PrimitiveType>(node["primitiveType"], data,
                     parseElementFeatures,
@@ -447,6 +569,26 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parsePackageableElementScope,
                     parseParameterableElementScope,
                     parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["profile"]) {
+        ret = createAndParse<Profile>(node["profile"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseParameterableElementFeatures,
+                    parseNamespaceFeatures,
+                    parseTemplateableElementFeatures,
+                    parsePackageFeatures);
+        parseScope(node, ret->as<Profile>(), data,
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["profileApplication"]) {
+        ret = createAndParse<ProfileApplication>(node["profileApplication"], data,
+                    parseElementFeatures,
+                    parseProfileApplicationFeatures);
+        parseScope(node, ret->as<ProfileApplication>(), data,
+                    parseProfileApplicationScope,
                     parseElementScope);
     } else if (node["property"]) {
         ret = createAndParse<Property>(node["property"], data,
@@ -515,6 +657,22 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
         parseScope(node, ret->as<Slot>(), data, 
                     parseSlotScope,
                     parseElementScope);
+    } else if (node["stereotype"]) {
+        ret = createAndParse<Stereotype>(node["stereotype"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseNamespaceFeatures,
+                    parseParameterableElementFeatures,
+                    parseTemplateableElementFeatures,
+                    parseClassifierFeatures,
+                    parseStructuredClassifierFeatures,
+                    parseBehavioredClassifierFeatures,
+                    parseClassFeatures);
+        parseScope(node, ret->as<Stereotype>(), data, 
+                    parsePackageableElementScope,
+                    parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
     } else if (node["templateBinding"]) {
         ret = createAndParse<TemplateBinding>(node["templateBinding"], data,
                     parseElementFeatures,
@@ -554,6 +712,22 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
         throw SerializationError("Could not identify an element type to parse in data provided for parsing " + getLineNumber(node));
     }
     return ret;
+}
+
+void parseActivityFeatures(YAML::Node node, Activity& activity, ParserData& data) {
+    parseSet<ActivityNode>(node, activity, data, "nodes", &Activity::getNodes);
+    parseSet<ActivityEdge>(node, activity, data, "edges", &Activity::getEdges);
+}
+
+void parseAssociationFeatures(YAML::Node node, Association& association, ParserData& data) {
+    parseSet<Property>(node, association, data, "memberEnds", &Association::getMemberEnds);
+    parseSet<Property>(node, association, data, "ownedEnds", &Association::getOwnedEnds);
+    parseSet<Property>(node, association, data, "navigableOwnedEnds", &Association::getNavigableOwnedEnds);
+}
+
+void parseBehaviorFeatures(YAML::Node node, Behavior& behavior, ParserData& data) {
+    parseSingleton<BehavioralFeature>(node, behavior, data, "specification", &Behavior::setSpecification, &Behavior::setSpecification);
+    parseSet<Parameter>(node, behavior, data, "ownedParameters", &Behavior::getOwnedParameters);
 }
 
 void parseBehavioralFeatureFeatures(YAML::Node node, BehavioralFeature& behavioralFeature, ParserData& data) {
@@ -599,6 +773,16 @@ void parseClassifierTemplateParameterFeatures(YAML::Node node, ClassifierTemplat
 void parseCommentFeatures(YAML::Node node, Comment& comment, ParserData& data) {
     parseSet<Element>(node, comment, data, "annotatedElements", &Comment::getAnnotatedElements);
     parseString(node, comment, "body", &Comment::setBody);
+}
+
+void parseConnectorFeatures(YAML::Node node, Connector& connector, ParserData& data) {
+    parseSet<ConnectorEnd>(node, connector, data, "ends", &Connector::getEnds);
+    parseSet<Behavior>(node, connector, data, "contracts", &Connector::getContracts);
+    parseSingleton<Association>(node, connector, data, "type", &Connector::setType, &Connector::setType);
+}
+
+void parseConnectorEndFeatures(YAML::Node node, ConnectorEnd& connectorEnd, ParserData& data) {
+    parseSingleton<ConnectableElement>(node, connectorEnd, data, "role", &ConnectorEnd::setRole, &ConnectorEnd::setRole);
 }
 
 void parseConstraintFeatures(YAML::Node node, Constraint& constraint, ParserData& data) {
@@ -662,6 +846,243 @@ void parseExpressionFeatures(YAML::Node node, Expression& expression, ParserData
     parseString(node, expression, "symbol", &Expression::setSymbol);
 }
 
+ElementType elementTypeFromString(string eType) {
+    if (eType.compare("ABSTRACTION") == 0) {
+        return ElementType::ABSTRACTION;
+    } else if (eType.compare("ACTION") == 0) {
+        return ElementType::ACTION;
+    } else if (eType.compare("ACTION_INPUT_PIN") == 0) {
+        return ElementType::ACTION_INPUT_PIN;
+    } else if (eType.compare("ACTIVITY") == 0) {
+        return ElementType::ACTIVITY;
+    } else if (eType.compare("ACTIVITY_EDGE") == 0) {
+        return ElementType::ACTIVITY_EDGE;
+    } else if (eType.compare("ACTIVITY_FINAL_NODE") == 0) {
+        return ElementType::ACTIVITY_FINAL_NODE;
+    } else if (eType.compare("ACTIVITY_GROUP") == 0) {
+        return ElementType::ACTIVITY_GROUP;
+    } else if (eType.compare("ACTIVITY_NODE") == 0) {
+        return ElementType::ACTIVITY_NODE;
+    } else if (eType.compare("ACTIVITY_PARAMETER_NODE") == 0) {
+        return ElementType::ACTIVITY_PARAMETER_NODE;
+    } else if (eType.compare("ACTIVITY_PARTITION") == 0) {
+        return ElementType::ACTIVITY_PARTITION;
+    } else if (eType.compare("ARTIFACT") == 0) {
+        return ElementType::ARTIFACT;
+    } else if (eType.compare("ASSOCIATION") == 0) {
+        return ElementType::ASSOCIATION;
+    } else if (eType.compare("BEHAVIOR") == 0) {
+        return ElementType::BEHAVIOR;
+    } else if (eType.compare("BEHAVIORAL_FEATURE") == 0) {
+        return ElementType::BEHAVIORAL_FEATURE;
+    } else if (eType.compare("BEHAVIORED_CLASSIFIER") == 0 ) {
+        return ElementType::BEHAVIORED_CLASSIFIER;
+    } else if (eType.compare("CALL_ACTION") == 0) {
+        return ElementType::CALL_ACTION;
+    } else if (eType.compare("CALL_BEHAVIOR_ACTION") == 0) {
+        return ElementType::CALL_BEHAVIOR_ACTION;
+    } else if (eType.compare("CENTRAL_BUFFER_NODE") == 0) {
+        return ElementType::CENTRAL_BUFFER_NODE;
+    } else if (eType.compare("CLASS") == 0) {
+        return ElementType::CLASS;
+    } else if (eType.compare("CLASSIFIER") == 0) {
+        return ElementType::CLASSIFIER;
+    } else if (eType.compare("COMMENT") == 0) {
+        return ElementType::COMMENT;
+    } else if (eType.compare("CLASSIFIER_TEMPLATE_PARAMETER") == 0) {
+        return ElementType::CLASSIFIER_TEMPLATE_PARAMETER;
+    } else if (eType.compare("CONNECTOR") == 0) {
+        return ElementType::CONNECTOR;
+    } else if (eType.compare("CONNECTOR_END") == 0) {
+        return ElementType::CONNECTOR_END;
+    } else if (eType.compare("CONNECTABLE_ELEMENT") == 0) {
+        return ElementType::CONNECTABLE_ELEMENT;
+    } else if (eType.compare("CONSTRAINT") == 0) {
+        return ElementType::CONSTRAINT;
+    } else if (eType.compare("CONTROL_FLOW") == 0) {
+        return ElementType::CONTROL_FLOW;
+    } else if (eType.compare("CREATE_OBJECT_ACTION") == 0) {
+        return ElementType::CREATE_OBJECT_ACTION;
+    } else if (eType.compare("DATA_STORE_NODE") == 0) {
+        return ElementType::DATA_STORE_NODE;
+    } else if (eType.compare("DATA_TYPE") == 0) {
+        return ElementType::DATA_TYPE;
+    } else if (eType.compare("DECISION_NODE") == 0) {
+        return ElementType::DECISION_NODE;
+    } else if (eType.compare("DEPENDENCY") == 0) {
+        return ElementType::DEPENDENCY;
+    } else if (eType.compare("DEPLOYED_ARTIFACT") == 0) {
+        return ElementType::DEPLOYED_ARTIFACT;
+    } else if (eType.compare("DEPLOYMENT") == 0) {
+        return ElementType::DEPLOYMENT;
+    } else if (eType.compare("DEPLOYMENT_TARGET") == 0) {
+        return ElementType::DEPLOYMENT_TARGET;
+    } else if (eType.compare("DIRECTED_RELATIONSHIP") == 0) {
+        return ElementType::DIRECTED_RELATIONSHIP;
+    } else if (eType.compare("ELEMENT") == 0) {
+        return ElementType::ELEMENT;
+    } else if (eType.compare("ELEMENT_IMPORT") == 0) {
+        return ElementType::ELEMENT_IMPORT;
+    } else if (eType.compare("ENUMERATION") == 0) {
+        return ElementType::ENUMERATION;
+    } else if (eType.compare("ENUMERATION_LITERAL") == 0) {
+        return ElementType::ENUMERATION_LITERAL;
+    } else if (eType.compare("EXCEPTION_HANDLER") == 0) {
+        return ElementType::EXCEPTION_HANDLER;
+    } else if (eType.compare("EXECUTABLE_NODE") == 0) {
+        return ElementType::EXECUTABLE_NODE;
+    } else if (eType.compare("EXPRESSION") == 0) {
+        return ElementType::EXPRESSION;
+    } else if (eType.compare("EXTENSION") == 0) {
+        return ElementType::EXTENSION;
+    } else if (eType.compare("EXTENSION_END") == 0) {
+        return ElementType::EXTENSION_END;
+    } else if (eType.compare("FEATURE") == 0) {
+        return ElementType::FEATURE;
+    } else if (eType.compare("FINAL_NODE") == 0) {
+        return ElementType::FINAL_NODE;
+    } else if (eType.compare("FORK_NODE") == 0) {
+        return ElementType::FORK_NODE;
+    } else if (eType.compare("GENERALIZATION") == 0) {
+        return ElementType::GENERALIZATION;
+    } else if (eType.compare("GENERALIZATION_SET") == 0) {
+        return ElementType::GENERALIZATION_SET;
+    } else if (eType.compare("INITITAL_NODE") == 0) {
+        return ElementType::INITIAL_NODE;
+    } else if (eType.compare("INPUT_PIN") == 0) {
+        return ElementType::INPUT_PIN;
+    } else if (eType.compare("INSTANCE_SPECIFICATION") == 0) {
+        return ElementType::INSTANCE_SPECIFICATION;
+    } else if (eType.compare("INSTANCE_VALUE") == 0) {
+        return ElementType::INSTANCE_VALUE;
+    } else if (eType.compare("INTERFACE") == 0) {
+        return ElementType::INTERFACE_UML;
+    } else if (eType.compare("INTERFACE_REALIZATION") == 0) {
+        return ElementType::INTERFACE_REALIZATION;
+    } else if (eType.compare("INTERRUPTIBLE_ACTIVITY_REGION") == 0) {
+        return ElementType::INTERRUPTIBLE_ACTIVITY_REGION;
+    } else if (eType.compare("INVOCATION_ACTION") == 0) {
+        return ElementType::INVOCATION_ACTION;
+    } else if (eType.compare("JOIN_NODE") == 0) {
+        return ElementType::JOIN_NODE;
+    } else if (eType.compare("LITERAL_BOOL") == 0) {
+        return ElementType::LITERAL_BOOL;
+    } else if (eType.compare("LITERAL_INT") == 0) {
+        return ElementType::LITERAL_INT;
+    } else if (eType.compare("LITERAL_NULL") == 0) {
+        return ElementType::LITERAL_NULL;
+    } else if (eType.compare("LITERAL_REAL") == 0) {
+        return ElementType::LITERAL_REAL;
+    } else if (eType.compare("LITERAL_SPECIFICATION") == 0) {
+        return ElementType::LITERAL_SPECIFICATION;
+    } else if (eType.compare("LITERAL_STRING") == 0) {
+        return ElementType::LITERAL_STRING;
+    } else if (eType.compare("LITERAL_UNLIMITED_NATURAL") == 0) {
+        return ElementType::LITERAL_UNLIMITED_NATURAL;
+    } else if (eType.compare("MANIFESTATION") == 0) {
+        return ElementType::MANIFESTATION;
+    } else if (eType.compare("MERGE_NODE") == 0) {
+        return ElementType::MERGE_NODE;
+    } else if (eType.compare("MODEL") == 0) {
+        return ElementType::MODEL;
+    } else if (eType.compare("MULTIPLICITY_ELEMENT") == 0) {
+        return ElementType::MULTIPLICITY_ELEMENT;
+    } else if (eType.compare("NAMED_ELEMENT") == 0) {
+        return ElementType::NAMED_ELEMENT;
+    } else if (eType.compare("NAMESPACE") == 0) {
+        return ElementType::NAMESPACE;
+    } else if (eType.compare("OBJECT_FLOW") == 0) {
+        return ElementType::OBJECT_FLOW;
+    } else if (eType.compare("OBJECT_NODE") == 0) {
+        return ElementType::OBJECT_NODE;
+    } else if (eType.compare("OPAQUE_ACTION") == 0) {
+        return ElementType::OPAQUE_ACTION;
+    } else if (eType.compare("OPAQUE_BEHAVIOR") == 0) {
+        return ElementType::OPAQUE_BEHAVIOR;
+    } else if (eType.compare("OPERATION") == 0) {
+        return ElementType::OPERATION;
+    } else if (eType.compare("OUTPUT_PIN") == 0) {
+        return ElementType::OUTPUT_PIN;
+    } else if (eType.compare("PACKAGE") == 0) {
+        return ElementType::PACKAGE;
+    } else if (eType.compare("PACKAGEABLE_ELEMENT") == 0) {
+        return ElementType::PACKAGEABLE_ELEMENT;
+    } else if (eType.compare("PACKAGE_IMPORT") == 0) {
+        return ElementType::PACKAGE_IMPORT;
+    } else if (eType.compare("PACKAGE_MERGE") == 0) {
+        return ElementType::PACKAGE_MERGE;
+    } else if (eType.compare("PARAMETER") == 0) {
+        return ElementType::PARAMETER;
+    } else if (eType.compare("PARAMETERABLE_ELEMENT") == 0) {
+        return ElementType::PARAMETERABLE_ELEMENT;
+    } else if (eType.compare("PARAMETER_SET") == 0) {
+        return ElementType::PARAMETER_SET;
+    } else if (eType.compare("PIN") == 0) {
+        return ElementType::PIN;
+    } else if (eType.compare("PORT") == 0) {
+        return ElementType::PORT;
+    } else if (eType.compare("PRIMITIVE_TYPE") == 0) {
+        return ElementType::PRIMITIVE_TYPE;
+    } else if (eType.compare("PROFILE") == 0) {
+        return ElementType::PROFILE;
+    } else if (eType.compare("PROFILE_APPLICATION") == 0) {
+        return ElementType::PROFILE_APPLICATION;
+    } else if (eType.compare("PROPERTY") == 0) {
+        return ElementType::PROPERTY;
+    } else if (eType.compare("REALIZATION") == 0) {
+        return ElementType::REALIZATION;
+    } else if (eType.compare("RECEPTION") == 0) {
+        return ElementType::RECEPTION;
+    } else if (eType.compare("REDEFINABLE_ELEMENT") == 0) {
+        return ElementType::REDEFINABLE_ELEMENT;
+    } else if (eType.compare("REDEFINABLE_TEMPLATE_SIGNATURE") == 0) {
+        return ElementType::REDEFINABLE_TEMPLATE_SIGNATURE;
+    } else if (eType.compare("RELATIONSHIP") == 0) {
+        return ElementType::RELATIONSHIP;
+    } else if (eType.compare("SIGNAL") == 0) {
+        return ElementType::SIGNAL;
+    } else if (eType.compare("SLOT") == 0) {
+        return ElementType::SLOT;
+    } else if (eType.compare("STEREOTYPE") == 0) {
+        return ElementType::STEREOTYPE;
+    } else if (eType.compare("STRUCTURAL_FEATURE") == 0) {
+        return ElementType::STRUCTURAL_FEATURE;
+    } else if (eType.compare("STRUCTURED_CLASSIFIER") == 0) {
+        return ElementType::STRUCTURED_CLASSIFIER;
+    } else if (eType.compare("TEMPLATEABLE_ELEMENT") == 0) {
+        return ElementType::TEMPLATEABLE_ELEMENT;
+    } else if (eType.compare("TEMPLATE_BINDING") == 0) {
+        return ElementType::TEMPLATE_BINDING;
+    } else if (eType.compare("TEMPLATE_PARAMETER") == 0) {
+        return ElementType::TEMPLATE_PARAMETER;
+    } else if (eType.compare("TEMPLATE_PARAMETER_SUBSTITUTION") == 0) {
+        return ElementType::TEMPLATE_PARAMETER_SUBSTITUTION;
+    } else if (eType.compare("TEMPLATE_SIGNATURE") == 0) {
+        return ElementType::TEMPLATE_SIGNATURE;
+    } else if (eType.compare("TYPE") == 0) {
+        return ElementType::TYPE;
+    } else if (eType.compare("TYPED_ELEMENT") == 0) {
+        return ElementType::TYPED_ELEMENT;
+    } else if (eType.compare("USAGE") == 0) {
+        return ElementType::USAGE;
+    } else if (eType.compare("VALUE_PIN") == 0) {
+        return ElementType::VALUE_PIN;
+    } else if (eType.compare("VALUE_SPECIFICATION") == 0) {
+        return ElementType::VALUE_SPECIFICATION;
+    }
+    throw SerializationError("Could not identify element type by keyword: " + eType + '!');
+}
+
+void parseExtensionFeatures(YAML::Node node, Extension& extension, ParserData& data) {
+    parseSingleton<ExtensionEnd>(node, extension, data, "ownedEnd", &Extension::setOwnedEnd, &Extension::setOwnedEnd);
+    if (node["metaClass"]) { // this implementation might change
+        if (!node["metaClass"].IsScalar()) {
+            throw SerializationError("Expected metaClass to be a scalar value " + getLineNumber(node["metaClass"]));
+        }
+        extension.setMetaClass(elementTypeFromString(node["metaClass"].as<string>()));
+    }
+}
+
 void parseFeatureFeatures(YAML::Node node, Feature& feature, ParserData& data) {
     parseBoolean(node, feature, "isStatic", &Feature::setStatic);
 }
@@ -716,7 +1137,7 @@ void parseLiteralStringFeatures(YAML::Node node, LiteralString& literalString, P
     parseString(node, literalString, "value", &LiteralString::setValue);
 }
 
-void parseLiteralUnlimitedNaturalfeatures(YAML::Node node, LiteralUnlimitedNatural& literalUnlimitedNatural, ParserData& data) {
+void parseLiteralUnlimitedNaturalFeatures(YAML::Node node, LiteralUnlimitedNatural& literalUnlimitedNatural, ParserData& data) {
     // special parsing
     if (node["value"]) {
         if (!node["value"].IsScalar()) {
@@ -729,6 +1150,10 @@ void parseLiteralUnlimitedNaturalfeatures(YAML::Node node, LiteralUnlimitedNatur
             literalUnlimitedNatural.setNumberValue(node["value"].as<unsigned long>());
         }
     }
+}
+
+void parseModelFeatures(YAML::Node node, Model& model, ParserData& data) {
+    parseString(node, model, "viewpoint", &Model::setViewpoint);
 }
 
 void parseMultiplicityElementFeatures(YAML::Node node, MultiplicityElement& multiplicityElement, ParserData& data) {
@@ -752,13 +1177,23 @@ void parseNamespaceFeatures(YAML::Node node, Namespace& nmspc, ParserData& data)
     parseSet<Constraint>(node, nmspc, data, "ownedRules", &Namespace::getOwnedRules);
 }
 
+void parseOpaqueBehaviorFeatures(YAML::Node node, OpaqueBehavior& opaqueBehavior, ParserData& data) {
+    parseSet<LiteralString>(node, opaqueBehavior, data, "bodies", &OpaqueBehavior::getBodies);
+}
+
 void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data) {
     parseSet<InstanceSpecification>(node, pckg, data, "packagedElements", &Package::getPackagedElements);
+    parseSet<PackageMerge>(node, pckg, data, "packageMerges", &Package::getPackageMerge);
+    parseSet<ProfileApplication>(node, pckg, data, "profileApplications", &Package::getProfileApplications);
 }
 
 void parsePackageImportFeatures(YAML::Node node, PackageImport& packageImport, ParserData& data) {
     parseSingleton<Package>(node, packageImport, data, "importedPackage", &PackageImport::setImportedPackage, &PackageImport::setImportedPackage);
     parseVisibilty(node, packageImport);
+}
+
+void parsePackageMergeFeatures(YAML::Node node, PackageMerge& packageMerge, ParserData& data) {
+    parseSingleton<Package>(node, packageMerge, data, "mergedPackage", &PackageMerge::setMergedPackage, &PackageMerge::setMergedPackage);
 }
 
 void parseParameterFeatures(YAML::Node node, Parameter& parameter, ParserData& data) {
@@ -804,6 +1239,17 @@ void parseParameterableElementFeatures(YAML::Node node, ParameterableElement& pa
 void parseParameterSetFeatures(YAML::Node node, ParameterSet& parameterSet, ParserData& data) {
     parseSet<Parameter>(node, parameterSet, data, "parameters", &ParameterSet::getParameters);
     parseSet<Constraint>(node, parameterSet, data, "conditions", &ParameterSet::getConditions);
+}
+
+void parsePortFeatures(YAML::Node node, Port& port, ParserData& data) {
+    parseBoolean(node, port, "isBehavior", &Port::setIsBehavior);
+    parseBoolean(node, port, "isConjugated", &Port::setIsConjugated);
+    parseBoolean(node, port, "isService", &Port::setIsService);
+    // parseSet<Port>(node, port, data, "redefinedPorts", &Port::getRedefinedPorts);
+}
+
+void parseProfileApplicationFeatures(YAML::Node node, ProfileApplication& profileApplication, ParserData& data) {
+    parseSingleton<Profile>(node, profileApplication, data, "profileApplication", &ProfileApplication::setAppliedProfile, &ProfileApplication::setAppliedProfile);
 }
 
 void parsePropertyFeatures(YAML::Node node, Property& property, ParserData& data) {
@@ -943,8 +1389,16 @@ bool parsePackageImportScope(YAML::Node node, PackageImport& packageImport, Pars
     return parseSingleton<Namespace>(node, packageImport, data, "importingNamespace", &PackageImport::setImportingNamespace, &PackageImport::setImportingNamespace);
 }
 
+bool parsePackageMergeScope(YAML::Node node, PackageMerge& packageMerge, ParserData& data) {
+    return parseSingleton<Package>(node, packageMerge, data, "receivingPackage", &PackageMerge::setReceivingPackage, &PackageMerge::setReceivingPackage);
+}
+
 bool parseParameterableElementScope(YAML::Node node, ParameterableElement& parameterableElement, ParserData& data) {
     return parseSingleton<TemplateParameter>(node, parameterableElement, data, "owningTemplateParameter", &ParameterableElement::setOwningTemplateParameter, &ParameterableElement::setOwningTemplateParameter);
+}
+
+bool parseProfileApplicationScope(YAML::Node node, ProfileApplication& profileApplication, ParserData& data) {
+    return parseSingleton<Package>(node, profileApplication, data, "applyingPackage", &ProfileApplication::setApplyingPackage, &ProfileApplication::setApplyingPackage);
 }
 
 bool parsePropertyScope(YAML::Node node, Property& property, ParserData& data) {

@@ -26,6 +26,7 @@ ElementPtr OpenUmlSerializationPolicy::parseWhole(std::string data, AbstractMana
 
 std::string OpenUmlSerializationPolicy::emitIndividual(Element& el, AbstractManager& manager) {
     EmitterData data;
+    data.emitReferences = true;
     return emit(el, data);
 }
 
@@ -33,7 +34,6 @@ std::string OpenUmlSerializationPolicy::emitWhole(Element& el, AbstractManager& 
     EmitterData data;
     data.mode = SerializationMode::WHOLE;
     return emit(el, data);
-    return "";
 }
 
 std::string emit(Element& el, EmitterData& data) {

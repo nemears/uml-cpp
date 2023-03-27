@@ -14,7 +14,7 @@ namespace UML{
         public:
             virtual ~Model();
             std::string getViewpoint() const;
-            void setViewpoint(std::string viewpoint);
+            void setViewpoint(const std::string& viewpoint);
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::MODEL;

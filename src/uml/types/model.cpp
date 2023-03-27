@@ -19,7 +19,7 @@ std::string Model::getViewpoint() const {
     return m_viewpoint;
 }
 
-void Model::setViewpoint(std::string viewpoint) {
+void Model::setViewpoint(const std::string& viewpoint) {
     m_viewpoint = viewpoint;
 }
 

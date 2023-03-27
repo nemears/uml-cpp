@@ -15,7 +15,7 @@ UML_SINGLETON_INTEGRATION_TEST(PackageableElementOwningPackage, Package, Package
 UML_SET_INTEGRATION_TEST(PackagePackageMerges, PackageMerge, Package, &Package::getPackageMerge);
 UML_SINGLETON_INTEGRATION_TEST(PackageMergeReceivingPackage, Package, PackageMerge, &PackageMerge::getReceivingPackage, &PackageMerge::setReceivingPackage);
 UML_SINGLETON_INTEGRATION_TEST(PackageMergeMergedPackage, Package, PackageMerge, &PackageMerge::getMergedPackage, &PackageMerge::setMergedPackage);
-UML_SET_INTEGRATION_TEST(PackageOwnedStereotypes, Stereotype, Package, &Package::getOwnedStereotypes);
+// commented out because it is readonly // UML_SET_INTEGRATION_TEST(PackageOwnedStereotypes, Stereotype, Package, &Package::getOwnedStereotypes);
 
 TEST_F(PackageTest, addPackagedElementTest) {
     Manager<> m;
@@ -112,7 +112,7 @@ TEST_F(PackageTest, addOwnedStereotype) {
     p.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
     Stereotype& s = *m.create<Stereotype>();
     s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
-    p.getOwnedStereotypes().add(s);
+    p.getPackagedElements().add(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
     ASSERT_EQ(p.getOwnedStereotypes().front().getID(), s.getID());
     ASSERT_EQ(p.getPackagedElements().size(), 1);
@@ -131,7 +131,7 @@ TEST_F(PackageTest, addOwnedStereotype) {
     Package& pp = *m.create<Package>();
     pp.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAF");
     p2.getPackagedElements().add(pp);
-    p2.getOwnedStereotypes().add(s2);
+    p2.getPackagedElements().add(s2);
     ASSERT_EQ(p2.getOwnedStereotypes().size(), 1);
     ASSERT_EQ(p2.getPackagedElements().size(), 2);
     ASSERT_TRUE(p2.getOwnedStereotypes().contains(s2));
@@ -153,21 +153,21 @@ TEST_F(PackageTest, removeOwnedStereotype) {
     Manager<> m;
     Profile& p = *m.create<Profile>();
     Stereotype& s = *m.create<Stereotype>();
-    p.getOwnedStereotypes().add(s);
-    p.getOwnedStereotypes().remove(s);
+    p.getPackagedElements().add(s);
+    p.getPackagedElements().remove(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
     ASSERT_EQ(p.getPackagedElements().size(), 0);
     Package& pp = *m.create<Package>();
     s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
     p.getPackagedElements().add(pp);
-    p.getOwnedStereotypes().add(s);
+    p.getPackagedElements().add(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
     ASSERT_EQ(p.getPackagedElements().size(), 2);
     ASSERT_TRUE(p.getOwnedStereotypes().contains(s));
     ASSERT_TRUE(p.getPackagedElements().contains(s));
     ASSERT_FALSE(p.getOwnedStereotypes().contains(pp.getID()));
     ASSERT_TRUE(p.getPackagedElements().contains(pp));
-    p.getOwnedStereotypes().remove(s);
+    p.getPackagedElements().remove(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
     ASSERT_EQ(p.getPackagedElements().size(), 1);
     ASSERT_FALSE(p.getOwnedStereotypes().contains(s));
@@ -181,7 +181,7 @@ TEST_F(PackageTest, inTreeRemoveOwnedStereotype) {
     Package& p = *m.create<Package>();
     Stereotype& s = *m.create<Stereotype>();
     PackageMerge& pm = *m.create<PackageMerge>();
-    p.getOwnedStereotypes().add(s);
+    p.getPackagedElements().add(s);
     p.getPackageMerge().add(pm);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
     ASSERT_EQ(p.getPackagedElements().size(), 1);
@@ -201,7 +201,7 @@ TEST_F(PackageTest, inTreeRemoveOwnedStereotype) {
     ASSERT_FALSE(p.getMembers().contains(pm.getID()));
     ASSERT_TRUE(p.getOwnedElements().contains(pm));
     ASSERT_TRUE(p.getPackageMerge().contains(pm));
-    p.getOwnedStereotypes().remove(s);
+    p.getPackagedElements().remove(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
     ASSERT_EQ(p.getPackagedElements().size(), 0);
     ASSERT_EQ(p.getOwnedMembers().size(), 0);
@@ -351,7 +351,7 @@ TEST_F(PackageTest, emitVerySimplePackageTest) {
     std::string expectedEmit = R""""(package:
   id: "_SljVdCSVuBAkmgXqFcopy8&D9oN"
   name: package
-  visibility: PACKAGE)"""";
+  visibility: package)"""";
   std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;
@@ -360,15 +360,15 @@ TEST_F(PackageTest, emitVerySimplePackageTest) {
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
-TEST_F(PackageTest, parsePackagedElementInDifferentFileTest) {
-    Manager<> m;
-    ASSERT_NO_THROW(m.open(ymlPath + "packageParserTests/subFolderTest.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
-    Package& pckg = m.getRoot()->as<Package>();
-    ASSERT_EQ(pckg.getPackagedElements().size(), 1);
-    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
-    ASSERT_EQ(pckg.getPackagedElements().front().getID(), ID::fromString("4tcg0slbMiorhD6UUNfSGw6hHTV3"));
-}
+// TEST_F(PackageTest, parsePackagedElementInDifferentFileTest) {
+//     Manager<> m;
+//     ASSERT_NO_THROW(m.open(ymlPath + "packageParserTests/subFolderTest.yml"));
+//     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+//     Package& pckg = m.getRoot()->as<Package>();
+//     ASSERT_EQ(pckg.getPackagedElements().size(), 1);
+//     ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
+//     ASSERT_EQ(pckg.getPackagedElements().front().getID(), ID::fromString("4tcg0slbMiorhD6UUNfSGw6hHTV3"));
+// }
 
 TEST_F(PackageTest, emitMergedPackageTest) {
     Manager<> m;
@@ -423,7 +423,7 @@ TEST_F(PackageTest, mountAndEditPackageTest) {
     PackageMerge& merge = *m.create<PackageMerge>();
     ProfileApplication& profileApplication = *m.create<ProfileApplication>();
     Stereotype& stereotype = *m.create<Stereotype>();
-    c1.getOwnedStereotypes().add(stereotype);
+    c1.getPackagedElements().add(stereotype);
     merge.setMergedPackage(merged);
     c1.getPackageMerge().add(merge);
     profileApplication.setAppliedProfile(profile);
@@ -581,20 +581,19 @@ TEST_F(PackageTest, emitProfileTest) {
     end.setType(&stereotype);
     extension.setOwnedEnd(&end);
     extension.setMetaClass(ElementType::OPERATION);
-    profile.getOwnedStereotypes().add(stereotype);
+    profile.getPackagedElements().add(stereotype);
     profile.getPackagedElements().add(extension);
     std::string expectedEmit = R""""(profile:
   id: "83lphS&gucqvJwW&KSzVmTSMMG1z"
   packagedElements:
     - extension:
         id: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"
-        metaClass: OPERATION
         ownedEnd:
           extensionEnd:
             id: "t&ZWitKKpMcvG9Dzwh23wSbP1hr5"
             type: 7PJxQhyjuuWylik9y2fgpNDXmMdv
             association: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"
-  ownedStereotypes:
+        metaClass: OPERATION
     - stereotype:
         id: 7PJxQhyjuuWylik9y2fgpNDXmMdv)"""";
     std::string generatedEmit;

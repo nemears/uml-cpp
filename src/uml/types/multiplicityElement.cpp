@@ -67,11 +67,12 @@ MultiplicityElement::~MultiplicityElement() {
 }
 
 int MultiplicityElement::getLower() {
-    if (m_lowSpecified) {
-        return m_lower;
-    } else {
-        throw multiplicityNotSpecifiedException;
-    }
+    return m_lower;
+    // if (m_lowSpecified) {
+    //     return m_lower;
+    // } else {
+    //     // throw multiplicityNotSpecifiedException;
+    // }
 }
 
 void MultiplicityElement::setLower(const int low) {
@@ -85,11 +86,12 @@ void MultiplicityElement::setLower(const int low) {
 }
 
 int MultiplicityElement::getUpper() {
-    if (m_upSpecified) {
-        return m_upper;
-    } else {
-        throw multiplicityNotSpecifiedException;
-    }
+    return m_upper;
+    // if (m_upSpecified) {
+    //     return m_upper;
+    // } else {
+    //     // throw multiplicityNotSpecifiedException;
+    // }
 }
 
 void MultiplicityElement::setUpper(const int up) {
@@ -104,6 +106,13 @@ void MultiplicityElement::setUpper(const int up) {
 
 bool MultiplicityElement::multiplicitySpecified() {
     return m_multiplicityIsSpecified;
+}
+
+bool MultiplicityElement::lowSpecified() const {
+    return m_lowSpecified;
+}
+bool MultiplicityElement::upSpecified() const {
+    return m_upSpecified;
 }
 
 ValueSpecificationPtr MultiplicityElement::getLowerValue() const {

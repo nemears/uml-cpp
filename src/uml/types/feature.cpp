@@ -41,13 +41,13 @@ ClassifierPtr Feature::getFeaturingClassifier() const {
     return m_featuringClassifier.get();
 }
 
-void Feature::setFeaturingClassifier(Classifier* clazz) {
-    m_featuringClassifier.set(clazz);
-}
+// void Feature::setFeaturingClassifier(Classifier* clazz) {
+//     m_featuringClassifier.set(clazz);
+// }
 
-void Feature::setFeaturingClassifier(ID id) {
-    m_featuringClassifier.set(id);
-}
+// void Feature::setFeaturingClassifier(ID id) {
+//     m_featuringClassifier.set(id);
+// }
 
 bool Feature::isStatic() {
     return m_static;

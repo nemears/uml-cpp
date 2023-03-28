@@ -95,7 +95,7 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
   packagedElements:
     - class:
         id: mmUnLGAGcUocJQlNkF2BxGUzadjY
-        powertypeExtents:
+        powertypeExtent:
           - "uLHn5GsNBUhrk9cgTO&qLw5LO068"
     - class:
         id: wJ7Y3K6BmTpN3D2pEtbbBt5aMhuo
@@ -107,8 +107,8 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
                 - "uLHn5GsNBUhrk9cgTO&qLw5LO068"
     - generalizationSet:
         id: "uLHn5GsNBUhrk9cgTO&qLw5LO068"
-        covering: false
-        disjoint: false
+        isCovering: false
+        isDisjoint: false
         powertype: mmUnLGAGcUocJQlNkF2BxGUzadjY
         generalizations:
           - vGAiKV8tZmvkxePhhEns36Z654xF)"""";
@@ -117,12 +117,12 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
   packagedElements:
     - class:
         id: mmUnLGAGcUocJQlNkF2BxGUzadjY
-        powerTypeExtents:
+        powerTypeExtent:
           - uLHn5GsNBUhrk9cgTO&qLw5LO068
     - generalizationSet:
         id: uLHn5GsNBUhrk9cgTO&qLw5LO068
-        covering: false
-        disjoint: false
+        isCovering: false
+        isDisjoint: false
         powertype: mmUnLGAGcUocJQlNkF2BxGUzadjY
         generalizations:
           - vGAiKV8tZmvkxePhhEns36Z654xF

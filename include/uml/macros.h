@@ -52,6 +52,7 @@ friend class Behavior; \
 friend class BehavioredClassifier; \
 friend class BehavioralFeature; \
 friend class CallBehaviorAction; \
+friend class Class; \
 friend class ClassifierTemplateParameter; \
 friend class Classifier; \
 friend class Comment; \

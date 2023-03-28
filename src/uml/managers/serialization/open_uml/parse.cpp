@@ -356,7 +356,7 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["interface"]) {
+    } else if (node["interface"] && node["interface"].IsMap()) {
         ret = createAndParse<Interface>(node["interface"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
@@ -482,7 +482,7 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["operation"]) {
+    } else if (node["operation"] && node["operation"].IsMap()) {
         ret = createAndParse<Operation>(node["operation"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
@@ -523,13 +523,14 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parsePackageMergeScope,
                     parseElementScope);
     } else if (node["parameter"]) {
-        ret = createAndParse<Parameter>(node, data, 
+        ret = createAndParse<Parameter>(node["parameter"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseTypedElementFeatures, // parseConnectableElements
                     parseMultiplicityElementFeatures,
                     parseParameterFeatures);
         parseScope(node, ret->as<Parameter>(), data, 
+                    parseParameterScope,
                     parseNamedElementScope,
                     parseElementScope);
     } else if (node["parameterSet"]) {
@@ -556,7 +557,7 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["primitivType"]) {
+    } else if (node["primitiveType"]) {
         ret = createAndParse<PrimitiveType>(node["primitiveType"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
@@ -673,7 +674,7 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["templateBinding"]) {
+    } else if (node["templateBinding"] && node["templateBinding"].IsMap()) {
         ret = createAndParse<TemplateBinding>(node["templateBinding"], data,
                     parseElementFeatures,
                     parseTemplateBindingFeatures);
@@ -752,6 +753,7 @@ void parseBehavioralFeatureFeatures(YAML::Node node, BehavioralFeature& behavior
 void parseBehavioredClassifierFeatures(YAML::Node node, BehavioredClassifier& behavioredClassifier, ParserData& data) {
     parseSingleton<Behavior>(node, behavioredClassifier, data, "classifierBehavior", &BehavioredClassifier::setClassifierBehavior, &BehavioredClassifier::setClassifierBehavior);
     parseSet<Behavior>(node, behavioredClassifier, data, "ownedBehaviors", &BehavioredClassifier::getOwnedBehaviors);
+    parseSet<InterfaceRealization>(node, behavioredClassifier, data, "interfaceRealizations", &BehavioredClassifier::getInterfaceRealizations);
 }
 
 void parseClassFeatures(YAML::Node node, Class& clazz, ParserData& data) {
@@ -811,6 +813,7 @@ void parseElementFeatures(YAML::Node node, Element& el, ParserData& data) {
         }
         el.setID(idString);
     }
+    parseSet<Comment>(node, el, data, "ownedComments", &Element::getOwnedComments);
     parseSet<InstanceSpecification>(node, el, data, "appliedStereotypes", &Element::getAppliedStereotypes);
 }
 
@@ -1111,7 +1114,7 @@ void parseInstanceValueFeatures(YAML::Node node, InstanceValue& instanceValue, P
 
 void parseInterfaceFeatures(YAML::Node node, Interface& interface, ParserData& data) {
     parseSet<Property>(node, interface, data, "ownedAttributes", &Interface::getOwnedAttributes);
-    parseSet<Operation>(node, interface, data, "ownedOpterations", &Interface::getOwnedOperations);
+    parseSet<Operation>(node, interface, data, "ownedOperations", &Interface::getOwnedOperations);
     // parseSet<Reception>(node, interface, data, "ownedReceptions", &Interface::getOwnedReceptions);
     parseSet<Classifier>(node, interface, data, "nestedClassifiers", &Interface::getNestedClassifiers);
     // parseSet<Interface>(node, interface, data, "redefinedInterfaces", &Interface::getRedefinedInterfaces);
@@ -1199,6 +1202,9 @@ void parsePackageMergeFeatures(YAML::Node node, PackageMerge& packageMerge, Pars
 void parseParameterFeatures(YAML::Node node, Parameter& parameter, ParserData& data) {
     // TODO string default
     if (node["direction"]) {
+        if (!node["direction"].IsScalar()) {
+            throw SerializationError("could not parse parameter direction because it was not a scalar value " + getLineNumber(node["direction"]));
+        }
         string directionVal = node["direction"].as<string>();
         if (directionVal == "in") {
             parameter.setDirection(ParameterDirectionKind::IN_UML);
@@ -1249,18 +1255,20 @@ void parsePortFeatures(YAML::Node node, Port& port, ParserData& data) {
 }
 
 void parseProfileApplicationFeatures(YAML::Node node, ProfileApplication& profileApplication, ParserData& data) {
-    parseSingleton<Profile>(node, profileApplication, data, "profileApplication", &ProfileApplication::setAppliedProfile, &ProfileApplication::setAppliedProfile);
+    parseSingleton<Profile>(node, profileApplication, data, "appliedProfile", &ProfileApplication::setAppliedProfile, &ProfileApplication::setAppliedProfile);
 }
 
 void parsePropertyFeatures(YAML::Node node, Property& property, ParserData& data) {
     if (node["aggregation"]) {
         string aggregationVal = node["aggregation"].as<string>();
-        if (aggregationVal == "composite") {
+        if (aggregationVal == "composite" || aggregationVal == "COMPOSITE") {
             property.setAggregation(AggregationKind::COMPOSITE);
-        } else if (aggregationVal == "none") {
+        } else if (aggregationVal == "none" || aggregationVal == "NONE") {
             property.setAggregation(AggregationKind::NONE);
-        } else if (aggregationVal == "shared") {
+        } else if (aggregationVal == "shared" || aggregationVal == "SHARED") {
             property.setAggregation(AggregationKind::SHARED);
+        } else {
+            throw SerializationError("could not determine aggregation strategy for property " + getLineNumber(node["aggregation"]));
         }
     }
     parseBoolean(node, property, "isComposite", &Property::setComposite);
@@ -1275,7 +1283,7 @@ void parseReceptionFeatures(YAML::Node node, Reception& reception, ParserData& d
 }
 
 void parseRedefinableTemplateSignatureFeatures(YAML::Node node, RedefinableTemplateSignature& redefinableTemplateSignature, ParserData& data) {
-    parseSet<RedefinableTemplateSignature>(node, redefinableTemplateSignature, data, "extendedSignature", &RedefinableTemplateSignature::getExtendedSignatures);
+    parseSet<RedefinableTemplateSignature>(node, redefinableTemplateSignature, data, "extendedSignatures", &RedefinableTemplateSignature::getExtendedSignatures);
 }
 
 void parseSignalFeatures(YAML::Node node, Signal& signal, ParserData& data) {
@@ -1391,6 +1399,10 @@ bool parsePackageImportScope(YAML::Node node, PackageImport& packageImport, Pars
 
 bool parsePackageMergeScope(YAML::Node node, PackageMerge& packageMerge, ParserData& data) {
     return parseSingleton<Package>(node, packageMerge, data, "receivingPackage", &PackageMerge::setReceivingPackage, &PackageMerge::setReceivingPackage);
+}
+
+bool parseParameterScope(YAML::Node node, Parameter& parameter, ParserData& data) {
+    return parseSingleton<Operation>(node, parameter, data, "operation", &Parameter::setOperation, &Parameter::setOperation);
 }
 
 bool parseParameterableElementScope(YAML::Node node, ParameterableElement& parameterableElement, ParserData& data) {

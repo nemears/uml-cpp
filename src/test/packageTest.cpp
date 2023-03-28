@@ -684,7 +684,7 @@ TEST_F(PackageTest, emitAppliedStereotypeTest) {
     extension.setID("jjf&mHlwFSAjJXsBqng4IlxfYIJh");
     end.setID("FK1SGxJ2lV&5RtbRhiGU9jR0zAsw");
     stereotype.setID("x5r8XggyW2DI5c3RyAS8r_arWh79");
-    profile.getOwnedStereotypes().add(stereotype);
+    profile.getPackagedElements().add(stereotype);
     extension.setMetaClass(ElementType::PACKAGE);
     end.setType(&stereotype);
     extension.setOwnedEnd(&end);
@@ -701,10 +701,6 @@ TEST_F(PackageTest, emitAppliedStereotypeTest) {
   packagedElements:
     - package:
         id: "Lf963Dxo5MFIqi9ip7&Nj4l1f1yj"
-        profileApplications:
-          - profileApplication:
-              id: MUiSKR6gArugHOb1RqZtF5_uhflV
-              appliedProfile: "I3QrZblFek6tdX&j70kCP8u4QNAh"
         packagedElements:
           - package:
               id: "wX&KNwgtwFYOQ0B4eIweaaRz&QC1"
@@ -713,18 +709,21 @@ TEST_F(PackageTest, emitAppliedStereotypeTest) {
                     id: "l3q&INpC6kqcdavsgIMSrSNNpGEt"
                     classifiers:
                       - x5r8XggyW2DI5c3RyAS8r_arWh79
+        profileApplications:
+          - profileApplication:
+              id: MUiSKR6gArugHOb1RqZtF5_uhflV
+              appliedProfile: "I3QrZblFek6tdX&j70kCP8u4QNAh"
     - profile:
         id: "I3QrZblFek6tdX&j70kCP8u4QNAh"
         packagedElements:
           - extension:
               id: "jjf&mHlwFSAjJXsBqng4IlxfYIJh"
-              metaClass: PACKAGE
               ownedEnd:
                 extensionEnd:
                   id: "FK1SGxJ2lV&5RtbRhiGU9jR0zAsw"
                   type: x5r8XggyW2DI5c3RyAS8r_arWh79
                   association: "jjf&mHlwFSAjJXsBqng4IlxfYIJh"
-        ownedStereotypes:
+              metaClass: PACKAGE
           - stereotype:
               id: x5r8XggyW2DI5c3RyAS8r_arWh79)"""";
     std::string generatedEmit;

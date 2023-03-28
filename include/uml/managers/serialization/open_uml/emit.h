@@ -78,6 +78,7 @@ namespace UML {
     bool emitOperationScope(YAML::Emitter& emitter, Operation& operation, EmitterData& data);
     bool emitPackageableElementScope(YAML::Emitter& emitter, PackageableElement& el, EmitterData& data);
     bool emitPackageImportScope(YAML::Emitter& emitter, PackageImport& packageImport, EmitterData& data);
+    bool emitParameterScope(YAML::Emitter& emitter, Parameter& parameter, EmitterData& data);
     bool emitPackageMergeScope(YAML::Emitter& emitter, PackageMerge& packageMerge, EmitterData& data);
     bool emitParameterableElementScope(YAML::Emitter& emitter, ParameterableElement& el, EmitterData& data);
     bool emitProfileApplicationScope(YAML::Emitter& emitter, ProfileApplication& profileApplication, EmitterData& data);

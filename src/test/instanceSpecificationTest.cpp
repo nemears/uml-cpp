@@ -270,7 +270,7 @@ TEST_F(InstanceSpecificationTest, simpleInstanceEmitTest) {
     std::string expectedEmit = R""""(instanceSpecification:
   id: 3XvQFHIrqSmU7WAXA7fVzkw1v2U3
   name: simple
-  visibility: PROTECTED)"""";
+  visibility: protected)"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;
@@ -291,7 +291,7 @@ TEST_F(InstanceSpecificationTest, simpleSlotTest) {
     std::string expectedEmit = R""""(instanceSpecification:
   id: yaogA9yjaFoD_RdGQzRrwe1826Aj
   name: slot
-  visibility: PROTECTED
+  visibility: protected
   slots:
     - slot:
         id: "w6arMVW4Plw0aLOBWLE9_8Xo_UL&")"""";

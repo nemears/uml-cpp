@@ -13,7 +13,8 @@
           id : mEaEOlbgEXAE_peo&rm2JzrVI6tk
           name : isValid
           bodies : 
-            - "return true"
+            - literalString: 
+                value: "return true"
           ownedParameters :
             - parameter :
                 name : "debug"

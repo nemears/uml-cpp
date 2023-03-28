@@ -12,6 +12,16 @@
 
 using namespace UML;
 
+void Class::restoreReference(Element* el) {
+    EncapsulatedClassifier::restoreReference(el);
+    if (el->isSubClassOf(ElementType::RECEPTION)) {
+        Reception& reception = el->as<Reception>();
+        if (m_ownedReceptions.contains(reception.getID()) && reception.getFeaturingClassifier().id() == ID::nullID() && reception.getNamespace().id() == m_id) {
+            reception.m_featuringClassifier.innerAdd(*this);
+        }
+    }
+}
+
 Class::Class() : Element(ElementType::CLASS) {
     m_classOwnedAttrubutes.redefines(m_ownedAttributes);
     m_classOwnedAttrubutes.opposite(&Property::getClassSingleton);

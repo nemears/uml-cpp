@@ -80,6 +80,7 @@ namespace UML {
     bool parsePackageableElementScope(YAML::Node node, PackageableElement& el, ParserData& data);
     bool parsePackageImportScope(YAML::Node node, PackageImport& packageImport, ParserData& data);
     bool parsePackageMergeScope(YAML::Node node, PackageMerge& packageMerge, ParserData& data);
+    bool parseParameterScope(YAML::Node node, Parameter& parameter, ParserData& data);
     bool parseParameterableElementScope(YAML::Node node, ParameterableElement& parameterableElement, ParserData& data);
     bool parseProfileApplicationScope(YAML::Node node, ProfileApplication& profileApplication, ParserData& data);
     bool parsePropertyScope(YAML::Node node, Property& property, ParserData& data);

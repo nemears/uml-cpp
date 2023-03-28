@@ -21,6 +21,12 @@ void ConnectableElement::restoreReference(Element* el) {
     if (m_ends.contains(el->getID())) {
         el->setReference(this);
     }
+    if (el->isSubClassOf(ElementType::CONNECTOR_END)) {
+        ConnectorEnd& end = el->as<ConnectorEnd>();
+        if (end.getRole().id() == m_id && !m_ends.contains(end.getID())) {
+            m_ends.innerAdd(end);
+        }
+    }
 }
 
 void ConnectableElement::referenceErased(ID id) {

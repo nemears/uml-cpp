@@ -13,7 +13,7 @@
                         - dKx8Rm8wx5a&paU5v&dgC0ocZ3xt
       - profile:
           id: PPkaUpbLRkxoN76k6_qR9xv6FruX
-          ownedStereotypes:
+          packagedElements:
             - stereotype:
                 id: dKx8Rm8wx5a&paU5v&dgC0ocZ3xt
                 metaClass: PACKAGE

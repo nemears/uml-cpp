@@ -208,12 +208,6 @@ namespace UML {
             void removeOpposite(__attribute__((unused)) T& el) override {}
     };
 
-    namespace Parsers {
-        void setNamespace(NamedElement& el, ID id);
-        void setOwner(Element& el, ID id);
-        void addEnd(ConnectableElement& el, ID id);
-    }
-
     template <
                 class T, 
                 class U, 
@@ -227,10 +221,6 @@ namespace UML {
                         protected RemovalPolicy {
 
         FRIEND_ALL_UML()
-
-        friend void Parsers::setNamespace(NamedElement& el, ID id);
-        friend void Parsers::setOwner(Element& el, ID id);
-        friend void Parsers::addEnd(ConnectableElement& el, ID id);
 
         protected:
             U& m_el;
@@ -583,14 +573,18 @@ namespace UML {
                                     delete node;
                                     throw SetStateException("Node already in set TODO bags and list");
                                 }
-                                SetNode* nextCurrNode = getParent(currNode, currNode->set->m_root);
+
+                                // remove it
                                 currNode->set->innerRemove(currNode->m_ptr.id());
+                                
+                                // add again
+                                visited[set] = false;
                                 if (currNode->m_ptr.loaded()) {
                                     // TODO dont do opposite
                                     m_opposite->skip = true;
                                 }
-                                currNode = nextCurrNode;
-                                continue;
+                                innerAddDFS(node, set, allSuperSetsAndMe, allSubSets, visited);
+                                return;
                             } else {
                                 // TODO may be valid in some edge cases
                                 throw SetStateException("Node already in this set!");

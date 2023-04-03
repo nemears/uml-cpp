@@ -13,8 +13,6 @@ namespace UML {
     class CustomSingleton : public PrivateSet<T, U, AdditionPolicy, RemovalPolicy> {
 
         FRIEND_ALL_UML()
-        friend void Parsers::setNamespace(NamedElement& el, ID id);
-        friend void Parsers::setOwner(Element& el, ID id);
 
         protected:
             void innerAdd(T& el) override {

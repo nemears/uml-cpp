@@ -745,7 +745,7 @@ TEST_F(PackageTest, mountProfileTest) {
   Package& root = *m.create<Package>();
   Package& pckg = *m.create<Package>();
   ProfileApplication& profileApplication = *m.create<ProfileApplication>();
-  profile.getOwnedStereotypes().add(stereotype);
+  profile.getPackagedElements().add(stereotype);
   profile.getPackagedElements().add(extension);
   extension.setOwnedEnd(end);
   extension.setMetaClass(ElementType::CLASS);

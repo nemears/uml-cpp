@@ -11,13 +11,13 @@ using namespace UML;
 
 void Stereotype::SetOwningPackagePolicy::apply(Package& el, Stereotype& me) {
     if (el.isSubClassOf(ElementType::PROFILE) && me.m_profile.get().id() != el.getID()) {
-        me.m_profile.addReadOnly(el.as<Profile>());
+        me.m_profile.add(el.as<Profile>());
     }
 }
 
 void Stereotype::RemoveOwningPackagePolicy::apply(Package& el, Stereotype& me) {
     if (el.isSubClassOf(ElementType::PROFILE) && me.m_profile.get().id() == el.getID()) {
-        me.m_profile.removeReadOnly(el.getID());
+        me.m_profile.remove(el.getID());
     }
 }
 
@@ -28,7 +28,7 @@ TypedSet<Profile, Stereotype>& Stereotype::getProfileSingleton() {
 void Stereotype::restoreReference(Element* el) {
     Class::restoreReference(el);
     if (el->isSubClassOf(ElementType::PROFILE) && m_owningPackage.get().id() == el->getID()&& m_profile.get().id() != el->getID()) {
-        m_profile.addReadOnly(el->as<Profile>());
+        m_profile.add(el->as<Profile>());
     }
 }
 
@@ -36,7 +36,6 @@ Stereotype::Stereotype() : Element(ElementType::STEREOTYPE) {
     m_stereotypeOwningPackage.redefines(m_owningPackage);
     m_profile.subsets(m_stereotypeOwningPackage);
     m_profile.opposite(&Profile::getOwnedStereotypes);
-    m_profile.m_readOnly = true;
 }
 
 Stereotype::~Stereotype() {

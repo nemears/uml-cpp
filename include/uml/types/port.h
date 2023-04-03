@@ -25,8 +25,8 @@ namespace UML {
                 public:
                     void apply(Type& el, Port& me);
             };
-            CustomSet<Interface, Port> m_required = CustomSet<Interface, Port>(this);
-            CustomSet<Interface, Port> m_provided = CustomSet<Interface, Port>(this);
+            CustomReadOnlySet<Interface, Port> m_required = CustomReadOnlySet<Interface, Port>(this);
+            CustomReadOnlySet<Interface, Port> m_provided = CustomReadOnlySet<Interface, Port>(this);
             CustomSingleton<Type, Port, SetTypePolicy, RemoveTypePolicy> m_portType = CustomSingleton<Type, Port, SetTypePolicy, RemoveTypePolicy>(this);
             bool m_isBehavior = false;
             bool m_isConjugated = false;
@@ -44,8 +44,8 @@ namespace UML {
             void setIsConjugated(bool isConjugated);
             bool isService() const;
             void setIsService(bool isService);
-            Set<Interface, Port>& getRequired();
-            Set<Interface, Port>& getProvided();
+            ReadOnlySet<Interface, Port>& getRequired();
+            ReadOnlySet<Interface, Port>& getProvided();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PORT;

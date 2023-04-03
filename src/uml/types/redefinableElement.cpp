@@ -23,19 +23,18 @@ void RedefinableElement::referenceErased(ID id) {
 }
 
 RedefinableElement::RedefinableElement() : Element(ElementType::REDEFINABLE_ELEMENT) {
-    m_redefinedElement.m_readOnly = true;
-    m_redefinitionContext.m_readOnly = true;
+
 }
 
 RedefinableElement::~RedefinableElement() {
 
 }
 
-Set<RedefinableElement, RedefinableElement>& RedefinableElement::getRedefinedElements() {
+ReadOnlySet<RedefinableElement, RedefinableElement>& RedefinableElement::getRedefinedElements() {
     return m_redefinedElement;
 }
 
-Set<Classifier, RedefinableElement>& RedefinableElement::getRedefinitionContext() {
+ReadOnlySet<Classifier, RedefinableElement>& RedefinableElement::getRedefinitionContext() {
     return m_redefinitionContext;
 }
 

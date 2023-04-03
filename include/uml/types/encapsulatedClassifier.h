@@ -18,12 +18,12 @@ namespace UML {
                 public:
                     void apply(Property& el, EncapsulatedClassifier& me);
             };
-            CustomSet<Port, EncapsulatedClassifier> m_ownedPorts = CustomSet<Port, EncapsulatedClassifier>(this);
+            CustomReadOnlySet<Port, EncapsulatedClassifier> m_ownedPorts = CustomReadOnlySet<Port, EncapsulatedClassifier>(this);
             CustomSet<Property, EncapsulatedClassifier, AddOwnedAttributePolicy, RemoveOwnedAttributePolicy> m_encapsulatedClassifierOwnedAttributes = CustomSet<Property, EncapsulatedClassifier, AddOwnedAttributePolicy, RemoveOwnedAttributePolicy>(this);
             EncapsulatedClassifier();
         public:
             virtual ~EncapsulatedClassifier();
-            Set<Port, EncapsulatedClassifier>& getOwnedPorts();
+            ReadOnlySet<Port, EncapsulatedClassifier>& getOwnedPorts();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ENCAPSULATED_CLASSIFIER;

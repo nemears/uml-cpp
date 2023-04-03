@@ -13,19 +13,18 @@ using namespace UML;
 
 void EncapsulatedClassifier::AddOwnedAttributePolicy::apply(Property& el, EncapsulatedClassifier& me) {
     if (el.isSubClassOf(ElementType::PORT) && !me.m_ownedPorts.contains(el.getID())) {
-        me.m_ownedPorts.addReadOnly(el.as<Port>());
+        me.m_ownedPorts.add(el.as<Port>());
     }
 }
 
 void EncapsulatedClassifier::RemoveOwnedAttributePolicy::apply(Property& el, EncapsulatedClassifier& me) {
     if (el.isSubClassOf(ElementType::PORT) && me.m_ownedPorts.contains(el.getID())) {
-        me.m_ownedPorts.removeReadOnly(el.getID());
+        me.m_ownedPorts.remove(el.getID());
     }
 }
 
 EncapsulatedClassifier::EncapsulatedClassifier() : Element(ElementType::ENCAPSULATED_CLASSIFIER) {
     m_ownedPorts.subsets(m_ownedAttributes);
-    m_ownedPorts.m_readOnly = true;
     m_encapsulatedClassifierOwnedAttributes.redefines(m_ownedAttributes);
 }
 
@@ -33,7 +32,7 @@ EncapsulatedClassifier::~EncapsulatedClassifier() {
 
 }
 
-Set<Port, EncapsulatedClassifier>& EncapsulatedClassifier::getOwnedPorts() {
+ReadOnlySet<Port, EncapsulatedClassifier>& EncapsulatedClassifier::getOwnedPorts() {
     return m_ownedPorts;
 }
 

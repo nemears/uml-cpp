@@ -187,6 +187,8 @@ namespace UML {
     class RedefinableTemplateSignature;
     template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomSet;
     template <class T, class U> class Set;
+    template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomReadOnlySet;
+    template <class T, class U> class ReadOnlySet;
     template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomSingleton;
     template <class T, class U> class Singleton;
     template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomOrderedSet;
@@ -254,7 +256,7 @@ namespace UML {
             TypedSet<Element, Element>& getOwnerSingleton();
             
             // ownedElements
-            CustomSet<Element, Element, DoNothingAdd<Element, Element>, DoNothingRemove<Element, Element>>* m_ownedElements;
+            CustomReadOnlySet<Element, Element, DoNothingAdd<Element, Element>, DoNothingRemove<Element, Element>>* m_ownedElements;
             CustomSet<Comment, Element, DoNothingAdd<Comment, Element>, DoNothingRemove<Comment, Element>>* m_ownedComments;
             CustomSet<InstanceSpecification, Element, DoNothingAdd<InstanceSpecification, Element>, DoNothingRemove<InstanceSpecification, Element>>* m_appliedStereotype;
             void setOwner(Element* el);
@@ -274,7 +276,7 @@ namespace UML {
             virtual ~Element();
             ID getID() const;
             ElementPtr getOwner() const;
-            Set<Element, Element>& getOwnedElements();
+            ReadOnlySet<Element, Element>& getOwnedElements();
             Set<Comment, Element>& getOwnedComments();
             /**
              * TODO: I am keeping it simple for now, instance specification of stereotype to

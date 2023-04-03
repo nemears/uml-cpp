@@ -33,7 +33,6 @@ void ConnectorEnd::referenceErased(ID id) {
 
 ConnectorEnd::ConnectorEnd() : Element(ElementType::CONNECTOR_END) {
     m_role.opposite(&ConnectableElement::getEnds);
-    m_definingEnd.m_readOnly = true;
 }
 
 ConnectorEnd::~ConnectorEnd() {

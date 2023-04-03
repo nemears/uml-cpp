@@ -22,7 +22,7 @@ namespace UML {
             CustomSingleton<Activity, ActivityNode> m_activity = CustomSingleton<Activity, ActivityNode>(this);
             CustomSet<ActivityEdge, ActivityNode> m_incoming = CustomSet<ActivityEdge, ActivityNode>(this);
             CustomSet<ActivityEdge, ActivityNode> m_outgoing = CustomSet<ActivityEdge, ActivityNode>(this);
-            CustomSet<ActivityGroup, ActivityNode> m_inGroups = CustomSet<ActivityGroup, ActivityNode>(this);
+            CustomReadOnlySet<ActivityGroup, ActivityNode> m_inGroups = CustomReadOnlySet<ActivityGroup, ActivityNode>(this);
             CustomSet<ActivityPartition, ActivityNode> m_inPartitions = CustomSet<ActivityPartition, ActivityNode>(this);
             CustomSet<InterruptibleActivityRegion, ActivityNode> m_interruptibleRegions = CustomSet<InterruptibleActivityRegion, ActivityNode>(this);
             TypedSet<Activity, ActivityNode>& getActivitySingleton();
@@ -38,7 +38,7 @@ namespace UML {
             void setActivity(Activity& activity);
             void setActivity(ActivityPtr activity);
             void setActivity(ID id);
-            Set<ActivityGroup, ActivityNode>& getInGroups();
+            ReadOnlySet<ActivityGroup, ActivityNode>& getInGroups();
             Set<ActivityPartition, ActivityNode>& getInPartitions();
             Set<InterruptibleActivityRegion, ActivityNode>& getInterruptibleRegions();
             bool isSubClassOf(ElementType eType) const override;

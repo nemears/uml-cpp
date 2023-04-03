@@ -72,7 +72,7 @@ void emitOwnedSet(YAML::Emitter& emitter, U& el, EmitterData& data, string key, 
 
 template <class T, class U, class S>
 bool subsetContains(U& el, T& addedEl, S& (U::*signature)()) {
-    return (el.*signature)().contains(addedEl);
+    return (el.*signature)().contains(addedEl.getID());
 }
 
 template <class T, class U>
@@ -1221,7 +1221,8 @@ void emitOpaqueBehaviorFeatures(YAML::Emitter& emitter, OpaqueBehavior& opaqueBe
 }
 
 void emitPackageFeatures(YAML::Emitter& emitter, Package& package, EmitterData& data) {
-    emitOwnedSet<PackageableElement>(emitter, package, data, "packagedElements", &Package::getPackagedElements);
+    emitOwnedSet<PackageableElement>(emitter, package, data, "packagedElements", &Package::getPackagedElements, &Package::getOwnedStereotypes);
+    emitOwnedSet<Stereotype>(emitter, package, data, "ownedStereotypes", &Package::getOwnedStereotypes);
     emitOwnedSet<PackageMerge>(emitter, package, data, "packageMerges", &Package::getPackageMerge);
     emitOwnedSet<ProfileApplication>(emitter, package, data, "profileApplications", &Package::getProfileApplications);
 }

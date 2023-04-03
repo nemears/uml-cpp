@@ -46,12 +46,10 @@ void StructuredClassifier::restoreReference(Element* el) {
 
 StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_CLASSIFIER) {
     m_roles.subsets(m_members);
-    m_roles.m_readOnly = true;
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_roles);
     m_parts.subsets(m_ownedAttributes);
-    m_parts.m_readOnly = true;
     m_ownedConnectors.subsets(m_ownedMembers);
     m_ownedConnectors.subsets(m_features);
     m_ownedConnectors.opposite(&Connector::getStructuredClassifierSingleton);
@@ -65,11 +63,11 @@ Set<Property, StructuredClassifier>& StructuredClassifier::getOwnedAttributes() 
     return m_ownedAttributes;
 }
 
-Set<ConnectableElement, StructuredClassifier>& StructuredClassifier::getRoles() {
+ReadOnlySet<ConnectableElement, StructuredClassifier>& StructuredClassifier::getRoles() {
     return m_roles;
 }
 
-Set<Property, StructuredClassifier>& StructuredClassifier::getParts() {
+ReadOnlySet<Property, StructuredClassifier>& StructuredClassifier::getParts() {
     return m_parts;
 }
 

@@ -62,7 +62,6 @@ ActivityEdge::ActivityEdge() : Element(ElementType::ACTIVITY_EDGE) {
     m_guard.subsets(*m_ownedElements);
     m_weight.subsets(*m_ownedElements);
     m_inGroups.opposite(&ActivityGroup::getContainedEdges);
-    m_inGroups.m_readOnly = true;
     m_inPartitions.subsets(m_inGroups);
     m_inPartitions.opposite(&ActivityPartition::getEdges);
     m_interrupts.subsets(m_inGroups);
@@ -174,7 +173,7 @@ void ActivityEdge::setWeight(ID id) {
     m_weight.set(id);
 }
 
-Set<ActivityGroup, ActivityEdge>& ActivityEdge::getInGroups() {
+ReadOnlySet<ActivityGroup, ActivityEdge>& ActivityEdge::getInGroups() {
     return m_inGroups;
 }
 

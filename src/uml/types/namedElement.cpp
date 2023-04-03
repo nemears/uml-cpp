@@ -40,7 +40,6 @@ NamedElement::NamedElement() : Element(ElementType::NAMED_ELEMENT) {
     m_namespace = new CustomSingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy, RemoveQualifiedNamePolicy>(this);
     m_namespace->subsets(*m_owner);
     m_namespace->opposite(&Namespace::getOwnedMembers);
-    m_namespace->m_readOnly = true;
     m_clientDependencies = new CustomSet<Dependency, NamedElement>(this);
     m_clientDependencies->opposite(&Dependency::getClients);
 }

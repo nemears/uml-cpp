@@ -99,7 +99,6 @@ RedefinableTemplateSignature::RedefinableTemplateSignature() : Element(ElementTy
     m_extendedSignatures.subsets(m_redefinedElement);
     m_inheritedParameters.subsets(m_redefinableTemplateSignatureParameters);
     m_parameters.redefines(m_redefinableTemplateSignatureParameters);
-    m_inheritedParameters.m_readOnly = true;
 }
 
 RedefinableTemplateSignature::~RedefinableTemplateSignature() {
@@ -130,7 +129,7 @@ Set<RedefinableTemplateSignature, RedefinableTemplateSignature>& RedefinableTemp
     return m_extendedSignatures;
 }
 
-Set<TemplateParameter, RedefinableTemplateSignature>& RedefinableTemplateSignature::getInheritedParameters() {
+ReadOnlySet<TemplateParameter, RedefinableTemplateSignature>& RedefinableTemplateSignature::getInheritedParameters() {
     return m_inheritedParameters;
 }
 

@@ -2,6 +2,7 @@
 #define _UML_GENERALIZATION_SET_H_
 
 #include "packageableElement.h"
+#include "uml/set/set.h"
 
 namespace UML {
 

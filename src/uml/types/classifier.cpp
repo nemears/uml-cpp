@@ -133,13 +133,10 @@ void Classifier::referenceErased(ID id) {
 Classifier::Classifier() : Element(ElementType::CLASSIFIER) {
     m_features.subsets(m_members);
     m_features.opposite(&Feature::getFeaturingClassifierSingleton);
-    m_features.m_readOnly = true;
     m_attributes.subsets(m_features);
-    m_attributes.m_readOnly = true;
     m_generalizations.subsets(*m_ownedElements);
     m_generalizations.opposite(&Generalization::getSpecificSingleton);
     m_inheritedMembers.subsets(m_members);
-    m_inheritedMembers.m_readOnly = true;
     m_powerTypeExtent.opposite(&GeneralizationSet::getPowerTypeSingleton);
     m_classifierOwnedTemplateSignature.redefines(m_ownedTemplateSignature);
     m_classifierOwnedTemplateSignature.opposite(&RedefinableTemplateSignature::getClassifierSingleton);
@@ -160,11 +157,11 @@ void Classifier::setName(const std::string& name) {
     Namespace::setName(name);
 }
 
-Set<Feature, Classifier>& Classifier::getFeatures() {
+ReadOnlySet<Feature, Classifier>& Classifier::getFeatures() {
     return m_features;
 }
 
-Set<Property, Classifier>& Classifier::getAttributes() {
+ReadOnlySet<Property, Classifier>& Classifier::getAttributes() {
     return m_attributes;
 }
 
@@ -176,7 +173,7 @@ Set<Classifier, Classifier>& Classifier::getGenerals() {
     return m_generals;
 }
 
-Set<NamedElement, Classifier>& Classifier::getInheritedMembers() {
+ReadOnlySet<NamedElement, Classifier>& Classifier::getInheritedMembers() {
     return m_inheritedMembers;
 }
 

@@ -258,35 +258,6 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
   ASSERT_EQ(p1.getOwnedElements().size(), 0);
 }
 
-TEST_F(ElementTest, readOnlySequenceTest) {
-    Manager<> m;
-    Package& p = *m.create<Package>();
-    Package& c1 = *m.create<Package>();
-    Package& c2 = *m.create<Package>();
-    ASSERT_NO_THROW(p.getPackagedElements().add(c1));
-    ASSERT_THROW(p.getOwnedElements().add(c2), SetStateException);
-    ASSERT_THROW(p.getOwnedElements().remove(c1), SetStateException);
-}
-
-TEST_F(ElementTest, readOnlyRelatedElementsTest) {
-    Manager<> mm;
-    Package& p = *mm.create<Package>();
-    Package& m = *mm.create<Package>();
-    PackageMerge& r = *mm.create<PackageMerge>();
-    Package& h = *mm.create<Package>();
-    p.getPackageMerge().add(r);
-    r.setMergedPackage(&m);
-    ASSERT_THROW(r.getRelatedElements().remove(p), SetStateException);
-    ASSERT_THROW(r.getRelatedElements().add(h), SetStateException);
-}
-
-// TEST_F(ElementTest, checkAppliedStereotypeFunctorTest) {
-//   Manager<> m;
-//   Class& c = m.create<Class>();
-//   InstanceSpecification& s = m.create<InstanceSpecification>();
-//   ASSERT_THROW(c.getAppliedStereotypes().add(s), InvalidAppliedStereotypeException());
-// }
-
 TEST_F(ElementTest, AddAndRemoveAppliedStereotypetest) {
   Manager<> m;
   Class& c = *m.create<Class>();
@@ -320,12 +291,4 @@ TEST_F(ElementTest, emitJSON_test) {
     std::string generatedEmit = emit(*p, data);
     std::string expectedEmit = "{\"package\": {\"id\": \"Wmhz0dIdjUbcWmTn7EL4Zz261oy6\", \"packagedElements\": [{\"package\": {\"id\": \"GcJO3kDBnbRcT4f&Kwf9arl6YOmS\"}}]}}";
     ASSERT_EQ(generatedEmit, expectedEmit);
-    // ASSERT_TRUE(false);
-    // Parsers::EmitterMetaData data = Parsers::getData(*p);
-    // data.m_isJSON = true;
-    // data.m_strategy = Parsers::EmitterStrategy::WHOLE;
-    // std::string generatedEmit = Parsers::emitString(data, *p);
-    // std::cout << generatedEmit << std::endl;
-    // std::string expectedEmit = "{\"package\": {\"id\": \"Wmhz0dIdjUbcWmTn7EL4Zz261oy6\", \"packagedElements\": [{\"package\": {\"id\": \"GcJO3kDBnbRcT4f&Kwf9arl6YOmS\"}}]}}";
-    // ASSERT_EQ(generatedEmit, expectedEmit);
 }

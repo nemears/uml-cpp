@@ -13,12 +13,12 @@ void Package::AddPackageableElementPolicy::apply(PackageableElement& el, Package
     for (const UmlPtr<PackageImport>& import : packageImportsAdd) {
         if (import->getImportingNamespace()) {
             if (!import->getImportingNamespace()->getImportedMembers().contains(el.getID())) {
-                import->getImportingNamespace()->getImportedMembers().addReadOnly(el);
+                import->getImportingNamespace()->m_importedMembers.add(el);
             }
         }
     }
     if (el.isSubClassOf(ElementType::STEREOTYPE) && !me.getOwnedStereotypes().contains(el.getID())) {
-        me.getOwnedStereotypes().addReadOnly(el.as<Stereotype>());
+        me.m_ownedStereotypes.add(el.as<Stereotype>());
     }
 }
 
@@ -26,12 +26,12 @@ void Package::RemovePackageableElementPolicy::apply(PackageableElement& el, Pack
     for (const UmlPtr<PackageImport>& import : packageImportsRemove) {
         if (import->getImportingNamespace()) {
             if (import->getImportingNamespace()->getImportedMembers().contains(el.getID())) {
-                import->getImportingNamespace()->getImportedMembers().removeReadOnly(el.getID());
+                import->getImportingNamespace()->m_importedMembers.remove(el.getID());
             }
         }
     }
     if (el.isSubClassOf(ElementType::STEREOTYPE) && me.getOwnedStereotypes().contains(el.getID())) {
-        me.getOwnedStereotypes().removeReadOnly(el.getID());
+        me.m_ownedStereotypes.remove(el.getID());
     }
 }
 
@@ -48,7 +48,7 @@ void Package::referenceErased(ID id) {
 void Package::restoreReference(Element* el) {
     Element::restoreReference(el);
     if (el->isSubClassOf(ElementType::STEREOTYPE) && getPackagedElements().contains(el->getID()) && !getOwnedStereotypes().contains(el->getID())) {
-        getOwnedStereotypes().addReadOnly(el->as<Stereotype>());
+        m_ownedStereotypes.add(el->as<Stereotype>());
     }
 }
 
@@ -58,7 +58,6 @@ Package::Package() : Element(ElementType::PACKAGE) {
     m_packageMerge.subsets(*m_ownedElements);
     m_packageMerge.opposite(&PackageMerge::getReceivingPackageSingleton);
     m_ownedStereotypes.subsets(m_packagedElements);
-    m_ownedStereotypes.m_readOnly = true;
     m_profileApplications.subsets(*m_ownedElements);
     m_profileApplications.opposite(&ProfileApplication::getApplyingPackageSingleton);
 }
@@ -79,7 +78,7 @@ Set<ProfileApplication, Package>& Package::getProfileApplications() {
     return m_profileApplications;
 }
 
-Set<Stereotype, Package>& Package::getOwnedStereotypes() {
+ReadOnlySet<Stereotype, Package>& Package::getOwnedStereotypes() {
     return m_ownedStereotypes;
 }
 

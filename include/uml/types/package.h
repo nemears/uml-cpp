@@ -12,11 +12,13 @@ namespace UML {
     class Stereotype;
     class ProfileApplication;
     class PackageMerge;
+    void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
 
     class Package : public PackageableElement, public Namespace, public TemplateableElement {
 
         template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class PackageImport;
+        friend void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
 
         protected:
             class AddPackageableElementPolicy {
@@ -33,7 +35,7 @@ namespace UML {
             };
             CustomSet<PackageableElement, Package, AddPackageableElementPolicy, RemovePackageableElementPolicy> m_packagedElements = CustomSet<PackageableElement, Package, AddPackageableElementPolicy, RemovePackageableElementPolicy>(this);
             CustomSet<PackageMerge, Package> m_packageMerge = CustomSet<PackageMerge, Package>(this);
-            CustomSet<Stereotype, Package> m_ownedStereotypes = CustomSet<Stereotype, Package>(this);
+            CustomReadOnlySet<Stereotype, Package> m_ownedStereotypes = CustomReadOnlySet<Stereotype, Package>(this);
             CustomSet<ProfileApplication, Package> m_profileApplications = CustomSet<ProfileApplication, Package>(this);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
@@ -44,7 +46,7 @@ namespace UML {
             Set<PackageableElement, Package>& getPackagedElements();
             Set<PackageMerge, Package>& getPackageMerge();
             Set<ProfileApplication, Package>& getProfileApplications();
-            Set<Stereotype, Package>& getOwnedStereotypes();
+            ReadOnlySet<Stereotype, Package>& getOwnedStereotypes();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PACKAGE;

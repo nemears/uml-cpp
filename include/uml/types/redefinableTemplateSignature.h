@@ -35,7 +35,7 @@ namespace UML {
             CustomSingleton<Classifier, RedefinableTemplateSignature> m_classifier = CustomSingleton<Classifier, RedefinableTemplateSignature>(this);
             CustomSet<RedefinableTemplateSignature, RedefinableTemplateSignature, AddExtendedSignaturePolicy, RemoveExtendedSignaturePolicy> m_extendedSignatures = CustomSet<RedefinableTemplateSignature, RedefinableTemplateSignature, AddExtendedSignaturePolicy, RemoveExtendedSignaturePolicy>(this);
             CustomSet<TemplateParameter, RedefinableTemplateSignature, AddParameterPolicy, RemoveParameterPolicy> m_redefinableTemplateSignatureParameters = CustomSet<TemplateParameter, RedefinableTemplateSignature, AddParameterPolicy, RemoveParameterPolicy>(this);
-            CustomSet<TemplateParameter, RedefinableTemplateSignature> m_inheritedParameters = CustomSet<TemplateParameter, RedefinableTemplateSignature>(this);
+            CustomReadOnlySet<TemplateParameter, RedefinableTemplateSignature> m_inheritedParameters = CustomReadOnlySet<TemplateParameter, RedefinableTemplateSignature>(this);
             TypedSet<Classifier, RedefinableTemplateSignature>& getClassifierSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
@@ -48,7 +48,7 @@ namespace UML {
             void setClassifier(ClassifierPtr classifier);
             void setClassifier(ID id);
             Set<RedefinableTemplateSignature, RedefinableTemplateSignature>& getExtendedSignatures();
-            Set<TemplateParameter, RedefinableTemplateSignature>& getInheritedParameters();
+            ReadOnlySet<TemplateParameter, RedefinableTemplateSignature>& getInheritedParameters();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::REDEFINABLE_TEMPLATE_SIGNATURE;

@@ -14,9 +14,9 @@ void Port::setPortInterfaces(BehavioredClassifier& clazz) {
     for (auto& realization : clazz.getInterfaceRealizations()) {
         if (realization.getContract()) {
             if (isConjugated()) {
-                m_required.addReadOnly(*realization.getContract());
+                m_required.add(*realization.getContract());
             } else {
-               m_provided.addReadOnly(*realization.getContract());
+               m_provided.add(*realization.getContract());
             }
         }
     }
@@ -87,9 +87,9 @@ void Port::RemoveTypePolicy::apply(Type& el, Port& me) {
         me.removePortInterfaces(el.as<BehavioredClassifier>());
     } else if (el.isSubClassOf(ElementType::INTERFACE_UML)) {
         if (me.isConjugated()) {
-            me.m_required.removeReadOnly(el.getID());
+            me.m_required.remove(el.getID());
         } else {
-            me.m_provided.removeReadOnly(el.getID());
+            me.m_provided.remove(el.getID());
         }
     }
 }
@@ -125,8 +125,6 @@ void Port::restoreReferences() {
 }
 
 Port::Port() : Element(ElementType::PORT) {
-    m_required.m_readOnly = true;
-    m_provided.m_readOnly = true;
     m_portType.redefines(m_type);
 }
 
@@ -176,11 +174,11 @@ void Port::setIsService(bool isService) {
     m_isService = isService;
 }
 
-Set<Interface, Port>& Port::getRequired() {
+ReadOnlySet<Interface, Port>& Port::getRequired() {
     return m_required;
 }
 
-Set<Interface, Port>& Port::getProvided() {
+ReadOnlySet<Interface, Port>& Port::getProvided() {
     return m_provided;
 }
 

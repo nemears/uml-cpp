@@ -29,7 +29,7 @@ namespace UML {
             CustomSingleton<ActivityNode, ActivityEdge> m_target = CustomSingleton<ActivityNode, ActivityEdge>(this);
             CustomSingleton<ValueSpecification, ActivityEdge> m_guard = CustomSingleton<ValueSpecification, ActivityEdge>(this);
             CustomSingleton<ValueSpecification, ActivityEdge> m_weight = CustomSingleton<ValueSpecification, ActivityEdge>(this);
-            CustomSet<ActivityGroup, ActivityEdge> m_inGroups = CustomSet<ActivityGroup, ActivityEdge>(this);
+            CustomReadOnlySet<ActivityGroup, ActivityEdge> m_inGroups = CustomReadOnlySet<ActivityGroup, ActivityEdge>(this);
             CustomSet<ActivityPartition, ActivityEdge> m_inPartitions = CustomSet<ActivityPartition, ActivityEdge>(this);
             CustomSingleton<InterruptibleActivityRegion, ActivityEdge> m_interrupts = CustomSingleton<InterruptibleActivityRegion, ActivityEdge>(this);
             TypedSet<Activity, ActivityEdge>& getActivitySingleton();
@@ -68,7 +68,7 @@ namespace UML {
             void setWeight(ValueSpecification& weight);
             void setWeight(ValueSpecificationPtr weight);
             void setWeight(ID id);
-            Set<ActivityGroup, ActivityEdge>& getInGroups();
+            ReadOnlySet<ActivityGroup, ActivityEdge>& getInGroups();
             Set<ActivityPartition, ActivityEdge>& getInPartitions();
             InterruptibleActivityRegionPtr getInterrupts() const;
             void setInterrupts(InterruptibleActivityRegion* interrupts);

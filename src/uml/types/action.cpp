@@ -18,9 +18,7 @@ using namespace UML;
 
 Action::Action() : Element(ElementType::ACTION) {
     m_inputs.subsets(*m_ownedElements);
-    m_inputs.m_readOnly = true;
     m_outputs.subsets(*m_ownedElements);
-    m_outputs.m_readOnly = true;
     m_localPreconditions.subsets(*m_ownedElements);
     m_localPostconditions.subsets(*m_ownedElements);
 }
@@ -37,11 +35,11 @@ void Action::setIsLocallyReentrant(bool val) {
     m_isLocallyReentrant = val;
 }
 
-Set<InputPin, Action>& Action::getInputs() {
+ReadOnlySet<InputPin, Action>& Action::getInputs() {
     return m_inputs;
 }
 
-Set<OutputPin, Action>& Action::getOutputs() {
+ReadOnlySet<OutputPin, Action>& Action::getOutputs() {
     return m_outputs;
 }
 

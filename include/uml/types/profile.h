@@ -10,11 +10,11 @@ namespace UML {
         template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            CustomSet<Stereotype, Profile> m_profileOwnedStereotypes = CustomSet<Stereotype, Profile>(this);
+            CustomReadOnlySet<Stereotype, Profile> m_profileOwnedStereotypes = CustomReadOnlySet<Stereotype, Profile>(this);
             Profile();
         public:
             virtual ~Profile();
-            Set<Stereotype, Profile>& getOwnedStereotypes();
+            ReadOnlySet<Stereotype, Profile>& getOwnedStereotypes();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PROFILE;

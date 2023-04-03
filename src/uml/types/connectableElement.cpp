@@ -35,7 +35,7 @@ void ConnectableElement::referenceErased(ID id) {
 }
 
 ConnectableElement::ConnectableElement() : Element(ElementType::CONNECTABLE_ELEMENT) {
-    m_ends.m_readOnly = true;
+    // m_ends.m_readOnly = true;
     m_ends.opposite(&ConnectorEnd::getRoleSingleton);
 }
 
@@ -43,7 +43,7 @@ ConnectableElement::~ConnectableElement() {
     
 }
 
-Set<ConnectorEnd, ConnectableElement>& ConnectableElement::getEnds() {
+ReadOnlySet<ConnectorEnd, ConnectableElement>& ConnectableElement::getEnds() {
     return m_ends;
 }
 

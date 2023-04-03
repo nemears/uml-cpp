@@ -13,14 +13,14 @@ void Relationship::referenceErased(ID id) {
 }
 
 Relationship::Relationship() : Element(ElementType::RELATIONSHIP) {
-    m_relatedElements.m_readOnly = true;
+
 }
 
 Relationship::~Relationship() {
 
 }
 
-Set<Element, Relationship>& Relationship::getRelatedElements() {
+ReadOnlySet<Element, Relationship>& Relationship::getRelatedElements() {
     return m_relatedElements;
 }
 

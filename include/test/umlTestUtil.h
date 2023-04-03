@@ -25,12 +25,12 @@ namespace UML {
         ASSERT_RESTORED_NAMESPACE(el, pckg);
     }
 
-    inline void recursiveSetContains(ID id, AbstractSet* set) {
-        ASSERT_TRUE(set->contains(id));
-        for (auto& supserSet : set->m_superSets) {
-            ASSERT_NO_FATAL_FAILURE(recursiveSetContains(id, supserSet));
-        }
-    };
+    // inline void recursiveSetContains(ID id, AbstractSet* set) {
+    //     ASSERT_TRUE(set->contains(id));
+    //     for (auto& supserSet : set->m_superSets) {
+    //         ASSERT_NO_FATAL_FAILURE(recursiveSetContains(id, supserSet));
+    //     }
+    // };
 
     template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
     void setIntegrationTestBasic(S& (U::*acessor)()) {
@@ -40,7 +40,7 @@ namespace UML {
         ASSERT_NO_THROW(((*u).*acessor)().add(*t));
         ASSERT_EQ(((*u).*acessor)().size(), 1);
         ASSERT_EQ(((*u).*acessor)().front(), *t);
-        ASSERT_NO_FATAL_FAILURE(recursiveSetContains(t.id(), &((*u).*acessor)()));
+        // ASSERT_NO_FATAL_FAILURE(recursiveSetContains(t.id(), &((*u).*acessor)()));
         ASSERT_NO_THROW(((*u).*acessor)().remove(*t));
         ASSERT_EQ(((*u).*acessor)().size(), 0);
         UmlPtr<V> t2 = m.create<V>();

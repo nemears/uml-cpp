@@ -38,14 +38,10 @@ ActivityGroup::ActivityGroup() : Element(ElementType::ACTIVITY_GROUP) {
     m_inActivity.opposite(&Activity::getGroups);
     m_superGroup.subsets(*m_owner);
     m_superGroup.opposite(&ActivityGroup::getSubGroups);
-    m_superGroup.m_readOnly = true;
     m_containedNodes.opposite(&ActivityNode::getInGroups);
-    m_containedNodes.m_readOnly = true;
     m_containedEdges.opposite(&ActivityEdge::getInGroups);
-    m_containedEdges.m_readOnly = true;
     m_subGroups.subsets(*m_ownedElements);
     m_subGroups.opposite(&ActivityGroup::getSuperGroupSingleton);
-    m_subGroups.m_readOnly = true;
 }
 
 ActivityGroup::~ActivityGroup() {
@@ -76,15 +72,15 @@ ActivityGroupPtr ActivityGroup::getSuperGroup() const {
     return m_superGroup.get();
 }
 
-Set<ActivityNode, ActivityGroup>& ActivityGroup::getContainedNodes() {
+ReadOnlySet<ActivityNode, ActivityGroup>& ActivityGroup::getContainedNodes() {
     return m_containedNodes;
 }
 
-Set<ActivityEdge, ActivityGroup>& ActivityGroup::getContainedEdges() {
+ReadOnlySet<ActivityEdge, ActivityGroup>& ActivityGroup::getContainedEdges() {
     return m_containedEdges;
 }
 
-Set<ActivityGroup, ActivityGroup>& ActivityGroup::getSubGroups() {
+ReadOnlySet<ActivityGroup, ActivityGroup>& ActivityGroup::getSubGroups() {
     return m_subGroups;
 }
 

@@ -54,11 +54,11 @@ namespace UML {
                 public:
                     void apply(NamedElement& el, Classifier& me);
             };
-            CustomSet<Feature, Classifier> m_features = CustomSet<Feature, Classifier>(this);
-            CustomSet<Property, Classifier> m_attributes = CustomSet<Property, Classifier>(this);
+            CustomReadOnlySet<Feature, Classifier> m_features = CustomReadOnlySet<Feature, Classifier>(this);
+            CustomReadOnlySet<Property, Classifier> m_attributes = CustomReadOnlySet<Property, Classifier>(this);
             CustomSet<Generalization, Classifier, AddGeneralizationPolicy, RemoveGeneralizationPolicy> m_generalizations = CustomSet<Generalization, Classifier, AddGeneralizationPolicy, RemoveGeneralizationPolicy>(this);
             CustomSet<Classifier, Classifier, AddGeneralPolicy, RemoveGeneralPolicy> m_generals = CustomSet<Classifier, Classifier, AddGeneralPolicy, RemoveGeneralPolicy>(this);
-            CustomSet<NamedElement, Classifier> m_inheritedMembers = CustomSet<NamedElement, Classifier>(this);
+            CustomReadOnlySet<NamedElement, Classifier> m_inheritedMembers = CustomReadOnlySet<NamedElement, Classifier>(this);
             CustomSet<GeneralizationSet, Classifier> m_powerTypeExtent = CustomSet<GeneralizationSet, Classifier>(this);
             CustomSingleton<RedefinableTemplateSignature, Classifier> m_classifierOwnedTemplateSignature = CustomSingleton<RedefinableTemplateSignature, Classifier>(this);
             CustomSingleton<ClassifierTemplateParameter, Classifier> m_classifierTemplateParameter = CustomSingleton<ClassifierTemplateParameter, Classifier>(this);
@@ -74,11 +74,11 @@ namespace UML {
             virtual ~Classifier();
             std::string getName() override;
             void setName(const std::string& name) override;
-            Set<Feature, Classifier>& getFeatures();
-            Set<Property, Classifier>& getAttributes();
+            ReadOnlySet<Feature, Classifier>& getFeatures();
+            ReadOnlySet<Property, Classifier>& getAttributes();
             Set<Generalization, Classifier>& getGeneralizations();
             Set<Classifier, Classifier>& getGenerals();
-            Set<NamedElement, Classifier>& getInheritedMembers();
+            ReadOnlySet<NamedElement, Classifier>& getInheritedMembers();
             Set<GeneralizationSet, Classifier>& getPowerTypeExtent();
             RedefinableTemplateSignaturePtr getOwnedTemplateSignature() const;
             void setOwnedTemplateSignature(RedefinableTemplateSignature* signature);

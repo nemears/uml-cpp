@@ -9,7 +9,6 @@ using namespace UML;
 
 Profile::Profile() : Element(ElementType::PROFILE) {
     m_profileOwnedStereotypes.redefines(m_ownedStereotypes);
-    m_profileOwnedStereotypes.m_readOnly = true;
     m_profileOwnedStereotypes.opposite(&Stereotype::getProfileSingleton);
 }
 
@@ -17,7 +16,7 @@ Profile::~Profile() {
     
 }
 
-Set<Stereotype, Profile>& Profile::getOwnedStereotypes() {
+ReadOnlySet<Stereotype, Profile>& Profile::getOwnedStereotypes() {
     return m_profileOwnedStereotypes;
 }
 

@@ -51,15 +51,12 @@ void Namespace::referenceErased(ID id) {
 }
 
 Namespace::Namespace() : Element(ElementType::NAMESPACE) {
-    m_members.m_readOnly = true;
     m_ownedMembers.subsets(*m_ownedElements);
     m_ownedMembers.subsets(m_members);
     m_ownedMembers.opposite(&NamedElement::getNamespaceSingleton);
-    m_ownedMembers.m_readOnly = true;
     m_ownedRules.subsets(m_ownedMembers);
     m_ownedRules.opposite(&Constraint::getContextSingleton);
     m_importedMembers.subsets(m_members);
-    m_importedMembers.m_readOnly = true;
     m_elementImports.subsets(*m_ownedElements);
     m_elementImports.opposite(&ElementImport::getImportingNamespaceSingleton);
     m_packageImports.subsets(*m_ownedElements);
@@ -77,11 +74,11 @@ void Namespace::setName(const std::string& name) {
     }
 }
 
-Set<NamedElement, Namespace>& Namespace::getMembers() {
+ReadOnlySet<NamedElement, Namespace>& Namespace::getMembers() {
     return m_members;
 }
 
-Set<NamedElement, Namespace>& Namespace::getOwnedMembers() {
+ReadOnlySet<NamedElement, Namespace>& Namespace::getOwnedMembers() {
     return m_ownedMembers;
 }
 
@@ -89,7 +86,7 @@ Set<Constraint, Namespace>& Namespace::getOwnedRules() {
     return m_ownedRules;
 }
 
-Set<PackageableElement, Namespace>& Namespace::getImportedMembers() {
+ReadOnlySet<PackageableElement, Namespace>& Namespace::getImportedMembers() {
     return m_importedMembers;
 }
 

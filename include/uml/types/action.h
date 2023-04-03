@@ -13,8 +13,8 @@ namespace UML {
 
     class Action : public ExecutableNode {
         protected:
-            CustomSet<InputPin, Action> m_inputs = CustomSet<InputPin, Action>(this);
-            CustomSet<OutputPin, Action> m_outputs = CustomSet<OutputPin, Action>(this);
+            CustomReadOnlySet<InputPin, Action> m_inputs = CustomReadOnlySet<InputPin, Action>(this);
+            CustomReadOnlySet<OutputPin, Action> m_outputs = CustomReadOnlySet<OutputPin, Action>(this);
             CustomSet<Constraint, Action> m_localPreconditions = CustomSet<Constraint, Action>(this);
             CustomSet<Constraint, Action> m_localPostconditions = CustomSet<Constraint, Action>(this);
             // TODO context
@@ -24,8 +24,8 @@ namespace UML {
             virtual ~Action();
             bool isLocallyReentrant() const;
             void setIsLocallyReentrant(bool val);
-            Set<InputPin, Action>& getInputs();
-            Set<OutputPin, Action>& getOutputs();
+            ReadOnlySet<InputPin, Action>& getInputs();
+            ReadOnlySet<OutputPin, Action>& getOutputs();
             Set<Constraint, Action>& getLocalPreconditions();
             Set<Constraint, Action>& getLocalPostconditions();
             bool isSubClassOf(ElementType eType) const override;

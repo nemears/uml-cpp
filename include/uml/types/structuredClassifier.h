@@ -22,9 +22,9 @@ namespace UML {
                 public:
                     static void apply(Property& prop, StructuredClassifier& me);
             };
-            CustomSet<ConnectableElement, StructuredClassifier> m_roles = CustomSet<ConnectableElement, StructuredClassifier>(this);
+            CustomReadOnlySet<ConnectableElement, StructuredClassifier> m_roles = CustomReadOnlySet<ConnectableElement, StructuredClassifier>(this);
             CustomSet<Property, StructuredClassifier, AddPartPolicy, RemovePartPolicy> m_ownedAttributes = CustomSet<Property, StructuredClassifier, AddPartPolicy, RemovePartPolicy>(this);
-            CustomSet<Property, StructuredClassifier> m_parts = CustomSet<Property, StructuredClassifier>(this);
+            CustomReadOnlySet<Property, StructuredClassifier> m_parts = CustomReadOnlySet<Property, StructuredClassifier>(this);
             CustomSet<Connector, StructuredClassifier> m_ownedConnectors = CustomSet<Connector, StructuredClassifier>(this);
             void restoreReferences() override;
             void restoreReference(Element* el) override;
@@ -32,8 +32,8 @@ namespace UML {
         public:
             virtual ~StructuredClassifier();
             Set<Property, StructuredClassifier>& getOwnedAttributes();
-            Set<ConnectableElement, StructuredClassifier>& getRoles();
-            Set<Property, StructuredClassifier>& getParts();
+            ReadOnlySet<ConnectableElement, StructuredClassifier>& getRoles();
+            ReadOnlySet<Property, StructuredClassifier>& getParts();
             Set<Connector, StructuredClassifier>& getOwnedConnectors();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {

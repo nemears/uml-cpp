@@ -3,6 +3,7 @@
 
 #include "packageableElement.h"
 #include "valueSpecification.h"
+#include "uml/set/set.h"
 
 namespace UML {
 

@@ -17,9 +17,9 @@ namespace UML {
         protected:
             CustomSingleton<Activity, ActivityGroup> m_inActivity = CustomSingleton<Activity, ActivityGroup>(this);
             CustomSingleton<ActivityGroup, ActivityGroup> m_superGroup = CustomSingleton<ActivityGroup, ActivityGroup>(this);
-            CustomSet<ActivityNode, ActivityGroup> m_containedNodes = CustomSet<ActivityNode, ActivityGroup>(this);
-            CustomSet<ActivityEdge, ActivityGroup> m_containedEdges = CustomSet<ActivityEdge, ActivityGroup>(this);
-            CustomSet<ActivityGroup, ActivityGroup> m_subGroups = CustomSet<ActivityGroup, ActivityGroup>(this);
+            CustomReadOnlySet<ActivityNode, ActivityGroup> m_containedNodes = CustomReadOnlySet<ActivityNode, ActivityGroup>(this);
+            CustomReadOnlySet<ActivityEdge, ActivityGroup> m_containedEdges = CustomReadOnlySet<ActivityEdge, ActivityGroup>(this);
+            CustomReadOnlySet<ActivityGroup, ActivityGroup> m_subGroups = CustomReadOnlySet<ActivityGroup, ActivityGroup>(this);
             TypedSet<Activity, ActivityGroup>& getInActivitySingleton();
             TypedSet<ActivityGroup, ActivityGroup>& getSuperGroupSingleton();
             void referenceReindexed(ID newID) override;
@@ -33,9 +33,9 @@ namespace UML {
             void setInActivity(ActivityPtr inActivity);
             void setInActivity(ID id);
             ActivityGroupPtr getSuperGroup() const;
-            Set<ActivityNode, ActivityGroup>& getContainedNodes();
-            Set<ActivityEdge, ActivityGroup>& getContainedEdges();
-            Set<ActivityGroup, ActivityGroup>& getSubGroups();
+            ReadOnlySet<ActivityNode, ActivityGroup>& getContainedNodes();
+            ReadOnlySet<ActivityEdge, ActivityGroup>& getContainedEdges();
+            ReadOnlySet<ActivityGroup, ActivityGroup>& getSubGroups();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ACTIVITY_GROUP;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "set.h"
+#include "abstractSet.h"
 
 namespace UML {
 
@@ -67,9 +67,9 @@ namespace UML {
                         return;
                     }
                     [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
-                    if (this->m_readOnly) {
-                        throw SetStateException("Cannot remove from read only set!");
-                    }
+                    // if (this->m_readOnly) {
+                    //     throw SetStateException("Cannot remove from read only set!");
+                    // }
 
                     (*this->m_root->m_ptr).m_node->removeReference(this->m_el);
                     this->m_el.m_node->removeReference(*this->m_root->m_ptr);
@@ -80,9 +80,9 @@ namespace UML {
                 }
                 if (el) {
                     [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*el);
-                    if (this->m_readOnly) {
-                        throw SetStateException("Cannot add to read only set!");
-                    }
+                    // if (this->m_readOnly) {
+                    //     throw SetStateException("Cannot add to read only set!");
+                    // }
                     // add
                     PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerAdd(*el);
                     el->m_node->setReference(this->m_el);
@@ -96,9 +96,9 @@ namespace UML {
                 [[maybe_unused]] SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (this->m_root && (id == ID::nullID() || id != this->m_root->m_ptr.id())) {
                     [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
-                    if (this->m_readOnly) {
-                        throw SetStateException("Cannot remove from read only set!");
-                    }
+                    // if (this->m_readOnly) {
+                    //     throw SetStateException("Cannot remove from read only set!");
+                    // }
 
                     (*this->m_root->m_ptr).m_node->removeReference(this->m_el);
                     this->m_el.m_node->removeReference(*this->m_root->m_ptr);
@@ -110,9 +110,9 @@ namespace UML {
                     this->handleOppositeRemove(elToRemove);
                 }
                 if (id != ID::nullID()) {
-                    if (this->m_readOnly) {
-                        throw SetStateException("Cannot add to read only set!");
-                    }
+                    // if (this->m_readOnly) {
+                    //     throw SetStateException("Cannot add to read only set!");
+                    // }
                     // add
                     PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerAdd(id);
                     this->m_el.m_node->setReference(id);

@@ -84,11 +84,9 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
 
     m_owner = new CustomSingleton<Element, Element>(this);
     m_owner->opposite(&Element::getOwnedElements);
-    m_owner->m_readOnly = true;
 
-    m_ownedElements = new CustomSet<Element, Element>(this);
+    m_ownedElements = new CustomReadOnlySet<Element, Element>(this);
     m_ownedElements->opposite(&Element::getOwnerSingleton);
-    m_ownedElements->m_readOnly = true;
 
     m_ownedComments = new CustomSet<Comment, Element>(this);
     m_ownedComments->subsets(*m_ownedElements);
@@ -495,7 +493,7 @@ void Element::setOwnerByID(ID id) {
    m_owner->set(id);
 }
 
-Set<Element, Element>& Element::getOwnedElements() {
+ReadOnlySet<Element, Element>& Element::getOwnedElements() {
     return *m_ownedElements;
 }
 

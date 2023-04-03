@@ -40,7 +40,6 @@ ActivityNode::ActivityNode() : Element(ElementType::ACTIVITY_NODE) {
     m_incoming.opposite(&ActivityEdge::getTargetSingleton);
     m_outgoing.opposite(&ActivityEdge::getSourceSingleton);
     m_inGroups.opposite(&ActivityGroup::getContainedNodes);
-    m_inGroups.m_readOnly = true;
     m_inPartitions.subsets(m_inGroups);
     m_inPartitions.opposite(&ActivityPartition::getNodes);
     m_interruptibleRegions.subsets(m_inGroups);
@@ -79,7 +78,7 @@ void ActivityNode::setActivity(ID id) {
     m_activity.set(id);
 }
 
-Set<ActivityGroup, ActivityNode>& ActivityNode::getInGroups() {
+ReadOnlySet<ActivityGroup, ActivityNode>& ActivityNode::getInGroups() {
     return m_inGroups;
 }
 

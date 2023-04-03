@@ -2,6 +2,7 @@
 #define _UML_CLASSIFIER_TEMPLATE_PARAMETER_H_
 
 #include "templateParameter.h"
+#include "uml/set/set.h"
 
 namespace UML {
 

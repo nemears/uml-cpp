@@ -10,15 +10,15 @@ namespace UML {
 
     class RedefinableElement : virtual public NamedElement {
         protected:
-            CustomSet<RedefinableElement, RedefinableElement> m_redefinedElement = CustomSet<RedefinableElement, RedefinableElement>(this);
-            CustomSet<Classifier, RedefinableElement> m_redefinitionContext = CustomSet<Classifier, RedefinableElement>(this);
+            CustomReadOnlySet<RedefinableElement, RedefinableElement> m_redefinedElement = CustomReadOnlySet<RedefinableElement, RedefinableElement>(this);
+            CustomReadOnlySet<Classifier, RedefinableElement> m_redefinitionContext = CustomReadOnlySet<Classifier, RedefinableElement>(this);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             RedefinableElement();
         public:
             virtual ~RedefinableElement();
-            Set<RedefinableElement, RedefinableElement>& getRedefinedElements();
-            Set<Classifier, RedefinableElement>& getRedefinitionContext();
+            ReadOnlySet<RedefinableElement, RedefinableElement>& getRedefinedElements();
+            ReadOnlySet<Classifier, RedefinableElement>& getRedefinitionContext();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::REDEFINABLE_ELEMENT;

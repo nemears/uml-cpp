@@ -1185,7 +1185,21 @@ void parseOpaqueBehaviorFeatures(YAML::Node node, OpaqueBehavior& opaqueBehavior
 }
 
 void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data) {
-    parseSet<InstanceSpecification>(node, pckg, data, "packagedElements", &Package::getPackagedElements);
+    parseSet<PackageableElement>(node, pckg, data, "packagedElements", &Package::getPackagedElements);
+    if (node["ownedStereotypes"]) {
+        if (!node["ownedStereotypes"].IsSequence()) {
+            throw SerializationError("Could not parse set ownedStereotypes for Package, must be a sequence! " + getLineNumber(node["ownedStereotypes"]));
+        }
+        for (size_t i = 0; i < node["ownedStereotypes"].size(); i++) {
+            if (node["ownedStereotypes"][i].IsMap()) {
+                pckg.m_ownedStereotypes.add(parseNode(node["ownedStereotypes"][i], data)->as<Stereotype>());
+            } else if (node["ownedStereotypes"][i].IsScalar()) {
+                pckg.m_ownedStereotypes.add(ID::fromString(node["ownedStereotypes"][i].as<string>()));
+            } else {
+                throw SerializationError("could not parse ownedStereotypes entry for Package " + getLineNumber(node["ownedStereotypes"][i]));
+            }
+        }
+    }
     parseSet<PackageMerge>(node, pckg, data, "packageMerges", &Package::getPackageMerge);
     parseSet<ProfileApplication>(node, pckg, data, "profileApplications", &Package::getProfileApplications);
 }

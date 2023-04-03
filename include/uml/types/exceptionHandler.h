@@ -3,6 +3,7 @@
 
 #include "element.h"
 #include "uml/set/singleton.h"
+#include "uml/set/set.h"
 
 namespace UML {
 

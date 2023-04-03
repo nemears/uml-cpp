@@ -20,7 +20,7 @@ void PackageImport::AddImportedPackagePolicy::apply(Package& el, PackageImport& 
     if (me.getImportingNamespace()) {
         for (auto& pckgedEl : el.getPackagedElements()) {
             if (!me.getImportingNamespace()->getImportedMembers().contains(pckgedEl)) {
-                me.getImportingNamespace()->getImportedMembers().addReadOnly(pckgedEl);
+                me.getImportingNamespace()->m_importedMembers.add(pckgedEl);
             }
         }
     }
@@ -39,7 +39,7 @@ void PackageImport::RemoveImportedPackagePolicy::apply(Package& el, PackageImpor
     if (me.getImportingNamespace()) {
         for (auto& pckgedEl : el.getPackagedElements()) {
             if (me.getImportingNamespace()->getImportedMembers().contains(pckgedEl)) {
-                me.getImportingNamespace()->getImportedMembers().removeReadOnly(pckgedEl.getID());
+                me.getImportingNamespace()->m_importedMembers.remove(pckgedEl.getID());
             }
         }
     }

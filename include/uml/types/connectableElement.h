@@ -10,8 +10,6 @@ namespace UML {
 
     class ConnectableElement : virtual public TypedElement, virtual public ParameterableElement {
 
-        friend void Parsers::addEnd(ConnectableElement& el, ID id);
-
         protected:
             CustomSet<ConnectorEnd, ConnectableElement> m_ends = CustomSet<ConnectorEnd, ConnectableElement>(this);
             void referenceReindexed(ID newID) override;

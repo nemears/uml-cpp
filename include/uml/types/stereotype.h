@@ -29,7 +29,7 @@ namespace UML {
             CustomSingleton<Profile, Stereotype> m_profile = CustomSingleton<Profile, Stereotype>(this);
             CustomSingleton<Package, Stereotype, SetOwningPackagePolicy, RemoveOwningPackagePolicy> m_stereotypeOwningPackage = CustomSingleton<Package, Stereotype, SetOwningPackagePolicy, RemoveOwningPackagePolicy>(this);
             TypedSet<Profile, Stereotype>& getProfileSingleton();
-            void restoreReference(Element* el) override;
+            void restoreReferences() override;
             Stereotype();
         public:
             virtual ~Stereotype();

@@ -594,6 +594,7 @@ TEST_F(PackageTest, emitProfileTest) {
             type: 7PJxQhyjuuWylik9y2fgpNDXmMdv
             association: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"
         metaClass: OPERATION
+  ownedStereotypes:
     - stereotype:
         id: 7PJxQhyjuuWylik9y2fgpNDXmMdv)"""";
     std::string generatedEmit;
@@ -724,6 +725,7 @@ TEST_F(PackageTest, emitAppliedStereotypeTest) {
                   type: x5r8XggyW2DI5c3RyAS8r_arWh79
                   association: "jjf&mHlwFSAjJXsBqng4IlxfYIJh"
               metaClass: PACKAGE
+        ownedStereotypes:
           - stereotype:
               id: x5r8XggyW2DI5c3RyAS8r_arWh79)"""";
     std::string generatedEmit;

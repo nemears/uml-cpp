@@ -10,25 +10,30 @@
 using namespace UML;
 
 void Stereotype::SetOwningPackagePolicy::apply(Package& el, Stereotype& me) {
-    if (el.isSubClassOf(ElementType::PROFILE) && me.m_profile.get().id() != el.getID()) {
-        me.m_profile.add(el.as<Profile>());
+    PackagePtr possibleProfile = &el;
+    while (possibleProfile && !possibleProfile->isSubClassOf(ElementType::PROFILE)) {
+        possibleProfile = possibleProfile->getOwningPackage();
+    }
+    if (possibleProfile) {
+        me.m_profile.set(el.as<Profile>());
     }
 }
 
 void Stereotype::RemoveOwningPackagePolicy::apply(Package& el, Stereotype& me) {
-    if (el.isSubClassOf(ElementType::PROFILE) && me.m_profile.get().id() == el.getID()) {
-        me.m_profile.remove(el.getID());
-    }
+    me.m_profile.set(0);
 }
 
 TypedSet<Profile, Stereotype>& Stereotype::getProfileSingleton() {
     return m_profile;
 }
 
-void Stereotype::restoreReference(Element* el) {
-    Class::restoreReference(el);
-    if (el->isSubClassOf(ElementType::PROFILE) && m_owningPackage.get().id() == el->getID()&& m_profile.get().id() != el->getID()) {
-        m_profile.add(el->as<Profile>());
+void Stereotype::restoreReferences() {
+    PackagePtr possibleProfile = getOwningPackage();
+    while (possibleProfile && !possibleProfile->isSubClassOf(ElementType::PROFILE)) {
+        possibleProfile = possibleProfile->getOwningPackage();
+    }
+    if (possibleProfile) {
+        m_profile.set(possibleProfile);
     }
 }
 

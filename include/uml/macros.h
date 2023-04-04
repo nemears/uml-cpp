@@ -75,11 +75,13 @@ friend class InstanceValue; \
 friend class InterfaceRealization; \
 friend class InterruptibleActivityRegion; \
 friend class InvocationAction; \
+friend class Manifestation; \
 friend class MultiplicityElement; \
 friend class NamedElement; \
 friend class Namespace; \
 friend class ObjectFlow; \
 friend class ObjectNode; \
+friend class Operation; \
 friend class Package; \
 friend class PackageImport; \
 friend class PackageMerge; \

@@ -204,6 +204,8 @@ TEST_F(DeploymentTest, emitDeploymentTargetTest) {
     prop.getDeployments().add(d);
     std::string expectedEmit = R""""(property:
   id: 0gLOuagM6UjFYi2401zvnoCpMn0M
+  clientDependencies:
+    - hZ6hYVt147nLvdm70bATtgmwlQqN
   deployments:
     - deployment:
         id: hZ6hYVt147nLvdm70bATtgmwlQqN)"""";
@@ -288,6 +290,8 @@ TEST_F(DeploymentTest, emitManifestationTest) {
         id: 9mp2RmgjnYQrPtXIoOw9is1UUEyu
     - artifact:
         id: Ihue7RPPRluLEpIUbTV8Xqb68ofQ
+        clientDependencies:
+          - "UfyRMRUyPnad&lJcpSBOD17VSHtn"
         manifestations:
           - manifestation:
               id: "UfyRMRUyPnad&lJcpSBOD17VSHtn"

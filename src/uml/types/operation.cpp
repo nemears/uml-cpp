@@ -26,6 +26,18 @@ void Operation::restoreReference(Element* el) {
     ParameterableElement::restoreReference(el);
 }
 
+void Operation::restoreReferences() {
+    BehavioralFeature::restoreReferences();
+    if (m_namespace->get() && !m_featuringClassifier.get()) {
+        if (m_namespace->get()->isSubClassOf(ElementType::CLASSIFIER)) {
+            Classifier& clazz = m_namespace->get()->as<Classifier>();
+            if (clazz.getFeatures().contains(m_id)) {
+                m_featuringClassifier.innerAdd(clazz);
+            }
+        }
+    }
+}
+
 TypedSet<Type, Operation>& Operation::getTypeSingleton() {
     return m_type;
 }

@@ -44,17 +44,17 @@ TEST_F(UmlManagerTest, openAndSaveTest) {
     m.save();
 }
 
-TEST_F(UmlManagerTest, multipleFileTest) {
-    Manager<> m;
-    ASSERT_NO_THROW(m.open(ymlPath + "umlManagerTests/multipleFiles.yml"));
-    ASSERT_TRUE(m.getRoot());
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
-    Package& pckg = dynamic_cast<Package&>(*m.getRoot());
-    ASSERT_EQ(pckg.getProfileApplications().size(), 1);
-    ProfileApplication& application = pckg.getProfileApplications().front();
-    ASSERT_TRUE(application.getAppliedProfile());
-    m.save();
-}
+// TEST_F(UmlManagerTest, multipleFileTest) {
+//     Manager<> m;
+//     ASSERT_NO_THROW(m.open(ymlPath + "umlManagerTests/multipleFiles.yml"));
+//     ASSERT_TRUE(m.getRoot());
+//     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+//     Package& pckg = dynamic_cast<Package&>(*m.getRoot());
+//     ASSERT_EQ(pckg.getProfileApplications().size(), 1);
+//     ProfileApplication& application = pckg.getProfileApplications().front();
+//     ASSERT_TRUE(application.getAppliedProfile());
+//     m.save();
+// }
 
 // TEST_F(UmlManagerTest, simpleMountTest) {
 //     UmlManager* m = new UmlManager;

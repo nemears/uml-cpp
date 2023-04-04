@@ -94,6 +94,7 @@ namespace UML {
     bool parseActivityEdgeScope(YAML::Node node, ActivityEdge& activityEdge, ParserData& data);
     bool parseActivityNodeScope(YAML::Node node, ActivityNode& activityNode, ParserData& data);
     bool parseActivityGroupScope(YAML::Node node, ActivityGroup& activityGroup, ParserData& data);
+    bool parseActivityPartitionScope(YAML::Node node, ActivityPartition& activityPartition, ParserData& data);
     bool parseConstraintScope(YAML::Node node, Constraint& constraint, ParserData& data);
     bool parseDeploymentScope(YAML::Node node, Deployment& deployment, ParserData& data);
     bool parseElementScope(YAML::Node node, Element& el, ParserData& data);

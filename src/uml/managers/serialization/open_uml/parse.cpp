@@ -197,6 +197,7 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseNamedElementFeatures,
                     parseActivityPartitionFeatures);
         parseScope(node, ret->as<ActivityPartition>(), data,
+                    parseActivityPartitionScope,
                     parseActivityGroupScope,
                     parseNamedElementScope,
                     parseElementScope);
@@ -499,6 +500,15 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
         parseScope(node, ret->as<GeneralizationSet>(), data,
                     parsePackageableElementScope,
                     parseParameterableElementScope,
+                    parseNamedElementScope,
+                    parseElementScope);
+    } else if (node["initialNode"]) {
+        ret = createAndParse<InitialNode>(node["initialNode"], data,
+                    parseElementFeatures,
+                    parseNamedElementFeatures,
+                    parseActivityNodeFeatures);
+        parseScope(node, ret->as<InitialNode>(), data, 
+                    parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
     } else if (node["inputPin"]) {
@@ -997,12 +1007,14 @@ void parseActivityEdgeFeatures(YAML::Node node, ActivityEdge& activityEdge, Pars
     parseSingleton(node, activityEdge, data, "source", &ActivityEdge::setSource, &ActivityEdge::setSource);
     parseSingleton(node, activityEdge, data, "guard", &ActivityEdge::setGuard, &ActivityEdge::setGuard);
     parseSingleton(node, activityEdge, data, "weight", &ActivityEdge::setWeight, &ActivityEdge::setWeight);
+    parseSet<ActivityPartition>(node, activityEdge, data, "inPartitions", &ActivityEdge::getInPartitions);
 }
 
 void parseActivityNodeFeatures(YAML::Node node, ActivityNode& activityNode, ParserData& data) {
     parseSet<ActivityEdge>(node, activityNode, data, "incoming", &ActivityNode::getIncoming);
     parseSet<ActivityEdge>(node, activityNode, data, "outgoing", &ActivityNode::getOutgoing);
     // parseSet<ActivityNode>(node, activityNode, data, "redefinedNodes", &Activity::getRedefinedNodes);
+    parseSet<ActivityPartition>(node, activityNode, data, "inPartitions", &ActivityNode::getInPartitions);
 }
 
 void parseActivityParameterNodeFeatures(YAML::Node node, ActivityParameterNode& activityParameterNode, ParserData& data) {
@@ -1748,6 +1760,10 @@ bool parseActivityNodeScope(YAML::Node node, ActivityNode& activityNode, ParserD
 
 bool parseActivityGroupScope(YAML::Node node, ActivityGroup& activityGroup, ParserData& data) {
     return parseSingleton(node, activityGroup, data, "inActivity", &ActivityGroup::setInActivity, &ActivityGroup::setInActivity);
+}
+
+bool parseActivityPartitionScope(YAML::Node node, ActivityPartition& activityPartition, ParserData& data) {
+    return parseSingleton(node, activityPartition, data, "superPartition", &ActivityPartition::setSuperPartition, &ActivityPartition::setSuperPartition);
 }
 
 bool parseConstraintScope(YAML::Node node, Constraint& constraint, ParserData& data) {

@@ -15,6 +15,17 @@ TypedSet<PackageableElement, Manifestation>& Manifestation::getUtilizedElementSi
     return m_utilizedElement;
 }
 
+void Manifestation::restoreReferences() {
+    if (m_owner->get()) {
+        if (m_owner->get()->isSubClassOf(ElementType::ARTIFACT)) {
+            Artifact& possibleClient = m_owner->get()->as<Artifact>();
+            if (possibleClient.getManifestations().contains(m_id) && !m_clients.contains(m_owner->get().id())) {
+                m_clients.innerAdd(possibleClient);
+            }
+        }
+    }
+}
+
 Manifestation::Manifestation() : Element(ElementType::MANIFESTATION) {
     m_utilizedElement.subsets(m_suppliers);
 }

@@ -16,7 +16,7 @@ Artifact::Artifact() : Element(ElementType::ARTIFACT) {
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedOperations.subsets(m_features);
     m_ownedOperations.subsets(m_ownedMembers);
-    m_manifestations.subsets(m_ownedMembers);
+    m_manifestations.subsets(*m_ownedElements);
     m_manifestations.subsets(*m_clientDependencies);
 }
 

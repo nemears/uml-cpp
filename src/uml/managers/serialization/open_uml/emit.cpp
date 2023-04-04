@@ -293,6 +293,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         case ElementType::ACTIVITY_PARTITION : {
             ActivityPartition& activityPartition = el.as<ActivityPartition>();
             emitScope(emitter, activityPartition, data,
+                        emitActivityPartitionScope,
                         emitActivityGroupScope,
                         emitNamedElementScope,
                         emitElementScope);
@@ -489,7 +490,8 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitElementTypeAndData(emitter, decisionNode, data, "decisionNode", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
-                        emitActivityNodeFeatures);
+                        emitActivityNodeFeatures,
+                        emitDecisionNodeFeatures);
             break;
         }
         case ElementType::DEPENDENCY : {
@@ -1300,7 +1302,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
 
 void emitActionFeatures(YAML::Emitter& emitter, Action& action, EmitterData& data) {
     emitOwnedSet<Constraint>(emitter, action, data, "localPreconditions", &Action::getLocalPreconditions);
-    emitOwnedSet<Constraint>(emitter, action, data, "locatPostconditions", &Action::getLocalPostconditions);
+    emitOwnedSet<Constraint>(emitter, action, data, "localPostconditions", &Action::getLocalPostconditions);
 }
 
 void emitActionInputPinFeatures(YAML::Emitter& emitter, ActionInputPin& actionInputPin, EmitterData& data) {
@@ -1318,11 +1320,13 @@ void emitActivityEdgeFeatures(YAML::Emitter& emitter, ActivityEdge& activityEdge
     emitSingleton(emitter, activityEdge, "source", &ActivityEdge::getSource);
     emitSingleton(emitter, activityEdge, "guard", &ActivityEdge::getGuard);
     emitSingleton(emitter, activityEdge, "weight", &ActivityEdge::getWeight);
+    emitSet<ActivityPartition>(emitter, activityEdge, "inPartitions", &ActivityEdge::getInPartitions);
 }
 
 void emitActivityNodeFeatures(YAML::Emitter& emitter, ActivityNode& activityNode, EmitterData& data) {
     emitSet<ActivityEdge>(emitter, activityNode, "incoming", &ActivityNode::getIncoming);
     emitSet<ActivityEdge>(emitter, activityNode, "outgoing", &ActivityNode::getOutgoing);
+    emitSet<ActivityPartition>(emitter, activityNode, "inPartitions", &ActivityNode::getInPartitions);
 }
 
 void emitActivityParameterNodeFeatures(YAML::Emitter& emitter, ActivityParameterNode& activityParameterNode, EmitterData& data) {
@@ -1646,7 +1650,7 @@ void emitObjectNodeFeatures(YAML::Emitter& emitter, ObjectNode& objectNode, Emit
         emitter << "isControlType" << YAML::Value << true;
     }
     if (objectNode.getOrdering() != ObjectNodeOrderingKind::FIFO) {
-        emitter << YAML::Value;
+        emitter << "ordering" << YAML::Value;
         switch (objectNode.getOrdering()) {
             case ObjectNodeOrderingKind::UNORDERED : {
                 emitter << "unordered";
@@ -1849,7 +1853,7 @@ void emitValuePinFeatures(YAML::Emitter& emitter, ValuePin& valuePin, EmitterDat
 }
 
 bool emitActivityEdgeScope(YAML::Emitter& emitter, ActivityEdge& activityEdge, EmitterData& data) {
-    return emitSingleton(emitter, activityEdge, "activitye", &ActivityEdge::getActivity);
+    return emitSingleton(emitter, activityEdge, "activity", &ActivityEdge::getActivity);
 }
 
 bool emitActivityNodeScope(YAML::Emitter& emitter, ActivityNode& activityNode, EmitterData& data) {
@@ -1858,6 +1862,10 @@ bool emitActivityNodeScope(YAML::Emitter& emitter, ActivityNode& activityNode, E
 
 bool emitActivityGroupScope(YAML::Emitter& emitter, ActivityGroup& activityGroup, EmitterData& data) {
     return emitSingleton(emitter, activityGroup, "inActivity", &ActivityGroup::getInActivity);
+}
+
+bool emitActivityPartitionScope(YAML::Emitter& emitter, ActivityPartition& activityPartition, EmitterData& data) {
+    return emitSingleton(emitter, activityPartition, "superPartition", &ActivityPartition::getSuperPartition);
 }
 
 bool emitConstraintScope(YAML::Emitter& emitter, Constraint& constraint, EmitterData& data) {

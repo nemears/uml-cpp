@@ -36,6 +36,7 @@ namespace UML {
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
+            void restoreReferences() override;
             TypedSet<Type, Operation>& getTypeSingleton();
             TypedSet<Class, Operation>& getClassSingleton();
             TypedSet<DataType, Operation>& getDataTypeSingleton();

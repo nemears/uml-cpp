@@ -93,6 +93,7 @@ namespace UML {
     bool emitActivityEdgeScope(YAML::Emitter& emitter, ActivityEdge& activityEdge, EmitterData& data);
     bool emitActivityNodeScope(YAML::Emitter& emitter, ActivityNode& activityNode, EmitterData& data);
     bool emitActivityGroupScope(YAML::Emitter& emitter, ActivityGroup& activityGroup, EmitterData& data);
+    bool emitActivityPartitionScope(YAML::Emitter& emitter, ActivityPartition& activityPartition, EmitterData& data);
     bool emitConstraintScope(YAML::Emitter& emitter, Constraint& constraint, EmitterData& data);
     bool emitDeploymentScope(YAML::Emitter& emitter, Deployment& deployment, EmitterData& data);
     bool emitElementScope(YAML::Emitter& emitter, Element& el, EmitterData& data);

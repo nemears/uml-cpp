@@ -147,7 +147,6 @@ TEST_F(ActivityTest, emitActivityTest) {
   nodes:
     - centralBufferNode:
         id: objectNode__________________
-        isControlType: false
         ordering: unordered)"""";
     std::string generatedEmit;
     EmitterData data;

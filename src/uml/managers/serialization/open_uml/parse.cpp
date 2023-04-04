@@ -66,7 +66,11 @@ bool parseSingleton(YAML::Node node, U& el, ParserData& data, string key, void (
             // assuming this is an owned singleton and we are parsing a project serialized in whole
             (el.*elMutator)(parseNode(node[key], data)->as<T>());
         } else if (node[key].IsScalar()) {
-            (el.*idMutator)(ID::fromString(node[key].as<string>()));
+            try {
+                (el.*idMutator)(ID::fromString(node[key].as<string>()));
+            } catch (InvalidUmlID_Exception& exception) {
+                throw SerializationError("singleton value must be an ID which is a base64 encoded 28 character string! " + getLineNumber(node[key]));
+            }
         } else {
             throw SerializationError("Singleton " + key + " for element type " + Element::elementTypeToString(U::elementType()) + " could not be serialized because it was not a map or scalar " + getLineNumber(node[key]));
         }
@@ -101,7 +105,7 @@ void parseDouble(YAML::Node node, T& el, string key, void (T::*mutator)(double))
         if (!node[key].IsScalar()) {
             throw SerializationError("Could not parse double value for property " + key + " for element type " + Element::elementTypeToString(T::elementType()) + " " + getLineNumber(node[key]));
         }
-        (el.*mutator)(node[key].as<int>());
+        (el.*mutator)(node[key].as<double>());
     }
 }
 
@@ -699,7 +703,7 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseTemplateSignatureScope,
                     parseElementScope);
     } else if (node["usage"]) {
-        ret = createAndParse<Usage>(node, data, 
+        ret = createAndParse<Usage>(node["usage"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,

@@ -198,6 +198,7 @@ TEST_F(TemplateableElementTest, parameterSubstitutionW_OwnedActualTest) {
 
 TEST_F(TemplateableElementTest, parameterSubstitutionW_Actual) {
     Manager<> m;
+    m.open(ymlPath + "uml/primitiveTypes.yml");
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/parameterSubstitutionW_backwardsActual.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -289,7 +290,6 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
         templateBindings:
           - templateBinding:
               id: e_ob7tgbN16Plhj_sTAOVD5ijLrL
-              signature: nOh5namt9s4oOvimAXQpR8nJHfTF
               parameterSubstitutions:
                 - templateParameterSubstitution:
                     id: 7bYUY3yFUBrfPmzKKrV2NJmXuECA
@@ -300,7 +300,8 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
                 - templateParameterSubstitution:
                     id: puJaUTZsLPdGJkJSJtdX51MIA2ch
                     formal: Km4WF5rf3ohUeLTr99POiW7VMb_4
-                    actual: 4gA4RgL9vKTRYd61D99y1d_Yggj6)"""";
+                    actual: 4gA4RgL9vKTRYd61D99y1d_Yggj6
+              signature: nOh5namt9s4oOvimAXQpR8nJHfTF)"""";
   //   std::string expectedEmit2 = R""""(package:
   // id: b4EasFCBjochdruOQfxBubQw3VlD
   // packagedElements:

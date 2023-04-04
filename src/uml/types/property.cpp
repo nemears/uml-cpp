@@ -60,6 +60,18 @@ void Property::restoreReference(Element* el) {
     }
 }
 
+void Property::restoreReferences() {
+    StructuralFeature::restoreReferences();
+    if (m_namespace->get() && !m_featuringClassifier.get()) {
+        if (m_namespace->get()->isSubClassOf(ElementType::CLASSIFIER)) {
+            Classifier& clazz = m_namespace->get()->as<Classifier>();
+            if (clazz.getAttributes().contains(m_id)) {
+                m_featuringClassifier.innerAdd(clazz);
+            }
+        }
+    }
+}
+
 void Property::referenceErased(ID id) {
     StructuralFeature::referenceErased(id);
     DeploymentTarget::referenceErased(id);

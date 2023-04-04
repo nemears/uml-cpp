@@ -121,6 +121,7 @@ TEST_F(ValueSpecificationTest, LiteralUnlimitedNaturalTest) {
 
 TEST_F(ValueSpecificationTest, expressionTest) {
     Manager<> m;
+    m.open(ymlPath + "uml/primitiveTypes.yml");
     ASSERT_NO_THROW(m.open(ymlPath + "expressionTests/expression.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();

@@ -322,6 +322,8 @@ TEST_F(PackageTest, basicPackageMerge) {
 
 TEST_F(PackageTest, externalMergedPackageTest) {
     Manager<> mm;
+    mm.open(ymlPath + "uml/primitiveTypes.yml");
+    mm.open(ymlPath + "packageParserTests/3packages.yml");
     ASSERT_NO_THROW(mm.open(ymlPath + "packageParserTests/mergedPackage.yml"));
     ASSERT_TRUE(mm.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &mm.getRoot()->as<Package>();
@@ -559,6 +561,7 @@ TEST_F(PackageTest, internalProfileapplication) {
 
 TEST_F(PackageTest, externalProfileApplicationTest) {
   Manager<> m;
+  m.open(ymlPath + "profileTests/testProfile.yml");
   ASSERT_NO_THROW(m.open(ymlPath + "profileTests/externalProfileApplication.yml"));
   ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
   Package& pckg = m.getRoot()->as<Package>();

@@ -20,5 +20,5 @@
                 name : "debug"
             #     type : BOOL
                 id : Sc8u1tx8VV5S5108MWGxk&zmbRWr
-                direction: IN
+                direction: in
 ...

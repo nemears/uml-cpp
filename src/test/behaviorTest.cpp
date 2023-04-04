@@ -105,12 +105,12 @@ TEST_F(BehaviorTest, emitBasicOpaqueBehavior) {
     - property:
         id: YVV4HY0dc4OS0zPOc1HPLfyLmx39
         name: prop
-        visibility: PRIVATE
+        visibility: private
   ownedOperations:
     - operation:
         id: P73WqZXNrYSV0fEtHqKAJTv3RDTD
         name: op
-        visibility: PROTECTED)"""";
+        visibility: protected)"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

@@ -1,9 +1,12 @@
 --- 
 opaqueBehavior: 
   bodies: 
-    - one
-    - 1
-    - true
+    - literalString:
+        value: one
+    - literalString:
+        value: 1
+    - literalString: 
+        value: true
   id: i0wopIpBjBHdekQ57DbWeHfWmQp3
   name: test
 ...

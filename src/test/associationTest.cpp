@@ -339,6 +339,7 @@ TEST_F(AssociationTest, reindexTypeIDTest) {
 
 TEST_F(AssociationTest, parseNavigableOwnedEndAndMemberEndTest) {
     Manager<> m;
+    m.open(ymlPath + "uml/primitiveTypes.yml");
     ASSERT_NO_THROW(m.open(ymlPath + "associationTests/navigableEnd.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -368,6 +369,7 @@ TEST_F(AssociationTest, parseNavigableOwnedEndAndMemberEndTest) {
 
 TEST_F(AssociationTest, parseOwnedEndAndMemberEndTest) {
     Manager<> m;
+    m.open(ymlPath + "uml/primitiveTypes.yml");
     ASSERT_NO_THROW(m.open(ymlPath + "associationTests/ownedEnd.yml"));
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
@@ -430,13 +432,13 @@ TEST_F(AssociationTest, emitAssociationTest) {
         id: m8K65o0wEqtIznmEPmuXaTph2JJu
     - association:
         id: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5"
+        memberEnds:
+          - FqaulNq6bCe_8J5M0Ff2oCCaQD05
         navigableOwnedEnds:
           - property:
               id: "k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"
               type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
-              association: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5"
-        memberEnds:
-          - FqaulNq6bCe_8J5M0Ff2oCCaQD05)"""";
+              association: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5")"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

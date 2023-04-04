@@ -318,6 +318,7 @@ TEST_F(OperationTest, properExceptions) {
 
 TEST_F(OperationTest, basicParamTest) {
     Manager<> m;
+    m.open(ymlPath + "uml/primitiveTypes.yml");
     ASSERT_NO_THROW(m.open(ymlPath + "operationTests/basicParameter.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();

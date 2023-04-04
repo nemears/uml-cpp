@@ -2,9 +2,9 @@
   package:
     packageMerges:
       - packageMerge:
-          mergedPackage: 3packages.yml
+          mergedPackage: HdQGnHEztfzbMvcBURUAEPRWuw7M # load before
       - packageMerge:
-          mergedPackage: ../uml/primitiveTypes.yml
+          mergedPackage: Primitive_Types_WZcyDDLemQ97 # load before this one
     packagedElements:
       - class:
           ownedAttributes:

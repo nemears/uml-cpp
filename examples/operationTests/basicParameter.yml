@@ -2,7 +2,7 @@
   package:
     packageMerges:
       - packageMerge:
-          mergedPackage: ../uml/primitiveTypes.yml
+          mergedPackage: Primitive_Types_WZcyDDLemQ97
     packagedElements:
       - class:
           ownedOperations:
@@ -11,5 +11,5 @@
                   - parameter:
                       name: testInt
                       type: int_r9nNbBukx47IomXrT2raqtc4
-                      direction: IN
+                      direction: in
 ...

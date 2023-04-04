@@ -225,6 +225,23 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         // TODO emitAbstractionFeatures;
             break;
         }
+        case ElementType::ACTION_INPUT_PIN : {
+            ActionInputPin& actionInputPin = el.as<ActionInputPin>();
+            emitScope(emitter, actionInputPin, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, actionInputPin, data, "actionInputPin", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures,
+                        emitTypedElementFeatures,
+                        emitObjectNodeFeatures,
+                        emitMultiplicityElementFeatures,
+                        emitPinFeatures,
+                        emitActionInputPinFeatures);
+            break;
+        }
         case ElementType::ACTIVITY : {
             Activity& activity = el.as<Activity>();
             emitScope(emitter, activity, data,
@@ -246,6 +263,62 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityFeatures);
             break;
         }
+        case ElementType::ACTIVITY_FINAL_NODE : {
+            ActivityFinalNode& activityFinalNode = el.as<ActivityFinalNode>();
+            emitScope(emitter, activityFinalNode, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, activityFinalNode, data, "activityFinalNode", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures);
+            break;
+        }
+        case ElementType::ACTIVITY_PARAMETER_NODE : {
+            ActivityParameterNode& activityParameterNode = el.as<ActivityParameterNode>();
+            emitScope(emitter, activityParameterNode, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, activityParameterNode, data, "activityParameterNode",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures,
+                        emitTypedElementFeatures,
+                        emitObjectNodeFeatures,
+                        emitActivityParameterNodeFeatures);
+            break;
+        }
+        case ElementType::ACTIVITY_PARTITION : {
+            ActivityPartition& activityPartition = el.as<ActivityPartition>();
+            emitScope(emitter, activityPartition, data,
+                        emitActivityGroupScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, activityPartition, data, "activityPartition",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityPartitionFeatures);
+            break;
+        }
+        case ElementType::ARTIFACT : {
+            Artifact& artifact = el.as<Artifact>();
+            emitScope(emitter, artifact, data, 
+                        emitPackageableElementScope, 
+                        emitParameterableElementScope,
+                        emitNamedElementScope, 
+                        emitElementScope);
+            emitElementTypeAndData(emitter, artifact, data, "artifact",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitNamespaceFeatures,
+                        emitTemplateableElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitClassifierFeatures,
+                        emitArtifactFeatures);
+            break;
+        }
         case ElementType::ASSOCIATION : {
             Association& association = el.as<Association>();
             emitScope(emitter, association, data,
@@ -261,6 +334,37 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitClassifierFeatures,
                         emitAssociationFeatures);
+            break;
+        }
+        case ElementType::CALL_BEHAVIOR_ACTION : {
+            CallBehaviorAction& callBehaviorAction = el.as<CallBehaviorAction>();
+            emitScope(emitter, callBehaviorAction, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, callBehaviorAction, data, "callBehaviorAction",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures,
+                        emitExecutableNodeFeatures,
+                        emitActionFeatures,
+                        emitInvocationActionFeatures,
+                        emitCallActionFeatures,
+                        emitCallBehaviorActionFeatures);
+            break;
+        }
+        case ElementType::CENTRAL_BUFFER_NODE : {
+            CentralBufferNode& centralBufferNode = el.as<CentralBufferNode>();
+            emitScope(emitter, centralBufferNode, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, centralBufferNode, data, "centralBufferNode",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures,
+                        emitTypedElementFeatures,
+                        emitObjectNodeFeatures);
             break;
         }
         case ElementType::CLASS : {
@@ -333,6 +437,32 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitConstraintFeatures);
             break;
         }
+        case ElementType::CONTROL_FLOW : {
+            ControlFlow& controlFlow = el.as<ControlFlow>();
+            emitScope(emitter, controlFlow, data,
+                        emitActivityEdgeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, controlFlow, data, "controlFlow",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityEdgeFeatures);
+            break;
+        }
+        case ElementType::DATA_STORE_NODE : {
+            DataStoreNode& dataStoreNode = el.as<DataStoreNode>();
+            emitScope(emitter, dataStoreNode, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, dataStoreNode, data, "dataStoreNode",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures,
+                        emitTypedElementFeatures,
+                        emitObjectNodeFeatures);
+            break;
+        }
         case ElementType::DATA_TYPE : {
             DataType& dataType = el.as<DataType>();
             emitScope(emitter, dataType, data, 
@@ -350,6 +480,18 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitDataTypeFeatures);
             break;
         }
+        case ElementType::DECISION_NODE : {
+            DecisionNode& decisionNode = el.as<DecisionNode>();
+            emitScope(emitter, decisionNode, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, decisionNode, data, "decisionNode", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures);
+            break;
+        }
         case ElementType::DEPENDENCY : {
             Dependency& dependency = el.as<Dependency>();
             emitScope(emitter, dependency, data,
@@ -362,6 +504,21 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
                         emitDependencyFeatures);
+            break;
+        }
+        case ElementType::DEPLOYMENT : {
+            Deployment& deployment = el.as<Deployment>();
+            emitScope(emitter, deployment, data,
+                        emitDeploymentScope,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, deployment, data, "deployment",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitDeploymentFeatures);
             break;
         }
         case ElementType::ELEMENT_IMPORT : {
@@ -405,6 +562,16 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitNamedElementFeatures, 
                         emitParameterableElementFeatures,
                         emitInstanceSpecificationFeatures);
+            break;
+        }
+        case ElementType::EXCEPTION_HANDLER : {
+            ExceptionHandler& exceptionHandler = el.as<ExceptionHandler>();
+            emitScope(emitter, exceptionHandler, data,
+                        emitExceptionHandlerScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, exceptionHandler, data, "exceptionHandler", 
+                        emitElementFeatures,
+                        emitExceptionHandlerFeatures);
             break;
         }
         case ElementType::EXPRESSION : {
@@ -455,6 +622,42 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitPropertyFeatures);
             break;
         }
+        case ElementType::FINAL_NODE : {
+            FinalNode& finalNode = el.as<FinalNode>();
+            emitScope(emitter, finalNode, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, finalNode, data, "finalNode", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures);
+            break;
+        }
+        case ElementType::FLOW_FINAL_NODE : {
+            FlowFinalNode& flowFinalNode = el.as<FlowFinalNode>();
+            emitScope(emitter, flowFinalNode, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, flowFinalNode, data, "flowFinalNode", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures);
+            break;
+        }
+        case ElementType::FORK_NODE : {
+            ForkNode& forkNode = el.as<ForkNode>();
+            emitScope(emitter, forkNode, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, forkNode, data, "forkNode", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures);
+            break;
+        }
         case ElementType::GENERALIZATION : {
             Generalization& generalization = el.as<Generalization>();
             emitScope(emitter, generalization, data,
@@ -479,6 +682,34 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitGeneralizationSetFeatures);
             break;
         }
+        case ElementType::INITIAL_NODE : {
+            InitialNode& initialNode = el.as<InitialNode>();
+            emitScope(emitter, initialNode, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, initialNode, data, "initialNode", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures);
+            break;
+        }
+        case ElementType::INPUT_PIN : {
+            InputPin& inputPin = el.as<InputPin>();
+            emitScope(emitter, inputPin, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, inputPin, data, "inputPin", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures,
+                        emitTypedElementFeatures,
+                        emitObjectNodeFeatures,
+                        emitMultiplicityElementFeatures,
+                        emitPinFeatures);
+            break;
+        }
         case ElementType::INSTANCE_SPECIFICATION : {
             InstanceSpecification& inst = el.as<InstanceSpecification>();
             emitScope(emitter, inst, data, 
@@ -490,6 +721,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitElementFeatures, 
                         emitNamedElementFeatures, 
                         emitParameterableElementFeatures,
+                        emitDeploymentTargetFeatures,
                         emitInstanceSpecificationFeatures);
             break;
         }
@@ -540,6 +772,19 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         // emitDependencyFeatures,
                         // TODO emitAbstractionFeatures;
                         emitInterfaceRealizationFeatures);
+            break;
+        }
+        case ElementType::JOIN_NODE : {
+            JoinNode& joinNode = el.as<JoinNode>();
+            emitScope(emitter, joinNode, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, joinNode, data, "joinNode", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures,
+                        emitJoinNodeFeatures);
             break;
         }
         case ElementType::LITERAL_BOOL : {
@@ -631,6 +876,32 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitLiteralUnlimitedNaturalFeatures);
             break;
         }
+        case ElementType::MERGE_NODE : {
+            MergeNode& mergeNode = el.as<MergeNode>();
+            emitScope(emitter, mergeNode, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, mergeNode, data, "mergeNode", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures);
+            break;
+        }
+        case ElementType::MANIFESTATION : {
+            Manifestation& manifestation = el.as<Manifestation>();
+            emitScope(emitter, manifestation, data,
+                        emitPackageableElementScope,
+                        emitParameterableElementScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, manifestation, data, "manifestation", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitParameterableElementFeatures,
+                        emitManifestationFeatures);
+            break;
+        }
         case ElementType::MODEL : {
             Model& model = el.as<Model>();
             emitScope(emitter, model, data,
@@ -646,6 +917,34 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTemplateableElementFeatures,
                         emitPackageFeatures,
                         emitModelFeatures);
+            break;
+        }
+        case ElementType::OBJECT_FLOW : {
+            ObjectFlow& objectFlow = el.as<ObjectFlow>();
+            emitScope(emitter, objectFlow, data,
+                        emitActivityEdgeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, objectFlow, data, "objectFlow",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityEdgeFeatures,
+                        emitObjectFlowFeatures);
+            break;
+        }
+        case ElementType::OPAQUE_ACTION : {
+            OpaqueAction& opaqueAction = el.as<OpaqueAction>();
+            emitScope(emitter, opaqueAction, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, opaqueAction, data, "opaqueAction",
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures,
+                        emitExecutableNodeFeatures,
+                        emitActionFeatures,
+                        emitOpaqueActionFeatures);
             break;
         }
         case ElementType::OPAQUE_BEHAVIOR : {
@@ -683,6 +982,22 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTemplateableElementFeatures,
                         emitFeatureFeatures,
                         emitBehavioralFeatureFeatures);
+            break;
+        }
+        case ElementType::OUTPUT_PIN : {
+            OutputPin& outputPin = el.as<OutputPin>();
+            emitScope(emitter, outputPin, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, outputPin, data, "outputPin", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures,
+                        emitTypedElementFeatures,
+                        emitObjectNodeFeatures,
+                        emitMultiplicityElementFeatures,
+                        emitPinFeatures);
             break;
         }
         case ElementType::PACKAGE : {
@@ -818,6 +1133,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitStructuralFeatureFeatures,
                         emitMultiplicityElementFeatures,
                         emitParameterableElementFeatures,
+                        emitDeploymentTargetFeatures,
                         emitPropertyFeatures);
             break;
         }
@@ -959,15 +1275,72 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitDependencyFeatures);
             break;
         }
+        case ElementType::VALUE_PIN : {
+            ValuePin& valuePin = el.as<ValuePin>();
+            emitScope(emitter, valuePin, data,
+                        emitActivityNodeScope,
+                        emitNamedElementScope,
+                        emitElementScope);
+            emitElementTypeAndData(emitter, valuePin, data, "valuePin", 
+                        emitElementFeatures,
+                        emitNamedElementFeatures,
+                        emitActivityNodeFeatures,
+                        emitTypedElementFeatures,
+                        emitObjectNodeFeatures,
+                        emitMultiplicityElementFeatures,
+                        emitPinFeatures,
+                        emitValuePinFeatures);
+            break;
+        }
         default : {
             throw SerializationError("No strategy to serialize element of type " + Element::elementTypeToString(el.getElementType()));
         }
     }
 }
 
+void emitActionFeatures(YAML::Emitter& emitter, Action& action, EmitterData& data) {
+    emitOwnedSet<Constraint>(emitter, action, data, "localPreconditions", &Action::getLocalPreconditions);
+    emitOwnedSet<Constraint>(emitter, action, data, "locatPostconditions", &Action::getLocalPostconditions);
+}
+
+void emitActionInputPinFeatures(YAML::Emitter& emitter, ActionInputPin& actionInputPin, EmitterData& data) {
+    emitSingleton(emitter, actionInputPin, "fromAction", &ActionInputPin::getFromAction);
+}
+
 void emitActivityFeatures(YAML::Emitter& emitter, Activity& activity, EmitterData& data) {
     emitOwnedSet<ActivityNode>(emitter, activity, data, "nodes", &Activity::getNodes);
     emitOwnedSet<ActivityEdge>(emitter, activity, data, "edges", &Activity::getEdges);
+    emitOwnedSet<ActivityPartition>(emitter, activity, data, "partitions", &Activity::getPartitions);
+}
+
+void emitActivityEdgeFeatures(YAML::Emitter& emitter, ActivityEdge& activityEdge, EmitterData& data) {
+    emitSingleton(emitter, activityEdge, "target", &ActivityEdge::getTarget);
+    emitSingleton(emitter, activityEdge, "source", &ActivityEdge::getSource);
+    emitSingleton(emitter, activityEdge, "guard", &ActivityEdge::getGuard);
+    emitSingleton(emitter, activityEdge, "weight", &ActivityEdge::getWeight);
+}
+
+void emitActivityNodeFeatures(YAML::Emitter& emitter, ActivityNode& activityNode, EmitterData& data) {
+    emitSet<ActivityEdge>(emitter, activityNode, "incoming", &ActivityNode::getIncoming);
+    emitSet<ActivityEdge>(emitter, activityNode, "outgoing", &ActivityNode::getOutgoing);
+}
+
+void emitActivityParameterNodeFeatures(YAML::Emitter& emitter, ActivityParameterNode& activityParameterNode, EmitterData& data) {
+    emitSingleton(emitter, activityParameterNode, "parameter", &ActivityParameterNode::getParameter);
+}
+
+void emitActivityPartitionFeatures(YAML::Emitter& emitter, ActivityPartition& activityPartition, EmitterData& data) {
+    emitSet<ActivityNode>(emitter, activityPartition, "nodes", &ActivityPartition::getNodes);
+    emitSet<ActivityNode>(emitter, activityPartition, "edges", &ActivityPartition::getEdges);
+    emitOwnedSet<ActivityPartition>(emitter, activityPartition, data, "subPartitions", &ActivityPartition::getSubPartitions);
+    emitSingleton(emitter, activityPartition, "represents", &ActivityPartition::getRepresents);
+}
+
+void emitArtifactFeatures(YAML::Emitter& emitter, Artifact& artifact, EmitterData& data) {
+    emitOwnedSet<Property>(emitter, artifact, data, "ownedAttributes", &Artifact::getOwnedAttributes);
+    emitOwnedSet<Operation>(emitter, artifact, data, "ownedOperations", &Artifact::getOwnedOperations);
+    emitOwnedSet<Artifact>(emitter, artifact, data, "nestedArtifacts", &Artifact::getNestedArtifacts);
+    emitOwnedSet<Manifestation>(emitter, artifact, data, "manifestations", &Artifact::getManifestations);
 }
 
 void emitAssociationFeatures(YAML::Emitter& emitter, Association& association, EmitterData& data) {
@@ -1005,6 +1378,14 @@ void emitBehavioredClassifierFeatures(YAML::Emitter& emitter, BehavioredClassifi
     emitOwnedSingleton<Behavior>(emitter, behavioredClassifier, data, "classifierBehavior", &BehavioredClassifier::getClassifierBehavior);
     emitOwnedSet<Behavior>(emitter, behavioredClassifier, data, "ownedBehaviors", &Behavior::getOwnedBehaviors, &BehavioredClassifier::getClassifierBehavior);
     emitOwnedSet<InterfaceRealization>(emitter, behavioredClassifier, data, "interfaceRealizations", &BehavioredClassifier::getInterfaceRealizations);
+}
+
+void emitCallActionFeatures(YAML::Emitter& emitter, CallAction& callAction, EmitterData& data) {
+    emitOwnedSet<OutputPin>(emitter, callAction, data, "results", &CallAction::getResults);
+}
+
+void emitCallBehaviorActionFeatures(YAML::Emitter& emitter, CallBehaviorAction& callBehaviorAction, EmitterData& data) {
+    emitSingleton(emitter, callBehaviorAction, "behavior", &CallBehaviorAction::getBehavior);
 }
 
 void emitClassFeatures(YAML::Emitter& emitter, Class& clazz, EmitterData& data) {
@@ -1051,9 +1432,22 @@ void emitDataTypeFeatures(YAML::Emitter& emitter, DataType& dataType, EmitterDat
     emitOwnedSet<Operation>(emitter, dataType, data, "ownedOperations", &DataType::getOwnedOperations);
 }
 
+void emitDecisionNodeFeatures(YAML::Emitter& emitter, DecisionNode& decisionNode, EmitterData& data) {
+    emitSingleton(emitter, decisionNode, "decisionInput", &DecisionNode::getDecisionInput);
+    emitSingleton(emitter, decisionNode, "decisionInputFlow", &DecisionNode::getDecisionInputFlow);
+}
+
 void emitDependencyFeatures(YAML::Emitter& emitter, Dependency& dependency, EmitterData& data) {
     emitSet<NamedElement>(emitter, dependency, "suppliers", &Dependency::getSuppliers);
     emitSet<NamedElement>(emitter, dependency, "clients", &Dependency::getClients);
+}
+
+void emitDeploymentFeatures(YAML::Emitter& emitter, Deployment& deployment, EmitterData& data) {
+    emitSet<DeployedArtifact>(emitter, deployment, "deployedArtifacts", &Deployment::getDeployedArtifacts);
+}
+
+void emitDeploymentTargetFeatures(YAML::Emitter& emitter, DeploymentTarget& deploymentTarget, EmitterData& data) {
+    emitOwnedSet<Deployment>(emitter, deploymentTarget, data, "deployments", &DeploymentTarget::getDeployments);
 }
 
 void emitElementFeatures(YAML::Emitter& emitter, Element& el, EmitterData& data) {
@@ -1093,6 +1487,16 @@ void emitElementImportFeatures(YAML::Emitter& emitter, ElementImport& elementImp
 
 void emitEnumerationFeatures(YAML::Emitter& emitter, Enumeration& enumeration, EmitterData& data) {
     emitOwnedSet<EnumerationLiteral>(emitter, enumeration, data, "ownedLiterals", &Enumeration::getOwnedLiterals);
+}
+
+void emitExceptionHandlerFeatures(YAML::Emitter& emitter, ExceptionHandler& exceptionHandler, EmitterData& data) {
+    emitSingleton(emitter, exceptionHandler, "handlerBody", &ExceptionHandler::getHandlerBody);
+    emitSingleton(emitter, exceptionHandler, "exceptionInput", &ExceptionHandler::getExceptionInput);
+    emitSet<Classifier>(emitter, exceptionHandler, "exceptionTypes", &ExceptionHandler::getExceptionTypes);
+}
+
+void emitExecutableNodeFeatures(YAML::Emitter& emitter, ExecutableNode& executableNode, EmitterData& data) {
+    emitOwnedSet<ExceptionHandler>(emitter, executableNode, data, "handlers", &ExecutableNode::getHandlers);
 }
 
 void emitExpressionFeatures(YAML::Emitter& emitter, Expression& expression, EmitterData& data) {
@@ -1151,6 +1555,15 @@ void emitInterfaceRealizationFeatures(YAML::Emitter& emitter, InterfaceRealizati
     emitSingleton<Interface>(emitter, interfaceRealization, "contract", &InterfaceRealization::getContract);
 }
 
+void emitInvocationActionFeatures(YAML::Emitter& emitter, InvocationAction& invocationAction, EmitterData& data) {
+    emitOwnedSet<InputPin>(emitter, invocationAction, data, "arguments", &InvocationAction::getArguments);
+    emitSingleton(emitter, invocationAction, "onPort", &InvocationAction::getOnPort);
+}
+
+void emitJoinNodeFeatures(YAML::Emitter& emitter, JoinNode& joinNode, EmitterData& data) {
+    emitOwnedSingleton(emitter, joinNode, data, "joinSpec", &JoinNode::getJoinSpec);
+}
+
 void emitLiteralBoolFeatures(YAML::Emitter& emitter, LiteralBool& literalBool, EmitterData& data) {
     emitter << "value" << YAML::Value << literalBool.getValue();
 }
@@ -1176,6 +1589,10 @@ void emitLiteralUnlimitedNaturalFeatures(YAML::Emitter& emitter, LiteralUnlimite
     } else {
         emitter << literalUnlimitedNatural.getNumberValue();
     }
+}
+
+void emitManifestationFeatures(YAML::Emitter& emitter, Manifestation& manifestation, EmitterData& data) {
+    emitSingleton(emitter, manifestation, "utilizedElement", &Manifestation::getUtilizedElement);
 }
 
 void emitModelFeatures(YAML::Emitter& emitter, Model& model, EmitterData& data) {
@@ -1215,6 +1632,45 @@ void emitNamespaceFeatures(YAML::Emitter& emitter, Namespace& nmspc, EmitterData
     emitOwnedSet<ElementImport>(emitter, nmspc, data, "elementImports", &Namespace::getElementImports);
     emitOwnedSet<PackageImport>(emitter, nmspc, data, "packageImports", &Namespace::getPackageImports);
     emitOwnedSet<Constraint>(emitter, nmspc, data, "ownedRules", &Namespace::getOwnedRules);
+}
+
+void emitObjectFlowFeatures(YAML::Emitter& emitter, ObjectFlow& objectFlow, EmitterData& data) {
+    emitSingleton(emitter, objectFlow, "transformation", &ObjectFlow::getTransformation);
+    emitSingleton(emitter, objectFlow, "selection", &ObjectFlow::getSelection);
+}
+
+void emitObjectNodeFeatures(YAML::Emitter& emitter, ObjectNode& objectNode, EmitterData& data) {
+    emitSingleton(emitter, objectNode, "selection", &ObjectNode::getSelection);
+    emitOwnedSingleton(emitter, objectNode, data, "upperBound", &ObjectNode::getUpperBound);
+    if (objectNode.isControlType()) {
+        emitter << "isControlType" << YAML::Value << true;
+    }
+    if (objectNode.getOrdering() != ObjectNodeOrderingKind::FIFO) {
+        emitter << YAML::Value;
+        switch (objectNode.getOrdering()) {
+            case ObjectNodeOrderingKind::UNORDERED : {
+                emitter << "unordered";
+                break;
+            }
+            case ObjectNodeOrderingKind::ORDERED : {
+                emitter << "ordered";
+                break;
+            }
+            case ObjectNodeOrderingKind::LIFO : {
+                emitter << "LIFO";
+                break;
+            }
+            default : {
+                throw SerializationError("Could not determine OrderingKind to emit ");
+            }
+        }
+    }
+}
+
+void emitOpaqueActionFeatures(YAML::Emitter& emitter, OpaqueAction& opaqueAction, EmitterData& data) {
+    emitOwnedSet<InputPin>(emitter, opaqueAction, data, "inputValues", &OpaqueAction::getInputValues);
+    emitOwnedSet<OutputPin>(emitter, opaqueAction, data, "outputValues", &OpaqueAction::getOutputValues);
+    emitOwnedSet<LiteralString>(emitter, opaqueAction, data, "bodies", &OpaqueAction::getBodies);
 }
 
 void emitOpaqueBehaviorFeatures(YAML::Emitter& emitter, OpaqueBehavior& opaqueBehavior, EmitterData& data) {
@@ -1280,6 +1736,12 @@ void emitParameterableElementFeatures(YAML::Emitter& emitter, ParameterableEleme
 void emitParameterSetFeatures(YAML::Emitter& emitter, ParameterSet& parameterSet, EmitterData& data) {
     emitSet<Parameter>(emitter, parameterSet, "parameters", &ParameterSet::getParameters);
     emitOwnedSet<Constraint>(emitter, parameterSet, data, "conditions", &ParameterSet::getConditions);
+}
+
+void emitPinFeatures(YAML::Emitter& emitter, Pin& pin, EmitterData& data) {
+    if (pin.isControl()) {
+        emitter << "isControl" << YAML::Value << true;
+    }
 }
 
 void emitPortFeatures(YAML::Emitter& emitter, Port& port, EmitterData& data) {
@@ -1382,8 +1844,28 @@ void emitTypedElementFeatures(YAML::Emitter& emitter, TypedElement& typedElement
     emitSingleton<Type>(emitter, typedElement, "type", &TypedElement::getType);
 }
 
+void emitValuePinFeatures(YAML::Emitter& emitter, ValuePin& valuePin, EmitterData& data) {
+    emitOwnedSingleton(emitter, valuePin, data, "value", &ValuePin::getValue);
+}
+
+bool emitActivityEdgeScope(YAML::Emitter& emitter, ActivityEdge& activityEdge, EmitterData& data) {
+    return emitSingleton(emitter, activityEdge, "activitye", &ActivityEdge::getActivity);
+}
+
+bool emitActivityNodeScope(YAML::Emitter& emitter, ActivityNode& activityNode, EmitterData& data) {
+    return emitSingleton(emitter, activityNode, "activity", &ActivityNode::getActivity);
+}
+
+bool emitActivityGroupScope(YAML::Emitter& emitter, ActivityGroup& activityGroup, EmitterData& data) {
+    return emitSingleton(emitter, activityGroup, "inActivity", &ActivityGroup::getInActivity);
+}
+
 bool emitConstraintScope(YAML::Emitter& emitter, Constraint& constraint, EmitterData& data) {
     return emitSingleton<Namespace>(emitter, constraint, "context", &Constraint::getContext);
+}
+
+bool emitDeploymentScope(YAML::Emitter& emitter, Deployment& deployment, EmitterData& data) {
+    return emitSingleton(emitter, deployment, "location", &Deployment::getLocation);
 }
 
 bool emitElementScope(YAML::Emitter& emitter, Element& el, EmitterData& data) {
@@ -1396,6 +1878,10 @@ bool emitElementImportScope(YAML::Emitter& emitter, ElementImport& elementImport
 
 bool emitEnumerationLiteralScope(YAML::Emitter& emitter, EnumerationLiteral& literal, EmitterData& data) {
     return emitSingleton<Enumeration>(emitter, literal, "enumeration", &EnumerationLiteral::getEnumeration);
+}
+
+bool emitExceptionHandlerScope(YAML::Emitter& emitter, ExceptionHandler& exceptionHandler, EmitterData& data) {
+    return emitSingleton(emitter, exceptionHandler, "protectedNode", &ExceptionHandler::getProtectedNode);
 }
 
 bool emitGeneralizationScope(YAML::Emitter& emitter, Generalization& generalization, EmitterData& data) {

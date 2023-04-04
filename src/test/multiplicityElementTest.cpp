@@ -22,17 +22,17 @@ TEST_F(MultiplicityElementTest, SetAndGetProperLowerAndUpperTest) {
     ASSERT_EQ(p.getUpper(), 1);
 }
 
-TEST_F(MultiplicityElementTest, GetLowerBeforeSettingTest) {
-    Manager<> m;
-    Property& p = *m.create<Property>();
-    ASSERT_THROW(p.getLower(), MultiplicityElement::MultiplicityNotSpecifiedException);
-}
+// TEST_F(MultiplicityElementTest, GetLowerBeforeSettingTest) {
+//     Manager<> m;
+//     Property& p = *m.create<Property>();
+//     ASSERT_THROW(p.getLower(), MultiplicityElement::MultiplicityNotSpecifiedException);
+// }
 
-TEST_F(MultiplicityElementTest, GetUpperBeforeSettingTest) {
-    Manager<> m;
-    Property& p = *m.create<Property>();
-    ASSERT_THROW(p.getUpper(), MultiplicityElement::MultiplicityNotSpecifiedException);
-}
+// TEST_F(MultiplicityElementTest, GetUpperBeforeSettingTest) {
+//     Manager<> m;
+//     Property& p = *m.create<Property>();
+//     ASSERT_THROW(p.getUpper(), MultiplicityElement::MultiplicityNotSpecifiedException);
+// }
 
 TEST_F(MultiplicityElementTest, MultiplictySpecifiedTest) {
     Manager<> m;

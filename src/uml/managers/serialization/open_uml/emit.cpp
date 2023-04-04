@@ -242,6 +242,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitStructuredClassifierFeatures,
                         emitBehavioredClassifierFeatures,
                         emitClassFeatures,
+                        emitBehaviorFeatures,
                         emitActivityFeatures);
             break;
         }
@@ -922,8 +923,8 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTemplateParameterScope,
                         emitElementScope);
             emitElementTypeAndData(emitter, templateParameter, data, "templateParameter",
-                        emitTemplateParameterFeatures,
-                        emitElementFeatures);
+                        emitElementFeatures,
+                        emitTemplateParameterFeatures);
             break;
         }
         case ElementType::TEMPLATE_PARAMETER_SUBSTITUTION : {
@@ -932,8 +933,8 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTemplateParameterSubstitutionScope,
                         emitElementScope);
             emitElementTypeAndData(emitter, templateParameterSubstitution, data, "templateParameterSubstitution", 
-                        emitTemplateParameterSubstitutionFeatures,
-                        emitElementFeatures);
+                        emitElementFeatures,
+                        emitTemplateParameterSubstitutionFeatures);
             break;
         }
         case ElementType::TEMPLATE_SIGNATURE : {
@@ -970,9 +971,9 @@ void emitActivityFeatures(YAML::Emitter& emitter, Activity& activity, EmitterDat
 }
 
 void emitAssociationFeatures(YAML::Emitter& emitter, Association& association, EmitterData& data) {
-    emitSet<Property>(emitter, association, "memberEnds", &Association::getMemberEnds);
-    emitOwnedSet<Property>(emitter, association, data, "ownedEnds", &Association::getOwnedEnds, &Association::getMemberEnds);
-    emitOwnedSet<Property>(emitter, association, data, "navigableOwnedEnds", &Association::getNavigableOwnedEnds, &Association::getOwnedEnds);
+    emitSet<Property>(emitter, association, "memberEnds", &Association::getMemberEnds, &Association::getOwnedEnds);
+    emitOwnedSet<Property>(emitter, association, data, "ownedEnds", &Association::getOwnedEnds, &Association::getNavigableOwnedEnds);
+    emitOwnedSet<Property>(emitter, association, data, "navigableOwnedEnds", &Association::getNavigableOwnedEnds);
 }
 
 void emitBehaviorFeatures(YAML::Emitter& emitter, Behavior& behavior, EmitterData& data) {
@@ -1096,7 +1097,7 @@ void emitEnumerationFeatures(YAML::Emitter& emitter, Enumeration& enumeration, E
 
 void emitExpressionFeatures(YAML::Emitter& emitter, Expression& expression, EmitterData& data) {
     if (!expression.getSymbol().empty()) {
-        emitter << expression.getSymbol();
+        emitter << "symbol" << YAML::Value << expression.getSymbol();
     }
     emitOwnedSet<ValueSpecification>(emitter, expression, data, "operands", &Expression::getOperands);
 }
@@ -1357,17 +1358,17 @@ void emitTemplateBindingFeatures(YAML::Emitter& emitter, TemplateBinding& templa
 }
 
 void emitTemplateParameterFeatures(YAML::Emitter& emitter, TemplateParameter& templateParameter, EmitterData& data) {
-    if (!emitSingleton<ParameterableElement>(emitter, templateParameter, "ownedParameteredElement", &TemplateParameter::getOwnedParameteredElement)) {
+    if (!emitOwnedSingleton<ParameterableElement>(emitter, templateParameter, data, "ownedParameteredElement", &TemplateParameter::getOwnedParameteredElement)) {
         emitSingleton<ParameterableElement>(emitter, templateParameter, "parameteredElement", &TemplateParameter::getParameteredElement);
     }
-    if (!emitSingleton<ParameterableElement>(emitter, templateParameter, "ownedDefault", &TemplateParameter::getOwnedDefault)) {
+    if (!emitOwnedSingleton<ParameterableElement>(emitter, templateParameter, data, "ownedDefault", &TemplateParameter::getOwnedDefault)) {
         emitSingleton<ParameterableElement>(emitter, templateParameter, "default", &TemplateParameter::getDefault);
     }
 }
 
 void emitTemplateParameterSubstitutionFeatures(YAML::Emitter& emitter, TemplateParameterSubstitution& templateParameterSubstitution, EmitterData& data) {
     emitSingleton<TemplateParameter>(emitter, templateParameterSubstitution, "formal", &TemplateParameterSubstitution::getFormal);
-    if (!emitSingleton<ParameterableElement>(emitter, templateParameterSubstitution, "ownedActual", &TemplateParameterSubstitution::getOwnedActual)) {
+    if (!emitOwnedSingleton<ParameterableElement>(emitter, templateParameterSubstitution, data, "ownedActual", &TemplateParameterSubstitution::getOwnedActual)) {
         emitSingleton<ParameterableElement>(emitter, templateParameterSubstitution, "actual", &TemplateParameterSubstitution::getActual);
     }
 }

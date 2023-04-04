@@ -257,6 +257,7 @@ TEST_F(PropertyTest, improperTypeTest) {
 
 TEST_F(PropertyTest, literalBoolDefaultValueTest) {
     Manager<> m;
+    m.open(ymlPath + "uml/primitiveTypes.yml");
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/literalBool.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
@@ -276,6 +277,7 @@ TEST_F(PropertyTest, literalBoolDefaultValueTest) {
 
 TEST_F(PropertyTest, literalsTest) {
     Manager<> m;
+    m.open(ymlPath + "uml/primitiveTypes.yml");
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/defaultValue.yml"));
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();

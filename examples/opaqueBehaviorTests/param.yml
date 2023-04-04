@@ -3,5 +3,5 @@
     ownedParameters:
       - parameter:
           name: test
-          direction: IN
+          direction: in
 ...

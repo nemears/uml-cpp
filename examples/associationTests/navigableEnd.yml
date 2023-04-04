@@ -2,7 +2,7 @@
   package:
     packageMerges:
       - packageMerge:
-          mergedPackage: ../uml/primitiveTypes.yml
+          mergedPackage: Primitive_Types_WZcyDDLemQ97
     packagedElements:
       - class:
           id: m7pAITPBHxM9c1_aPbfnMLUOC5Dc

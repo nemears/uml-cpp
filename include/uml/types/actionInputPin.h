@@ -10,7 +10,7 @@ namespace UML {
 
     class ActionInputPin : public InputPin {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             CustomSingleton<Action, ActionInputPin> m_fromAction = CustomSingleton<Action, ActionInputPin>(this);

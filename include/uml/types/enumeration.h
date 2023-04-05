@@ -9,7 +9,7 @@ namespace UML {
 
     class Enumeration : public DataType {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class EnumerationLiteral;
 
         protected:

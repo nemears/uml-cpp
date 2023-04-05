@@ -562,7 +562,7 @@ TEST_F(SetTest, addToSetTwice) {
 
 class TestElement2 : public Element {
 
-    template<typename AccessPolicy, typename SerializationPolicy, typename PersistencePolciy> friend class Manager;
+    template <typename SerializationPolicy, typename PersistencePolciy> friend class Manager;
 
     private:
         CustomSet<TestElement2, TestElement2> m_others = CustomSet<TestElement2, TestElement2>(*this);
@@ -586,7 +586,7 @@ TEST_F(SetTest, oppositeTest) {
 
 class RedefinedTestElement : public Element {
 
-    template<typename AccessPolicy, typename SerializationPolicy, typename PersistencePolciy> friend class Manager;
+    template <typename SerializationPolicy, typename PersistencePolciy> friend class Manager;
 
     public:
         CustomSet<Package, RedefinedTestElement> rootSet = CustomSet<Package, RedefinedTestElement>(this);
@@ -647,7 +647,7 @@ class TestPolicy {
 
 class PolicyTestElement : public Element {
 
-    template<typename AccessPolicy, typename SerializationPolicy, typename PersistencePolciy> friend class Manager;
+    template <typename SerializationPolicy, typename PersistencePolciy> friend class Manager;
 
     public:
         CustomSet<Package, PolicyTestElement, TestPolicy> policySet = CustomSet<Package, PolicyTestElement, TestPolicy>(this);
@@ -672,7 +672,7 @@ TEST_F(SetTest, setRedefinedWFunctors) {
 
 class TestOrderedSetElement : public Element {
     
-    template<typename AccessPolicy, typename SerializationPolicy, typename PersistencePolciy> friend class Manager;
+    template <typename SerializationPolicy, typename PersistencePolciy> friend class Manager;
 
     public:
         CustomOrderedSet<Package, TestOrderedSetElement> set = CustomOrderedSet<Package, TestOrderedSetElement>(this);
@@ -942,7 +942,7 @@ TEST_F(SetTest, multiSubsetsOneElement) {
 }
 
 class TestComplexSubsetElement : public Element {
-    template<typename AccessPolicy, typename SerializationPolicy, typename PersistencePolciy> friend class Manager;
+    template<typename SerializationPolicy, typename PersistencePolciy> friend class Manager;
     
     public:
         CustomSet<Element, TestComplexSubsetElement> rootSet = CustomSet<Element, TestComplexSubsetElement>(*this);

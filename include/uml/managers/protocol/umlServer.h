@@ -1,7 +1,7 @@
 #ifndef _UML_UML_SERVER_H_
 #define _UML_UML_SERVER_H_
 
-#include "uml/managers/threadSafeManager.h"
+#include "uml/managers/manager.h"
 #include <atomic>
 #include <iostream>
 #include <mutex>
@@ -25,7 +25,7 @@ namespace std {
 
 namespace UML {
 
-    class UmlServer : public ThreadSafeManager {
+    class UmlServer : public Manager<> {
 
         private:
             struct ClientInfo {

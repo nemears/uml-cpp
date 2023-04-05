@@ -3,81 +3,91 @@
 
 #include "uml/types/element.h"
 #include "abstractManager.h"
-#include "abstractAccessPolicy.h"
-#include "simpleAccessPolicy.h"
 #include "filePersistencePolicy.h"
 #include "serialization/open_uml/openUmlSerializationPolicy.h"
 #include "uml/umlPtr.h"
 
 namespace UML {
 
-    /**
-     * This is the policy class for a manager of UML elements, it requires two policies to be defined
-     * in order to use it:
-     *  AccessPolicy: The policy handling accessing the managers current memory of uml elements
-     *  PersistencePolicy: The policy handling the persistent storage of uml elements as well as the
-     *      swap space. // TODO think about seperating persistence and swap policies
-     * 
-     * These policies have methods that need to be implemented:
-     *      AccessPolicy:
-     *          - ManagerNode& assignNode(Element* newElement) : assigns the element a ManagerNode* object or sub object
-     *          - ElementPtr get(ID id) : get an element from memory
-     *          - bool loaded(ID id) : the element with the specified id is loaded in memory
-     *          - void restoreNode(ManagerNode* restoredNode) : restore a node from memory
-     *          - void eraseNode(ManagerNode* node, AbstractManager* me) : erase a node from existence
-     *          - void releaseNode(ManagerNode* node) : release a node from memory
-     *          - void reindex(ID oldID, ID newID) : reindex a node within the node graph
-     *          - void removeNode(ID id) : remove a node with the specified id from the graph
-     *          - void assignPtr(AbstractUmlPtr& ptr) : assign a pointer to the list
-     *          - void removePtr(AbstractUmlPtr& ptr) : remove a pointer from the list
-     *          - void restorePtr(AbstractUmlPtr& ptr) : restores a ptr in the list (TODO reimplement)
-     *      PersistencePolicy:
-     *          - ElementPtr aquire(ID id, AbstractManager* manager) : aquire an element with the specified id from disk // move to swap policy
-     *          - void write(Element& el, AbstractManager* me) : write an element to disk // move to swap policy
-     *          - void write(AbstractManager* me) : write everything to disk whole
-     *          - void write(std::string key, AbstractManager* me) : write to disk under key
-     *          - ElementPtr parse(AbstractManager* me) : read from disk
-     *          - ElementPtr parse(std::string path, AbstractManager* me) : read from specified signifier
-     *          - std::string getLocation(ID id) : get ID of signifier
-     *          - void setLocation(ID id, std::string location) : set a signifier ID pair
-     **/
+    struct ThreadSafeSetLock : public SetLock {
+        std::unique_lock<std::mutex> m_lck;
+        ThreadSafeSetLock(ManagerNode& node) : m_lck(node.m_mtx) {}
+    };
+
     template <
-            class AccessPolicy = SimpleAccessPolicy, 
             class SerializationPolicy = OpenUmlSerializationPolicy, 
             class PersistencePolicy = FilePersistencePolicy
         >
-    class Manager : public AbstractManager , public AccessPolicy, public SerializationPolicy, public PersistencePolicy {
+    class Manager : public AbstractManager, public SerializationPolicy, public PersistencePolicy {
         protected:
 
             ElementPtr m_root;
+            std::unordered_map<ID, ManagerNode> m_graph;
+            std::mutex m_graphMtx;
+
+            void setPtr(ElementPtr& ptr, ID id, const ManagerNode* node) {
+                ptr.m_id = id;
+                ptr.m_manager = this;
+                ptr.m_node = const_cast<ManagerNode*>(node);
+                if (node->m_managerElementMemory) {
+                    ptr.m_ptr = node->m_managerElementMemory;
+                }
+            }
 
             ElementPtr createPtr(ID id) override {
-                return AccessPolicy::createPtr(this, id);
+                std::unordered_map<ID, ManagerNode>::const_iterator nodeIt = m_graph.find(id);
+                const ManagerNode* node = 0;
+                if (nodeIt == m_graph.end()) {
+                    node = &m_graph[id];
+                } else {
+                    node = &nodeIt->second;
+                }
+                ElementPtr ret;
+                setPtr(ret, id, node);
+                assignPtr(ret);
+                return ret;
             }
             void removePtr(AbstractUmlPtr& ptr) override {
-                AccessPolicy::removePtr(ptr);
+                std::lock_guard<std::mutex> ptrsLck(ptr.m_node->m_ptrsMtx);
+                ptr.m_node->m_ptrs.remove_if([&](const AbstractUmlPtr* ptrEntry) {
+                    return ptrEntry->m_ptrId == ptr.m_ptrId;
+                });
             }
             void destroyPtr(AbstractUmlPtr& ptr) override {
-                AccessPolicy::destroyPtr(ptr);
+                if (ptr.m_node->m_ptrs.empty() && !ptr.m_node->m_managerElementMemory) {
+                    removeNode(ptr.m_id);
+                }
             }
             void assignPtr(AbstractUmlPtr& ptr) override {
-                AccessPolicy::assignPtr(ptr);
+                std::lock_guard<std::mutex> ptrsLck(ptr.m_node->m_ptrsMtx);
+                if (ptr.m_node->m_ptrs.size() > 0) {
+                    ptr.m_ptrId = ptr.m_node->m_ptrs.back()->m_ptrId + 1;
+                }
+                ptr.m_node->m_ptrs.push_back(const_cast<AbstractUmlPtr*>(&ptr));
             }
             void restorePtr(AbstractUmlPtr& ptr) override {
-                AccessPolicy::restorePtr(ptr);
+                std::lock_guard<std::mutex> ptrsLck(ptr.m_node->m_ptrsMtx);
+                ptr.m_node->m_ptrs.push_back(const_cast<AbstractUmlPtr*>(&ptr));
             }
 
             SetLock lockEl(Element& el) override {
-                return AccessPolicy::lockEl(el);
+                return ThreadSafeSetLock(*el.m_node);
             }
         public:
             virtual ~Manager() {
-                AccessPolicy::clear();
+                for (auto& pair : m_graph) {
+                    pair.second.erasePtrs();
+                    delete pair.second.m_managerElementMemory;
+                    pair.second.erase();
+                }
+                m_graph.clear();
             }
             template <class T = Element>
             UmlPtr<T> create() {
                 T* newElement = new T;
-                ManagerNode& node = AccessPolicy::assignNode(newElement);
+                std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                ManagerNode& node = m_graph[newElement->getID()];
+                node.m_managerElementMemory = newElement;
                 newElement->m_node = &node;
                 newElement->m_manager = this;
                 UmlPtr<T> ret(newElement);
@@ -324,8 +334,30 @@ namespace UML {
                 return 0;
             }
 
+            void restoreNode(ManagerNode* restoredNode) {
+                for (auto& pair : restoredNode->m_references) {
+                    ManagerNode* node = pair.second.node;
+                    if (!node || !node->m_managerElementMemory) {
+                        // element has been released, possibly there are no pointers
+                        continue;
+                    }
+                    node->restoreReference(restoredNode->m_managerElementMemory);
+                    restoredNode->restoreReference(node->m_managerElementMemory);
+                }
+                restoredNode->restoreReferences();
+            }
+
             ElementPtr get(ID id) override {
-                ElementPtr ret = AccessPolicy::get(id);
+                ElementPtr ret;
+                {
+                    std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                    std::unordered_map<ID, ManagerNode>::iterator result = m_graph.find(id);
+                    if (result != m_graph.end() && (*result).second.m_managerElementMemory) {
+                        // lock node for creation
+                        ret = ElementPtr(result->second.m_managerElementMemory);
+                    }
+                }
+
                 if (ret) {
                     return ret;
                 }
@@ -334,19 +366,29 @@ namespace UML {
                 ret = SerializationPolicy::parseIndividual(PersistencePolicy::loadElementData(id), *this);
 
                 if (ret) {
-                    AccessPolicy::restoreNode(ret.m_node);
+                    restoreNode(ret->m_node);
                 }
 
                 return ret;
             };
 
             bool loaded(ID id) override {
-                return AccessPolicy::loaded(id);
+                std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                std::unordered_map<ID, ManagerNode>::const_iterator result = m_graph.find(id);
+                return result != m_graph.end() && (*result).second.m_managerElementMemory;
             }
 
             void release(Element& el) override {
                 PersistencePolicy::saveElementData(SerializationPolicy::emitIndividual(el, *this), el.getID());
-                AccessPolicy::releaseNode(el.m_node);
+                ManagerNode* node = el.m_node;
+                ID id = node->m_managerElementMemory->getID();
+                node->releasePtrs();
+                delete node->m_managerElementMemory;
+                node->m_managerElementMemory = 0;
+                if (node->m_ptrs.empty()) {
+                    std::lock_guard<std::mutex> graphLck(m_graphMtx);
+                    m_graph.erase(id);
+                }
             }
 
             template <class ... Elements> 
@@ -357,24 +399,116 @@ namespace UML {
 
             void erase(Element& el) override {
                 PersistencePolicy::eraseEl(el.getID());
-                AccessPolicy::eraseNode(el.m_node, this);
+
+                ManagerNode* node = el.m_node;
+                ID id = node->m_managerElementMemory->getID();
+                {
+                    // lock node
+                    std::vector<ManagerNode*> nodesToErase(node->m_references.size());
+                    {
+                        std::vector<ID> idsToAquire(node->m_references.size());
+                        size_t i = 0;
+                        for (auto& pair : node->m_references) {
+                            if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+                                // element has been released, aquire later
+                                nodesToErase[i] = 0;
+                                idsToAquire[i] = pair.first;
+                            } else {
+                                nodesToErase[i] = pair.second.node;
+                            }
+                            i++;
+                        }
+                        i = 0;
+                        for (auto& refNode : nodesToErase) {
+                            if (!refNode) {
+                                refNode = get(idsToAquire[i]).m_node;
+                            }
+                            i++;
+                        }
+                    }
+                    for (auto& refNode : nodesToErase) {
+                        if (!refNode) {
+                            continue;
+                        }
+                        // refNode->removeReference(*node->m_managerElementMemory);
+                        refNode->referenceErased(id);
+                        if (refNode->m_references.count(id)) {
+                            refNode->m_references.erase(id);
+                        }
+                    }
+                    node->erase();
+                    delete node->m_managerElementMemory;
+                }
+                // lock graph for deletion
+                std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                m_graph.erase(id);
             };
+
+            bool exists(ID id) {
+                // lock graph for access
+                std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                return m_graph.count(id);
+            }
 
             void reindex(ID oldID, ID newID) override {
                 if (oldID == newID) {
                     return;
                 }
-                if (AccessPolicy::exists(newID)) {
-                    AccessPolicy::overwrite(oldID, newID);
+
+                if (exists(newID)) {
+                    // lock graph for edit
+                    std::lock_guard<std::mutex> graphLock(m_graphMtx);
+
+                    // overwrite
+                    std::unordered_map<ID, ManagerNode>::iterator nodeToBeOverwrittenIterator = m_graph.find(newID);
+                    ManagerNode& nodeToBeOverwritten = nodeToBeOverwrittenIterator->second;
+                    ManagerNode& newNode = m_graph[oldID];
+                    if (nodeToBeOverwritten.m_managerElementMemory) {
+                        delete nodeToBeOverwritten.m_managerElementMemory;
+                    }
+                    nodeToBeOverwritten.m_managerElementMemory = newNode.m_managerElementMemory;
+                    nodeToBeOverwritten.m_managerElementMemory->m_node = &nodeToBeOverwritten;
+                    nodeToBeOverwritten.m_references.clear();
+                    nodeToBeOverwritten.reindexPtrs(newID);
+                    for (auto& ptr : newNode.m_ptrs) {
+                        nodeToBeOverwritten.assingPtr(ptr);
+                        assignPtr(*ptr);
+                    }
+                    m_graph.erase(oldID);
                 } else {
-                    AccessPolicy::reindex(oldID, newID);
+                    // lock graph for edit
+                    std::lock_guard<std::mutex> graphLock(m_graphMtx);
+
+                    // reindex
+                    ManagerNode& discRef = m_graph[oldID];
+                    ManagerNode& newDisc = m_graph[newID] = discRef;
+                    newDisc.m_managerElementMemory->m_node = &newDisc;
+                    for (auto& ptr : newDisc.m_ptrs) {
+                        ptr->reindex(newID, newDisc.m_managerElementMemory);
+                    }
+                    for (auto& ref : newDisc.m_references) {
+                        if (!ref.second.node) {
+                            // reference is relased currently with no ptrs
+                            throw ManagerStateException("Bad state in reindex, reference released! TODO maybe aquire released el");
+                        } else if (ref.second.node->m_references.count(oldID)) {
+                            size_t numRefs = ref.second.node->m_references[oldID].count;
+                            ref.second.node->m_references.erase(oldID);
+                            ref.second.node->m_references[newID] = ManagerNode::NodeReference{&newDisc, numRefs};
+                        }
+                        if (!ref.second.node->m_managerElementMemory) {
+                            get(ref.first);
+                        }
+                        ref.second.node->m_managerElementMemory->referenceReindexed(newID);
+                    }
+                    m_graph.erase(oldID);
                 }
-                // TODO persistence policy reindex?
+
                 PersistencePolicy::reindex(oldID, newID);
             }
 
             void removeNode(ID id) override {
-                AccessPolicy::removeNode(id);
+                std::lock_guard<std::mutex> graphLck(m_graphMtx);
+                m_graph.erase(id);
             }
 
             ElementPtr open(std::string path) override {
@@ -384,7 +518,7 @@ namespace UML {
                 while (!queue.empty()) {
                     ElementPtr front = queue.front();
                     queue.pop_front();
-                    AccessPolicy::restoreNode(front.m_node);
+                    restoreNode(front.m_node);
                     for (auto& el : front->getOwnedElements()) {
                         queue.push_back(&el);
                     }
@@ -399,7 +533,7 @@ namespace UML {
                 while (!queue.empty()) {
                     ElementPtr front = queue.front();
                     queue.pop_front();
-                    AccessPolicy::restoreNode(front.m_node);
+                    restoreNode(front.m_node);
                     for (auto& el : front->getOwnedElements()) {
                         queue.push_back(&el);
                     }

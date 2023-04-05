@@ -10,7 +10,7 @@ namespace UML {
 
     class InstanceValue : public ValueSpecification {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             CustomSingleton<InstanceSpecification, InstanceValue> m_instance = CustomSingleton<InstanceSpecification, InstanceValue>(this);

@@ -7,7 +7,7 @@
 namespace UML {
     class Comment : public Element {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             CustomSet<Element, Comment> m_annotatedElements = CustomSet<Element, Comment>(this);

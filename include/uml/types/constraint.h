@@ -13,7 +13,7 @@ namespace UML {
     {
 
         friend class Namespace;
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy>
+        template <typename SerializationPolicy, typename PersistencePolicy>
         friend class Manager;
 
     protected:

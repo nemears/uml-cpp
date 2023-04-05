@@ -3,7 +3,6 @@
 #include "test/uml-cpp-paths.h"
 #include "test/umlTestUtil.h"
 #include "uml/managers/manager.h"
-#include "uml/managers/threadSafeManager.h"
 
 using namespace std;
 using namespace UML;
@@ -250,19 +249,19 @@ TEST_F(UmlManagerTest, policyManagerTest) {
     ASSERT_FALSE(child->getOwningPackage().loaded());
 }
 
-TEST_F(UmlManagerTest, threadSafeManagerTest) {
-    ThreadSafeManager m;
-    PackagePtr p = m.create<Package>();
-    m.mount(".");
-    m.release(*p);
-    ASSERT_FALSE(p.loaded());
-    ASSERT_EQ(m.get(p.id()).ptr(), p.ptr());
-    PackagePtr child = m.create<Package>();
-    p->getPackagedElements().add(*child);
-    p.release();
-    ASSERT_FALSE(p.loaded());
-    ASSERT_FALSE(child->getOwningPackage().loaded());
-}
+// TEST_F(UmlManagerTest, threadSafeManagerTest) {
+//     ThreadSafeManager m;
+//     PackagePtr p = m.create<Package>();
+//     m.mount(".");
+//     m.release(*p);
+//     ASSERT_FALSE(p.loaded());
+//     ASSERT_EQ(m.get(p.id()).ptr(), p.ptr());
+//     PackagePtr child = m.create<Package>();
+//     p->getPackagedElements().add(*child);
+//     p.release();
+//     ASSERT_FALSE(p.loaded());
+//     ASSERT_FALSE(child->getOwningPackage().loaded());
+// }
 
 TEST_F(UmlManagerTest, overwriteRootTest) {
     Manager<> m;

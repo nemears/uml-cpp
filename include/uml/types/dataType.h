@@ -7,7 +7,7 @@
 namespace UML {
     class DataType : public Classifier {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Property;
         friend class Operation;
 

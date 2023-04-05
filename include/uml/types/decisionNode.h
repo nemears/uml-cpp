@@ -12,7 +12,7 @@ namespace UML {
 
     class DecisionNode : public ControlNode {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             CustomSingleton<ObjectFlow, DecisionNode> m_decisionInputFlow = CustomSingleton<ObjectFlow, DecisionNode>(this);

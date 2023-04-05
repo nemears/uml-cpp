@@ -15,7 +15,7 @@ namespace UML {
     class Deployment : public Dependency {
 
         friend class DeploymentTarget;
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         private:
             CustomSet<DeployedArtifact, Deployment> m_deployedArtifacts = CustomSet<DeployedArtifact, Deployment>(this);

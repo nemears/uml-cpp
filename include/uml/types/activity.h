@@ -16,7 +16,7 @@ namespace UML {
 
     class Activity : public Behavior {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             CustomSet<ActivityNode, Activity> m_nodes = CustomSet<ActivityNode, Activity>(this);

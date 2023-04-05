@@ -13,7 +13,7 @@ namespace UML {
 
     class Connector : public Feature {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class StructuredClassifier;
 
         protected:

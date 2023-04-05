@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <list>
+#include <mutex>
 #include "uml/id.h"
 
 namespace UML {
@@ -25,6 +26,8 @@ namespace UML {
         };
         std::unordered_map<ID, NodeReference> m_references;
         std::list<AbstractUmlPtr*> m_ptrs; // list to UmlPtr*'s
+        std::mutex m_mtx;
+        std::mutex m_ptrsMtx;
         ManagerNode(){};
         // ManagerNode(const ManagerNode& rhs);
         ManagerNode& operator=(const ManagerNode& rhs);

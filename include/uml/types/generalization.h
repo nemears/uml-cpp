@@ -12,7 +12,7 @@ namespace UML {
 
     class Generalization : public DirectedRelationship {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Classifier;
 
         protected:

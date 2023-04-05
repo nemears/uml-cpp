@@ -6,7 +6,7 @@
 namespace UML {
     class MergeNode : public ControlNode {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             MergeNode();

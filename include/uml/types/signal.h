@@ -7,7 +7,7 @@
 namespace UML {
     class Signal : public Classifier {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             CustomOrderedSet<Property, Signal> m_ownedAttributes = CustomOrderedSet<Property, Signal>(this);

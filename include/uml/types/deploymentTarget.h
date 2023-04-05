@@ -10,7 +10,7 @@ namespace UML {
 
     class DeploymentTarget : virtual public NamedElement {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             CustomSet<Deployment, DeploymentTarget> m_deployments = CustomSet<Deployment, DeploymentTarget>(this);

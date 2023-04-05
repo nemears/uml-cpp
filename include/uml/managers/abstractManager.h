@@ -33,9 +33,6 @@ namespace UML {
             virtual ElementPtr open() = 0;
             virtual ElementPtr getRoot() const = 0;
             virtual void setRoot(Element* root) = 0;
-            // virtual std::string getLocation(ID id) = 0;
-            // virtual std::string getLocation() = 0;
-            // virtual void setLocation(ID id, std::string location) = 0;
             virtual void save(std::string location) = 0;
             virtual void save() = 0;
         protected:

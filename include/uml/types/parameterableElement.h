@@ -15,7 +15,7 @@ namespace UML {
 
         friend class TemplateParameter;
         friend class TemplateParameterSubstitution;
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             CustomSingleton<TemplateParameter, ParameterableElement> m_templateParameter = CustomSingleton<TemplateParameter, ParameterableElement>(this);

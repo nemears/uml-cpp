@@ -11,7 +11,7 @@ namespace UML {
 
     class ObjectFlow : public ActivityEdge {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             CustomSingleton<Behavior, ObjectFlow> m_transformation = CustomSingleton<Behavior, ObjectFlow>(this);

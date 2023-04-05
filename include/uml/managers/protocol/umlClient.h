@@ -2,7 +2,7 @@
 #define _UML_UML_CLIENT_H_
 
 // #include "manager.h"
-#include "serverAccessPolicy.h"
+// #include "serverAccessPolicy.h"
 #include "serverPersistencePolicy.h"
 
 namespace UML {

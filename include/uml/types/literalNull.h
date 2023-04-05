@@ -6,7 +6,7 @@
 namespace UML {
     class LiteralNull : public LiteralSpecification {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             LiteralNull();

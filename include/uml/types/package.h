@@ -16,7 +16,7 @@ namespace UML {
 
     class Package : public PackageableElement, public Namespace, public TemplateableElement {
 
-        template <typename AccessPolicy, typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class PackageImport;
         friend void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
 

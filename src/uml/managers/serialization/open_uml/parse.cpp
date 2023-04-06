@@ -987,214 +987,6 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
     return ret;
 }
 
-void parseActionFeatures(YAML::Node node, Action& action, ParserData& data) {
-    parseSet<Constraint>(node, action, data, "localPreconditions", &Action::getLocalPreconditions);
-    parseSet<Constraint>(node, action, data, "localPostconditions", &Action::getLocalPostconditions);
-}
-
-void parseActionInputPinFeatures(YAML::Node node, ActionInputPin& actionInputPin, ParserData& data) {
-    parseSingleton(node, actionInputPin, data, "fromAction", &ActionInputPin::setFromAction, &ActionInputPin::setFromAction);
-}
-
-void parseActivityFeatures(YAML::Node node, Activity& activity, ParserData& data) {
-    parseSet<ActivityNode>(node, activity, data, "nodes", &Activity::getNodes);
-    parseSet<ActivityEdge>(node, activity, data, "edges", &Activity::getEdges);
-    parseSet<ActivityPartition>(node, activity, data, "partitions", &Activity::getPartitions);
-}
-
-void parseActivityEdgeFeatures(YAML::Node node, ActivityEdge& activityEdge, ParserData& data) {
-    parseSingleton(node, activityEdge, data, "target", &ActivityEdge::setTarget, &ActivityEdge::setTarget);
-    parseSingleton(node, activityEdge, data, "source", &ActivityEdge::setSource, &ActivityEdge::setSource);
-    parseSingleton(node, activityEdge, data, "guard", &ActivityEdge::setGuard, &ActivityEdge::setGuard);
-    parseSingleton(node, activityEdge, data, "weight", &ActivityEdge::setWeight, &ActivityEdge::setWeight);
-    parseSet<ActivityPartition>(node, activityEdge, data, "inPartitions", &ActivityEdge::getInPartitions);
-}
-
-void parseActivityNodeFeatures(YAML::Node node, ActivityNode& activityNode, ParserData& data) {
-    parseSet<ActivityEdge>(node, activityNode, data, "incoming", &ActivityNode::getIncoming);
-    parseSet<ActivityEdge>(node, activityNode, data, "outgoing", &ActivityNode::getOutgoing);
-    // parseSet<ActivityNode>(node, activityNode, data, "redefinedNodes", &Activity::getRedefinedNodes);
-    parseSet<ActivityPartition>(node, activityNode, data, "inPartitions", &ActivityNode::getInPartitions);
-}
-
-void parseActivityParameterNodeFeatures(YAML::Node node, ActivityParameterNode& activityParameterNode, ParserData& data) {
-    parseSingleton(node, activityParameterNode, data, "parameter", &ActivityParameterNode::setParameter, &ActivityParameterNode::setParameter);
-}
-
-void parseActivityPartitionFeatures(YAML::Node node, ActivityPartition& activityPartition, ParserData& data) {
-    parseSet<ActivityNode>(node, activityPartition, data, "nodes", &ActivityPartition::getNodes);
-    parseSet<ActivityEdge>(node, activityPartition, data, "edges", &ActivityPartition::getEdges);
-    parseSet<ActivityPartition>(node, activityPartition, data, "subPartitions", &ActivityPartition::getSubPartitions);
-    parseSingleton(node, activityPartition, data, "represents", &ActivityPartition::setRepresents, &ActivityPartition::setRepresents);
-}
-
-void parseArtifactFeatures(YAML::Node node, Artifact& artifact, ParserData& data) {
-    parseSet<Property>(node, artifact, data, "ownedAttributes", &Artifact::getOwnedAttributes);
-    parseSet<Operation>(node, artifact, data, "ownedOperations", &Artifact::getOwnedOperations);
-    parseSet<Artifact>(node, artifact, data, "nestedArtifacts", &Artifact::getNestedArtifacts);
-    parseSet<Manifestation>(node, artifact, data, "manifestations", &Artifact::getManifestations);
-}
-
-void parseAssociationFeatures(YAML::Node node, Association& association, ParserData& data) {
-    parseSet<Property>(node, association, data, "memberEnds", &Association::getMemberEnds);
-    parseSet<Property>(node, association, data, "ownedEnds", &Association::getOwnedEnds);
-    parseSet<Property>(node, association, data, "navigableOwnedEnds", &Association::getNavigableOwnedEnds);
-}
-
-void parseBehaviorFeatures(YAML::Node node, Behavior& behavior, ParserData& data) {
-    parseSingleton<BehavioralFeature>(node, behavior, data, "specification", &Behavior::setSpecification, &Behavior::setSpecification);
-    parseSet<Parameter>(node, behavior, data, "ownedParameters", &Behavior::getOwnedParameters);
-}
-
-void parseBehavioralFeatureFeatures(YAML::Node node, BehavioralFeature& behavioralFeature, ParserData& data) {
-    if (node["concurrency"]) {
-        string concurrencyValue = node["concurrency"].as<string>();
-        if (concurrencyValue == "sequential") {
-            behavioralFeature.setConcurrency(CallConcurrencyKind::Sequential);
-        } else if (concurrencyValue == "guarded") {
-            behavioralFeature.setConcurrency(CallConcurrencyKind::Guarded);
-        } else if (concurrencyValue == "concurrent") {
-            behavioralFeature.setConcurrency(CallConcurrencyKind::Concurrent);
-        } else {
-            throw SerializationError("Could not parse concurrency, must be sequential, guarded or concurrent! " + getLineNumber(node["concurrency"]));
-        }
-    }
-    parseSet<Type>(node, behavioralFeature, data, "raisedExceptions", &BehavioralFeature::getRaisedExceptions);
-    parseSet<Behavior>(node, behavioralFeature, data, "methods", &BehavioralFeature::getMethods);
-    parseSet<Parameter>(node, behavioralFeature, data, "ownedParameters", &BehavioralFeature::getOwnedParameters);
-    parseSet<ParameterSet>(node, behavioralFeature, data, "ownedParameterSets", &BehavioralFeature::getOwnedParameterSets);
-}
-
-void parseBehavioredClassifierFeatures(YAML::Node node, BehavioredClassifier& behavioredClassifier, ParserData& data) {
-    parseSingleton<Behavior>(node, behavioredClassifier, data, "classifierBehavior", &BehavioredClassifier::setClassifierBehavior, &BehavioredClassifier::setClassifierBehavior);
-    parseSet<Behavior>(node, behavioredClassifier, data, "ownedBehaviors", &BehavioredClassifier::getOwnedBehaviors);
-    parseSet<InterfaceRealization>(node, behavioredClassifier, data, "interfaceRealizations", &BehavioredClassifier::getInterfaceRealizations);
-}
-
-void parseCallActionFeatures(YAML::Node node, CallAction& callAction, ParserData& data) {
-    parseSet<OutputPin>(node, callAction, data, "results", &CallAction::getResults);
-}
-
-void parseCallBehaviorActionFeatures(YAML::Node node, CallBehaviorAction& callBehaviorAction, ParserData& data) {
-    parseSingleton(node, callBehaviorAction, data, "behavior", &CallBehaviorAction::setBehavior, &CallBehaviorAction::setBehavior);
-}
-
-void parseClassFeatures(YAML::Node node, Class& clazz, ParserData& data) {
-    parseSet<Classifier>(node, clazz, data, "nestedClassifiers", &Class::getNestedClassifiers);
-    parseSet<Property>(node, clazz, data, "ownedAttributes", &Class::getOwnedAttributes);
-    parseSet<Operation>(node, clazz, data, "ownedOperations", &Class::getOwnedOperations);
-    parseSet<Reception>(node, clazz, data, "ownedReceptions", &Class::getOwnedReceptions);
-}
-
-void parseClassifierFeatures(YAML::Node node, Classifier& classifier, ParserData& data) {
-    parseSet<Generalization>(node, classifier, data, "generalizations", &Classifier::getGeneralizations);
-    parseSet<GeneralizationSet>(node, classifier, data, "powertypeExtent", &Classifier::getPowerTypeExtent);
-}
-
-void parseClassifierTemplateParameterFeatures(YAML::Node node, ClassifierTemplateParameter& classifierTemplateParameter, ParserData& data) {
-    parseSet<Classifier>(node, classifierTemplateParameter, data, "constrainingClassifiers", &ClassifierTemplateParameter::getConstrainingClassifiers);
-}
-
-void parseCommentFeatures(YAML::Node node, Comment& comment, ParserData& data) {
-    parseSet<Element>(node, comment, data, "annotatedElements", &Comment::getAnnotatedElements);
-    parseString(node, comment, "body", &Comment::setBody);
-}
-
-void parseConnectorFeatures(YAML::Node node, Connector& connector, ParserData& data) {
-    parseSet<ConnectorEnd>(node, connector, data, "ends", &Connector::getEnds);
-    parseSet<Behavior>(node, connector, data, "contracts", &Connector::getContracts);
-    parseSingleton<Association>(node, connector, data, "type", &Connector::setType, &Connector::setType);
-}
-
-void parseConnectorEndFeatures(YAML::Node node, ConnectorEnd& connectorEnd, ParserData& data) {
-    parseSingleton<ConnectableElement>(node, connectorEnd, data, "role", &ConnectorEnd::setRole, &ConnectorEnd::setRole);
-}
-
-void parseConstraintFeatures(YAML::Node node, Constraint& constraint, ParserData& data) {
-    parseSet<Element>(node, constraint, data, "constrainedElements", &Constraint::getConstrainedElements);
-    parseSingleton<ValueSpecification>(node, constraint, data, "specification", &Constraint::setSpecification, &Constraint::setSpecification);
-}
-
-void parseDataTypeFeatures(YAML::Node node, DataType& dataType, ParserData& data) {
-    parseSet<Property>(node, dataType, data, "ownedAttributes", &DataType::getOwnedAttributes);
-    parseSet<Operation>(node, dataType, data, "ownedOperations", &DataType::getOwnedOperations);
-}
-
-void parseDecisionNodeFeatures(YAML::Node node, DecisionNode& decisionNode, ParserData& data) {
-    parseSingleton(node, decisionNode, data, "decisionInput", &DecisionNode::setDecisionInput, &DecisionNode::setDecisionInput);
-    parseSingleton(node, decisionNode, data, "decisionInputFlow", &DecisionNode::setDecisionInputFlow, &DecisionNode::setDecisionInputFlow);
-}
-
-void parseDependencyFeatures(YAML::Node node, Dependency& dependency, ParserData& data) {
-    parseSet<NamedElement>(node, dependency, data, "suppliers", &Dependency::getSuppliers);
-    parseSet<NamedElement>(node, dependency, data, "clients", &Dependency::getClients);
-}
-
-void parseDeploymentTargetFeatures(YAML::Node node, DeploymentTarget& deploymentTarget, ParserData& data) {
-    parseSet<Deployment>(node, deploymentTarget, data, "deployments", &DeploymentTarget::getDeployments);
-}
-
-void parseDeploymentFeatures(YAML::Node node, Deployment& deployment, ParserData& data) {
-    parseSet<DeployedArtifact>(node, deployment, data, "deployedArtifacts", &Deployment::getDeployedArtifacts);
-}
-
-void parseElementFeatures(YAML::Node node, Element& el, ParserData& data) {
-    if (node["id"]) {
-        if (!node["id"].IsScalar()) {
-            throw SerializationError("Could not parse id of element because it is not a scalar value " + getLineNumber(node["id"]));
-        }
-        string idString = node["id"].as<string>();
-        if (!isValidID(idString)) {
-            throw SerializationError("Could not parse id of element because it is not a valid id. A valid id is a 28 character url safe base64 encoded string " + getLineNumber(node["id"]));
-        }
-        el.setID(idString);
-    }
-    parseSet<Comment>(node, el, data, "ownedComments", &Element::getOwnedComments);
-    parseSet<InstanceSpecification>(node, el, data, "appliedStereotypes", &Element::getAppliedStereotypes);
-}
-
-template <class T>
-void parseVisibilty(YAML::Node node, T& elWithVisibility) {
-    if (node["visibility"]) {
-        if (!node["visibility"].IsScalar()) {
-            throw SerializationError("could not parse visibility, node must be a scalar!" + getLineNumber(node["visibility"]));
-        }
-        string visibilityValue = node["visibility"].as<string>();
-        if (visibilityValue == "package") {
-            elWithVisibility.setVisibility(VisibilityKind::PACKAGE);
-        } else if (visibilityValue == "private") {
-            elWithVisibility.setVisibility(VisibilityKind::PRIVATE);
-        } else if (visibilityValue == "protected") {
-            elWithVisibility.setVisibility(VisibilityKind::PROTECTED);
-        }
-    }
-}
-
-void parseElementImportFeatures(YAML::Node node, ElementImport& elementImport, ParserData& data) {
-    parseSingleton<PackageableElement>(node, elementImport, data, "importedElement", &ElementImport::setImportedElement, &ElementImport::setImportedElement);
-    parseString(node, elementImport, "alias", &ElementImport::setAlias);
-    parseVisibilty(node, elementImport);
-}
-
-void parseEnumerationFeatures(YAML::Node node, Enumeration& enumeration, ParserData& data) {
-    parseSet<EnumerationLiteral>(node, enumeration, data, "ownedLiterals", &Enumeration::getOwnedLiterals);
-}
-
-void parseExceptionHandlerFeatures(YAML::Node node, ExceptionHandler& exceptionHandler, ParserData& data) {
-    parseSingleton(node, exceptionHandler, data, "handlerBody", &ExceptionHandler::setHandlerBody, &ExceptionHandler::setHandlerBody);
-    parseSingleton(node, exceptionHandler, data, "exceptionInput", &ExceptionHandler::setExceptionInput, &ExceptionHandler::setExceptionInput);
-    parseSet<Classifier>(node, exceptionHandler, data, "exceptionTypes", &ExceptionHandler::getExceptionTypes);
-}
-
-void parseExecutableNodeFeatures(YAML::Node node, ExecutableNode& executableNode, ParserData& data) {
-    parseSet<ExceptionHandler>(node, executableNode, data, "handlers", &ExecutableNode::getHandlers);
-}
-
-void parseExpressionFeatures(YAML::Node node, Expression& expression, ParserData& data) {
-    parseSet<ValueSpecification>(node, expression, data, "operands", &Expression::getOperands);
-    parseString(node, expression, "symbol", &Expression::setSymbol);
-}
-
 ElementType elementTypeFromString(string eType) {
     if (eType.compare("ABSTRACTION") == 0) {
         return ElementType::ABSTRACTION;
@@ -1420,6 +1212,214 @@ ElementType elementTypeFromString(string eType) {
         return ElementType::VALUE_SPECIFICATION;
     }
     throw SerializationError("Could not identify element type by keyword: " + eType + '!');
+}
+
+void parseActionFeatures(YAML::Node node, Action& action, ParserData& data) {
+    parseSet<Constraint>(node, action, data, "localPreconditions", &Action::getLocalPreconditions);
+    parseSet<Constraint>(node, action, data, "localPostconditions", &Action::getLocalPostconditions);
+}
+
+void parseActionInputPinFeatures(YAML::Node node, ActionInputPin& actionInputPin, ParserData& data) {
+    parseSingleton(node, actionInputPin, data, "fromAction", &ActionInputPin::setFromAction, &ActionInputPin::setFromAction);
+}
+
+void parseActivityFeatures(YAML::Node node, Activity& activity, ParserData& data) {
+    parseSet<ActivityNode>(node, activity, data, "nodes", &Activity::getNodes);
+    parseSet<ActivityEdge>(node, activity, data, "edges", &Activity::getEdges);
+    parseSet<ActivityPartition>(node, activity, data, "partitions", &Activity::getPartitions);
+}
+
+void parseActivityEdgeFeatures(YAML::Node node, ActivityEdge& activityEdge, ParserData& data) {
+    parseSingleton(node, activityEdge, data, "target", &ActivityEdge::setTarget, &ActivityEdge::setTarget);
+    parseSingleton(node, activityEdge, data, "source", &ActivityEdge::setSource, &ActivityEdge::setSource);
+    parseSingleton(node, activityEdge, data, "guard", &ActivityEdge::setGuard, &ActivityEdge::setGuard);
+    parseSingleton(node, activityEdge, data, "weight", &ActivityEdge::setWeight, &ActivityEdge::setWeight);
+    parseSet<ActivityPartition>(node, activityEdge, data, "inPartitions", &ActivityEdge::getInPartitions);
+}
+
+void parseActivityNodeFeatures(YAML::Node node, ActivityNode& activityNode, ParserData& data) {
+    parseSet<ActivityEdge>(node, activityNode, data, "incoming", &ActivityNode::getIncoming);
+    parseSet<ActivityEdge>(node, activityNode, data, "outgoing", &ActivityNode::getOutgoing);
+    // parseSet<ActivityNode>(node, activityNode, data, "redefinedNodes", &Activity::getRedefinedNodes);
+    parseSet<ActivityPartition>(node, activityNode, data, "inPartitions", &ActivityNode::getInPartitions);
+}
+
+void parseActivityParameterNodeFeatures(YAML::Node node, ActivityParameterNode& activityParameterNode, ParserData& data) {
+    parseSingleton(node, activityParameterNode, data, "parameter", &ActivityParameterNode::setParameter, &ActivityParameterNode::setParameter);
+}
+
+void parseActivityPartitionFeatures(YAML::Node node, ActivityPartition& activityPartition, ParserData& data) {
+    parseSet<ActivityNode>(node, activityPartition, data, "nodes", &ActivityPartition::getNodes);
+    parseSet<ActivityEdge>(node, activityPartition, data, "edges", &ActivityPartition::getEdges);
+    parseSet<ActivityPartition>(node, activityPartition, data, "subPartitions", &ActivityPartition::getSubPartitions);
+    parseSingleton(node, activityPartition, data, "represents", &ActivityPartition::setRepresents, &ActivityPartition::setRepresents);
+}
+
+void parseArtifactFeatures(YAML::Node node, Artifact& artifact, ParserData& data) {
+    parseSet<Property>(node, artifact, data, "ownedAttributes", &Artifact::getOwnedAttributes);
+    parseSet<Operation>(node, artifact, data, "ownedOperations", &Artifact::getOwnedOperations);
+    parseSet<Artifact>(node, artifact, data, "nestedArtifacts", &Artifact::getNestedArtifacts);
+    parseSet<Manifestation>(node, artifact, data, "manifestations", &Artifact::getManifestations);
+}
+
+void parseAssociationFeatures(YAML::Node node, Association& association, ParserData& data) {
+    parseSet<Property>(node, association, data, "memberEnds", &Association::getMemberEnds);
+    parseSet<Property>(node, association, data, "ownedEnds", &Association::getOwnedEnds);
+    parseSet<Property>(node, association, data, "navigableOwnedEnds", &Association::getNavigableOwnedEnds);
+}
+
+void parseBehaviorFeatures(YAML::Node node, Behavior& behavior, ParserData& data) {
+    parseSingleton<BehavioralFeature>(node, behavior, data, "specification", &Behavior::setSpecification, &Behavior::setSpecification);
+    parseSet<Parameter>(node, behavior, data, "ownedParameters", &Behavior::getOwnedParameters);
+}
+
+void parseBehavioralFeatureFeatures(YAML::Node node, BehavioralFeature& behavioralFeature, ParserData& data) {
+    if (node["concurrency"]) {
+        string concurrencyValue = node["concurrency"].as<string>();
+        if (concurrencyValue == "sequential") {
+            behavioralFeature.setConcurrency(CallConcurrencyKind::Sequential);
+        } else if (concurrencyValue == "guarded") {
+            behavioralFeature.setConcurrency(CallConcurrencyKind::Guarded);
+        } else if (concurrencyValue == "concurrent") {
+            behavioralFeature.setConcurrency(CallConcurrencyKind::Concurrent);
+        } else {
+            throw SerializationError("Could not parse concurrency, must be sequential, guarded or concurrent! " + getLineNumber(node["concurrency"]));
+        }
+    }
+    parseSet<Type>(node, behavioralFeature, data, "raisedExceptions", &BehavioralFeature::getRaisedExceptions);
+    parseSet<Behavior>(node, behavioralFeature, data, "methods", &BehavioralFeature::getMethods);
+    parseSet<Parameter>(node, behavioralFeature, data, "ownedParameters", &BehavioralFeature::getOwnedParameters);
+    parseSet<ParameterSet>(node, behavioralFeature, data, "ownedParameterSets", &BehavioralFeature::getOwnedParameterSets);
+}
+
+void parseBehavioredClassifierFeatures(YAML::Node node, BehavioredClassifier& behavioredClassifier, ParserData& data) {
+    parseSingleton<Behavior>(node, behavioredClassifier, data, "classifierBehavior", &BehavioredClassifier::setClassifierBehavior, &BehavioredClassifier::setClassifierBehavior);
+    parseSet<Behavior>(node, behavioredClassifier, data, "ownedBehaviors", &BehavioredClassifier::getOwnedBehaviors);
+    parseSet<InterfaceRealization>(node, behavioredClassifier, data, "interfaceRealizations", &BehavioredClassifier::getInterfaceRealizations);
+}
+
+void parseCallActionFeatures(YAML::Node node, CallAction& callAction, ParserData& data) {
+    parseSet<OutputPin>(node, callAction, data, "results", &CallAction::getResults);
+}
+
+void parseCallBehaviorActionFeatures(YAML::Node node, CallBehaviorAction& callBehaviorAction, ParserData& data) {
+    parseSingleton(node, callBehaviorAction, data, "behavior", &CallBehaviorAction::setBehavior, &CallBehaviorAction::setBehavior);
+}
+
+void parseClassFeatures(YAML::Node node, Class& clazz, ParserData& data) {
+    parseSet<Classifier>(node, clazz, data, "nestedClassifiers", &Class::getNestedClassifiers);
+    parseSet<Property>(node, clazz, data, "ownedAttributes", &Class::getOwnedAttributes);
+    parseSet<Operation>(node, clazz, data, "ownedOperations", &Class::getOwnedOperations);
+    parseSet<Reception>(node, clazz, data, "ownedReceptions", &Class::getOwnedReceptions);
+}
+
+void parseClassifierFeatures(YAML::Node node, Classifier& classifier, ParserData& data) {
+    parseSet<Generalization>(node, classifier, data, "generalizations", &Classifier::getGeneralizations);
+    parseSet<GeneralizationSet>(node, classifier, data, "powertypeExtent", &Classifier::getPowerTypeExtent);
+}
+
+void parseClassifierTemplateParameterFeatures(YAML::Node node, ClassifierTemplateParameter& classifierTemplateParameter, ParserData& data) {
+    parseSet<Classifier>(node, classifierTemplateParameter, data, "constrainingClassifiers", &ClassifierTemplateParameter::getConstrainingClassifiers);
+}
+
+void parseCommentFeatures(YAML::Node node, Comment& comment, ParserData& data) {
+    parseSet<Element>(node, comment, data, "annotatedElements", &Comment::getAnnotatedElements);
+    parseString(node, comment, "body", &Comment::setBody);
+}
+
+void parseConnectorFeatures(YAML::Node node, Connector& connector, ParserData& data) {
+    parseSet<ConnectorEnd>(node, connector, data, "ends", &Connector::getEnds);
+    parseSet<Behavior>(node, connector, data, "contracts", &Connector::getContracts);
+    parseSingleton<Association>(node, connector, data, "type", &Connector::setType, &Connector::setType);
+}
+
+void parseConnectorEndFeatures(YAML::Node node, ConnectorEnd& connectorEnd, ParserData& data) {
+    parseSingleton<ConnectableElement>(node, connectorEnd, data, "role", &ConnectorEnd::setRole, &ConnectorEnd::setRole);
+}
+
+void parseConstraintFeatures(YAML::Node node, Constraint& constraint, ParserData& data) {
+    parseSet<Element>(node, constraint, data, "constrainedElements", &Constraint::getConstrainedElements);
+    parseSingleton<ValueSpecification>(node, constraint, data, "specification", &Constraint::setSpecification, &Constraint::setSpecification);
+}
+
+void parseDataTypeFeatures(YAML::Node node, DataType& dataType, ParserData& data) {
+    parseSet<Property>(node, dataType, data, "ownedAttributes", &DataType::getOwnedAttributes);
+    parseSet<Operation>(node, dataType, data, "ownedOperations", &DataType::getOwnedOperations);
+}
+
+void parseDecisionNodeFeatures(YAML::Node node, DecisionNode& decisionNode, ParserData& data) {
+    parseSingleton(node, decisionNode, data, "decisionInput", &DecisionNode::setDecisionInput, &DecisionNode::setDecisionInput);
+    parseSingleton(node, decisionNode, data, "decisionInputFlow", &DecisionNode::setDecisionInputFlow, &DecisionNode::setDecisionInputFlow);
+}
+
+void parseDependencyFeatures(YAML::Node node, Dependency& dependency, ParserData& data) {
+    parseSet<NamedElement>(node, dependency, data, "suppliers", &Dependency::getSuppliers);
+    parseSet<NamedElement>(node, dependency, data, "clients", &Dependency::getClients);
+}
+
+void parseDeploymentTargetFeatures(YAML::Node node, DeploymentTarget& deploymentTarget, ParserData& data) {
+    parseSet<Deployment>(node, deploymentTarget, data, "deployments", &DeploymentTarget::getDeployments);
+}
+
+void parseDeploymentFeatures(YAML::Node node, Deployment& deployment, ParserData& data) {
+    parseSet<DeployedArtifact>(node, deployment, data, "deployedArtifacts", &Deployment::getDeployedArtifacts);
+}
+
+void parseElementFeatures(YAML::Node node, Element& el, ParserData& data) {
+    if (node["id"]) {
+        if (!node["id"].IsScalar()) {
+            throw SerializationError("Could not parse id of element because it is not a scalar value " + getLineNumber(node["id"]));
+        }
+        string idString = node["id"].as<string>();
+        if (!isValidID(idString)) {
+            throw SerializationError("Could not parse id of element because it is not a valid id. A valid id is a 28 character url safe base64 encoded string " + getLineNumber(node["id"]));
+        }
+        el.setID(idString);
+    }
+    parseSet<Comment>(node, el, data, "ownedComments", &Element::getOwnedComments);
+    parseSet<InstanceSpecification>(node, el, data, "appliedStereotypes", &Element::getAppliedStereotypes);
+}
+
+template <class T>
+void parseVisibilty(YAML::Node node, T& elWithVisibility) {
+    if (node["visibility"]) {
+        if (!node["visibility"].IsScalar()) {
+            throw SerializationError("could not parse visibility, node must be a scalar!" + getLineNumber(node["visibility"]));
+        }
+        string visibilityValue = node["visibility"].as<string>();
+        if (visibilityValue == "package") {
+            elWithVisibility.setVisibility(VisibilityKind::PACKAGE);
+        } else if (visibilityValue == "private") {
+            elWithVisibility.setVisibility(VisibilityKind::PRIVATE);
+        } else if (visibilityValue == "protected") {
+            elWithVisibility.setVisibility(VisibilityKind::PROTECTED);
+        }
+    }
+}
+
+void parseElementImportFeatures(YAML::Node node, ElementImport& elementImport, ParserData& data) {
+    parseSingleton<PackageableElement>(node, elementImport, data, "importedElement", &ElementImport::setImportedElement, &ElementImport::setImportedElement);
+    parseString(node, elementImport, "alias", &ElementImport::setAlias);
+    parseVisibilty(node, elementImport);
+}
+
+void parseEnumerationFeatures(YAML::Node node, Enumeration& enumeration, ParserData& data) {
+    parseSet<EnumerationLiteral>(node, enumeration, data, "ownedLiterals", &Enumeration::getOwnedLiterals);
+}
+
+void parseExceptionHandlerFeatures(YAML::Node node, ExceptionHandler& exceptionHandler, ParserData& data) {
+    parseSingleton(node, exceptionHandler, data, "handlerBody", &ExceptionHandler::setHandlerBody, &ExceptionHandler::setHandlerBody);
+    parseSingleton(node, exceptionHandler, data, "exceptionInput", &ExceptionHandler::setExceptionInput, &ExceptionHandler::setExceptionInput);
+    parseSet<Classifier>(node, exceptionHandler, data, "exceptionTypes", &ExceptionHandler::getExceptionTypes);
+}
+
+void parseExecutableNodeFeatures(YAML::Node node, ExecutableNode& executableNode, ParserData& data) {
+    parseSet<ExceptionHandler>(node, executableNode, data, "handlers", &ExecutableNode::getHandlers);
+}
+
+void parseExpressionFeatures(YAML::Node node, Expression& expression, ParserData& data) {
+    parseSet<ValueSpecification>(node, expression, data, "operands", &Expression::getOperands);
+    parseString(node, expression, "symbol", &Expression::setSymbol);
 }
 
 void parseExtensionFeatures(YAML::Node node, Extension& extension, ParserData& data) {

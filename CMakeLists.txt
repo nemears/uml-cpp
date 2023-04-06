@@ -48,9 +48,7 @@ add_subdirectory(libs/yaml-cpp)
 set(YAML_CPP_BUILD_TESTS OFF)
 
 # src
-if(UML_CLIENT_SERVER)
-    list(APPEND umlSources managers/protocol/umlServer.cpp managers/protocol/abstractClient.cpp)
-else() 
+if(NOT UML_CLIENT_SERVER)
     add_definitions( -DNO_UML_CLIENT_SERVER)
 endif()
 add_library(uml STATIC 
@@ -98,7 +96,8 @@ add_library(uml STATIC
     src/uml/types/callBehaviorAction.cpp src/uml/types/elementImport.cpp src/uml/types/packageImport.cpp 
     src/uml/types/redefinableTemplateSignature.cpp src/uml/types/classifierTemplateParameter.cpp src/uml/types/parameterSet.cpp
     
-
+    # protocol
+    src/uml/managers/protocol/umlServer.cpp src/uml/managers/protocol/serverPersistencePolicy.cpp src/uml/managers/protocol/umlClient.cpp
 )
 target_include_directories(uml PUBLIC include)
 target_link_libraries(uml PUBLIC yaml-cpp)

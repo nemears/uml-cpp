@@ -6,6 +6,7 @@
 #include "filePersistencePolicy.h"
 #include "serialization/open_uml/openUmlSerializationPolicy.h"
 #include "uml/umlPtr.h"
+#include "uml/set/readOnlySet.h"
 
 namespace UML {
 
@@ -338,6 +339,9 @@ namespace UML {
                 for (auto& pair : restoredNode->m_references) {
                     ManagerNode* node = pair.second.node;
                     if (!node || !node->m_managerElementMemory) {
+                        if (exists(pair.first)) {
+                            pair.second.node = &m_graph.find(pair.first)->second;
+                        }
                         // element has been released, possibly there are no pointers
                         continue;
                     }
@@ -345,6 +349,10 @@ namespace UML {
                     restoredNode->restoreReference(node->m_managerElementMemory);
                 }
                 restoredNode->restoreReferences();
+            }
+
+            void restoreNode(ElementPtr ptr) {
+                restoreNode(ptr->m_node);
             }
 
             ElementPtr get(ID id) override {
@@ -457,23 +465,28 @@ namespace UML {
 
                 if (exists(newID)) {
                     // lock graph for edit
-                    std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                    ManagerNode* nodeToBeOverwritten = 0;
+                    ManagerNode* newNode = 0;
+                    {
+                        std::lock_guard<std::mutex> graphLock(m_graphMtx);
 
-                    // overwrite
-                    std::unordered_map<ID, ManagerNode>::iterator nodeToBeOverwrittenIterator = m_graph.find(newID);
-                    ManagerNode& nodeToBeOverwritten = nodeToBeOverwrittenIterator->second;
-                    ManagerNode& newNode = m_graph[oldID];
-                    if (nodeToBeOverwritten.m_managerElementMemory) {
-                        delete nodeToBeOverwritten.m_managerElementMemory;
+                        // overwrite
+                        std::unordered_map<ID, ManagerNode>::iterator nodeToBeOverwrittenIterator = m_graph.find(newID);
+                        nodeToBeOverwritten = &nodeToBeOverwrittenIterator->second;
+                        newNode = &m_graph[oldID];
                     }
-                    nodeToBeOverwritten.m_managerElementMemory = newNode.m_managerElementMemory;
-                    nodeToBeOverwritten.m_managerElementMemory->m_node = &nodeToBeOverwritten;
-                    nodeToBeOverwritten.m_references.clear();
-                    nodeToBeOverwritten.reindexPtrs(newID);
-                    for (auto& ptr : newNode.m_ptrs) {
-                        nodeToBeOverwritten.assingPtr(ptr);
+                    if (nodeToBeOverwritten->m_managerElementMemory) {
+                        delete nodeToBeOverwritten->m_managerElementMemory;
+                    }
+                    nodeToBeOverwritten->m_managerElementMemory = newNode->m_managerElementMemory;
+                    nodeToBeOverwritten->m_managerElementMemory->m_node = nodeToBeOverwritten;
+                    nodeToBeOverwritten->m_references.clear();
+                    nodeToBeOverwritten->reindexPtrs(newID);
+                    for (auto& ptr : newNode->m_ptrs) {
+                        nodeToBeOverwritten->assingPtr(ptr);
                         assignPtr(*ptr);
                     }
+                    std::lock_guard<std::mutex> graphLock(m_graphMtx);
                     m_graph.erase(oldID);
                 } else {
                     // lock graph for edit

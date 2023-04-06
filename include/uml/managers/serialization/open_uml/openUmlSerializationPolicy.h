@@ -31,6 +31,14 @@ namespace UML {
             std::string emitWhole(Element& el, AbstractManager& manager);
     };
 
+    class OpenUmlJsonSerializationPolicy {
+        protected:
+            std::string extensionName();
+            ElementPtr parseIndividual(std::string data, AbstractManager& manager);
+            ElementPtr parseWhole(std::string data, AbstractManager& manager);
+            std::string emitIndividual(Element& el, AbstractManager& manager);
+            std::string emitWhole(Element& el, AbstractManager& manager);
+    };
     class EmitterData;
     class ParserData;
 

@@ -8,6 +8,7 @@ namespace UML {
     // general functions for parsing
     ElementPtr parseNode(YAML::Node node, ParserData& data);
     std::string getLineNumber(YAML::Node node);
+    ElementType elementTypeFromString(std::string eType);
 
     // parsing features of element types
     void parseActionFeatures(YAML::Node node, Action& action, ParserData& data);

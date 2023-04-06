@@ -12,10 +12,12 @@
 #endif
 #include <thread>
 #include <yaml-cpp/yaml.h>
-#include "uml/managers/serialization/open_uml/parser.h"
+#include "uml/forwardDeclarations.h"
+#include "uml/managers/serialization/open_uml/parse.h"
 #include "uml/uml-stable.h"
 #include <chrono>
 #include <ctime>
+#include <iomanip>
 #include <errno.h>
 #include <string.h>
 
@@ -86,9 +88,9 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         }
         try {
             Element& el = *get(elID);
-            Parsers::EmitterMetaData data = Parsers::getData(el);
-            data.m_isJSON = true;
-            std::string msg = Parsers::emitString(data, el);
+            EmitterData data;
+            data.isJSON = true;
+            std::string msg = emit(el, data);
             int bytesSent = send(info.socket, msg.c_str(), msg.size() + 1, 0);
             if (bytesSent <= 0) {
                 throw ManagerStateException();
@@ -102,7 +104,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     } else if (node["POST"] || node["post"]) {
         log("server handling post request from client " + id.string());
         try {
-            ElementType type = Parsers::elementTypeFromString((node["POST"] ? node["POST"] : node["post"]).as<std::string>());
+            ElementType type = elementTypeFromString((node["POST"] ? node["POST"] : node["post"]).as<std::string>());
             ID id = ID::fromString(node["id"].as<std::string>());
             Element* ret = 0;
             ret = create(type);
@@ -124,17 +126,12 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             }
             m_urls[putNode["qualifiedName"].as<std::string>()] = elID;
         }
-        Parsers::ParserMetaData data;
-        data.m_manager = this;
-        data.m_strategy = Parsers::ParserStrategy::INDIVIDUAL;
+        ParserData data;
+        data.manager = this;
         try {
-            // ThreadSafeManagerNode& node = *static_cast<ThreadSafeManagerNode*>(getNode(*get(elID)));
-            // std::lock_guard<std::mutex> lck(node.m_mtx);
-            // std::vector<std::unique_lock<std::mutex>> refLcks = lockReferences(node);
-            ElementPtr el = Parsers::parseYAML(putNode["element"], data);
+            ElementPtr el = parseNode(putNode["element"], data);
             if (el) {
-                // restore references
-                // data.m_manager->forceRestore(el, data);
+                restoreNode(el);
             }
             if (isRoot) {
                 setRoot(*el);
@@ -454,7 +451,7 @@ std::vector<std::unique_lock<std::mutex>> UmlServer::lockReferences(ManagerNode&
         if (!referencePair.second.node) {
             continue;
         }
-        ret.push_back(std::unique_lock<std::mutex>(static_cast<ThreadSafeManagerNode*>(referencePair.second.node)->m_mtx));
+        ret.push_back(std::unique_lock<std::mutex>(referencePair.second.node->m_mtx));
     }
     return ret;
 }
@@ -705,7 +702,7 @@ int UmlServer::waitTillShutDown() {
 }
 
 void UmlServer::setRoot(Element* el) {
-    ThreadSafeManager::setRoot(el);
+    Manager<>::setRoot(el);
     if (!el) {
         return;
     }

@@ -595,7 +595,6 @@ TEST_F(PackageTest, emitProfileTest) {
           extensionEnd:
             id: "t&ZWitKKpMcvG9Dzwh23wSbP1hr5"
             type: 7PJxQhyjuuWylik9y2fgpNDXmMdv
-            association: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"
         metaClass: OPERATION
   ownedStereotypes:
     - stereotype:
@@ -726,7 +725,6 @@ TEST_F(PackageTest, emitAppliedStereotypeTest) {
                 extensionEnd:
                   id: "FK1SGxJ2lV&5RtbRhiGU9jR0zAsw"
                   type: x5r8XggyW2DI5c3RyAS8r_arWh79
-                  association: "jjf&mHlwFSAjJXsBqng4IlxfYIJh"
               metaClass: PACKAGE
         ownedStereotypes:
           - stereotype:

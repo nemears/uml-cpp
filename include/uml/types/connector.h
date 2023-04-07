@@ -36,12 +36,11 @@ namespace UML {
             CustomSingleton<Association, Connector, SetTypePolicy, RemoveTypePolicy> m_type = CustomSingleton<Association, Connector, SetTypePolicy, RemoveTypePolicy>(this);
             CustomSet<Behavior, Connector> m_contracts = CustomSet<Behavior, Connector>(this);
             CustomOrderedSet<ConnectorEnd, Connector, AddEndPolicy, RemoveEndPolicy> m_ends = CustomOrderedSet<ConnectorEnd, Connector, AddEndPolicy, RemoveEndPolicy>(this);
-            CustomSingleton<StructuredClassifier, Connector> m_structuredClassifier = CustomSingleton<StructuredClassifier, Connector>(this);
             TypedSet<Association, Connector>& getTypeSingleton();
-            TypedSet<StructuredClassifier, Connector>& getStructuredClassifierSingleton();
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void restoreReference(Element* el) override;
+            void restoreReferences() override;
             Connector();
         public:
             virtual ~Connector();

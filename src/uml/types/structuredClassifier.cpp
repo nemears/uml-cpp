@@ -52,7 +52,6 @@ StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_C
     m_parts.subsets(m_ownedAttributes);
     m_ownedConnectors.subsets(m_ownedMembers);
     m_ownedConnectors.subsets(m_features);
-    m_ownedConnectors.opposite(&Connector::getStructuredClassifierSingleton);
 }
 
 StructuredClassifier::~StructuredClassifier() {

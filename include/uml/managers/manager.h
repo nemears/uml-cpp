@@ -340,12 +340,21 @@ namespace UML {
                     ManagerNode* node = pair.second.node;
                     if (!node || !node->m_managerElementMemory) {
                         if (exists(pair.first)) {
-                            pair.second.node = &m_graph.find(pair.first)->second;
+                            node = &m_graph.find(pair.first)->second;
+                            pair.second.node = node;
                         }
                         // element has been released, possibly there are no pointers
-                        continue;
+                        if (!node || !node->m_managerElementMemory) {
+                            continue;
+                        }
+                    }
+                    if (!node->m_references.count(restoredNode->m_managerElementMemory->getID())) {
+                        node->setReference(*restoredNode->m_managerElementMemory);
                     }
                     node->restoreReference(restoredNode->m_managerElementMemory);
+                    if (!restoredNode->m_references.count(node->m_managerElementMemory->getID())) {
+                        restoredNode->setReference(*node->m_managerElementMemory);
+                    }
                     restoredNode->restoreReference(node->m_managerElementMemory);
                 }
                 restoredNode->restoreReferences();

@@ -1782,7 +1782,9 @@ void emitPropertyFeatures(YAML::Emitter& emitter, Property& property, EmitterDat
         emitter << "isComposite" << YAML::Value << true;
     }
     emitOwnedSingleton<ValueSpecification>(emitter, property, data, "defaultValue", &Property::getDefaultValue);
-    emitSingleton<Association>(emitter, property, "association", &Property::getAssociation);
+    if (!property.getOwningAssociation()) {
+        emitSingleton<Association>(emitter, property, "association", &Property::getAssociation);
+    }
     emitSet<Property>(emitter, property, "redefinedProperties", &Property::getRedefinedProperties);
 }
 

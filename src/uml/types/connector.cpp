@@ -51,10 +51,6 @@ TypedSet<Association, Connector>& Connector::getTypeSingleton() {
     return m_type;
 }
 
-TypedSet<StructuredClassifier, Connector>& Connector::getStructuredClassifierSingleton() {
-    return m_structuredClassifier;
-}
-
 void Connector::referenceReindexed(ID newID) {
     Feature::referenceReindexed(newID);
     m_type.reindex(newID);
@@ -63,16 +59,6 @@ void Connector::referenceReindexed(ID newID) {
 
 void Connector::restoreReference(Element* el) {
     Feature::restoreReference(el);
-    if (!m_structuredClassifier.get() &&
-        m_featuringClassifier.get() && 
-        m_featuringClassifier.get().id() == el->getID()) 
-    {
-        if (el->isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
-            // TODO lock
-            m_structuredClassifier.innerAdd(el->as<StructuredClassifier>());
-        }
-    }
-    
     if (
             m_ends.contains(el->getID()) && 
             el->as<ConnectorEnd>().getRole() && 
@@ -94,11 +80,19 @@ void Connector::referenceErased(ID id) {
     m_contracts.eraseElement(id);
 }
 
+void Connector::restoreReferences() {
+    if (m_namespace->get() && !m_featuringClassifier.get()) {
+        if (m_namespace->get()->isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
+            StructuredClassifier& clazz = m_namespace->get()->as<StructuredClassifier>();
+            if (clazz.getOwnedConnectors().contains(m_id) && !m_featuringClassifier.get()) {
+                m_featuringClassifier.innerAdd(clazz);
+            }
+        }
+    }
+}
+
 Connector::Connector() : Element(ElementType::CONNECTOR) {
     m_ends.subsets(*m_ownedElements);
-    m_structuredClassifier.subsets(m_featuringClassifier);
-    m_structuredClassifier.subsets(*m_namespace);
-    m_structuredClassifier.opposite(&StructuredClassifier::getOwnedConnectors);
 }
 
 Connector::~Connector() {

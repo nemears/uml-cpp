@@ -79,12 +79,14 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             elID = ID::fromString(getNode.as<std::string>());
         } else {
             try {
-                elID = m_urls.at(getNode.as<std::string>()); // not thread safe!
+                std::lock_guard<std::mutex> graphLck(m_graphMtx);
+                elID = m_urls.at(getNode.as<std::string>());
             } catch (std::exception& e) {
                 log(e.what());
                 std::string msg = std::string("{ERROR: ") + std::string(e.what()) + std::string("}");
                 send(info.socket, msg.c_str(), msg.length() , 0);
-            }            
+                return;
+            }
         }
         try {
             Element& el = *get(elID);

@@ -437,8 +437,7 @@ TEST_F(AssociationTest, emitAssociationTest) {
         navigableOwnedEnds:
           - property:
               id: "k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"
-              type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
-              association: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5")"""";
+              type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3)"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

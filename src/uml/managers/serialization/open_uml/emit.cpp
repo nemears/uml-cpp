@@ -721,7 +721,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitElementScope);
             emitElementTypeAndData(emitter, inst, data, "instanceSpecification", 
                         emitElementFeatures, 
-                        emitNamedElementFeatures, 
+                        emitNamedElementDeploymentTargetFeatures, 
                         emitParameterableElementFeatures,
                         emitDeploymentTargetFeatures,
                         emitInstanceSpecificationFeatures);
@@ -1129,7 +1129,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitElementScope);
             emitElementTypeAndData(emitter, property, data, "property",
                         emitElementFeatures,
-                        emitNamedElementFeatures,
+                        emitNamedElementDeploymentTargetFeatures,
                         emitFeatureFeatures,
                         emitTypedElementFeatures,
                         emitStructuralFeatureFeatures,
@@ -1630,6 +1630,19 @@ void emitNamedElementFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterD
     }
     emitVisibilityKind(emitter, el);
     emitSet<Dependency>(emitter, el, "clientDependencies", &NamedElement::getClientDependencies);
+}
+
+void emitNamedElementDeploymentTargetFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterData& data) {
+    if (!el.getName().empty()) {
+        emitter << "name" << YAML::Value << el.getName();
+    }
+    emitVisibilityKind(emitter, el);
+    // emitSet<Dependency>(emitter, el, "clientDependencies", &NamedElement::getClientDependencies, &DeploymentTarget::getDeployments);
+    if (!el.getClientDependencies().empty()) {
+        if (el.as<DeploymentTarget>().getDeployments().size() != el.getClientDependencies().size()) {
+            emitSet<Dependency>(emitter, el, "clientDependencies", &NamedElement::getClientDependencies);
+        }
+    }
 }
 
 void emitNamespaceFeatures(YAML::Emitter& emitter, Namespace& nmspc, EmitterData& data) {

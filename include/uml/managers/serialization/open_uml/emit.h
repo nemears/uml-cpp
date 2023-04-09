@@ -60,6 +60,7 @@ namespace UML {
     void emitModelFeatures(YAML::Emitter& emitter, Model& model, EmitterData& data);
     void emitMultiplicityElementFeatures(YAML::Emitter& emitter, MultiplicityElement& multiplicityElement, EmitterData& data);
     void emitNamedElementFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterData& data);
+    void emitNamedElementDeploymentTargetFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterData& data);
     void emitNamespaceFeatures(YAML::Emitter& emitter, Namespace& nmspc, EmitterData& data);
     void emitObjectFlowFeatures(YAML::Emitter& emitter, ObjectFlow& objectFlow, EmitterData& data);
     void emitObjectNodeFeatures(YAML::Emitter& emitter, ObjectNode& objectNode, EmitterData& data);

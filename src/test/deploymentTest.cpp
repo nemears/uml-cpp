@@ -204,8 +204,6 @@ TEST_F(DeploymentTest, emitDeploymentTargetTest) {
     prop.getDeployments().add(d);
     std::string expectedEmit = R""""(property:
   id: 0gLOuagM6UjFYi2401zvnoCpMn0M
-  clientDependencies:
-    - hZ6hYVt147nLvdm70bATtgmwlQqN
   deployments:
     - deployment:
         id: hZ6hYVt147nLvdm70bATtgmwlQqN)"""";

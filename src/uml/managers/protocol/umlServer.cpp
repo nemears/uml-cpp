@@ -67,6 +67,17 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         } catch (std::exception& e) {
             log("exception encountered when trying to delete element: " + std::string(e.what()));
         }
+    } else if (node["DUMP"] || node["dump"]) {
+        EmitterData data;
+        data.mode = SerializationMode::WHOLE;
+        data.isJSON = false;
+        data.emitReferences = false;
+        std::string dump = emit(*getRoot(), data);
+        int bytesSent = send(info.socket, dump.c_str(), dump.size() + 1, 0);
+        if (bytesSent <= 0) {
+            throw ManagerStateException();
+        }
+        log("dumped server data to client, data: " + dump);
     } else if (node["GET"] || node["get"]) {
         ID elID;
         YAML::Node getNode = (node["GET"] ? node["GET"] : node["get"]);

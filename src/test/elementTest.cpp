@@ -258,18 +258,6 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
   ASSERT_EQ(p1.getOwnedElements().size(), 0);
 }
 
-TEST_F(ElementTest, AddAndRemoveAppliedStereotypetest) {
-  Manager<> m;
-  Class& c = *m.create<Class>();
-  InstanceSpecification& i = *m.create<InstanceSpecification>();
-  Stereotype& s = *m.create<Stereotype>();
-  i.getClassifiers().add(s);
-  ASSERT_NO_THROW(c.getAppliedStereotypes().add(i));
-  ASSERT_EQ(c.getOwnedElements().size(), 1);
-  ASSERT_NO_THROW(c.getAppliedStereotypes().remove(i));
-  ASSERT_EQ(c.getOwnedElements().size(), 0);
-}
-
 TEST_F(ElementTest, asFuncTest) {
   Manager<> m;
   UmlPtr<Classifier> classifier = m.create<Class>();

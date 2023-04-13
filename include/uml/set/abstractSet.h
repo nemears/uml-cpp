@@ -30,7 +30,6 @@ namespace UML {
     };
 
     template <class T, class U> class TypedSet;
-    void recursiveSetContains(ID id, AbstractSet* set);
 
     enum class SetType {
         SET,
@@ -42,7 +41,6 @@ namespace UML {
     class AbstractSet {
 
         template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
-        friend void recursiveSetContains(ID id, AbstractSet* set);
         friend class OrderedSetNodeAllocationPolicy;
 
         protected:
@@ -321,7 +319,6 @@ namespace UML {
                     for (auto redefinedSet : this->m_redefines) {
                         if (redefinedSet->m_rootRedefinedSet) {
                             instantiationgSet = redefinedSet;
-                            this->m_size++;
                             break;
                         }
                     }
@@ -330,10 +327,10 @@ namespace UML {
                 
                 std::unordered_set<AbstractSet*> allSuperSetsAndMe = this->getAllSuperSets();
                 allSuperSetsAndMe.insert(node->set);
-                for (auto redefinedSet : this->m_redefines) {
+                for (auto redefinedSet : instantiationgSet->m_redefines) {
                     allSuperSetsAndMe.insert(redefinedSet);
                 }
-                std::unordered_set<AbstractSet*> allSubSets = this->getAllSubSets();
+                std::unordered_set<AbstractSet*> allSubSets = instantiationgSet->getAllSubSets();
 
                 node->set->adjustSuperSets(node, allSuperSetsAndMe);
 
@@ -597,13 +594,8 @@ namespace UML {
                         if (allSubSets.count(currNode->set)) {
                             // this is a subsets node, we must place it below ours
                             // adjust roots
-                            std::unordered_set<AbstractSet*> currNodesSubSets = currNode->set->getAllSubSets();
-                            currNodesSubSets.insert(currNode->set);
-                            for (auto redefinedSet : currNode->set->m_redefines) {
-                                currNodesSubSets.insert(redefinedSet);
-                            }
-                            for (auto subSet : set->getAllSubSets()) {
-                                if (currNodesSubSets.count(subSet)) {
+                            for (auto subSet : set->getAllSuperSets()) {
+                                if (!allSuperSetsAndMe.count(subSet)) {
                                     continue;
                                 }
                                 if (subSet->m_root == currNode) {

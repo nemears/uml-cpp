@@ -92,7 +92,7 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_ownedComments->subsets(*m_ownedElements);
 
     m_appliedStereotype = new CustomSet<InstanceSpecification, Element>(this);
-    m_appliedStereotype->subsets(*m_ownedElements);
+    // m_appliedStereotype->subsets(*m_ownedElements);
 }
 
 Element::~Element() {

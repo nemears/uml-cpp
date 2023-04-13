@@ -52,7 +52,7 @@ void emitSet(YAML::Emitter& emitter, U& el, string key, S& (U::*signature)()) {
 }
 
 template <class T, class U, class S>
-void emitOwnedSet(YAML::Emitter& emitter, U& el, EmitterData& data, string key, S& (U::*signature)()) {
+void emitCompositeSet(YAML::Emitter& emitter, U& el, EmitterData& data, string key, S& (U::*signature)()) {
     if (!(el.*signature)().empty()) {
         emitter << key << YAML::Value << YAML::BeginSeq;
         if (data.mode == SerializationMode::WHOLE) {
@@ -128,7 +128,7 @@ bool subsetContainsID(U& el, ID addedID, UmlPtr<T> (U::*signature)() const, Subs
 }
 
 template <class T, class U, class S, class ... SubSets>
-void emitOwnedSet(YAML::Emitter& emitter, U& el, EmitterData& data, string key, S& (U::*signature)(), SubSets ... subSets) {
+void emitCompositeSet(YAML::Emitter& emitter, U& el, EmitterData& data, string key, S& (U::*signature)(), SubSets ... subSets) {
     if (!(el.*signature)().empty()) {
         bool elementsAllInSubsets = true;
         for (ID id : (el.*signature)().ids()) {
@@ -1301,8 +1301,8 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
 }
 
 void emitActionFeatures(YAML::Emitter& emitter, Action& action, EmitterData& data) {
-    emitOwnedSet<Constraint>(emitter, action, data, "localPreconditions", &Action::getLocalPreconditions);
-    emitOwnedSet<Constraint>(emitter, action, data, "localPostconditions", &Action::getLocalPostconditions);
+    emitCompositeSet<Constraint>(emitter, action, data, "localPreconditions", &Action::getLocalPreconditions);
+    emitCompositeSet<Constraint>(emitter, action, data, "localPostconditions", &Action::getLocalPostconditions);
 }
 
 void emitActionInputPinFeatures(YAML::Emitter& emitter, ActionInputPin& actionInputPin, EmitterData& data) {
@@ -1310,9 +1310,9 @@ void emitActionInputPinFeatures(YAML::Emitter& emitter, ActionInputPin& actionIn
 }
 
 void emitActivityFeatures(YAML::Emitter& emitter, Activity& activity, EmitterData& data) {
-    emitOwnedSet<ActivityNode>(emitter, activity, data, "nodes", &Activity::getNodes);
-    emitOwnedSet<ActivityEdge>(emitter, activity, data, "edges", &Activity::getEdges);
-    emitOwnedSet<ActivityPartition>(emitter, activity, data, "partitions", &Activity::getPartitions);
+    emitCompositeSet<ActivityNode>(emitter, activity, data, "nodes", &Activity::getNodes);
+    emitCompositeSet<ActivityEdge>(emitter, activity, data, "edges", &Activity::getEdges);
+    emitCompositeSet<ActivityPartition>(emitter, activity, data, "partitions", &Activity::getPartitions);
 }
 
 void emitActivityEdgeFeatures(YAML::Emitter& emitter, ActivityEdge& activityEdge, EmitterData& data) {
@@ -1336,26 +1336,26 @@ void emitActivityParameterNodeFeatures(YAML::Emitter& emitter, ActivityParameter
 void emitActivityPartitionFeatures(YAML::Emitter& emitter, ActivityPartition& activityPartition, EmitterData& data) {
     emitSet<ActivityNode>(emitter, activityPartition, "nodes", &ActivityPartition::getNodes);
     emitSet<ActivityNode>(emitter, activityPartition, "edges", &ActivityPartition::getEdges);
-    emitOwnedSet<ActivityPartition>(emitter, activityPartition, data, "subPartitions", &ActivityPartition::getSubPartitions);
+    emitCompositeSet<ActivityPartition>(emitter, activityPartition, data, "subPartitions", &ActivityPartition::getSubPartitions);
     emitSingleton(emitter, activityPartition, "represents", &ActivityPartition::getRepresents);
 }
 
 void emitArtifactFeatures(YAML::Emitter& emitter, Artifact& artifact, EmitterData& data) {
-    emitOwnedSet<Property>(emitter, artifact, data, "ownedAttributes", &Artifact::getOwnedAttributes);
-    emitOwnedSet<Operation>(emitter, artifact, data, "ownedOperations", &Artifact::getOwnedOperations);
-    emitOwnedSet<Artifact>(emitter, artifact, data, "nestedArtifacts", &Artifact::getNestedArtifacts);
-    emitOwnedSet<Manifestation>(emitter, artifact, data, "manifestations", &Artifact::getManifestations);
+    emitCompositeSet<Property>(emitter, artifact, data, "ownedAttributes", &Artifact::getOwnedAttributes);
+    emitCompositeSet<Operation>(emitter, artifact, data, "ownedOperations", &Artifact::getOwnedOperations);
+    emitCompositeSet<Artifact>(emitter, artifact, data, "nestedArtifacts", &Artifact::getNestedArtifacts);
+    emitCompositeSet<Manifestation>(emitter, artifact, data, "manifestations", &Artifact::getManifestations);
 }
 
 void emitAssociationFeatures(YAML::Emitter& emitter, Association& association, EmitterData& data) {
     emitSet<Property>(emitter, association, "memberEnds", &Association::getMemberEnds, &Association::getOwnedEnds);
-    emitOwnedSet<Property>(emitter, association, data, "ownedEnds", &Association::getOwnedEnds, &Association::getNavigableOwnedEnds);
-    emitOwnedSet<Property>(emitter, association, data, "navigableOwnedEnds", &Association::getNavigableOwnedEnds);
+    emitCompositeSet<Property>(emitter, association, data, "ownedEnds", &Association::getOwnedEnds, &Association::getNavigableOwnedEnds);
+    emitCompositeSet<Property>(emitter, association, data, "navigableOwnedEnds", &Association::getNavigableOwnedEnds);
 }
 
 void emitBehaviorFeatures(YAML::Emitter& emitter, Behavior& behavior, EmitterData& data) {
     emitSingleton<BehavioralFeature>(emitter, behavior, "specification", &Behavior::getSpecification);
-    emitOwnedSet<Parameter>(emitter, behavior, data, "ownedParameters", &Behavior::getOwnedParameters);
+    emitCompositeSet<Parameter>(emitter, behavior, data, "ownedParameters", &Behavior::getOwnedParameters);
 }
 
 void emitBehavioralFeatureFeatures(YAML::Emitter& emitter, BehavioralFeature& behavioralFeature, EmitterData& data) {
@@ -1374,18 +1374,18 @@ void emitBehavioralFeatureFeatures(YAML::Emitter& emitter, BehavioralFeature& be
     }
     emitSet<Type>(emitter, behavioralFeature, "raisedExceptions", &BehavioralFeature::getRaisedExceptions);
     emitSet<Behavior>(emitter, behavioralFeature, "methods", &BehavioralFeature::getMethods);
-    emitOwnedSet<Parameter>(emitter, behavioralFeature, data, "ownedParameters", &BehavioralFeature::getOwnedParameters);
-    emitOwnedSet<ParameterSet>(emitter, behavioralFeature, data, "ownedParameterSets", &BehavioralFeature::getOwnedParameterSets);
+    emitCompositeSet<Parameter>(emitter, behavioralFeature, data, "ownedParameters", &BehavioralFeature::getOwnedParameters);
+    emitCompositeSet<ParameterSet>(emitter, behavioralFeature, data, "ownedParameterSets", &BehavioralFeature::getOwnedParameterSets);
 }
 
 void emitBehavioredClassifierFeatures(YAML::Emitter& emitter, BehavioredClassifier& behavioredClassifier, EmitterData& data) {
     emitOwnedSingleton<Behavior>(emitter, behavioredClassifier, data, "classifierBehavior", &BehavioredClassifier::getClassifierBehavior);
-    emitOwnedSet<Behavior>(emitter, behavioredClassifier, data, "ownedBehaviors", &Behavior::getOwnedBehaviors, &BehavioredClassifier::getClassifierBehavior);
-    emitOwnedSet<InterfaceRealization>(emitter, behavioredClassifier, data, "interfaceRealizations", &BehavioredClassifier::getInterfaceRealizations);
+    emitCompositeSet<Behavior>(emitter, behavioredClassifier, data, "ownedBehaviors", &Behavior::getOwnedBehaviors, &BehavioredClassifier::getClassifierBehavior);
+    emitCompositeSet<InterfaceRealization>(emitter, behavioredClassifier, data, "interfaceRealizations", &BehavioredClassifier::getInterfaceRealizations);
 }
 
 void emitCallActionFeatures(YAML::Emitter& emitter, CallAction& callAction, EmitterData& data) {
-    emitOwnedSet<OutputPin>(emitter, callAction, data, "results", &CallAction::getResults);
+    emitCompositeSet<OutputPin>(emitter, callAction, data, "results", &CallAction::getResults);
 }
 
 void emitCallBehaviorActionFeatures(YAML::Emitter& emitter, CallBehaviorAction& callBehaviorAction, EmitterData& data) {
@@ -1393,14 +1393,14 @@ void emitCallBehaviorActionFeatures(YAML::Emitter& emitter, CallBehaviorAction& 
 }
 
 void emitClassFeatures(YAML::Emitter& emitter, Class& clazz, EmitterData& data) {
-    emitOwnedSet<Classifier>(emitter, clazz, data, "nestedClassifiers", &Class::getNestedClassifiers);
-    emitOwnedSet<Property>(emitter, clazz, data, "ownedAttributes", &Class::getOwnedAttributes);
-    emitOwnedSet<Operation>(emitter, clazz, data, "ownedOperations", &Class::getOwnedOperations);
-    emitOwnedSet<Reception>(emitter, clazz, data, "ownedReceptions", &Class::getOwnedReceptions);
+    emitCompositeSet<Classifier>(emitter, clazz, data, "nestedClassifiers", &Class::getNestedClassifiers);
+    emitCompositeSet<Property>(emitter, clazz, data, "ownedAttributes", &Class::getOwnedAttributes);
+    emitCompositeSet<Operation>(emitter, clazz, data, "ownedOperations", &Class::getOwnedOperations);
+    emitCompositeSet<Reception>(emitter, clazz, data, "ownedReceptions", &Class::getOwnedReceptions);
 }
 
 void emitClassifierFeatures(YAML::Emitter& emitter, Classifier& classifier, EmitterData& data) {
-    emitOwnedSet<Generalization>(emitter, classifier, data, "generalizations", &Classifier::getGeneralizations);
+    emitCompositeSet<Generalization>(emitter, classifier, data, "generalizations", &Classifier::getGeneralizations);
     emitSet<GeneralizationSet>(emitter, classifier, "powertypeExtent", &Classifier::getPowerTypeExtent);
 }
 
@@ -1416,7 +1416,7 @@ void emitCommentFeatures(YAML::Emitter& emitter, Comment& comment, EmitterData& 
 }
 
 void emitConnectorFeatures(YAML::Emitter& emitter, Connector& connector, EmitterData& data) {
-    emitOwnedSet<ConnectorEnd>(emitter, connector, data, "ends", &Connector::getEnds);
+    emitCompositeSet<ConnectorEnd>(emitter, connector, data, "ends", &Connector::getEnds);
     //emitSet<Connector>(emitter, connector, "redefinedConnectors", &Connector::getRedefinedConnecots);
     emitSet<Behavior>(emitter, connector, "contracts", &Connector::getContracts);
     emitSingleton<Association>(emitter, connector, "type", &Connector::getType);
@@ -1432,8 +1432,8 @@ void emitConstraintFeatures(YAML::Emitter& emitter, Constraint& constraint, Emit
 }
 
 void emitDataTypeFeatures(YAML::Emitter& emitter, DataType& dataType, EmitterData& data) {
-    emitOwnedSet<Property>(emitter, dataType, data, "ownedAttributes", &DataType::getOwnedAttributes);
-    emitOwnedSet<Operation>(emitter, dataType, data, "ownedOperations", &DataType::getOwnedOperations);
+    emitCompositeSet<Property>(emitter, dataType, data, "ownedAttributes", &DataType::getOwnedAttributes);
+    emitCompositeSet<Operation>(emitter, dataType, data, "ownedOperations", &DataType::getOwnedOperations);
 }
 
 void emitDecisionNodeFeatures(YAML::Emitter& emitter, DecisionNode& decisionNode, EmitterData& data) {
@@ -1451,13 +1451,13 @@ void emitDeploymentFeatures(YAML::Emitter& emitter, Deployment& deployment, Emit
 }
 
 void emitDeploymentTargetFeatures(YAML::Emitter& emitter, DeploymentTarget& deploymentTarget, EmitterData& data) {
-    emitOwnedSet<Deployment>(emitter, deploymentTarget, data, "deployments", &DeploymentTarget::getDeployments);
+    emitCompositeSet<Deployment>(emitter, deploymentTarget, data, "deployments", &DeploymentTarget::getDeployments);
 }
 
 void emitElementFeatures(YAML::Emitter& emitter, Element& el, EmitterData& data) {
     emitter << "id" << YAML::Value << el.getID().string();
-    emitOwnedSet<Comment>(emitter, el, data, "ownedComments", &Element::getOwnedComments);
-    emitOwnedSet<InstanceSpecification>(emitter, el, data, "appliedStereotypes", &Element::getAppliedStereotypes);
+    emitCompositeSet<Comment>(emitter, el, data, "ownedComments", &Element::getOwnedComments);
+    emitCompositeSet<InstanceSpecification>(emitter, el, data, "appliedStereotypes", &Element::getAppliedStereotypes);
 }
 
 template <class T>
@@ -1490,7 +1490,7 @@ void emitElementImportFeatures(YAML::Emitter& emitter, ElementImport& elementImp
 }
 
 void emitEnumerationFeatures(YAML::Emitter& emitter, Enumeration& enumeration, EmitterData& data) {
-    emitOwnedSet<EnumerationLiteral>(emitter, enumeration, data, "ownedLiterals", &Enumeration::getOwnedLiterals);
+    emitCompositeSet<EnumerationLiteral>(emitter, enumeration, data, "ownedLiterals", &Enumeration::getOwnedLiterals);
 }
 
 void emitExceptionHandlerFeatures(YAML::Emitter& emitter, ExceptionHandler& exceptionHandler, EmitterData& data) {
@@ -1500,21 +1500,22 @@ void emitExceptionHandlerFeatures(YAML::Emitter& emitter, ExceptionHandler& exce
 }
 
 void emitExecutableNodeFeatures(YAML::Emitter& emitter, ExecutableNode& executableNode, EmitterData& data) {
-    emitOwnedSet<ExceptionHandler>(emitter, executableNode, data, "handlers", &ExecutableNode::getHandlers);
+    emitCompositeSet<ExceptionHandler>(emitter, executableNode, data, "handlers", &ExecutableNode::getHandlers);
 }
 
 void emitExpressionFeatures(YAML::Emitter& emitter, Expression& expression, EmitterData& data) {
     if (!expression.getSymbol().empty()) {
         emitter << "symbol" << YAML::Value << expression.getSymbol();
     }
-    emitOwnedSet<ValueSpecification>(emitter, expression, data, "operands", &Expression::getOperands);
+    emitCompositeSet<ValueSpecification>(emitter, expression, data, "operands", &Expression::getOperands);
 }
 
 void emitExtensionFeatures(YAML::Emitter& emitter, Extension& extension, EmitterData& data) {
+    emitSet<Property, Association>(emitter, extension, "memberEnds", &Association::getMemberEnds, &Association::getOwnedEnds);
     emitOwnedSingleton<ExtensionEnd>(emitter, extension, data, "ownedEnd", &Extension::getOwnedEnd);
-    if (extension.getMetaClass() != ElementType::NOT_SET) {
-        emitter << "metaClass" << YAML::Value << Element::elementTypeToString(extension.getMetaClass());
-    }
+    // if (extension.getMetaClass() != ElementType::NOT_SET) {
+    //     emitter << "metaClass" << YAML::Value << Element::elementTypeToString(extension.getMetaClass());
+    // }
 }
 
 void emitFeatureFeatures(YAML::Emitter& emitter, Feature& feature, EmitterData& data) {
@@ -1536,7 +1537,7 @@ void emitGeneralizationSetFeatures(YAML::Emitter& emitter, GeneralizationSet& ge
 }
 
 void emitInstanceSpecificationFeatures(YAML::Emitter& emitter, InstanceSpecification& specification, EmitterData& data) {
-    emitOwnedSet<Slot>(emitter, specification, data, "slots", &InstanceSpecification::getSlots);
+    emitCompositeSet<Slot>(emitter, specification, data, "slots", &InstanceSpecification::getSlots);
     emitOwnedSingleton<ValueSpecification>(emitter, specification, data, "specification", &InstanceSpecification::getSpecification);
     emitSet<Classifier>(emitter, specification, "classifiers", &InstanceSpecification::getClassifiers);
 }
@@ -1546,10 +1547,10 @@ void emitInstanceValueFeatures(YAML::Emitter& emitter, InstanceValue& instanceVa
 }
 
 void emitInterfaceFeatures(YAML::Emitter& emitter, Interface& interface, EmitterData& data) {
-    emitOwnedSet<Property>(emitter, interface, data, "ownedAttributes", &Interface::getOwnedAttributes);
-    emitOwnedSet<Operation>(emitter, interface, data, "ownedOperations", &Interface::getOwnedOperations);
-    // emitOwnedSet<Reception>(emitter, interface, data, "ownedReception", &Interface::getOwnedReception);
-    emitOwnedSet<Classifier>(emitter, interface, data, "nestedClassifiers", &Interface::getNestedClassifiers);
+    emitCompositeSet<Property>(emitter, interface, data, "ownedAttributes", &Interface::getOwnedAttributes);
+    emitCompositeSet<Operation>(emitter, interface, data, "ownedOperations", &Interface::getOwnedOperations);
+    // emitCompositeSet<Reception>(emitter, interface, data, "ownedReception", &Interface::getOwnedReception);
+    emitCompositeSet<Classifier>(emitter, interface, data, "nestedClassifiers", &Interface::getNestedClassifiers);
     // emitSet<Interface>(emitter, interface, data, "redefinedInterfaces", &Interface::getRedefinedInterfaces);
 }
 
@@ -1560,7 +1561,7 @@ void emitInterfaceRealizationFeatures(YAML::Emitter& emitter, InterfaceRealizati
 }
 
 void emitInvocationActionFeatures(YAML::Emitter& emitter, InvocationAction& invocationAction, EmitterData& data) {
-    emitOwnedSet<InputPin>(emitter, invocationAction, data, "arguments", &InvocationAction::getArguments);
+    emitCompositeSet<InputPin>(emitter, invocationAction, data, "arguments", &InvocationAction::getArguments);
     emitSingleton(emitter, invocationAction, "onPort", &InvocationAction::getOnPort);
 }
 
@@ -1646,9 +1647,9 @@ void emitNamedElementDeploymentTargetFeatures(YAML::Emitter& emitter, NamedEleme
 }
 
 void emitNamespaceFeatures(YAML::Emitter& emitter, Namespace& nmspc, EmitterData& data) {
-    emitOwnedSet<ElementImport>(emitter, nmspc, data, "elementImports", &Namespace::getElementImports);
-    emitOwnedSet<PackageImport>(emitter, nmspc, data, "packageImports", &Namespace::getPackageImports);
-    emitOwnedSet<Constraint>(emitter, nmspc, data, "ownedRules", &Namespace::getOwnedRules);
+    emitCompositeSet<ElementImport>(emitter, nmspc, data, "elementImports", &Namespace::getElementImports);
+    emitCompositeSet<PackageImport>(emitter, nmspc, data, "packageImports", &Namespace::getPackageImports);
+    emitCompositeSet<Constraint>(emitter, nmspc, data, "ownedRules", &Namespace::getOwnedRules);
 }
 
 void emitObjectFlowFeatures(YAML::Emitter& emitter, ObjectFlow& objectFlow, EmitterData& data) {
@@ -1685,20 +1686,20 @@ void emitObjectNodeFeatures(YAML::Emitter& emitter, ObjectNode& objectNode, Emit
 }
 
 void emitOpaqueActionFeatures(YAML::Emitter& emitter, OpaqueAction& opaqueAction, EmitterData& data) {
-    emitOwnedSet<InputPin>(emitter, opaqueAction, data, "inputValues", &OpaqueAction::getInputValues);
-    emitOwnedSet<OutputPin>(emitter, opaqueAction, data, "outputValues", &OpaqueAction::getOutputValues);
-    emitOwnedSet<LiteralString>(emitter, opaqueAction, data, "bodies", &OpaqueAction::getBodies);
+    emitCompositeSet<InputPin>(emitter, opaqueAction, data, "inputValues", &OpaqueAction::getInputValues);
+    emitCompositeSet<OutputPin>(emitter, opaqueAction, data, "outputValues", &OpaqueAction::getOutputValues);
+    emitCompositeSet<LiteralString>(emitter, opaqueAction, data, "bodies", &OpaqueAction::getBodies);
 }
 
 void emitOpaqueBehaviorFeatures(YAML::Emitter& emitter, OpaqueBehavior& opaqueBehavior, EmitterData& data) {
-    emitOwnedSet<LiteralString>(emitter, opaqueBehavior, data, "bodies", &OpaqueBehavior::getBodies);
+    emitCompositeSet<LiteralString>(emitter, opaqueBehavior, data, "bodies", &OpaqueBehavior::getBodies);
 }
 
 void emitPackageFeatures(YAML::Emitter& emitter, Package& package, EmitterData& data) {
-    emitOwnedSet<PackageableElement>(emitter, package, data, "packagedElements", &Package::getPackagedElements, &Package::getOwnedStereotypes);
-    emitOwnedSet<Stereotype>(emitter, package, data, "ownedStereotypes", &Package::getOwnedStereotypes);
-    emitOwnedSet<PackageMerge>(emitter, package, data, "packageMerges", &Package::getPackageMerge);
-    emitOwnedSet<ProfileApplication>(emitter, package, data, "profileApplications", &Package::getProfileApplications);
+    emitCompositeSet<PackageableElement>(emitter, package, data, "packagedElements", &Package::getPackagedElements, &Package::getOwnedStereotypes);
+    emitCompositeSet<Stereotype>(emitter, package, data, "ownedStereotypes", &Package::getOwnedStereotypes);
+    emitCompositeSet<PackageMerge>(emitter, package, data, "packageMerges", &Package::getPackageMerge);
+    emitCompositeSet<ProfileApplication>(emitter, package, data, "profileApplications", &Package::getProfileApplications);
 }
 
 void emitPackageImportFeatures(YAML::Emitter& emitter, PackageImport& packageImport, EmitterData& data) {
@@ -1752,7 +1753,7 @@ void emitParameterableElementFeatures(YAML::Emitter& emitter, ParameterableEleme
 
 void emitParameterSetFeatures(YAML::Emitter& emitter, ParameterSet& parameterSet, EmitterData& data) {
     emitSet<Parameter>(emitter, parameterSet, "parameters", &ParameterSet::getParameters);
-    emitOwnedSet<Constraint>(emitter, parameterSet, data, "conditions", &ParameterSet::getConditions);
+    emitCompositeSet<Constraint>(emitter, parameterSet, data, "conditions", &ParameterSet::getConditions);
 }
 
 void emitPinFeatures(YAML::Emitter& emitter, Pin& pin, EmitterData& data) {
@@ -1810,11 +1811,11 @@ void emitRedefinableTemplateSignatureFeatures(YAML::Emitter& emitter, Redefinabl
 }
 
 void emitSignalFeatures(YAML::Emitter& emitter, Signal& signal, EmitterData& data) {
-    emitOwnedSet<Property>(emitter, signal, data, "ownedAttributes", &Signal::getOwnedAttributes);
+    emitCompositeSet<Property>(emitter, signal, data, "ownedAttributes", &Signal::getOwnedAttributes);
 }
 
 void emitSlotFeatures(YAML::Emitter& emitter, Slot& slot, EmitterData& data) {
-    emitOwnedSet<ValueSpecification>(emitter, slot, data, "values", &Slot::getValues);
+    emitCompositeSet<ValueSpecification>(emitter, slot, data, "values", &Slot::getValues);
     emitSingleton<StructuralFeature>(emitter, slot, "definingFeature", &Slot::getDefiningFeature);
 }
 
@@ -1825,16 +1826,16 @@ void emitStructuralFeatureFeatures(YAML::Emitter& emitter, StructuralFeature& st
 }
 
 void emitStructuredClassifierFeatures(YAML::Emitter& emitter, StructuredClassifier& structuredClassifier, EmitterData& data) {
-    emitOwnedSet<Connector>(emitter, structuredClassifier, data, "ownedConnectors", &StructuredClassifier::getOwnedConnectors);
+    emitCompositeSet<Connector>(emitter, structuredClassifier, data, "ownedConnectors", &StructuredClassifier::getOwnedConnectors);
 }
 
 void emitTemplateableElementFeatures(YAML::Emitter& emitter, TemplateableElement& templateableElement, EmitterData& data) {
     emitOwnedSingleton<TemplateSignature>(emitter, templateableElement, data, "ownedTemplateSignature", &TemplateableElement::getOwnedTemplateSignature);
-    emitOwnedSet<TemplateBinding>(emitter, templateableElement, data, "templateBindings", &TemplateableElement::getTemplateBindings);
+    emitCompositeSet<TemplateBinding>(emitter, templateableElement, data, "templateBindings", &TemplateableElement::getTemplateBindings);
 }
 
 void emitTemplateBindingFeatures(YAML::Emitter& emitter, TemplateBinding& templateBinding, EmitterData& data) {
-    emitOwnedSet<TemplateParameterSubstitution>(emitter, templateBinding, data, "parameterSubstitutions", &TemplateBinding::getParameterSubstitutions);
+    emitCompositeSet<TemplateParameterSubstitution>(emitter, templateBinding, data, "parameterSubstitutions", &TemplateBinding::getParameterSubstitutions);
     emitSingleton<TemplateSignature>(emitter, templateBinding, "signature", &TemplateBinding::getSignature);
 }
 
@@ -1855,7 +1856,7 @@ void emitTemplateParameterSubstitutionFeatures(YAML::Emitter& emitter, TemplateP
 }
 
 void emitTemplateSignatureFeatures(YAML::Emitter& emitter, TemplateSignature& signature, EmitterData& data) {
-    emitOwnedSet<TemplateParameter>(emitter, signature, data, "ownedParameters", &TemplateSignature::getOwnedParameters);
+    emitCompositeSet<TemplateParameter>(emitter, signature, data, "ownedParameters", &TemplateSignature::getOwnedParameters);
     emitSet<TemplateParameter>(emitter, signature, "parameters", &TemplateSignature::getParameters, &TemplateSignature::getOwnedParameters);
 }
 

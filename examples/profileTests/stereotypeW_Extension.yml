@@ -6,8 +6,14 @@
     packagedElements:
       - extension:
           name: ext
+          memberEnds:
+            - property:
+                name: member end
+                type: cEoEHKDqYcoIOtYwIqrMbz&WG1G_
           ownedEnd:
             extensionEnd:
               type: cLvWpn5ofnVR_f2lob3ofVyLu0Fc
-          metaClass: CLASS
+      - class:
+          id: cEoEHKDqYcoIOtYwIqrMbz&WG1G_
+          name: meta class
 ...

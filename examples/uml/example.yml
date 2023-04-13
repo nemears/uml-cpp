@@ -93,7 +93,8 @@
                             type: int_r9nNbBukx47IomXrT2raqtc4
                   - extension:
                       id: "CLUbrvbx1qIuFyoG1O&ULzByyPAP"
-                      metaClass: CLASS
+                      memberEnds:
+                        - U8UAFKIsvN2Gv8FvSCgEbwnOB_1k
                       ownedEnd:
                         extensionEnd:
                           id: "&sSE4laBvC8nVkvXWrGa3wrsD3dB"
@@ -105,21 +106,25 @@
                       name: Diagram
                       ownedAttributes:
                         - property:
+                            id: U8UAFKIsvN2Gv8FvSCgEbwnOB_1k
+                            name: basePackage
+                            type: "zvAhfu&WNCI1cNXd3BkqhxywHAYY"
+                        - property:
                             id: s1uJq8oidNVLz52qsZCsdcecIoZs
                             name: presentationElements
                             type: fppmrPcasKJDUBoKnMA3rNU22SFk
-                        - property:
-                            id: Nktd1JglePYIY3SN0akm0TklcGd0
-                            name: shapesPackage
-                            type: "zvAhfu&WNCI1cNXd3BkqhxywHAYY"
-                            lowerValue:
-                              literalInt:
-                                id: 27qjUIDYyZOx_z9PQy_ZjnPwWVlM
-                                value: 0
-                            upperValue:
-                              literalInt:
-                                id: "9&HlAYeeLZdmnSPDfvOjWUZx5ILR"
-                                value: 1
+                        # - property:
+                        #     id: Nktd1JglePYIY3SN0akm0TklcGd0
+                        #     name: shapesPackage
+                        #     type: "zvAhfu&WNCI1cNXd3BkqhxywHAYY"
+                        #     lowerValue:
+                        #       literalInt:
+                        #         id: 27qjUIDYyZOx_z9PQy_ZjnPwWVlM
+                        #         value: 0
+                        #     upperValue:
+                        #       literalInt:
+                        #         id: "9&HlAYeeLZdmnSPDfvOjWUZx5ILR"
+                        #         value: 1
             - package:
                 id: y7LiHxyNJEQt9UaAj68FATLdgf18
                 name: UML2 Metamodel

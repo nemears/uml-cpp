@@ -6,25 +6,44 @@
 #include "uml/types/stereotype.h"
 #include "uml/types/interface.h"
 #include "uml/types/deployment.h"
+#include "uml/types/extension.h"
+#include "uml/types/extensionEnd.h"
 #include "uml/umlPtr.h"
 
 using namespace UML;
 
 void Property::SetPropertyTypePolicy::apply(Type& el, Property& me) {
-    if (me.getAssociation()) {
-        [[maybe_unused]] SetLock assocLock = me.lockEl(*me.getAssociation());
-        me.getAssociation()->m_endTypes.innerAdd(el);
-        me.getAssociation()->setReference(&el);
+    if (!me.getAssociation()) {
+        return;
     }
+    [[maybe_unused]] SetLock assocLock = me.lockEl(*me.getAssociation());
+    me.getAssociation()->m_endTypes.innerAdd(el);
+    me.getAssociation()->setReference(&el);
+    if (!me.getAssociation()->isSubClassOf(ElementType::EXTENSION)) {
+        return;
+    }
+    Extension& extension = me.getAssociation()->as<Extension>();
+    if (extension.getMetaClass().id() == el.getID()) {
+        return;
+    }
+    extension.m_metaClass.set(el.as<Class>());
 }
 
 void Property::RemovePropertyTypePolicy::apply(Type& el, Property& me) {
-    if (me.getAssociation()) {
-        if (me.getAssociation()->getEndTypes().contains(el.getID())) {
-            [[maybe_unused]] SetLock assocLock = me.lockEl(*me.getAssociation());
-            me.getAssociation()->m_endTypes.innerRemove(el.getID());
-            me.getAssociation()->removeReference(el.getID());
-        }
+    if (!me.getAssociation()) {
+        return;
+    }
+    if (me.getAssociation()->getEndTypes().contains(el.getID())) {
+        [[maybe_unused]] SetLock assocLock = me.lockEl(*me.getAssociation());
+        me.getAssociation()->m_endTypes.innerRemove(el.getID());
+        me.getAssociation()->removeReference(el.getID());
+    }
+    if (!me.getAssociation()->isSubClassOf(ElementType::EXTENSION)) {
+        return;
+    }
+    Extension& extension = me.getAssociation()->as<Extension>();
+    if (extension.getMetaClass().id() == el.getID()) {
+        extension.m_metaClass.set(0);
     }
 }
 

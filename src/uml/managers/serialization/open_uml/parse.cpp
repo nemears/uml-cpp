@@ -1423,13 +1423,14 @@ void parseExpressionFeatures(YAML::Node node, Expression& expression, ParserData
 }
 
 void parseExtensionFeatures(YAML::Node node, Extension& extension, ParserData& data) {
+    parseSet<Property, Association>(node, extension, data, "memberEnds", &Association::getMemberEnds);
     parseSingleton<ExtensionEnd>(node, extension, data, "ownedEnd", &Extension::setOwnedEnd, &Extension::setOwnedEnd);
-    if (node["metaClass"]) { // this implementation might change
-        if (!node["metaClass"].IsScalar()) {
-            throw SerializationError("Expected metaClass to be a scalar value " + getLineNumber(node["metaClass"]));
-        }
-        extension.setMetaClass(elementTypeFromString(node["metaClass"].as<string>()));
-    }
+    // if (node["metaClass"]) { // this implementation might change
+    //     if (!node["metaClass"].IsScalar()) {
+    //         throw SerializationError("Expected metaClass to be a scalar value " + getLineNumber(node["metaClass"]));
+    //     }
+    //     extension.setMetaClass(elementTypeFromString(node["metaClass"].as<string>()));
+    // }
 }
 
 void parseFeatureFeatures(YAML::Node node, Feature& feature, ParserData& data) {

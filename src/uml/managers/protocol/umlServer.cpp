@@ -51,7 +51,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
     
     if (!node.IsMap()) {
         log("ERROR receiving message from client, invalid format!\nMessage:\n" + buff);
-        std::string msg = std::string("{ERROR: ") + std::string("ERROR receiving message from client, invalid format!\nMessage:\n" + buff) + std::string("}");
+        std::string msg = std::string("{\"ERROR\":\"") + std::string("ERROR receiving message from client, invalid format!\nMessage:\n" + buff) + std::string("\"}");
         send(info.socket, msg.c_str(), msg.length() , 0);
         return;
     }
@@ -94,8 +94,8 @@ void UmlServer::handleMessage(ID id, std::string buff) {
                 elID = m_urls.at(getNode.as<std::string>());
             } catch (std::exception& e) {
                 log(e.what());
-                std::string msg = std::string("{ERROR: ") + std::string(e.what()) + std::string("}");
-                send(info.socket, msg.c_str(), msg.length() , 0);
+                std::string msg = std::string("{\"ERROR\":\"") + std::string(e.what()) + std::string("\"}");
+                send(info.socket, msg.c_str(), msg.length() + 1 , 0);
                 return;
             }
         }
@@ -111,8 +111,8 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             log("server got element " +  elID.string() + " for client " + id.string() + ":\n" + msg);
         } catch (std::exception& e) {
             log(e.what());
-            std::string msg = std::string("{ERROR: ") + std::string(e.what()) + std::string("}");
-            send(info.socket, msg.c_str(), msg.length() , 0);
+            std::string msg = std::string("{\"ERROR\":\"") + std::string(e.what()) + std::string("\"}");
+            send(info.socket, msg.c_str(), msg.length() + 1, 0);
         }
     } else if (node["POST"] || node["post"]) {
         log("server handling post request from client " + id.string());

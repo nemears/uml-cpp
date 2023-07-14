@@ -5,9 +5,9 @@
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(DependencySuppliers, Package, Dependency, &Dependency::getSuppliers);
-UML_SET_INTEGRATION_TEST(DependencyClients, Package, Dependency, &Dependency::getClients);
-UML_SET_INTEGRATION_TEST(NamedElementClientDependencies, Dependency, Package, &NamedElement::getClientDependencies);
+UML_SET_INTEGRATION_TEST(DependencySuppliers, Package, Dependency, &Dependency::getSuppliers)
+UML_SET_INTEGRATION_TEST(DependencyClients, Package, Dependency, &Dependency::getClients)
+UML_SET_INTEGRATION_TEST(NamedElementClientDependencies, Dependency, Package, &NamedElement::getClientDependencies)
 
 class DependencyTest : public ::testing::Test {
     public:

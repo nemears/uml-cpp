@@ -4,9 +4,9 @@
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(PackageProfileApplication, ProfileApplication, Package, &Package::getProfileApplications);
-UML_SINGLETON_INTEGRATION_TEST(ProfileApplicationAppliedProfile, Profile, ProfileApplication, &ProfileApplication::getAppliedProfile, &ProfileApplication::setAppliedProfile);
-UML_SINGLETON_INTEGRATION_TEST(ProfileApplicationApplyingPackage, Package, ProfileApplication, &ProfileApplication::getApplyingPackage, &ProfileApplication::setApplyingPackage);
+UML_SET_INTEGRATION_TEST(PackageProfileApplication, ProfileApplication, Package, &Package::getProfileApplications)
+UML_SINGLETON_INTEGRATION_TEST(ProfileApplicationAppliedProfile, Profile, ProfileApplication, &ProfileApplication::getAppliedProfile, &ProfileApplication::setAppliedProfile)
+UML_SINGLETON_INTEGRATION_TEST(ProfileApplicationApplyingPackage, Package, ProfileApplication, &ProfileApplication::getApplyingPackage, &ProfileApplication::setApplyingPackage)
 
 class ProfileApplicationTest : public ::testing::Test {};
 

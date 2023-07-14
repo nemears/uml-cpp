@@ -5,11 +5,11 @@
 
 using namespace UML;
 
-UML_SINGLETON_INTEGRATION_TEST(ParameterDefaultValue, LiteralString, Parameter, &Parameter::getDefaultValue, &Parameter::setDefaultValue);
-UML_SET_INTEGRATION_TEST(ParameterParameterSets, ParameterSet, Parameter, &Parameter::getParameterSets);
-UML_SET_INTEGRATION_TEST(ParmeterSetParameters, Parameter, ParameterSet, &ParameterSet::getParameters);
-UML_SET_INTEGRATION_TEST(ParameterSetConditions, Constraint, ParameterSet, &ParameterSet::getConditions);
-UML_SET_INTEGRATION_TEST(BehavioralFeatureOwnedParameterSets, ParameterSet, Operation, &BehavioralFeature::getOwnedParameterSets);
+UML_SINGLETON_INTEGRATION_TEST(ParameterDefaultValue, LiteralString, Parameter, &Parameter::getDefaultValue, &Parameter::setDefaultValue)
+UML_SET_INTEGRATION_TEST(ParameterParameterSets, ParameterSet, Parameter, &Parameter::getParameterSets)
+UML_SET_INTEGRATION_TEST(ParmeterSetParameters, Parameter, ParameterSet, &ParameterSet::getParameters)
+UML_SET_INTEGRATION_TEST(ParameterSetConditions, Constraint, ParameterSet, &ParameterSet::getConditions)
+UML_SET_INTEGRATION_TEST(BehavioralFeatureOwnedParameterSets, ParameterSet, Operation, &BehavioralFeature::getOwnedParameterSets)
 
 class ParameterTest : public ::testing::Test {
     public:

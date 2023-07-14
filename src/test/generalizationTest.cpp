@@ -4,8 +4,8 @@
 
 using namespace UML;
 
-UML_SINGLETON_INTEGRATION_TEST(GeneralizationSpecific, OpaqueBehavior, Generalization, &Generalization::getSpecific, &Generalization::setSpecific);
-UML_SINGLETON_INTEGRATION_TEST(GeneralizationGeneral, Activity, Generalization, &Generalization::getGeneral, &Generalization::setGeneral);
+UML_SINGLETON_INTEGRATION_TEST(GeneralizationSpecific, OpaqueBehavior, Generalization, &Generalization::getSpecific, &Generalization::setSpecific)
+UML_SINGLETON_INTEGRATION_TEST(GeneralizationGeneral, Activity, Generalization, &Generalization::getGeneral, &Generalization::setGeneral)
 
 typedef UmlPtr<Generalization> GeneralizationPtr;
 

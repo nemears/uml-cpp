@@ -5,9 +5,9 @@
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(DeploymentTargetDeployment, Deployment, InstanceSpecification, &DeploymentTarget::getDeployments);
-UML_SINGLETON_INTEGRATION_TEST(DeploymentLocation, Property, Deployment, &Deployment::getLocation, &Deployment::setLocation);
-UML_SET_INTEGRATION_TEST(DeploymentDeployedArtifacts, Artifact, Deployment, &Deployment::getDeployedArtifacts);
+UML_SET_INTEGRATION_TEST(DeploymentTargetDeployment, Deployment, InstanceSpecification, &DeploymentTarget::getDeployments)
+UML_SINGLETON_INTEGRATION_TEST(DeploymentLocation, Property, Deployment, &Deployment::getLocation, &Deployment::setLocation)
+UML_SET_INTEGRATION_TEST(DeploymentDeployedArtifacts, Artifact, Deployment, &Deployment::getDeployedArtifacts)
 
 class DeploymentTest : public ::testing::Test {
     public:

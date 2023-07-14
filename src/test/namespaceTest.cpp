@@ -4,16 +4,16 @@
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(NamespaceOwnedRules, Constraint, Package, &Namespace::getOwnedRules);
-UML_SINGLETON_INTEGRATION_TEST(ConstraintContext, Package, Constraint, &Constraint::getContext, &Constraint::setContext);
+UML_SET_INTEGRATION_TEST(NamespaceOwnedRules, Constraint, Package, &Namespace::getOwnedRules)
+UML_SINGLETON_INTEGRATION_TEST(ConstraintContext, Package, Constraint, &Constraint::getContext, &Constraint::setContext)
 // UML_SET_INTEGRATION_TEST(ConstraintConstrainedElements, Slot, Constraint, &Constraint::getConstrainedElements);
 // TODO fix constraint
-UML_SET_INTEGRATION_TEST(NamespaceElementImports, ElementImport, Class, &Namespace::getElementImports);
-UML_SINGLETON_INTEGRATION_TEST(ElementImportImportingNamespace, Package, ElementImport, &ElementImport::getImportingNamespace, &ElementImport::setImportingNamespace);
-UML_SINGLETON_INTEGRATION_TEST(ElementImportImportedElement, DataType, ElementImport, &ElementImport::getImportedElement, &ElementImport::setImportedElement);
-UML_SET_INTEGRATION_TEST(NamespacePackageImports, PackageImport, Class, &Namespace::getPackageImports);
-UML_SINGLETON_INTEGRATION_TEST(PackageImportImportedPackage, Package, PackageImport, &PackageImport::getImportedPackage, &PackageImport::setImportedPackage);
-UML_SINGLETON_INTEGRATION_TEST(PackageImportImportingNamespace, Activity, PackageImport, &PackageImport::getImportingNamespace, &PackageImport::setImportingNamespace);
+UML_SET_INTEGRATION_TEST(NamespaceElementImports, ElementImport, Class, &Namespace::getElementImports)
+UML_SINGLETON_INTEGRATION_TEST(ElementImportImportingNamespace, Package, ElementImport, &ElementImport::getImportingNamespace, &ElementImport::setImportingNamespace)
+UML_SINGLETON_INTEGRATION_TEST(ElementImportImportedElement, DataType, ElementImport, &ElementImport::getImportedElement, &ElementImport::setImportedElement)
+UML_SET_INTEGRATION_TEST(NamespacePackageImports, PackageImport, Class, &Namespace::getPackageImports)
+UML_SINGLETON_INTEGRATION_TEST(PackageImportImportedPackage, Package, PackageImport, &PackageImport::getImportedPackage, &PackageImport::setImportedPackage)
+UML_SINGLETON_INTEGRATION_TEST(PackageImportImportingNamespace, Activity, PackageImport, &PackageImport::getImportingNamespace, &PackageImport::setImportingNamespace)
 
 class NamespaceTest : public ::testing::Test {};
 

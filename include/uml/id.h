@@ -1,7 +1,7 @@
-#ifndef UML_ID_H
-#define UML_ID_H
+#pragma once
 
 #include <string>
+#include "stdint.h"
 
 namespace UML {
     class ID {
@@ -66,5 +66,3 @@ namespace std {
         }
     };
 }
-
-#endif

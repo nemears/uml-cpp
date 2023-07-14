@@ -8,7 +8,7 @@ using namespace std;
 namespace UML {
 
 std::string OpenUmlSerializationPolicy::extensionName() {
-    return ".yml"; // ".uml.yml"
+    return ".yml";
 }
 
 ElementPtr OpenUmlSerializationPolicy::parseIndividual(std::string data, AbstractManager& manager) {
@@ -24,13 +24,13 @@ ElementPtr OpenUmlSerializationPolicy::parseWhole(std::string data, AbstractMana
     return parse(data, metaData);
 }
 
-std::string OpenUmlSerializationPolicy::emitIndividual(Element& el, AbstractManager& manager) {
+std::string OpenUmlSerializationPolicy::emitIndividual(Element& el, __attribute__((unused))AbstractManager& manager) {
     EmitterData data;
     data.emitReferences = true;
     return emit(el, data);
 }
 
-std::string OpenUmlSerializationPolicy::emitWhole(Element& el, AbstractManager& manager) {
+std::string OpenUmlSerializationPolicy::emitWhole(Element& el, __attribute__((unused))AbstractManager& manager) {
     EmitterData data;
     data.mode = SerializationMode::WHOLE;
     return emit(el, data);
@@ -55,13 +55,13 @@ ElementPtr OpenUmlJsonSerializationPolicy::parseWhole(std::string data, Abstract
     return parse(data, metaData);
 }
 
-std::string OpenUmlJsonSerializationPolicy::emitIndividual(Element& el, AbstractManager& manager) {
+std::string OpenUmlJsonSerializationPolicy::emitIndividual(Element& el, __attribute__((unused))AbstractManager& manager) {
     EmitterData data;
     data.isJSON = true;
     return emit(el, data);
 }
 
-std::string OpenUmlJsonSerializationPolicy::emitWhole(Element& el, AbstractManager& manager) {
+std::string OpenUmlJsonSerializationPolicy::emitWhole(Element& el, __attribute__((unused))AbstractManager& manager) {
     EmitterData data;
     data.mode = SerializationMode::WHOLE;
     data.isJSON = true;
@@ -120,16 +120,6 @@ ElementPtr parse(std::string data, ParserData& metaData) {
                 if (ret->m_node->m_references.find(referenceID) == ret->m_node->m_references.end()) {
                     ret->m_node->setReference(referenceID);
                 }
-
-
-
-                // if (!metaData.manager->loaded(referenceID)) {
-                // //     ElementPtr referencedEl = metaData.manager->get(referenceID);
-                // //     ret->m_node->setReference(*referencedEl);
-                // //     referencedEl->m_node->setReference(*ret);
-                // // } else {
-                //     ret->m_node->setReference(referenceID);
-                // }
             }
         }
     } else {

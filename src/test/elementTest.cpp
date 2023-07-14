@@ -5,7 +5,7 @@
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(ElementAppliedStereotypes, InstanceSpecification, EnumerationLiteral, &Element::getAppliedStereotypes);
+UML_SET_INTEGRATION_TEST(ElementAppliedStereotypes, InstanceSpecification, EnumerationLiteral, &Element::getAppliedStereotypes)
 
 class ElementTest : public ::testing::Test {};
 

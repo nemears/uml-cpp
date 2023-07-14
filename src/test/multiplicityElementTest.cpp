@@ -4,8 +4,8 @@
 
 using namespace UML;
 
-UML_SINGLETON_INTEGRATION_TEST(MultiplicityElementLowerValue, LiteralReal, Property, &MultiplicityElement::getLowerValue, &MultiplicityElement::setLowerValue);
-UML_SINGLETON_INTEGRATION_TEST(MultiplicityElementUpperValue, LiteralNull, ActionInputPin, &MultiplicityElement::getUpperValue, &MultiplicityElement::setUpperValue);
+UML_SINGLETON_INTEGRATION_TEST(MultiplicityElementLowerValue, LiteralReal, Property, &MultiplicityElement::getLowerValue, &MultiplicityElement::setLowerValue)
+UML_SINGLETON_INTEGRATION_TEST(MultiplicityElementUpperValue, LiteralNull, ActionInputPin, &MultiplicityElement::getUpperValue, &MultiplicityElement::setUpperValue)
 
 class MultiplicityElementTest : public ::testing::Test {
    

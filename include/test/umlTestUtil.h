@@ -49,7 +49,7 @@ namespace UML {
         ASSERT_EQ(((*u).*acessor)().size(), 2);
         ASSERT_TRUE(((*u).*acessor)().contains(*t2));
         ASSERT_TRUE(((*u).*acessor)().contains(*t));
-    };
+    }
 
     template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
     void setIntegrationTestReindex(S& (U::*acessor)()) {
@@ -69,7 +69,7 @@ namespace UML {
         t->setID(id);
         ASSERT_NO_THROW(((*u).*acessor)().get(id));
         ASSERT_EQ(((*u).*acessor)().get(id), *t);
-    };
+    }
 
     template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
     void setIntegrationTestMount(S& (U::*acessor)()) {
@@ -94,7 +94,7 @@ namespace UML {
         ASSERT_TRUE(((*u).*acessor)().contains(*t2));
         ASSERT_TRUE(((*u).*acessor)().contains(*t));
         ASSERT_EQ(((*u).*acessor)().size(), 2);
-    };
+    }
 
     template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
     void setIntegrationTestClientServer(S& (U::*acessor)()) { // TODO test this one a lil more thouroghly
@@ -133,7 +133,7 @@ namespace UML {
         #else
         std::cout << "skipping" << std::endl;
         #endif
-    };
+    }
 
     template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
     void setIntegrationTestErase(S& (U::*acessor)()) {
@@ -144,7 +144,7 @@ namespace UML {
         m.erase(*t);
         ASSERT_EQ(((*u).*acessor)().size(), 0);
         ASSERT_FALSE(m.loaded(t.id()));
-    };
+    }
 
     #define UML_SET_INTEGRATION_TEST(TEST_NAME, T, U, signature) \
     class TEST_NAME ## Method : public ::testing::Test { \

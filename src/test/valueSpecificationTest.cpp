@@ -6,7 +6,7 @@
 using namespace std;
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(ExpressionOperands, Expression, Expression, &Expression::getOperands);
+UML_SET_INTEGRATION_TEST(ExpressionOperands, Expression, Expression, &Expression::getOperands)
 
 class ValueSpecificationTest : public ::testing::Test {
     public:

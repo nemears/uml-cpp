@@ -5,11 +5,11 @@
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(AssociationOwnedEnd, Property, Association, &Association::getOwnedEnds);
-UML_SINGLETON_INTEGRATION_TEST(PropertyOwningAssociation, Association, Property, &Property::getOwningAssociation, &Property::setOwningAssociation);
-UML_SET_INTEGRATION_TEST(AssociationNavigableOwnedEnd, Property, Association, &Association::getNavigableOwnedEnds);
-UML_SET_INTEGRATION_TEST(AssociationMemberEnd, Property, Association, &Association::getMemberEnds);
-UML_SINGLETON_INTEGRATION_TEST(PropertyAssociation, Association, Property, &Property::getAssociation, &Property::setAssociation);
+UML_SET_INTEGRATION_TEST(AssociationOwnedEnd, Property, Association, &Association::getOwnedEnds)
+UML_SINGLETON_INTEGRATION_TEST(PropertyOwningAssociation, Association, Property, &Property::getOwningAssociation, &Property::setOwningAssociation)
+UML_SET_INTEGRATION_TEST(AssociationNavigableOwnedEnd, Property, Association, &Association::getNavigableOwnedEnds)
+UML_SET_INTEGRATION_TEST(AssociationMemberEnd, Property, Association, &Association::getMemberEnds)
+UML_SINGLETON_INTEGRATION_TEST(PropertyAssociation, Association, Property, &Property::getAssociation, &Property::setAssociation)
 
 class AssociationTest : public ::testing::Test {
    public:

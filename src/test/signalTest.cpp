@@ -5,8 +5,8 @@
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(SignalOwnedAttributes, Property, Signal, &Signal::getOwnedAttributes);
-UML_SINGLETON_INTEGRATION_TEST(ReceptionSignal, Signal, Reception, &Reception::getSignal, &Reception::setSignal);
+UML_SET_INTEGRATION_TEST(SignalOwnedAttributes, Property, Signal, &Signal::getOwnedAttributes)
+UML_SINGLETON_INTEGRATION_TEST(ReceptionSignal, Signal, Reception, &Reception::getSignal, &Reception::setSignal)
 
 class SignalTest : public ::testing::Test {
     public:

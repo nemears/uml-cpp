@@ -5,8 +5,8 @@
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(BehavioredClassifierOwnedBehavior, OpaqueBehavior, Class, &BehavioredClassifier::getOwnedBehaviors);
-UML_SINGLETON_INTEGRATION_TEST(BehavioredClassifierClassifierBehavior, OpaqueBehavior, Class, &BehavioredClassifier::getClassifierBehavior, &BehavioredClassifier::setClassifierBehavior);
+UML_SET_INTEGRATION_TEST(BehavioredClassifierOwnedBehavior, OpaqueBehavior, Class, &BehavioredClassifier::getOwnedBehaviors)
+UML_SINGLETON_INTEGRATION_TEST(BehavioredClassifierClassifierBehavior, OpaqueBehavior, Class, &BehavioredClassifier::getClassifierBehavior, &BehavioredClassifier::setClassifierBehavior)
 
 class BehavioredClassifierTest : public ::testing::Test {
    public:

@@ -4,7 +4,7 @@
 
 using namespace UML;
 
-UML_SINGLETON_INTEGRATION_TEST(ManifestationUtilizedElement, Package, Manifestation, &Manifestation::getUtilizedElement, &Manifestation::setUtilizedElement);
+UML_SINGLETON_INTEGRATION_TEST(ManifestationUtilizedElement, Package, Manifestation, &Manifestation::getUtilizedElement, &Manifestation::setUtilizedElement)
 
 class ManifestationTest : public ::testing::Test {};
 

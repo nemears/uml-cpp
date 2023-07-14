@@ -989,4 +989,4 @@ ID ID::fromString(std::string id) {
 bool ID::operator>(const ID& rhs) {
     std::hash<ID> hasher;
     return hasher(*this) > hasher(rhs);
-};
+}

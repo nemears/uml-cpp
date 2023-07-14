@@ -5,15 +5,15 @@
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(InterfaceOwnedAttribute, Property, Interface, &Interface::getOwnedAttributes);
-UML_SINGLETON_INTEGRATION_TEST(PropertyInterface, Interface, Property, &Property::getInterface, &Property::setInterface);
-UML_SET_INTEGRATION_TEST(InterfaceOwnedOperation, Operation, Interface, &Interface::getOwnedOperations);
-UML_SINGLETON_INTEGRATION_TEST(OperationInterface, Interface, Operation, &Operation::getInterface, &Operation::setInterface);
+UML_SET_INTEGRATION_TEST(InterfaceOwnedAttribute, Property, Interface, &Interface::getOwnedAttributes)
+UML_SINGLETON_INTEGRATION_TEST(PropertyInterface, Interface, Property, &Property::getInterface, &Property::setInterface)
+UML_SET_INTEGRATION_TEST(InterfaceOwnedOperation, Operation, Interface, &Interface::getOwnedOperations)
+UML_SINGLETON_INTEGRATION_TEST(OperationInterface, Interface, Operation, &Operation::getInterface, &Operation::setInterface)
 // UML_SET_INTEGRATION_TEST(InterfaceReception, Reception, Interface, &Interface::getOwnedReceptions);
-UML_SET_INTEGRATION_TEST(InterfaceNestedClassifiers, Class, Interface, &Interface::getNestedClassifiers);
-UML_SINGLETON_INTEGRATION_TEST(InterfaceRealizationContract, Interface, InterfaceRealization, &InterfaceRealization::getContract, &InterfaceRealization::setContract);
-UML_SINGLETON_INTEGRATION_TEST(InterfaceRealizationImplementingClassifier, Class, InterfaceRealization, &InterfaceRealization::getImplementingClassifier, &InterfaceRealization::setImplementingClassifier);
-UML_SET_INTEGRATION_TEST(BehavioredClassifierInterfaceRealizations, InterfaceRealization, Class, &BehavioredClassifier::getInterfaceRealizations);
+UML_SET_INTEGRATION_TEST(InterfaceNestedClassifiers, Class, Interface, &Interface::getNestedClassifiers)
+UML_SINGLETON_INTEGRATION_TEST(InterfaceRealizationContract, Interface, InterfaceRealization, &InterfaceRealization::getContract, &InterfaceRealization::setContract)
+UML_SINGLETON_INTEGRATION_TEST(InterfaceRealizationImplementingClassifier, Class, InterfaceRealization, &InterfaceRealization::getImplementingClassifier, &InterfaceRealization::setImplementingClassifier)
+UML_SET_INTEGRATION_TEST(BehavioredClassifierInterfaceRealizations, InterfaceRealization, Class, &BehavioredClassifier::getInterfaceRealizations)
 
 class InterfaceTest : public ::testing::Test {
     public:

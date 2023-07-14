@@ -5,8 +5,8 @@
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(OperationOwnedParameter, Parameter, Operation, &Operation::getOwnedParameters);
-UML_SINGLETON_INTEGRATION_TEST(ParameterOperation, Operation, Parameter, &Parameter::getOperation, &Parameter::setOperation);
+UML_SET_INTEGRATION_TEST(OperationOwnedParameter, Parameter, Operation, &Operation::getOwnedParameters)
+UML_SINGLETON_INTEGRATION_TEST(ParameterOperation, Operation, Parameter, &Parameter::getOperation, &Parameter::setOperation)
 // TODO type and constraints and stuff
 
 class OperationTest : public ::testing::Test {

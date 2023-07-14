@@ -5,10 +5,10 @@
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(DataTypeOwnedAttributes, Property, DataType, &DataType::getOwnedAttributes);
-UML_SET_INTEGRATION_TEST(DataTypeOwnedOperations, Operation, PrimitiveType, &DataType::getOwnedOperations);
-UML_SINGLETON_INTEGRATION_TEST(PropertyDataType, DataType, Property, &Property::getDataType, &Property::setDataType);
-UML_SINGLETON_INTEGRATION_TEST(OperationDataType, DataType, Operation, &Operation::getDataType, &Operation::setDataType);
+UML_SET_INTEGRATION_TEST(DataTypeOwnedAttributes, Property, DataType, &DataType::getOwnedAttributes)
+UML_SET_INTEGRATION_TEST(DataTypeOwnedOperations, Operation, PrimitiveType, &DataType::getOwnedOperations)
+UML_SINGLETON_INTEGRATION_TEST(PropertyDataType, DataType, Property, &Property::getDataType, &Property::setDataType)
+UML_SINGLETON_INTEGRATION_TEST(OperationDataType, DataType, Operation, &Operation::getDataType, &Operation::setDataType)
 
 typedef UmlPtr<Property> PropertyPtr;
 

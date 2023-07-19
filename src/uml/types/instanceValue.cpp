@@ -21,7 +21,9 @@ void InstanceValue::referenceErased(ID id) {
 
 void InstanceValue::restoreReference(Element* el) {
     ValueSpecification::restoreReference(el);
-    // m_instance.restore(el);
+    if (m_instance.get().id() == el->getID()) {
+        el->setReference(this);
+    }
 }
 
 TypedSet<InstanceSpecification, InstanceValue>& InstanceValue::getInstanceSingleton() {

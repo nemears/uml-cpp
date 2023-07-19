@@ -48,7 +48,7 @@ Slot::~Slot() {
     
 }
 
-Set<ValueSpecification, Slot>& Slot::getValues() {
+OrderedSet<ValueSpecification, Slot>& Slot::getValues() {
     return m_values;
 }
 

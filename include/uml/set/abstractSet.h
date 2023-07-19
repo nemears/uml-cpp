@@ -1096,7 +1096,11 @@ namespace UML {
                 if (!this->m_root) {
                     throw SetStateException("Could not find el with id of " + id.string() + " in set");
                 }
-                AbstractSet* setThatNodeWasAdded = search(id, this->m_root)->set;
+                SetNode* result = search(id, this->m_root);
+                if (!result) {
+                    throw SetStateException("Could not find el with id of " + id.string() + " in set");
+                }
+                AbstractSet* setThatNodeWasAdded = result->set;
                 innerRemove(id);
                 el->m_node->removeReference(m_el);
                 m_el.m_node->removeReference(*el);
@@ -1181,8 +1185,10 @@ namespace UML {
             }
 
             void eraseElement(ID id) {
-                if (contains(id)) { // TODO we are searching set twice, can be quicker
+                try {
                     remove(id);
+                } catch (SetStateException& exception) {
+
                 }
             }
 

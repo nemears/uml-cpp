@@ -1,176 +1,796 @@
----
-  package:
-    id: m3ixuPETCXTA2EgBYEEQP4nBGhoG #eventually maybe replace id so not every projects model is same id
-    name: Model
-    packagedElements:
-      - package:
-          id: UML_r67OnwwyTHCtCmWnZsd8ePh5
-          name: UML
-          packagedElements:
-            - package:
-                id: Primitive_Types_WZcyDDLemQ97
-                name: Primitive_Types
-                packagedElements:
-                  - primitiveType:
-                      id: "bool_bzkcabSy3CiFd&HmJOtnVRK"
-                      name: bool
-                  - primitiveType:
-                      id: "real_aZG&w6yl61bXVWutgeyScN9"
-                      name: real
-                  - primitiveType:
-                      id: "string_L&R5eAEq6f3LUNtUmzHzT"
-                      name: string
-                  - primitiveType:
-                      id: int_r9nNbBukx47IomXrT2raqtc4
-                      name: int
-            - package:
-                id: Standard_Profile_IlesiZnrVGR
-                name: Open-UML Profile
-                packagedElements:
-                  - class:
-                      id: fppmrPcasKJDUBoKnMA3rNU22SFk
-                      name: PresentationElement
-                      ownedAttributes:
-                        - property:
-                            id: "5aQ4hcDk32eSc3R&84uIyACddmu0"
-                            name: elementID
-                            type: "string_L&R5eAEq6f3LUNtUmzHzT"
-                  - class:
-                      id: "&7qxHqMCh5Cwd3&s053vQD&xPsAK"
-                      name: ShapeElement
-                      generalizations:
-                        - generalization:
-                            id: v5WUo7Gu_B7JtsMFgtglJTt8AiAJ
-                            general: fppmrPcasKJDUBoKnMA3rNU22SFk
-                      ownedAttributes:
-                        - property:
-                            id: XH6q5l6Dpf8QoqUeqb0wlBcF3LVN
-                            name: x
-                            type: int_r9nNbBukx47IomXrT2raqtc4
-                        - property:
-                            id: "MbxzX87yGS4s8kl&FehOVttIWs2q"
-                            name: width
-                            type: int_r9nNbBukx47IomXrT2raqtc4
-                        - property:
-                            id: 3df71o06GbM0LYLmcrv7yIehbxFG
-                            name: y
-                            type: int_r9nNbBukx47IomXrT2raqtc4
-                        - property:
-                            id: pmvMVFeRTg6QF87n8ey97MIyopwb
-                            name: height
-                            type: int_r9nNbBukx47IomXrT2raqtc4
-                  - class:
-                      id: NKE5JxXD2Cp82Gw0CzsnlgtanuSp
-                      name: PathElement
-                      generalizations:
-                        - generalization:
-                            id: KLxKdrkoSZbd4LhjhQokgqbo22Qn
-                            general: fppmrPcasKJDUBoKnMA3rNU22SFk
-                      ownedAttributes:
-                        - property:
-                            id: JZd_DbxP5H2otheX0ucXKgeGxB3b
-                            name: waypoints
-                            type: Wd18iwR4ijeaG7WrKZJX966ySqPg
-                        - property:
-                            id: nW89s4ZaRhGlrwbri3wIQ6AG5PcY
-                            name: source
-                            type: "&7qxHqMCh5Cwd3&s053vQD&xPsAK"
-                        - property:
-                            id: "KrQkyKfJLEoLHucoJlsUn&06GdTi"
-                            name: target
-                            type: "&7qxHqMCh5Cwd3&s053vQD&xPsAK"
-                  - class:
-                      id: Wd18iwR4ijeaG7WrKZJX966ySqPg
-                      name: Point
-                      ownedAttributes:
-                        - property:
-                            id: "TL9YRNP&uSq5O&ZX0BNUqSl3uHTO"
-                            name: x
-                            type: int_r9nNbBukx47IomXrT2raqtc4
-                        - property:
-                            id: WQEwSh2OYmb1Yj2Hu5Fdk_S6qFP5
-                            name: y
-                            type: int_r9nNbBukx47IomXrT2raqtc4
-                  - extension:
-                      id: "CLUbrvbx1qIuFyoG1O&ULzByyPAP"
-                      memberEnds:
-                        - U8UAFKIsvN2Gv8FvSCgEbwnOB_1k
-                      ownedEnd:
-                        extensionEnd:
-                          id: "&sSE4laBvC8nVkvXWrGa3wrsD3dB"
-                          type: Diagram_nuc1IC2Cavgoa4zMBlVq
-                          association: "CLUbrvbx1qIuFyoG1O&ULzByyPAP"
-                ownedStereotypes:
-                  - stereotype:
-                      id: Diagram_nuc1IC2Cavgoa4zMBlVq
-                      name: Diagram
-                      ownedAttributes:
-                        - property:
-                            id: U8UAFKIsvN2Gv8FvSCgEbwnOB_1k
-                            name: basePackage
-                            type: "zvAhfu&WNCI1cNXd3BkqhxywHAYY"
-                        - property:
-                            id: s1uJq8oidNVLz52qsZCsdcecIoZs
-                            name: presentationElements
-                            type: fppmrPcasKJDUBoKnMA3rNU22SFk
-                        # - property:
-                        #     id: Nktd1JglePYIY3SN0akm0TklcGd0
-                        #     name: shapesPackage
-                        #     type: "zvAhfu&WNCI1cNXd3BkqhxywHAYY"
-                        #     lowerValue:
-                        #       literalInt:
-                        #         id: 27qjUIDYyZOx_z9PQy_ZjnPwWVlM
-                        #         value: 0
-                        #     upperValue:
-                        #       literalInt:
-                        #         id: "9&HlAYeeLZdmnSPDfvOjWUZx5ILR"
-                        #         value: 1
-            - package:
-                id: y7LiHxyNJEQt9UaAj68FATLdgf18
-                name: UML2 Metamodel
-                packagedElements:
-                  - class:
-                      id: "zvAhfu&WNCI1cNXd3BkqhxywHAYY"
-                      name: Package
-                      generalizations:
-                        - generalization:
-                            id: cyWbAa159c48tfqsoWTZJMWOE0LO
-                            general: pUg_kaODi6D0KMi6MXAJcMWMG3G_
-                        - generalization:
-                            id: "ZvHd7GYQP&Tsoat31w5et4Hmel_n"
-                            general: "&ve0WKXZ2Hn47xMl&Dl&lXPTMHD9"
-                  - class:
-                      id: pUg_kaODi6D0KMi6MXAJcMWMG3G_
-                      name: Namespace
-                      generalizations:
-                        - generalization:
-                            id: SCQQKRDwxHNk5usTlqBa1whibNRn
-                            general: Ox30_bFSsGtPZorPYOkDTLeXquIN
-                  - class:
-                      id: "&ve0WKXZ2Hn47xMl&Dl&lXPTMHD9"
-                      name: PackageableElement
-                      generalizations:
-                        - generalization:
-                            id: "feIy&LrRjB4RegILZ4WEHtSvSJJJ"
-                            general: Ox30_bFSsGtPZorPYOkDTLeXquIN
-                  - class:
-                      id: Ox30_bFSsGtPZorPYOkDTLeXquIN
-                      name: NamedElement
-                      generalizations:
-                        - generalization:
-                            id: nPgccF4Kz_icaR9cEyrGqpjKSgpc
-                            general: XI35viryLd5YduwnSbWpxSs3npcu
-                      ownedAttributes:
-                        - property:
-                            id: OATEs8WJeyqHKy7Os_9aWi5HGCDU
-                            name: name
-                            type: "string_L&R5eAEq6f3LUNtUmzHzT"
-                  - class:
-                      id: XI35viryLd5YduwnSbWpxSs3npcu
-                      name: Element
-                      ownedAttributes:
-                        - property:
-                            id: 3gx55nLEvmzDt2kKK7gYgxsTBD6M
-                            name: id
-                            type: "string_L&R5eAEq6f3LUNtUmzHzT"
-...
+package:
+  id: m3ixuPETCXTA2EgBYEEQP4nBGhoG
+  name: Model
+  packagedElements:
+    - package:
+        id: UML_r67OnwwyTHCtCmWnZsd8ePh5
+        name: UML
+        packagedElements:
+          - package:
+              id: Primitive_Types_WZcyDDLemQ97
+              name: Primitive_Types
+              packagedElements:
+                - primitiveType:
+                    id: "bool_bzkcabSy3CiFd&HmJOtnVRK"
+                    name: Boolean
+                - primitiveType:
+                    id: "real_aZG&w6yl61bXVWutgeyScN9"
+                    name: Real
+                - primitiveType:
+                    id: "string_L&R5eAEq6f3LUNtUmzHzT"
+                    name: String
+                - primitiveType:
+                    id: qlCO1PwnQkJ4kg7DLifFEs0OSv9e
+                    name: UnlimitedNatural
+                - primitiveType:
+                    id: int_r9nNbBukx47IomXrT2raqtc4
+                    name: Integer
+          - package:
+              id: YXUv4lT7uhmDU7PdRxT_K8QC24ku
+              name: Diagram Common
+              packagedElements:
+                - dataType:
+                    id: iJOykGQ4z9anpcPG_cawroBzlZPL
+                    name: Point
+                    ownedAttributes:
+                      - property:
+                          id: 0TTKoNWbe13DJ3ou_1KhyS9sE1iU
+                          name: x
+                          type: "real_aZG&w6yl61bXVWutgeyScN9"
+                          lowerValue:
+                            literalInt:
+                              id: 7Nsur8jlwWswxeM0NrW6NZ3NDMGQ
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: eH01MOx3xPovALCGxjJ9IG5XCkYx
+                              value: 1
+                          defaultValue:
+                            literalReal:
+                              id: "wN_gCV19XpHgH&f&S_k0zj48q&WF"
+                              value: 0
+                      - property:
+                          id: wecoFZpGF2kLOJ0sBneePO3nB47z
+                          name: y
+                          lowerValue:
+                            literalInt:
+                              id: "5ZC&sqnDGAbcou5p3IQdpX&fnzEm"
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: "bnYM4SX2bmSUkp&Oe7Qf92gtjdBf"
+                              value: 1
+                - dataType:
+                    id: "&5o9ZnljHgKF9lt&AP3yMjz1HKSr"
+                    name: Color
+                    ownedAttributes:
+                      - property:
+                          id: "VWl5zdNtgmkCDMkWQnbt&MMJKlA8"
+                          name: red
+                          type: int_r9nNbBukx47IomXrT2raqtc4
+                          lowerValue:
+                            literalInt:
+                              id: y4WQ2h6xHZwncbqlxcyFtNtX0Pz0
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: FT8hfwwB125d0Kaoorcq0G_Set9Z
+                              value: 1
+                      - property:
+                          id: ECbPAnT7dFpInLzDizGZntbs1PsV
+                          name: blue
+                          type: int_r9nNbBukx47IomXrT2raqtc4
+                          lowerValue:
+                            literalInt:
+                              id: "rBtk4V2R0smD&Cz6bNtSHGb7MWY_"
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: gtphHOoFH098tznLYedgT0iAJKgX
+                              value: 1
+                      - property:
+                          id: "Q&WMvZLU_bjiutysDQgs_YHhvYZ5"
+                          name: green
+                          type: int_r9nNbBukx47IomXrT2raqtc4
+                          lowerValue:
+                            literalInt:
+                              id: 0GGQqLYXBCB4Q0uFmEmA1CmJKVgG
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: 15xNk5KeyWys4DqIMLWByxelkkz6
+                              value: 1
+                - dataType:
+                    id: "t3n5Hp40h6dcHIG9xGWAz&A3pcwU"
+                    name: Dimension
+                    ownedAttributes:
+                      - property:
+                          id: "&CObE4xQM1YdLUZvbwoyq2Uv7&75"
+                          name: width
+                          type: "real_aZG&w6yl61bXVWutgeyScN9"
+                          lowerValue:
+                            literalInt:
+                              id: gZxOd_mcqWXHRizvyD_zrpmR2qzK
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: "reeqWHnVl077Rm0s&yfuIthg3f1z"
+                              value: 1
+                      - property:
+                          id: 9WKxm1c9JrbPrVdUEVzZZA2IUxB6
+                          name: height
+                          type: "real_aZG&w6yl61bXVWutgeyScN9"
+                          lowerValue:
+                            literalInt:
+                              id: eg5YkNDG7wrLnwSNu2iJ3h6c69Rh
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: 66rlpCp7cWmdixtpwWj8zRka4jQA
+                              value: 1
+                - enumeration:
+                    id: "SxEDdlsOyBUiDufPGz5&5yPLKNw_"
+                    name: AlignmentKind
+                    ownedLiterals:
+                      - enumerationLiteral:
+                          id: "kKR8K38TblSzT4UcD26bf4w&hK17"
+                          name: start
+                      - enumerationLiteral:
+                          id: TPNL0COKdQ5jgyEUkze8BngwpUTZ
+                          name: end
+                      - enumerationLiteral:
+                          id: pRpw0RNeqqYIRPLDifi_yGfKrfif
+                          name: center
+                - enumeration:
+                    id: "iViTacxvZLjd4BuA&xvkzMcbhlTa"
+                    name: KnownColor
+                    ownedLiterals:
+                      - enumerationLiteral:
+                          id: "qo02HxWrhFmLkqQIqq&yCT9kKLEv"
+                          name: maroon
+                      - enumerationLiteral:
+                          id: Mx9rRynC_DhgdxXHACoku4SrvY5_
+                          name: red
+                      - enumerationLiteral:
+                          id: syyFF1LBteBqrMySDaLUJ_MPabhX
+                          name: orange
+                      - enumerationLiteral:
+                          id: "cHmqy&0hPTAp1pocKcCsWjpOxJBT"
+                          name: yellow
+                      - enumerationLiteral:
+                          id: "yYYWBfO4OLWkqSKigWCvL_9v&cie"
+                          name: olive
+                      - enumerationLiteral:
+                          id: Yq7gi27j_3fY2AtXHvuRqz55oN49
+                          name: purple
+                      - enumerationLiteral:
+                          id: OPkBua8K2vqsv9RZ1DpNNpC5jxrU
+                          name: fuchsia
+                      - enumerationLiteral:
+                          id: "jAbuTHGEj82&fD0Yk3y&JRwH64Nm"
+                          name: white
+                      - enumerationLiteral:
+                          id: 4SLW40BKPbayZToyFijOoSCJQYUn
+                          name: lime
+                      - enumerationLiteral:
+                          id: FPGBnE0UvOOpxcCNmLYXpNrbpNog
+                          name: green
+                      - enumerationLiteral:
+                          id: NvGCbtY_y748yMqt51VWBUNjiG_l
+                          name: navy
+                      - enumerationLiteral:
+                          id: pRbHg0DBcIjR4ytnzKmWx1XYS0DO
+                          name: blue
+                      - enumerationLiteral:
+                          id: R5rF5z5S6Vre0Uhq45eB7yDAccfy
+                          name: aqua
+                      - enumerationLiteral:
+                          id: IuCCnnR2CLaZtBnB76B7UwnMexCq
+                          name: teal
+                      - enumerationLiteral:
+                          id: 5_LZXvVNfOvwMN8tHrU2muG2d6Pq
+                          name: black
+                      - enumerationLiteral:
+                          id: "H5VP8OfTNMV&mOXIwXbqDGwutrMm"
+                          name: silver
+                      - enumerationLiteral:
+                          id: jbbR1PqdkNq6S7uwPJSmgU3Ljb51
+                          name: gray
+                - dataType:
+                    id: GrSBY10MECO6g8EesG5ZdXVQ5m5B
+                    name: Bounds
+                    ownedAttributes:
+                      - property:
+                          id: OaYzOYryv5lrW2YYkujnjL02rSlo
+                          name: x
+                          type: "real_aZG&w6yl61bXVWutgeyScN9"
+                          lowerValue:
+                            literalInt:
+                              id: lqrvdxbRPA2O2liryMjM02A3JWbO
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: 4Rl36gLyO9m6v72jZoAM67vqfiU7
+                              value: 1
+                          defaultValue:
+                            literalReal:
+                              id: 2jOLRQQZ5FT9E_eOt5ExMgi1bD2t
+                              value: 0
+                      - property:
+                          id: "&TCEXx1uZQsa7g1KPT9ocVwNiwV7"
+                          name: width
+                          type: "real_aZG&w6yl61bXVWutgeyScN9"
+                          lowerValue:
+                            literalInt:
+                              id: 7UuUoIcu3GyvW6FnVXupkybJXCmQ
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: pMXKay77KXKBh5ugVeqJp5K2pf7S
+                              value: 1
+                      - property:
+                          id: RhD_fTVUMc4ceJ4topOlpaFPpoiB
+                          name: y
+                          type: "real_aZG&w6yl61bXVWutgeyScN9"
+                          lowerValue:
+                            literalInt:
+                              id: "o0e4L&hDfD9X78VigC5ZzXfzwZI2"
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: QhidQOyP9wU8kqgBUNODZmn3n0R_
+                              value: 1
+                          defaultValue:
+                            literalReal:
+                              id: CLslsQ2EmwpaGjQZ_EcMAugDHZF3
+                              value: 0
+                      - property:
+                          id: ELF54xP3DUMrFbgteAQkIXONqnlg
+                          name: height
+                          type: "real_aZG&w6yl61bXVWutgeyScN9"
+                          lowerValue:
+                            literalInt:
+                              id: "shCYmuMTOA6&3DifmQdblFqArbyv"
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: GKZ6_JuqAdHiAbjBXaLDyKhfzLr_
+                              value: 1
+          - package:
+              id: Standard_Profile_IlesiZnrVGR
+              name: Open-UML Profile
+              packagedElements:
+                - extension:
+                    id: "CLUbrvbx1qIuFyoG1O&ULzByyPAP"
+                    ownedEnd:
+                      extensionEnd:
+                        id: "&sSE4laBvC8nVkvXWrGa3wrsD3dB"
+                        type: Diagram_nuc1IC2Cavgoa4zMBlVq
+              ownedStereotypes:
+                - stereotype:
+                    id: Diagram_nuc1IC2Cavgoa4zMBlVq
+                    name: Diagram
+                    generalizations:
+                      - generalization:
+                          id: h3UtoZmVAxN69hxsm8oUWsunLJ7u
+                          general: U3CQzJden20cL0mG0nQN_HuWfisB
+          - package:
+              id: "eG2Xwx&vouEkDctJcAiaCXLu8G5H"
+              name: UML DI
+              packagedElements:
+                - class:
+                    id: "pYBbzHRbiLs2Yh_lGpBkvzipf&D1"
+                    name: UMLDiagramElement
+                    generalizations:
+                      - generalization:
+                          id: z_EFZTdJ2PRyzDvKXMPFJpY_nOlE
+                          general: JyJLXpOZyw01guSKghjxNcRxd8Zy
+                    ownedAttributes:
+                      - property:
+                          id: "3&io9rgm9t1Vu9l8EEwU3QBNblgX"
+                          name: owningElement
+                          type: "pYBbzHRbiLs2Yh_lGpBkvzipf&D1"
+                          lowerValue:
+                            literalInt:
+                              id: 56iiGIcfZxhtNfIDVVPAlVt036jY
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: Bj2ZB2lqo1QdVp2IhGrtH1fMlCHG
+                              value: 1
+                          association: "&u7vcZfbaFjiNO4Yjnh4HWKvIbHA"
+                      - property:
+                          id: xnI9Aiz3GaF91K8H7KAPe95oDgyE
+                          name: modelElement
+                          type: XI35viryLd5YduwnSbWpxSs3npcu
+                          lowerValue:
+                            literalInt:
+                              id: "YID17KCB4yq&kEpaQqE3jpdIFtCm"
+                              value: 0
+                          upperValue:
+                            literalUnlimitedNatural:
+                              id: D0toxXQ144MmeDefpbLTReSqYStv
+                              value: "*"
+                      - property:
+                          id: rnm_zSDRk_kdPiWTfx6QZRkgUvFe
+                          name: ownedElements
+                          type: "pYBbzHRbiLs2Yh_lGpBkvzipf&D1"
+                          lowerValue:
+                            literalInt:
+                              id: VyYl6DLQ5sUGhg4MmevA_8R97eGG
+                              value: 0
+                          upperValue:
+                            literalUnlimitedNatural:
+                              id: "6V&CxOayP_xVVhVyzD3ro4gbNlaf"
+                              value: "*"
+                          aggregation: composite
+                          isComposite: true
+                          association: "&u7vcZfbaFjiNO4Yjnh4HWKvIbHA"
+                - association:
+                    id: "qPERxZCZS0b&NCDSEM8OS5C1YvHt"
+                    ownedEnds:
+                      - property:
+                          id: JKQnt95obbUHC5q023OY2r0vJ0cz
+                          name: sourceEdge
+                          type: u2fIGW2nEDfMfVxqDvSmPd5e_wNR
+                          lowerValue:
+                            literalInt:
+                              id: "v4hvNLW3f6kAI6wp2&YhLEnCYdn9"
+                              value: 0
+                          upperValue:
+                            literalUnlimitedNatural:
+                              id: ldrDY4PPEJEcOC7mopUfWFTJyJDR
+                              value: "*"
+                - association:
+                    id: Mw0hV5CqFLrTFIOUQ7xH4wC_LOAc
+                    memberEnds:
+                      - "R2flL_8p_&Zc7HP07QfAyUI7EtCg"
+                    ownedEnds:
+                      - property:
+                          id: Ji31E30RKG6dzSZjHLNwUiNQV9Sr
+                          name: targetEdge
+                          type: u2fIGW2nEDfMfVxqDvSmPd5e_wNR
+                          lowerValue:
+                            literalInt:
+                              id: m1L2vbYZ9P8FtcdAk_IJoYIlSXTb
+                              value: 0
+                          upperValue:
+                            literalUnlimitedNatural:
+                              id: AK6On8wNwYps0dqhJ8ZCdv15wq1P
+                              value: "*"
+                - association:
+                    id: "&u7vcZfbaFjiNO4Yjnh4HWKvIbHA"
+                    memberEnds:
+                      - rnm_zSDRk_kdPiWTfx6QZRkgUvFe
+                      - "3&io9rgm9t1Vu9l8EEwU3QBNblgX"
+                - class:
+                    id: U3CQzJden20cL0mG0nQN_HuWfisB
+                    name: UMLDiagram
+                    generalizations:
+                      - generalization:
+                          id: "oGBaj&FLLbp2vDNvO_idi6kBr&lg"
+                          general: "pYBbzHRbiLs2Yh_lGpBkvzipf&D1"
+                      - generalization:
+                          id: qtfQ8peWQmxUqhTeUy_u6iEuNe4R
+                          general: "&ve0WKXZ2Hn47xMl&Dl&lXPTMHD9"
+                      - generalization:
+                          id: jTmwqF2HfUjLKhPPRi3zfyqW99NC
+                          general: 4XJkzTWX7xcZHOxUppoC6gYQzTKF
+                    ownedAttributes:
+                      - property:
+                          id: 7mT9JY5EGA4TDqjv0R0Ncd9x5OyU
+                          name: isFrame
+                          type: "bool_bzkcabSy3CiFd&HmJOtnVRK"
+                          lowerValue:
+                            literalInt:
+                              id: qwXwkWRd0f5PKca3jc72xZRlToCc
+                              value: 1
+                          upperValue:
+                            literalInt:
+                              id: aSncIkIQq1TCDhDw2q6qx0Ld2Ipm
+                              value: 1
+                          defaultValue:
+                            literalBool:
+                              id: ZCBL5t3hGNUX8T3PruoCMdAoQv4O
+                              value: true
+                      - property:
+                          id: 4phpVkyDwulQSgJPc6gX7mIVhSbE
+                          name: isInheritedLighter
+                          type: "bool_bzkcabSy3CiFd&HmJOtnVRK"
+                          lowerValue:
+                            literalInt:
+                              id: PUa934UdsSxST9ryBaAW6751IKde
+                              value: 1
+                          upperValue:
+                            literalInt:
+                              id: "Q52jyqdz8Js8nE7w3YcOx9k&4ZwG"
+                              value: 1
+                          defaultValue:
+                            literalBool:
+                              id: 9_MbHCbNsE4O3RBfZdMXsx52bdGR
+                              value: false
+                      - property:
+                          id: "&DNyiZYBunaQcQexHq7OfqrZrEuU"
+                          name: isIso
+                          type: "bool_bzkcabSy3CiFd&HmJOtnVRK"
+                          lowerValue:
+                            literalInt:
+                              id: vSZWG4189Dzb1yrfF5esp2OMmK2s
+                              value: 1
+                          upperValue:
+                            literalInt:
+                              id: "7s0zsUIbOYgpD8HMK6BipYTed3&d"
+                              value: 1
+                          defaultValue:
+                            literalBool:
+                              id: HQGzcSEN3IAU6dYW6vcChDwUTI3f
+                              value: true
+                      - property:
+                          id: jHSNDVVMy40lH6TTEOeTtGBnrZGv
+                          name: heading
+                          type: urWpoxZVhva76RnwyRAhLgduprmm
+                          lowerValue:
+                            literalInt:
+                              id: "1yCV&8GOKjK4B9OGqUorQD1wK8Vr"
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: HWQk6GMUs2iEQC2RgjXyNW0SWlOX
+                              value: 1
+                - association:
+                    id: "Mvqml&gK_p8qeAZLpvQ&MH8IEaQA"
+                    navigableOwnedEnds:
+                      - property:
+                          id: "N9xPgjmT&AB_Wnv94gtQKKzlEqkF"
+                          name: " umlDiagramElement"
+                          type: "pYBbzHRbiLs2Yh_lGpBkvzipf&D1"
+                          lowerValue:
+                            literalInt:
+                              id: TamdIJP34FLJCTtRMwR1RCJIY5Zh
+                              value: 0
+                          upperValue:
+                            literalUnlimitedNatural:
+                              id: gVrniSuOfeyZFlzb_OftfF5iPl7x
+                              value: "*"
+                - class:
+                    id: urWpoxZVhva76RnwyRAhLgduprmm
+                    name: UMLLabel
+                    generalizations:
+                      - generalization:
+                          id: hUVcF1CMlykesdo2Hz7OQWlaz2X3
+                          general: KYV0Pg5b5r4KJ6qCA3_RAU2bWI4g
+                    ownedAttributes:
+                      - property:
+                          id: "GJKibcaKH82QYL&Sm3&rX5Mlc8ps"
+                          name: text
+                          type: "string_L&R5eAEq6f3LUNtUmzHzT"
+                          lowerValue:
+                            literalInt:
+                              id: 2DseOJW4r7YDHmVvtBqptm92mtwI
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: "oTNU0gcASAg&H33Kq36hmRonWgyD"
+                              value: 1
+                - class:
+                    id: u2fIGW2nEDfMfVxqDvSmPd5e_wNR
+                    name: UMLEdge
+                    generalizations:
+                      - generalization:
+                          id: Dc2LqQYichgOb0FcNIHLziJ0SlTL
+                          general: km1lg5hn0M_a7vfwudun2ylfqkV3
+                      - generalization:
+                          id: NUyxpjFq87bfYfze24_ft0wV4g7K
+                          general: "pYBbzHRbiLs2Yh_lGpBkvzipf&D1"
+                    ownedAttributes:
+                      - property:
+                          id: Xxh7mjF9IMK0rhyrbSXOGA1_7vVo
+                          name: source
+                          type: "pYBbzHRbiLs2Yh_lGpBkvzipf&D1"
+                          lowerValue:
+                            literalInt:
+                              id: kE3PxxULSdOQJ8nRVRW4n3_Z76bT
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: u4Aw_iH0ig2p9jOeS2LeGU5pUaNN
+                              value: 1
+                      - property:
+                          id: "R2flL_8p_&Zc7HP07QfAyUI7EtCg"
+                          name: target
+                          type: "pYBbzHRbiLs2Yh_lGpBkvzipf&D1"
+                          lowerValue:
+                            literalInt:
+                              id: G_mHSfdkOs0U4pI54MjNsDVH8alS
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: SFAV73_STn2WXJsyclB4tW3_PDhw
+                              value: 1
+                          association: Mw0hV5CqFLrTFIOUQ7xH4wC_LOAc
+                - class:
+                    id: KYV0Pg5b5r4KJ6qCA3_RAU2bWI4g
+                    name: UMLShape
+                    generalizations:
+                      - generalization:
+                          id: YQmbNTObCG8qWVYXPz90Ym5sRxXi
+                          general: Fj3BBa2Uf4XDwSp_gM46SFqGJdqy
+                      - generalization:
+                          id: mwW3ms4LYy3HkxLCMTNmVEOX9uMG
+                          general: "pYBbzHRbiLs2Yh_lGpBkvzipf&D1"
+          - package:
+              id: WArfzPKZHN_6i24NfN1PJKnB_PWv
+              name: Diagram Interchange
+              packagedElements:
+                - class:
+                    id: JyJLXpOZyw01guSKghjxNcRxd8Zy
+                    name: DiagramElement
+                    ownedAttributes:
+                      - property:
+                          id: IKA1tRlsZ6HY_empbuQiXG9IHv_R
+                          name: modelElement
+                          type: XI35viryLd5YduwnSbWpxSs3npcu
+                      - property:
+                          id: gKpLJKf9u_PpyJ5T3VqjqD0Mt0oa
+                          name: sharedStyle
+                          type: Jq6tOLJHyVZilh3qLtnYYmsHkSsS
+                          lowerValue:
+                            literalInt:
+                              id: fRygdk8LJwt3UsA_8WVZw9JlsOqf
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: splcMOtXKeyAt5dQmyEjikGIhn9M
+                              value: 1
+                          association: lMDVxmUicvVlwEu86FLu6R07Zmme
+                      - property:
+                          id: "pRC&nYUTPsFa3FF8A7I4hc1upU&H"
+                          name: localStyle
+                          type: Jq6tOLJHyVZilh3qLtnYYmsHkSsS
+                          lowerValue:
+                            literalInt:
+                              id: 1PXQ1MQ8V8hv02uoYvwwU3VaPD6p
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: ObXXUJkFSGbYFW1axrw0O65z2sOU
+                              value: 1
+                          association: GGXYlRByI1SXEXVa3xj8xfT1dwxj
+                      - property:
+                          id: "AS1O&HB89UHuO5mwEs&kmyStr8bC"
+                          name: owningElement
+                          type: JyJLXpOZyw01guSKghjxNcRxd8Zy
+                          lowerValue:
+                            literalInt:
+                              id: qJy6UyEylE8QJeBAVGefweb8Q61A
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: FguJC3bdDLmNV21cHlb_7tZQb0mk
+                              value: 1
+                          association: YgwX_EqbrRPJ4M9MXMJOQOu6WD4X
+                      - property:
+                          id: UMUZ4IGiaApjD5Okua3rlWzey_Gz
+                          name: ownedElement
+                          type: JyJLXpOZyw01guSKghjxNcRxd8Zy
+                          lowerValue:
+                            literalInt:
+                              id: VjMBDrPl_iITaI_Ia_9BA1XFqdxx
+                              value: 0
+                          upperValue:
+                            literalUnlimitedNatural:
+                              id: SXOS0ber5uslc12ZTOn_77ELBAHo
+                              value: "*"
+                          aggregation: composite
+                          isComposite: true
+                          association: YgwX_EqbrRPJ4M9MXMJOQOu6WD4X
+                - association:
+                    id: GGXYlRByI1SXEXVa3xj8xfT1dwxj
+                    memberEnds:
+                      - "pRC&nYUTPsFa3FF8A7I4hc1upU&H"
+                    navigableOwnedEnds:
+                      - property:
+                          id: oIynXarLxYM2tyxSo9RNJydH0772
+                          name: styledElement
+                          type: JyJLXpOZyw01guSKghjxNcRxd8Zy
+                          lowerValue:
+                            literalInt:
+                              id: "SUtZNJKYxkZiUzXS9&z7PdG1o38B"
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: "w5&LRh0e_PaHKGLULxNmsbiL84LU"
+                              value: 1
+                          aggregation: composite
+                          isComposite: true
+                - class:
+                    id: km1lg5hn0M_a7vfwudun2ylfqkV3
+                    name: Edge
+                    ownedAttributes:
+                      - property:
+                          id: "Zf2K&k0k&jwaAz1GLsTSk7rN742p"
+                          name: waypoints
+                          type: iJOykGQ4z9anpcPG_cawroBzlZPL
+                          lowerValue:
+                            literalInt:
+                              id: zRIx4yJYvOZT6NxqFbo1qk_k0EHp
+                              value: 0
+                          upperValue:
+                            literalUnlimitedNatural:
+                              id: "rniMl45yrWW&MwaoH5AowxrWSkTA"
+                              value: "*"
+                      - property:
+                          id: "nrLYcZPcYzpup2Owc97sYznNQ&bO"
+                          name: target
+                          type: JyJLXpOZyw01guSKghjxNcRxd8Zy
+                          association: "Ya&UemdbrrJ6PoaRzKZ0NMNKfVCB"
+                      - property:
+                          id: "Iw3AexBp&2TB&w2ugEhu1MBCkw1R"
+                          name: source
+                          type: JyJLXpOZyw01guSKghjxNcRxd8Zy
+                          association: K8iraOGl0udEMjN7dI_nY80bjWgf
+                - class:
+                    id: Fj3BBa2Uf4XDwSp_gM46SFqGJdqy
+                    name: Shape
+                    generalizations:
+                      - generalization:
+                          id: 1eIWrIDlliyBq5AjY7R9iwg3DJ2y
+                          general: JyJLXpOZyw01guSKghjxNcRxd8Zy
+                    ownedAttributes:
+                      - property:
+                          id: KbKmDNU19SWMJwggKTQ9FrzAzozO
+                          name: bounds
+                          type: GrSBY10MECO6g8EesG5ZdXVQ5m5B
+                          lowerValue:
+                            literalInt:
+                              id: SYvwMMcgAUAtQIp4IBUIlwmIwaXn
+                              value: 0
+                          upperValue:
+                            literalInt:
+                              id: 26PICSpLU9WgwyzZS1pZ0Kpg4Zma
+                              value: 1
+                - association:
+                    id: lMDVxmUicvVlwEu86FLu6R07Zmme
+                    memberEnds:
+                      - gKpLJKf9u_PpyJ5T3VqjqD0Mt0oa
+                    navigableOwnedEnds:
+                      - property:
+                          id: xLgQ2tF5wf0vqKffzgJrJL7HcWDZ
+                          name: styledElement
+                          type: JyJLXpOZyw01guSKghjxNcRxd8Zy
+                          lowerValue:
+                            literalInt:
+                              id: FTfvrHCkJwcG8GCZDtwrMJpL2hqS
+                              value: 0
+                          upperValue:
+                            literalUnlimitedNatural:
+                              id: 5SE1MvXHUU_1RqZkmNdxenhR6U51
+                              value: "*"
+                - association:
+                    id: "Ya&UemdbrrJ6PoaRzKZ0NMNKfVCB"
+                    memberEnds:
+                      - "nrLYcZPcYzpup2Owc97sYznNQ&bO"
+                    navigableOwnedEnds:
+                      - property:
+                          id: "GmBPq5Jg&Lv3gL0F8l1ZGjdzuvQ&"
+                          name: targetEdge
+                          type: km1lg5hn0M_a7vfwudun2ylfqkV3
+                - class:
+                    id: 4XJkzTWX7xcZHOxUppoC6gYQzTKF
+                    name: Diagram
+                    generalizations:
+                      - generalization:
+                          id: AE8y2LL9ySHhKHZRajv0iBiR6M_D
+                          general: Fj3BBa2Uf4XDwSp_gM46SFqGJdqy
+                    ownedAttributes:
+                      - property:
+                          id: 4Tize6jbCmObf93emecyjJFvRjo3
+                          name: resolution
+                          type: "real_aZG&w6yl61bXVWutgeyScN9"
+                          lowerValue:
+                            literalInt:
+                              id: "vPz&2oo5fcDnYA0y7Oc6wSeTeln9"
+                              value: 1
+                          upperValue:
+                            literalInt:
+                              id: "Gupb&2wDfLEh4miy1e&w44rEkQCi"
+                              value: 1
+                          defaultValue:
+                            literalReal:
+                              id: tX7demOnM8RhPl2vwCCOHNF7cwej
+                              value: 300
+                      - property:
+                          id: "6CjufML0&O3S4cmtN2cL44BYr8HL"
+                          name: documentation
+                          type: "string_L&R5eAEq6f3LUNtUmzHzT"
+                          lowerValue:
+                            literalInt:
+                              id: qCqz_QiYfuHMjCWsCm4iPuB72AFG
+                              value: 1
+                          upperValue:
+                            literalInt:
+                              id: YCXK_XIcbr8rbWGNcoyD8JegQ93E
+                              value: 1
+                          defaultValue:
+                            literalString:
+                              id: "4WCjMOvEBJ&E3eHqwowgFIei9KVy"
+                      - property:
+                          id: CN7vzxOOpQJkGS964DTMuDWQkLlz
+                          name: name
+                          type: "string_L&R5eAEq6f3LUNtUmzHzT"
+                          lowerValue:
+                            literalInt:
+                              id: "4sV_&79yAn8LCzK9bzMmtV_upesA"
+                              value: 1
+                          upperValue:
+                            literalInt:
+                              id: LSxb_Y8GRR0nxeax9A3afJLrIwzg
+                              value: 1
+                          defaultValue:
+                            literalString:
+                              id: Hktrdlaic7zbv06OZSjOwKSipZJk
+                - association:
+                    id: K8iraOGl0udEMjN7dI_nY80bjWgf
+                    memberEnds:
+                      - "Iw3AexBp&2TB&w2ugEhu1MBCkw1R"
+                    navigableOwnedEnds:
+                      - property:
+                          id: VQWHXLVhXOXB7PDj8RNH40cUsMCi
+                          name: sourceEdge
+                          type: km1lg5hn0M_a7vfwudun2ylfqkV3
+                - association:
+                    id: YgwX_EqbrRPJ4M9MXMJOQOu6WD4X
+                    memberEnds:
+                      - UMUZ4IGiaApjD5Okua3rlWzey_Gz
+                      - "AS1O&HB89UHuO5mwEs&kmyStr8bC"
+                - class:
+                    id: Jq6tOLJHyVZilh3qLtnYYmsHkSsS
+                    name: Style
+          - package:
+              id: y7LiHxyNJEQt9UaAj68FATLdgf18
+              name: UML2 Metamodel
+              packagedElements:
+                - class:
+                    id: "zvAhfu&WNCI1cNXd3BkqhxywHAYY"
+                    name: Package
+                    generalizations:
+                      - generalization:
+                          id: cyWbAa159c48tfqsoWTZJMWOE0LO
+                          general: pUg_kaODi6D0KMi6MXAJcMWMG3G_
+                      - generalization:
+                          id: "ZvHd7GYQP&Tsoat31w5et4Hmel_n"
+                          general: "&ve0WKXZ2Hn47xMl&Dl&lXPTMHD9"
+                - class:
+                    id: pUg_kaODi6D0KMi6MXAJcMWMG3G_
+                    name: Namespace
+                    generalizations:
+                      - generalization:
+                          id: SCQQKRDwxHNk5usTlqBa1whibNRn
+                          general: Ox30_bFSsGtPZorPYOkDTLeXquIN
+                - class:
+                    id: "&ve0WKXZ2Hn47xMl&Dl&lXPTMHD9"
+                    name: PackageableElement
+                    generalizations:
+                      - generalization:
+                          id: "feIy&LrRjB4RegILZ4WEHtSvSJJJ"
+                          general: Ox30_bFSsGtPZorPYOkDTLeXquIN
+                - class:
+                    id: Ox30_bFSsGtPZorPYOkDTLeXquIN
+                    name: NamedElement
+                    generalizations:
+                      - generalization:
+                          id: nPgccF4Kz_icaR9cEyrGqpjKSgpc
+                          general: XI35viryLd5YduwnSbWpxSs3npcu
+                    ownedAttributes:
+                      - property:
+                          id: OATEs8WJeyqHKy7Os_9aWi5HGCDU
+                          name: name
+                          type: "string_L&R5eAEq6f3LUNtUmzHzT"
+                - class:
+                    id: XI35viryLd5YduwnSbWpxSs3npcu
+                    name: Element
+                    ownedAttributes:
+                      - property:
+                          id: 3gx55nLEvmzDt2kKK7gYgxsTBD6M
+                          name: id
+                          type: "string_L&R5eAEq6f3LUNtUmzHzT"

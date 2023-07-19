@@ -1,5 +1,4 @@
-#ifndef _UML_MANAGERS_MANAGER_POLICY_H_
-#define _UML_MANAGERS_MANAGER_POLICY_H_
+#pragma once
 
 #include "uml/types/element.h"
 #include "abstractManager.h"
@@ -447,7 +446,6 @@ namespace UML {
                         if (!refNode) {
                             continue;
                         }
-                        // refNode->removeReference(*node->m_managerElementMemory);
                         refNode->referenceErased(id);
                         if (refNode->m_references.count(id)) {
                             refNode->m_references.erase(id);
@@ -489,7 +487,6 @@ namespace UML {
                     }
                     nodeToBeOverwritten->m_managerElementMemory = newNode->m_managerElementMemory;
                     nodeToBeOverwritten->m_managerElementMemory->m_node = nodeToBeOverwritten;
-                    nodeToBeOverwritten->m_references.clear();
                     nodeToBeOverwritten->reindexPtrs(newID);
                     for (auto& ptr : newNode->m_ptrs) {
                         nodeToBeOverwritten->assingPtr(ptr);
@@ -580,5 +577,3 @@ namespace UML {
             }
     };
 }
-
-#endif

@@ -1,8 +1,7 @@
-#ifndef _UML_SLOT_H_
-#define _UML_SLOT_H_
+#pragma once
 
 #include "uml/set/singleton.h"
-#include "uml/set/set.h"
+#include "uml/set/orderedSet.h"
 
 namespace UML {
 
@@ -19,7 +18,7 @@ namespace UML {
         
         protected:
             CustomSingleton<StructuralFeature, Slot> m_definingFeature = CustomSingleton<StructuralFeature, Slot>(this);
-            CustomSet<ValueSpecification, Slot> m_values = CustomSet<ValueSpecification, Slot>(this);
+            CustomOrderedSet<ValueSpecification, Slot> m_values = CustomOrderedSet<ValueSpecification, Slot>(this);
             CustomSingleton<InstanceSpecification, Slot> m_owningInstance = CustomSingleton<InstanceSpecification, Slot>(this);
             void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
@@ -29,7 +28,7 @@ namespace UML {
             Slot();
         public:
             virtual ~Slot();
-            Set<ValueSpecification, Slot>& getValues();
+            OrderedSet<ValueSpecification, Slot>& getValues();
             StructuralFeaturePtr getDefiningFeature() const;
             void setDefiningFeature(StructuralFeature& definingFeature);
             void setDefiningFeature(StructuralFeature* definingFeature);
@@ -50,5 +49,3 @@ namespace UML {
             };
     };
 }
-
-#endif

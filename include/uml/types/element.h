@@ -171,6 +171,7 @@ namespace UML {
     class AddToMountFunctor;
     class PackageMerge;
     class Classifier;
+    class InstanceValue;
     class Namespace;
     class NamedElement;
     class Generalization;
@@ -219,6 +220,7 @@ namespace UML {
         friend class AddToMountFunctor;
         friend class PackageMerge;
         friend class Classifier;
+        friend class InstanceValue;
         friend class Namespace;
         friend class InstanceSpecification;
         friend class NamedElement;

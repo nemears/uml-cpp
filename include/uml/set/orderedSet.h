@@ -16,7 +16,7 @@ namespace UML {
 
         template<class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomOrderedSet;
 
-        private:
+        protected:
             OrderedSetNode* curr = 0;
             std::unordered_set<AbstractSet*> validSets;
         public:
@@ -60,15 +60,117 @@ namespace UML {
             }
     };
 
+    template <class T>
+    class OrderedID_Set;
+
+    template <class T>
+    class OrderedSetID_Iterator : public OrderedSetIterator<T> {
+        friend class OrderedID_Set<T>;
+        public:
+            ID operator*() {
+                return this->curr->m_ptr.id();
+            }
+            UmlPtr<T> operator->() = delete;
+    };
+
+    template <class T>
+    class OreredPtrSet;
+
     class OrderedSetNodeAllocationPolicyInterface : virtual public AbstractSet {
 
         friend class OrderedSetNodeAllocationPolicy;
+        template <class T> 
+        friend class OrderedID_Set;
+        template <class T>
+        friend class OrderedPtrSet;
 
         protected:
             virtual OrderedSetNode* getFront() const = 0;
             virtual OrderedSetNode* getBack() const = 0;
             virtual void setFront(OrderedSetNode* front) = 0;
             virtual void setBack(OrderedSetNode* back) = 0;
+    };
+
+    template <class T>
+    class OrderedID_Set {
+
+        template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomReadOnlySet;
+        template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomOrderedSet;
+
+        private:
+            OrderedSetNodeAllocationPolicyInterface* m_me = 0;
+        public:
+            OrderedSetID_Iterator<T> begin() {
+                OrderedSetID_Iterator<T> ret;
+                ret.curr = m_me->getFront();
+                ret.validSets = m_me->getAllSubSets();
+                ret.validSets.insert(const_cast<AbstractSet*>(static_cast<const AbstractSet*>(m_me))); // I <3 c++
+                return ret;
+            };
+            OrderedSetID_Iterator<T> end() {
+                return OrderedSetID_Iterator<T>();
+            };
+            ID front() const {
+                SetNode* curr = m_me->getFront();
+                if (!curr) {
+                    throw SetStateException("Cannot get front element because set is empty!");
+                }
+
+                return curr->m_ptr.id();
+            }
+            ID back() const {
+                SetNode* curr = m_me->getBack();
+                if (!curr) {
+                    throw SetStateException("Cannot get back element because set is empty!");
+                }
+
+                return curr->m_ptr.id();
+            }
+    };
+
+    template <class T>
+    class OrderedSetPtrIterator : public OrderedSetIterator<T> {
+        public:
+            UmlPtr<T> operator*() {
+                return this->curr->m_ptr;
+            }
+    };
+
+    template <class T>
+    class OrderedPtrSet {
+
+        template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomReadOnlySet;
+        template <class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomOrderedSet;
+
+        private:
+            OrderedSetNodeAllocationPolicyInterface* m_me = 0;
+        public:
+            OrderedSetPtrIterator<T> begin() {
+                OrderedSetPtrIterator<T> ret;
+                ret.curr = m_me->getFront();
+                ret.validSets = m_me->getAllSubSets();
+                ret.validSets.insert(const_cast<AbstractSet*>(static_cast<const AbstractSet*>(m_me))); // I <3 c++
+                return ret;
+            };
+            OrderedSetPtrIterator<T> end() {
+                return SetPtrIterator<T>();
+            };
+            UmlPtr<T> front() const {
+                SetNode* curr = m_me->getFront();
+                if (!curr) {
+                    throw SetStateException("Cannot get front element because set is empty!");
+                }
+
+                return curr->m_ptr;
+            }
+            UmlPtr<T> back() const {
+                SetNode* curr = m_me->getBack();
+                if (!curr) {
+                    throw SetStateException("Cannot get back element because set is empty!");
+                }
+
+                return curr->m_ptr;
+            }
     };
 
     class OrderedSetNodeAllocationPolicy : public OrderedSetNodeAllocationPolicyInterface {
@@ -184,8 +286,8 @@ namespace UML {
             virtual void clear() = 0;
             virtual OrderedSetIterator<T> begin() const = 0;
             virtual OrderedSetIterator<T> end() const = 0;
-            virtual ID_Set<T> ids() = 0; // TODO ordered ID set and ptr set
-            virtual PtrSet<T> ptrs() = 0; 
+            virtual OrderedID_Set<T> ids() = 0;
+            virtual OrderedPtrSet<T> ptrs() = 0; 
     };
 
     template <
@@ -276,15 +378,15 @@ namespace UML {
                 return OrderedSetIterator<T>();
             }
 
-            ID_Set<T> ids() override {
-                ID_Set<T> ret;
-                ret.root = this->m_root;
+            OrderedID_Set<T> ids() override {
+                OrderedID_Set<T> ret;
+                ret.m_me = this;
                 return ret;
             };
 
-            PtrSet<T> ptrs() override {
-                PtrSet<T> ret;
-                ret.root = this->m_root;
+            OrderedPtrSet<T> ptrs() override {
+                OrderedPtrSet<T> ret;
+                ret.m_me = this;
                 return ret;
             }
     };

@@ -4,9 +4,51 @@
 
 namespace UML {
 
+    struct OrderedSetNode;
+
+    class OrderedSetNodeAllocationPolicyInterface : virtual public AbstractSet {
+
+        friend class OrderedSetNodeAllocationPolicy;
+        template <class T> 
+        friend class OrderedID_Set;
+        template <class T>
+        friend class OrderedPtrSet;
+        friend struct OrderedSetNode;
+
+        protected:
+            virtual OrderedSetNode* getFront() const = 0;
+            virtual OrderedSetNode* getBack() const = 0;
+            virtual void setFront(OrderedSetNode* front) = 0;
+            virtual void setBack(OrderedSetNode* back) = 0;
+    };
+
     struct OrderedSetNode : public SetNode {
         OrderedSetNode* m_prev = 0;
         OrderedSetNode* m_next = 0;
+        void deleteNode() override {
+            OrderedSetNodeAllocationPolicyInterface* orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(set);
+            if (!orderedSet) {
+                for (auto& superSet : set->getAllSuperSets()) {
+                    orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(superSet);
+                    if (orderedSet) {
+                        break;
+                    }
+                }
+            }
+            if (orderedSet->getFront() == this) {
+                orderedSet->setFront(m_next);
+            }
+            if (orderedSet->getBack() == this) {
+                orderedSet->setBack(m_prev);
+            }
+            if (m_prev) {
+                m_prev->m_next = m_next;
+            }
+            if (m_next) {
+                m_next->m_prev = m_prev;
+            }
+            delete this;
+        }
     };
 
     template<class V, class W, class AdditionPolicy, class RemovalPolicy> class CustomOrderedSet;
@@ -76,21 +118,6 @@ namespace UML {
     template <class T>
     class OreredPtrSet;
 
-    class OrderedSetNodeAllocationPolicyInterface : virtual public AbstractSet {
-
-        friend class OrderedSetNodeAllocationPolicy;
-        template <class T> 
-        friend class OrderedID_Set;
-        template <class T>
-        friend class OrderedPtrSet;
-
-        protected:
-            virtual OrderedSetNode* getFront() const = 0;
-            virtual OrderedSetNode* getBack() const = 0;
-            virtual void setFront(OrderedSetNode* front) = 0;
-            virtual void setBack(OrderedSetNode* back) = 0;
-    };
-
     template <class T>
     class OrderedID_Set {
 
@@ -104,7 +131,10 @@ namespace UML {
                 OrderedSetID_Iterator<T> ret;
                 ret.curr = m_me->getFront();
                 ret.validSets = m_me->getAllSubSets();
-                ret.validSets.insert(const_cast<AbstractSet*>(static_cast<const AbstractSet*>(m_me))); // I <3 c++
+                ret.validSets.insert(m_me);
+                for (auto& redefinedSet : m_me->m_redefines) {
+                    ret.validSets.insert(redefinedSet);
+                }
                 return ret;
             };
             OrderedSetID_Iterator<T> end() {
@@ -149,7 +179,10 @@ namespace UML {
                 OrderedSetPtrIterator<T> ret;
                 ret.curr = m_me->getFront();
                 ret.validSets = m_me->getAllSubSets();
-                ret.validSets.insert(const_cast<AbstractSet*>(static_cast<const AbstractSet*>(m_me))); // I <3 c++
+                ret.validSets.insert(m_me);
+                for (auto& redefinedSet : m_me->m_redefines) {
+                    ret.validSets.insert(redefinedSet);
+                }
                 return ret;
             };
             OrderedSetPtrIterator<T> end() {

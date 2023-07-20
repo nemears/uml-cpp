@@ -27,6 +27,9 @@ namespace UML {
         SetNode* m_left = 0;
         SetNode* m_right = 0;
         AbstractSet* set = 0;
+        virtual void deleteNode() {
+            delete this;
+        }
     };
 
     template <class T, class U> class TypedSet;
@@ -42,6 +45,7 @@ namespace UML {
 
         template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
         friend class OrderedSetNodeAllocationPolicy;
+        friend class OrderedSetNode;
 
         protected:
             SetNode* m_root = 0;
@@ -978,7 +982,7 @@ namespace UML {
                     superSet->m_size--;
                     superSet->runRemovePolicy(*node->m_ptr);
                 }
-                AllocationPolicy::deleteNode(node);
+                node->deleteNode();
             }
 
             void handleOppositeAdd(T& el) {

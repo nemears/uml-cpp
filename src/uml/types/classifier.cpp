@@ -86,7 +86,8 @@ void Classifier::RemoveOwnedMemberPolicy::apply(NamedElement& el, Classifier& me
             }
             if (pair.second.node->m_managerElementMemory && 
                 pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
-                pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(me.getID())) {
+                pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(me.getID()) &&
+                pair.second.node->m_managerElementMemory->as<Classifier>().m_inheritedMembers.contains(me.getID())) {
                     pair.second.node->m_managerElementMemory->as<Classifier>().m_inheritedMembers.innerRemove(el.getID());
             }
         }

@@ -1,5 +1,4 @@
-#ifndef _UML_ASSOCIATION_H_
-#define _UML_ASSOCIATION_H_
+#pragma once
 
 #include "classifier.h"
 #include "relationship.h"
@@ -44,5 +43,3 @@ namespace UML {
             };
     };
 }
-
-#endif

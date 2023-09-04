@@ -30,6 +30,7 @@ namespace UML {
         virtual void deleteNode() {
             delete this;
         }
+	virtual ~SetNode() {}
     };
 
     template <class T, class U> class TypedSet;

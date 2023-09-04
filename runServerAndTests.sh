@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 outputToNull=false
 while getopts nf: flag
 do

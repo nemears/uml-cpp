@@ -6,6 +6,13 @@ enable_testing()
 option(UML_CLIENT_SERVER "allows for building of src/cpp/uml/managers for restful server client classes" ON)
 option(UML_BUILD_TESTS "build tests for uml library" ON)
 option(UML_DEBUG "builds with debug tools and without optimizations" OFF)
+option(NIX_BUILD "indicates that the paths to the libs are not in the libs folder, must set GTEST_PATH and YAML_CPP_PATH" OFF)
+set(GTEST_PATH "../libs/googletest" CACHE STRING "location of googletest library")
+set(YAML_CPP_PATH "../libs/yaml-cpp" CACHE STRING "location of yaml-cpp library")
+
+message(STATUS "NIX_BUILD=${NIX_BUILD}")
+message(STATUS "GTEST_PATH=${GTEST_PATH}")
+message(STATUS "YAML_CPP_PATH=${YAML_CPP_PATH}")
 
 if (UML_DEBUG)
     add_definitions( -DUML_DEBUG )
@@ -43,16 +50,24 @@ endif()
 
 # Headers
 include_directories(include)
-
-# Google Test dependency
 IF(WIN32)
     set(gtest_force_shared_crt ON)
 ENDIF()
-add_subdirectory(libs/googletest)
 
-# yaml-cpp dependency
-add_subdirectory(libs/yaml-cpp)
-set(YAML_CPP_BUILD_TESTS OFF)
+if (NOT NIX_BUILD)
+    # Google Test dependency
+    add_subdirectory(${GTEST_PATH})
+
+    # yaml-cpp dependency
+    add_subdirectory(${YAML_CPP_PATH})
+    set(YAML_CPP_BUILD_TESTS OFF)
+else()
+    find_package(PkgConfig)
+    pkg_check_modules(GTEST REQUIRED gtest)
+    pkg_check_modules(GTEST_MAIN REQUIRED gtest_main)
+    include_directories(${YAML_CPP_PATH}/include ${GTEST_INCLUDE_DIRS} ${GTEST_MAIN_INCLUDE_DIRS})
+    link_directories(${YAML_CPP_PATH}/lib ${GTEST_LIBRARY_DIRS} ${GTEST_MAIN_LIBRARY_DIRS})
+endif()
 
 # src
 if(NOT UML_CLIENT_SERVER)
@@ -127,7 +142,11 @@ if (UML_BUILD_TESTS)
         list(APPEND umltestSources src/test/restfulTest.cpp)
     endif()
     add_executable(umltest ${umltestSources})
-    target_link_libraries(umltest PUBLIC gtest gmock gtest_main uml)
+    if (NOT NIX_BUILD)
+      target_link_libraries(umltest PUBLIC gtest gmock gtest_main uml)
+    else()
+	    target_link_libraries(umltest PUBLIC ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} uml) 
+    endif()
     if (UML_DEBUG AND UML_ADDRESS_SANITIZER) 
         message("address sanitizer")
         target_link_libraries(umltest PRIVATE -fsanitize=address -fno-omit-frame-pointer)

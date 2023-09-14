@@ -14,10 +14,14 @@
             packages = with pkgs; [ 
               # build dependencies
               cmake 
-              clang 
+              clang
+              gnumake
+              pkg-config
 
               # dev dependencies
               websocketpp 
+              asio
+              openssl
             ];
           };
           
@@ -26,7 +30,7 @@
             name = "uml-cpp";
             src = ./.;
             inherit system;
-            inherit (pkgs) cmake pkg-config clang gnumake coreutils gtest yaml-cpp;
+            inherit (pkgs) cmake pkg-config clang gnumake coreutils gtest yaml-cpp websocketpp;
             # environment variables for builder
             yamlcpp = pkgs.yaml-cpp;
             gtestdev = pkgs.gtest.dev;

@@ -1,9 +1,12 @@
 #include "uml/managers/protocol/umlKitchenPersistencePolicy.h"
 #include "uml/managers/manager.h"
 #include "yaml-cpp/node/parse.h"
+#include <mutex>
 #include <string>
 #include <websocketpp/common/connection_hdl.hpp>
+#include <websocketpp/common/functional.hpp>
 #include <websocketpp/config/asio_no_tls_client.hpp>
+#include <websocketpp/frame.hpp>
 #include <websocketpp/logger/levels.hpp>
 #include <websocketpp/roles/client_endpoint.hpp>
 #include <yaml-cpp/yaml.h>
@@ -43,6 +46,18 @@ void handleOpen(UmlKitchenPersistencePolicy* me, websocketpp::connection_hdl hdl
  
 }
 
+void handleGetResponse(
+        UmlKitchenPersistencePolicy* me, 
+        websocketpp::connection_hdl hdl, 
+        websocketpp::client<websocketpp::config::asio_client>::message_ptr msg
+) {
+    // TODO communicate string to other thread   
+    std::unique_lock<std::mutex> lck(me->m_responseMtx);
+    me->m_response = msg->get_payload();
+    me->m_responseUpdated = true;
+    me->m_responseCV.notify_one();
+}
+
 void UmlKitchenPersistencePolicy::login(std::string address, std::string project, std::string user, std::string passwordHash) {
     m_address = address;
     m_project = project;
@@ -54,11 +69,11 @@ void UmlKitchenPersistencePolicy::login(std::string address, std::string project
     m_websocketClient.set_message_handler(websocketpp::lib::bind(&handleInitialization, this, ::_1, ::_2));
     m_websocketClient.set_open_handler(websocketpp::lib::bind(&handleOpen, this, ::_1));
     websocketpp::lib::error_code ec;
-    websocketpp::client<websocketpp::config::asio_client>::connection_ptr con = m_websocketClient.get_connection(address, ec);
+    m_connection = m_websocketClient.get_connection(address, ec);
     if (ec) {
         std::cout << "could not create connection because: " << ec.message() << std::endl;
     }
-    m_websocketClient.connect(con);
+    m_websocketClient.connect(m_connection);
     m_websocketClient.run();
     
     std::unique_lock<std::mutex> lck(m_initializedMtx);
@@ -68,7 +83,48 @@ void UmlKitchenPersistencePolicy::login(std::string address, std::string project
 }
 
 std::string UmlKitchenPersistencePolicy::loadElementData(ID id) {
+    // lock scope for request
+    std::lock_guard<std::mutex> requestLck(m_requestMtx);
+
+    // set response
+    m_websocketClient.set_message_handler(websocketpp::lib::bind(&handleGetResponse, this, ::_1, ::_2));
+
+    // request
+    YAML::Emitter emitter;
+    emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
+        YAML::Key << "GET" << YAML::Value << id.string() << 
+    YAML::EndMap;
+    websocketpp::lib::error_code ec;
+    m_websocketClient.send(m_connection, emitter.c_str(), websocketpp::frame::opcode::text, ec);
     
+    if (ec) {
+        std::cout << "could not request data of element with id  " << id.string() << " from uml-kitchen instance!" <<  std::endl; 
+    }
+
+    // wait for response
+    std::unique_lock<std::mutex> lck(m_responseMtx);
+    while (!m_responseUpdated) {
+        m_responseCV.wait(lck);
+    }
+    m_responseUpdated = false;
+    return m_response;
+}
+
+void UmlKitchenPersistencePolicy::saveElementData(std::string data, ID id) {
+    // lock scope for request
+    std::lock_guard<std::mutex> requestLck(m_requestMtx);
+    
+    // send request
+    YAML::Emitter emitter;
+    emitter << YAML::DoubleQuoted << YAML::Flow << YAML::BeginMap << 
+        YAML::Key << "PUT" << YAML::Value << YAML::BeginMap << YAML::Key << 
+        "id" << YAML::Value << id.string() << YAML::Key << "element" << YAML::Value << 
+        YAML::Load(data) << YAML::EndMap << YAML::EndMap;
+    websocketpp::lib::error_code ec;
+    m_websocketClient.send(m_connection, emitter.c_str(), websocketpp::frame::opcode::text, ec);
+    if (ec) {
+        std::cout << "could not send element with id " << id.string() << " to uml-kitchen instance!" << std::endl;
+    }
 }
 
 std::string UmlKitchenPersistencePolicy::getProjectData(std::string path) {
@@ -80,4 +136,41 @@ std::string UmlKitchenPersistencePolicy::getProjectData() {
     // get head and construct ????
     throw ManagerStateException("Do not try to open with a client, get individual elements");
 }
+
+void UmlKitchenPersistencePolicy::saveProjectData(std::string data, std::string path) {
+    websocketpp::lib::error_code ec;
+    YAML::Emitter emitter;
+    emitter << YAML::DoubleQuoted << YAML::Flow << YAML::BeginMap << YAML::Key << "save" << YAML::Value << "." << YAML::EndMap;
+    m_websocketClient.send(m_connection, emitter.c_str(), websocketpp::frame::opcode::text, ec);
+    if (ec) {
+        std::cout << "could not send project data to uml-kitchen instance!" << std::endl; 
+    }
+}
+
+void UmlKitchenPersistencePolicy::saveProjectData(std::string data) {
+    websocketpp::lib::error_code ec;
+    YAML::Emitter emitter;
+    emitter << YAML::DoubleQuoted << YAML::Flow << YAML::BeginMap << YAML::Key << "save" << YAML::Value << "." << YAML::EndMap;
+    m_websocketClient.send(m_connection, emitter.c_str(), websocketpp::frame::opcode::text, ec);
+    if (ec) {
+        std::cout << "could not send project data to uml-kitchen instance!" << std::endl; 
+    }
+}
+
+void UmlKitchenPersistencePolicy::eraseEl(ID id) {
+    websocketpp::lib::error_code ec;
+    YAML::Emitter emitter;
+    emitter << YAML::DoubleQuoted  << YAML::Flow << YAML::BeginMap << 
+        YAML::Key << "DELETE" << YAML::Value << id.string() << 
+    YAML::EndMap;
+    m_websocketClient.send(m_connection, emitter.c_str(), websocketpp::frame::opcode::text, ec);
+    if (ec) {
+        std::cout << "could not send erase request for element with id " << id.string() << " to  uml-kitchen instance!" << std::endl; 
+    }
+}
+
+void UmlKitchenPersistencePolicy::reindex(ID oldID, ID newID) {
+
+}
+        
 }

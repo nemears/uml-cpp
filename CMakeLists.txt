@@ -80,7 +80,6 @@ if (WEBSOCKET_BUILD)
     include_directories(${ASIO_INCLUDE_DIRS} ${WEBSOCKETPP_INCLUDE_DIRS})
     add_library(uml-kitchen-cpp STATIC 
         src/uml/managers/protocol/umlKitchenClient.cpp 
-        src/uml/managers/protocol/umlKitchenPersistencePolicy.cpp
     )
 endif()
 

@@ -22,6 +22,9 @@
               websocketpp 
               asio
               openssl
+
+              # debug dependencies
+              gdb
             ];
           };
           

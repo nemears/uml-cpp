@@ -5,4 +5,4 @@ export PKG_CONFIG_PATH=$gtestdev/lib/pkgconfig
 cmake $src -DNIX_BUILD=ON -DYAML_CPP_PATH=$yamlcpp -DWEBSOCKET_BUILD=ON -DCMAKE_PREFIX_PATH="$websocketpp/lib/cmake/websocketpp"
 make
 mkdir $out
-cp uml-server libuml.a $out
+cp -r uml-server libuml.a include $out

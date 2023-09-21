@@ -29,19 +29,22 @@
           };
           
           # build flake with nix build
-          packages.default = derivation {
+          packages.uml-cpp = derivation {
             name = "uml-cpp";
             src = ./.;
             inherit system;
-            inherit (pkgs) cmake pkg-config clang gnumake coreutils gtest yaml-cpp websocketpp;
+            inherit (pkgs) cmake pkg-config clang gnumake coreutils gtest yaml-cpp websocketpp asio openssl;
             # environment variables for builder
             yamlcpp = pkgs.yaml-cpp;
             gtestdev = pkgs.gtest.dev;
             pkgconfig = pkgs.pkg-config;
+            openssldev = pkgs.openssl.dev;
             # build with bash and builder script
             builder = "${pkgs.bash}/bin/bash";
             args = [ ./builder.sh ];
           };
+
+          packages.default = self.packages.${system}.uml-cpp;
         }
       );
 }

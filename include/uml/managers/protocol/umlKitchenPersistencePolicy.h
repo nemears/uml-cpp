@@ -188,6 +188,7 @@ namespace UML {
                 m_websocketClient.init_asio();
                 m_websocketClient.set_message_handler(websocketpp::lib::bind(&handleInitialization<WebsocketConfig>, this, websocketpp::lib::placeholders::_1, websocketpp::lib::placeholders::_2));
                 m_websocketClient.set_open_handler(websocketpp::lib::bind(&handleOpen<WebsocketConfig>, this, websocketpp::lib::placeholders::_1));
+                m_websocketClient.set_close_handler(websocketpp::lib::bind(&handleClose<WebsocketConfig>, this, websocketpp::lib::placeholders::_1));
             }
         public:
             virtual ~UmlKitchenPersistencePolicy() {

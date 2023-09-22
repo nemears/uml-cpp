@@ -6,13 +6,13 @@
 
 using namespace UML;
 
-websocketpp::lib::shared_ptr<boost::asio::ssl::context> handleTLS() {
-    websocketpp::lib::shared_ptr<boost::asio::ssl::context> context = websocketpp::lib::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23);
+websocketpp::lib::shared_ptr<asio::ssl::context> handleTLS() {
+    websocketpp::lib::shared_ptr<asio::ssl::context> context = websocketpp::lib::make_shared<asio::ssl::context>(asio::ssl::context::sslv23);
     try {
-        context->set_options(boost::asio::ssl::context::default_workarounds |
-                         boost::asio::ssl::context::no_sslv2 |
-                         boost::asio::ssl::context::no_sslv3 |
-                         boost::asio::ssl::context::single_dh_use);
+        context->set_options(asio::ssl::context::default_workarounds |
+                         asio::ssl::context::no_sslv2 |
+                         asio::ssl::context::no_sslv3 |
+                         asio::ssl::context::single_dh_use);
     } catch (std::exception& e) {
         std::cout << "could not set tls options for client" << std::endl;
     }

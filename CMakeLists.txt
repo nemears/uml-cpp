@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12.0)
-project(uml-cpp VERSION 0.2.4)
+project(uml-cpp VERSION 0.2.5)
 include(CTest)
 enable_testing()
 
@@ -77,7 +77,14 @@ if (WEBSOCKET_BUILD)
     pkg_check_modules(ASIO REQUIRED asio)
     pkg_check_modules(OPENSSL REQUIRED openssl)
     find_package(WEBSOCKETPP CONFIG REQUIRED websocketpp)
-    include_directories(${ASIO_INCLUDE_DIRS} ${WEBSOCKETPP_INCLUDE_DIRS})
+    include_directories(${ASIO_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIRS} ${WEBSOCKETPP_INCLUDE_DIR})
+    add_definitions( -DASIO_STANDALONE )
+    if (${WEBSOCKETPP_FOUND})
+        message(STATUS "found websocketpp!")
+        message(STATUS "websocketpp path: ${WEBSOCKETPP_INCLUDE_DIR}")
+    else()
+        message(STATUS "did not find websocketpp!")
+    endif()
     add_library(uml-kitchen-cpp STATIC 
         src/uml/managers/protocol/umlKitchenClient.cpp 
     )

@@ -9,6 +9,7 @@
 #include <yaml-cpp/yaml.h>
 #include <websocketpp/common/connection_hdl.hpp>
 #include <websocketpp/roles/client_endpoint.hpp>
+#include "uml/managers/abstractManager.h"
 #include "websocketpp/client.hpp"
 #include <websocketpp/endpoint.hpp>
 
@@ -36,6 +37,9 @@ namespace UML {
 
     template <class WebsocketConfig>
     void handleClose(UmlKitchenPersistencePolicy<WebsocketConfig>*, websocketpp::connection_hdl);
+    
+    template <class WebsocketConfig>
+    void handleFail(UmlKitchenPersistencePolicy<WebsocketConfig>*, websocketpp::connection_hdl);
 
     template <class WebsocketConfig>
     void backgroundThread(UmlKitchenPersistencePolicy<WebsocketConfig>*);
@@ -56,6 +60,7 @@ namespace UML {
         friend void handleOpen<WebsocketConfig>(UmlKitchenPersistencePolicy<WebsocketConfig>*, websocketpp::connection_hdl);
         friend void backgroundThread<WebsocketConfig>(UmlKitchenPersistencePolicy<WebsocketConfig>*);
         friend void handleClose<WebsocketConfig>(UmlKitchenPersistencePolicy<WebsocketConfig>*, websocketpp::connection_hdl);
+        friend void handleFail<WebsocketConfig>(UmlKitchenPersistencePolicy<WebsocketConfig>*, websocketpp::connection_hdl);
 
         private:
             std::thread* m_backgroundThread = 0;
@@ -91,7 +96,7 @@ namespace UML {
                 std::lock_guard<std::mutex> requestLck(m_requestMtx);
 
                 // set response
-                m_websocketClient.set_message_handler(websocketpp::lib::bind(&handleGetResponse<WebsocketConfig>, this, websocketpp::lib::placeholders::_1, websocketpp::lib::placeholders::_2));
+                m_connection->set_message_handler(websocketpp::lib::bind(&handleGetResponse<WebsocketConfig>, this, websocketpp::lib::placeholders::_1, websocketpp::lib::placeholders::_2));
 
                 // request
                 YAML::Emitter emitter;
@@ -112,6 +117,7 @@ namespace UML {
                     m_responseCV.wait(lck);
                 }
                 m_responseUpdated = false;
+                m_connection->set_message_handler(0);
                 return m_response;
  
             }
@@ -175,7 +181,7 @@ namespace UML {
             }
 
             void reindex(ID oldID, ID newID) {
-            
+                // TODO
             }
 
             virtual void init(std::string address, std::string project, std::string user, std::string passwordHash) {
@@ -189,12 +195,17 @@ namespace UML {
                 m_websocketClient.set_message_handler(websocketpp::lib::bind(&handleInitialization<WebsocketConfig>, this, websocketpp::lib::placeholders::_1, websocketpp::lib::placeholders::_2));
                 m_websocketClient.set_open_handler(websocketpp::lib::bind(&handleOpen<WebsocketConfig>, this, websocketpp::lib::placeholders::_1));
                 m_websocketClient.set_close_handler(websocketpp::lib::bind(&handleClose<WebsocketConfig>, this, websocketpp::lib::placeholders::_1));
+                m_websocketClient.set_fail_handler(websocketpp::lib::bind(&handleFail<WebsocketConfig>, this, websocketpp::lib::placeholders::_1));
             }
         public:
             virtual ~UmlKitchenPersistencePolicy() {
-                m_websocketClient.close(m_connection, websocketpp::close::status::going_away, "");
-                m_backgroundThread->join();
-                delete m_backgroundThread;
+                if (m_initialized) {
+                    m_websocketClient.close(m_connection, websocketpp::close::status::going_away, "");
+                }
+                if (m_backgroundThread) {
+                    m_backgroundThread->join();
+                    delete m_backgroundThread;
+                }
             }
             // login method (need to call this once to use client)
             void login(std::string address, std::string project, std::string user, std::string passwordHash) {
@@ -218,6 +229,7 @@ namespace UML {
                 }
                 if (m_badInitialization) {
                     m_badInitialization = false;
+                    throw ManagerStateException("could not connect to server");
                 }
                 std::cout << "finished connecting to server" << std::endl; 
             }
@@ -229,6 +241,9 @@ namespace UML {
         websocketpp::connection_hdl hdl, 
         typename websocketpp::client<WebsocketConfig>::message_ptr msg
     ) {
+        if (me->m_initialized || me->m_badInitialization) {
+            return;
+        }
         YAML::Node node = YAML::Load(msg->get_payload());
         std::cout << "got response from server: " << msg->get_payload() << std::endl;
         if (node["client"] && ID::fromString(node["client"].as<std::string>()) == me->m_clientID) {
@@ -243,6 +258,7 @@ namespace UML {
             me->m_badInitialization = true;
             me->m_initializedCV.notify_all();
         }
+        me->m_connection->set_message_handler(0);
     }
 
     template <class WebsocketConfig>
@@ -269,9 +285,8 @@ namespace UML {
     ) {
         // TODO communicate string to other thread   
         std::unique_lock<std::mutex> lck(me->m_responseMtx);
-        std::string response = msg->get_payload();
-        std::cout << "got response from server " << response  << std::endl;
         me->m_response = msg->get_payload();
+        std::cout << "got response from server " << me->m_response  << std::endl;
         me->m_responseUpdated = true;
         me->m_responseCV.notify_one();
     }
@@ -283,6 +298,13 @@ namespace UML {
 
     template <class WebsocketConfig>
     void handleClose(UmlKitchenPersistencePolicy<WebsocketConfig>* me, websocketpp::connection_hdl hdl) {
+        std::unique_lock<std::mutex> lck(me->m_initializedMtx);
+        me->m_badInitialization = true;
+        me->m_initializedCV.notify_all();
+    }
+
+    template <class WebsocketConfig>
+    void handleFail(UmlKitchenPersistencePolicy<WebsocketConfig>* me, websocketpp::connection_hdl hdl) {
         std::unique_lock<std::mutex> lck(me->m_initializedMtx);
         me->m_badInitialization = true;
         me->m_initializedCV.notify_all();

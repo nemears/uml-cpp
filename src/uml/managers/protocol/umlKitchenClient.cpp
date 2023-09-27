@@ -23,11 +23,19 @@ UmlKitchenClient::UmlKitchenClient() {
     // Do nothing :)
 }
 
-UmlKitchenClient::UmlKitchenClient(std::string address, std::string server, std::string user, std::string passwordHash) {
-    login(address, server, user, passwordHash);
+UmlKitchenClient::UmlKitchenClient(std::string address, std::string project, std::string user, std::string passwordHash) {
+    login(address, project, user, passwordHash);
 }
 
 void UmlKitchenClient::init(std::string address, std::string project, std::string user, std::string passwordHash) {
    UmlKitchenPersistencePolicy<websocketpp::config::asio_tls_client>::init(address, project, user, passwordHash);
    m_websocketClient.set_tls_init_handler(websocketpp::lib::bind(&handleTLS));
+}
+
+NoTlsUmlKitchenClient::NoTlsUmlKitchenClient() {
+
+}
+
+NoTlsUmlKitchenClient::NoTlsUmlKitchenClient(std::string address, std::string project, std::string user, std::string passwordHash) {
+    login(address, project, user, passwordHash);
 }

@@ -926,7 +926,7 @@ TEST_F(PackageTest, mountProfileTest) {
   ASSERT_EQ(*extension4.getOwnedElements().begin(), end3);
   ASSERT_EQ(extension4.getEndTypes().size(), 2);
   ASSERT_TRUE(extension4.getEndTypes().contains(stereotype3));
-    ASSERT_TRUE(extension4.getEndTypes().contains(metaClass));
+  ASSERT_TRUE(extension4.getEndTypes().contains(metaClass));
   ASSERT_EQ(*end3.getOwningAssociation(), extension4);
   ASSERT_EQ(*end3.getAssociation(), extension4);
   ASSERT_EQ(*end3.getFeaturingClassifier(), extension4);

@@ -25,6 +25,7 @@
 
               # debug dependencies
               gdb
+              valgrind
             ];
           };
           

@@ -53,21 +53,31 @@ namespace UML {
                     return ptrEntry->m_ptrId == ptr.m_ptrId;
                 });
             }
-            void destroyPtr(AbstractUmlPtr& ptr) override {
-                std::lock_guard<std::mutex> ptrsLck(ptr.m_node->m_ptrsMtx);
-                if (ptr.m_node->m_ptrs.empty() && !ptr.m_node->m_managerElementMemory) {
+            void destroyNode(ID id, ManagerNode* node) {
+                bool removeFromGraph = false;
+                {
+                    std::lock_guard<std::mutex> ptrsLck(node->m_ptrsMtx);
+                    if (node->m_ptrs.empty() && !node->m_managerElementMemory) {
 
-                    // remove trailing references that may have been left around from another element in memory
-                    for (auto referencePair : ptr.m_node->m_references) {
-                        if (referencePair.second.node->m_references.count(ptr.m_id)) {
-                            referencePair.second.node->m_references.erase(ptr.m_id);
+                        // remove trailing references that may have been left around from another element in memory
+                        for (auto referencePair : node->m_references) {
+                            if (referencePair.second.node->m_references.count(id)) {
+                                referencePair.second.node->m_references.erase(id);
+                            }
                         }
-                    }
 
-                    // remove from graph
-                    std::lock_guard<std::mutex> graphLck(m_graphMtx);
-                    m_graph.erase(ptr.m_id);
+                        // remove from graph
+                        removeFromGraph = true;
+                    }
                 }
+                if (removeFromGraph) {
+                    std::lock_guard<std::mutex> graphLck(m_graphMtx);
+                    m_graph.erase(id);
+                }
+ 
+            }
+            void destroyPtr(AbstractUmlPtr& ptr) override {
+                destroyNode(ptr.m_id, ptr.m_node);
             }
             void assignPtr(AbstractUmlPtr& ptr) override {
                 std::lock_guard<std::mutex> ptrsLck(ptr.m_node->m_ptrsMtx);
@@ -412,10 +422,7 @@ namespace UML {
                 node->releasePtrs();
                 delete node->m_managerElementMemory;
                 node->m_managerElementMemory = 0;
-                if (node->m_ptrs.empty()) {
-                    std::lock_guard<std::mutex> graphLck(m_graphMtx);
-                    m_graph.erase(id);
-                }
+                destroyNode(id, node);
             }
 
             template <class ... Elements> 

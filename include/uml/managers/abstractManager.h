@@ -27,7 +27,6 @@ namespace UML {
             virtual bool loaded(ID id) = 0;
             virtual void reindex (ID oldID, ID newID) = 0;
             virtual void release(Element& el) = 0;
-            virtual void removeNode(ID id) = 0;
             virtual void erase(Element& el) = 0;
             virtual ElementPtr open(std::string path) = 0;
             virtual ElementPtr open() = 0;

@@ -46,7 +46,7 @@ namespace UML {
 
         template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
         friend class OrderedSetNodeAllocationPolicy;
-        friend class OrderedSetNode;
+        friend struct OrderedSetNode;
 
         protected:
             SetNode* m_root = 0;

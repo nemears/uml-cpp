@@ -41,6 +41,20 @@ namespace UML {
             if (orderedSet->getBack() == this) {
                 orderedSet->setBack(m_prev);
             }
+            
+            // check if supersets are orderedSets to clear adjust their front and back
+            for (auto& superSet : set->getAllSuperSets()) {
+                OrderedSetNodeAllocationPolicyInterface* orderedSuperSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(superSet);
+                    if (orderedSuperSet) {
+                        if (orderedSuperSet->getFront() == this) {
+                            orderedSuperSet->setFront(m_next);
+                        }
+                        if (orderedSuperSet->getBack() == this) {
+                            orderedSuperSet->setBack(m_prev);
+                        }
+                    }
+            }
+
             if (m_prev) {
                 m_prev->m_next = m_next;
             }

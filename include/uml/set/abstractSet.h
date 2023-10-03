@@ -584,7 +584,7 @@ namespace UML {
                                 
                                 // add again
                                 visited[set] = false;
-                                if (currNode->m_ptr.loaded()) {
+                                if (node->m_ptr.loaded()) {
                                     // TODO dont do opposite
                                     m_opposite->skip = true;
                                 }

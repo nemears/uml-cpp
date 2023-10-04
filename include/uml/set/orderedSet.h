@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream> // TODO remove after debugging
 #include "set.h"
 
 namespace UML {
@@ -25,7 +26,7 @@ namespace UML {
     struct OrderedSetNode : public SetNode {
         OrderedSetNode* m_prev = 0;
         OrderedSetNode* m_next = 0;
-        void deleteNode() override {
+        virtual ~OrderedSetNode() {
             OrderedSetNodeAllocationPolicyInterface* orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(set);
             if (!orderedSet) {
                 for (auto& superSet : set->getAllSuperSets()) {
@@ -35,6 +36,12 @@ namespace UML {
                     }
                 }
             }
+
+            // TODO understand this edge case (orderedSetNode is not part of an ordered set)
+            if (!orderedSet) {
+                // throw SetStateException("bad state, non orderedSetNode tried to add to orderedSet!");
+            }
+
             if (orderedSet->getFront() == this) {
                 orderedSet->setFront(m_next);
             }
@@ -61,16 +68,17 @@ namespace UML {
             if (m_next) {
                 m_next->m_prev = m_prev;
             }
-            delete this;
         }
     };
 
     template<class V, class W, class AdditionPolicy, class RemovalPolicy> class CustomOrderedSet;
+    template <class T> class OrderedPtrSet;
 
     template <class T>
     class OrderedSetIterator {
 
         template<class V, class W, class AdditionPolicy, class RemovalPolicy> friend class CustomOrderedSet;
+        template <class V> friend class OrderedPtrSet;
 
         protected:
             OrderedSetNode* curr = 0;
@@ -97,19 +105,19 @@ namespace UML {
                 return ++(*this);
             }
             friend bool operator== (const OrderedSetIterator& lhs, const OrderedSetIterator& rhs) {
-                if (!lhs.curr && !lhs.curr) {
+                if (!lhs.curr && !rhs.curr) {
                     return true;
                 }
-                if (!lhs.curr || !lhs.curr) {
+                if (!lhs.curr || !rhs.curr) {
                     return false;
                 }
                 return lhs.curr == rhs.curr;
             }
             friend bool operator!= (const OrderedSetIterator& lhs, const OrderedSetIterator& rhs) {
-                if (!lhs.curr && !lhs.curr) {
+                if (!lhs.curr && !rhs.curr) {
                     return false;
                 }
-                if (!lhs.curr || !lhs.curr) {
+                if (!lhs.curr || !rhs.curr) {
                     return true;
                 }
                 return lhs.curr != rhs.curr;
@@ -200,7 +208,7 @@ namespace UML {
                 return ret;
             };
             OrderedSetPtrIterator<T> end() {
-                return SetPtrIterator<T>();
+                return OrderedSetPtrIterator<T>();
             };
             UmlPtr<T> front() const {
                 SetNode* curr = m_me->getFront();
@@ -248,43 +256,48 @@ namespace UML {
             SetNode* create(Element& el) {
                 OrderedSetNode* ret = new OrderedSetNode();
                 ret->m_ptr = &el;
-                ret->m_prev = m_last;
-                if (ret->m_prev) {
-                    ret->m_prev->m_next = ret;
-                }
-                m_last = ret;
-                if (!m_first) {
-                    m_first = ret;
-                }
+                // ret->m_prev = m_last;
+                // if (ret->m_prev) {
+                //     ret->m_prev->m_next = ret;
+                // }
+                // m_last = ret;
+                // if (!m_first) {
+                //     m_first = ret;
+                // }
                 return ret;
             }
             template <class T>
             SetNode* create(UmlPtr<T> el) {
                 OrderedSetNode* ret = new OrderedSetNode();
                 ret->m_ptr = el;
-                ret->m_prev = m_last;
-                if (ret->m_prev) {
-                    ret->m_prev->m_next = ret;
-                }
-                m_last = ret;
-                if (!m_first) {
-                    m_first = ret;
-                }
+                // ret->m_prev = m_last;
+                // if (ret->m_prev) {
+                //     ret->m_prev->m_next = ret;
+                // }
+                // m_last = ret;
+                // if (!m_first) {
+                //     m_first = ret;
+                // }
                 return ret;
             }
             void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*>& allSuperSetsAndMe) override {
-                if (!m_first) {
-                    m_first = static_cast<OrderedSetNode*>(node);
-                }
-                m_last = static_cast<OrderedSetNode*>(node);
+                OrderedSetNode* orderedSetNode = static_cast<OrderedSetNode*>(node);
+                // todo maybe do this bfs instead of just giving the list
                 for (AbstractSet* set: allSuperSetsAndMe) {
-                    if (set->setType() == SetType::ORDERED_SET) {
-                        OrderedSetNodeAllocationPolicyInterface* orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(set);
-                        if (!orderedSet->getFront()) {
-                            orderedSet->setFront(static_cast<OrderedSetNode*>(node));
-                        }
-                        orderedSet->setBack(static_cast<OrderedSetNode*>(node));
+                    if (set->setType() != SetType::ORDERED_SET) {
+                        continue;
                     }
+                    OrderedSetNodeAllocationPolicyInterface* orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(set);
+
+                    if (!orderedSet->getFront()) {
+                        orderedSet->setFront(orderedSetNode);
+                    }
+
+                    if (orderedSet->getBack() && orderedSetNode->m_prev != orderedSet->getBack()) {
+                        orderedSetNode->m_prev = orderedSet->getBack();
+                        orderedSetNode->m_prev->m_next = orderedSetNode;                        
+                    }
+                    orderedSet->setBack(orderedSetNode);
                 }
             }
             void deleteNode(SetNode* node) {

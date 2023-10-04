@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12.0)
-project(uml-cpp VERSION 0.2.5)
+project(uml-cpp VERSION 0.2.6)
 include(CTest)
 enable_testing()
 
@@ -46,7 +46,7 @@ IF(UNIX)
         if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
             add_compile_options(-fstandalone-debug)
         endif()
-        add_compile_options(-Og)
+        # add_compile_options(-Og)
     ENDIF()
 ENDIF()
 

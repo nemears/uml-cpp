@@ -28,8 +28,8 @@ namespace UML {
                 public:
                     void apply(Property& el, Extension& me);
             };
-            CustomSet<Property, Extension, ExtensionAddMemberEndPolicy, ExtensionRemoveMemberEndPolicy> m_extensionMemberEnds = 
-                    CustomSet<Property, Extension, ExtensionAddMemberEndPolicy, ExtensionRemoveMemberEndPolicy>(this);
+            CustomOrderedSet<Property, Extension, ExtensionAddMemberEndPolicy, ExtensionRemoveMemberEndPolicy> m_extensionMemberEnds = 
+                    CustomOrderedSet<Property, Extension, ExtensionAddMemberEndPolicy, ExtensionRemoveMemberEndPolicy>(this);
             CustomSingleton<ExtensionEnd, Extension> m_ownedEnd = CustomSingleton<ExtensionEnd, Extension>(this);
             CustomSingleton<Class, Extension> m_metaClass = CustomSingleton<Class, Extension>(this);
             bool m_setFlag = false;

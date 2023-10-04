@@ -27,9 +27,6 @@ namespace UML {
         SetNode* m_left = 0;
         SetNode* m_right = 0;
         AbstractSet* set = 0;
-        virtual void deleteNode() {
-            delete this;
-        }
 	virtual ~SetNode() {}
     };
 
@@ -53,7 +50,7 @@ namespace UML {
 
             std::vector<AbstractSet*> m_superSets;
             std::vector<AbstractSet*> m_subSets;
-            std::vector<AbstractSet*> m_redefines;
+            std::unordered_set<AbstractSet*> m_redefines;
 
             AbstractSet* m_setToInstantiate = 0;
 
@@ -185,10 +182,6 @@ namespace UML {
             }
 
             void adjustSuperSets(__attribute__((unused)) SetNode* node, __attribute__((unused)) std::unordered_set<AbstractSet*>& allSuperSetsAndMe) {}
-
-            void deleteNode(SetNode* node) {
-                delete node;
-            }
     };
 
     template <class T>
@@ -320,14 +313,14 @@ namespace UML {
             void innerAdd(T& el) override {
                 // add
                 AbstractSet* instantiationgSet = this;
-                if (!this->m_rootRedefinedSet) {
-                    for (auto redefinedSet : this->m_redefines) {
-                        if (redefinedSet->m_rootRedefinedSet) {
-                            instantiationgSet = redefinedSet;
-                            break;
-                        }
-                    }
-                }
+                // if (!this->m_rootRedefinedSet) {
+                //     for (auto redefinedSet : this->m_redefines) {
+                //         if (redefinedSet->m_rootRedefinedSet) {
+                //             instantiationgSet = redefinedSet;
+                //             break;
+                //         }
+                //     }
+                // }
                 SetNode* node = instantiationgSet->createNode(el);
                 
                 std::unordered_set<AbstractSet*> allSuperSetsAndMe = this->getAllSuperSets();
@@ -356,17 +349,17 @@ namespace UML {
             }
 
             void innerAdd(ID id) {
-                // add
+                // choose appropriate set to use to instantiate node
                 AbstractSet* instantiationgSet = this;
-                if (!this->m_rootRedefinedSet) {
-                    for (auto redefinedSet : this->m_redefines) {
-                        if (redefinedSet->m_rootRedefinedSet) {
-                            instantiationgSet = redefinedSet;
-                            this->m_size++;
-                            break;
-                        }
-                    }
-                }
+                // if (!this->m_rootRedefinedSet) {
+                //     for (auto redefinedSet : this->m_redefines) {
+                //         if (redefinedSet->m_rootRedefinedSet) {
+                //             instantiationgSet = redefinedSet;
+                //             this->m_size++;
+                //             break;
+                //         }
+                //     }
+                // }
                 SetNode* node = instantiationgSet->createNode(id);
                 
                 std::unordered_set<AbstractSet*> allSuperSetsAndMe = this->getAllSuperSets();
@@ -416,7 +409,7 @@ namespace UML {
 
                 // adjust redefines
                 for (AbstractSet* redefinedSet : set->m_redefines) {
-                    if (!redefinedSet->m_root && !redefinedSet->m_rootRedefinedSet) {
+                    if (!redefinedSet->m_root && redefinedSet->m_rootRedefinedSet) {
                         redefinedSet->m_root = node;
                     }
                 }
@@ -983,7 +976,7 @@ namespace UML {
                     superSet->m_size--;
                     superSet->runRemovePolicy(*node->m_ptr);
                 }
-                node->deleteNode();
+                delete node;
             }
 
             void handleOppositeAdd(T& el) {
@@ -1386,22 +1379,105 @@ namespace UML {
                 if (this->m_root) {
                     throw SetStateException("WARNING redefines set after set was used, must make sure redefining is done during configuration, before use!");
                 }
-                this->m_redefines.push_back(&redefined);
-                for (auto redefinedSet : redefined.m_redefines) {
-                    this->m_redefines.push_back(redefinedSet);
-                    redefinedSet->m_rootRedefinedSet = false;
+
+                // add to redefined set's redefines redefines
+                for (AbstractSet* redefinedSet : redefined.m_redefines) {
+                    redefinedSet->m_redefines.insert(this);
+                    this->m_redefines.insert(redefinedSet);
                 }
-                redefined.m_redefines.push_back(this);
-                redefined.m_rootRedefinedSet = false;
-                if (!this->m_setToInstantiate && redefined.setType() == SetType::ORDERED_SET && this->setType() != SetType::ORDERED_SET) {
-                        this->m_setToInstantiate = &redefined;
-                    }
+
+                // make sure our subsets and supersets are the same
                 for (auto set : redefined.m_superSets) {
                     this->subsets(*set);
                 }
                 for (auto subSet : redefined.m_subSets) {
                     subSet->subsets(*this);
                 }
+                for (auto set : this->m_superSets) {
+                    redefined.subsets(*set);
+                }
+                for (auto subSet : this->m_subSets) {
+                    subSet->subsets(redefined);
+                }
+
+                // add this set's redefines to redefined set
+                for (AbstractSet* redefinedSet : this->m_redefines) {
+                    redefinedSet->m_redefines.insert(&redefined);
+                    redefined.m_redefines.insert(redefinedSet);
+                }
+
+                // add to our redefines
+                this->m_redefines.insert(&redefined);
+
+                // add to redefined set's redefines
+                redefined.m_redefines.insert(this);
+
+                for (AbstractSet* redefinedSet : this->m_redefines) {
+                    redefinedSet->m_rootRedefinedSet = false;
+                }
+
+                // evaluate which will be the rootRedfinedSet
+                // sorry if it's too complicated or superfluous, really want to be sure
+                // if (this->setType() == SetType::ORDERED_SET) {
+                //     this->m_rootRedefinedSet = true;
+                //     for (AbstractSet* redefinedSet : this->m_redefines) {
+                //         redefinedSet->m_rootRedefinedSet = false;
+                //         redefinedSet->m_setToInstantiate = this;
+                //     }
+                // } else if (redefined.setType() == SetType::ORDERED_SET) {
+                //     if (redefined.m_setToInstantiate) {
+                //         this->m_setToInstantiate = redefined.m_setToInstantiate;
+                //         for (AbstractSet* redefinedSet : this->m_redefines) {
+                //             if (redefinedSet->m_rootRedefinedSet) {
+                //                 continue;
+                //             }
+                //             redefinedSet->m_rootRedefinedSet = false;
+                //             redefinedSet->m_setToInstantiate = redefined.m_setToInstantiate;
+                //         }
+                //     } else {
+                //         redefined.m_rootRedefinedSet = true;
+                //         this->m_setToInstantiate = &redefined;
+                //         for (AbstractSet* redefinedSet : this->m_redefines) {
+                //             if (redefinedSet == &redefined) {
+                //                 continue;
+                //             }
+                //             redefinedSet->m_rootRedefinedSet = false;
+                //             redefinedSet->m_setToInstantiate = &redefined;
+                //         }
+                //     }
+                // } else if (redefined.m_setToInstantiate) {
+                //     this->m_setToInstantiate = redefined.m_setToInstantiate;
+                //     for (AbstractSet* redefinedSet : this->m_redefines) {
+                //         if (redefinedSet == this->m_setToInstantiate) {
+                //             continue;
+                //         }
+                //         redefinedSet->m_rootRedefinedSet = false;
+                //         redefinedSet->m_setToInstantiate = this->m_setToInstantiate;
+                //     }
+                // } else {
+                //     this->m_rootRedefinedSet = true;
+                //     for (AbstractSet* redefinedSet : this->m_redefines) {
+                //         redefinedSet->m_rootRedefinedSet = false;
+                //         redefinedSet->m_setToInstantiate = this;
+                //     }
+                // }
+
+
+                // for (auto redefinedSet : redefined.m_redefines) {
+                //     this->m_redefines.push_back(redefinedSet);
+                //     redefinedSet->m_rootRedefinedSet = false;
+                // }
+                // redefined.m_redefines.push_back(this);
+                // redefined.m_rootRedefinedSet = false;
+                // if (!this->m_setToInstantiate && redefined.setType() == SetType::ORDERED_SET && this->setType() != SetType::ORDERED_SET) {
+                //     this->m_setToInstantiate = &redefined;
+                // }
+                // for (auto set : redefined.m_superSets) {
+                //     this->subsets(*set);
+                // }
+                // for (auto subSet : redefined.m_subSets) {
+                //     subSet->subsets(*this);
+                // }
             }
 
             // Shared Accessors, all of these can be used by subclasses
@@ -1554,19 +1630,19 @@ namespace UML {
                 return ++(*this);
             }
             friend bool operator== (const SetIterator& lhs, const SetIterator& rhs) {
-                if (!lhs.curr && !lhs.curr) {
+                if (!lhs.curr && !rhs.curr) {
                     return true;
                 }
-                if (!lhs.curr || !lhs.curr) {
+                if (!lhs.curr || !rhs.curr) {
                     return false;
                 }
                 return lhs.curr == rhs.curr;
             }
             friend bool operator!= (const SetIterator& lhs, const SetIterator& rhs) {
-                if (!lhs.curr && !lhs.curr) {
+                if (!lhs.curr && !rhs.curr) {
                     return false;
                 }
-                if (!lhs.curr || !lhs.curr) {
+                if (!lhs.curr || !rhs.curr) {
                     return true;
                 }
                 return lhs.curr != rhs.curr;

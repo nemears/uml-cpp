@@ -6,6 +6,7 @@
 #include "serialization/open_uml/openUmlSerializationPolicy.h"
 #include "uml/umlPtr.h"
 #include "uml/set/readOnlySet.h"
+#include <shared_mutex>
 
 namespace UML {
 
@@ -23,7 +24,7 @@ namespace UML {
 
             ElementPtr m_root;
             std::unordered_map<ID, ManagerNode> m_graph;
-            std::mutex m_graphMtx;
+            std::shared_timed_mutex m_graphMtx;
 
             void setPtr(ElementPtr& ptr, ID id, const ManagerNode* node) {
                 ptr.m_id = id;
@@ -35,6 +36,7 @@ namespace UML {
             }
 
             ElementPtr createPtr(ID id) override {
+                std::shared_lock<std::shared_timed_mutex> lck(m_graphMtx);
                 std::unordered_map<ID, ManagerNode>::const_iterator nodeIt = m_graph.find(id);
                 const ManagerNode* node = 0;
                 if (nodeIt == m_graph.end()) {
@@ -71,7 +73,7 @@ namespace UML {
                     }
                 }
                 if (removeFromGraph) {
-                    std::lock_guard<std::mutex> graphLck(m_graphMtx);
+                    std::unique_lock<std::shared_timed_mutex> graphLck(m_graphMtx);
                     m_graph.erase(id);
                 }
  
@@ -106,7 +108,7 @@ namespace UML {
             template <class T = Element>
             UmlPtr<T> create() {
                 T* newElement = new T;
-                std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                std::unique_lock<std::shared_timed_mutex> graphLock(m_graphMtx);
                 ManagerNode& node = m_graph[newElement->getID()];
                 node.m_managerElementMemory = newElement;
                 newElement->m_node = &node;
@@ -360,6 +362,7 @@ namespace UML {
                     ManagerNode* node = pair.second.node;
                     if (!node || !node->m_managerElementMemory) {
                         if (exists(pair.first)) {
+                            std::shared_lock<std::shared_timed_mutex> lck(m_graphMtx);
                             node = &m_graph.find(pair.first)->second;
                             pair.second.node = node;
                         }
@@ -387,7 +390,7 @@ namespace UML {
             ElementPtr get(ID id) override {
                 ElementPtr ret;
                 {
-                    std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                    std::shared_lock<std::shared_timed_mutex> graphLock(m_graphMtx);
                     std::unordered_map<ID, ManagerNode>::iterator result = m_graph.find(id);
                     if (result != m_graph.end() && (*result).second.m_managerElementMemory) {
                         // lock node for creation
@@ -410,7 +413,7 @@ namespace UML {
             };
 
             bool loaded(ID id) override {
-                std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                std::shared_lock<std::shared_timed_mutex> graphLock(m_graphMtx);
                 std::unordered_map<ID, ManagerNode>::const_iterator result = m_graph.find(id);
                 return result != m_graph.end() && (*result).second.m_managerElementMemory;
             }
@@ -473,13 +476,13 @@ namespace UML {
                     delete node->m_managerElementMemory;
                 }
                 // lock graph for deletion
-                std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                std::unique_lock<std::shared_timed_mutex> graphLock(m_graphMtx);
                 m_graph.erase(id);
             };
 
             bool exists(ID id) {
                 // lock graph for access
-                std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                std::shared_lock<std::shared_timed_mutex> graphLock(m_graphMtx);
                 return m_graph.count(id);
             }
 
@@ -493,7 +496,7 @@ namespace UML {
                     ManagerNode* nodeToBeOverwritten = 0;
                     ManagerNode* newNode = 0;
                     {
-                        std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                        std::unique_lock<std::shared_timed_mutex> graphLock(m_graphMtx);
 
                         // overwrite
                         std::unordered_map<ID, ManagerNode>::iterator nodeToBeOverwrittenIterator = m_graph.find(newID);
@@ -510,11 +513,11 @@ namespace UML {
                         ptr->reindex(newID, nodeToBeOverwritten->m_managerElementMemory);
                         assignPtr(*ptr);
                     }
-                    std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                    std::unique_lock<std::shared_timed_mutex> graphLock(m_graphMtx);
                     m_graph.erase(oldID);
                 } else {
                     // lock graph for edit
-                    std::lock_guard<std::mutex> graphLock(m_graphMtx);
+                    std::unique_lock<std::shared_timed_mutex> graphLock(m_graphMtx);
 
                     // reindex
                     ManagerNode& discRef = m_graph[oldID];

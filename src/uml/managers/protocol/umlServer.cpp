@@ -90,7 +90,7 @@ void UmlServer::handleMessage(ID id, std::string buff) {
             elID = ID::fromString(getNode.as<std::string>());
         } else {
             try {
-                std::lock_guard<std::mutex> graphLck(m_graphMtx);
+                std::shared_lock<std::shared_timed_mutex> graphLck(m_graphMtx);
                 elID = m_urls.at(getNode.as<std::string>());
             } catch (std::exception& e) {
                 log(e.what());

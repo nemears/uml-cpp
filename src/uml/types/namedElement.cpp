@@ -17,8 +17,7 @@ void NamedElement::UpdateQualifiedNamePolicy::apply(Namespace& el, NamedElement&
     me.updateQualifiedName(el.getQualifiedName());
 }
 
-void NamedElement::RemoveQualifiedNamePolicy::apply(Namespace& el, NamedElement& me) {
-    (void*) &el;
+void NamedElement::RemoveQualifiedNamePolicy::apply(Namespace& el, __attribute__((unused)) NamedElement& me) {
     me.updateQualifiedName("");
 }
 

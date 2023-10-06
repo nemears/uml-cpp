@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream> // TODO remove after debugging
 #include "set.h"
 
 namespace UML {
@@ -27,7 +26,16 @@ namespace UML {
         OrderedSetNode* m_prev = 0;
         OrderedSetNode* m_next = 0;
         virtual ~OrderedSetNode() {
+            // find root orderedSet
             OrderedSetNodeAllocationPolicyInterface* orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(set);
+            if (!orderedSet) {
+                for (auto& redefinedSet : set->m_redefines) {
+                    orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(redefinedSet);
+                    if (orderedSet) {
+                        break;
+                    }
+                }
+            }
             if (!orderedSet) {
                 for (auto& superSet : set->getAllSuperSets()) {
                     orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(superSet);

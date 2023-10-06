@@ -22,7 +22,7 @@ void MultiplicityElement::AddLowerPolicy::apply(ValueSpecification& el, Multipli
     }
 }
 
-void MultiplicityElement::RemoveLowerPolicy::apply(ValueSpecification& el, MultiplicityElement& me) {
+void MultiplicityElement::RemoveLowerPolicy::apply(__attribute__((unused)) ValueSpecification& el, MultiplicityElement& me) {
     if (me.m_lowSpecified) {
         me.m_lower = -1;
         me.m_lowSpecified = false;
@@ -41,7 +41,7 @@ void MultiplicityElement::AddUpperPolicy::apply(ValueSpecification& el, Multipli
     }
 }
 
-void MultiplicityElement::RemoveUpperPolicy::apply(ValueSpecification& el, MultiplicityElement& me) {
+void MultiplicityElement::RemoveUpperPolicy::apply(__attribute__((unused)) ValueSpecification& el, MultiplicityElement& me) {
     if (me.m_upSpecified) {
         me.m_upper = -1;
         me.m_upSpecified = false;

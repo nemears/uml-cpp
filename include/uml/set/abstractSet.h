@@ -312,23 +312,14 @@ namespace UML {
 
             void innerAdd(T& el) override {
                 // add
-                AbstractSet* instantiationgSet = this;
-                // if (!this->m_rootRedefinedSet) {
-                //     for (auto redefinedSet : this->m_redefines) {
-                //         if (redefinedSet->m_rootRedefinedSet) {
-                //             instantiationgSet = redefinedSet;
-                //             break;
-                //         }
-                //     }
-                // }
-                SetNode* node = instantiationgSet->createNode(el);
+                SetNode* node = this->createNode(el);
                 
-                std::unordered_set<AbstractSet*> allSuperSetsAndMe = this->getAllSuperSets();
+                std::unordered_set<AbstractSet*> allSuperSetsAndMe = node->set->getAllSuperSets();
                 allSuperSetsAndMe.insert(node->set);
-                for (auto redefinedSet : instantiationgSet->m_redefines) {
+                for (auto redefinedSet : node->set->m_redefines) {
                     allSuperSetsAndMe.insert(redefinedSet);
                 }
-                std::unordered_set<AbstractSet*> allSubSets = instantiationgSet->getAllSubSets();
+                std::unordered_set<AbstractSet*> allSubSets = node->set->getAllSubSets();
 
                 node->set->adjustSuperSets(node, allSuperSetsAndMe);
 
@@ -337,7 +328,17 @@ namespace UML {
                     visited[set] = false;
                 }
 
-                innerAddDFS(node, node->set, allSuperSetsAndMe, allSubSets, visited);
+                // start from proper set
+                AbstractSet* rootSet = node->set;
+                if (!rootSet->m_rootRedefinedSet) {
+                    for (auto redefinedSet : rootSet->m_redefines) {
+                        if (redefinedSet->m_rootRedefinedSet) {
+                            rootSet = redefinedSet;
+                            break;
+                        }
+                    }
+                }
+                innerAddDFS(node, rootSet, allSuperSetsAndMe, allSubSets, visited);
 
                 for (auto superSet : allSuperSetsAndMe) {
                     superSet->m_size++;
@@ -350,24 +351,14 @@ namespace UML {
 
             void innerAdd(ID id) {
                 // choose appropriate set to use to instantiate node
-                AbstractSet* instantiationgSet = this;
-                // if (!this->m_rootRedefinedSet) {
-                //     for (auto redefinedSet : this->m_redefines) {
-                //         if (redefinedSet->m_rootRedefinedSet) {
-                //             instantiationgSet = redefinedSet;
-                //             this->m_size++;
-                //             break;
-                //         }
-                //     }
-                // }
-                SetNode* node = instantiationgSet->createNode(id);
+                SetNode* node = createNode(id);
                 
-                std::unordered_set<AbstractSet*> allSuperSetsAndMe = this->getAllSuperSets();
+                std::unordered_set<AbstractSet*> allSuperSetsAndMe = node->set->getAllSuperSets();
                 allSuperSetsAndMe.insert(node->set);
-                for (auto redefinedSet : this->m_redefines) {
+                for (auto redefinedSet : node->set->m_redefines) {
                     allSuperSetsAndMe.insert(redefinedSet);
                 }
-                std::unordered_set<AbstractSet*> allSubSets = this->getAllSubSets();
+                std::unordered_set<AbstractSet*> allSubSets = node->set->getAllSubSets();
 
                 node->set->adjustSuperSets(node, allSuperSetsAndMe);
 
@@ -376,7 +367,18 @@ namespace UML {
                     visited[set] = false;
                 }
 
-                innerAddDFS(node, node->set, allSuperSetsAndMe, allSubSets, visited);
+                // start from proper set
+                AbstractSet* rootSet = node->set;
+                if (!rootSet->m_rootRedefinedSet) {
+                    for (auto redefinedSet : rootSet->m_redefines) {
+                        if (redefinedSet->m_rootRedefinedSet) {
+                            rootSet = redefinedSet;
+                            break;
+                        }
+                    }
+                }
+
+                innerAddDFS(node, rootSet, allSuperSetsAndMe, allSubSets, visited);
 
                 for (auto superSet : allSuperSetsAndMe) {
                     superSet->m_size++;
@@ -409,7 +411,7 @@ namespace UML {
 
                 // adjust redefines
                 for (AbstractSet* redefinedSet : set->m_redefines) {
-                    if (!redefinedSet->m_root && redefinedSet->m_rootRedefinedSet) {
+                    if (!redefinedSet->m_root && !redefinedSet->m_rootRedefinedSet) {
                         redefinedSet->m_root = node;
                     }
                 }
@@ -1414,70 +1416,12 @@ namespace UML {
 
                 for (AbstractSet* redefinedSet : this->m_redefines) {
                     redefinedSet->m_rootRedefinedSet = false;
+                    if (redefinedSet->setType() == SetType::ORDERED_SET && this->setType() != SetType::ORDERED_SET) {
+                        this->m_setToInstantiate = redefinedSet;
+                    } else if (this->setType() == SetType::ORDERED_SET && redefinedSet->setType() != SetType::ORDERED_SET && !redefinedSet->m_setToInstantiate) {
+                        redefinedSet->m_setToInstantiate = this;
+                    }
                 }
-
-                // evaluate which will be the rootRedfinedSet
-                // sorry if it's too complicated or superfluous, really want to be sure
-                // if (this->setType() == SetType::ORDERED_SET) {
-                //     this->m_rootRedefinedSet = true;
-                //     for (AbstractSet* redefinedSet : this->m_redefines) {
-                //         redefinedSet->m_rootRedefinedSet = false;
-                //         redefinedSet->m_setToInstantiate = this;
-                //     }
-                // } else if (redefined.setType() == SetType::ORDERED_SET) {
-                //     if (redefined.m_setToInstantiate) {
-                //         this->m_setToInstantiate = redefined.m_setToInstantiate;
-                //         for (AbstractSet* redefinedSet : this->m_redefines) {
-                //             if (redefinedSet->m_rootRedefinedSet) {
-                //                 continue;
-                //             }
-                //             redefinedSet->m_rootRedefinedSet = false;
-                //             redefinedSet->m_setToInstantiate = redefined.m_setToInstantiate;
-                //         }
-                //     } else {
-                //         redefined.m_rootRedefinedSet = true;
-                //         this->m_setToInstantiate = &redefined;
-                //         for (AbstractSet* redefinedSet : this->m_redefines) {
-                //             if (redefinedSet == &redefined) {
-                //                 continue;
-                //             }
-                //             redefinedSet->m_rootRedefinedSet = false;
-                //             redefinedSet->m_setToInstantiate = &redefined;
-                //         }
-                //     }
-                // } else if (redefined.m_setToInstantiate) {
-                //     this->m_setToInstantiate = redefined.m_setToInstantiate;
-                //     for (AbstractSet* redefinedSet : this->m_redefines) {
-                //         if (redefinedSet == this->m_setToInstantiate) {
-                //             continue;
-                //         }
-                //         redefinedSet->m_rootRedefinedSet = false;
-                //         redefinedSet->m_setToInstantiate = this->m_setToInstantiate;
-                //     }
-                // } else {
-                //     this->m_rootRedefinedSet = true;
-                //     for (AbstractSet* redefinedSet : this->m_redefines) {
-                //         redefinedSet->m_rootRedefinedSet = false;
-                //         redefinedSet->m_setToInstantiate = this;
-                //     }
-                // }
-
-
-                // for (auto redefinedSet : redefined.m_redefines) {
-                //     this->m_redefines.push_back(redefinedSet);
-                //     redefinedSet->m_rootRedefinedSet = false;
-                // }
-                // redefined.m_redefines.push_back(this);
-                // redefined.m_rootRedefinedSet = false;
-                // if (!this->m_setToInstantiate && redefined.setType() == SetType::ORDERED_SET && this->setType() != SetType::ORDERED_SET) {
-                //     this->m_setToInstantiate = &redefined;
-                // }
-                // for (auto set : redefined.m_superSets) {
-                //     this->subsets(*set);
-                // }
-                // for (auto subSet : redefined.m_subSets) {
-                //     subSet->subsets(*this);
-                // }
             }
 
             // Shared Accessors, all of these can be used by subclasses

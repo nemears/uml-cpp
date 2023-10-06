@@ -1,5 +1,4 @@
-#ifndef _UML_UML_PTR_H_
-#define _UML_UML_PTR_H_
+#pragma once
 
 #include "types/element.h"
 #include "managers/abstractManager.h"
@@ -236,5 +235,3 @@ namespace std {
         return hasher(ptr.id().string() /*+ to_string(ptr.m_ptrId)*/);
     }
 }
-
-#endif

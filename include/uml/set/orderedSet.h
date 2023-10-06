@@ -38,8 +38,10 @@ namespace UML {
             }
 
             // TODO understand this edge case (orderedSetNode is not part of an ordered set)
+            // happens with ClassTest.addOwnedAttributeAsStructuredClassifierTest
             if (!orderedSet) {
                 // throw SetStateException("bad state, non orderedSetNode tried to add to orderedSet!");
+                return;
             }
 
             if (orderedSet->getFront() == this) {
@@ -256,28 +258,12 @@ namespace UML {
             SetNode* create(Element& el) {
                 OrderedSetNode* ret = new OrderedSetNode();
                 ret->m_ptr = &el;
-                // ret->m_prev = m_last;
-                // if (ret->m_prev) {
-                //     ret->m_prev->m_next = ret;
-                // }
-                // m_last = ret;
-                // if (!m_first) {
-                //     m_first = ret;
-                // }
                 return ret;
             }
             template <class T>
             SetNode* create(UmlPtr<T> el) {
                 OrderedSetNode* ret = new OrderedSetNode();
                 ret->m_ptr = el;
-                // ret->m_prev = m_last;
-                // if (ret->m_prev) {
-                //     ret->m_prev->m_next = ret;
-                // }
-                // m_last = ret;
-                // if (!m_first) {
-                //     m_first = ret;
-                // }
                 return ret;
             }
             void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*>& allSuperSetsAndMe) override {
@@ -293,7 +279,7 @@ namespace UML {
                         orderedSet->setFront(orderedSetNode);
                     }
 
-                    if (orderedSet->getBack() && orderedSetNode->m_prev != orderedSet->getBack()) {
+                    if (orderedSet->getBack() && orderedSetNode->m_prev != orderedSet->getBack() && orderedSetNode != orderedSet->getBack()) {
                         orderedSetNode->m_prev = orderedSet->getBack();
                         orderedSetNode->m_prev->m_next = orderedSetNode;                        
                     }

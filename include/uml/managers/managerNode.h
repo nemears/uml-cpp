@@ -36,7 +36,6 @@ namespace UML {
         void removeReference(Element& el);
         void restoreReference(Element* el);
         void restoreReferences();
-        void releaseReference(ID id);
         void releasePtrs();
         void referenceErased(ID id);
         void erase();

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "uml/types/namedElement.h"
-#include "uml/umlPtr.h"
+#include "setNode.h"
 #include "setLock.h"
 #include "doNothingPolicy.h"
 #include "uml/macros.h"
@@ -19,17 +19,6 @@ namespace UML {
             };
     };
 
-    class AbstractSet;
-
-    struct SetNode {
-        ElementPtr m_ptr;
-        SetNode* m_parent = 0;
-        SetNode* m_left = 0;
-        SetNode* m_right = 0;
-        AbstractSet* set = 0;
-	virtual ~SetNode() {}
-    };
-
     template <class T, class U> class TypedSet;
 
     enum class SetType {
@@ -39,11 +28,20 @@ namespace UML {
         LIST
     };
 
+    bool is_root(SetNode*, AbstractSet*);
+    void right_rotate(SetNode*, AbstractSet*);
+    void left_rotate(SetNode*, AbstractSet*);
+    void insert(SetNode*, SetNode*);
+
     class AbstractSet {
 
         template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
         friend class OrderedSetNodeAllocationPolicy;
         friend struct OrderedSetNode;
+        friend bool is_root(SetNode*, AbstractSet*);
+        friend void right_rotate(SetNode*, AbstractSet*);
+        friend void left_rotate(SetNode*, AbstractSet*);
+        friend void insert(SetNode*, SetNode*);
 
         protected:
             SetNode* m_root = 0;

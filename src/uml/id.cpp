@@ -990,3 +990,8 @@ bool ID::operator>(const ID& rhs) {
     std::hash<ID> hasher;
     return hasher(*this) > hasher(rhs);
 }
+
+bool ID::operator<(const ID& rhs) {
+    std::hash<ID> hasher;
+    return hasher(*this) < hasher(rhs);
+}

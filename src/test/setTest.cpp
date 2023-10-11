@@ -16,11 +16,373 @@
 #include "uml/set/singleton.h"
 #include "uml/managers/manager.h"
 
+// TODO probably remove
+#include "uml/set/redBlackTree.h"
+
 using namespace UML;
 
 class SetTest : public ::testing::Test {
    
 };
+
+class TestSet : public AbstractSet {
+    protected:
+        void runAddPolicy(Element& el) override {}
+        void runRemovePolicy(Element& el) override {}
+        bool oppositeEnabled() override {}
+        void oppositeAdd(Element& el) override {}
+        void oppositeRemove(Element& el) override {}
+        void handleOppositeRemove(Element& el) override {}
+        SetType setType() const override{};
+        void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*>& allSuperSetsAndMe) override {}
+        SetNode* createNode(Element& el) override {}
+        SetNode* createNode(ID id) override {}
+        void innerRemove(ID id) override {}
+        void remove(ID id) override {}
+    public:
+        void setRoot(SetNode* node) {
+            m_root = node;
+        }
+        SetNode* getRoot() const {
+            return m_root;
+        }
+};
+
+TEST_F(SetTest, redBlackTreeInsertTest) {
+    Manager<> m;
+    TestSet set;
+    PackagePtr pckgA = m.create<Package>();
+    pckgA->setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    SetNode a;
+    a.m_ptr = pckgA;
+    a.set = &set;
+    PackagePtr pckgB = m.create<Package>();
+    pckgB->setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    SetNode b;
+    b.m_ptr = pckgB;
+    b.set = &set;
+    set.setRoot(&a);
+    insert(&a, &b);
+    ASSERT_TRUE(a.m_left == &b);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    PackagePtr pckgC = m.create<Package>();
+    SetNode c;
+    c.m_ptr = pckgC;
+    c.set = &set;
+    insert(&a, &c);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    PackagePtr pckgD = m.create<Package>();
+    SetNode d;
+    d.m_ptr = pckgD;
+    d.set = &set;
+    insert(&a, &d);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(b.m_left == &d);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    ASSERT_TRUE(d.m_parent == &b);
+    PackagePtr pckgE = m.create<Package>();
+    SetNode e;
+    e.m_ptr = pckgE;
+    e.set = &set;
+    insert(&a, &e);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(b.m_left == &d);
+    ASSERT_TRUE(c.m_left == &e);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    ASSERT_TRUE(d.m_parent == &b);
+    ASSERT_TRUE(e.m_parent == &c);
+    PackagePtr pckgF = m.create<Package>();
+    SetNode f;
+    f.m_ptr = pckgF;
+    f.set = &set;
+    insert(&a, &f);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(b.m_left == &d);
+    ASSERT_TRUE(c.m_left == &e);
+    ASSERT_TRUE(c.m_right == &f);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    ASSERT_TRUE(d.m_parent == &b);
+    ASSERT_TRUE(e.m_parent == &c);
+    ASSERT_TRUE(f.m_parent == &c);
+    PackagePtr pckgG = m.create<Package>();
+    SetNode g;
+    g.m_ptr = pckgG;
+    g.set = &set;
+    insert(&a, &g);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(b.m_left == &d);
+    ASSERT_TRUE(c.m_left == &e);
+    ASSERT_TRUE(c.m_right == &f);
+    ASSERT_TRUE(f.m_left == &g);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    ASSERT_TRUE(d.m_parent == &b);
+    ASSERT_TRUE(e.m_parent == &c);
+    ASSERT_TRUE(f.m_parent == &c);
+    ASSERT_TRUE(g.m_parent == &f);
+    PackagePtr pckgH = m.create<Package>();
+    SetNode h;
+    h.m_ptr = pckgH;
+    h.set = &set;
+    insert(&a, &h);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(b.m_right == &d);
+    ASSERT_TRUE(c.m_left == &e);
+    ASSERT_TRUE(c.m_right == &f);
+    ASSERT_TRUE(f.m_left == &g);
+    ASSERT_TRUE(b.m_left == &h);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    ASSERT_TRUE(d.m_parent == &b);
+    ASSERT_TRUE(e.m_parent == &c);
+    ASSERT_TRUE(f.m_parent == &c);
+    ASSERT_TRUE(g.m_parent == &f);
+    ASSERT_TRUE(h.m_parent == &b);
+    PackagePtr pckgI = m.create<Package>();
+    SetNode i;
+    i.m_ptr = pckgI;
+    i.set = &set;
+    insert(&a, &i);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(b.m_right == &d);
+    ASSERT_TRUE(c.m_left == &e);
+    ASSERT_TRUE(c.m_right == &f);
+    ASSERT_TRUE(f.m_left == &g);
+    ASSERT_TRUE(b.m_left == &h);
+    ASSERT_TRUE(d.m_left == &i);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    ASSERT_TRUE(d.m_parent == &b);
+    ASSERT_TRUE(e.m_parent == &c);
+    ASSERT_TRUE(f.m_parent == &c);
+    ASSERT_TRUE(g.m_parent == &f);
+    ASSERT_TRUE(h.m_parent == &b);
+    ASSERT_TRUE(i.m_parent == &d);
+    PackagePtr pckgJ = m.create<Package>();
+    SetNode j;
+    j.m_ptr = pckgJ;
+    j.set = &set;
+    insert(&a, &j);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(b.m_right == &d);
+    ASSERT_TRUE(c.m_left == &e);
+    ASSERT_TRUE(c.m_right == &f);
+    ASSERT_TRUE(f.m_left == &g);
+    ASSERT_TRUE(b.m_left == &h);
+    ASSERT_TRUE(d.m_left == &i);
+    ASSERT_TRUE(f.m_right == &j);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    ASSERT_TRUE(d.m_parent == &b);
+    ASSERT_TRUE(e.m_parent == &c);
+    ASSERT_TRUE(f.m_parent == &c);
+    ASSERT_TRUE(g.m_parent == &f);
+    ASSERT_TRUE(h.m_parent == &b);
+    ASSERT_TRUE(i.m_parent == &d);
+    ASSERT_TRUE(j.m_parent == &f);
+    PackagePtr pckgK = m.create<Package>();
+    SetNode k;
+    k.m_ptr = pckgK;
+    k.set = &set;
+    insert(&a, &k);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(b.m_right == &d);
+    ASSERT_TRUE(c.m_left == &e);
+    ASSERT_TRUE(c.m_right == &f);
+    ASSERT_TRUE(f.m_left == &g);
+    ASSERT_TRUE(b.m_left == &h);
+    ASSERT_TRUE(d.m_right == &i);
+    ASSERT_TRUE(f.m_right == &j);
+    ASSERT_TRUE(d.m_left == &k);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    ASSERT_TRUE(d.m_parent == &b);
+    ASSERT_TRUE(e.m_parent == &c);
+    ASSERT_TRUE(f.m_parent == &c);
+    ASSERT_TRUE(g.m_parent == &f);
+    ASSERT_TRUE(h.m_parent == &b);
+    ASSERT_TRUE(i.m_parent == &d);
+    ASSERT_TRUE(j.m_parent == &f);
+    ASSERT_TRUE(k.m_parent == &d);
+    PackagePtr pckgL = m.create<Package>();
+    SetNode l;
+    l.m_ptr = pckgL;
+    l.set = &set;
+    insert(&a, &l);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(b.m_right == &d);
+    ASSERT_TRUE(c.m_left == &e);
+    ASSERT_TRUE(c.m_right == &f);
+    ASSERT_TRUE(f.m_left == &g);
+    ASSERT_TRUE(b.m_left == &h);
+    ASSERT_TRUE(d.m_right == &i);
+    ASSERT_TRUE(f.m_right == &j);
+    ASSERT_TRUE(d.m_left == &k);
+    ASSERT_TRUE(j.m_left == &l);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    ASSERT_TRUE(d.m_parent == &b);
+    ASSERT_TRUE(e.m_parent == &c);
+    ASSERT_TRUE(f.m_parent == &c);
+    ASSERT_TRUE(g.m_parent == &f);
+    ASSERT_TRUE(h.m_parent == &b);
+    ASSERT_TRUE(i.m_parent == &d);
+    ASSERT_TRUE(j.m_parent == &f);
+    ASSERT_TRUE(k.m_parent == &d);
+    ASSERT_TRUE(l.m_parent == &j);
+    PackagePtr pckgM = m.create<Package>();
+    SetNode mm;
+    mm.m_ptr = pckgM;
+    mm.set = &set;
+    insert(&a, &mm);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+}
+
+TEST_F(SetTest, RedBlackAlwaysLeft) {
+    Manager<> m;
+    TestSet set;
+    PackagePtr pckgA = m.create<Package>();
+    SetNode a;
+    a.m_ptr = pckgA;
+    a.set = &set;
+    PackagePtr pckgB = m.create<Package>();
+    pckgB->setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    SetNode b;
+    b.m_ptr = pckgB;
+    b.set = &set;
+    set.setRoot(&a);
+    insert(&a, &b);
+    ASSERT_TRUE(a.m_left == &b);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    PackagePtr pckgC = m.create<Package>();
+    SetNode c;
+    c.m_ptr = pckgC;
+    c.set = &set;
+    insert(&a, &c);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    PackagePtr pckgD = m.create<Package>();
+    pckgD->setID("BAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    SetNode d;
+    d.m_ptr = pckgD;
+    d.set = &set;
+    insert(&a, &d);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(c.m_left == &d);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    ASSERT_TRUE(d.m_parent == &c);
+    PackagePtr pckgE = m.create<Package>();
+    pckgE->setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    SetNode e;
+    e.m_ptr = pckgE;
+    e.set = &set;
+    insert(&a, &e);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(c.m_right == &d);
+    ASSERT_TRUE(c.m_left == &e);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    ASSERT_TRUE(d.m_parent == &c);
+    ASSERT_TRUE(e.m_parent == &c);
+    PackagePtr pckgF = m.create<Package>();
+    pckgF->setID("ABAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    SetNode f;
+    f.m_ptr = pckgF;
+    f.set = &set;
+    insert(&a, &f);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(c.m_right == &d);
+    ASSERT_TRUE(c.m_left == &e);
+    ASSERT_TRUE(d.m_left == &f);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    ASSERT_TRUE(d.m_parent == &c);
+    ASSERT_TRUE(e.m_parent == &c);
+    ASSERT_TRUE(f.m_parent == &d);
+    PackagePtr pckgG = m.create<Package>();
+    pckgG->setID("ABBAAAAAAAAAAAAAAAAAAAAAAAAA");
+    SetNode g;
+    g.m_ptr = pckgG;
+    g.set = &set;
+    insert(&a, &g);
+    ASSERT_TRUE(a.m_right == &b);
+    ASSERT_TRUE(a.m_left == &c);
+    ASSERT_TRUE(c.m_right == &d);
+    ASSERT_TRUE(c.m_left == &e);
+    ASSERT_TRUE(d.m_left == &f);
+    ASSERT_TRUE(d.m_right == &g);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+    ASSERT_TRUE(b.m_parent == &a);
+    ASSERT_TRUE(c.m_parent == &a);
+    ASSERT_TRUE(d.m_parent == &c);
+    ASSERT_TRUE(e.m_parent == &c);
+    ASSERT_TRUE(f.m_parent == &d);
+    ASSERT_TRUE(g.m_parent == &d);
+    PackagePtr pckgH = m.create<Package>();
+    pckgH->setID("ABBBAAAAAAAAAAAAAAAAAAAAAAAA");
+    SetNode h;
+    h.m_ptr = pckgH;
+    h.set = &set;
+    insert(&a, &h);
+    ASSERT_TRUE(set.getRoot() == &a);
+    ASSERT_TRUE(a.m_parent == 0);
+}
+
 
 class TestPackageSetElement : public Element {
     public:

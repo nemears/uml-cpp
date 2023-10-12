@@ -32,6 +32,7 @@ namespace UML {
     void right_rotate(SetNode*, AbstractSet*);
     void left_rotate(SetNode*, AbstractSet*);
     void insert(SetNode*, SetNode*);
+    void deleteFromTree(SetNode*);
 
     class AbstractSet {
 
@@ -42,6 +43,7 @@ namespace UML {
         friend void right_rotate(SetNode*, AbstractSet*);
         friend void left_rotate(SetNode*, AbstractSet*);
         friend void insert(SetNode*, SetNode*);
+        friend void deleteFromTree(SetNode*);
 
         protected:
             SetNode* m_root = 0;
@@ -114,6 +116,10 @@ namespace UML {
             }
 
         public:
+
+            // root
+            virtual void setRoot(SetNode* node) = 0;
+            virtual SetNode* getRoot() const = 0;
 
             AbstractSet& operator=(AbstractSet&&) = delete;
 
@@ -1345,6 +1351,16 @@ namespace UML {
                 for (auto subSet : this->m_subSets) {
                     subSet->m_superSets.erase(std::find(subSet->m_superSets.begin(), subSet->m_superSets.end(), this));
                 }
+            }
+
+            // root
+            void setRoot(SetNode* node) override {
+                // TODO, balance with subsets and stuff maybe
+                this->m_root = node;
+            }
+            
+            SetNode* getRoot() const override {
+                return this->m_root;
             }
 
             template <class S>

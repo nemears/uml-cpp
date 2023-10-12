@@ -158,6 +158,7 @@ namespace UML {
             while (succesor->m_left) {
                 succesor = succesor->m_left;
             }
+            succesor->m_parent->m_left = 0;
 
             // replace with succesor
             if (succesor->m_parent != node) {

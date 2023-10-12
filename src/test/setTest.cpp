@@ -86,6 +86,8 @@ void checkNode(SetNode* node) {
     // check children number of black
     if (node->m_left && node->m_right) {
         ASSERT_NO_FATAL_FAILURE(checkAllPathsAreEqual(node));
+        ASSERT_NO_FATAL_FAILURE(checkNode(node->m_left));
+        ASSERT_NO_FATAL_FAILURE(checkNode(node->m_right));
     } else if (node->m_left) {
         ASSERT_TRUE(node->m_left->m_color == RedOrBlack::RED);
     } else if (node->m_right) {
@@ -225,6 +227,83 @@ TEST_F(SetTest, RedBlackAlwaysLeft) {
     ASSERT_TRUE(g.m_parent == &a);
     ASSERT_TRUE(b.m_parent == &a);
     ASSERT_TRUE(h.m_parent == &g);
+}
+
+TEST_F(SetTest, addAndRemoveALotOfElements) {
+    size_t numElements = 100;
+    Manager<> m;
+    TestSet set;
+    PackagePtr rootPckg = m.create<Package>();
+    SetNode root;
+    root.m_ptr = rootPckg;
+    root.set = &set;
+    set.setRoot(&root);
+    std::vector<SetNode*> nodes;
+    for (size_t i = 0; i < numElements; i++) {
+        PackagePtr pckg = m.create<Package>();
+        SetNode* node = new SetNode;
+        node->m_ptr = pckg;
+        node->set = &set;
+        insert(set.getRoot(), node);
+        ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
+        nodes.push_back(node);
+    }
+    // remove some elements, from front
+    // 1
+    deleteFromTree(nodes[0]);
+    nodes.erase(nodes.begin());
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
+    // 2
+    deleteFromTree(nodes[0]);
+    nodes.erase(nodes.begin());
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
+    // 3
+    deleteFromTree(nodes[0]);
+    nodes.erase(nodes.begin());
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
+    // 4
+    deleteFromTree(nodes[0]);
+    nodes.erase(nodes.begin());
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
+
+    // 5
+    deleteFromTree(nodes[0]);
+    nodes.erase(nodes.begin());
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
+
+    // remove some from the end
+    // 1
+    deleteFromTree(nodes.back());
+    nodes.erase(--nodes.end());
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
+
+    // 2
+    deleteFromTree(nodes.back());
+    nodes.erase(--nodes.end());
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
+
+    // 3
+    deleteFromTree(nodes.back());
+    nodes.erase(--nodes.end());
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
+
+    // 4
+    deleteFromTree(nodes.back());
+    nodes.erase(--nodes.end());
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
+
+    // 5
+    deleteFromTree(nodes.back());
+    nodes.erase(--nodes.end());
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
+
+    // delete from middle
+    // TODO
+
+    // erase nodes from memory
+    for (auto node: nodes) {
+        delete node;
+    }
 }
 
 

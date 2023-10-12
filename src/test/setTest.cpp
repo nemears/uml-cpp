@@ -48,6 +48,56 @@ class TestSet : public AbstractSet {
         }
 };
 
+size_t getNumberOfBlackToLeafNodes(SetNode* node) {
+    if (!node) {
+        return 0;
+    }
+    size_t ret = 0;
+    SetNode* currNode = node;
+    do {
+        if (currNode->m_color == RedOrBlack::BLACK) {
+            ret++;
+        }
+    } while (currNode->m_right && (currNode = currNode->m_left));
+    return ret;
+}
+
+void checkAllPathsAreEqual(SetNode* node) {
+    // traverse inorder
+    if (node->m_left) {
+        ASSERT_NO_FATAL_FAILURE(checkAllPathsAreEqual(node->m_left));
+    }
+    if (node->m_right) {
+        ASSERT_NO_FATAL_FAILURE(checkAllPathsAreEqual(node->m_right));
+    }
+    ASSERT_EQ(getNumberOfBlackToLeafNodes(node->m_left), getNumberOfBlackToLeafNodes(node->m_right));
+}
+
+void checkNode(SetNode* node) {
+    if (node->m_color == RedOrBlack::RED) {
+        ASSERT_TRUE((node->m_left && node->m_right) || (!node->m_right && !node->m_left));
+        if (node->m_left) {
+            ASSERT_TRUE(node->m_left->m_color == RedOrBlack::BLACK);
+        }
+        if (node->m_right) {
+            ASSERT_TRUE(node->m_right->m_color == RedOrBlack::BLACK);
+        }
+    }
+    // check children number of black
+    if (node->m_left && node->m_right) {
+        ASSERT_NO_FATAL_FAILURE(checkAllPathsAreEqual(node));
+    } else if (node->m_left) {
+        ASSERT_TRUE(node->m_left->m_color == RedOrBlack::RED);
+    } else if (node->m_right) {
+        ASSERT_TRUE(node->m_right->m_color == RedOrBlack::RED);
+    }
+}
+
+void isValidRedBlackTree(SetNode* root) {
+    ASSERT_TRUE(root->m_color == RedOrBlack::BLACK);
+    ASSERT_NO_FATAL_FAILURE(checkNode(root));
+}
+
 TEST_F(SetTest, RedBlackAlwaysLeft) {
     Manager<> m;
     TestSet set;
@@ -61,7 +111,9 @@ TEST_F(SetTest, RedBlackAlwaysLeft) {
     b.m_ptr = pckgB;
     b.set = &set;
     set.setRoot(&a);
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(&a));
     insert(&a, &b);
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(&a));
     ASSERT_TRUE(a.m_left == &b);
     ASSERT_TRUE(set.getRoot() == &a);
     ASSERT_TRUE(a.m_parent == 0);
@@ -71,6 +123,7 @@ TEST_F(SetTest, RedBlackAlwaysLeft) {
     c.m_ptr = pckgC;
     c.set = &set;
     insert(&a, &c);
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(&a));
     ASSERT_TRUE(a.m_right == &b);
     ASSERT_TRUE(a.m_left == &c);
     ASSERT_TRUE(set.getRoot() == &a);
@@ -83,6 +136,7 @@ TEST_F(SetTest, RedBlackAlwaysLeft) {
     d.m_ptr = pckgD;
     d.set = &set;
     insert(&a, &d);
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(&a));
     ASSERT_TRUE(a.m_right == &b);
     ASSERT_TRUE(a.m_left == &c);
     ASSERT_TRUE(c.m_left == &d);
@@ -97,6 +151,7 @@ TEST_F(SetTest, RedBlackAlwaysLeft) {
     e.m_ptr = pckgE;
     e.set = &set;
     insert(&a, &e);
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(&a));
     ASSERT_TRUE(a.m_right == &b);
     ASSERT_TRUE(a.m_left == &c);
     ASSERT_TRUE(c.m_right == &d);
@@ -113,6 +168,7 @@ TEST_F(SetTest, RedBlackAlwaysLeft) {
     f.m_ptr = pckgF;
     f.set = &set;
     insert(&a, &f);
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(&a));
     ASSERT_TRUE(a.m_right == &b);
     ASSERT_TRUE(a.m_left == &c);
     ASSERT_TRUE(c.m_right == &d);
@@ -131,6 +187,7 @@ TEST_F(SetTest, RedBlackAlwaysLeft) {
     g.m_ptr = pckgG;
     g.set = &set;
     insert(&a, &g);
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(&a));
     ASSERT_TRUE(a.m_right == &b);
     ASSERT_TRUE(a.m_left == &c);
     ASSERT_TRUE(c.m_right == &d);
@@ -151,6 +208,7 @@ TEST_F(SetTest, RedBlackAlwaysLeft) {
     h.m_ptr = pckgH;
     h.set = &set;
     insert(&a, &h);
+    ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(&d));
     ASSERT_TRUE(set.getRoot() == &d);
     ASSERT_TRUE(d.m_parent == 0);
     ASSERT_TRUE(d.m_left == &c);

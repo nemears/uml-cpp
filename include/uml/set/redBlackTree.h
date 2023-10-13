@@ -6,21 +6,22 @@
 namespace UML {
 
     void insertBST(SetNode* parent, SetNode* node) {
-        if (!parent->m_left) {
-            parent->m_left = node;
-            node->m_parent = parent;
-        } else if (!parent->m_right) {
-            if (node->m_ptr.id() < parent->m_left->m_ptr.id()) {
-                parent->m_right = parent->m_left;
+        if (parent->m_ptr.id() > node->m_ptr.id()) {
+            SetNode* nextParent = parent->m_left;
+            if (!nextParent) {
                 parent->m_left = node;
+                node->m_parent = parent;
             } else {
-                parent->m_right = node;
+                insertBST(nextParent, node);
             }
-            node->m_parent = parent;
-        } else if (parent->m_left->m_ptr.id() > node->m_ptr.id()) {
-            insertBST(parent->m_left, node);
         } else {
-            insertBST(parent->m_right, node);
+            SetNode* nextParent = parent->m_right;
+            if (!nextParent) {
+                parent->m_right = node;
+                node->m_parent = parent;
+            } else {
+                insertBST(nextParent, node);
+            }
         }
     }
 
@@ -37,7 +38,9 @@ namespace UML {
         rightNode->m_left = node;
         rightNode->m_parent = node->m_parent;
         node->m_parent = rightNode;
-        node->m_right->m_parent = node;
+        if (node->m_right) {
+            node->m_right->m_parent = node;
+        }
         if (!is_root(node, set)) {
             if (nodeIsLeft) {
                 rightNode->m_parent->m_left = rightNode;
@@ -56,7 +59,9 @@ namespace UML {
         leftNode->m_right = node;
         leftNode->m_parent = node->m_parent;
         node->m_parent = leftNode;
-        node->m_left->m_parent = node;
+        if (node->m_left) {
+            node->m_left->m_parent = node;
+        }
         if (!is_root(node, set)) {
             if (nodeIsLeft) {
                 leftNode->m_parent->m_left = leftNode;
@@ -154,21 +159,23 @@ namespace UML {
             }
         } else if (node->m_left && node->m_right) {
             // find successor
-            SetNode* succesor = node->m_left;
-            while (succesor->m_left) {
-                succesor = succesor->m_left;
+            SetNode* succesor = node->m_right;
+            while (succesor->m_right) {
+                succesor = succesor->m_right;
             }
-            succesor->m_parent->m_left = 0;
+            succesor->m_parent->m_right = 0;
 
             // replace with succesor
             if (succesor->m_parent != node) {
-                shiftNodes(succesor, succesor->m_right, set);
-                succesor->m_right = node->m_right;
-                succesor->m_right->m_parent = succesor;
+                shiftNodes(succesor, succesor->m_left, set);
+                succesor->m_left = node->m_left;
+                succesor->m_left->m_parent = succesor;
             }
             shiftNodes(node, succesor, set);
-            succesor->m_left = node->m_left;
-            succesor->m_left->m_parent = succesor;
+            succesor->m_right = node->m_right;
+            if (succesor->m_right) {
+                succesor->m_right->m_parent = succesor;
+            }
 
             // repaint succesor to maintain balance of red and black
             succesor->m_color = node->m_color;

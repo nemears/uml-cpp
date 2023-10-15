@@ -41,6 +41,9 @@ class TestSet : public AbstractSet {
         void remove(ID id) override {}
     public:
         void setRoot(SetNode* node) {
+            if (m_root && node) {
+                node->m_parent = this->m_root->m_parent;
+            }
             m_root = node;
         }
         SetNode* getRoot() const {
@@ -58,7 +61,14 @@ size_t getNumberOfBlackToLeafNodes(SetNode* node) {
         if (currNode->m_color == RedOrBlack::BLACK) {
             ret++;
         }
-    } while (currNode->m_right && (currNode = currNode->m_left));
+        if (currNode->m_left) {
+            currNode = currNode->m_left;
+        } else if (currNode->m_right) {
+            currNode = currNode->m_right;
+        } else {
+            currNode = 0;
+        }
+    } while (currNode);
     return ret;
 }
 
@@ -227,12 +237,12 @@ TEST_F(SetTest, addAndRemoveALotOfElements) {
     nodes.erase(--nodes.end());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
-    // delete from middle
-    // TODO
-
-    // erase nodes from memory
-    for (auto node: nodes) {
-        delete node;
+    std::vector<SetNode*>::iterator nodeIt = nodes.end();
+    --nodeIt;
+    while (nodeIt != nodes.begin()) {
+        deleteFromTree(*nodeIt);
+        --nodeIt;
+        ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     }
 }
 

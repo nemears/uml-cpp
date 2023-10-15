@@ -145,11 +145,12 @@ namespace UML {
 
     void deleteFromTree(SetNode* node) {
         AbstractSet* set = node->set;
-        SetNode* nodeToDelete = node;        
+        SetNode* nodeToDelete = node;
+        bool notSwapped = true;
         if (set->getRoot() == node && !node->m_left && !node->m_right) {
             // node is root and has no children
             set->setRoot(0);
-        } if (node->m_color == RedOrBlack::RED && !node->m_left && !node->m_right) {
+        } else if (node->m_color == RedOrBlack::RED && !node->m_left && !node->m_right) {
             // node is red and has no children
             // simply just remove it
             if (node->m_parent->m_left == node) {
@@ -158,27 +159,51 @@ namespace UML {
                 node->m_parent->m_right = 0;
             }
         } else if (node->m_left && node->m_right) {
-            // find successor
-            SetNode* succesor = node->m_right;
-            while (succesor->m_right) {
-                succesor = succesor->m_right;
-            }
-            succesor->m_parent->m_right = 0;
-
-            // replace with succesor
-            if (succesor->m_parent != node) {
-                shiftNodes(succesor, succesor->m_left, set);
-                succesor->m_left = node->m_left;
-                succesor->m_left->m_parent = succesor;
-            }
-            shiftNodes(node, succesor, set);
-            succesor->m_right = node->m_right;
-            if (succesor->m_right) {
-                succesor->m_right->m_parent = succesor;
+            //find successor
+            SetNode* succesor = 0;
+            if (node->m_right) {
+                succesor = node->m_right;
+                while (succesor->m_left) {
+                    succesor = succesor->m_left;
+                }
+            } else {
+                succesor = node->m_parent;
+                SetNode* currNode = 0;
+                while (succesor && set->getRoot() != succesor && currNode == succesor->m_right) {
+                    currNode = succesor;
+                    succesor = succesor->m_parent;
+                }
             }
 
-            // repaint succesor to maintain balance of red and black
-            succesor->m_color = node->m_color;
+            // swap values with successor and delete successor
+            ElementPtr val = node->m_ptr;
+            RedOrBlack color = node->m_color;
+            node->m_ptr = succesor->m_ptr;
+            node->m_color = succesor->m_color;
+            succesor->m_ptr = val;
+            succesor->m_color = color;
+
+            if (succesor->set != node->set) {
+                throw SetStateException("deleting node and swaping values, nodes do not have same set! contact dev!");
+            }
+            notSwapped = false;
+            deleteFromTree(succesor);
+            
+            // // replace with succesor
+            // if (succesor->m_parent != node) {
+            //     // not direct child, requires extra shifting
+            //     shiftNodes(succesor, succesor->m_right, set);
+            //     succesor->m_right = node->m_right;
+            //     succesor->m_right->m_parent = succesor;
+            // }
+            // shiftNodes(node, succesor, set);
+            // succesor->m_left = node->m_left;
+            // if (succesor->m_left) {
+            //     succesor->m_left->m_parent = succesor;
+            // }
+
+            // // repaint succesor to maintain balance of red and black
+            // succesor->m_color = node->m_color;
         } else if (node->m_left) {
             if (node->m_left->m_color == RedOrBlack::RED) {
                 // replace it with it's child and paint it black
@@ -186,10 +211,13 @@ namespace UML {
                 if (set->getRoot() == node) {
                     // set root
                     set->setRoot(node->m_left);
-                } else if (node->m_parent->m_left == node) {
-                    node->m_parent->m_left = node->m_left;
                 } else {
-                    node->m_parent->m_right = node->m_left;
+                    if (node->m_parent->m_left == node) {
+                        node->m_parent->m_left = node->m_left;
+                    } else {
+                        node->m_parent->m_right = node->m_left;
+                    }
+                    node->m_left->m_parent = node->m_parent;
                 }
             } else {
                 // this should be impossible to get to
@@ -202,10 +230,13 @@ namespace UML {
                 if (set->getRoot() == node) {
                     // set root
                     set->setRoot(node->m_right);
-                } else if (node->m_parent->m_left == node) {
-                    node->m_parent->m_left = node->m_right;
                 } else {
-                    node->m_parent->m_right = node->m_right;
+                    if (node->m_parent->m_left == node) {
+                        node->m_parent->m_left = node->m_right;
+                    } else {
+                        node->m_parent->m_right = node->m_right;
+                    }
+                    node->m_right->m_parent = node->m_parent;
                 }
             } else {
                 // this should be impossible to get to
@@ -222,15 +253,19 @@ namespace UML {
                 bool isLeft = true;
                 if (node->m_parent->m_left == node) {
                     sibling = node->m_parent->m_right;
-                    closeCousin = sibling->m_left;
-                    distantCousin = sibling->m_right;
+                    if (sibling) {
+                        closeCousin = sibling->m_left;
+                        distantCousin = sibling->m_right;
+                    }
                 } else {
                     sibling = node->m_parent->m_left;
-                    closeCousin = sibling->m_right;
-                    distantCousin = sibling->m_left;
+                    if (sibling) {
+                        closeCousin = sibling->m_right;
+                        distantCousin = sibling->m_left;
+                    }
                     isLeft = false;
                 }
-                if (sibling->m_color == RedOrBlack::RED) {
+                if (sibling && sibling->m_color == RedOrBlack::RED) {
                     // case d3
                     if (isLeft) {
                         left_rotate(node->m_parent, set);
@@ -292,7 +327,9 @@ namespace UML {
                     break;
                 }
                 // case d2
-                sibling->m_color = RedOrBlack::RED;
+                if (sibling) {
+                    sibling->m_color = RedOrBlack::RED;
+                }
                 node = node->m_parent;
             }
 
@@ -310,6 +347,8 @@ namespace UML {
         }
 
         // delete the node from memory
-        delete nodeToDelete;
+        if (notSwapped) {
+            delete nodeToDelete;
+        }
     }
 }

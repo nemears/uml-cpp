@@ -1356,6 +1356,9 @@ namespace UML {
             // root
             void setRoot(SetNode* node) override {
                 // TODO, balance with subsets and stuff maybe
+                if (this->m_root && node) {
+                    node->m_parent = this->m_root->m_parent;
+                }
                 this->m_root = node;
             }
             

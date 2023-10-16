@@ -1,6 +1,6 @@
 #pragma once
 
-#include "abstractSet.h"
+#include "privateSet.h"
 
 namespace UML {
 

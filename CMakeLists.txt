@@ -100,7 +100,7 @@ endif()
 add_library(uml STATIC 
 
     # core
-    src/uml/id.cpp
+    src/uml/id.cpp src/uml/set/setNode.cpp
 
     # managers
     src/uml/managers/abstractManager.cpp src/uml/managers/managerNode.cpp

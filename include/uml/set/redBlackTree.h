@@ -5,6 +5,17 @@
 
 namespace UML {
 
+    SetNode* searchBST(SetNode* root, ID key) {
+        if (!root || root->m_ptr.id() == key) {
+            return root;
+        }
+        if (key < root->m_ptr.id()) {
+            return searchBST(root->m_left, key);
+        } else {
+            return searchBST(root->m_right, key);
+        }
+    }
+
     void insertBST(SetNode* parent, SetNode* node) {
         if (parent->m_ptr.id() > node->m_ptr.id()) {
             SetNode* nextParent = parent->m_left;
@@ -177,33 +188,18 @@ namespace UML {
 
             // swap values with successor and delete successor
             ElementPtr val = node->m_ptr;
-            RedOrBlack color = node->m_color;
+            // RedOrBlack color = node->m_color;
             node->m_ptr = succesor->m_ptr;
-            node->m_color = succesor->m_color;
+            // node->m_color = succesor->m_color;
             succesor->m_ptr = val;
-            succesor->m_color = color;
+            // succesor->m_color = color;
+            // TODO function to swap orderedNode data etc.
 
             if (succesor->set != node->set) {
                 throw SetStateException("deleting node and swaping values, nodes do not have same set! contact dev!");
             }
             notSwapped = false;
             deleteFromTree(succesor);
-            
-            // // replace with succesor
-            // if (succesor->m_parent != node) {
-            //     // not direct child, requires extra shifting
-            //     shiftNodes(succesor, succesor->m_right, set);
-            //     succesor->m_right = node->m_right;
-            //     succesor->m_right->m_parent = succesor;
-            // }
-            // shiftNodes(node, succesor, set);
-            // succesor->m_left = node->m_left;
-            // if (succesor->m_left) {
-            //     succesor->m_left->m_parent = succesor;
-            // }
-
-            // // repaint succesor to maintain balance of red and black
-            // succesor->m_color = node->m_color;
         } else if (node->m_left) {
             if (node->m_left->m_color == RedOrBlack::RED) {
                 // replace it with it's child and paint it black
@@ -244,35 +240,52 @@ namespace UML {
             }
         } else if (node->m_color == RedOrBlack::BLACK && !node->m_left && !node->m_right) {
             // black and no children
+            bool isLeft = nodeToDelete->m_parent->m_left == nodeToDelete;
+            SetNode* parent = node->m_parent;
+            SetNode* sibling = isLeft ? parent->m_right : parent->m_left;
+            SetNode* closeCousin = isLeft ? sibling->m_left : sibling->m_right;
+            SetNode* distantCousin = isLeft ? sibling->m_right : sibling->m_left;
+
+            // remove from tree
+            if (parent) {
+                if (isLeft) {
+                    parent->m_left = 0;
+                } else {
+                    parent->m_right = 0;
+                }
+            }
+            node = 0;
+
             // balance
             // case d1 covered by this loop condition
             while (!is_root(node, set)) {
-                SetNode* sibling = 0;
-                SetNode* closeCousin = 0;
-                SetNode* distantCousin = 0;
-                bool isLeft = true;
-                if (node->m_parent->m_left == node) {
-                    sibling = node->m_parent->m_right;
-                    if (sibling) {
+                if (node) {
+                    isLeft = true;
+                    if (parent->m_left == node) {
+                        sibling = parent->m_right;
+                        if (!sibling) {
+                            throw SetStateException("node deletion special case does not have sibling! Contact dev!");
+                        }
                         closeCousin = sibling->m_left;
                         distantCousin = sibling->m_right;
-                    }
-                } else {
-                    sibling = node->m_parent->m_left;
-                    if (sibling) {
+                    } else {
+                        sibling = parent->m_left;
+                        if (!sibling) {
+                            throw SetStateException("node deletion special case does not have sibling! Contact dev!");
+                        }
                         closeCousin = sibling->m_right;
                         distantCousin = sibling->m_left;
+                        isLeft = false;
                     }
-                    isLeft = false;
                 }
-                if (sibling && sibling->m_color == RedOrBlack::RED) {
+                if (sibling->m_color == RedOrBlack::RED) {
                     // case d3
                     if (isLeft) {
-                        left_rotate(node->m_parent, set);
+                        left_rotate(parent, set);
                     } else {
-                        right_rotate(node->m_parent, set);
+                        right_rotate(parent, set);
                     }
-                    node->m_parent->m_color = RedOrBlack::RED;
+                    parent->m_color = RedOrBlack::RED;
                     sibling->m_color = RedOrBlack::BLACK;
                     sibling = closeCousin;
                     if (isLeft) {
@@ -282,7 +295,7 @@ namespace UML {
                     }
                     if (distantCousin && distantCousin->m_color == RedOrBlack::RED) {
                         // case d6
-                        deleteCaseSix(node->m_parent, sibling, distantCousin, set, isLeft);
+                        deleteCaseSix(parent, sibling, distantCousin, set, isLeft);
                         break;
                     }
                     if (isLeft) {
@@ -301,13 +314,15 @@ namespace UML {
                         closeCousin->m_color = RedOrBlack::BLACK;
                         distantCousin = sibling;
                         sibling = closeCousin;
+                        deleteCaseSix(parent, sibling, distantCousin, set, isLeft);
+                        break;
                     }
                 }
                 if (distantCousin && distantCousin->m_color == RedOrBlack::RED) {
                     // case d6
-                    deleteCaseSix(node->m_parent, sibling, distantCousin, set, isLeft);
+                    deleteCaseSix(parent, sibling, distantCousin, set, isLeft);
                     break;
-                }
+                } 
                 if (closeCousin && closeCousin->m_color == RedOrBlack::RED) {
                     // case d5
                     if (isLeft) {
@@ -319,27 +334,19 @@ namespace UML {
                     closeCousin->m_color = RedOrBlack::BLACK;
                     distantCousin = sibling;
                     sibling = closeCousin;
-                }
-                if (node->m_parent->m_color == RedOrBlack::RED) {
+                    deleteCaseSix(parent, sibling, distantCousin, set, isLeft);
+                    break;
+                } 
+                if (parent->m_color == RedOrBlack::RED) {
                     // case d4
                     sibling->m_color = RedOrBlack::RED;
-                    node->m_parent->m_color = RedOrBlack::BLACK;
+                    parent->m_color = RedOrBlack::BLACK;
                     break;
                 }
                 // case d2
-                if (sibling) {
-                    sibling->m_color = RedOrBlack::RED;
-                }
-                node = node->m_parent;
-            }
-
-            // remove from tree
-            if (nodeToDelete->m_parent) {
-                if (nodeToDelete->m_parent->m_left == nodeToDelete) {
-                    nodeToDelete->m_parent->m_left = 0;
-                } else {
-                    nodeToDelete->m_parent->m_right = 0;
-                }
+                sibling->m_color = RedOrBlack::RED;
+                node = parent;
+                parent = node->m_parent;
             }
         } else {
             // error, should be impossible

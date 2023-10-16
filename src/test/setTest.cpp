@@ -92,6 +92,9 @@ void checkNode(SetNode* node) {
         if (node->m_right) {
             ASSERT_TRUE(node->m_right->m_color == RedOrBlack::BLACK);
         }
+        if (node->m_parent) {
+            ASSERT_TRUE(node->m_parent->m_color == RedOrBlack::BLACK);
+        }
     }
     // check children number of black
     if (node->m_left && node->m_right) {
@@ -100,8 +103,10 @@ void checkNode(SetNode* node) {
         ASSERT_NO_FATAL_FAILURE(checkNode(node->m_right));
     } else if (node->m_left) {
         ASSERT_TRUE(node->m_left->m_color == RedOrBlack::RED);
+        ASSERT_NO_FATAL_FAILURE(checkNode(node->m_left));
     } else if (node->m_right) {
         ASSERT_TRUE(node->m_right->m_color == RedOrBlack::RED);
+        ASSERT_NO_FATAL_FAILURE(checkNode(node->m_right));
     }
 }
 
@@ -174,11 +179,11 @@ TEST_F(SetTest, addAndRemoveALotOfElements) {
     Manager<> m;
     TestSet set;
     PackagePtr rootPckg = m.create<Package>();
-    SetNode root;
-    root.m_ptr = rootPckg;
-    root.set = &set;
-    set.setRoot(&root);
-    std::vector<SetNode*> nodes;
+    SetNode* root = new SetNode;
+    root->m_ptr = rootPckg;
+    root->set = &set;
+    set.setRoot(root);
+    std::vector<ID> nodes;
     for (size_t i = 0; i < numElements; i++) {
         PackagePtr pckg = m.create<Package>();
         SetNode* node = new SetNode;
@@ -186,64 +191,66 @@ TEST_F(SetTest, addAndRemoveALotOfElements) {
         node->set = &set;
         insert(set.getRoot(), node);
         ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
-        nodes.push_back(node);
+        nodes.push_back(pckg.id());
     }
     // remove some elements, from front
     // 1
-    deleteFromTree(nodes[0]);
+    deleteFromTree(searchBST(set.getRoot(), nodes[0]));
     nodes.erase(nodes.begin());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     // 2
-    deleteFromTree(nodes[0]);
+    deleteFromTree(searchBST(set.getRoot(), nodes[0]));
     nodes.erase(nodes.begin());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     // 3
-    deleteFromTree(nodes[0]);
+    deleteFromTree(searchBST(set.getRoot(), nodes[0]));
     nodes.erase(nodes.begin());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     // 4
-    deleteFromTree(nodes[0]);
+    deleteFromTree(searchBST(set.getRoot(), nodes[0]));
     nodes.erase(nodes.begin());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
     // 5
-    deleteFromTree(nodes[0]);
+    deleteFromTree(searchBST(set.getRoot(), nodes[0]));
     nodes.erase(nodes.begin());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
     // remove some from the end
     // 1
-    deleteFromTree(nodes.back());
+    deleteFromTree(searchBST(set.getRoot(), nodes.back()));
     nodes.erase(--nodes.end());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
     // 2
-    deleteFromTree(nodes.back());
+    deleteFromTree(searchBST(set.getRoot(), nodes.back()));
     nodes.erase(--nodes.end());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
     // 3
-    deleteFromTree(nodes.back());
+    deleteFromTree(searchBST(set.getRoot(), nodes.back()));
     nodes.erase(--nodes.end());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
     // 4
-    deleteFromTree(nodes.back());
+    deleteFromTree(searchBST(set.getRoot(), nodes.back()));
     nodes.erase(--nodes.end());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
     // 5
-    deleteFromTree(nodes.back());
+    deleteFromTree(searchBST(set.getRoot(), nodes.back()));
     nodes.erase(--nodes.end());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
-    std::vector<SetNode*>::iterator nodeIt = nodes.end();
-    --nodeIt;
-    while (nodeIt != nodes.begin()) {
-        deleteFromTree(*nodeIt);
+    std::vector<ID>::iterator nodeIt = nodes.end();
+    do {
         --nodeIt;
+        deleteFromTree(searchBST(set.getRoot(), *nodeIt));
         ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
-    }
+    } while (nodeIt != nodes.begin());
+    ASSERT_TRUE(set.getRoot() == root);
+    deleteFromTree(set.getRoot());
+    ASSERT_TRUE(set.getRoot() == 0);
 }
 
 

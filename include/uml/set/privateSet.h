@@ -121,79 +121,146 @@ namespace UML {
                 m_opposite->removeOpposite(el.as<T>());
             }
 
-            void innerAdd(T& el) override {
-                // add
-                SetNode* node = this->createNode(el);
-                
-                std::unordered_set<AbstractSet*> allSuperSetsAndMe = node->set->getAllSuperSets();
-                allSuperSetsAndMe.insert(node->set);
-                for (auto redefinedSet : node->set->m_redefines) {
-                    allSuperSetsAndMe.insert(redefinedSet);
-                }
-                std::unordered_set<AbstractSet*> allSubSets = node->set->getAllSubSets();
+            void createDividerNode(SetNode* node, SetNode* existingRoot, AbstractSet* set) {
+                SetNode* dividerNode = new SetNode;
+                SetNode* oldRoot = set->m_root;
 
-                node->set->adjustSuperSets(node, allSuperSetsAndMe);
+                // TODO find minimum set with both oldRoot's set and new node's set
+                // TODO find parent for divider node
 
-                std::unordered_map<AbstractSet*, bool> visited;
-                for (auto set : allSuperSetsAndMe) {
-                    visited[set] = false;
-                }
-
-                // start from proper set
-                AbstractSet* rootSet = node->set;
-                if (!rootSet->m_rootRedefinedSet) {
-                    for (auto redefinedSet : rootSet->m_redefines) {
-                        if (redefinedSet->m_rootRedefinedSet) {
-                            rootSet = redefinedSet;
-                            break;
-                        }
-                    }
-                }
-                innerAddDFS(node, rootSet, allSuperSetsAndMe, allSubSets, visited);
-
-                for (auto superSet : allSuperSetsAndMe) {
-                    superSet->m_size++;
-                }
-
-                for (auto superSet : allSuperSetsAndMe) {
-                    superSet->runAddPolicy(el);
+                if (node->m_ptr.id() < existingRoot->m_ptr.id()) {
+                    dividerNode->m_left = node;
+                    dividerNode->m_right = oldRoot;
+                } else {
+                    dividerNode->m_left = oldRoot;
+                    dividerNode->m_right = node;
                 }
             }
 
-            void innerAdd(ID id) {
-                // choose appropriate set to use to instantiate node
-                SetNode* node = createNode(id);
-                
-                std::unordered_set<AbstractSet*> allSuperSetsAndMe = node->set->getAllSuperSets();
-                allSuperSetsAndMe.insert(node->set);
-                for (auto redefinedSet : node->set->m_redefines) {
-                    allSuperSetsAndMe.insert(redefinedSet);
-                }
-                std::unordered_set<AbstractSet*> allSubSets = node->set->getAllSubSets();
+            void addNodeToSet(SetNode* node) {
+                // we want to place this in all of our root super sets
+                // climb up graph dfs to find root super sets
+                std::list<AbstractSet*> stack;
+                stack.push_front(this);
+                std::unordered_set<AbstractSet*> visited;
+                bool treeAlreadyCreated = false;
+                do {
+                    // take set from top of stack
+                    AbstractSet* set = stack.front();
+                    stack.pop_front();
 
-                node->set->adjustSuperSets(node, allSuperSetsAndMe);
+                    // skip sets allready visited
+                    if (visited.count(set)) {
+                        // TODO check that we need this, place a breakpoint here and run all tests
+                        continue;
+                    } else {
+                        visited.insert(set);
+                    }
 
-                std::unordered_map<AbstractSet*, bool> visited;
-                for (auto set : allSuperSetsAndMe) {
-                    visited[set] = false;
-                }
-
-                // start from proper set
-                AbstractSet* rootSet = node->set;
-                if (!rootSet->m_rootRedefinedSet) {
-                    for (auto redefinedSet : rootSet->m_redefines) {
-                        if (redefinedSet->m_rootRedefinedSet) {
-                            rootSet = redefinedSet;
-                            break;
+                    if (!set->m_superSets.empty()) {
+                        // add supersets to stack
+                        for (auto superSet : set->m_superSets) {
+                            stack.push_front(superSet);
+                        }
+                    } else if (!treeAlreadyCreated) {
+                        // add node to set from top
+                        for (auto redefinedSet : set->m_redefines) {
+                            if (redefinedSet->m_rootRedefinedSet) {
+                                set = redefinedSet;
+                            }
+                        }
+                        if (set->m_root) {
+                            SetNode* currNode = set->m_root;
+                            while (currNode) {
+                                if (!currNode->m_ptr) {
+                                    // this is a divider node, see which side our node belongs
+                                    std::list<AbstractSet*> dividerStack;
+                                    dividerStack.push_front(this);
+                                    bool createDividerNodeFlag = false;
+                                    do {
+                                        AbstractSet* currSet = dividerStack.front();
+                                        dividerStack.pop_front();
+                                        if (currSet == currNode->m_left->set) {
+                                            currNode = currNode->m_left;
+                                            break;
+                                        } else if (currSet == currNode->m_right->set) {
+                                            currNode = currNode->m_right;
+                                            break;
+                                        }
+                                        for (auto superSet : currSet->m_superSets) {
+                                            dividerStack.push_front(superSet);
+                                        }
+                                        if (dividerStack.empty()) {
+                                            // neither side is appropriate, we need a new divider node
+                                            createDividerNodeFlag = true;
+                                            createDividerNode(node, currNode, set);
+                                        }
+                                    } while (!dividerStack.empty());
+                                    if (createDividerNodeFlag) {
+                                        break;
+                                    }
+                                } else {
+                                    // not a divider node
+                                    if (currNode->set == node->set) {
+                                        currNode->insert(node);
+                                        // because there is already a node of this set, we can skip adding to other trees because this set's root has already been established
+                                        treeAlreadyCreated = true;
+                                    } else {
+                                        // there is data that belongs in a superset to this set but it is not divided
+                                        createDividerNode(node, currNode, set);
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
-                }
 
-                innerAddDFS(node, rootSet, allSuperSetsAndMe, allSubSets, visited);
+                    // handle redefines
+                    for (auto redefinedSet : set->m_redefines) {
+                        // set root
+                        if (!redefinedSet->m_root) {
+                            redefinedSet->m_root = node;
+                            if (set->m_root) {
+                                // remove this after we are sure it works lol
+                                throw SetStateException("bad state for set with redefines, our set has root already but redefined does not. Please contact the developer!");
+                            }
+                        }
 
-                for (auto superSet : allSuperSetsAndMe) {
-                    superSet->m_size++;
-                }
+                        // increase size
+                        redefinedSet->m_size++;
+                    }
+
+                    if (!set->m_root) {
+                        // set is empty, set root
+                        set->m_root = node;
+                    }
+
+                    // increase size
+                    set->m_size++;
+                } while (!stack.empty());
+            }
+
+            void innerAdd(T& el) override {
+                SetNode* node = this->createNode(el);
+                addNodeToSet(node);
+
+                // run add policies bfs with queue
+                std::list<AbstractSet*> queue;
+                queue.push_back(this);
+                do {
+                    AbstractSet* set = queue.front();
+                    queue.pop_front();
+                    for (auto superSet : set->m_superSets) {
+                        queue.push_back(superSet);
+                    }
+                    set->runAddPolicy(el);
+                } while (!queue.empty());
+            }
+
+            void innerAdd(ID id) {
+                SetNode* node = createNode(id);
+                addNodeToSet(node);
+                // we are done, we can't run policies because we don't have both elements
             }
 
             /**

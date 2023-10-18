@@ -158,8 +158,6 @@ void SetNode::deleteCaseSix(SetNode* parent, SetNode* sibling, SetNode* distantC
 }
 
 SetNode::~SetNode() {
-    AbstractSet* set = set;
-    SetNode* nodeToDelete = this;
     bool notSwapped = true;
     do {
         if (set->getRoot() == this && !m_left && !m_right) {

@@ -365,3 +365,7 @@ SetNode::~SetNode() {
         }
     } while (!notSwapped);
 }
+
+ElementPtr SetNode::ptr() const {
+    return m_ptr;
+}

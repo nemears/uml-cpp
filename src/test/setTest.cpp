@@ -40,13 +40,13 @@ class TestSet : public AbstractSet {
         void innerRemove(ID id) override {}
         void remove(ID id) override {}
     public:
-        void setRoot(SetNode* node) {
+        void setRoot(SetNode* node) override {
             if (m_root && node) {
                 node->m_parent = this->m_root->m_parent;
             }
             m_root = node;
         }
-        SetNode* getRoot() const {
+        SetNode* getRoot() const override {
             return m_root;
         }
 };

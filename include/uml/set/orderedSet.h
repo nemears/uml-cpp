@@ -22,7 +22,20 @@ namespace UML {
             virtual void setBack(OrderedSetNode* back) = 0;
     };
 
+    class OrderedSetNodeAllocationPolicy;
+    template <class T>
+    class OrderedPtrSet;
+    template <class T>
+    class OrderedSetIterator; 
+
     struct OrderedSetNode : public SetNode {
+
+        friend class OrderedSetNodeAllocationPolicy;
+        template <class T>
+        friend class OrderedPtrSet;
+        template <class T>
+        friend class OrderedSetIterator;
+
         OrderedSetNode* m_prev = 0;
         OrderedSetNode* m_next = 0;
         virtual ~OrderedSetNode() {
@@ -100,10 +113,10 @@ namespace UML {
                 validSets = rhs.validSets;
             }
             T& operator*() {
-                return curr->m_ptr->as<T>();
+                return curr->ptr()->as<T>();
             }
             UmlPtr<T> operator->() {
-                return curr->m_ptr;
+                return curr->ptr();
             }
             OrderedSetIterator& operator++() {
                 do {
@@ -178,7 +191,7 @@ namespace UML {
                     throw SetStateException("Cannot get front element because set is empty!");
                 }
 
-                return curr->m_ptr.id();
+                return curr->ptr().id();
             }
             ID back() const {
                 SetNode* curr = m_me->getBack();
@@ -186,7 +199,7 @@ namespace UML {
                     throw SetStateException("Cannot get back element because set is empty!");
                 }
 
-                return curr->m_ptr.id();
+                return curr->ptr().id();
             }
     };
 
@@ -226,7 +239,7 @@ namespace UML {
                     throw SetStateException("Cannot get front element because set is empty!");
                 }
 
-                return curr->m_ptr;
+                return curr->ptr();
             }
             UmlPtr<T> back() const {
                 SetNode* curr = m_me->getBack();
@@ -234,7 +247,7 @@ namespace UML {
                     throw SetStateException("Cannot get back element because set is empty!");
                 }
 
-                return curr->m_ptr;
+                return curr->ptr();
             }
     };
 
@@ -390,14 +403,14 @@ namespace UML {
                 if (!this->m_first) {
                     throw SetStateException("front is null");
                 }
-                return this->m_first->m_ptr->template as<T>();
+                return this->m_first->ptr()->template as<T>();
             }
             T& back() override {
                 [[maybe_unused]] SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (!this->m_last) {
                     throw SetStateException("last is null");
                 }
-                return this->m_last->m_ptr->template as<T>();
+                return this->m_last->ptr()->template as<T>();
             }
             void add(UmlPtr<T> el) override {
                 add(*el);

@@ -80,6 +80,26 @@ namespace UML {
         protected:
             U& m_el;
             OppositeInterface<T>* m_opposite = new NoOpposite<T>();
+            
+            SetNode* search(ID id, SetNode* node) const {
+                if (!node) {
+                    return 0;
+                }
+
+                if (id == node->ptr().id()) {
+                    return node;
+                } else if (!node->ptr()) {
+                    SetNode* ret = search(id, node->m_left);
+                    if (ret) {
+                        return ret;
+                    }
+                    return search(id, node->m_right);
+                } else if (id < node->ptr().id()) {
+                    return search(id, node->m_left);
+                } else {
+                    return search(id, node->m_right);
+                }
+            }
 
             SetNode* search(std::string name, SetNode* node) const {
                 if (node->m_ptr && node->m_ptr->isSubClassOf(ElementType::NAMED_ELEMENT)) {
@@ -121,20 +141,114 @@ namespace UML {
                 m_opposite->removeOpposite(el.as<T>());
             }
 
-            void createDividerNode(SetNode* node, SetNode* existingRoot, AbstractSet* set) {
+            void createDividerNode(SetNode* node, SetNode* existingRoot, AbstractSet* rootSet) {
                 SetNode* dividerNode = new SetNode;
-                SetNode* oldRoot = set->m_root;
 
                 // TODO find minimum set with both oldRoot's set and new node's set
-                // TODO find parent for divider node
+                // travel bfs down the tree from the root set provided
+                std::list<AbstractSet*> queue;
+                queue.push_back(rootSet);
+                AbstractSet* candidate = 0;
+                do {
+                    AbstractSet* currSet = queue.front();
+                    queue.pop_front();
 
-                if (node->m_ptr.id() < existingRoot->m_ptr.id()) {
-                    dividerNode->m_left = node;
-                    dividerNode->m_right = oldRoot;
-                } else {
-                    dividerNode->m_left = oldRoot;
-                    dividerNode->m_right = node;
+                    // compare set to the node's set's supersets
+                    std::list<AbstractSet*> nodeStack;
+                    nodeStack.push_front(node->set);
+                    bool superSetOfNode = false;
+                    do {
+                        AbstractSet* currNodeSet = nodeStack.front();
+                        nodeStack.pop_front();
+                        if (currNodeSet == currSet) {
+                            superSetOfNode = true;
+                            break;
+                        }
+                        for (auto superset : currNodeSet->m_superSets) {
+                            nodeStack.push_front(superset);
+                        }
+                    } while (nodeStack.empty());
+
+                    // compare set to rootNode's set's supersets
+                    std::list<AbstractSet*> rootStack;
+                    rootStack.push_front(existingRoot->set);
+                    bool superSetOfRoot = false;
+                    do {
+                        AbstractSet* currRootSet = rootStack.front();
+                        rootStack.pop_front();
+
+                        if (currRootSet == currSet) {
+                            superSetOfRoot = true;
+                            break;
+                        }
+                        
+                        for (auto superset : currRootSet->m_superSets) {
+                            rootStack.push_front(superset);
+                        }
+                    } while (!rootStack.empty());
+
+                    if (superSetOfNode && superSetOfRoot) {
+                        // if both are good, we have a candidate
+                        candidate = currSet;
+
+                        // add children of candidates, only they can be candidates further down the tree
+                        for (auto subset : currSet->m_subSets) {
+                            queue.push_back(subset);
+                        }
+                    }
+                } while (!queue.empty());
+
+                if (!candidate) {
+                    throw SetStateException("could not find common set for divider node in set, please contact developer!");
                 }
+
+                dividerNode->set = candidate;
+
+                // rootNode has already been placed, adjust parents
+                SetNode* currNode = rootSet->m_root;
+                while (currNode) {
+
+                    if (currNode->m_left == existingRoot) {
+                        // currNode is parent of existing root in this tree,
+                        // replace m_left with dividerNode
+                        currNode->m_left = dividerNode;
+                        dividerNode->m_parent = currNode;
+                        dividerNode->m_left = existingRoot;
+                        dividerNode->m_right = node; 
+                        existingRoot->m_parent = dividerNode;
+                        node->m_parent = dividerNode;
+                        break;
+                    } else if (currNode->m_right == existingRoot) {
+                       // currNode is parent of existing root in this tree,
+                       // replace m_right with dividerNode 
+                       currNode->m_right = dividerNode;
+                       dividerNode->m_parent = currNode;
+                       dividerNode->m_right = existingRoot;
+                       dividerNode->m_left = node;
+                       existingRoot->m_parent = dividerNode;
+                       node->m_parent = dividerNode;
+                       break;
+                    }
+
+                    // check which side is a viable candidate
+                    std::list<AbstractSet*> stack;
+                    stack.push_front(existingRoot->set);
+                    do {
+                        AbstractSet* currSet = stack.front();
+                        stack.pop_front();
+                        if (currSet == currNode->m_left->set) {
+                            currNode = currNode->m_left;
+                            break;
+                        } else if (currSet == currNode->m_right->set) {
+                           currNode = currNode->m_right; 
+                           break;
+                        }
+                        for (auto superset : currSet->m_superSets) {
+                            stack.push_front(superset);
+                        }
+                    } while (!stack.empty()); 
+                }
+                
             }
 
             void addNodeToSet(SetNode* node) {

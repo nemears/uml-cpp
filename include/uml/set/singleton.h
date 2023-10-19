@@ -16,13 +16,13 @@ namespace UML {
 
         protected:
             void innerAdd(T& el) override {
-                if (this->m_root && el.getID() != this->m_root->ptr().id()) {
-                    [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->ptr());
-                    (*this->m_root->ptr()).m_node->removeReference(this->m_el);
-                    this->m_el.m_node->removeReference(*this->m_root->ptr());
-                    T& elToRemove = this->m_root->ptr()->template as<T>();
+                if (this->m_root && el.getID() != this->m_root->m_ptr.id()) {
+                    [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
+                    (*this->m_root->m_ptr).m_node->removeReference(this->m_el);
+                    this->m_el.m_node->removeReference(*this->m_root->m_ptr);
+                    T& elToRemove = this->m_root->m_ptr->template as<T>();
                     // remove
-                    this->innerRemove(this->m_root->ptr().id());
+                    this->innerRemove(this->m_root->m_ptr.id());
                     this->handleOppositeRemove(elToRemove);
                 }
                 // add
@@ -31,15 +31,15 @@ namespace UML {
                 this->m_el.m_node->setReference(el);
             }
             void innerAdd(ID id) {
-               if (this->m_root && (id == ID::nullID() || id != this->m_root->ptr().id())) {
-                    [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->ptr());
+               if (this->m_root && (id == ID::nullID() || id != this->m_root->m_ptr.id())) {
+                    [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
 
-                    (*this->m_root->ptr()).m_node->removeReference(this->m_el);
-                    this->m_el.m_node->removeReference(*this->m_root->ptr());
+                    (*this->m_root->m_ptr).m_node->removeReference(this->m_el);
+                    this->m_el.m_node->removeReference(*this->m_root->m_ptr);
 
-                    T& elToRemove = this->m_root->ptr()->template as<T>();
+                    T& elToRemove = this->m_root->m_ptr->template as<T>();
                     // remove
-                    this->innerRemove(this->m_root->ptr().id());
+                    this->innerRemove(this->m_root->m_ptr.id());
                     // handle opposites
                     this->handleOppositeRemove(elToRemove);
                 }
@@ -56,23 +56,23 @@ namespace UML {
             UmlPtr<T> get() const {
                 [[maybe_unused]] SetLock myLck = this->m_el.m_manager->lockEl(this->m_el);
                 if (this->m_root) {
-                    return this->m_root->ptr();
+                    return this->m_root->m_ptr;
                 }
                 return UmlPtr<T>();
             }
             void set(T* el) {
                 [[maybe_unused]] SetLock myLck = this->m_el.m_manager->lockEl(this->m_el);
                 if (this->m_root) {
-                    if (el && el->getID() == this->m_root->ptr().id()) {
+                    if (el && el->getID() == this->m_root->m_ptr.id()) {
                         return;
                     }
-                    [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->ptr());
+                    [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
 
                     (*this->m_root->m_ptr).m_node->removeReference(this->m_el);
-                    this->m_el.m_node->removeReference(*this->m_root->ptr());
-                    T& elToRemove = this->m_root->ptr()->template as<T>();
+                    this->m_el.m_node->removeReference(*this->m_root->m_ptr);
+                    T& elToRemove = this->m_root->m_ptr->template as<T>();
                     // remove
-                    this->innerRemove(this->m_root->ptr().id());
+                    this->innerRemove(this->m_root->m_ptr.id());
                     this->handleOppositeRemove(elToRemove);
                 }
                 if (el) {
@@ -88,15 +88,15 @@ namespace UML {
             void set(ID id) {
                 // "lock" elements we are editing
                 [[maybe_unused]] SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
-                if (this->m_root && (id == ID::nullID() || id != this->m_root->ptr().id())) {
-                    [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->ptr());
+                if (this->m_root && (id == ID::nullID() || id != this->m_root->m_ptr.id())) {
+                    [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
 
-                    (*this->m_root->ptr()).m_node->removeReference(this->m_el);
-                    this->m_el.m_node->removeReference(*this->m_root->ptr());
+                    (*this->m_root->m_ptr).m_node->removeReference(this->m_el);
+                    this->m_el.m_node->removeReference(*this->m_root->m_ptr);
 
-                    T& elToRemove = this->m_root->ptr()->template as<T>();
+                    T& elToRemove = this->m_root->m_ptr->template as<T>();
                     // remove
-                    this->innerRemove(this->m_root->ptr().id());
+                    this->innerRemove(this->m_root->m_ptr.id());
                     // handle opposites
                     this->handleOppositeRemove(elToRemove);
                 }

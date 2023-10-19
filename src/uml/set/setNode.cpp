@@ -160,6 +160,7 @@ void SetNode::deleteCaseSix(SetNode* parent, SetNode* sibling, SetNode* distantC
 SetNode::~SetNode() {
     bool notSwapped = true;
     do {
+        notSwapped = true;
         if (set->getRoot() == this && !m_left && !m_right) {
             // node is root and has no children
             set->setRoot(0);
@@ -269,7 +270,7 @@ SetNode::~SetNode() {
 
             // balance
             // case d1 covered by this loop condition
-            while (!node->is_root(set)) {
+            while (set->getRoot() != node) {
                 if (node) {
                     isLeft = true;
                     if (parent->m_left == node) {
@@ -364,8 +365,4 @@ SetNode::~SetNode() {
             throw SetStateException("Unhandled edge case in Red Black Tree deleteFromTree, contact developer!");
         }
     } while (!notSwapped);
-}
-
-ElementPtr SetNode::ptr() const {
-    return m_ptr;
 }

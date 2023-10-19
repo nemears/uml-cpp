@@ -86,15 +86,15 @@ namespace UML {
                     return 0;
                 }
 
-                if (id == node->ptr().id()) {
+                if (id == node->m_ptr.id()) {
                     return node;
-                } else if (!node->ptr()) {
+                } else if (!node->m_ptr) {
                     SetNode* ret = search(id, node->m_left);
                     if (ret) {
                         return ret;
                     }
                     return search(id, node->m_right);
-                } else if (id < node->ptr().id()) {
+                } else if (id < node->m_ptr.id()) {
                     return search(id, node->m_left);
                 } else {
                     return search(id, node->m_right);

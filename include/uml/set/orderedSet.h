@@ -113,10 +113,10 @@ namespace UML {
                 validSets = rhs.validSets;
             }
             T& operator*() {
-                return curr->ptr()->as<T>();
+                return curr->m_ptr->as<T>();
             }
             UmlPtr<T> operator->() {
-                return curr->ptr();
+                return curr->m_ptr;
             }
             OrderedSetIterator& operator++() {
                 do {
@@ -191,7 +191,7 @@ namespace UML {
                     throw SetStateException("Cannot get front element because set is empty!");
                 }
 
-                return curr->ptr().id();
+                return curr->m_ptr.id();
             }
             ID back() const {
                 SetNode* curr = m_me->getBack();
@@ -199,7 +199,7 @@ namespace UML {
                     throw SetStateException("Cannot get back element because set is empty!");
                 }
 
-                return curr->ptr().id();
+                return curr->m_ptr.id();
             }
     };
 
@@ -239,7 +239,7 @@ namespace UML {
                     throw SetStateException("Cannot get front element because set is empty!");
                 }
 
-                return curr->ptr();
+                return curr->m_ptr;
             }
             UmlPtr<T> back() const {
                 SetNode* curr = m_me->getBack();
@@ -247,7 +247,7 @@ namespace UML {
                     throw SetStateException("Cannot get back element because set is empty!");
                 }
 
-                return curr->ptr();
+                return curr->m_ptr;
             }
     };
 
@@ -403,14 +403,14 @@ namespace UML {
                 if (!this->m_first) {
                     throw SetStateException("front is null");
                 }
-                return this->m_first->ptr()->template as<T>();
+                return this->m_first->m_ptr->template as<T>();
             }
             T& back() override {
                 [[maybe_unused]] SetLock myLock = this->m_el.m_manager->lockEl(this->m_el);
                 if (!this->m_last) {
                     throw SetStateException("last is null");
                 }
-                return this->m_last->ptr()->template as<T>();
+                return this->m_last->m_ptr->template as<T>();
             }
             void add(UmlPtr<T> el) override {
                 add(*el);

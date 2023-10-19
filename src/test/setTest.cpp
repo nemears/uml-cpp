@@ -16,9 +16,6 @@
 #include "uml/set/singleton.h"
 #include "uml/managers/manager.h"
 
-// TODO probably remove
-#include "uml/set/redBlackTree.h"
-
 using namespace UML;
 
 class SetTest : public ::testing::Test {
@@ -41,9 +38,9 @@ class TestSet : public AbstractSet {
         void remove(ID id) override {}
     public:
         void setRoot(SetNode* node) override {
-            if (m_root && node) {
-                node->m_parent = this->m_root->m_parent;
-            }
+            // if (m_root && node) {
+            //     // node->m_parent = this->m_root->m_parent;
+            // }
             m_root = node;
         }
         SetNode* getRoot() const override {
@@ -58,7 +55,7 @@ size_t getNumberOfBlackToLeafNodes(SetNode* node) {
     size_t ret = 0;
     SetNode* currNode = node;
     do {
-        if (currNode->m_color == RedOrBlack::BLACK) {
+        if (currNode->m_color == SetNode::RedOrBlack::BLACK) {
             ret++;
         }
         if (currNode->m_left) {
@@ -84,16 +81,16 @@ void checkAllPathsAreEqual(SetNode* node) {
 }
 
 void checkNode(SetNode* node) {
-    if (node->m_color == RedOrBlack::RED) {
+    if (node->m_color == SetNode::RedOrBlack::RED) {
         ASSERT_TRUE((node->m_left && node->m_right) || (!node->m_right && !node->m_left));
         if (node->m_left) {
-            ASSERT_TRUE(node->m_left->m_color == RedOrBlack::BLACK);
+            ASSERT_TRUE(node->m_left->m_color == SetNode::RedOrBlack::BLACK);
         }
         if (node->m_right) {
-            ASSERT_TRUE(node->m_right->m_color == RedOrBlack::BLACK);
+            ASSERT_TRUE(node->m_right->m_color == SetNode::RedOrBlack::BLACK);
         }
         if (node->m_parent) {
-            ASSERT_TRUE(node->m_parent->m_color == RedOrBlack::BLACK);
+            ASSERT_TRUE(node->m_parent->m_color == SetNode::RedOrBlack::BLACK);
         }
     }
     // check children number of black
@@ -102,16 +99,16 @@ void checkNode(SetNode* node) {
         ASSERT_NO_FATAL_FAILURE(checkNode(node->m_left));
         ASSERT_NO_FATAL_FAILURE(checkNode(node->m_right));
     } else if (node->m_left) {
-        ASSERT_TRUE(node->m_left->m_color == RedOrBlack::RED);
+        ASSERT_TRUE(node->m_left->m_color == SetNode::RedOrBlack::RED);
         ASSERT_NO_FATAL_FAILURE(checkNode(node->m_left));
     } else if (node->m_right) {
-        ASSERT_TRUE(node->m_right->m_color == RedOrBlack::RED);
+        ASSERT_TRUE(node->m_right->m_color == SetNode::RedOrBlack::RED);
         ASSERT_NO_FATAL_FAILURE(checkNode(node->m_right));
     }
 }
 
 void isValidRedBlackTree(SetNode* root) {
-    ASSERT_TRUE(root->m_color == RedOrBlack::BLACK);
+    ASSERT_TRUE(root->m_color == SetNode::RedOrBlack::BLACK);
     ASSERT_NO_FATAL_FAILURE(checkNode(root));
 }
 
@@ -129,48 +126,48 @@ TEST_F(SetTest, RedBlackAlwaysLeft) {
     b.set = &set;
     set.setRoot(&a);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
-    insert(&a, &b);
+    set.getRoot()->insert(&b);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     PackagePtr pckgC = m.create<Package>();
     SetNode c;
     c.m_ptr = pckgC;
     c.set = &set;
-    insert(&a, &c);
+    set.getRoot()->insert(&c);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     PackagePtr pckgD = m.create<Package>();
     pckgD->setID("BAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     SetNode d;
     d.m_ptr = pckgD;
     d.set = &set;
-    insert(&a, &d);
+    set.getRoot()->insert(&d);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     PackagePtr pckgE = m.create<Package>();
     pckgE->setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     SetNode e;
     e.m_ptr = pckgE;
     e.set = &set;
-    insert(&a, &e);
+    set.getRoot()->insert(&e);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     PackagePtr pckgF = m.create<Package>();
     pckgF->setID("ABAAAAAAAAAAAAAAAAAAAAAAAAAA");
     SetNode f;
     f.m_ptr = pckgF;
     f.set = &set;
-    insert(&a, &f);
+    set.getRoot()->insert(&f);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     PackagePtr pckgG = m.create<Package>();
     pckgG->setID("ABBAAAAAAAAAAAAAAAAAAAAAAAAA");
     SetNode g;
     g.m_ptr = pckgG;
     g.set = &set;
-    insert(&a, &g);
+    set.getRoot()->insert(&g);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     PackagePtr pckgH = m.create<Package>();
     pckgH->setID("ABBBAAAAAAAAAAAAAAAAAAAAAAAA");
     SetNode h;
     h.m_ptr = pckgH;
     h.set = &set;
-    insert(&a, &h);
+    set.getRoot()->insert(&h);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 }
 
@@ -189,67 +186,67 @@ TEST_F(SetTest, addAndRemoveALotOfElements) {
         SetNode* node = new SetNode;
         node->m_ptr = pckg;
         node->set = &set;
-        insert(set.getRoot(), node);
+        set.getRoot()->insert(node);
         ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
         nodes.push_back(pckg.id());
     }
     // remove some elements, from front
     // 1
-    deleteFromTree(searchBST(set.getRoot(), nodes[0]));
+    delete set.getRoot()->search(nodes[0]);
     nodes.erase(nodes.begin());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     // 2
-    deleteFromTree(searchBST(set.getRoot(), nodes[0]));
+    delete set.getRoot()->search(nodes[0]);
     nodes.erase(nodes.begin());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     // 3
-    deleteFromTree(searchBST(set.getRoot(), nodes[0]));
+    delete set.getRoot()->search(nodes[0]);
     nodes.erase(nodes.begin());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     // 4
-    deleteFromTree(searchBST(set.getRoot(), nodes[0]));
+    delete set.getRoot()->search(nodes[0]);
     nodes.erase(nodes.begin());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
     // 5
-    deleteFromTree(searchBST(set.getRoot(), nodes[0]));
+    delete set.getRoot()->search(nodes[0]);
     nodes.erase(nodes.begin());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
     // remove some from the end
     // 1
-    deleteFromTree(searchBST(set.getRoot(), nodes.back()));
+    delete set.getRoot()->search(nodes.back());
     nodes.erase(--nodes.end());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
     // 2
-    deleteFromTree(searchBST(set.getRoot(), nodes.back()));
+    delete set.getRoot()->search(nodes.back());
     nodes.erase(--nodes.end());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
     // 3
-    deleteFromTree(searchBST(set.getRoot(), nodes.back()));
+    delete set.getRoot()->search(nodes.back());
     nodes.erase(--nodes.end());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
     // 4
-    deleteFromTree(searchBST(set.getRoot(), nodes.back()));
+    delete set.getRoot()->search(nodes.back());
     nodes.erase(--nodes.end());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
     // 5
-    deleteFromTree(searchBST(set.getRoot(), nodes.back()));
+    delete set.getRoot()->search(nodes.back());
     nodes.erase(--nodes.end());
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
 
     std::vector<ID>::iterator nodeIt = nodes.end();
     do {
         --nodeIt;
-        deleteFromTree(searchBST(set.getRoot(), *nodeIt));
+        delete set.getRoot()->search(*nodeIt);
         ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     } while (nodeIt != nodes.begin());
     ASSERT_TRUE(set.getRoot() == root);
-    deleteFromTree(set.getRoot());
+    delete set.getRoot();
     ASSERT_TRUE(set.getRoot() == 0);
 }
 

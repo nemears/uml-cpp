@@ -195,13 +195,40 @@ SetNode::~SetNode() {
             SetNode* right = m_right;
             RedOrBlack color = m_color;
             bool isRoot = is_root(set);
-            m_parent = succesor->m_parent;
-            m_left = succesor->m_left;
-            m_right = succesor->m_right;
             m_color = succesor->m_color;
+            m_left = succesor->m_left;
+            if (m_left) {
+                m_left->m_parent = this;
+            }
+            m_right = succesor->m_right;
+            if (m_right) {
+                m_right->m_parent = this;
+            }
+            if (succesor->m_parent == this) {
+                m_parent = succesor;
+                succesor->m_right = this;
+                succesor->m_left = left;
+                left->m_parent = succesor;
+            } else {
+                m_parent = succesor->m_parent;
+                if (m_parent->m_left == succesor) {
+                    m_parent->m_left = this;
+                } else {
+                    m_parent->m_right = this;
+                }
+                succesor->m_left = left;
+                left->m_parent = succesor;
+                succesor->m_right = right;
+                right->m_parent = succesor;
+            }
             succesor->m_parent = parent;
-            succesor->m_left = left;
-            succesor->m_right = right;
+            if (parent) {
+                if (parent->m_left == this) {
+                    parent->m_left = succesor;
+                } else {
+                    parent->m_right = succesor;
+                }
+            }
             succesor->m_color = color;
             if (isRoot) {
                 set->setRoot(succesor);

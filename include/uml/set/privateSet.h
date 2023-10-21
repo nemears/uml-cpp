@@ -405,281 +405,111 @@ namespace UML {
                 // we are done, we can't run policies because we don't have both elements
             }
 
-            SetNode* getParent(SetNode* match, SetNode* search) {
-                if (search->m_ptr) {
-                    if (search->m_right) {
-                        if (match->m_ptr.id() > search->m_right->m_ptr.id()) {
-                            if (search->m_left == match) {
-                                return search;
-                            }
-                            if (search->m_left) {
-                                return getParent(match, search->m_left);
-                            }
-                            return 0;
-                        } else {
-                            if (search->m_right == match) {
-                                return search;
-                            }
-                            return getParent(match, search->m_right);
-                        }
-                    } else if (search->m_left) {
-                        if (search->m_left == match) {
-                            return search;
-                        } else {
-                            if (search->m_left) {
-                                return getParent(match, search->m_left);
-                            }
-                            return 0;
-                        }
+            void removeDividerNode(SetNode* dividerNodeToDelete, SetNode* remainingChild) {
+                SetNode* successor = dividerNodeToDelete->m_parent;
+                if (successor) {
+                    if (successor->m_left == dividerNodeToDelete) {
+                        successor->m_left = remainingChild;
                     } else {
-                        return 0;
+                        successor->m_right = remainingChild;
                     }
-                } else {
-                    if (search->m_right) {
-                        if (search->m_right == match) {
-                            return search;
-                        }
-                        SetNode* ret = getParent(match, search->m_right);
-                        if (ret) {
-                            return ret;
-                        }
-                    }
-                    if (search->m_left) {
-                        if (search->m_left == match) {
-                            return search;
-                        }
-                        SetNode* ret = getParent(match, search->m_left);
-                        if (ret) {
-                            return ret;
-                        }
-                    }
-                    return 0;
                 }
+                remainingChild->m_parent = successor;
+
+                // adjust intermediate roots
+                std::list<AbstractSet*> stack;
+                stack.push_front(dividerNodeToDelete->set);
+                do {
+                    AbstractSet* currSet = stack.front();
+                    stack.pop_front();
+                    if (currSet->m_root == dividerNodeToDelete) {
+                        if (successor) {
+                            currSet->m_root = successor;
+                        } else {
+                            currSet->m_root = remainingChild;
+                        }
+                    }
+                    if (currSet->m_root != successor) {
+                        for (auto superset : currSet->m_superSets) {
+                            stack.push_front(superset);
+                        }
+                    }
+                } while (!stack.empty());
             }
 
             void innerRemove(ID id) override {
                 if (!this->m_root) {
-                    throw SetStateException("Could not remove element of id " + id.string() + " from set because it is not in the set");
+                    throw SetStateException("could not rempve element of id " + id.string() + " in set, set is empty!");
                 }
                 SetNode* node = search(id, this->m_root);
                 if (!node) {
-                    throw SetStateException("Could not remove element of id " + id.string() + " from set because it is not in the set");
+                    throw SetStateException("could not remove element of id " + id.string() + " in set, element with that id could not be located within the set!");
                 }
+                std::list<AbstractSet*> stack;
+                stack.push_front(this);
+                if (node->m_parent && !node->m_parent->m_ptr) {
+                    // parent is a divider node
+                    do {
+                        AbstractSet* currSet = stack.front();
+                        stack.pop_front();
 
-                std::unordered_set<AbstractSet*> allSuperSets = node->set->getAllSuperSets();
-                allSuperSets.insert(node->set);
-                for (auto redefinedSet : node->set->m_redefines) {
-                    allSuperSets.insert(redefinedSet);
-                }
-                for (auto superSet : allSuperSets) {
-                    if (superSet->m_superSets.size() == 0 && superSet->m_rootRedefinedSet) {
-                        // root set
-                        if (node->m_parent) {
-                            SetNode* parent = getParent(node, superSet->m_root);
-                            if (!parent) {
-                                continue;
-                                // throw SetStateException("Could not remove element of id " + id.string() + " from set because we could not identify it's parent");
+                        // handle redefines
+                        for (auto redefinedSet : currSet->m_redefines) {
+                            // set root
+                            if (redefinedSet->m_root == node) {
+                                redefinedSet->m_root = 0;
                             }
-                            if (!parent->m_ptr) {
-                                // check if we need to get rid of the divider node
-                                if (!node->m_left) {
-                                    // nothing to place in divider node so we don't need the divider node anymore
-                                    SetNode* newParent = parent->m_left == node ? parent->m_right : parent->m_left;
-                                    for (auto otherSuperSet : allSuperSets) {
-                                        if (otherSuperSet->m_root == parent) {
-                                            otherSuperSet->m_root = newParent;
-                                        }
-                                    }
-                                    if (superSet->m_root == parent) {
-                                        superSet->m_root = newParent;
-                                    }
-                                    newParent->m_parent = parent->m_parent;
-                                    if (newParent->m_parent) {
-                                        if (newParent->m_parent->m_left == parent) {
-                                            newParent->m_parent->m_left = newParent;
-                                        } else {
-                                            newParent->m_parent->m_right = newParent;
-                                        }
-                                    }
-                                    delete parent;
-                                    continue;
-                                }
-                            }
-                            if (parent->m_left == node) {
-                                parent->m_left = node->m_left;
-                                if (parent->m_left) {
-                                    parent->m_left->m_parent = parent;
-                                } else {
-                                    // left is empty, so we need to put right in left
-                                    parent->m_left = parent->m_right;
 
-                                    // balance right
-                                    SetNode* currNode = parent->m_right;
-                                    while (currNode) {
-                                        if (currNode->m_right) {
-                                            if (currNode->m_right->m_ptr.id() > parent->m_left->m_ptr.id()) {
-                                                parent->m_right = parent->m_left;
-                                                parent->m_left = currNode->m_right;
-                                                parent->m_left->m_parent = parent;
-                                            } else {
-                                                parent->m_right = currNode->m_right;
-                                                parent->m_right->m_parent = parent;
-                                            }
-                                            currNode->m_right = 0;
-                                            break;
-                                        } else if (currNode->m_left) {
-                                            if (currNode->m_left->m_ptr.id() > parent->m_left->m_ptr.id()) {
-                                                parent->m_right = parent->m_left;
-                                                parent->m_left = currNode->m_left;
-                                                parent->m_left->m_parent = parent;
-                                            } else {
-                                                parent->m_right = currNode->m_left;
-                                                parent->m_right->m_parent = parent;
-                                            }
-                                            currNode->m_left = 0;
-                                            parent = currNode;
-                                            currNode = currNode->m_left;
-                                        } else {
-                                            parent->m_right = 0;
-                                            break;
-                                        }
-                                    }
-                                }
-                            } else if (parent->m_right == node) {
-                                parent->m_right = node->m_left;
-                                if (parent->m_right) {
-                                    if (parent->m_right->m_ptr.id() > parent->m_left->m_ptr.id()) {
-                                        parent->m_right = parent->m_left;
-                                        parent->m_left = node->m_left;
-                                    } else {
-                                        parent->m_right->m_parent = parent;
-                                    }
-                                    node->m_left->m_parent = parent;
-                                } else {
-                                    // balance tree
-                                    SetNode* currNode = parent->m_left;
-                                    while (currNode) {
-                                        if (currNode->m_right) {
-                                            if (currNode->m_right->m_ptr.id() > parent->m_left->m_ptr.id()) {
-                                                parent->m_right = parent->m_left;
-                                                parent->m_left = currNode->m_right;
-                                            } else {
-                                                parent->m_right = currNode->m_right;
-                                            }
-                                            currNode->m_right->m_parent = parent;
-                                            currNode->m_right = 0;
-                                            parent = currNode;
-                                            currNode = currNode->m_left;
-                                        } else if (currNode->m_left) {
-                                            if (currNode->m_left->m_ptr.id() > parent->m_left->m_ptr.id()) {
-                                                parent->m_right = parent->m_left;
-                                                parent->m_left = currNode->m_left;
-                                            } else {
-                                                parent->m_right = currNode->m_left;
-                                            }
-                                            currNode->m_left->m_parent = parent;
-                                            currNode->m_left = 0;
-                                            parent = currNode;
-                                            currNode = currNode->m_right;
-                                        } else {
-                                            break;
-                                        }
-                                    }
-                                }
-                            } else {
-                                throw SetStateException("Could not remove element of id " + id.string() + " from set because of an internal error");
-                            }
-                            // place right
-                            SetNode* currNode = 0;
-                            if (node->m_right) {
-                                currNode = node->m_left;
-                            }
-                            while (currNode) {
-                                if (!currNode->m_left) {
-                                    currNode->m_left = node->m_right;
-                                    node->m_right->m_parent = currNode;
-                                    break;
-                                } else if (!currNode->m_right) {
-                                    if (node->m_right->m_ptr.id() > currNode->m_left->m_ptr.id()) {
-                                        currNode->m_right = currNode->m_left;
-                                        currNode->m_left = node->m_right;
-                                    } else {
-                                        currNode->m_right = node->m_right;
-                                    }
-                                    node->m_right->m_parent = currNode;
-                                    break;
-                                } else if (node->m_right->m_ptr.id() > currNode->m_right->m_ptr.id()) {
-                                    currNode = currNode->m_left;
-                                } else {
-                                    currNode = currNode->m_right;
-                                }
-                            }
-                        } else {
-                            if (node->m_left) {
-                                node->m_left->m_parent = 0;
-
-                                // place right in left
-                                SetNode* currNode = node->m_left;
-                                SetNode* nodeToMove = node->m_right;
-
-                                while (currNode && nodeToMove) {
-                                    if (!currNode->m_left) {
-                                        currNode->m_left = nodeToMove;
-                                        nodeToMove->m_parent = currNode;
-                                        // determine how to handle nodeToMove's children
-                                        if (nodeToMove->m_right) {
-                                            if (nodeToMove->m_right->m_ptr.id() > currNode->m_left->m_ptr.id()) {
-                                                currNode->m_right = currNode->m_left;
-                                                currNode->m_left = nodeToMove->m_right;
-                                            } else {
-                                                currNode->m_right = nodeToMove->m_right;
-                                            }
-                                            nodeToMove->m_right->m_parent = currNode;
-                                            nodeToMove->m_right = 0;
-
-                                            SetNode* temp = nodeToMove;
-                                            nodeToMove = nodeToMove->m_left;
-                                            temp->m_left = 0;
-                                        } else if (nodeToMove->m_left) {
-                                            if (nodeToMove->m_left->m_ptr.id() > currNode->m_left->m_ptr.id()) {
-                                                currNode->m_right = currNode->m_left;
-                                                currNode->m_left = nodeToMove->m_left;
-                                            } else {
-                                                currNode->m_right = nodeToMove->m_left;
-                                            }
-                                            nodeToMove->m_left->m_parent = currNode;
-                                            nodeToMove->m_left = 0;
-                                            break;
-                                        } else {
-                                            break;
-                                        }
-                                    } else if (!currNode->m_right) {
-                                        if (nodeToMove->m_ptr.id() > currNode->m_left->m_ptr.id()) {
-                                            currNode->m_right = currNode->m_left;
-                                            currNode->m_left = nodeToMove;
-                                        } else {
-                                            currNode->m_right = nodeToMove;
-                                        }
-                                        nodeToMove->m_parent = currNode;
-                                        break;
-                                    } else {
-                                        if (nodeToMove->m_ptr.id() > currNode->m_right->m_ptr.id()) {
-                                            currNode = currNode->m_left;
-                                        } else {
-                                            currNode = currNode->m_right;
-                                        }
-                                    }
-                                }
-                            }
+                            // increase size
+                            redefinedSet->m_size--;
                         }
-                    }
-                }
-                for (auto superSet : allSuperSets) {
-                    if (superSet->m_root == node) {
-                        superSet->m_root = node->m_left;
-                    }
-                    superSet->m_size--;
-                    superSet->runRemovePolicy(*node->m_ptr);
+
+                        if (currSet->m_root == node) {
+                            currSet->m_root = 0;
+                        } else if (currSet->m_root->m_left == node) {
+                            SetNode* dividerNodeToDelete = currSet->m_root;
+                            dividerNodeToDelete->m_left = 0;
+                            removeDividerNode(dividerNodeToDelete, dividerNodeToDelete->m_right);
+                            dividerNodeToDelete->m_right = 0;
+                            dividerNodeToDelete->m_parent = 0;
+                            delete dividerNodeToDelete;
+                        } else if (currSet->m_root->m_right == node) {
+                            SetNode* dividerNodeToDelete = currSet->m_root;
+                            currSet->m_root->m_right = 0;
+                            removeDividerNode(dividerNodeToDelete, dividerNodeToDelete->m_right);
+                            dividerNodeToDelete->m_left = 0;
+                            dividerNodeToDelete->m_parent = 0;
+                            delete dividerNodeToDelete;
+                        }
+
+                        currSet->m_size--;
+                    } while (!stack.empty());
+                } else {
+                    // just adjust root and size
+                    do {
+                        AbstractSet* currSet = stack.front();
+                        stack.pop_front();
+
+                        // handle redefines
+                        for (auto redefinedSet : currSet->m_redefines) {
+                            // set root
+                            if (redefinedSet->m_root == node && !node->m_left && !node->m_right) {
+                                redefinedSet->m_root = 0;
+                            }
+
+                            // increase size
+                            redefinedSet->m_size--;
+                        }
+
+                        if (currSet->m_root == node && !node->m_left && !node->m_right) {
+                            currSet->m_root = 0;
+                        }
+                        currSet->m_size--;
+
+                        for (auto superset : currSet->m_superSets) {
+                            stack.push_front(superset);
+                        }
+                    } while (!stack.empty());
                 }
                 delete node;
             }
@@ -852,30 +682,30 @@ namespace UML {
                     // TODO replace;
                 // }
             }
-            void reindexDFS(SetNode* node, AbstractSet* set) {
-                for (auto superSet : set->m_superSets) {
-                    reindexDFS(node, superSet);
-                }
-                if (set->m_superSets.size() == 0) {
-                    SetNode* parent = getParent(node, this->m_root);
-                    if (!parent) {
-                        return;
-                    }
-                    if (parent->m_left == node) {
-                        if (parent->m_right && parent->m_right->m_ptr.id() > node->m_ptr.id()) {
-                            parent->m_left = parent->m_right;
-                            parent->m_right = node;
-                        }
-                    } else if (parent->m_right == node) {
-                        if (node->m_ptr.id() > parent->m_left->m_ptr.id()) {
-                            parent->m_right = parent->m_left;
-                            parent->m_left = node;
-                        }
-                    } else {
-                        throw SetStateException("bad state reindexing, bad parent found! contact developer");
-                    }
-                }
-            }
+            // void reindexDFS(SetNode* node, AbstractSet* set) {
+            //     for (auto superSet : set->m_superSets) {
+            //         reindexDFS(node, superSet);
+            //     }
+            //     if (set->m_superSets.size() == 0) {
+            //         SetNode* parent = getParent(node, this->m_root);
+            //         if (!parent) {
+            //             return;
+            //         }
+            //         if (parent->m_left == node) {
+            //             if (parent->m_right && parent->m_right->m_ptr.id() > node->m_ptr.id()) {
+            //                 parent->m_left = parent->m_right;
+            //                 parent->m_right = node;
+            //             }
+            //         } else if (parent->m_right == node) {
+            //             if (node->m_ptr.id() > parent->m_left->m_ptr.id()) {
+            //                 parent->m_right = parent->m_left;
+            //                 parent->m_left = node;
+            //             }
+            //         } else {
+            //             throw SetStateException("bad state reindexing, bad parent found! contact developer");
+            //         }
+            //     }
+            // }
             void reindex(ID newID) {
                 if (!this->m_root) {
                     return;
@@ -884,7 +714,7 @@ namespace UML {
                 if (!node || !node->m_parent) {
                     return;
                 } 
-                reindexDFS(node, this);
+                // reindexDFS(node, this);
             }
 
             void eraseElement(ID id) {

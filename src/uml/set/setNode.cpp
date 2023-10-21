@@ -42,7 +42,7 @@ void SetNode::insertBST(SetNode* node) {
 // determines if the parent of the node is a valid part of this set
 // basically a boolean to check if it is a valid root of the set
 bool SetNode::is_root(AbstractSet* set) {
-    return set->getRoot() == this;
+    return !m_parent || set->getRoot() == this;
 }
 
 void SetNode::left_rotate(AbstractSet* set) {
@@ -161,7 +161,7 @@ SetNode::~SetNode() {
     bool notSwapped = true;
     do {
         notSwapped = true;
-        if (set->getRoot() == this && !m_left && !m_right) {
+        if (is_root(set) && !m_left && !m_right) {
             // node is root and has no children
             set->setRoot(0);
         } else if (m_color == RedOrBlack::RED && !m_left && !m_right) {
@@ -245,6 +245,7 @@ SetNode::~SetNode() {
                 if (set->getRoot() == this) {
                     // set root
                     set->setRoot(m_left);
+                    m_left->m_parent = m_parent;
                 } else {
                     if (m_parent->m_left == this) {
                         m_parent->m_left = m_left;
@@ -264,6 +265,7 @@ SetNode::~SetNode() {
                 if (set->getRoot() == this) {
                     // set root
                     set->setRoot(m_right);
+                    m_right->m_parent = m_parent;
                 } else {
                     if (m_parent->m_left == this) {
                         m_parent->m_left = m_right;

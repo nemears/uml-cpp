@@ -405,323 +405,6 @@ namespace UML {
                 // we are done, we can't run policies because we don't have both elements
             }
 
-            /**
-             * searches superSet structure by finding the roots first and checking if it was placed
-             * @param node: the node being placed
-             * @param set: the current set we are checking
-            */
-            void innerAddDFS(   
-                                SetNode* node, 
-                                AbstractSet* set, 
-                                std::unordered_set<AbstractSet*>& allSuperSetsAndMe, 
-                                std::unordered_set<AbstractSet*>& allSubSets,
-                                std::unordered_map<AbstractSet*, bool>& visited
-                            ) {
-
-                if (visited[set]) {
-                    return;
-                }
-
-                visited[set] = true;
-
-                // place in supersets
-                for (AbstractSet* superSet : set->m_superSets) {
-                    innerAddDFS(node, superSet, allSuperSetsAndMe, allSubSets, visited);
-                }
-
-                // adjust redefines
-                for (AbstractSet* redefinedSet : set->m_redefines) {
-                    if (!redefinedSet->m_root && !redefinedSet->m_rootRedefinedSet) {
-                        redefinedSet->m_root = node;
-                    }
-                }
-                
-                if (set->m_superSets.size() == 0 && set->m_rootRedefinedSet) {
-                    // root set, place the node in the tree
-                    // gather our set's supersets and subsets
-                    SetNode* currNode = set->m_root;
-
-                    // handle divider nodes
-                    while (currNode) {
-                        if (!currNode->m_ptr) {
-                            if (allSuperSetsAndMe.count(currNode->set)) {
-                                if (allSuperSetsAndMe.count(currNode->m_left->set) || allSubSets.count(currNode->m_left->set)) {
-                                    currNode = currNode->m_left;
-                                    continue;
-                                } else if (allSuperSetsAndMe.count(currNode->m_right->set) || allSubSets.count(currNode->m_right->set)) {
-                                    currNode = currNode->m_right;
-                                    continue;
-                                } else if (currNode->m_left->m_ptr && !currNode->m_right->m_ptr) {
-                                    currNode = currNode->m_left;
-                                } else if (currNode->m_right->m_ptr && !currNode->m_left->m_ptr) {
-                                    currNode = currNode->m_right;
-                                } else {
-                                    // special case, we are going to have to change currNode's set variable because 
-                                    // it is no longer valid as the scope for the divider node
-                                    
-                                    // find most similar set
-                                    AbstractSet* dividerNodeSet = 0;
-                                    std::unordered_set setsSubSets = set->getAllSubSets();
-                                    setsSubSets.insert(set);
-                                    std::list<AbstractSet*> queue;
-                                    std::unordered_set leftsSuperSets = currNode->m_left->set->getAllSuperSets();
-                                    queue.push_back(currNode->m_right->set);
-                                    while (!queue.empty()) {
-                                        AbstractSet* front = queue.front();
-                                        queue.pop_front();
-                                        if (leftsSuperSets.count(front) && front != currNode->set) {
-                                            dividerNodeSet = front;
-                                            break;
-                                        }
-                                        for (auto superSet : front->m_superSets) {
-                                            if (setsSubSets.count(superSet)) {
-                                                queue.push_back(superSet);
-                                            }
-                                        }
-                                    }
-
-                                    if (dividerNodeSet) {
-                                        currNode->set = dividerNodeSet;
-                                    }
-                                }
-                            }
-                        } else if (allSuperSetsAndMe.count(currNode->set) || allSubSets.count(currNode->set)) {
-                            // regular node, check if it is in related sets, else continue with loop and create divider node
-                            break;
-                        }
-
-                        // create divider node
-                        SetNode* dividerNode = new SetNode();
-
-                        // handle parent from this tree
-                        SetNode* parent = getParent(currNode, set->m_root);
-                        if (parent) {
-                            if (parent->m_left == currNode) {
-                                parent->m_left = dividerNode;
-                            } else {
-                                parent->m_right = parent->m_left;
-                                parent->m_left = dividerNode;
-                            }
-                            dividerNode->m_parent = parent;
-                        }
-
-                        // find most similar set
-                        AbstractSet* dividerNodeSet = 0;
-                        std::unordered_set setsSubSets = set->getAllSubSets();
-                        setsSubSets.insert(set);
-                        std::list<AbstractSet*> queue;
-                        queue.push_back(currNode->set);
-                        while (!queue.empty()) {
-                            AbstractSet* front = queue.front();
-                            queue.pop_front();
-                            if (allSuperSetsAndMe.count(front)) {
-                                dividerNodeSet = front;
-                                break;
-                            }
-                            for (auto superSet : front->m_superSets) {
-                                if (setsSubSets.count(superSet)) {
-                                    queue.push_back(superSet);
-                                }
-                            }
-                        }
-
-                        if (dividerNodeSet == 0) {
-                            throw SetStateException("Bad state could not find similar node between");
-                        }
-
-                        dividerNode->set = dividerNodeSet;
-
-                        // add currNode and node below this divider node
-                        currNode->m_parent = dividerNode;
-                        node->m_parent = dividerNode;
-                        if (currNode->m_ptr.id() > node->m_ptr.id()) {
-                            dividerNode->m_left = currNode;
-                            dividerNode->m_right = node;
-                        } else {
-                            dividerNode->m_right = currNode;
-                            dividerNode->m_left = node;
-                        }
-
-                        // readjust roots if needed
-                        queue.clear();
-                        if (currNode->m_ptr) {
-                            queue.push_back(currNode->set);
-                        } else {
-                            // divider node, we need to check its children's sets
-                            std::list<SetNode*> queuingQueue;
-                            queuingQueue.push_back(currNode);
-                            while (!queuingQueue.empty()) {
-                                SetNode* front = queuingQueue.front();
-                                queuingQueue.pop_front();
-                                if (!front->m_ptr) {
-                                    queuingQueue.push_back(front->m_left);
-                                    queuingQueue.push_back(front->m_right);
-                                } else {
-                                    queue.push_back(front->set);
-                                }
-                            }
-                        }
-                        
-                        while (!queue.empty()) {
-                            AbstractSet* front = queue.front();
-                            queue.pop_front();
-                            if (front->m_root == currNode && allSuperSetsAndMe.count(front) && setsSubSets.count(front)) {
-                                front->m_root = dividerNode;
-                            }
-                            for (auto superSet : front->m_superSets) {
-                                queue.push_back(superSet);
-                            }
-                        }
-
-                        return;
-                    }
-                    while (currNode) {
-                        
-                        if (
-                                currNode->m_ptr.id() == node->m_ptr.id() || 
-                                (currNode->m_left && currNode->m_left->m_ptr.id() == node->m_ptr.id())
-                            ) 
-                        {
-                            currNode = currNode->m_ptr.id() == node->m_ptr.id() ? currNode : currNode->m_left;
-                            if (std::find(this->m_redefines.begin(), this->m_redefines.end(), currNode->set) != this->m_redefines.end()) {
-                                break;
-                            } else if (allSuperSetsAndMe.count(currNode->set)) {
-                                // node already exists in superset
-                                // TODO move to allocation policy
-                                if (currNode->set == this) {
-                                    // TODO different behavior with Bag and List
-                                    delete node;
-                                    throw SetStateException("Node already in set TODO bags and list");
-                                }
-
-                                // remove it
-                                currNode->set->innerRemove(currNode->m_ptr.id());
-                                
-                                // add again
-                                visited[set] = false;
-                                if (node->m_ptr.loaded()) {
-                                    // TODO dont do opposite
-                                    m_opposite->skip = true;
-                                }
-                                innerAddDFS(node, set, allSuperSetsAndMe, allSubSets, visited);
-                                return;
-                            } else {
-                                // TODO may be valid in some edge cases
-                                throw SetStateException("Node already in this set!");
-                            }
-                        }
-
-                        if (allSubSets.count(currNode->set)) {
-                            // this is a subsets node, we must place it below ours
-                            // adjust roots
-                            for (auto subSet : set->getAllSuperSets()) {
-                                if (!allSuperSetsAndMe.count(subSet)) {
-                                    continue;
-                                }
-                                if (subSet->m_root == currNode) {
-                                    subSet->m_root = node;
-                                }
-                            }
-                            if (set->m_root == currNode) {
-                                set->m_root = node;
-                            }
-
-                            // mark all parents as being visited allready and check their roots
-                            for (auto superSet : allSuperSetsAndMe) {
-                                visited[superSet] = true;
-                                if (superSet->m_root == currNode) {
-                                    superSet->m_root = node;
-                                }
-                            }
-
-                            if (currNode->m_parent == node) {
-                                break;
-                            }
-                            node->m_parent = currNode->m_parent;
-                            node->m_left = currNode;
-                            currNode->m_parent = node;
-                            if (node->m_parent) {
-                                if (node->m_parent->m_left == currNode) {
-                                    node->m_parent->m_left = node;
-                                } else if (node->m_parent->m_right == currNode) {
-                                    node->m_parent->m_right = node;
-                                }
-                            }
-                            break;
-                        }
-                        
-                        // no children, place to left
-                        if (!currNode->m_left) {
-                            currNode->m_left = node;
-                            node->m_parent = currNode;
-                            
-                            // mark all parents as being visited allready
-                            for (auto superSet : currNode->set->getAllSuperSets()) {
-                                visited[superSet] = true;
-                            }
-                            break;
-                        }
-
-                        // one child determine where to place
-                        if (!currNode->m_right) {
-                            if (node->m_ptr.id() > currNode->m_left->m_ptr.id()) {
-                                currNode->m_right = currNode->m_left;
-                                currNode->m_left = node;
-                            } else {
-                                currNode->m_right = node;
-                            }
-                            node->m_parent = currNode;
-
-                            // mark all parents as being visited allready
-                            if (currNode->m_ptr) {
-                                for (auto superSet : currNode->set->getAllSuperSets()) {
-                                    visited[superSet] = true;
-                                }
-                            } else {
-                                // handle divider node superset search
-                                std::list<AbstractSet*> queue;
-                                std::list<SetNode*> queueingQueue;
-                                queueingQueue.push_back(currNode);
-                                while (!queueingQueue.empty()) {
-                                    SetNode* front = queueingQueue.front();
-                                    queueingQueue.pop_front();
-                                    if (!front->m_ptr) {
-                                        if (front->m_left != node) {
-                                            queueingQueue.push_back(front->m_left);
-                                        }
-                                        if (front->m_right != node) {
-                                            queueingQueue.push_back(front->m_right);
-                                        }
-                                    } else {
-                                        queue.push_back(front->set);
-                                    }
-                                }
-                                while (!queue.empty()) {
-                                    AbstractSet* front = queue.front();
-                                    queue.pop_front();
-                                    visited[front] = true;
-                                    for (auto superSet : front->m_superSets) {
-                                        queue.push_back(superSet);
-                                    }
-                                }
-                            }
-                            break;
-                        }
-
-                        // two children, pick side to recurse
-                        if (node->m_ptr.id() > currNode->m_right->m_ptr.id()) {
-                            currNode = currNode->m_left;
-                        } else {
-                            currNode = currNode->m_right;
-                        }
-                    }
-                }
-
-                if (!set->m_root) {
-                    set->m_root = node;
-                }
-            }
-
             SetNode* getParent(SetNode* match, SetNode* search) {
                 if (search->m_ptr) {
                     if (search->m_right) {
@@ -1250,28 +933,49 @@ namespace UML {
                 [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el); 
                 delete m_opposite;
                 if (this->m_root) {
-                    bool deleteRoot = false;
-                    if (this->m_root->m_ptr) {
-                        deleteRoot = true;
-                    } else if (!this->m_root->m_left && !this->m_root->m_right) {
-                        deleteRoot = true;
+                    if (!this->m_root->m_ptr) {
+                        // divider node
+                        if (this->m_root->m_left && this->m_root->m_right) {
+                            // bad
+                            throw SetStateException("I know im not supposed to throw an error but this state is bad");
+                        }
+                        SetNode* newRoot = 0;
+                        if (this->m_root->m_left) {
+                            newRoot = this->m_root->m_left;
+                            this->m_root->m_left = 0;
+                        } else {
+                            newRoot = this->m_root->m_right;
+                            this->m_root->m_right = 0;
+                        }
+                        newRoot->m_parent = 0;
+                        delete this->m_root;
+                        this->m_root = newRoot;
                     }
+                   
+                    // adjust roots and parents from base of trees
+                    std::list<AbstractSet*> queue;
+                    for (auto superset : this->m_superSets) {
+                        queue.push_back(superset);
+                    }
+                    while (!queue.empty()) {
+                        AbstractSet* currSet = queue.front();
+                        queue.pop_front();
+                        if (currSet->m_root == this->m_root) {
+                            currSet->m_root = 0;
+                        } else if (currSet->m_root->m_left == this->m_root) {
+                            currSet->m_root->m_left = 0;
+                        } else if (currSet->m_root->m_right == this->m_root) {
+                            currSet->m_root->m_right = 0;
+                        }
+                        for (auto superset : currSet->m_superSets) {
+                            queue.push_back(superset);
+                        }
+                    }
+                    this->m_root->m_parent = 0;
 
-                    if (deleteRoot) {
-                        SetNode* node = this->m_root;
-                        std::list<AbstractSet*> queue;
-                        queue.push_back(this);
-                        do {
-                            AbstractSet* set = queue.front();
-                            queue.pop_front();
-                            if (set->m_root == node) {
-                                set->m_root = 0;
-                            }
-                            for (auto superset : set->m_superSets) {
-                                queue.push_back(superset);
-                            }
-                        } while (!queue.empty());
-                        delete node;
+                    // delete everything
+                    while (this->m_root) {
+                        delete this->m_root;
                     }
                 }
 
@@ -1285,10 +989,6 @@ namespace UML {
 
             // root
             void setRoot(SetNode* node) override {
-                // TODO, balance with subsets and stuff maybe
-                if (this->m_root && node) {
-                    node->m_parent = this->m_root->m_parent;
-                }
                 this->m_root = node;
             }
             

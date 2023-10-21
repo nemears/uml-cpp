@@ -267,7 +267,7 @@ TEST_F(SetTest, basicSetTest) {
     ASSERT_EQ(testEl->set.get(pckg.getID()), pckg);
     std::vector<ID> ids(numPackages);
     ids[0] = pckg.getID();
-    for (int i = 0; i < numPackages - 1; i++) {
+    for (size_t i = 0; i < numPackages - 1; i++) {
         Package& p = *m.create<Package>();
         ids[i+1] = p.getID();
         testEl->set.add(p);

@@ -20,6 +20,9 @@ SetNode* SetNode::search(ID key) {
 }
 
 void SetNode::insertBST(SetNode* node) {
+    if (node->m_ptr.id() == m_ptr.id()) {
+        throw SetStateException("Duplicate element added to set!");
+    }
     if (m_ptr.id() > node->m_ptr.id()) {
         SetNode* nextParent = m_left;
         if (!nextParent) {
@@ -163,7 +166,9 @@ SetNode::~SetNode() {
         notSwapped = true;
         if (is_root(set) && !m_left && !m_right) {
             // node is root and has no children
-            set->setRoot(0);
+            if (set->m_root == this) {
+                set->m_root = 0;
+            } 
         } else if (m_color == RedOrBlack::RED && !m_left && !m_right) {
             // node is red and has no children
             // simply just remove it

@@ -417,6 +417,8 @@ namespace UML {
                                                 // neither side is a subset, make a dividerNode and make sure our root stays as node, not the divider node
                                                 createDividerNode(node, currNode, set);
                                                 // TODO, i don't think we change it, maybe we do??? TODO test!
+                                                // TODO check supersets to see if they need to be adjusted, there is a reason we made a divider node
+                                                
                                             }
                                         }
                                     } while (!dividerStack.empty());
@@ -872,10 +874,64 @@ namespace UML {
                             newRoot = this->m_root->m_right;
                             this->m_root->m_right = 0;
                         }
-                        this->m_root->m_parent = 0;
-                        newRoot->m_parent = 0;
-                        delete this->m_root;
-                        this->m_root = newRoot;
+
+                        if (this->m_root->m_parent) {
+                            this->m_root->m_parent = 0;
+
+                            // adjust other supersets that have referenced dividerNode
+                            std::list<AbstractSet*> stack;
+                            stack.push_front(this->m_root->set);
+                            do {
+                                AbstractSet* set = stack.front();
+                                stack.pop_front();
+                                
+                                if (set->m_superSets.empty()) {
+                                    SetNode* currNode = set->m_root;
+                                    while (currNode) {
+                                        if (currNode->m_left == this->m_root) {
+                                            currNode->m_left = 0;
+                                            break;
+                                        } else if (currNode->m_right == this->m_root) {
+                                            currNode->m_right = 0;
+                                            break;
+                                        } else {
+                                            std::list<AbstractSet*> queue;
+                                            queue.push_back(this->m_root->set);
+                                            do {
+                                                AbstractSet* superSet = queue.front();
+                                                queue.pop_front();
+
+                                                if (currNode->m_left && superSet == currNode->m_left->set) {
+                                                    currNode = currNode->m_left;
+                                                    break;
+                                                } else if (currNode->m_right && superSet == currNode->m_right->set) {
+                                                    currNode = currNode->m_right;
+                                                    break;
+                                                }
+
+                                                for (auto superSuperSet : superSet->m_superSets) {
+                                                    queue.push_back(superSuperSet);
+                                                }
+
+                                                if (queue.empty()) {
+                                                    throw SetStateException("I know don't throw exceptions in destructor, except this is bad, its technically impossible! contact dev!");
+                                                }
+                                            } while (!queue.empty());
+                                        }
+                                    }
+                                }
+
+                                for (auto superset : set->m_superSets) {
+                                    stack.push_front(superset);
+                                }
+                            } while (!stack.empty());
+                        }
+
+                        if (newRoot) {
+                            newRoot->m_parent = 0;
+                            delete this->m_root;
+                            this->m_root = newRoot;
+                        }
                     }
                    
                     // adjust roots and parents from base of trees

@@ -317,7 +317,7 @@ namespace UML {
                 // we want to place this in all of our root super sets
                 // climb up graph dfs to find root super sets
                 std::list<AbstractSet*> stack;
-                stack.push_front(this);
+                stack.push_front(node->set);
                 std::unordered_set<AbstractSet*> visited;
                 bool treeAlreadyCreated = false;
                 do {
@@ -347,11 +347,17 @@ namespace UML {
                         }
                         if (set->m_root) {
                             SetNode* currNode = set->m_root;
+                            SetNode* existingNode;
+                            if ((existingNode = search(node->m_ptr.id(), currNode))) { // slow but only way i think
+                                // node is in superset
+                                existingNode->set->innerRemove(node->m_ptr.id());
+                                // TODO keep orderedSet stuff? or no?
+                            }
                             while (currNode) {
                                 if (!currNode->m_ptr) {
                                     // this is a divider node, see which side our node belongs
                                     std::list<AbstractSet*> dividerStack;
-                                    dividerStack.push_front(this);
+                                    dividerStack.push_front(node->set);
                                     bool createDividerNodeFlag = false;
                                     do {
                                         AbstractSet* currSet = dividerStack.front();
@@ -526,7 +532,7 @@ namespace UML {
 
                 // run add policies bfs with queue
                 std::list<AbstractSet*> queue;
-                queue.push_back(this);
+                queue.push_back(node->set);
                 do {
                     AbstractSet* set = queue.front();
                     queue.pop_front();
@@ -674,6 +680,21 @@ namespace UML {
                         stack.push_front(superset);
                     }
                 } while (!stack.empty());
+
+                // run removal policies
+                std::list<AbstractSet*> queue;
+                queue.push_back(node->set);
+                do {
+                    AbstractSet* set = queue.front();
+                    queue.pop_front();
+                    for (auto superSet : set->m_superSets) {
+                        queue.push_back(superSet);
+                    }
+                    set->runRemovePolicy(*node->m_ptr);
+                    for (auto redefinedSet : set->m_redefines) {
+                        redefinedSet->runRemovePolicy(*node->m_ptr);
+                    }
+                } while (!queue.empty());
 
                 delete node;
             }
@@ -837,7 +858,7 @@ namespace UML {
                     return;
                 }
                 if (this->m_superSets.size() == 1) {
-                    node->set = this->m_superSets[0];
+                    node->set = *this->m_superSets.begin();
                     return;
                 }
                 // for (auto superSet : this->m_superSets) {
@@ -1029,10 +1050,10 @@ namespace UML {
                 }
 
                 for (auto superSet : this->m_superSets) {
-                    superSet->m_subSets.erase(std::find(superSet->m_subSets.begin(), superSet->m_subSets.end(), this));
+                    superSet->m_subSets.erase(this);
                 }
                 for (auto subSet : this->m_subSets) {
-                    subSet->m_superSets.erase(std::find(subSet->m_superSets.begin(), subSet->m_superSets.end(), this));
+                    subSet->m_superSets.erase(this);
                 }
             }
 
@@ -1069,7 +1090,7 @@ namespace UML {
                 m_opposite = new OppositeInterfaceAdapter(m_el, oppositeSignature);
             }
             /**
-             * makes sure that the set we are redefining is the same tree as ours and vice versa
+             * makes sure that only one set of the redefines has subsets and supersets
              * @param redefined, the set that this set is redefining
              **/
             template <class V, class W> 
@@ -1078,37 +1099,49 @@ namespace UML {
                     throw SetStateException("WARNING redefines set after set was used, must make sure redefining is done during configuration, before use!");
                 }
 
+                AbstractSet* oldRootRedefined = &redefined;
+
+                if (!oldRootRedefined->m_rootRedefinedSet) {
+                    for (AbstractSet* redefinedSet : redefined.m_redefines) {
+                        if (redefinedSet->m_rootRedefinedSet) {
+                            oldRootRedefined = redefinedSet;
+                            break;
+                        }
+                    }
+                }
+
                 // add to redefined set's redefines redefines
-                for (AbstractSet* redefinedSet : redefined.m_redefines) {
+                for (AbstractSet* redefinedSet : oldRootRedefined->m_redefines) {
                     redefinedSet->m_redefines.insert(this);
                     this->m_redefines.insert(redefinedSet);
                 }
 
-                // make sure our subsets and supersets are the same
-                for (auto set : redefined.m_superSets) {
-                    this->subsets(*set);
-                }
-                for (auto subSet : redefined.m_subSets) {
-                    subSet->subsets(*this);
-                }
-                for (auto set : this->m_superSets) {
-                    redefined.subsets(*set);
-                }
-                for (auto subSet : this->m_subSets) {
-                    subSet->subsets(redefined);
-                }
-
                 // add this set's redefines to redefined set
                 for (AbstractSet* redefinedSet : this->m_redefines) {
-                    redefinedSet->m_redefines.insert(&redefined);
-                    redefined.m_redefines.insert(redefinedSet);
+                    redefinedSet->m_redefines.insert(oldRootRedefined);
+                    oldRootRedefined->m_redefines.insert(redefinedSet);
+                    for (AbstractSet* otherSetsRedefinedSet : oldRootRedefined->m_redefines) {
+                        redefinedSet->m_redefines.insert(otherSetsRedefinedSet);
+                        otherSetsRedefinedSet->m_redefines.insert(redefinedSet);
+                    }
                 }
 
-                // add to our redefines
-                this->m_redefines.insert(&redefined);
+                this->m_redefines.insert(oldRootRedefined);
+                oldRootRedefined->m_redefines.insert(this);
 
-                // add to redefined set's redefines
-                redefined.m_redefines.insert(this);
+                // TODO move subsets and supersets from theirs to ours
+                for (auto superset : oldRootRedefined->m_superSets) {
+                    this->m_superSets.insert(superset);
+                    superset->m_subSets.erase(oldRootRedefined);
+                    superset->m_subSets.insert(this);
+                }
+                oldRootRedefined->m_superSets.clear();
+
+                for (auto subset : redefined.m_subSets) {
+                    this->m_subSets.insert(subset);
+                    subset->m_superSets.erase(oldRootRedefined);
+                    subset->m_superSets.insert(this);
+                }
 
                 for (AbstractSet* redefinedSet : this->m_redefines) {
                     redefinedSet->m_rootRedefinedSet = false;

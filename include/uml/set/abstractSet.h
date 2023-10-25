@@ -38,8 +38,8 @@ namespace UML {
         protected:
             SetNode* m_root = 0;
 
-            std::vector<AbstractSet*> m_superSets;
-            std::vector<AbstractSet*> m_subSets;
+            std::unordered_set<AbstractSet*> m_superSets;
+            std::unordered_set<AbstractSet*> m_subSets;
             std::unordered_set<AbstractSet*> m_redefines;
 
             AbstractSet* m_setToInstantiate = 0;
@@ -118,9 +118,9 @@ namespace UML {
              * @param subsetOf the set that we are a subset of
              **/
             void subsets(AbstractSet& subsetOf) {
-                if (std::find(this->m_superSets.begin(), this->m_superSets.end(), &subsetOf) == this->m_superSets.end()) {
-                    this->m_superSets.push_back(&subsetOf);
-                    subsetOf.m_subSets.push_back(this);
+                if (!this->m_superSets.count(&subsetOf)) {
+                    this->m_superSets.insert(&subsetOf);
+                    subsetOf.m_subSets.insert(this);
                     if (subsetOf.m_guard >= m_guard) {
                         m_guard = subsetOf.m_guard + 1;
                     }

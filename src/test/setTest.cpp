@@ -595,36 +595,6 @@ TEST_F(SetTest, longerBasicRemoveTest) {
     ASSERT_FALSE(testEl->set.contains(pckg8));
 }
 
-// TEST_F(SetTest, basicRandomRemoveTest) {
-//     Manager<> m;
-//     const size_t constNumPackages = 40;
-//     // TODO bug change 40 to 50 or higher
-//     size_t numPackages = constNumPackages;
-//     UmlPtr<TestPackageSetElement> testEl = m.create<TestPackageSetElement>();
-//     std::vector<ID> packages;
-//     for (size_t i = 0; i < numPackages; i++) {
-//         Package& temp = *m.create<Package>();
-//         packages.push_back(temp.getID());
-//         testEl->set.add(temp);
-//     }
-//     for (size_t i = 0; i < constNumPackages / 2; i++) {
-//         int index = rand() % numPackages;
-//         std::cout << i << ", ";
-//         testEl->set.remove(packages[index]);
-//         packages.erase(std::remove(packages.begin(), packages.end(), packages[index]), packages.end()) - packages.begin();
-//         numPackages--;
-//     }
-//     std::cout << std::endl;
-//     ASSERT_EQ(testEl->set.size(), constNumPackages/2);
-//     for (size_t i = 0; i < constNumPackages/ 2; i++) {
-//         int index = rand() % numPackages;
-//         testEl->set.remove(packages[index]);
-//         packages.erase(std::remove(packages.begin(), packages.end(), packages[index]), packages.end()) - packages.begin();
-//         numPackages--;
-//     }
-//     ASSERT_EQ(testEl->set.size(), 0);
-// }
-
 class TestSubsetsElement : public Element {
     public:
         CustomSet<PackageableElement, TestSubsetsElement> root = CustomSet<PackageableElement, TestSubsetsElement>(this);

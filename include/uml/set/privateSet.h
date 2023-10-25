@@ -353,8 +353,15 @@ namespace UML {
                             SetNode* existingNode;
                             if ((existingNode = search(node->m_ptr.id(), currNode))) { // slow but only way i think
                                 // node is in superset
-                                existingNode->set->innerRemove(node->m_ptr.id());
-                                // TODO keep orderedSet stuff? or no?
+                                if (existingNode->set == node->set) {
+                                    // TODO do we have to do some cleanup here?
+                                    delete node;
+                                    throw SetStateException("Duplicate element added to set!");
+                                } else {
+                                    existingNode->set->innerRemove(node->m_ptr.id());
+                                    currNode = set->m_root;
+                                    // TODO keep orderedSet stuff? or no?
+                                }
                             }
                             while (currNode) {
                                 if (!currNode->m_ptr) {
@@ -434,11 +441,11 @@ namespace UML {
                                                 createDividerNodeFlag = true;
                                             } else {
                                                 // neither side is a subset, make a dividerNode and make sure our root stays as node, not the divider node
-                                                // TODO choose most appropriate side, left or right and recurse, or if 
+                                                // choose most appropriate side, left or right and recurse, or if 
                                                 // neither side is more appropriate than currNode, make dividerNode here
                                                 AbstractSet* rightCandidate = getClosestSuperset(node->set, currNode->m_right->set, set);
                                                 AbstractSet* leftCandidate = getClosestSuperset(node->set, currNode->m_left->set, set);
-                                                // TODO find out which one is closer,
+                                                // find out which one is closer,
                                                 std::list<AbstractSet*> distanceStack;
                                                 distanceStack.push_front(node->set);
                                                 size_t distance = 0;
@@ -474,7 +481,7 @@ namespace UML {
                                                 } else if (leftDistance < rightDistance && leftDistance < currNodeDistance) {
                                                     // recurse left
                                                     currNode = currNode->m_left;
-                                                } else /**if (currNodeDistance < leftDistance && currNodeDistance < rightDistance)**/ {
+                                                } else {
                                                     // create divider node and put us on top off currNode
                                                     createDividerNode(node, currNode, set);
                                                     createDividerNodeFlag = true;
@@ -839,6 +846,8 @@ namespace UML {
                     remove(nodeToRemove->m_ptr.id());
                 }
             }
+
+            // TODO remove or reimplement
             void removeFromJustThisSet(ID id) {
                 // "lock" elements we are editing
                 [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
@@ -870,30 +879,8 @@ namespace UML {
                     // TODO replace;
                 // }
             }
-            // void reindexDFS(SetNode* node, AbstractSet* set) {
-            //     for (auto superSet : set->m_superSets) {
-            //         reindexDFS(node, superSet);
-            //     }
-            //     if (set->m_superSets.size() == 0) {
-            //         SetNode* parent = getParent(node, this->m_root);
-            //         if (!parent) {
-            //             return;
-            //         }
-            //         if (parent->m_left == node) {
-            //             if (parent->m_right && parent->m_right->m_ptr.id() > node->m_ptr.id()) {
-            //                 parent->m_left = parent->m_right;
-            //                 parent->m_right = node;
-            //             }
-            //         } else if (parent->m_right == node) {
-            //             if (node->m_ptr.id() > parent->m_left->m_ptr.id()) {
-            //                 parent->m_right = parent->m_left;
-            //                 parent->m_left = node;
-            //             }
-            //         } else {
-            //             throw SetStateException("bad state reindexing, bad parent found! contact developer");
-            //         }
-            //     }
-            // }
+
+            // TODO reimplement
             void reindex(ID newID) {
                 if (!this->m_root) {
                     return;
@@ -920,6 +907,7 @@ namespace UML {
             void adjustSuperSets(SetNode* node) override {
                 this->m_setToInstantiate ? this->m_setToInstantiate->adjustSuperSets(node) : AllocationPolicy::adjustSuperSets(node);
             }
+
             SetNode* createNode (Element& el) override {
                 SetNode* ret = 0;
                 if (this->m_setToInstantiate) {
@@ -930,6 +918,7 @@ namespace UML {
                 ret->set = this;
                 return ret;
             }
+
             SetNode* createNode (ID id) override {
                 SetNode* ret = 0;
                 if (this->m_setToInstantiate) {
@@ -941,12 +930,8 @@ namespace UML {
                 return ret;
             }
         public:
-            PrivateSet(U& el) : m_el(el) {
-                
-            }
-            PrivateSet(U* el) : m_el(*el) {
-
-            }
+            PrivateSet(U& el) : m_el(el) {}
+            PrivateSet(U* el) : m_el(*el) {}
             virtual ~PrivateSet() {
                 [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el); 
                 delete m_opposite;

@@ -710,28 +710,6 @@ TEST_F(SetTest, removeFromSubsettedSequenceTest) {
     ASSERT_FALSE(testEl->root.contains(pckg));
 }
 
-// TEST_F(SetTest, specialAutoForLoop) {
-//     Set<Package> seq;
-//     int numPackages = 1;
-//     Manager<> m;
-//     for (int i = 0; i < numPackages; i++) {
-//         Package& p = *m.create<Package>(); 
-//         seq.add(p);
-//         std::hash<ID> hasher;
-//         std::cout << p.getID().string() << ", hash: " << hasher(p.getID()) << std::endl;
-//     }
-//     std::cout << "=========================================================" << std::endl;
-//     int i = 0;
-//     for (auto& p : seq) {
-//         i++;
-//         ASSERT_EQ(p.getElementType(), ElementType::PACKAGE);
-//         std::hash<ID> hasher;
-//         std::cout << p.getID().string() << ", hash: " << hasher(p.getID()) << std::endl;
-//         if (i > numPackages + 10) break;
-//     }
-//     ASSERT_EQ(i, numPackages);
-// }
-
 TEST_F(SetTest, getFromSetByNameTest) {
     Manager<> m;
     UmlPtr<TestSubsetsElement> testEl = m.create<TestSubsetsElement>();
@@ -989,21 +967,6 @@ TEST_F(SetTest, orderedSetSubSetsSet) {
     }
     ASSERT_EQ(i, 2);
 }
-
-// TEST_F(SetTest, testIdsMethodLoop) {
-//     Set<Package> set;
-//     Manager<> m;
-//     int numPackages = 1;
-//     std::unordered_set<ID> ids;
-//     for (int i = 0; i < numPackages; i++) {
-//         Package& p = *m.create<Package>();
-//         set.add(p);
-//         ids.insert(p.getID());
-//     }
-//     for (const ID id : set.ids()) {
-//         ASSERT_TRUE(ids.count(id));
-//     }
-//  }
 
 class TestSingletonElement : public Element {
     public:

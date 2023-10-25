@@ -20,6 +20,17 @@ namespace UML {
     };
 
     template <class T, class U> class TypedSet;
+    template <class T>
+    class OrderedID_Set;
+    template <class T>
+    class OrderedPtrSet;
+    template <
+                class T, 
+                class U,
+                class AdditionPolicy,
+                class RemovalPolicy
+            >
+    class CustomOrderedSet;
 
     enum class SetType {
         SET,
@@ -34,6 +45,17 @@ namespace UML {
         friend class OrderedSetNodeAllocationPolicy;
         friend struct OrderedSetNode;
         friend class SetNode;
+        template <class T>
+        friend class OrderedID_Set;
+        template <class T>
+        friend class OrderedPtrSet;
+        template <
+                class T, 
+                class U,
+                class AdditionPolicy,
+                class RemovalPolicy
+            >
+        friend class CustomOrderedSet;
 
         protected:
             SetNode* m_root = 0;
@@ -62,52 +84,11 @@ namespace UML {
             virtual void oppositeRemove(Element& el) = 0;
             virtual void handleOppositeRemove(Element& el) = 0;
             virtual SetType setType() const = 0;
-            virtual void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*>& allSuperSetsAndMe) = 0;
+            virtual void adjustSuperSets(SetNode* node) = 0;
             virtual SetNode* createNode(Element& el) = 0;
             virtual SetNode* createNode(ID id) = 0;
             virtual void innerRemove(ID id) = 0;
             virtual void remove(ID id) = 0;
-
-
-            std::unordered_set<AbstractSet*> getAllSuperSets() const {
-                std::unordered_set<AbstractSet*> allSuperSets;
-                std::list<AbstractSet*> queue;
-                for (auto superSet : this->m_superSets) {
-                    queue.push_back(superSet);
-                }
-                while (!queue.empty()) {
-                    AbstractSet* front = queue.front();
-                    queue.pop_front();
-                    allSuperSets.insert(front);
-                    for (auto superSet : front->m_superSets) {
-                        queue.push_back(superSet);
-                    }
-                    for (auto redefinedSet : front->m_redefines) {
-                        allSuperSets.insert(redefinedSet);
-                    }
-                }
-                return allSuperSets;
-            }
-
-            std::unordered_set<AbstractSet*> getAllSubSets() const {
-                std::unordered_set<AbstractSet*> allSubSets;
-                std::list<AbstractSet*> queue;
-                for (auto subSet : this->m_subSets) {
-                    queue.push_back(subSet);
-                }
-                while (!queue.empty()) {
-                    AbstractSet* front = queue.front();
-                    queue.pop_front();
-                    allSubSets.insert(front);
-                    for (auto subSet : front->m_subSets) {
-                        queue.push_back(subSet);
-                    }
-                    for (auto redefinedSet : front->m_redefines) {
-                        allSubSets.insert(redefinedSet);
-                    }
-                }
-                return allSubSets;
-            }
 
         public:
             AbstractSet& operator=(AbstractSet&&) = delete;

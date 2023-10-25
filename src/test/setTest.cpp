@@ -31,7 +31,7 @@ class TestSet : public AbstractSet {
         void oppositeRemove(Element& el) override {}
         void handleOppositeRemove(Element& el) override {}
         SetType setType() const override{};
-        void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*>& allSuperSetsAndMe) override {}
+        void adjustSuperSets(SetNode* node) override {}
         SetNode* createNode(Element& el) override {}
         SetNode* createNode(ID id) override {}
         void innerRemove(ID id) override {}

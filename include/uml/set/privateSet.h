@@ -36,7 +36,7 @@ namespace UML {
                 return ret;
             }
 
-            void adjustSuperSets(__attribute__((unused)) SetNode* node, __attribute__((unused)) std::unordered_set<AbstractSet*>& allSuperSetsAndMe) {}
+            void adjustSuperSets(__attribute__((unused)) SetNode* node) {}
     };
 
     template <class T>
@@ -313,6 +313,9 @@ namespace UML {
                         node->set = redefinedSet;
                     }
                 }
+
+                // adjust supersets
+                node->set->adjustSuperSets(node);
 
                 // we want to place this in all of our root super sets
                 // climb up graph dfs to find root super sets
@@ -914,8 +917,8 @@ namespace UML {
                 return AllocationPolicy::setType();
             }
 
-            void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*>& allSuperSetsAndMe) override {
-                this->m_setToInstantiate ? this->m_setToInstantiate->adjustSuperSets(node, allSuperSetsAndMe) : AllocationPolicy::adjustSuperSets(node, allSuperSetsAndMe);
+            void adjustSuperSets(SetNode* node) override {
+                this->m_setToInstantiate ? this->m_setToInstantiate->adjustSuperSets(node) : AllocationPolicy::adjustSuperSets(node);
             }
             SetNode* createNode (Element& el) override {
                 SetNode* ret = 0;

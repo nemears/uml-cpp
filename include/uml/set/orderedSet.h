@@ -50,19 +50,27 @@ namespace UML {
                 }
             }
             if (!orderedSet) {
-                for (auto& superSet : set->getAllSuperSets()) {
-                    orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(superSet);
+                std::list<AbstractSet*> queue;
+                queue.push_back(set);
+                do {
+                    AbstractSet* superset = queue.front();
+                    queue.pop_front();
+                    orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(superset);
                     if (orderedSet) {
                         break;
+                    } else {
+                        for (auto superSuperSet : superset->m_superSets) {
+                            queue.push_back(superSuperSet);
+                        }
                     }
-                }
+                } while (!queue.empty());
             }
 
             // TODO understand this edge case (orderedSetNode is not part of an ordered set)
             // happens with ClassTest.addOwnedAttributeAsStructuredClassifierTest
             if (!orderedSet) {
-                // throw SetStateException("bad state, non orderedSetNode tried to add to orderedSet!");
-                return;
+                throw SetStateException("bad state, non orderedSetNode tried to add to orderedSet!");
+                // return;
             }
 
             if (orderedSet->getFront() == this) {
@@ -73,17 +81,24 @@ namespace UML {
             }
             
             // check if supersets are orderedSets to clear adjust their front and back
-            for (auto& superSet : set->getAllSuperSets()) {
+            std::list<AbstractSet*> queue;
+            queue.push_back(set);
+            do {
+                AbstractSet* superSet = queue.front();
+                queue.pop_front();
                 OrderedSetNodeAllocationPolicyInterface* orderedSuperSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(superSet);
-                    if (orderedSuperSet) {
-                        if (orderedSuperSet->getFront() == this) {
-                            orderedSuperSet->setFront(m_next);
-                        }
-                        if (orderedSuperSet->getBack() == this) {
-                            orderedSuperSet->setBack(m_prev);
-                        }
+                if (orderedSuperSet) {
+                    if (orderedSuperSet->getFront() == this) {
+                        orderedSuperSet->setFront(m_next);
                     }
-            }
+                    if (orderedSuperSet->getBack() == this) {
+                        orderedSuperSet->setBack(m_prev);
+                    }
+                }
+                for (auto superSuperSet : superSet->m_superSets) {
+                    queue.push_back(superSuperSet);
+                }
+            } while (!queue.empty());
 
             if (m_prev) {
                 m_prev->m_next = m_next;
@@ -175,11 +190,17 @@ namespace UML {
             OrderedSetID_Iterator<T> begin() {
                 OrderedSetID_Iterator<T> ret;
                 ret.curr = m_me->getFront();
-                ret.validSets = m_me->getAllSubSets();
-                ret.validSets.insert(m_me);
-                for (auto& redefinedSet : m_me->m_redefines) {
-                    ret.validSets.insert(redefinedSet);
-                }
+                std::list<AbstractSet*> queue;
+                queue.push_back(m_me);
+                // TODO instead of m_me, find rootRedefinedSet to start looking (bug maybe might happen might not need) 
+                do {
+                    AbstractSet* subset = queue.front();
+                    queue.pop_front();
+                    ret.validSets.insert(subset);
+                    for (auto subSubSet : subset->m_subSets) {
+                        queue.push_back(subSubSet);
+                    }
+                } while (!queue.empty());
                 return ret;
             };
             OrderedSetID_Iterator<T> end() {
@@ -223,11 +244,17 @@ namespace UML {
             OrderedSetPtrIterator<T> begin() {
                 OrderedSetPtrIterator<T> ret;
                 ret.curr = m_me->getFront();
-                ret.validSets = m_me->getAllSubSets();
-                ret.validSets.insert(m_me);
-                for (auto& redefinedSet : m_me->m_redefines) {
-                    ret.validSets.insert(redefinedSet);
-                }
+                std::list<AbstractSet*> queue;
+                queue.push_back(m_me);
+                // TODO instead of m_me, find rootRedefinedSet to start looking (bug maybe might happen might not need) 
+                do {
+                    AbstractSet* subset = queue.front();
+                    queue.pop_front();
+                    ret.validSets.insert(subset);
+                    for (auto subSubSet : subset->m_subSets) {
+                        queue.push_back(subSubSet);
+                    }
+                } while (!queue.empty());
                 return ret;
             };
             OrderedSetPtrIterator<T> end() {
@@ -287,10 +314,15 @@ namespace UML {
                 ret->m_ptr = el;
                 return ret;
             }
-            void adjustSuperSets(SetNode* node, std::unordered_set<AbstractSet*>& allSuperSetsAndMe) override {
+            void adjustSuperSets(SetNode* node) override {
                 OrderedSetNode* orderedSetNode = static_cast<OrderedSetNode*>(node);
                 // todo maybe do this bfs instead of just giving the list
-                for (AbstractSet* set: allSuperSetsAndMe) {
+                std::list<AbstractSet*> queue;
+                queue.push_back(node->set);
+                do {
+                    AbstractSet* set = queue.front();
+                    queue.pop_front();
+
                     if (set->setType() != SetType::ORDERED_SET) {
                         continue;
                     }
@@ -305,8 +337,13 @@ namespace UML {
                         orderedSetNode->m_prev->m_next = orderedSetNode;                        
                     }
                     orderedSet->setBack(orderedSetNode);
-                }
+
+                    for (auto superset : set->m_superSets) {
+                        queue.push_back(superset);
+                    }
+                } while (!queue.empty());
             }
+            
             void deleteNode(SetNode* node) {
                 OrderedSetNode* orderedNode = static_cast<OrderedSetNode*>(node);
                 if (m_first == node) {
@@ -436,8 +473,17 @@ namespace UML {
             OrderedSetIterator<T> begin() const override {
                 OrderedSetIterator<T> ret;
                 ret.curr = this->m_first;
-                ret.validSets = this->getAllSubSets();
-                ret.validSets.insert(const_cast<AbstractSet*>(static_cast<const AbstractSet*>(this))); // I <3 c++
+                std::list<AbstractSet*> queue;
+                queue.push_back(const_cast<AbstractSet*>(static_cast<const AbstractSet*>(this)));
+                // TODO instead of m_me, find rootRedefinedSet to start looking (bug maybe might happen might not need) 
+                do {
+                    AbstractSet* subset = queue.front();
+                    queue.pop_front();
+                    ret.validSets.insert(subset);
+                    for (auto subSubSet : subset->m_subSets) {
+                        queue.push_back(subSubSet);
+                    }
+                } while (!queue.empty());
                 return ret;
             }
 

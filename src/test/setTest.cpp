@@ -1780,6 +1780,96 @@ TEST_F(SetTest, removefromDiamondSubset) {
     ASSERT_TRUE(testEl->left.contains(pckg3.id()));
     ASSERT_FALSE(testEl->right.contains(pckg3.id()));
     ASSERT_TRUE(testEl->root.contains(pckg3.id()));
+
+    testEl->bottom.add(pckg1);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 2);
+    ASSERT_EQ(testEl->right.size(), 2);
+    ASSERT_EQ(testEl->root.size(), 3);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->left.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg3.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg3.id()));
+
+    testEl->right.remove(pckg2);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 2);
+    ASSERT_EQ(testEl->right.size(), 1);
+    ASSERT_EQ(testEl->root.size(), 2);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->left.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->root.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg3.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg3.id()));
+
+    testEl->right.add(pckg2);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 2);
+    ASSERT_EQ(testEl->right.size(), 2);
+    ASSERT_EQ(testEl->root.size(), 3);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->left.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg3.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg3.id()));
+
+    testEl->left.remove(pckg3);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 1);
+    ASSERT_EQ(testEl->right.size(), 2);
+    ASSERT_EQ(testEl->root.size(), 2);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->left.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg3.id()));
+    ASSERT_FALSE(testEl->left.contains(pckg3.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg3.id()));
+    ASSERT_FALSE(testEl->root.contains(pckg3.id()));
+
+    testEl->left.add(pckg3);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 2);
+    ASSERT_EQ(testEl->right.size(), 2);
+    ASSERT_EQ(testEl->root.size(), 3);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->left.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg3.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg3.id()));
 }
 
 // TODO more complex set

@@ -382,151 +382,168 @@ namespace UML {
                                     std::list<AbstractSet*> dividerStack;
                                     dividerStack.push_front(node->set);
                                     bool createDividerNodeFlag = false;
+                                    bool isLeft = false;
+                                    bool isRight = false;
                                     do {
                                         AbstractSet* currSet = dividerStack.front();
                                         dividerStack.pop_front();
-                                        if (currSet == currNode->m_left->set) {
-                                            currNode = currNode->m_left;
-                                            break;
-                                        } else if (currSet == currNode->m_right->set) {
-                                            currNode = currNode->m_right;
-                                            break;
+                                        if (!isLeft) {
+                                            isLeft = currSet == currNode->m_left->set;
                                         }
+
+                                        if (!isRight) {
+                                            isRight = currSet == currNode->m_right->set;
+                                        }
+
                                         for (auto superSet : currSet->m_superSets) {
                                             dividerStack.push_front(superSet);
                                         }
                                         if (dividerStack.empty()) {
-                                            // neither side is appropriate, we need a new divider node
-                                            // find most appropriate side to base root off of
-                                            // basically see if either side is a subset of ours vs not
-                                            // left
-                                            bool leftIsSubset = false;
-                                            std::list<AbstractSet*> relativesQueue;
-                                            relativesQueue.push_back(currNode->m_left->set);
-                                            do {
-                                                AbstractSet* leftSuperSet = relativesQueue.front();
-                                                relativesQueue.pop_front();
-                                                if (leftSuperSet == node->set) {
-                                                    leftIsSubset = true;
-                                                    break;
-                                                }
-                                                for (auto superset : leftSuperSet->m_superSets) {
-                                                    relativesQueue.push_back(superset);
-                                                }
-                                            } while (!relativesQueue.empty());
+                                            if (isLeft && isRight) {
+                                                // diamond subset handle
+                                                SetNode* leftDividerNode = createDividerNode(node, currNode->m_left, set);
+                                                SetNode* rightDividerNode = createDividerNode(node, currNode->m_right, set);
+                                                insertDividerIntoTree(node, currNode->m_left, leftDividerNode, set);
+                                                insertDividerIntoTree(node, currNode->m_right, rightDividerNode, set);
 
-                                            // right
-                                            bool rightIsSubset = false;
-                                            relativesQueue.push_back(currNode->m_right->set);
-                                            do {
-                                                AbstractSet* rightSuperSet = relativesQueue.front();
-                                                relativesQueue.pop_front();
-                                                if (rightSuperSet == node->set) {
-                                                    rightIsSubset = true;
-                                                    break;
-                                                }
-                                                for (auto superset : rightSuperSet->m_superSets) {
-                                                    relativesQueue.push_back(superset);
-                                                }
-                                            } while (!relativesQueue.empty());
-
-                                            if (leftIsSubset && rightIsSubset) {
-                                                // if both are a subset, create a dividerNode with currNode and node placing our set at the 
-                                                // "top" of the tree to maintain subsetting
-                                                SetNode* dividerNode = createDividerNode(node, currNode, set);
-                                                insertDividerIntoTree(node, currNode, dividerNode, set);
-                                                // make sure our set's new root is the divider node, as well as parents until we have corrected
-                                                // and hit where divider node was created
-                                                adjustTreeRoots(dividerNode, node->set);
                                                 createDividerNodeFlag = true;
-                                            } else if (leftIsSubset) {
-                                                // if only left is a subset, create a dividerNode with currNode->m_left placing currNode->m_right
-                                                // on top of this set, but keep currNode->m_left below our node
-                                                SetNode* dividerNode = createDividerNode(node, currNode->m_left, set);
-
-                                                // check for if currNode->set is a superset
-                                                if (isParent(node->set, currNode->set)) {
-                                                    // we must also make sure our set's new root is the divider node to include currNode->m->left and node
-                                                    insertDividerIntoTree(node, currNode->m_left, dividerNode, set);
-                                                    adjustTreeRoots(dividerNode, node->set);
-                                                } else {
-                                                    // create divider node where node and currNode->m_left are children, 
-                                                    // and then create divider node where dividerNode and currNode are children
-                                                    SetNode* newRoot = createDividerNode(dividerNode, currNode, set);
-                                                    insertDividerIntoTree(dividerNode, currNode, newRoot, set);
-                                                    adjustTreeRoots(dividerNode, node->set);
-                                                    AbstractSet* closestSuperset = getClosestSuperset(node->set, currNode->set, currSet);
-                                                    adjustTreeRoots(newRoot, closestSuperset);
-                                                }
-                                                createDividerNodeFlag = true;
-                                            } else if (rightIsSubset) {
-                                                // if only right is a subset create a dividerNode with currNode->m_right placing currNode->m_left
-                                                // on top of this set, but keep currNode->m_right below our node
-                                                SetNode* dividerNode = createDividerNode(node, currNode->m_right, set);
-                                                // we must also make sure our set's new root is the divider node to include currNode->m->m_right and node
-                                                
-                                                // check for if currNode->set is a superset
-                                                if (isParent(node->set, currNode->set)) {
-                                                    insertDividerIntoTree(node, currNode->m_right, dividerNode, set);
-                                                    adjustTreeRoots(dividerNode, node->set);
-                                                } else {
-                                                    // create divider node where node and currNode->m_left are children, 
-                                                    // and then create divider node where dividerNode and currNode are children
-                                                    SetNode* newRoot = createDividerNode(dividerNode, currNode, set);
-                                                    insertDividerIntoTree(dividerNode, currNode, newRoot, set);
-                                                    adjustTreeRoots(dividerNode, node->set);
-                                                    AbstractSet* closestSuperset = getClosestSuperset(node->set, currNode->set, currSet);
-                                                    adjustTreeRoots(newRoot, closestSuperset);
-                                                }
-                                                createDividerNodeFlag = true;
+                                            } else if (isLeft) {
+                                                currNode = currNode->m_left;
+                                            } else if (isRight) {
+                                                currNode = currNode->m_right;
                                             } else {
-                                                // neither side is a subset, make a dividerNode and make sure our root stays as node, not the divider node
-                                                // choose most appropriate side, left or right and recurse, or if 
-                                                // neither side is more appropriate than currNode, make dividerNode here
-                                                AbstractSet* rightCandidate = getClosestSuperset(node->set, currNode->m_right->set, set);
-                                                AbstractSet* leftCandidate = getClosestSuperset(node->set, currNode->m_left->set, set);
-                                                // find out which one is closer,
-                                                std::list<AbstractSet*> distanceStack;
-                                                distanceStack.push_front(node->set);
-                                                size_t distance = 0;
-                                                size_t rightDistance = 0;
-                                                size_t leftDistance = 0;
-                                                size_t currNodeDistance = 0;
+                                                // neither side is appropriate, we need a new divider node
+                                                // find most appropriate side to base root off of
+                                                // basically see if either side is a subset of ours vs not
+                                                // left
+                                                bool leftIsSubset = false;
+                                                std::list<AbstractSet*> relativesQueue;
+                                                relativesQueue.push_back(currNode->m_left->set);
                                                 do {
-                                                    AbstractSet* distanceSet = distanceStack.front();
-                                                    distanceStack.pop_front();
-                                                    if (distanceSet == rightCandidate) {
-                                                        rightDistance = distance;
-                                                    } 
-                                                    if (distanceSet == leftCandidate) {
-                                                        leftDistance = distance;
+                                                    AbstractSet* leftSuperSet = relativesQueue.front();
+                                                    relativesQueue.pop_front();
+                                                    if (leftSuperSet == node->set) {
+                                                        leftIsSubset = true;
+                                                        break;
                                                     }
-                                                    if (distanceSet == currNode->set) {
-                                                        currNodeDistance = distance;
+                                                    for (auto superset : leftSuperSet->m_superSets) {
+                                                        relativesQueue.push_back(superset);
                                                     }
+                                                } while (!relativesQueue.empty());
 
-                                                    if (distanceSet->m_superSets.empty()) {
-                                                        distance = 0;
-                                                    } else {
-                                                        distance++;
-                                                        for (auto superset : distanceSet->m_superSets) {
-                                                            distanceStack.push_front(superset);
-                                                        }
+                                                // right
+                                                bool rightIsSubset = false;
+                                                relativesQueue.push_back(currNode->m_right->set);
+                                                do {
+                                                    AbstractSet* rightSuperSet = relativesQueue.front();
+                                                    relativesQueue.pop_front();
+                                                    if (rightSuperSet == node->set) {
+                                                        rightIsSubset = true;
+                                                        break;
                                                     }
-                                                } while (!distanceStack.empty());
+                                                    for (auto superset : rightSuperSet->m_superSets) {
+                                                        relativesQueue.push_back(superset);
+                                                    }
+                                                } while (!relativesQueue.empty());
 
-                                                if (rightDistance < leftDistance && rightDistance < currNodeDistance) {
-                                                    // recurse right
-                                                    currNode = currNode->m_right;
-                                                } else if (leftDistance < rightDistance && leftDistance < currNodeDistance) {
-                                                    // recurse left
-                                                    currNode = currNode->m_left;
-                                                } else {
-                                                    // create divider node and put us on top off currNode
+                                                if (leftIsSubset && rightIsSubset) {
+                                                    // if both are a subset, create a dividerNode with currNode and node placing our set at the 
+                                                    // "top" of the tree to maintain subsetting
                                                     SetNode* dividerNode = createDividerNode(node, currNode, set);
                                                     insertDividerIntoTree(node, currNode, dividerNode, set);
+                                                    // make sure our set's new root is the divider node, as well as parents until we have corrected
+                                                    // and hit where divider node was created
+                                                    adjustTreeRoots(dividerNode, node->set);
                                                     createDividerNodeFlag = true;
-                                                    // don't adjust roots
+                                                } else if (leftIsSubset) {
+                                                    // if only left is a subset, create a dividerNode with currNode->m_left placing currNode->m_right
+                                                    // on top of this set, but keep currNode->m_left below our node
+                                                    SetNode* dividerNode = createDividerNode(node, currNode->m_left, set);
+
+                                                    // check for if currNode->set is a superset
+                                                    if (isParent(node->set, currNode->set)) {
+                                                        // we must also make sure our set's new root is the divider node to include currNode->m->left and node
+                                                        insertDividerIntoTree(node, currNode->m_left, dividerNode, set);
+                                                        adjustTreeRoots(dividerNode, node->set);
+                                                    } else {
+                                                        // create divider node where node and currNode->m_left are children, 
+                                                        // and then create divider node where dividerNode and currNode are children
+                                                        SetNode* newRoot = createDividerNode(dividerNode, currNode, set);
+                                                        insertDividerIntoTree(dividerNode, currNode, newRoot, set);
+                                                        adjustTreeRoots(dividerNode, node->set);
+                                                        AbstractSet* closestSuperset = getClosestSuperset(node->set, currNode->set, currSet);
+                                                        adjustTreeRoots(newRoot, closestSuperset);
+                                                    }
+                                                    createDividerNodeFlag = true;
+                                                } else if (rightIsSubset) {
+                                                    // if only right is a subset create a dividerNode with currNode->m_right placing currNode->m_left
+                                                    // on top of this set, but keep currNode->m_right below our node
+                                                    SetNode* dividerNode = createDividerNode(node, currNode->m_right, set);
+                                                    // we must also make sure our set's new root is the divider node to include currNode->m->m_right and node
+                                                    
+                                                    // check for if currNode->set is a superset
+                                                    if (isParent(node->set, currNode->set)) {
+                                                        insertDividerIntoTree(node, currNode->m_right, dividerNode, set);
+                                                        adjustTreeRoots(dividerNode, node->set);
+                                                    } else {
+                                                        // create divider node where node and currNode->m_left are children, 
+                                                        // and then create divider node where dividerNode and currNode are children
+                                                        SetNode* newRoot = createDividerNode(dividerNode, currNode, set);
+                                                        insertDividerIntoTree(dividerNode, currNode, newRoot, set);
+                                                        adjustTreeRoots(dividerNode, node->set);
+                                                        AbstractSet* closestSuperset = getClosestSuperset(node->set, currNode->set, currSet);
+                                                        adjustTreeRoots(newRoot, closestSuperset);
+                                                    }
+                                                    createDividerNodeFlag = true;
+                                                } else {
+                                                    // neither side is a subset, make a dividerNode and make sure our root stays as node, not the divider node
+                                                    // choose most appropriate side, left or right and recurse, or if 
+                                                    // neither side is more appropriate than currNode, make dividerNode here
+                                                    AbstractSet* rightCandidate = getClosestSuperset(node->set, currNode->m_right->set, set);
+                                                    AbstractSet* leftCandidate = getClosestSuperset(node->set, currNode->m_left->set, set);
+                                                    // find out which one is closer,
+                                                    std::list<AbstractSet*> distanceStack;
+                                                    distanceStack.push_front(node->set);
+                                                    size_t distance = 0;
+                                                    size_t rightDistance = 0;
+                                                    size_t leftDistance = 0;
+                                                    size_t currNodeDistance = 0;
+                                                    do {
+                                                        AbstractSet* distanceSet = distanceStack.front();
+                                                        distanceStack.pop_front();
+                                                        if (distanceSet == rightCandidate) {
+                                                            rightDistance = distance;
+                                                        } 
+                                                        if (distanceSet == leftCandidate) {
+                                                            leftDistance = distance;
+                                                        }
+                                                        if (distanceSet == currNode->set) {
+                                                            currNodeDistance = distance;
+                                                        }
+
+                                                        if (distanceSet->m_superSets.empty()) {
+                                                            distance = 0;
+                                                        } else {
+                                                            distance++;
+                                                            for (auto superset : distanceSet->m_superSets) {
+                                                                distanceStack.push_front(superset);
+                                                            }
+                                                        }
+                                                    } while (!distanceStack.empty());
+
+                                                    if (rightDistance < leftDistance && rightDistance < currNodeDistance) {
+                                                        // recurse right
+                                                        currNode = currNode->m_right;
+                                                    } else if (leftDistance < rightDistance && leftDistance < currNodeDistance) {
+                                                        // recurse left
+                                                        currNode = currNode->m_left;
+                                                    } else {
+                                                        // create divider node and put us on top off currNode
+                                                        SetNode* dividerNode = createDividerNode(node, currNode, set);
+                                                        insertDividerIntoTree(node, currNode, dividerNode, set);
+                                                        createDividerNodeFlag = true;
+                                                        // don't adjust roots
+                                                    }
                                                 }
                                             }
                                         }
@@ -615,16 +632,46 @@ namespace UML {
                 // we are done, we can't run policies because we don't have both elements
             }
 
+            bool isValidSuccesor(AbstractSet* succesorCandidateSet, AbstractSet* setToCheck) {
+                std::list<AbstractSet*> stack;
+                stack.push_front(setToCheck);
+                do {
+                    AbstractSet* set = stack.front();
+                    stack.pop_front();
+
+                    if (set == succesorCandidateSet) {
+                        // it is subset we are good
+                        return true;
+                    }
+
+                    for (auto superset : set->m_superSets) {
+                        stack.push_front(superset);
+                    }
+                } while (!stack.empty());
+
+                return false;
+            }
+
             void removeDividerNode(SetNode* dividerNodeToDelete, SetNode* remainingChild) {
                 SetNode* successor = dividerNodeToDelete->m_parent;
+                remainingChild->m_parent = successor;
                 if (successor) {
                     if (successor->m_left == dividerNodeToDelete) {
                         successor->m_left = remainingChild;
+                        if (!isValidSuccesor(dividerNodeToDelete->set, successor->m_right->set)) {
+                            successor = remainingChild;
+                        }
                     } else {
                         successor->m_right = remainingChild;
+                        if (!isValidSuccesor(dividerNodeToDelete->set, successor->m_left->set)) {
+                            successor = remainingChild;
+                        }
                     }
                 }
-                remainingChild->m_parent = successor;
+
+                if (!successor) {
+                    successor = remainingChild;
+                }
 
                 // adjust intermediate roots
                 std::list<AbstractSet*> stack;
@@ -633,11 +680,7 @@ namespace UML {
                     AbstractSet* currSet = stack.front();
                     stack.pop_front();
                     if (currSet->m_root == dividerNodeToDelete) {
-                        if (successor) {
-                            currSet->m_root = successor;
-                        } else {
-                            currSet->m_root = remainingChild;
-                        }
+                        currSet->m_root = successor;
                     }
                     if (currSet->m_root != successor) {
                         for (auto superset : currSet->m_superSets) {

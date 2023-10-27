@@ -200,11 +200,6 @@ namespace UML {
 
             SetNode* createDividerNode(SetNode* node, SetNode* existingRoot, AbstractSet* rootSet) {
                 SetNode* dividerNode = new SetNode;
-
-                // find minimum set with both oldRoot's set and new node's set
-                // travel bfs down the tree from the root set provided
-                std::list<AbstractSet*> queue;
-                queue.push_back(rootSet);
                 AbstractSet* candidate = getClosestSuperset(existingRoot->set, node->set, rootSet);
 
                 if (!candidate) {
@@ -212,11 +207,24 @@ namespace UML {
                 }
 
                 dividerNode->set = candidate;
+                if (node->m_ptr.id() < existingRoot->m_ptr.id()) {
+                    dividerNode->m_left = node;
+                    dividerNode->m_right = existingRoot;
+                } else {
+                    dividerNode->m_right = node;
+                    dividerNode->m_left = existingRoot;
+                }
+                node->m_parent = dividerNode;
+                existingRoot->m_parent = dividerNode;
+                return dividerNode;
+            }
 
+            void insertDividerIntoTree(SetNode* node, SetNode* existingRoot, SetNode* dividerNode, AbstractSet* rootSet) {
                 SetNode* currNode = rootSet->m_root;
 
                 // adjust roots of super sets
-                queue.push_back(candidate);
+                std::list<AbstractSet*> queue;
+                queue.push_back(dividerNode->set);
                 do {
                     AbstractSet* currSet = queue.front();
                     queue.pop_front();
@@ -240,7 +248,7 @@ namespace UML {
                     }
                     node->m_parent = dividerNode;
                     existingRoot->m_parent = dividerNode;
-                    return dividerNode;
+                    return;
                 }
                 while (currNode) {
 
@@ -249,20 +257,12 @@ namespace UML {
                         // replace m_left with dividerNode
                         currNode->m_left = dividerNode;
                         dividerNode->m_parent = currNode;
-                        dividerNode->m_left = existingRoot;
-                        dividerNode->m_right = node; 
-                        existingRoot->m_parent = dividerNode;
-                        node->m_parent = dividerNode;
                         break;
                     } else if (currNode->m_right == existingRoot) {
                        // currNode is parent of existing root in this tree,
                        // replace m_right with dividerNode 
                        currNode->m_right = dividerNode;
                        dividerNode->m_parent = currNode;
-                       dividerNode->m_right = existingRoot;
-                       dividerNode->m_left = node;
-                       existingRoot->m_parent = dividerNode;
-                       node->m_parent = dividerNode;
                        break;
                     }
 
@@ -284,8 +284,6 @@ namespace UML {
                         }
                     } while (!stack.empty()); 
                 }
-
-                return dividerNode;
             }
 
             void adjustTreeRoots(SetNode* dividerNode, AbstractSet* set) {
@@ -304,6 +302,22 @@ namespace UML {
                         }
                     }
                 } while (!stack.empty());
+            }
+
+            bool isParent(AbstractSet* set, AbstractSet* parentCandidate) {
+                std::list<AbstractSet*> stack;
+                stack.push_front(set);
+                do {
+                    AbstractSet* currParentSet = stack.front();
+                    stack.pop_front();
+                    if (currParentSet == parentCandidate) {
+                        return true;
+                    }
+                    for (auto superset : currParentSet->m_superSets) {
+                        stack.push_front(superset);
+                    }
+                } while (!stack.empty());
+                return false;
             }
 
             void addNodeToSet(SetNode* node) {
@@ -330,7 +344,6 @@ namespace UML {
 
                     // skip sets allready visited
                     if (visited.count(set)) {
-                        // TODO check that we need this, place a breakpoint here and run all tests
                         continue;
                     } else {
                         visited.insert(set);
@@ -421,6 +434,7 @@ namespace UML {
                                                 // if both are a subset, create a dividerNode with currNode and node placing our set at the 
                                                 // "top" of the tree to maintain subsetting
                                                 SetNode* dividerNode = createDividerNode(node, currNode, set);
+                                                insertDividerIntoTree(node, currNode, dividerNode, set);
                                                 // make sure our set's new root is the divider node, as well as parents until we have corrected
                                                 // and hit where divider node was created
                                                 adjustTreeRoots(dividerNode, node->set);
@@ -429,15 +443,41 @@ namespace UML {
                                                 // if only left is a subset, create a dividerNode with currNode->m_left placing currNode->m_right
                                                 // on top of this set, but keep currNode->m_left below our node
                                                 SetNode* dividerNode = createDividerNode(node, currNode->m_left, set);
-                                                // we must also make sure our set's new root is the divider node to include currNode->m->left and node
-                                                adjustTreeRoots(dividerNode, node->set);
+
+                                                // check for if currNode->set is a superset
+                                                if (isParent(node->set, currNode->set)) {
+                                                    // we must also make sure our set's new root is the divider node to include currNode->m->left and node
+                                                    insertDividerIntoTree(node, currNode->m_left, dividerNode, set);
+                                                    adjustTreeRoots(dividerNode, node->set);
+                                                } else {
+                                                    // create divider node where node and currNode->m_left are children, 
+                                                    // and then create divider node where dividerNode and currNode are children
+                                                    SetNode* newRoot = createDividerNode(dividerNode, currNode, set);
+                                                    insertDividerIntoTree(dividerNode, currNode, newRoot, set);
+                                                    adjustTreeRoots(dividerNode, node->set);
+                                                    AbstractSet* closestSuperset = getClosestSuperset(node->set, currNode->set, currSet);
+                                                    adjustTreeRoots(newRoot, closestSuperset);
+                                                }
                                                 createDividerNodeFlag = true;
                                             } else if (rightIsSubset) {
                                                 // if only right is a subset create a dividerNode with currNode->m_right placing currNode->m_left
                                                 // on top of this set, but keep currNode->m_right below our node
                                                 SetNode* dividerNode = createDividerNode(node, currNode->m_right, set);
                                                 // we must also make sure our set's new root is the divider node to include currNode->m->m_right and node
-                                                adjustTreeRoots(dividerNode, node->set);
+                                                
+                                                // check for if currNode->set is a superset
+                                                if (isParent(node->set, currNode->set)) {
+                                                    insertDividerIntoTree(node, currNode->m_right, dividerNode, set);
+                                                    adjustTreeRoots(dividerNode, node->set);
+                                                } else {
+                                                    // create divider node where node and currNode->m_left are children, 
+                                                    // and then create divider node where dividerNode and currNode are children
+                                                    SetNode* newRoot = createDividerNode(dividerNode, currNode, set);
+                                                    insertDividerIntoTree(dividerNode, currNode, newRoot, set);
+                                                    adjustTreeRoots(dividerNode, node->set);
+                                                    AbstractSet* closestSuperset = getClosestSuperset(node->set, currNode->set, currSet);
+                                                    adjustTreeRoots(newRoot, closestSuperset);
+                                                }
                                                 createDividerNodeFlag = true;
                                             } else {
                                                 // neither side is a subset, make a dividerNode and make sure our root stays as node, not the divider node
@@ -483,7 +523,8 @@ namespace UML {
                                                     currNode = currNode->m_left;
                                                 } else {
                                                     // create divider node and put us on top off currNode
-                                                    createDividerNode(node, currNode, set);
+                                                    SetNode* dividerNode = createDividerNode(node, currNode, set);
+                                                    insertDividerIntoTree(node, currNode, dividerNode, set);
                                                     createDividerNodeFlag = true;
                                                     // don't adjust roots
                                                 }
@@ -503,13 +544,27 @@ namespace UML {
                                     } else {
                                         // there is data that belongs in a superset to this set but it is not divided
                                         // make sure our root stays as node
-                                        createDividerNode(node, currNode, set);
+                                        SetNode* dividerNode = createDividerNode(node, currNode, set);
+                                        insertDividerIntoTree(node, currNode, dividerNode, set);
                                         break;
                                     }
                                 }
                             }
                         }
                     }
+
+                    // increase size
+                    for (auto redefinedSet : set->m_redefines) {
+                        redefinedSet->m_size++;
+                    }
+                    set->m_size++;
+                } while (!stack.empty());
+
+                // adjust roots and size
+                stack.push_front(node->set);
+                do {
+                    AbstractSet* set = stack.front();
+                    stack.pop_front();
 
                     // handle redefines
                     for (auto redefinedSet : set->m_redefines) {
@@ -521,9 +576,6 @@ namespace UML {
                                 throw SetStateException("bad state for set with redefines, our set has root already but redefined does not. Please contact the developer!");
                             }
                         }
-
-                        // increase size
-                        redefinedSet->m_size++;
                     }
 
                     if (!set->m_root) {
@@ -531,8 +583,9 @@ namespace UML {
                         set->m_root = node;
                     }
 
-                    // increase size
-                    set->m_size++;
+                    for (auto superset : set->m_superSets) {
+                        stack.push_front(superset);
+                    }
                 } while (!stack.empty());
             }
 
@@ -649,7 +702,7 @@ namespace UML {
                     } while (!stack.empty());
                     node->m_parent = 0;
                 } else {
-                    // just adjust root and size
+                    // just adjust roots
                     do {
                         AbstractSet* currSet = stack.front();
                         stack.pop_front();
@@ -666,9 +719,15 @@ namespace UML {
 
                 // adjust all sets this node affects
                 stack.push_front(node->set);
+                std::unordered_set<AbstractSet*> visited;
                 do {
                     AbstractSet* currSet = stack.front();
                     stack.pop_front();
+                    if (visited.count(currSet)) {
+                        continue;
+                    } else {
+                        visited.insert(currSet);
+                    }
                     if (currSet->m_root == node && !node->m_left && !node->m_right) {
                         currSet->m_root = 0;
                     }
@@ -939,8 +998,26 @@ namespace UML {
                     if (!this->m_root->m_ptr) {
                         // divider node
                         if (this->m_root->m_left && this->m_root->m_right) {
-                            // bad
-                            throw SetStateException("I know im not supposed to throw an error but this state is bad");
+                            // one side should be leftover divider node from diamond set subtree
+                            if (!this->m_root->m_left->m_ptr) {
+                                if (this->m_root->m_left->m_left || this->m_root->m_left->m_right) {
+                                    throw SetStateException("I know im not supposed to throw an error but this state is not handled");
+                                }
+                                SetNode* dividerToDelete = this->m_root->m_left;
+                                dividerToDelete->m_parent = 0;
+                                this->m_root->m_left = 0;
+                                delete dividerToDelete;
+                            } else if (!this->m_root->m_right->m_ptr) {
+                                if (this->m_root->m_right->m_left || this->m_root->m_right->m_right) {
+                                    throw SetStateException("I know im not supposed to throw an error but this state is not handled");
+                                }
+                                SetNode* dividerToDelete = this->m_root->m_right;
+                                dividerToDelete->m_parent = 0;
+                                this->m_root->m_right = 0;
+                                delete dividerToDelete;
+                            } else {
+                                throw SetStateException("I know im not supposed to throw an error but this state is bad");
+                            }
                         }
                         SetNode* newRoot = 0;
                         if (this->m_root->m_left) {
@@ -1002,7 +1079,21 @@ namespace UML {
                                 }
                             } while (!stack.empty());
                         }
+                        std::list<AbstractSet*> stack;
+                        for (auto superset : this->m_root->set->m_superSets) {
+                            stack.push_front(superset);
+                        }
+                        while (!stack.empty()) {
+                            AbstractSet* set = stack.front();
+                            stack.pop_front();
 
+                            if (set->m_root == this->m_root) {
+                                set->m_root = 0;
+                                for (auto superset : set->m_superSets) {
+                                    stack.push_front(superset);
+                                }
+                            }
+                        }
                         if (newRoot) {
                             newRoot->m_parent = 0;
                             delete this->m_root;
@@ -1018,12 +1109,14 @@ namespace UML {
                     while (!queue.empty()) {
                         AbstractSet* currSet = queue.front();
                         queue.pop_front();
-                        if (currSet->m_root == this->m_root) {
-                            currSet->m_root = 0;
-                        } else if (currSet->m_root->m_left == this->m_root) {
-                            currSet->m_root->m_left = 0;
-                        } else if (currSet->m_root->m_right == this->m_root) {
-                            currSet->m_root->m_right = 0;
+                        if (currSet->m_root) {
+                            if (currSet->m_root == this->m_root) {
+                                currSet->m_root = 0;
+                            } else if (currSet->m_root->m_left == this->m_root) {
+                                currSet->m_root->m_left = 0;
+                            } else if (currSet->m_root->m_right == this->m_root) {
+                                currSet->m_root->m_right = 0;
+                            }
                         }
                         for (auto superset : currSet->m_superSets) {
                             queue.push_back(superset);

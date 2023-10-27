@@ -1551,3 +1551,235 @@ TEST_F(SetTest, tripleRemovePlacholder) {
     ASSERT_FALSE(testEl->set2.contains(pckg3));
     ASSERT_FALSE(testEl->set3.contains(pckg3));
 }
+
+class TestDiamondSuperSetElement : public Element
+{
+public:
+    CustomSet<Element, TestDiamondSuperSetElement> root = CustomSet<Element, TestDiamondSuperSetElement>(this);
+    CustomSet<NamedElement, TestDiamondSuperSetElement> left = CustomSet<NamedElement, TestDiamondSuperSetElement>(this);
+    CustomSet<PackageableElement, TestDiamondSuperSetElement> right = CustomSet<PackageableElement, TestDiamondSuperSetElement>(this);
+    CustomSet<Package, TestDiamondSuperSetElement> bottom = CustomSet<Package, TestDiamondSuperSetElement>(this);
+    TestDiamondSuperSetElement() : Element(ElementType::ELEMENT)
+    {
+        left.subsets(root);
+        right.subsets(root);
+        bottom.subsets(left);
+        bottom.subsets(right);
+    }
+};
+
+TEST_F(SetTest, VeryBasicDiamondSubsetTest)
+{
+    Manager<> m;
+    PackagePtr pckg1 = m.create<Package>();
+    UmlPtr<TestDiamondSuperSetElement> testEl = m.create<TestDiamondSuperSetElement>();
+    testEl->bottom.add(pckg1);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 1);
+    ASSERT_EQ(testEl->right.size(), 1);
+    ASSERT_EQ(testEl->root.size(), 1);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+}
+
+TEST_F(SetTest, TwoElementsDiamondSubsetTest)
+{
+    Manager<> m;
+    PackagePtr pckg1 = m.create<Package>();
+    PackagePtr pckg2 = m.create<Package>();
+    UmlPtr<TestDiamondSuperSetElement> testEl = m.create<TestDiamondSuperSetElement>();
+    testEl->bottom.add(pckg1);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 1);
+    ASSERT_EQ(testEl->right.size(), 1);
+    ASSERT_EQ(testEl->root.size(), 1);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+
+    testEl->left.add(pckg2);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 2);
+    ASSERT_EQ(testEl->right.size(), 1);
+    ASSERT_EQ(testEl->root.size(), 2);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg2.id()));
+}
+
+TEST_F(SetTest, threeElementDiamondSubsetTest)
+{
+    Manager<> m;
+    PackagePtr pckg1 = m.create<Package>();
+    PackagePtr pckg2 = m.create<Package>();
+    PackagePtr pckg3 = m.create<Package>();
+    UmlPtr<TestDiamondSuperSetElement> testEl = m.create<TestDiamondSuperSetElement>();
+    testEl->bottom.add(pckg1);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 1);
+    ASSERT_EQ(testEl->right.size(), 1);
+    ASSERT_EQ(testEl->root.size(), 1);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+
+    testEl->left.add(pckg2);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 2);
+    ASSERT_EQ(testEl->right.size(), 1);
+    ASSERT_EQ(testEl->root.size(), 2);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg2.id()));
+
+    testEl->right.add(pckg3);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 2);
+    ASSERT_EQ(testEl->right.size(), 2);
+    ASSERT_EQ(testEl->root.size(), 3);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg3.id()));
+    ASSERT_FALSE(testEl->left.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg3.id()));
+}
+
+TEST_F(SetTest, fourElementDiamondSubsetTest)
+{
+    Manager<> m;
+    PackagePtr pckg1 = m.create<Package>();
+    PackagePtr pckg2 = m.create<Package>();
+    PackagePtr pckg3 = m.create<Package>();
+    PackagePtr pckg4 = m.create<Package>();
+    UmlPtr<TestDiamondSuperSetElement> testEl = m.create<TestDiamondSuperSetElement>();
+    testEl->bottom.add(pckg1);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 1);
+    ASSERT_EQ(testEl->right.size(), 1);
+    ASSERT_EQ(testEl->root.size(), 1);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+
+    testEl->left.add(pckg2);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 2);
+    ASSERT_EQ(testEl->right.size(), 1);
+    ASSERT_EQ(testEl->root.size(), 2);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg2.id()));
+
+    testEl->right.add(pckg3);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 2);
+    ASSERT_EQ(testEl->right.size(), 2);
+    ASSERT_EQ(testEl->root.size(), 3);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg3.id()));
+    ASSERT_FALSE(testEl->left.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg3.id()));
+
+    testEl->root.add(pckg4);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_EQ(testEl->left.size(), 2);
+    ASSERT_EQ(testEl->right.size(), 2);
+    ASSERT_EQ(testEl->root.size(), 4);
+    ASSERT_TRUE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg1.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg3.id()));
+    ASSERT_FALSE(testEl->left.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg3.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg4.id()));
+    ASSERT_FALSE(testEl->left.contains(pckg4.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg4.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg4.id()));
+}
+
+TEST_F(SetTest, simpleRemoveFromDiamondSubset) {
+    Manager<> m;
+    PackagePtr pckg1 = m.create<Package>();
+    UmlPtr<TestDiamondSuperSetElement> testEl = m.create<TestDiamondSuperSetElement>();
+    testEl->bottom.add(pckg1);
+    testEl->bottom.remove(pckg1);
+    ASSERT_EQ(testEl->bottom.size(), 0);
+    ASSERT_EQ(testEl->left.size(), 0);
+    ASSERT_EQ(testEl->right.size(), 0);
+    ASSERT_EQ(testEl->root.size(), 0);
+    ASSERT_FALSE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->left.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->root.contains(pckg1.id()));
+}
+
+TEST_F(SetTest, removefromDiamondSubset) {
+    Manager<> m;
+    PackagePtr pckg1 = m.create<Package>();
+    PackagePtr pckg2 = m.create<Package>();
+    PackagePtr pckg3 = m.create<Package>();
+    UmlPtr<TestDiamondSuperSetElement> testEl = m.create<TestDiamondSuperSetElement>();
+    testEl->bottom.add(pckg1);
+    testEl->right.add(pckg2);
+    testEl->left.add(pckg3);
+    testEl->bottom.remove(pckg1);
+    ASSERT_EQ(testEl->bottom.size(), 0);
+    ASSERT_EQ(testEl->left.size(), 1);
+    ASSERT_EQ(testEl->right.size(), 1);
+    ASSERT_EQ(testEl->root.size(), 2);
+    ASSERT_FALSE(testEl->bottom.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->left.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->root.contains(pckg1.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->left.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->right.contains(pckg2.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg2.id()));
+    ASSERT_FALSE(testEl->bottom.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->left.contains(pckg3.id()));
+    ASSERT_FALSE(testEl->right.contains(pckg3.id()));
+    ASSERT_TRUE(testEl->root.contains(pckg3.id()));
+}
+
+// TODO more complex set

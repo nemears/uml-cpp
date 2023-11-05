@@ -68,9 +68,6 @@ namespace UML {
 
             bool m_rootRedefinedSet = true;
 
-            // m_guard lets us know the set's scope quickly, a subset must have a higher guard than its superset. root sets always have guards of 0
-            size_t m_guard = 0;
-
             size_t m_size = 0;
 
             // root
@@ -98,27 +95,34 @@ namespace UML {
              * but this set will not necessarily have all of the elements within the set supplied
              * @param subsetOf the set that we are a subset of
              **/
-            void subsets(AbstractSet& subsetOf) {
-                if (!this->m_superSets.count(&subsetOf)) {
-                    this->m_superSets.insert(&subsetOf);
-                    subsetOf.m_subSets.insert(this);
-                    if (subsetOf.m_guard >= m_guard) {
-                        m_guard = subsetOf.m_guard + 1;
-                    }
-                    // Handle ordered set, TODO other set types
-                    if (!m_setToInstantiate && subsetOf.setType() == SetType::ORDERED_SET /**&& setType() != SetType::ORDERED_SET**/) {
-                        if (subsetOf.m_setToInstantiate) {
-                            // we want highest up the tree orderedSet
-                            m_setToInstantiate = subsetOf.m_setToInstantiate;
-                        } else {
-                            m_setToInstantiate = &subsetOf;
+            void subsets(AbstractSet* subsetOf) {
+                if (!subsetOf->m_rootRedefinedSet) {
+                    for (auto redefinedSet : subsetOf->m_redefines) {
+                        if (redefinedSet->m_rootRedefinedSet) {
+                            subsetOf = redefinedSet;
+                            break;
                         }
-                    } else if (subsetOf.m_setToInstantiate) {
-                        m_setToInstantiate = subsetOf.m_setToInstantiate;
+                    }
+                }
+                if (!this->m_superSets.count(subsetOf)) {
+                    this->m_superSets.insert(subsetOf);
+                    subsetOf->m_subSets.insert(this);
+                    // Handle ordered set, TODO other set types
+                    if (!m_setToInstantiate && subsetOf->setType() == SetType::ORDERED_SET) {
+                        if (subsetOf->m_setToInstantiate) {
+                            // we want highest up the tree orderedSet
+                            m_setToInstantiate = subsetOf->m_setToInstantiate;
+                        } else {
+                            m_setToInstantiate = subsetOf;
+                        }
+                    } else if (subsetOf->m_setToInstantiate) {
+                        m_setToInstantiate = subsetOf->m_setToInstantiate;
                     }
                 }
             }
 
-            // virtual bool contains(ID id) const = 0;
+            void subsets(AbstractSet& subsetOf) {
+                subsets(&subsetOf);
+            }
     };
 }

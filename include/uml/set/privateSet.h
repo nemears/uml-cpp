@@ -1479,6 +1479,9 @@ namespace UML {
                 SetID_Iterator<T> ret;
                 ret.curr = root;
                 ret.root = root;
+                if (!ret.curr->m_ptr) {
+                    ++ret;
+                }
                 return ret;
             };
             SetID_Iterator<T> end() {
@@ -1540,6 +1543,9 @@ namespace UML {
                 SetPtrIterator<T> ret;
                 ret.curr = root;
                 ret.root = root;
+                if (!ret.curr->m_ptr) {
+                    ++ret;
+                }
                 return ret;
             };
             SetPtrIterator<T> end() {

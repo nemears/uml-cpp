@@ -38,8 +38,8 @@ namespace UML {
 
         OrderedSetNode* m_prev = 0;
         OrderedSetNode* m_next = 0;
-        virtual ~OrderedSetNode() {
-            // find root orderedSet
+
+        OrderedSetNodeAllocationPolicyInterface* getOrderedSet() {
             OrderedSetNodeAllocationPolicyInterface* orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(set);
             if (!orderedSet) {
                 for (auto& redefinedSet : set->m_redefines) {
@@ -65,12 +65,46 @@ namespace UML {
                     }
                 } while (!queue.empty());
             }
+            return orderedSet;
+        }
+
+        void copyData(SetNode* node) override {
+            OrderedSetNode* orderedNode = dynamic_cast<OrderedSetNode*>(node);
+            if (orderedNode->m_prev) {
+                m_prev = orderedNode->m_prev;
+            }
+
+            if (orderedNode->m_next) {
+                m_next = orderedNode->m_next;
+            }
+
+            OrderedSetNodeAllocationPolicyInterface* orderedSet = getOrderedSet();
+
+            if (!orderedSet) {
+                throw SetStateException("bad state, non orderedSetNode tried to add to orderedSet!");
+            }
+
+            if (orderedSet->getFront() == node) {
+                orderedSet->setFront(this);
+            }
+
+            if (orderedSet->getBack() == node) {
+                orderedSet->setBack(this);
+            }
+        }
+
+        virtual ~OrderedSetNode() {
+            // find root orderedSet
+            OrderedSetNodeAllocationPolicyInterface* orderedSet = getOrderedSet();
 
             // TODO understand this edge case (orderedSetNode is not part of an ordered set)
             // happens with ClassTest.addOwnedAttributeAsStructuredClassifierTest
             if (!orderedSet) {
-                throw SetStateException("bad state, non orderedSetNode tried to add to orderedSet!");
-                // return;
+                // throw SetStateException("bad state, non orderedSetNode tried to add to orderedSet!");
+                // This happens in Set destructors sometimes, at that point I don't know if there
+                // is a bad state to arise, but I will still consider this area of code suspicous
+                // the superset of this has been removed, either cutoff from tree or destroyed before us
+                return; 
             }
 
             if (orderedSet->getFront() == this) {

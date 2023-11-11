@@ -397,3 +397,5 @@ SetNode::~SetNode() {
         }
     } while (!notSwapped);
 }
+
+void SetNode::copyData(SetNode* node) {}

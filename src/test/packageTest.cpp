@@ -106,7 +106,7 @@ TEST_F(PackageTest, removePackageMergeTest) {
     ASSERT_TRUE(m.getRelatedElements().size() == 0);
 }
 
-TEST_F(PackageTest, addOwnedStereotype) {
+TEST_F(PackageTest, simpleStereotypeTest) {
     Manager<> m;
     Profile& p = *m.create<Profile>();
     p.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
@@ -123,8 +123,10 @@ TEST_F(PackageTest, addOwnedStereotype) {
     ASSERT_TRUE(p.getMembers().contains(s));
     ASSERT_EQ(p.getOwnedElements().size(), 1);
     ASSERT_TRUE(p.getOwnedElements().contains(s));
-    
-    // now with another element in packagedElements
+}
+
+TEST_F(PackageTest, addOwnedStereotype) {
+    Manager<> m;
     Profile& p2 = *m.create<Profile>();
     Stereotype& s2 = *m.create<Stereotype>();
     s2.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");

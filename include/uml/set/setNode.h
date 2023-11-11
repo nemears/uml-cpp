@@ -41,6 +41,7 @@ namespace UML {
             // search and insert
             SetNode* search(ID key);
             void insert(SetNode* node);
+            virtual void copyData(SetNode* node);
 
             // rule of three
             SetNode() {};

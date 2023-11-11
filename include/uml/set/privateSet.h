@@ -374,6 +374,9 @@ namespace UML {
                                 } else {
                                     // I don't know if this works with multiple tree roots with unrelated sets
                                     // TODO test that!
+
+                                    node->copyData(existingNode);
+
                                     existingNode->set->innerRemove(node->m_ptr.id());
 
                                     // I kind of get why we have to do this but I forget specifics
@@ -382,7 +385,7 @@ namespace UML {
                                     }
 
                                     addNodeToSet(node);
-                                    // TODO keep orderedSet stuff? or no?
+                                    // TODO keep orderedSet stuff? ClassTest.addCompositePropertyTest
                                     return;
                                 }
                             }
@@ -690,6 +693,7 @@ namespace UML {
                 }
 
                 // adjust intermediate roots
+
                 std::list<AbstractSet*> stack;
                 stack.push_front(dividerNodeToDelete->set);
                 do {
@@ -697,6 +701,11 @@ namespace UML {
                     stack.pop_front();
                     if (currSet->m_root == dividerNodeToDelete) {
                         currSet->m_root = successor;
+                        for (auto superset : currSet->m_superSets) {
+                            if (superset->m_root == dividerNodeToDelete) {
+                                stack.push_front(superset);
+                            }
+                        }
                     }
                     if (currSet->m_root != successor) {
                         for (auto superset : currSet->m_superSets) {
@@ -1186,6 +1195,12 @@ namespace UML {
 
                 for (auto superSet : this->m_superSets) {
                     superSet->m_subSets.erase(this);
+                    
+                    // add remaining subsets to supersets to keep track of still
+                    for (auto subSet : this->m_subSets) {
+                        superSet->m_subSets.insert(subSet);
+                        subSet->m_superSets.insert(superSet);
+                    }
                 }
                 for (auto subSet : this->m_subSets) {
                     subSet->m_superSets.erase(this);
@@ -1272,11 +1287,13 @@ namespace UML {
                 }
                 oldRootRedefined->m_superSets.clear();
 
-                for (auto subset : redefined.m_subSets) {
+                for (auto subset : oldRootRedefined->m_subSets) {
                     this->m_subSets.insert(subset);
                     subset->m_superSets.erase(oldRootRedefined);
                     subset->m_superSets.insert(this);
                 }
+                oldRootRedefined->m_subSets.clear();
+
 
                 for (AbstractSet* redefinedSet : this->m_redefines) {
                     redefinedSet->m_rootRedefinedSet = false;
@@ -1286,6 +1303,22 @@ namespace UML {
                         redefinedSet->m_setToInstantiate = this;
                     }
                 }
+
+                std::list<AbstractSet*> queue;
+                queue.push_back(this);
+                do {
+                    AbstractSet* currSet = queue.front();
+                    queue.pop_front();
+
+                    if (currSet->setType() != SetType::ORDERED_SET || currSet == this) {
+                        if (currSet != this) {
+                            currSet->m_setToInstantiate = this;
+                        }
+                        for (auto subset : currSet->m_subSets) {
+                            queue.push_back(subset);
+                        }
+                    }
+                } while (!queue.empty());
             }
 
             // Shared Accessors, all of these can be used by subclasses

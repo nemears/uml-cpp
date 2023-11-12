@@ -625,6 +625,29 @@ TEST_F(SetTest, basicSubsetsTest) {
     ASSERT_THROW(testEl->sub.get(clazz.getID()), SetStateException);
 }
 
+TEST_F(SetTest, iterateOverSubsettedElement) {
+    Manager<> m;
+    UmlPtr<TestSubsetsElement> testEl = m.create<TestSubsetsElement>();
+    PackagePtr a = m.create<Package>();
+    PackagePtr b = m.create<Package>();
+    PackagePtr c = m.create<Package>();
+    // a->setID("buttEyLdYRCk_zbuttYrQyy42yHr");
+    // b->setID("04zH_c&oPfM5KXPqJXA0_7AzIzcy");
+    // c->setID("&90IAqvc&wUnewHz0xLI4fPYNXUe");
+    testEl->root.add(a);
+    testEl->sub.add(b);
+    testEl->sub.add(c);
+    std::unordered_set<PackageableElement*> pckgs;
+    for (auto& pkg : testEl->root) {
+        pckgs.insert(&pkg);
+    }
+    ASSERT_EQ(pckgs.size(), 3);
+    SetIterator<PackageableElement> it = testEl->root.begin();
+    it++;
+    it++;
+    ASSERT_EQ(*it, testEl->root.back());
+}
+
 class Test2SubsetsElement : public Element {
     public:
         CustomSet<NamedElement, Test2SubsetsElement> set1 = CustomSet<NamedElement, Test2SubsetsElement>(this);

@@ -97,11 +97,7 @@ namespace UML {
                 if (!this->m_root) {
                     return ret;
                 }
-                ret.curr = this->m_root;
-                ret.root = this->m_root;
-                if (!ret.curr->m_ptr) {
-                    ++ret;
-                }
+                ret.loadleft(this->m_root);
                 return ret;
             }
             SetIterator<T> end() override {

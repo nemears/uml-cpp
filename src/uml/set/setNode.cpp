@@ -20,6 +20,9 @@ SetNode* SetNode::search(ID key) {
 }
 
 void SetNode::insertBST(SetNode* node) {
+    if (node->m_ptr.id() == m_ptr.id()) {
+        throw SetStateException("Duplicate node added to set!");
+    }
     if (m_ptr.id() > node->m_ptr.id()) {
         SetNode* nextParent = m_left;
         if (!nextParent) {

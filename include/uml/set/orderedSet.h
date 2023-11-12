@@ -357,6 +357,10 @@ namespace UML {
                     AbstractSet* set = queue.front();
                     queue.pop_front();
 
+                    for (auto superset : set->m_superSets) {
+                        queue.push_back(superset);
+                    }
+
                     if (set->setType() != SetType::ORDERED_SET) {
                         continue;
                     }
@@ -371,10 +375,6 @@ namespace UML {
                         orderedSetNode->m_prev->m_next = orderedSetNode;                        
                     }
                     orderedSet->setBack(orderedSetNode);
-
-                    for (auto superset : set->m_superSets) {
-                        queue.push_back(superset);
-                    }
                 } while (!queue.empty());
             }
             

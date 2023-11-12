@@ -170,7 +170,6 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
 
     ID expressionID = expression.getID();
     ID firstID = first.getID();
-    ID lastID = last.getID();
     m.release(expression);
     ASSERT_FALSE(m.loaded(expressionID));
     Expression& expression2 = m.get(expressionID)->as<Expression>();
@@ -178,8 +177,8 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
     ASSERT_EQ(expression2.getOperands().front(), first);
     ASSERT_EQ(expression2.getOperands().back(), last);
     ASSERT_EQ(expression2.getOwnedElements().size(), 2);
-    ASSERT_EQ(*expression2.getOwnedElements().begin(), first);
-    ASSERT_EQ(*(expression2.getOwnedElements().begin()++), last);
+    ASSERT_EQ(*expression2.getOwnedElements().begin(), last);
+    ASSERT_EQ(*(expression2.getOwnedElements().begin()++), first);
     ASSERT_TRUE(first.getOwner());
     ASSERT_TRUE(last.getOwner());
 
@@ -191,8 +190,8 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
     ASSERT_EQ(expression2.getOperands().front(), first2);
     ASSERT_EQ(expression2.getOperands().back(), last);
     ASSERT_EQ(expression2.getOwnedElements().size(), 2);
-    ASSERT_EQ(*expression2.getOwnedElements().begin(), first2);
-    ASSERT_EQ(*(expression2.getOwnedElements().begin()++), last);
+    ASSERT_EQ(*expression2.getOwnedElements().begin(), last);
+    ASSERT_EQ(*(expression2.getOwnedElements().begin()++), first2);
     ASSERT_TRUE(first2.getOwner());
     ASSERT_TRUE(last.getOwner());
 
@@ -205,8 +204,8 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
     ASSERT_EQ(expression3.getOperands().front(), first3);
     ASSERT_EQ(expression3.getOperands().back(), last);
     ASSERT_EQ(expression3.getOwnedElements().size(), 2);
-    ASSERT_EQ(*expression3.getOwnedElements().begin(), first3);
-    ASSERT_EQ(*(expression3.getOwnedElements().begin()++), last);
+    ASSERT_EQ(*expression3.getOwnedElements().begin(), last);
+    ASSERT_EQ(*(expression3.getOwnedElements().begin()++), first3);
     ASSERT_TRUE(first3.getOwner());
     ASSERT_TRUE(last.getOwner());
 }
@@ -254,16 +253,16 @@ TEST_F(ValueSpecificationTest, testEmitLiteralUnlimitedNatural) {
   id: e_ob7tgbN16Plhj_sTAOVD5ijLrL
   packagedElements:
     - literalUnlimitedNatural:
+        id: "8&K_0aLhvQDM12ZeYg9nPiSrexHo"
+        value: 9999
+    - literalUnlimitedNatural:
         id: 7bYUY3yFUBrfPmzKKrV2NJmXuECA
         value: 0
     - literalUnlimitedNatural:
         id: puJaUTZsLPdGJkJSJtdX51MIA2ch
         value: "*"
     - literalNull:
-        id: 4gA4RgL9vKTRYd61D99y1d_Yggj6
-    - literalUnlimitedNatural:
-        id: "8&K_0aLhvQDM12ZeYg9nPiSrexHo"
-        value: 9999)"""";
+        id: 4gA4RgL9vKTRYd61D99y1d_Yggj6)"""";
     string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

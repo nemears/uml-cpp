@@ -254,8 +254,8 @@ TEST_F(PackageTest, parse3PackagesTest) {
     ASSERT_TRUE(pckg2->getNamespace() == pckg1);
     ASSERT_TRUE(pckg3->getNamespace() == pckg1);
     ASSERT_TRUE(pckg1->getOwnedElements().size() == 2);
-    ASSERT_TRUE(*pckg1->getOwnedElements().begin() == *pckg2);
-    ASSERT_TRUE(*(pckg1->getOwnedElements().begin()++) == *pckg3);
+    ASSERT_TRUE(*pckg1->getOwnedElements().begin() == *pckg3);
+    ASSERT_TRUE(*(pckg1->getOwnedElements().begin()++) == *pckg2);
     ASSERT_TRUE(pckg2->getOwner() == pckg1);
     ASSERT_TRUE(pckg3->getOwner() == pckg1);
     ASSERT_TRUE(pckg2->getPackagedElements().size() == 1);
@@ -392,13 +392,13 @@ TEST_F(PackageTest, emitMergedPackageTest) {
   id: la_AO7XKQcEsH1P2LHcSk4ELzoEV
   packagedElements:
     - package:
+        id: "orUaM2sY9dz&YP83TqfGaHO5SBY4"
+    - package:
         id: SXE9QBb0rYOmBFbahGIQLhMxlYNq
         packageMerges:
           - packageMerge:
               id: "I7c2Z27FF1w&WX4NHKdfIkbNuhDA"
-              mergedPackage: "orUaM2sY9dz&YP83TqfGaHO5SBY4"
-    - package:
-        id: "orUaM2sY9dz&YP83TqfGaHO5SBY4")"""";
+              mergedPackage: "orUaM2sY9dz&YP83TqfGaHO5SBY4")"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;
@@ -644,14 +644,14 @@ TEST_F(PackageTest, emitProfileApplication) {
     std::string expectedEmit = R""""(package:
   id: BW5iaVf_WdBebuIH3yi9beXpG5Yi
   packagedElements:
+    - profile:
+        id: R12X_VJHWWUKmJS_F8JotXJZzsNB
     - package:
         id: "BtO&7RDq4sOe2Cb3hl_bByknWtDU"
         profileApplications:
           - profileApplication:
               id: QbTzWJmjUCFjrufpPQc9qyeQdK3R
-              appliedProfile: R12X_VJHWWUKmJS_F8JotXJZzsNB
-    - profile:
-        id: R12X_VJHWWUKmJS_F8JotXJZzsNB)"""";
+              appliedProfile: R12X_VJHWWUKmJS_F8JotXJZzsNB)"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

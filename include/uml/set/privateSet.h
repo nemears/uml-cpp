@@ -1216,7 +1216,33 @@ namespace UML {
 
             // root
             void setRoot(SetNode* node) override {
-                this->m_root = node;
+                AbstractSet* currSet = this;
+                for (auto redefinedSet : this->m_redefines) {
+                    if (redefinedSet->m_rootRedefinedSet) {
+                        currSet = redefinedSet;
+                    }
+                }
+
+                std::list<AbstractSet*> stack;
+                stack.push_front(currSet);
+
+                // keep track of original root
+                SetNode* oldRoot = currSet->m_root;
+
+                // replace all roots that shared with this set
+                do {
+                    currSet = stack.front();
+                    stack.pop_front();
+                    if (currSet->m_root == oldRoot) {
+                        currSet->m_root = node;
+                        for (auto redefinedSet : currSet->m_redefines) {
+                            redefinedSet->m_root = node;
+                        }
+                        for (auto superset : currSet->m_superSets) {
+                            stack.push_front(superset);
+                        }
+                    }
+                } while (!stack.empty());
             }
             
             SetNode* getRoot() const override {

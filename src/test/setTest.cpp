@@ -631,9 +631,16 @@ TEST_F(SetTest, iterateOverSubsettedElement) {
     PackagePtr a = m.create<Package>();
     PackagePtr b = m.create<Package>();
     PackagePtr c = m.create<Package>();
-    // a->setID("buttEyLdYRCk_zbuttYrQyy42yHr");
-    // b->setID("04zH_c&oPfM5KXPqJXA0_7AzIzcy");
-    // c->setID("&90IAqvc&wUnewHz0xLI4fPYNXUe");
+    a->setID("&90IAqvc&wUnewHz0xLI4fPYNXUe");
+    b->setID("04zH_c&oPfM5KXPqJXA0_7AzIzcy");
+    c->setID("buttEyLdYRCk_zbuttYrQyy42yHr"); 
+    // inorder
+    //
+    // &90IAqvc&wUnewHz0xLI4fPYNXUe
+    // buttEyLdYRCk_zbuttYrQyy42yHr
+    // 04zH_c&oPfM5KXPqJXA0_7AzIzcy
+    //
+    // WwowBIeuOqdXecMITJkHZWbnD94G
     testEl->root.add(a);
     testEl->sub.add(b);
     testEl->sub.add(c);
@@ -646,6 +653,23 @@ TEST_F(SetTest, iterateOverSubsettedElement) {
     it++;
     it++;
     ASSERT_EQ(*it, testEl->root.back());
+}
+
+TEST_F(SetTest, readjustRedBlackRootTest) {
+    Manager<> m;
+    UmlPtr<TestSubsetsElement> testEl = m.create<TestSubsetsElement>();
+    PackagePtr a = m.create<Package>();
+    PackagePtr b = m.create<Package>();
+    PackagePtr c = m.create<Package>();
+    a->setID("&90IAqvc&wUnewHz0xLI4fPYNXUe");
+    b->setID("buttEyLdYRCk_zbuttYrQyy42yHr");
+    c->setID("04zH_c&oPfM5KXPqJXA0_7AzIzcy");
+    testEl->sub.add(a);
+    ASSERT_EQ(testEl->sub.getRoot(), testEl->root.getRoot());
+    testEl->sub.add(b);
+    ASSERT_EQ(testEl->sub.getRoot(), testEl->root.getRoot());
+    testEl->sub.add(c);
+    ASSERT_EQ(testEl->sub.getRoot(), testEl->root.getRoot());
 }
 
 class Test2SubsetsElement : public Element {

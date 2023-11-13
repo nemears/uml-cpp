@@ -428,8 +428,6 @@ TEST_F(AssociationTest, emitAssociationTest) {
               id: FqaulNq6bCe_8J5M0Ff2oCCaQD05
               type: m8K65o0wEqtIznmEPmuXaTph2JJu
               association: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5"
-    - primitiveType:
-        id: m8K65o0wEqtIznmEPmuXaTph2JJu
     - association:
         id: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5"
         memberEnds:
@@ -437,7 +435,9 @@ TEST_F(AssociationTest, emitAssociationTest) {
         navigableOwnedEnds:
           - property:
               id: "k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"
-              type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3)"""";
+              type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
+    - primitiveType:
+        id: m8K65o0wEqtIznmEPmuXaTph2JJu)"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

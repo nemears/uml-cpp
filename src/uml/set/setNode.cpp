@@ -65,7 +65,7 @@ void SetNode::left_rotate(AbstractSet* set) {
             rightNode->m_parent->m_right = rightNode;
         }
     } else {
-        set->m_root = rightNode;
+        set->setRoot(rightNode);
     }
 }
 
@@ -86,7 +86,7 @@ void SetNode::right_rotate(AbstractSet* set) {
             leftNode->m_parent->m_right = leftNode;
         }
     } else {
-        set->m_root = leftNode;
+        set->setRoot(leftNode);
     }
 }
 
@@ -166,8 +166,8 @@ SetNode::~SetNode() {
         notSwapped = true;
         if (is_root(set) && !m_left && !m_right) {
             // node is root and has no children
-            if (set->m_root == this) {
-                set->m_root = 0;
+            if (set->getRoot() == this) {
+                set->setRoot(0);
             } 
         } else if (m_color == RedOrBlack::RED && !m_left && !m_right) {
             // node is red and has no children

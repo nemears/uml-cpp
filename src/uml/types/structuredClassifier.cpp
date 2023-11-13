@@ -27,10 +27,14 @@ void StructuredClassifier::RemovePartPolicy::apply(Property& el, StructuredClass
 
 void StructuredClassifier::restoreReferences() {
     Classifier::restoreReferences();
+    std::list<ID> props;
     for (auto& prop : m_ownedAttributes) {
         if (prop.isComposite() && !m_parts.contains(prop)) {
-            m_parts.innerAdd(prop.getID());
+            props.push_back(prop.getID());
         }
+    }
+    for (auto prop : props) {
+        m_parts.innerAdd(prop);
     }
 }
 

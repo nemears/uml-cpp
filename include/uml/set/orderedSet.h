@@ -370,7 +370,7 @@ namespace UML {
                         orderedSet->setFront(orderedSetNode);
                     }
 
-                    if (orderedSet->getBack() && orderedSetNode->m_prev != orderedSet->getBack() && orderedSetNode != orderedSet->getBack()) {
+                    if (orderedSet->getBack() && orderedSetNode->m_prev != orderedSet->getBack() && orderedSetNode->m_ptr.id() != orderedSet->getBack()->m_ptr.id()) {
                         orderedSetNode->m_prev = orderedSet->getBack();
                         orderedSetNode->m_prev->m_next = orderedSetNode;                        
                     }

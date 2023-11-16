@@ -1120,38 +1120,44 @@ namespace UML {
                                 
                                 if (set->m_superSets.empty()) {
                                     SetNode* currNode = set->m_root;
-                                    while (currNode) {
-                                        if (currNode->m_left == this->m_root) {
-                                            currNode->m_left = 0;
-                                            break;
-                                        } else if (currNode->m_right == this->m_root) {
-                                            currNode->m_right = 0;
-                                            break;
-                                        } else {
-                                            std::list<AbstractSet*> queue;
-                                            queue.push_back(this->m_root->set);
-                                            do {
-                                                AbstractSet* superSet = queue.front();
-                                                queue.pop_front();
+                                    if (currNode != this->m_root) {
+                                        while (currNode) {
+                                            if (currNode->m_left == this->m_root) {
+                                                currNode->m_left = 0;
+                                                break;
+                                            } else if (currNode->m_right == this->m_root) {
+                                                currNode->m_right = 0;
+                                                break;
+                                            } else {
+                                                std::list<AbstractSet*> queue;
+                                                queue.push_back(this->m_root->set);
+                                                do {
+                                                    AbstractSet* superSet = queue.front();
+                                                    queue.pop_front();
 
-                                                if (currNode->m_left && superSet == currNode->m_left->set) {
-                                                    currNode = currNode->m_left;
-                                                    break;
-                                                } else if (currNode->m_right && superSet == currNode->m_right->set) {
-                                                    currNode = currNode->m_right;
-                                                    break;
-                                                }
+                                                    if (currNode->m_left && superSet == currNode->m_left->set) {
+                                                        currNode = currNode->m_left;
+                                                        break;
+                                                    } else if (currNode->m_right && superSet == currNode->m_right->set) {
+                                                        currNode = currNode->m_right;
+                                                        break;
+                                                    }
 
-                                                for (auto superSuperSet : superSet->m_superSets) {
-                                                    queue.push_back(superSuperSet);
-                                                }
+                                                    for (auto superSuperSet : superSet->m_superSets) {
+                                                        queue.push_back(superSuperSet);
+                                                    }
 
-                                                if (queue.empty()) {
-                                                    throw SetStateException("I know don't throw exceptions in destructor, except this is bad, its technically impossible! contact dev!");
-                                                }
-                                            } while (!queue.empty());
+                                                    if (queue.empty()) {
+                                                        throw SetStateException("I know don't throw exceptions in destructor, except this is bad, its technically impossible! contact dev!");
+                                                    }
+                                                } while (!queue.empty());
+                                            }
                                         }
                                     }
+                                }
+
+                                if (set->m_root == this->m_root && set != this) {
+                                    set->m_root = newRoot;
                                 }
 
                                 for (auto superset : set->m_superSets) {

@@ -224,16 +224,19 @@ namespace UML {
 
                 // adjust roots of super sets
                 std::list<AbstractSet*> queue;
-                queue.push_back(dividerNode->set);
+                queue.push_back(node->set);
                 do {
                     AbstractSet* currSet = queue.front();
                     queue.pop_front();
                     if (currSet->m_root == existingRoot) {
                         currSet->m_root = dividerNode;
-                        visited.insert(currSet);
-                        for (auto superset : currSet->m_superSets) {
-                            queue.push_back(superset);
+                        for (auto redefinedSet : currSet->m_redefines) {
+                            redefinedSet->m_root = dividerNode;
                         }
+                        visited.insert(currSet);
+                    }
+                    for (auto superset : currSet->m_superSets) {
+                        queue.push_back(superset);
                     }
                 } while (!queue.empty());
 
@@ -708,6 +711,9 @@ namespace UML {
                     stack.pop_front();
                     if (currSet->m_root == dividerNodeToDelete) {
                         currSet->m_root = successor;
+                        for (auto redefinedSet : currSet->m_redefines) {
+                            redefinedSet->m_root = successor;
+                        }
                         for (auto superset : currSet->m_superSets) {
                             if (superset->m_root == dividerNodeToDelete) {
                                 stack.push_front(superset);
@@ -748,19 +754,43 @@ namespace UML {
                             while (currNode) {
                                 if (currNode->m_left == node) {
                                     SetNode* dividerNodeToDelete = currNode;
+                                    SetNode* replacementNode = dividerNodeToDelete->m_right;
                                     dividerNodeToDelete->m_left = 0;
                                     removeDividerNode(dividerNodeToDelete, dividerNodeToDelete->m_right);
                                     dividerNodeToDelete->m_right = 0;
                                     dividerNodeToDelete->m_parent = 0;
                                     delete dividerNodeToDelete;
+
+                                    // get rid of anything adjusted in stack
+                                    std::list<AbstractSet*> removeFromStack;
+                                    for (auto superset : stack) {
+                                        if (superset->m_root == replacementNode) {
+                                            removeFromStack.push_back(superset);
+                                        }
+                                    }
+                                    for (auto superset : removeFromStack) {
+                                        stack.remove(superset);
+                                    }
                                     break;
                                 } else if (currNode->m_right == node) {
                                     SetNode* dividerNodeToDelete = currNode;
+                                    SetNode* replacementNode = dividerNodeToDelete->m_left;
                                     currNode->m_right = 0;
-                                    removeDividerNode(dividerNodeToDelete, dividerNodeToDelete->m_left);
+                                    removeDividerNode(dividerNodeToDelete, replacementNode);
                                     dividerNodeToDelete->m_left = 0;
                                     dividerNodeToDelete->m_parent = 0;
                                     delete dividerNodeToDelete;
+
+                                    // get rid of anything adjusted in stack
+                                    std::list<AbstractSet*> removeFromStack;
+                                    for (auto superset : stack) {
+                                        if (superset->m_root == replacementNode) {
+                                            removeFromStack.push_back(superset);
+                                        }
+                                    }
+                                    for (auto superset : removeFromStack) {
+                                        stack.remove(superset);
+                                    }
                                     break;
                                 } else {
                                     // find the node

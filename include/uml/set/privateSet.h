@@ -400,9 +400,9 @@ namespace UML {
                                             m_opposite->skip = true;
                                         }
 
-                                        addNodeToSet(node);
+                                        // addNodeToSet(node);
                                         // TODO keep orderedSet stuff? ClassTest.addCompositePropertyTest
-                                        return;
+                                        continue;
                                     }
                                 }
                                 while (currNode) {
@@ -771,7 +771,6 @@ namespace UML {
                             while (currNode) {
                                 if (currNode->m_left == node) {
                                     SetNode* dividerNodeToDelete = currNode;
-                                    SetNode* replacementNode = dividerNodeToDelete->m_right;
                                     dividerNodeToDelete->m_left = 0;
                                     removeDividerNode(dividerNodeToDelete, dividerNodeToDelete->m_right);
                                     dividerNodeToDelete->m_right = 0;
@@ -780,9 +779,8 @@ namespace UML {
                                     break;
                                 } else if (currNode->m_right == node) {
                                     SetNode* dividerNodeToDelete = currNode;
-                                    SetNode* replacementNode = dividerNodeToDelete->m_left;
                                     currNode->m_right = 0;
-                                    removeDividerNode(dividerNodeToDelete, replacementNode);
+                                    removeDividerNode(dividerNodeToDelete, dividerNodeToDelete->m_left);
                                     dividerNodeToDelete->m_left = 0;
                                     dividerNodeToDelete->m_parent = 0;
                                     delete dividerNodeToDelete;
@@ -1070,72 +1068,94 @@ namespace UML {
                 [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el); 
                 delete m_opposite;
                 if (this->m_root && this->m_rootRedefinedSet && this->m_root->set == this) {
-                    if (!this->m_root->m_ptr) {
-                        // divider node
-                        throw SetStateException("I know don't throw exceptions in destructor, except this is bad, its technically impossible! contact dev!");
-                    }
-                   
-                    // adjust roots and parents from base of trees
-                    std::list<AbstractSet*> queue;
-                    for (auto superset : this->m_superSets) {
-                        queue.push_back(superset);
-                    }
-                    while (!queue.empty()) {
-                        AbstractSet* currSet = queue.front();
-                        queue.pop_front();
-                        if (currSet->m_root) {
-                            if (currSet->m_root == this->m_root) {
-                                // it is the root
-                                currSet->m_root = 0;
-                            } else {
-                                // it is a divider node, make sure we are destroying properly by checking all divider nodes
-                                std::list<SetNode*> dividerStack;
-                                dividerStack.push_front(currSet->m_root);
-                                do {
-                                    SetNode* currNode = dividerStack.front();
-                                    dividerStack.pop_front();
-                                    if (currNode->m_left == this->m_root) {
-                                        currNode->m_left = 0;
-                                        if (currNode->m_right) {
-                                            removeDividerNode(currNode, currNode->m_right);
-                                            currNode->m_parent = 0;
-                                            currNode->m_right = 0;
-                                            delete currNode;
-                                        }
-                                        break;
-                                    } else if (currNode->m_right == this->m_root) {
-                                        currNode->m_right = 0;
-                                        if (currNode->m_left) {
-                                            removeDividerNode(currNode, currNode->m_left);
-                                            currNode->m_parent = 0;
-                                            currNode->m_left = 0;
-                                            delete currNode;
-                                        }
-                                        break;
-                                    }
-                                    // recurse left
-                                    if (currNode->m_left && !currNode->m_left->m_ptr) {
-                                        dividerStack.push_front(currNode->m_left);
-                                    }
-                                    // recurse right
-                                    if (currNode->m_right && !currNode->m_right->m_ptr) {
-                                        dividerStack.push_front(currNode->m_right);
-                                    }
-                                } while (!dividerStack.empty());
-                            }
-                        }
-                        for (auto superset : currSet->m_superSets) {
+                    if (this->m_root->m_ptr) {
+                        // not a divider node
+
+                        // adjust roots and parents from base of trees
+                        std::list<AbstractSet*> queue;
+                        for (auto superset : this->m_superSets) {
                             queue.push_back(superset);
                         }
-                    }
-                    this->m_root->m_parent = 0;
+                        while (!queue.empty()) {
+                            AbstractSet* currSet = queue.front();
+                            queue.pop_front();
+                            if (currSet->m_root) {
+                                if (currSet->m_root == this->m_root) {
+                                    // it is the root
+                                    currSet->m_root = 0;
+                                } else {
+                                    // it is a divider node, make sure we are destroying properly by checking all divider nodes
+                                    std::list<SetNode*> dividerStack;
+                                    dividerStack.push_front(currSet->m_root);
+                                    do {
+                                        SetNode* currNode = dividerStack.front();
+                                        dividerStack.pop_front();
+                                        if (currNode->m_left == this->m_root) {
+                                            currNode->m_left = 0;
+                                            if (currNode->m_right) {
+                                                removeDividerNode(currNode, currNode->m_right);
+                                                currNode->m_parent = 0;
+                                                currNode->m_right = 0;
+                                                delete currNode;
+                                            }
+                                            break;
+                                        } else if (currNode->m_right == this->m_root) {
+                                            currNode->m_right = 0;
+                                            if (currNode->m_left) {
+                                                removeDividerNode(currNode, currNode->m_left);
+                                                currNode->m_parent = 0;
+                                                currNode->m_left = 0;
+                                                delete currNode;
+                                            }
+                                            break;
+                                        }
+                                        // recurse left
+                                        if (currNode->m_left && !currNode->m_left->m_ptr) {
+                                            dividerStack.push_front(currNode->m_left);
+                                        }
+                                        // recurse right
+                                        if (currNode->m_right && !currNode->m_right->m_ptr) {
+                                            dividerStack.push_front(currNode->m_right);
+                                        }
+                                    } while (!dividerStack.empty());
+                                }
+                            }
+                            for (auto superset : currSet->m_superSets) {
+                                queue.push_back(superset);
+                            }
+                        }
+                        this->m_root->m_parent = 0;
 
-                    // delete everything
-                    while (this->m_root) {
-                        delete this->m_root;
+                        // delete everything
+                        while (this->m_root) {
+                            delete this->m_root;
+                        }
+                    } else {
+                        // It is a divider node, try to adjust to redefine
+                        if (this->m_redefines.empty()) {
+                            throw SetStateException("Report to Developer! \nI know don't throw errors in destructor :( \nTODO remove this when confident in destructor and ready to release");
+                        }
+                        this->m_root->set = *this->m_redefines.begin();
                     }
                 }
 
+                // adjust redefines, subsets, supersets
+                for (auto redefinedSet : this->m_redefines) {
+                    if (this->m_rootRedefinedSet) {
+                        // switch with first
+                        redefinedSet->m_rootRedefinedSet = true;
+                        this->m_rootRedefinedSet = false;
+                        for (auto superSet : this->m_superSets) {
+                            redefinedSet->m_superSets.insert(superSet);
+                            superSet->m_subSets.insert(redefinedSet);
+                        }
+                        for (auto subSet : this->m_subSets) {
+                            redefinedSet->m_subSets.insert(subSet);
+                            subSet->m_superSets.insert(redefinedSet);
+                        }
+                    }
+                    redefinedSet->m_redefines.erase(this);
+                }
                 for (auto superSet : this->m_superSets) {
                     superSet->m_subSets.erase(this);
                     
@@ -1240,8 +1260,11 @@ namespace UML {
                     redefinedSet->m_redefines.insert(oldRootRedefined);
                     oldRootRedefined->m_redefines.insert(redefinedSet);
                     for (AbstractSet* otherSetsRedefinedSet : oldRootRedefined->m_redefines) {
-                        redefinedSet->m_redefines.insert(otherSetsRedefinedSet);
-                        otherSetsRedefinedSet->m_redefines.insert(redefinedSet);
+                        if (redefinedSet != otherSetsRedefinedSet) {
+                            // dont add itself
+                            redefinedSet->m_redefines.insert(otherSetsRedefinedSet);
+                            otherSetsRedefinedSet->m_redefines.insert(redefinedSet);
+                        }
                     }
                 }
 

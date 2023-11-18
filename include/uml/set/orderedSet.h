@@ -26,7 +26,7 @@ namespace UML {
     template <class T>
     class OrderedPtrSet;
     template <class T>
-    class OrderedSetIterator; 
+    class OrderedSetIterator;
 
     struct OrderedSetNode : public SetNode {
 
@@ -39,10 +39,10 @@ namespace UML {
         OrderedSetNode* m_prev = 0;
         OrderedSetNode* m_next = 0;
 
-        OrderedSetNodeAllocationPolicyInterface* getOrderedSet() {
-            OrderedSetNodeAllocationPolicyInterface* orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(set);
+        OrderedSetNodeAllocationPolicyInterface* getOrderedSet(AbstractSet* setToSearch) {
+            OrderedSetNodeAllocationPolicyInterface* orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(setToSearch);
             if (!orderedSet) {
-                for (auto& redefinedSet : set->m_redefines) {
+                for (auto& redefinedSet : setToSearch->m_redefines) {
                     orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(redefinedSet);
                     if (orderedSet) {
                         break;
@@ -51,7 +51,7 @@ namespace UML {
             }
             if (!orderedSet) {
                 std::list<AbstractSet*> queue;
-                queue.push_back(set);
+                queue.push_back(setToSearch);
                 do {
                     AbstractSet* superset = queue.front();
                     queue.pop_front();
@@ -78,7 +78,7 @@ namespace UML {
                 m_next = orderedNode->m_next;
             }
 
-            OrderedSetNodeAllocationPolicyInterface* orderedSet = getOrderedSet();
+            OrderedSetNodeAllocationPolicyInterface* orderedSet = getOrderedSet(this->set);
 
             if (!orderedSet) {
                 throw SetStateException("bad state, non orderedSetNode tried to add to orderedSet!");
@@ -95,7 +95,7 @@ namespace UML {
 
         virtual ~OrderedSetNode() {
             // find root orderedSet
-            OrderedSetNodeAllocationPolicyInterface* orderedSet = getOrderedSet();
+            OrderedSetNodeAllocationPolicyInterface* orderedSet = getOrderedSet(this->set);
 
             // TODO understand this edge case (orderedSetNode is not part of an ordered set)
             // happens with ClassTest.addOwnedAttributeAsStructuredClassifierTest
@@ -388,10 +388,10 @@ namespace UML {
                         queue.push_back(superset);
                     }
 
-                    if (set->setType() != SetType::ORDERED_SET) {
+                    OrderedSetNodeAllocationPolicyInterface* orderedSet = orderedSetNode->getOrderedSet(set);
+                    if (!orderedSet) {
                         continue;
                     }
-                    OrderedSetNodeAllocationPolicyInterface* orderedSet = dynamic_cast<OrderedSetNodeAllocationPolicyInterface*>(set);
 
                     if (!orderedSet->getFront()) {
                         orderedSet->setFront(orderedSetNode);

@@ -341,7 +341,13 @@ namespace UML {
                 if (this->m_root && this->m_root->m_ptr && this->m_root->set == node->set) {
                     // this set has already been subsetted in active tree
                     // just insert into the tree skip complexity check
-                    this->m_root->insert(node);
+                    try {
+                        this->m_root->insert(node);
+                    } catch (SetStateException& exception) {
+                        // delete node and propogate exception
+                        delete node;
+                        throw exception;
+                    }
                 } else {
                     // we want to place this in all of our root super sets
                     // climb up graph dfs to find root super sets
@@ -381,7 +387,8 @@ namespace UML {
                                         delete node;
                                         throw SetStateException("Duplicate element added to set!");
                                     } else {
-                                        // I don't know if this works with multiple tree roots with unrelated sets
+                                        // I don't know if this works with multiple tree roots with unrelated sets 
+                                        // TODO it doesn't deploymentTest.mountAndEdit
                                         // TODO test that!
 
                                         node->copyData(existingNode);
@@ -703,16 +710,26 @@ namespace UML {
                 }
 
                 // adjust intermediate roots
+                AbstractSet* rootRedefinedSet = this;
+                for (auto redefinedSet : this->m_redefines) {
+                    if (redefinedSet->m_rootRedefinedSet) {
+                        rootRedefinedSet = redefinedSet;
+                    }
+                }
 
                 std::list<AbstractSet*> stack;
-                stack.push_front(dividerNodeToDelete->set);
+                stack.push_front(rootRedefinedSet);
                 do {
                     AbstractSet* currSet = stack.front();
                     stack.pop_front();
                     if (currSet->m_root == dividerNodeToDelete) {
-                        currSet->m_root = successor;
+                        SetNode* newRoot = successor;
+                        if (!this->isValidSuccesor(successor->set, currSet)) {
+                            newRoot = remainingChild;
+                        }
+                        currSet->m_root = newRoot;
                         for (auto redefinedSet : currSet->m_redefines) {
-                            redefinedSet->m_root = successor;
+                            redefinedSet->m_root = newRoot;
                         }
                         for (auto superset : currSet->m_superSets) {
                             if (superset->m_root == dividerNodeToDelete) {
@@ -760,17 +777,6 @@ namespace UML {
                                     dividerNodeToDelete->m_right = 0;
                                     dividerNodeToDelete->m_parent = 0;
                                     delete dividerNodeToDelete;
-
-                                    // get rid of anything adjusted in stack
-                                    std::list<AbstractSet*> removeFromStack;
-                                    for (auto superset : stack) {
-                                        if (superset->m_root == replacementNode) {
-                                            removeFromStack.push_back(superset);
-                                        }
-                                    }
-                                    for (auto superset : removeFromStack) {
-                                        stack.remove(superset);
-                                    }
                                     break;
                                 } else if (currNode->m_right == node) {
                                     SetNode* dividerNodeToDelete = currNode;
@@ -780,17 +786,6 @@ namespace UML {
                                     dividerNodeToDelete->m_left = 0;
                                     dividerNodeToDelete->m_parent = 0;
                                     delete dividerNodeToDelete;
-
-                                    // get rid of anything adjusted in stack
-                                    std::list<AbstractSet*> removeFromStack;
-                                    for (auto superset : stack) {
-                                        if (superset->m_root == replacementNode) {
-                                            removeFromStack.push_back(superset);
-                                        }
-                                    }
-                                    for (auto superset : removeFromStack) {
-                                        stack.remove(superset);
-                                    }
                                     break;
                                 } else {
                                     // find the node
@@ -1077,114 +1072,7 @@ namespace UML {
                 if (this->m_root && this->m_rootRedefinedSet && this->m_root->set == this) {
                     if (!this->m_root->m_ptr) {
                         // divider node
-                        if (this->m_root->m_left && this->m_root->m_right) {
-                            // one side should be leftover divider node from diamond set subtree
-                            if (!this->m_root->m_left->m_ptr) {
-                                if (this->m_root->m_left->m_left || this->m_root->m_left->m_right) {
-                                    throw SetStateException("I know im not supposed to throw an error but this state is not handled");
-                                }
-                                SetNode* dividerToDelete = this->m_root->m_left;
-                                dividerToDelete->m_parent = 0;
-                                this->m_root->m_left = 0;
-                                delete dividerToDelete;
-                            } else if (!this->m_root->m_right->m_ptr) {
-                                if (this->m_root->m_right->m_left || this->m_root->m_right->m_right) {
-                                    throw SetStateException("I know im not supposed to throw an error but this state is not handled");
-                                }
-                                SetNode* dividerToDelete = this->m_root->m_right;
-                                dividerToDelete->m_parent = 0;
-                                this->m_root->m_right = 0;
-                                delete dividerToDelete;
-                            } else {
-                                throw SetStateException("I know im not supposed to throw an error but this state is bad");
-                            }
-                        }
-                        SetNode* newRoot = 0;
-                        if (this->m_root->m_left) {
-                            newRoot = this->m_root->m_left;
-                            this->m_root->m_left = 0;
-                        } else {
-                            newRoot = this->m_root->m_right;
-                            this->m_root->m_right = 0;
-                        }
-
-                        if (this->m_root->m_parent) {
-                            this->m_root->m_parent = 0;
-
-                            // adjust other supersets that have referenced dividerNode
-                            std::list<AbstractSet*> stack;
-                            stack.push_front(this->m_root->set);
-                            do {
-                                AbstractSet* set = stack.front();
-                                stack.pop_front();
-                                
-                                if (set->m_superSets.empty()) {
-                                    SetNode* currNode = set->m_root;
-                                    if (currNode != this->m_root) {
-                                        while (currNode) {
-                                            if (currNode->m_left == this->m_root) {
-                                                currNode->m_left = 0;
-                                                break;
-                                            } else if (currNode->m_right == this->m_root) {
-                                                currNode->m_right = 0;
-                                                break;
-                                            } else {
-                                                std::list<AbstractSet*> queue;
-                                                queue.push_back(this->m_root->set);
-                                                do {
-                                                    AbstractSet* superSet = queue.front();
-                                                    queue.pop_front();
-
-                                                    if (currNode->m_left && superSet == currNode->m_left->set) {
-                                                        currNode = currNode->m_left;
-                                                        break;
-                                                    } else if (currNode->m_right && superSet == currNode->m_right->set) {
-                                                        currNode = currNode->m_right;
-                                                        break;
-                                                    }
-
-                                                    for (auto superSuperSet : superSet->m_superSets) {
-                                                        queue.push_back(superSuperSet);
-                                                    }
-
-                                                    if (queue.empty()) {
-                                                        throw SetStateException("I know don't throw exceptions in destructor, except this is bad, its technically impossible! contact dev!");
-                                                    }
-                                                } while (!queue.empty());
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if (set->m_root == this->m_root && set != this) {
-                                    set->m_root = newRoot;
-                                }
-
-                                for (auto superset : set->m_superSets) {
-                                    stack.push_front(superset);
-                                }
-                            } while (!stack.empty());
-                        }
-                        std::list<AbstractSet*> stack;
-                        for (auto superset : this->m_root->set->m_superSets) {
-                            stack.push_front(superset);
-                        }
-                        while (!stack.empty()) {
-                            AbstractSet* set = stack.front();
-                            stack.pop_front();
-
-                            if (set->m_root == this->m_root) {
-                                set->m_root = 0;
-                                for (auto superset : set->m_superSets) {
-                                    stack.push_front(superset);
-                                }
-                            }
-                        }
-                        if (newRoot) {
-                            newRoot->m_parent = 0;
-                            delete this->m_root;
-                            this->m_root = newRoot;
-                        }
+                        throw SetStateException("I know don't throw exceptions in destructor, except this is bad, its technically impossible! contact dev!");
                     }
                    
                     // adjust roots and parents from base of trees
@@ -1208,9 +1096,21 @@ namespace UML {
                                     dividerStack.pop_front();
                                     if (currNode->m_left == this->m_root) {
                                         currNode->m_left = 0;
+                                        if (currNode->m_right) {
+                                            removeDividerNode(currNode, currNode->m_right);
+                                            currNode->m_parent = 0;
+                                            currNode->m_right = 0;
+                                            delete currNode;
+                                        }
                                         break;
                                     } else if (currNode->m_right == this->m_root) {
                                         currNode->m_right = 0;
+                                        if (currNode->m_left) {
+                                            removeDividerNode(currNode, currNode->m_left);
+                                            currNode->m_parent = 0;
+                                            currNode->m_left = 0;
+                                            delete currNode;
+                                        }
                                         break;
                                     }
                                     // recurse left

@@ -1150,6 +1150,26 @@ TEST_F(SetTest, multiSubsetsOneElement) {
     ASSERT_TRUE(testEl->root1.contains(p.getID()));
 }
 
+TEST_F(SetTest, multiRootAddToSubsetTest) {
+    Manager<> m;
+    UmlPtr<TestTwoRootSubSetElement> testEl = m.create<TestTwoRootSubSetElement>();
+    PackagePtr pckg = m.create<Package>();
+    testEl->root1.add(pckg);
+    ASSERT_EQ(testEl->sub.size(), 0);
+    ASSERT_EQ(testEl->root1.size(), 1);
+    ASSERT_EQ(testEl->root2.size(), 0);
+    ASSERT_FALSE(testEl->sub.contains(pckg.id()));
+    ASSERT_FALSE(testEl->root2.contains(pckg.id()));
+    ASSERT_TRUE(testEl->root1.contains(pckg.id()));
+    testEl->sub.add(pckg);
+    ASSERT_EQ(testEl->sub.size(), 1);
+    ASSERT_EQ(testEl->root1.size(), 1);
+    ASSERT_EQ(testEl->root2.size(), 1);
+    ASSERT_TRUE(testEl->sub.contains(pckg.id()));
+    ASSERT_TRUE(testEl->root2.contains(pckg.id()));
+    ASSERT_TRUE(testEl->root1.contains(pckg.id()));
+}
+
 class TestComplexSubsetElement : public Element {
     template<typename SerializationPolicy, typename PersistencePolciy> friend class Manager;
     

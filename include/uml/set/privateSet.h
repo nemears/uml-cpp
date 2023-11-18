@@ -889,10 +889,25 @@ namespace UML {
                     AbstractSet* front = queue.front();
                     queue.pop_front();
                     if (front->oppositeEnabled()) {
+                        // opposite handled
                         front->oppositeAdd(el);
                     } else {
-                        for (auto superSet : front->m_superSets) {
-                            queue.push_back(superSet);
+                        // just leave it up to the redefines, they might override it
+                        // TODO this is based on id hash, not necessarily a good order to go by
+                        // TODO redo redefines with a list probably to make the redefine order matter based on
+                        // TODO order overwritten
+                        bool oppositeFound = false;
+                        for (auto redefinedSet : front->m_redefines) {
+                            if (redefinedSet->oppositeEnabled()) {
+                                redefinedSet->oppositeAdd(el);
+                                oppositeFound = true;
+                                break;
+                            }
+                        }
+                        if (!oppositeFound) {
+                            for (auto superSet : front->m_superSets) {
+                                queue.push_back(superSet);
+                            }
                         }
                     }
                 }
@@ -937,8 +952,22 @@ namespace UML {
                     if (front->oppositeEnabled()) {
                         front->oppositeRemove(el);
                     } else {
-                        for (auto superSet : front->m_superSets) {
-                            queue.push_back(superSet);
+                        // just leave it up to the redefines, they might override it
+                        // TODO this is based on id hash, not necessarily a good order to go by
+                        // TODO redo redefines with a list probably to make the redefine order matter based on
+                        // TODO order overwritten
+                        bool oppositeFound = false;
+                        for (auto redefinedSet : front->m_redefines) {
+                            if (redefinedSet->oppositeEnabled()) {
+                                redefinedSet->oppositeRemove(el);
+                                oppositeFound = true;
+                                break;
+                            }
+                        }
+                        if (!oppositeFound) {
+                            for (auto superSet : front->m_superSets) {
+                                queue.push_back(superSet);
+                            }
                         }
                     }
                 }
@@ -1154,7 +1183,7 @@ namespace UML {
                             subSet->m_superSets.insert(redefinedSet);
                         }
                     }
-                    redefinedSet->m_redefines.erase(this);
+                    redefinedSet->m_redefines.remove(this);
                 }
                 for (auto superSet : this->m_superSets) {
                     superSet->m_subSets.erase(this);
@@ -1251,27 +1280,44 @@ namespace UML {
 
                 // add to redefined set's redefines redefines
                 for (AbstractSet* redefinedSet : oldRootRedefined->m_redefines) {
-                    redefinedSet->m_redefines.insert(this);
-                    this->m_redefines.insert(redefinedSet);
+                    if (std::find(redefinedSet->m_redefines.begin(), redefinedSet->m_redefines.end(), this) == redefinedSet->m_redefines.end()) {
+                        redefinedSet->m_redefines.push_front(this);
+                    }
+                    if (std::find(this->m_redefines.begin(), this->m_redefines.end(), redefinedSet) == this->m_redefines.end()) {
+                        this->m_redefines.push_front(redefinedSet);
+                    }                    
                 }
 
                 // add this set's redefines to redefined set
                 for (AbstractSet* redefinedSet : this->m_redefines) {
-                    redefinedSet->m_redefines.insert(oldRootRedefined);
-                    oldRootRedefined->m_redefines.insert(redefinedSet);
+                    if (std::find(redefinedSet->m_redefines.begin(), redefinedSet->m_redefines.end(), oldRootRedefined) == redefinedSet->m_redefines.end()) {
+                        redefinedSet->m_redefines.push_front(oldRootRedefined);
+                    }
+                    if (std::find(oldRootRedefined->m_redefines.begin(), oldRootRedefined->m_redefines.end(), redefinedSet) == oldRootRedefined->m_redefines.end()) {
+                        oldRootRedefined->m_redefines.push_front(redefinedSet);
+                    }
                     for (AbstractSet* otherSetsRedefinedSet : oldRootRedefined->m_redefines) {
                         if (redefinedSet != otherSetsRedefinedSet) {
                             // dont add itself
-                            redefinedSet->m_redefines.insert(otherSetsRedefinedSet);
-                            otherSetsRedefinedSet->m_redefines.insert(redefinedSet);
+                            if (std::find(redefinedSet->m_redefines.begin(), redefinedSet->m_redefines.end(), otherSetsRedefinedSet) == redefinedSet->m_redefines.end()) {
+                                redefinedSet->m_redefines.push_front(otherSetsRedefinedSet);
+                            }
+                            if (std::find(otherSetsRedefinedSet->m_redefines.begin(), otherSetsRedefinedSet->m_redefines.end(), redefinedSet) == otherSetsRedefinedSet->m_redefines.end()) {
+                                otherSetsRedefinedSet->m_redefines.push_front(redefinedSet);
+                            }
                         }
                     }
                 }
 
-                this->m_redefines.insert(oldRootRedefined);
-                oldRootRedefined->m_redefines.insert(this);
+                if (std::find(this->m_redefines.begin(), this->m_redefines.end(), oldRootRedefined) == this->m_redefines.end()) {
+                    this->m_redefines.push_front(oldRootRedefined);
+                }
+                
+                if (std::find(oldRootRedefined->m_redefines.begin(), oldRootRedefined->m_redefines.end(), this) == oldRootRedefined->m_redefines.end()) {
+                    oldRootRedefined->m_redefines.push_front(this);
+                }
 
-                // TODO move subsets and supersets from theirs to ours
+                // move subsets and supersets from theirs to ours
                 for (auto superset : oldRootRedefined->m_superSets) {
                     this->m_superSets.insert(superset);
                     superset->m_subSets.erase(oldRootRedefined);

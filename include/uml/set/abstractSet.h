@@ -62,7 +62,7 @@ namespace UML {
 
             std::unordered_set<AbstractSet*> m_superSets;
             std::unordered_set<AbstractSet*> m_subSets;
-            std::unordered_set<AbstractSet*> m_redefines;
+            std::list<AbstractSet*> m_redefines;
 
             AbstractSet* m_setToInstantiate = 0;
 

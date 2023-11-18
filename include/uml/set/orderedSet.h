@@ -154,7 +154,7 @@ namespace UML {
 
         protected:
             OrderedSetNode* curr = 0;
-            std::unordered_set<AbstractSet*> validSets;
+            std::unordered_set<const AbstractSet*> validSets;
         public:
             OrderedSetIterator() {}
             OrderedSetIterator(const OrderedSetIterator& rhs) {
@@ -225,8 +225,17 @@ namespace UML {
                 OrderedSetID_Iterator<T> ret;
                 ret.curr = m_me->getFront();
                 std::list<AbstractSet*> queue;
-                queue.push_back(m_me);
-                // TODO instead of m_me, find rootRedefinedSet to start looking (bug maybe might happen might not need) 
+
+                AbstractSet* rootRedefinedSet = m_me;
+                for (auto redefinedSet : m_me->m_redefines) {
+                    if (redefinedSet->m_rootRedefinedSet) {
+                        rootRedefinedSet = redefinedSet;
+                        break;
+                    }
+                }
+
+                queue.push_back(rootRedefinedSet);
+
                 do {
                     AbstractSet* subset = queue.front();
                     queue.pop_front();
@@ -279,8 +288,16 @@ namespace UML {
                 OrderedSetPtrIterator<T> ret;
                 ret.curr = m_me->getFront();
                 std::list<AbstractSet*> queue;
-                queue.push_back(m_me);
-                // TODO instead of m_me, find rootRedefinedSet to start looking (bug maybe might happen might not need) 
+
+                AbstractSet* rootRedefinedSet = m_me;
+                for (auto redefinedSet : m_me->m_redefines) {
+                    if (redefinedSet->m_rootRedefinedSet) {
+                        rootRedefinedSet = redefinedSet;
+                        break;
+                    }
+                }
+
+                queue.push_back(rootRedefinedSet);
                 do {
                     AbstractSet* subset = queue.front();
                     queue.pop_front();
@@ -328,10 +345,20 @@ namespace UML {
 
             void setFront(OrderedSetNode* front) override {
                 m_first = front;
+                for (auto redefinedSet : this->m_redefines) {
+                    if (redefinedSet->setType() == SetType::ORDERED_SET) {
+                        dynamic_cast<OrderedSetNodeAllocationPolicy*>(redefinedSet)->m_first = front;
+                    }
+                }
             }
 
             void setBack(OrderedSetNode* back) override {
                 m_last = back;
+                for (auto redefinedSet : this->m_redefines) {
+                    if (redefinedSet->setType() == SetType::ORDERED_SET) {
+                        dynamic_cast<OrderedSetNodeAllocationPolicy*>(redefinedSet)->m_last = back;
+                    }
+                }
             }
 
             SetType setType() const override {
@@ -507,11 +534,20 @@ namespace UML {
             OrderedSetIterator<T> begin() const override {
                 OrderedSetIterator<T> ret;
                 ret.curr = this->m_first;
-                std::list<AbstractSet*> queue;
-                queue.push_back(const_cast<AbstractSet*>(static_cast<const AbstractSet*>(this)));
-                // TODO instead of m_me, find rootRedefinedSet to start looking (bug maybe might happen might not need) 
+                std::list<const AbstractSet*> queue;
+                
+                const AbstractSet* rootRedefinedSet = this;
+                for (auto redefinedSet : this->m_redefines) {
+                    if (redefinedSet->m_rootRedefinedSet) {
+                        rootRedefinedSet = redefinedSet;
+                        break;
+                    }
+                }
+
+                queue.push_back(rootRedefinedSet);
+
                 do {
-                    AbstractSet* subset = queue.front();
+                    const AbstractSet* subset = queue.front();
                     queue.pop_front();
                     ret.validSets.insert(subset);
                     for (auto subSubSet : subset->m_subSets) {

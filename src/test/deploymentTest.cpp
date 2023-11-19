@@ -284,8 +284,6 @@ TEST_F(DeploymentTest, emitManifestationTest) {
     std::string expectedEmit = R""""(package:
   id: "O4FknRxSbpxEJlw6HhHP&Wpq0AjD"
   packagedElements:
-    - class:
-        id: 9mp2RmgjnYQrPtXIoOw9is1UUEyu
     - artifact:
         id: Ihue7RPPRluLEpIUbTV8Xqb68ofQ
         clientDependencies:
@@ -293,7 +291,9 @@ TEST_F(DeploymentTest, emitManifestationTest) {
         manifestations:
           - manifestation:
               id: "UfyRMRUyPnad&lJcpSBOD17VSHtn"
-              utilizedElement: 9mp2RmgjnYQrPtXIoOw9is1UUEyu)"""";
+              utilizedElement: 9mp2RmgjnYQrPtXIoOw9is1UUEyu
+    - class:
+        id: 9mp2RmgjnYQrPtXIoOw9is1UUEyu)"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

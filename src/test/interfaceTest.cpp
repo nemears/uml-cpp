@@ -197,14 +197,14 @@ TEST_F(InterfaceTest, emitInterfaceTest) {
         nestedClassifiers:
           - dataType:
               id: "TeIMyndF4nm_NOTbFZ&vZDLXxvtC"
+    - interface:
+        id: msHdxlZxjCCYwm2GLlDyaIq3KX4o
     - class:
         id: GqrX5Ta8KQDdFfaHrau08OS7Et3n
         interfaceRealizations:
           - interfaceRealization:
               id: IFDK1OePanvL7GwUxLspBo4p2JjA
-              contract: "fqag25FXykqQlo_bQWmS&cAB6338"
-    - interface:
-        id: msHdxlZxjCCYwm2GLlDyaIq3KX4o)"""";
+              contract: "fqag25FXykqQlo_bQWmS&cAB6338")"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

@@ -645,8 +645,12 @@ TEST_F(DataTypeTest, emitPrimWGeneralAndAttribute) {
   name: owningPackage
   packagedElements:
     - primitiveType:
-        id: "ufsWC1O42Rz36lNEixxF&gH6SKdj"
-        name: type
+        id: "3di2YkXSv7_2E8yUAdNElvDPCP4&"
+        name: specific
+        generalizations:
+          - generalization:
+              id: "Fpn&_P3zERcsyDCu8kN837WxY_90"
+              general: bD3tGZ_XwovlDpB4NPqiaMl19DUV
     - primitiveType:
         id: bD3tGZ_XwovlDpB4NPqiaMl19DUV
         name: general
@@ -656,12 +660,8 @@ TEST_F(DataTypeTest, emitPrimWGeneralAndAttribute) {
               name: generalProp
               type: "ufsWC1O42Rz36lNEixxF&gH6SKdj"
     - primitiveType:
-        id: "3di2YkXSv7_2E8yUAdNElvDPCP4&"
-        name: specific
-        generalizations:
-          - generalization:
-              id: "Fpn&_P3zERcsyDCu8kN837WxY_90"
-              general: bD3tGZ_XwovlDpB4NPqiaMl19DUV)"""";
+        id: "ufsWC1O42Rz36lNEixxF&gH6SKdj"
+        name: type)"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

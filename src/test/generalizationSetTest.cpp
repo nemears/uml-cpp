@@ -97,30 +97,8 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
         id: mmUnLGAGcUocJQlNkF2BxGUzadjY
         powertypeExtent:
           - "uLHn5GsNBUhrk9cgTO&qLw5LO068"
-    - class:
-        id: wJ7Y3K6BmTpN3D2pEtbbBt5aMhuo
-        generalizations:
-          - generalization:
-              id: vGAiKV8tZmvkxePhhEns36Z654xF
-              general: mmUnLGAGcUocJQlNkF2BxGUzadjY
-              generalizationSets:
-                - "uLHn5GsNBUhrk9cgTO&qLw5LO068"
     - generalizationSet:
         id: "uLHn5GsNBUhrk9cgTO&qLw5LO068"
-        isCovering: false
-        isDisjoint: false
-        powertype: mmUnLGAGcUocJQlNkF2BxGUzadjY
-        generalizations:
-          - vGAiKV8tZmvkxePhhEns36Z654xF)"""";
-    std::string expectedEmit2 = R""""(package:
-  id: UpJ207YoGcD0zWHbmtYZhLAYEhRP
-  packagedElements:
-    - class:
-        id: mmUnLGAGcUocJQlNkF2BxGUzadjY
-        powerTypeExtent:
-          - uLHn5GsNBUhrk9cgTO&qLw5LO068
-    - generalizationSet:
-        id: uLHn5GsNBUhrk9cgTO&qLw5LO068
         isCovering: false
         isDisjoint: false
         powertype: mmUnLGAGcUocJQlNkF2BxGUzadjY
@@ -133,13 +111,13 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
               id: vGAiKV8tZmvkxePhhEns36Z654xF
               general: mmUnLGAGcUocJQlNkF2BxGUzadjY
               generalizationSets:
-                - uLHn5GsNBUhrk9cgTO&qLw5LO068)"""";
+                - "uLHn5GsNBUhrk9cgTO&qLw5LO068")"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;
     ASSERT_NO_THROW(generatedEmit = emit(root, data));
     std::cout << generatedEmit << '\n';
-    ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit);
+    ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(GeneralizationSetTest, mountGeneralizationSet) {

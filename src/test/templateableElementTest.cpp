@@ -268,24 +268,6 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
   id: b4EasFCBjochdruOQfxBubQw3VlD
   packagedElements:
     - package:
-        id: a2arTP9Z2LteDWsjTS0ziALCWlXU
-    - primitiveType:
-        id: 4gA4RgL9vKTRYd61D99y1d_Yggj6
-    - package:
-        id: NYok8HRGpv_rOfAmfrRB94uwOZrb
-        ownedTemplateSignature:
-          templateSignature:
-            id: nOh5namt9s4oOvimAXQpR8nJHfTF
-            ownedParameters:
-              - templateParameter:
-                  id: OLULeTlF1Rzf4U5IpNQVW1nYd29c
-                  ownedDefault:
-                    package:
-                      id: GZaiGksTjm4GeM2GdJ5BXuajWnGU
-              - templateParameter:
-                  id: Km4WF5rf3ohUeLTr99POiW7VMb_4
-                  default: a2arTP9Z2LteDWsjTS0ziALCWlXU
-    - package:
         id: fMWs7G1YTFU1VQEAgNcZqt4lp6dB
         templateBindings:
           - templateBinding:
@@ -301,46 +283,25 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
                     id: puJaUTZsLPdGJkJSJtdX51MIA2ch
                     formal: Km4WF5rf3ohUeLTr99POiW7VMb_4
                     actual: 4gA4RgL9vKTRYd61D99y1d_Yggj6
-              signature: nOh5namt9s4oOvimAXQpR8nJHfTF)"""";
-  //   std::string expectedEmit2 = R""""(package:
-  // id: b4EasFCBjochdruOQfxBubQw3VlD
-  // packagedElements:
-  //   - package:
-  //       id: a2arTP9Z2LteDWsjTS0ziALCWlXU
-  //   - package:
-  //       id: NYok8HRGpv_rOfAmfrRB94uwOZrb
-  //       ownedTemplateSignature:
-  //         templateSignature:
-  //           id: nOh5namt9s4oOvimAXQpR8nJHfTF
-  //           ownedParameters:
-  //             - templateParameter:
-  //                 id: OLULeTlF1Rzf4U5IpNQVW1nYd29c
-  //                 ownedDefault:
-  //                   package:
-  //                     id: GZaiGksTjm4GeM2GdJ5BXuajWnGU
-  //                     templateParameter: OLULeTlF1Rzf4U5IpNQVW1nYd29c
-  //             - templateParameter:
-  //                 id: Km4WF5rf3ohUeLTr99POiW7VMb_4
-  //                 default: a2arTP9Z2LteDWsjTS0ziALCWlXU
-  //   - primitiveType:
-  //       id: 4gA4RgL9vKTRYd61D99y1d_Yggj6
-  //   - package:
-  //       id: fMWs7G1YTFU1VQEAgNcZqt4lp6dB
-  //       templateBindings:
-  //         - templateBinding:
-  //             id: e_ob7tgbN16Plhj_sTAOVD5ijLrL
-  //             signature: nOh5namt9s4oOvimAXQpR8nJHfTF
-  //             parameterSubstitutions:
-  //               - templateParameterSubstitution:
-  //                   id: 7bYUY3yFUBrfPmzKKrV2NJmXuECA
-  //                   formal: OLULeTlF1Rzf4U5IpNQVW1nYd29c
-  //                   ownedActual:
-  //                     primitiveType:
-  //                       id: "8&K_0aLhvQDM12ZeYg9nPiSrexHo"
-  //               - templateParameterSubstitution:
-  //                   id: puJaUTZsLPdGJkJSJtdX51MIA2ch
-  //                   formal: Km4WF5rf3ohUeLTr99POiW7VMb_4
-  //                   actual: 4gA4RgL9vKTRYd61D99y1d_Yggj6)"""";
+              signature: nOh5namt9s4oOvimAXQpR8nJHfTF
+    - package:
+        id: NYok8HRGpv_rOfAmfrRB94uwOZrb
+        ownedTemplateSignature:
+          templateSignature:
+            id: nOh5namt9s4oOvimAXQpR8nJHfTF
+            ownedParameters:
+              - templateParameter:
+                  id: OLULeTlF1Rzf4U5IpNQVW1nYd29c
+                  ownedDefault:
+                    package:
+                      id: GZaiGksTjm4GeM2GdJ5BXuajWnGU
+              - templateParameter:
+                  id: Km4WF5rf3ohUeLTr99POiW7VMb_4
+                  default: a2arTP9Z2LteDWsjTS0ziALCWlXU
+    - primitiveType:
+        id: 4gA4RgL9vKTRYd61D99y1d_Yggj6
+    - package:
+        id: a2arTP9Z2LteDWsjTS0ziALCWlXU)"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

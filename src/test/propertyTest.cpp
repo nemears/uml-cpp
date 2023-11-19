@@ -366,11 +366,6 @@ TEST_F(PropertyTest, emitRedefinedPropertyTest) {
   id: RC5KnOAfUJQY6BnxohDHLqrMadYI
   packagedElements:
     - class:
-        id: yzUVzVw8sod2KyBH5LxX_OLI7HrV
-        ownedAttributes:
-          - property:
-              id: 9m50Dir0MgpEaLu8ghn7cSlZ5Yzh
-    - class:
         id: "Y8UtleiQO3UuN4GEqSzai0G8&GqC"
         generalizations:
           - generalization:
@@ -380,7 +375,12 @@ TEST_F(PropertyTest, emitRedefinedPropertyTest) {
           - property:
               id: sVhU3UWy392YuTfewtNoyaWLhAQw
               redefinedProperties:
-                - 9m50Dir0MgpEaLu8ghn7cSlZ5Yzh)"""";
+                - 9m50Dir0MgpEaLu8ghn7cSlZ5Yzh
+    - class:
+        id: yzUVzVw8sod2KyBH5LxX_OLI7HrV
+        ownedAttributes:
+          - property:
+              id: 9m50Dir0MgpEaLu8ghn7cSlZ5Yzh)"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

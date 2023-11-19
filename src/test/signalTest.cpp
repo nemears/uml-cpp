@@ -95,17 +95,17 @@ TEST_F(SignalTest, emitSignalTest) {
     std::string expectedEmit = R""""(package:
   id: "IJabcFrKrE9yxVT&qQUQ2&xzVxpd"
   packagedElements:
-    - signal:
-        id: _sgqzW88lsR9bBTk8GyBRjYujfB5
-        ownedAttributes:
-          - property:
-              id: DSV8nQG_4VargpMXqb57S2dACThU
     - class:
         id: HdQGnHEztfzbMvcBURUAEPRWuw7M
         ownedReceptions:
           - reception:
               id: Y2ANJRtpZRZNCwR7jFo2v_DVm8pZ
-              signal: _sgqzW88lsR9bBTk8GyBRjYujfB5)"""";
+              signal: _sgqzW88lsR9bBTk8GyBRjYujfB5
+    - signal:
+        id: _sgqzW88lsR9bBTk8GyBRjYujfB5
+        ownedAttributes:
+          - property:
+              id: DSV8nQG_4VargpMXqb57S2dACThU)"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

@@ -156,7 +156,7 @@ bool Property::isComposite() {
 void Property::setComposite(bool composite) {
     if (!composite && m_composite) {
         if (m_featuringClassifier.get() && m_featuringClassifier.get()->isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
-            // TODO make this happen
+            // TODO test that removeFromJustThisSet function is safe
             m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.removeFromJustThisSet(m_id); // TODO test
         }
     }

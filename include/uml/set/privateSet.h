@@ -719,15 +719,24 @@ namespace UML {
 
                 std::list<AbstractSet*> stack;
                 stack.push_front(rootRedefinedSet);
+                std::unordered_set<AbstractSet*> visited;
                 do {
                     AbstractSet* currSet = stack.front();
                     stack.pop_front();
+                    if (visited.count(currSet)) {
+                        continue;
+                    } else {
+                        visited.insert(currSet);
+                    }
                     if (currSet->m_root == dividerNodeToDelete) {
                         SetNode* newRoot = successor;
                         if (!this->isValidSuccesor(successor->set, currSet)) {
                             newRoot = remainingChild;
                         }
                         currSet->m_root = newRoot;
+                        
+                        // TODO set set properly
+
                         for (auto redefinedSet : currSet->m_redefines) {
                             redefinedSet->m_root = newRoot;
                         }
@@ -753,8 +762,16 @@ namespace UML {
                 if (!node) {
                     throw SetStateException("could not remove element of id " + id.string() + " in set, element with that id could not be located within the set!");
                 }
+
+                AbstractSet* rootRedefinedSet = this;
+                for (auto redefinedSet : this->m_redefines) {
+                    if (redefinedSet->m_rootRedefinedSet) {
+                        rootRedefinedSet = redefinedSet;
+                        break;
+                    }
+                }
                 std::list<AbstractSet*> stack;
-                stack.push_front(this);
+                stack.push_front(rootRedefinedSet);
                 if (node->m_parent && !node->m_parent->m_ptr && !node->m_left && !node->m_right) {
                     // parent is a divider node that needs to be removed
                     do {
@@ -792,7 +809,8 @@ namespace UML {
                                     } else if (search(id, currNode->m_right)) {
                                         currNode = currNode->m_right;
                                     } else {
-                                        throw SetStateException("Bad state for removing node from tree, cannot find node in either subtree, contact dev!");
+                                        // This should only happen when we have removed a divider node earlier on in the function
+                                        break;
                                     }
                                 }
                             }
@@ -893,9 +911,6 @@ namespace UML {
                         front->oppositeAdd(el);
                     } else {
                         // just leave it up to the redefines, they might override it
-                        // TODO this is based on id hash, not necessarily a good order to go by
-                        // TODO redo redefines with a list probably to make the redefine order matter based on
-                        // TODO order overwritten
                         bool oppositeFound = false;
                         for (auto redefinedSet : front->m_redefines) {
                             if (redefinedSet->oppositeEnabled()) {
@@ -953,9 +968,6 @@ namespace UML {
                         front->oppositeRemove(el);
                     } else {
                         // just leave it up to the redefines, they might override it
-                        // TODO this is based on id hash, not necessarily a good order to go by
-                        // TODO redo redefines with a list probably to make the redefine order matter based on
-                        // TODO order overwritten
                         bool oppositeFound = false;
                         for (auto redefinedSet : front->m_redefines) {
                             if (redefinedSet->oppositeEnabled()) {
@@ -1105,9 +1117,15 @@ namespace UML {
                         for (auto superset : this->m_superSets) {
                             queue.push_back(superset);
                         }
+                        std::unordered_set<AbstractSet*> visited;
                         while (!queue.empty()) {
                             AbstractSet* currSet = queue.front();
                             queue.pop_front();
+                            if (visited.count(currSet)) {
+                                continue;
+                            } else {
+                                visited.insert(currSet);
+                            }
                             if (currSet->m_root) {
                                 if (currSet->m_root == this->m_root) {
                                     // it is the root
@@ -1164,25 +1182,44 @@ namespace UML {
                         if (this->m_redefines.empty()) {
                             throw SetStateException("Report to Developer! \nI know don't throw errors in destructor :( \nTODO remove this when confident in destructor and ready to release");
                         }
-                        this->m_root->set = *this->m_redefines.begin();
+
+                        std::list<SetNode*> stack;
+                        stack.push_front(this->m_root);
+                        do {
+                            SetNode* currNode = stack.front();
+                            stack.pop_front();
+                            if (currNode->set == this) {
+                                currNode->set = *this->m_redefines.begin();
+                                if (currNode->m_left) {
+                                    stack.push_front(currNode->m_left);
+                                }
+                                if (currNode->m_right) {
+                                    stack.push_front(currNode->m_right);
+                                }
+                            }
+                        } while (!stack.empty());
                     }
                 }
 
-                // adjust redefines, subsets, supersets
-                for (auto redefinedSet : this->m_redefines) {
-                    if (this->m_rootRedefinedSet) {
-                        // switch with first
-                        redefinedSet->m_rootRedefinedSet = true;
-                        this->m_rootRedefinedSet = false;
-                        for (auto superSet : this->m_superSets) {
-                            redefinedSet->m_superSets.insert(superSet);
-                            superSet->m_subSets.insert(redefinedSet);
-                        }
-                        for (auto subSet : this->m_subSets) {
-                            redefinedSet->m_subSets.insert(subSet);
-                            subSet->m_superSets.insert(redefinedSet);
-                        }
+                
+                // first redefine in our set will be the next
+                if (this->m_rootRedefinedSet && !this->m_redefines.empty()) {
+                    AbstractSet* newRootRedefinedSet = *this->m_redefines.begin();
+                    newRootRedefinedSet->m_rootRedefinedSet = true;
+                    for (auto superSet : this->m_superSets) {
+                        newRootRedefinedSet->m_superSets.insert(superSet);
+                        superSet->m_subSets.insert(newRootRedefinedSet);
                     }
+
+                    // adjust redefines, subsets, supersets
+                    for (auto subSet : this->m_subSets) {
+                        newRootRedefinedSet->m_subSets.insert(subSet);
+                        subSet->m_superSets.insert(newRootRedefinedSet);
+                    }
+                }
+
+                // remove from redefines
+                for (auto redefinedSet : this->m_redefines) {
                     redefinedSet->m_redefines.remove(this);
                 }
                 for (auto superSet : this->m_superSets) {

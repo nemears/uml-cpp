@@ -1130,6 +1130,9 @@ namespace UML {
                                 if (currSet->m_root == this->m_root) {
                                     // it is the root
                                     currSet->m_root = 0;
+                                    for (auto redefinedSet : currSet->m_redefines) {
+                                        redefinedSet->m_root = 0;
+                                    }
                                 } else {
                                     // it is a divider node, make sure we are destroying properly by checking all divider nodes
                                     std::list<SetNode*> dividerStack;

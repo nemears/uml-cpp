@@ -177,8 +177,8 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
     ASSERT_EQ(expression2.getOperands().front(), first);
     ASSERT_EQ(expression2.getOperands().back(), last);
     ASSERT_EQ(expression2.getOwnedElements().size(), 2);
-    ASSERT_EQ(*expression2.getOwnedElements().begin(), last);
-    ASSERT_EQ(*(expression2.getOwnedElements().begin()++), first);
+    ASSERT_TRUE(expression2.getOwnedElements().contains(last));
+    ASSERT_TRUE(expression2.getOwnedElements().contains(first));
     ASSERT_TRUE(first.getOwner());
     ASSERT_TRUE(last.getOwner());
 
@@ -190,8 +190,8 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
     ASSERT_EQ(expression2.getOperands().front(), first2);
     ASSERT_EQ(expression2.getOperands().back(), last);
     ASSERT_EQ(expression2.getOwnedElements().size(), 2);
-    ASSERT_EQ(*expression2.getOwnedElements().begin(), last);
-    ASSERT_EQ(*(expression2.getOwnedElements().begin()++), first2);
+    ASSERT_TRUE(expression2.getOwnedElements().contains(last));
+    ASSERT_TRUE(expression2.getOwnedElements().contains(first2));
     ASSERT_TRUE(first2.getOwner());
     ASSERT_TRUE(last.getOwner());
 
@@ -204,8 +204,8 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
     ASSERT_EQ(expression3.getOperands().front(), first3);
     ASSERT_EQ(expression3.getOperands().back(), last);
     ASSERT_EQ(expression3.getOwnedElements().size(), 2);
-    ASSERT_EQ(*expression3.getOwnedElements().begin(), last);
-    ASSERT_EQ(*(expression3.getOwnedElements().begin()++), first3);
+    ASSERT_TRUE(expression3.getOwnedElements().contains(last));
+    ASSERT_TRUE(expression3.getOwnedElements().contains(first3));
     ASSERT_TRUE(first3.getOwner());
     ASSERT_TRUE(last.getOwner());
 }

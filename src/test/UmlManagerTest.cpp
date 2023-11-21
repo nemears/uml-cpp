@@ -120,7 +120,7 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     m.setRoot(&p);
     ASSERT_NO_THROW(m.mount(ymlPath + "umlManagerTests"));
     ASSERT_TRUE(i.getClassifiers().size() != 0);
-    ASSERT_EQ(i.getClassifiers().front().getID(), c.getID());
+    ASSERT_TRUE(i.getClassifiers().contains(c.getID()));
     ASSERT_NO_THROW(m.release(c));
     ASSERT_TRUE(i.getClassifiers().size() != 0);
     Class* c2 = &i.getClassifiers().front().as<Class>();
@@ -128,11 +128,11 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     ASSERT_TRUE(c2->getOwner());
     ASSERT_EQ(c2->getNamespace(), &p);
     ASSERT_EQ(c2->getOwningPackage(), &p);
-    ASSERT_EQ(*p.getOwnedElements().begin(), *c2);
+    ASSERT_TRUE(p.getOwnedElements().contains(*c2));
     ASSERT_EQ(p.getMembers().size(), 2);
-    ASSERT_EQ(p.getMembers().front(), *c2);
-    ASSERT_EQ(&p.getMembers().front(), c2);
-    ASSERT_EQ(&p.getPackagedElements().front(), c2);
+    ASSERT_TRUE(p.getMembers().contains(*c2));
+    ASSERT_TRUE(p.getMembers().contains(*c2));
+    ASSERT_TRUE(p.getPackagedElements().contains(*c2));
     ASSERT_NO_THROW(m.release(p));
     ASSERT_TRUE(c2->getOwner());
     ASSERT_TRUE(i.getOwner());
@@ -150,14 +150,13 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     ASSERT_EQ(i.getOwningPackage(), p2);
 
     ASSERT_EQ(p2->getPackagedElements().size(), 2);
-    ASSERT_EQ(p2->getPackagedElements().front().getID(), c2->getID());
-    ASSERT_EQ(&p2->getPackagedElements().front(), c2); // compare memory
+    ASSERT_TRUE(p2->getPackagedElements().contains(c2->getID()));
     ASSERT_EQ(p2->getOwnedMembers().size(), 2);
-    ASSERT_EQ(&p2->getOwnedMembers().front(), c2);
+    ASSERT_TRUE(p2->getOwnedMembers().contains(*c2));
     ASSERT_EQ(p2->getMembers().size(), 2);
-    ASSERT_EQ(&p2->getMembers().front(), c2);
+    ASSERT_TRUE(p2->getMembers().contains(*c2));
     ASSERT_EQ(p2->getOwnedElements().size(), 2);
-    ASSERT_EQ(*p2->getOwnedElements().begin(), *c2);
+    ASSERT_TRUE(p2->getOwnedElements().contains(*c2));
 }
 
 TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {

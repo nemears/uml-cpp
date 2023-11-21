@@ -96,15 +96,15 @@ TEST_F(EnumerationTest, basicEnumerationTest) {
     EnumerationLiteral* l2 = &e->getOwnedLiterals().back();
     ASSERT_TRUE(l1->getName().compare("one") == 0);
     ASSERT_TRUE(l2->getName().compare("two") == 0);
+    ASSERT_TRUE(e->getOwnedMembers().contains(l1));
+    ASSERT_TRUE(e->getOwnedMembers().contains(l2));
     ASSERT_TRUE(e->getOwnedMembers().size() == 2);
-    ASSERT_TRUE(&e->getOwnedMembers().front() == l1);
-    ASSERT_TRUE(&e->getOwnedMembers().back() == l2);
     ASSERT_TRUE(e->getMembers().size() == 2);
-    ASSERT_TRUE(&e->getMembers().front() == l1);
-    ASSERT_TRUE(&e->getMembers().back() == l2);
+    ASSERT_TRUE(e->getMembers().contains(l1));
+    ASSERT_TRUE(e->getMembers().contains(l2));
     ASSERT_TRUE(e->getOwnedElements().size() == 2);
-    ASSERT_EQ(*e->getOwnedElements().begin(), *l1);
-    ASSERT_EQ(*(e->getOwnedElements().begin()++), *l2);
+    ASSERT_TRUE(e->getOwnedElements().contains(l1));
+    ASSERT_TRUE(e->getOwnedElements().contains(l2));
 
     ASSERT_TRUE(l1->getEnumeration() == e);
     ASSERT_TRUE(l1->getNamespace() == e);

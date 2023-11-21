@@ -435,8 +435,9 @@ TEST_F(PackageTest, mountAndEditPackageTest) {
     root.getPackagedElements().add(c1, merged, profile);
     m.setRoot(&root);
     m.mount(ymlPath + "packageParserTests");
+    ID cID = c1.getID();
     m.release(c1);
-    Package& c2 = root.getPackagedElements().front().as<Package>();
+    Package& c2 = root.getPackagedElements().get(cID).as<Package>();
     ASSERT_TRUE(c2.getOwningPackage());
     ASSERT_EQ(*c2.getOwningPackage(), root);
     ASSERT_EQ(c2.getPackageMerge().size(), 1);

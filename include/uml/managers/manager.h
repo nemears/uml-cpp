@@ -521,24 +521,30 @@ namespace UML {
 
                     // reindex
                     ManagerNode& discRef = m_graph[oldID];
+
+                    // TODO references
+                    if (!discRef.m_references.empty()) {
+                        throw ManagerStateException("Un-implemented, please set id before filling out element!");
+                        // for (auto& ref : newDisc.m_references) {
+                        //     if (!ref.second.node) {
+                        //         // reference is relased currently with no ptrs
+                        //         throw ManagerStateException("Bad state in reindex, reference released! TODO maybe aquire released el");
+                        //     } else if (ref.second.node->m_references.count(oldID)) {
+                        //         size_t numRefs = ref.second.node->m_references[oldID].count;
+                        //         ref.second.node->m_references.erase(oldID);
+                        //         ref.second.node->m_references[newID] = ManagerNode::NodeReference{&newDisc, numRefs};
+                        //     }
+                        //     if (!ref.second.node->m_managerElementMemory) {
+                        //         get(ref.first);
+                        //     }
+                        //     ref.second.node->m_managerElementMemory->referenceReindexed(newID);
+                        // }
+                    }
+
                     ManagerNode& newDisc = m_graph[newID] = discRef;
                     newDisc.m_managerElementMemory->m_node = &newDisc;
                     for (auto& ptr : newDisc.m_ptrs) {
                         ptr->reindex(newID, newDisc.m_managerElementMemory);
-                    }
-                    for (auto& ref : newDisc.m_references) {
-                        if (!ref.second.node) {
-                            // reference is relased currently with no ptrs
-                            throw ManagerStateException("Bad state in reindex, reference released! TODO maybe aquire released el");
-                        } else if (ref.second.node->m_references.count(oldID)) {
-                            size_t numRefs = ref.second.node->m_references[oldID].count;
-                            ref.second.node->m_references.erase(oldID);
-                            ref.second.node->m_references[newID] = ManagerNode::NodeReference{&newDisc, numRefs};
-                        }
-                        if (!ref.second.node->m_managerElementMemory) {
-                            get(ref.first);
-                        }
-                        ref.second.node->m_managerElementMemory->referenceReindexed(newID);
                     }
                     m_graph.erase(oldID);
                 }

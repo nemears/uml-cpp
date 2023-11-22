@@ -75,9 +75,12 @@ namespace UML {
                     curr = curr->m_right;
                 }
 
-                // now go all the way left
-                while (curr->m_left) {
-                    curr = curr->m_left;
+                // edge case where root is back
+                if (curr != this->m_root) {
+                    // now go all the way left
+                    while (curr->m_left) {
+                        curr = curr->m_left;
+                    }
                 }
 
                 return curr->m_ptr->as<T>();

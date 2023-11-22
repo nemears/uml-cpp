@@ -156,9 +156,6 @@ namespace UML {
     TEST_F( TEST_NAME ## Method , basicSetIntegrationTest ) { \
         ASSERT_NO_FATAL_FAILURE((setIntegrationTestBasic<T , U>(signature)));\
     } \
-    TEST_F( TEST_NAME ## Method , reindexSetIntegrationTest ) { \
-        ASSERT_NO_FATAL_FAILURE((setIntegrationTestReindex<T , U>(signature)));\
-    } \
     TEST_F( TEST_NAME ## Method , mountSetAndReleaseIntegrationTest ) { \
         ASSERT_NO_FATAL_FAILURE((setIntegrationTestMount<T , U>(signature)));\
     } \
@@ -260,9 +257,6 @@ namespace UML {
     }; \
     TEST_F(TEST_NAME ## Method , basicSingletonIntegrationTest) { \
         ASSERT_NO_FATAL_FAILURE((singletonIntegrationTestBasic<T,U>(acessor, mutator))); \
-    } \
-    TEST_F(TEST_NAME ## Method, reindexSingletonIntegrationTest) { \
-        ASSERT_NO_FATAL_FAILURE((singletonIntegrationTestReindex<T,U>(acessor, mutator))); \
     } \
     TEST_F(TEST_NAME ## Method, mountSingletonIntegrationTest) { \
         ASSERT_NO_FATAL_FAILURE((singletonIntegrationTestMount<T,U>(acessor, mutator))); \

@@ -58,10 +58,7 @@ namespace UML {
                     throw SetStateException("Cannot get front element because set is empty!");
                 }
 
-                while (!curr->m_ptr) {
-                    if (!curr->m_left) {
-                        throw SetStateException("Internal error while getting front element, contact developer!");
-                    }
+                while (curr->m_left) {
                     curr = curr->m_left;
                 }
 

@@ -1053,16 +1053,50 @@ namespace UML {
                 // }
             }
 
-            // TODO reimplement
+            void checkAndSwitchNodes(SetNode* node) {
+                if (node->m_left->m_ptr.id() > node->m_right->m_ptr.id()) {
+                    // This should still keep RedBlack balancing
+                    SetNode* oldLeft = node->m_left;
+                    node->m_left = node->m_right;
+                    node->m_right = oldLeft;
+                }
+            }
+
             void reindex(ID newID) {
                 if (!this->m_root) {
                     return;
                 }
-                SetNode* node = search(newID, this->m_root);
-                if (!node || !node->m_parent) {
+                
+                if (this->m_root->m_ptr.id() == newID) {
                     return;
-                } 
-                // reindexDFS(node, this);
+                }
+
+                // we need to look at all nodes until we find one
+                std::list<SetNode*> stack;
+                stack.push_front(this->m_root);
+                do {
+                    SetNode* node = stack.front();
+                    stack.pop_front();
+                    if (node->m_left && node->m_left->m_ptr.id() == newID) {
+                        // check if it is still less than m_right
+                        if (node->m_right) {
+                            checkAndSwitchNodes(node);
+                        }
+                        break;
+                    } else if (node->m_right && node->m_right->m_ptr.id() == newID) {
+                        if (node->m_left) {
+                            checkAndSwitchNodes(node);
+                        }
+                        break;
+                    } else {
+                        if (node->m_right) {
+                            stack.push_front(node->m_right);
+                        }
+                        if (node->m_left) {
+                            stack.push_front(node->m_left);
+                        }
+                    }
+                } while (!stack.empty());
             }
 
             void eraseElement(ID id) {
@@ -1501,9 +1535,15 @@ namespace UML {
                 m_stack = rhs.m_stack;
             }
             T& operator*() {
+                if (m_stack.empty()) {
+                    throw SetStateException("accessed empty iterator!");
+                }
                 return m_stack.front()->m_ptr->as<T>();
             }
             UmlPtr<T> operator->() {
+                if (m_stack.empty()) {
+                    throw SetStateException("accessed empty iterator!");
+                }
                 return m_stack.front()->m_ptr;
             }
             SetIterator<T> operator++() {

@@ -595,6 +595,55 @@ TEST_F(SetTest, longerBasicRemoveTest) {
     ASSERT_FALSE(testEl->set.contains(pckg8));
 }
 
+class TestReindexSetElement : public Element {
+    public:
+        CustomSet<Package, TestReindexSetElement> set = CustomSet<Package, TestReindexSetElement>(this);
+        TestReindexSetElement() : Element(ElementType::ELEMENT) {
+            set.subsets(this->m_ownedElements);
+        }
+};
+
+TEST_F(SetTest, reindexSetElementTest) {
+    // Reference ids of this test: shown in order from least to greatest
+    //      Jp2IhMjC2qNN7cIYPXiFZU4vDdun
+    //      GqrX5Ta8KQDdFfaHrau08OS7Et3n
+    //      kbreSzh_ys_8SepvJR6Q58tzWdFI
+    //      TeIMyndF4nm_NOTbFZ&vZDLXxvtC
+    Manager<> m;
+    UmlPtr<TestReindexSetElement> testEl = m.create<TestReindexSetElement>();
+    PackagePtr pckg1 = m.create<Package>();
+    pckg1->setID("GqrX5Ta8KQDdFfaHrau08OS7Et3n");
+    PackagePtr pckg2 = m.create<Package>();
+    pckg2->setID("kbreSzh_ys_8SepvJR6Q58tzWdFI");
+    PackagePtr pckg3 = m.create<Package>();
+    pckg3->setID("TeIMyndF4nm_NOTbFZ&vZDLXxvtC");
+    testEl->set.add(pckg1);
+    testEl->set.add(pckg2);
+    testEl->set.add(pckg3);
+    ASSERT_EQ(testEl->set.front(), *pckg1);
+    ASSERT_EQ(testEl->set.back(), *pckg3);
+    SetIterator<Package> it1 = testEl->set.begin();
+    ASSERT_EQ(*it1, *pckg1);
+    ++it1;
+    ASSERT_EQ(*it1, *pckg2);
+    ++it1;
+    ASSERT_EQ(*it1, *pckg3);
+    ++it1;
+    ASSERT_EQ(it1, testEl->set.end());
+    // reindex
+    pckg3->setID("Jp2IhMjC2qNN7cIYPXiFZU4vDdun");
+    ASSERT_EQ(testEl->set.front(), *pckg3);
+    ASSERT_EQ(testEl->set.back(), *pckg1);
+    SetIterator<Package> it2 = testEl->set.begin();
+    ASSERT_EQ(*it2, *pckg3);
+    ++it2;
+    ASSERT_EQ(*it2, *pckg2);
+    ++it2;
+    ASSERT_EQ(*it2, *pckg1);
+    ++it2;
+    ASSERT_EQ(it2, testEl->set.end());
+}
+
 class TestSubsetsElement : public Element {
     public:
         CustomSet<PackageableElement, TestSubsetsElement> root = CustomSet<PackageableElement, TestSubsetsElement>(this);

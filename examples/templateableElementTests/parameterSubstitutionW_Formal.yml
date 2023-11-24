@@ -2,6 +2,7 @@
   package:
     packagedElements:
       - class:
+          id: SyNjF8Y2rJNl5pfNXIvOiIx7wxq&
           ownedTemplateSignature:
             redefinableTemplateSignature:
               id: t9DEpJVxrlACAQsPLxoHMRPPpDUq
@@ -9,6 +10,7 @@
                 - templateParameter:
                     id: Yw0uEQ8ZDsgZx4bogVkuxvBL9CGR
       - class:
+          id: DVTE867SKvT8f7Z34sqaAxMR0jL2
           templateBindings:
             - templateBinding:
                 signature: t9DEpJVxrlACAQsPLxoHMRPPpDUq

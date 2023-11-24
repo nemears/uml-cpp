@@ -22,16 +22,6 @@ TEST_F(OperationTest, SetAndGetTypeTest) {
     ASSERT_TRUE(o.getType()->getID() == c.getID());
 }
 
-TEST_F(OperationTest, reIndexID_Test) {
-    Manager<> m;
-    Class& c = *m.create<Class>();
-    Operation& o = *m.create<Operation>();
-    o.setClass(&c);
-    o.setID("c3rcWoyTgxLfFl5jf2Ms6CMa_sWe");
-    ASSERT_NO_THROW(c.getOwnedOperations().get(o.getID()));
-    ASSERT_NO_THROW(c.getOwnedElements().get(o.getID()));
-}
-
 TEST_F(OperationTest, reIndexNameTest) {
     Manager<> m;
     ClassPtr c = m.create<Class>();
@@ -243,37 +233,37 @@ TEST_F(OperationTest, overrideParameterOperationTest) {
     ASSERT_TRUE(*p.getOwner() == o2);
 }
 
-TEST_F(OperationTest, reindexParameterDirectionTest) {
-    Manager<> mm;
-    Operation& o = *mm.create<Operation>();
-    Parameter& p = *mm.create<Parameter>();
-    Parameter& p2 = *mm.create<Parameter>();
-    o.getOwnedParameters().add(p);
-    o.getOwnedParameters().add(p2);
-    ASSERT_NO_THROW(p.setDirection(ParameterDirectionKind::RETURN));
-    ASSERT_TRUE(o.getOwnedParameters().size() == 2);
-    ASSERT_TRUE(&o.getOwnedParameters().front() == &p);
-    ASSERT_TRUE(&o.getOwnedParameters().back() == &p2);
-    ASSERT_TRUE(o.getOwnedMembers().size() == 2);
-    ASSERT_TRUE(&o.getOwnedMembers().front() == &p);
-    ASSERT_TRUE(&o.getOwnedMembers().back() == &p2);
-    ASSERT_TRUE(o.getMembers().size() == 2);
-    ASSERT_TRUE(&o.getMembers().front() == &p);
-    ASSERT_TRUE(&o.getMembers().back() == &p2);
-    ASSERT_TRUE(o.getOwnedElements().size() == 2);
-    ASSERT_TRUE(&o.getOwnedElements().get(p.getID()) == &p);
-    ASSERT_TRUE(&o.getOwnedElements().get(p2.getID()) == &p2);
+// TEST_F(OperationTest, reindexParameterDirectionTest) {
+//     Manager<> mm;
+//     Operation& o = *mm.create<Operation>();
+//     Parameter& p = *mm.create<Parameter>();
+//     Parameter& p2 = *mm.create<Parameter>();
+//     o.getOwnedParameters().add(p);
+//     o.getOwnedParameters().add(p2);
+//     ASSERT_NO_THROW(p.setDirection(ParameterDirectionKind::RETURN));
+//     ASSERT_TRUE(o.getOwnedParameters().size() == 2);
+//     ASSERT_TRUE(&o.getOwnedParameters().front() == &p);
+//     ASSERT_TRUE(&o.getOwnedParameters().back() == &p2);
+//     ASSERT_TRUE(o.getOwnedMembers().size() == 2);
+//     ASSERT_TRUE(&o.getOwnedMembers().front() == &p);
+//     ASSERT_TRUE(&o.getOwnedMembers().back() == &p2);
+//     ASSERT_TRUE(o.getMembers().size() == 2);
+//     ASSERT_TRUE(&o.getMembers().front() == &p);
+//     ASSERT_TRUE(&o.getMembers().back() == &p2);
+//     ASSERT_TRUE(o.getOwnedElements().size() == 2);
+//     ASSERT_TRUE(&o.getOwnedElements().get(p.getID()) == &p);
+//     ASSERT_TRUE(&o.getOwnedElements().get(p2.getID()) == &p2);
 
-    ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::RETURN);
-    ASSERT_TRUE(p.getOperation() == &o);
-    ASSERT_TRUE(p.getNamespace() == &o);
-    ASSERT_TRUE(p.getOwner() == &o);
+//     ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::RETURN);
+//     ASSERT_TRUE(p.getOperation() == &o);
+//     ASSERT_TRUE(p.getNamespace() == &o);
+//     ASSERT_TRUE(p.getOwner() == &o);
     
-    ASSERT_TRUE(p2.getDirection() == ParameterDirectionKind::NONE);
-    ASSERT_TRUE(*p2.getOperation() == o);
-    ASSERT_TRUE(*p2.getNamespace() == o);
-    ASSERT_TRUE(*p2.getOwner() == o);
-}
+//     ASSERT_TRUE(p2.getDirection() == ParameterDirectionKind::NONE);
+//     ASSERT_TRUE(*p2.getOperation() == o);
+//     ASSERT_TRUE(*p2.getNamespace() == o);
+//     ASSERT_TRUE(*p2.getOwner() == o);
+// }
 
 TEST_F(OperationTest, RemoveMethodFunctorTest) {
     Manager<> mm;

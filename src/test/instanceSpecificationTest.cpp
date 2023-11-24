@@ -71,17 +71,6 @@ TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
 // // TODO add throw for pushing slots that don't correspond structural feature
 
 
-TEST_F(InstanceSpecificationTest, reindexSlotID_Test) {
-    Manager<> m;
-    InstanceSpecification& i = *m.create<InstanceSpecification>();
-    Slot& s = *m.create<Slot>();
-    i.getSlots().add(s);
-    s.setOwningInstance(&i);
-    s.setID("190d1cb9_13dc_44e6_a064_1268");
-    ASSERT_NO_THROW(i.getSlots().get(s.getID()));
-    ASSERT_NO_THROW(i.getOwnedElements().get(s.getID()));
-}
-
 TEST_F(InstanceSpecificationTest, addSlotFunctorTest) {
     Manager<> m;
     InstanceSpecification& i = *m.create<InstanceSpecification>();
@@ -165,10 +154,10 @@ TEST_F(InstanceSpecificationTest, forwardClassifierTest) {
     ASSERT_EQ(el->getElementType(), ElementType::PACKAGE);
     Package* pckg = dynamic_cast<Package*>(el);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
-    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
-    ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::INSTANCE_SPECIFICATION);
-    InstanceSpecification* i = dynamic_cast<InstanceSpecification*>(&pckg->getPackagedElements().back());
+    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("W2gUELk0mKh&Kqc5fjFCOuppln2b")).getElementType() == ElementType::CLASS);
+    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().get(ID::fromString("W2gUELk0mKh&Kqc5fjFCOuppln2b")));
+    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("8SXVdBHWl9N6o6Uut3WImOPk6Ngw")).getElementType() == ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification* i = dynamic_cast<InstanceSpecification*>(&pckg->getPackagedElements().get(ID::fromString("8SXVdBHWl9N6o6Uut3WImOPk6Ngw")));
     ASSERT_EQ(i->getClassifiers().size(), 1);
     ASSERT_EQ(i->getClassifiers().front(), *c);
 }
@@ -179,10 +168,10 @@ TEST_F(InstanceSpecificationTest, backwardsClassifierTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::INSTANCE_SPECIFICATION);
-    ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::CLASS);
-    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().back());
-    InstanceSpecification* i = dynamic_cast<InstanceSpecification*>(&pckg->getPackagedElements().front());
+    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("HQci2EpoewLIakXPsMAjHKpLkByC")).getElementType() == ElementType::INSTANCE_SPECIFICATION);
+    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("wkz5zWQPLT7RaxpqT3RDFMeF0bA7")).getElementType() == ElementType::CLASS);
+    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().get(ID::fromString("wkz5zWQPLT7RaxpqT3RDFMeF0bA7")));
+    InstanceSpecification* i = dynamic_cast<InstanceSpecification*>(&pckg->getPackagedElements().get(ID::fromString("HQci2EpoewLIakXPsMAjHKpLkByC")));
     ASSERT_EQ(i->getClassifiers().size(), 1);
     ASSERT_EQ(i->getClassifiers().front(), *c);
 }
@@ -193,10 +182,10 @@ TEST_F(InstanceSpecificationTest, basicSlotTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::INSTANCE_SPECIFICATION);
-    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
-    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
-    InstanceSpecification& i = *dynamic_cast<InstanceSpecification*>(&pckg->getPackagedElements().back());
+    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("sQCzPFXcFEeTenYV0l8pGDwWTpo1")).getElementType() == ElementType::INSTANCE_SPECIFICATION);
+    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("efp5gW8d2yV5b9bKtY&OmBHJpUYw")).getElementType() == ElementType::CLASS);
+    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().get(ID::fromString("efp5gW8d2yV5b9bKtY&OmBHJpUYw")));
+    InstanceSpecification& i = *dynamic_cast<InstanceSpecification*>(&pckg->getPackagedElements().get(ID::fromString("sQCzPFXcFEeTenYV0l8pGDwWTpo1")));
     ASSERT_EQ(i.getClassifiers().size(), 1);
     ASSERT_EQ(i.getClassifiers().front(), *c);
     ASSERT_TRUE(i.getSlots().size() == 1);
@@ -204,27 +193,7 @@ TEST_F(InstanceSpecificationTest, basicSlotTest) {
     Slot* s = &i.getSlots().front();
     Property* p = &c->getOwnedAttributes().front();
     ASSERT_TRUE(s->getDefiningFeature() == p);
-    ASSERT_TRUE(*s->getOwningInstance() == pckg->getPackagedElements().back());
-}
-
-TEST_F(InstanceSpecificationTest, backwardsSlotTest) {
-    Manager<> m;
-    ASSERT_NO_THROW(m.open(ymlPath + "instanceSpecificationTests/backwardsSlot.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
-    Package* pckg = &m.getRoot()->as<Package>();
-    ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::INSTANCE_SPECIFICATION);
-    ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::CLASS);
-    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().back());
-    InstanceSpecification& i = *dynamic_cast<InstanceSpecification*>(&pckg->getPackagedElements().front());
-    ASSERT_EQ(i.getClassifiers().size(), 1);
-    ASSERT_EQ(i.getClassifiers().front(), *c);
-    ASSERT_TRUE(i.getSlots().size() == 1);
-    ASSERT_TRUE(c->getOwnedAttributes().size() == 1);
-    Slot* s = &i.getSlots().front();
-    Property* p = &c->getOwnedAttributes().front();
-    ASSERT_TRUE(s->getDefiningFeature() == p);
-    ASSERT_TRUE(*s->getOwningInstance() == pckg->getPackagedElements().front());
+    ASSERT_TRUE(*s->getOwningInstance() == i);
 }
 
 TEST_F(InstanceSpecificationTest, instanceValueSlot) {

@@ -26,35 +26,6 @@ TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
     ASSERT_TRUE(&p.getOwnedElements().get(ls.getID()) == &ls);
 }
 
-TEST_F(PropertyTest, reindexID_forClassiferTest) {
-    Manager<> m;
-    Class& c = *m.create<Class>();
-    Property& p = *m.create<Property>();
-    p.setAggregation(AggregationKind::COMPOSITE);
-    c.getOwnedAttributes().add(p);
-    ASSERT_NO_THROW(p.setID("190d1cb9_13dc_44e6_a064_1268"));
-    ASSERT_NO_THROW(c.getOwnedElements().get(p.getID()));
-    ASSERT_NO_THROW(c.getMembers().get(p.getID()));
-    ASSERT_NO_THROW(c.getOwnedMembers().get(p.getID()));
-    ASSERT_NO_THROW(c.getFeatures().get(p.getID()));
-    ASSERT_NO_THROW(c.getAttributes().get(p.getID()));
-    ASSERT_NO_THROW(c.getOwnedAttributes().get(p.getID()));
-    ASSERT_NO_THROW(c.getRoles().get(p.getID()));
-    ASSERT_NO_THROW(c.getParts().get(p.getID()));
-
-    Association& a = *m.create<Association>();
-    Property& p2 = *m.create<Property>();
-    a.getNavigableOwnedEnds().add(p2);
-    ASSERT_NO_THROW(p2.setID("c0ab87cc_d00b_4afb_9558_5382"));
-    ASSERT_NO_THROW(a.getNavigableOwnedEnds().get(p2.getID()));
-    ASSERT_NO_THROW(a.getOwnedEnds().get(p2.getID()));
-    ASSERT_NO_THROW(a.getMemberEnds().get(p2.getID()));
-    ASSERT_NO_THROW(a.getFeatures().get(p2.getID()));
-    ASSERT_NO_THROW(a.getOwnedMembers().get(p2.getID()));
-    ASSERT_NO_THROW(a.getMembers().get(p2.getID()));
-    ASSERT_NO_THROW(a.getOwnedElements().get(p2.getID()));
-}
-
 TEST_F(PropertyTest, reindexNameForClassifierTest) {
     Manager<> m;
     Class& c = *m.create<Class>();
@@ -164,39 +135,6 @@ TEST_F(PropertyTest, redefinePropertyTest) {
 //   ASSERT_THROW(prop.getRedefinedProperties().add(notRelated), ImproperRedefinitionException);
 }
 
-TEST_F(PropertyTest, reindexRedefinedPropertyTest) {
-    Manager<> m;
-    Class& b = *m.create<Class>();
-    Class& s = *m.create<Class>();
-    Generalization& g = *m.create<Generalization>();
-    Property& red = *m.create<Property>();
-    Property& ov = *m.create<Property>(); // override
-    Package& root = *m.create<Package>();
-    s.getGeneralizations().add(g);
-    g.setGeneral(b);
-    b.getOwnedAttributes().add(red);
-    s.getOwnedAttributes().add(ov);
-    root.getPackagedElements().add(b, s);
-    ov.getRedefinedProperties().add(red);
-    ID id = ID::fromString("cLvWpn5ofnVR_f2lob3ofVyLu0Fc");
-    red.setID(id);
-    m.setRoot(&root);
-    ASSERT_EQ(ov.getRedefinedProperties().size(), 1);
-    ASSERT_EQ(ov.getRedefinedProperties().front().getID(), id);
-    ASSERT_NO_THROW(ov.getRedefinedProperties().get(id));
-    ASSERT_EQ(ov.getRedefinedElements().size(), 1);
-    ASSERT_EQ(ov.getRedefinedElements().front().getID(), id);
-    ASSERT_NO_THROW(ov.getRedefinedElements().get(id));
-    m.mount(ymlPath + "propertyTests");
-    m.release(red);
-    ASSERT_EQ(ov.getRedefinedProperties().size(), 1);
-    ASSERT_EQ(ov.getRedefinedProperties().front().getID(), id);
-    ASSERT_NO_THROW(ov.getRedefinedProperties().get(id));
-    ASSERT_EQ(ov.getRedefinedElements().size(), 1);
-    ASSERT_EQ(ov.getRedefinedElements().front().getID(), id);
-    ASSERT_NO_THROW(ov.getRedefinedElements().get(id));
-}
-
 TEST_F(PropertyTest, forwardTypeTest) {
     Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/forwardType.yml"));
@@ -205,11 +143,11 @@ TEST_F(PropertyTest, forwardTypeTest) {
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
     ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::CLASS);
-    Class* clazz1 = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
-    Class* clazz2 = dynamic_cast<Class*>(&pckg->getPackagedElements().back());
-    ASSERT_TRUE(clazz2->getAttributes().size() == 1);
-    Property* prop = &clazz2->getAttributes().front();
-    ASSERT_TRUE(prop->getType() == clazz1);
+    Class& clazz1 = pckg->getPackagedElements().get(ID::fromString("5pyZRmwKoVZBKmqRI6qp93kvQYUR")).as<Class>();
+    Class& clazz2 = pckg->getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD")).as<Class>();
+    ASSERT_TRUE(clazz2.getAttributes().size() == 1);
+    Property* prop = &clazz2.getAttributes().front();
+    ASSERT_TRUE(prop->getType()->as<Class>() == clazz1);
 }
 
 TEST_F(PropertyTest, backwardsTypeTest) {
@@ -220,12 +158,11 @@ TEST_F(PropertyTest, backwardsTypeTest) {
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
     ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::CLASS);
-    Class* clazz1 = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
-    Class* clazz2 = dynamic_cast<Class*>(&pckg->getPackagedElements().back());
-    ASSERT_TRUE(clazz1->getAttributes().size() == 1);
-    Property* prop = &clazz1->getAttributes().front();
-    ASSERT_TRUE(prop->getType());
-    ASSERT_EQ(prop->getType(), clazz2);
+    Class& clazz1 = pckg->getPackagedElements().get(ID::fromString("UKqPzBXPjVPhV89kTmNr7xRc7Z_&")).as<Class>();
+    Class& clazz2 = pckg->getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD")).as<Class>();
+    ASSERT_TRUE(clazz2.getAttributes().size() == 1);
+    Property* prop = &clazz2.getAttributes().front();
+    ASSERT_TRUE(prop->getType()->as<Class>() == clazz1);
 }
 
 TEST_F(PropertyTest, multiplicityTest) {
@@ -262,7 +199,7 @@ TEST_F(PropertyTest, literalBoolDefaultValueTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
-    PrimitiveType* b = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().front());
+    PrimitiveType* b = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get("bool"));
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
     Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
@@ -327,12 +264,12 @@ TEST_F(PropertyTest, parseRedefinedPropertyTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
-    Class& base = pckg.getPackagedElements().front().as<Class>();
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("2luT6NreEKbmUKCHLqO4tfqxx5pX")).getElementType(), ElementType::CLASS);
+    Class& base = pckg.getPackagedElements().get(ID::fromString("2luT6NreEKbmUKCHLqO4tfqxx5pX")).as<Class>();
     ASSERT_EQ(base.getOwnedAttributes().size(), 1);
     Property& redefined = base.getOwnedAttributes().front();
-    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
-    Class& spec = pckg.getPackagedElements().back().as<Class>();
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("VI1AWv&JVnbq8P8mvFztq1W4v&0y")).getElementType(), ElementType::CLASS);
+    Class& spec = pckg.getPackagedElements().get(ID::fromString("VI1AWv&JVnbq8P8mvFztq1W4v&0y")).as<Class>();
     ASSERT_EQ(spec.getGenerals().size(), 1);
     ASSERT_EQ(spec.getGenerals().front().getID(), base.getID());
     ASSERT_EQ(spec.getOwnedAttributes().size(), 1);

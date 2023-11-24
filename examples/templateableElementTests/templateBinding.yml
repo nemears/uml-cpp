@@ -2,10 +2,12 @@
   package:
     packagedElements:
       - class:
+          id: PK0LXXxxVodB957G_lqrskz9gXqT
           ownedTemplateSignature:
             redefinableTemplateSignature:
               id: LZNsKPxKJ7fB3775xyVUNLKn9SZ4
       - class:
+          id: eakhRnuZo&zMT5BZ8OOuTszw1ylv
           templateBindings:
               - templateBinding:
                   signature: LZNsKPxKJ7fB3775xyVUNLKn9SZ4

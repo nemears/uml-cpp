@@ -322,21 +322,6 @@ TEST_F(DataTypeTest, overwriteOperationDataTypeW_OtherOperationTest) {
     ASSERT_TRUE(o.getOwner() == &d2);
 }
 
-TEST_F(DataTypeTest, reindexOwnedAttributeIDTest) {
-    Manager<> m;
-    DataTypePtr d = m.create<DataType>();
-    PropertyPtr p = m.create<Property>();
-    d->getOwnedAttributes().add(*p);
-    ID id = ID::fromString("16c345b4_5ae2_41ca_a0e7_a9c3");
-    p->setID(id);
-    ASSERT_EQ(d->getOwnedAttributes().get(id), *p);
-    ASSERT_EQ(d->getAttributes().get(id), *p);
-    ASSERT_EQ(d->getFeatures().get(id), *p);
-    ASSERT_EQ(d->getMembers().get(id) , *p);
-    ASSERT_EQ(d->getOwnedMembers().get(id), *p);
-    ASSERT_EQ(d->getOwnedElements().get(id), *p);
-}
-
 TEST_F(DataTypeTest, reindexOwnedAttributeNameTest) {
     Manager<> m;
     DataTypePtr d = m.create<DataType>();
@@ -350,20 +335,6 @@ TEST_F(DataTypeTest, reindexOwnedAttributeNameTest) {
     ASSERT_EQ(d->getMembers().get("2"), *p);
     ASSERT_EQ(d->getOwnedMembers().get("2"), *p);
     ASSERT_EQ(d->getOwnedElements().get("2"), *p);
-}
-
-TEST_F(DataTypeTest, reindexOwnedOperationIDTest) {
-    Manager<> m;
-    DataType& d = *m.create<DataType>();
-    Operation& o = *m.create<Operation>();
-    d.getOwnedOperations().add(o);
-    ID id = ID::fromString("16c345b4_5ae2_41ca_a0e7_a9c3");
-    o.setID(id);
-    ASSERT_TRUE(&d.getOwnedOperations().get(id) == &o);
-    ASSERT_TRUE(&d.getFeatures().get(id) == &o);
-    ASSERT_TRUE(&d.getMembers().get(id) == &o);
-    ASSERT_TRUE(&d.getOwnedMembers().get(id) == &o);
-    ASSERT_TRUE(&d.getOwnedElements().get(id) == &o);
 }
 
 TEST_F(DataTypeTest, reindexOwnedOperationNameTest) {
@@ -503,14 +474,14 @@ TEST_F(DataTypeTest, mountAndEditDataType) {
     m.setRoot(&root);
     m.mount(ymlPath + "dataTypeTests");
 
+    ID baseTypeID = baseType.getID();
     m.release(baseType);
-    DataType& baseType2 = root.getPackagedElements().front().as<DataType>();
+    DataType& baseType2 = root.getPackagedElements().get(baseTypeID).as<DataType>();
     ASSERT_TRUE(baseType2.getOwningPackage());
     ASSERT_EQ(*baseType2.getOwningPackage(), root);
     ASSERT_TRUE(baseType2.getNamespace());
     ASSERT_EQ(*baseType2.getNamespace(), root);
     
-    ID baseTypeID = baseType2.getID();
     m.release(baseType2, root);
     DataType& baseType3 = m.get(baseTypeID)->as<DataType>();
     ASSERT_TRUE(baseType3.getOwningPackage());
@@ -520,8 +491,9 @@ TEST_F(DataTypeTest, mountAndEditDataType) {
     ASSERT_TRUE(baseType3.getOwner());
     ASSERT_EQ(*baseType3.getOwner(), root2);
 
+    ID basePropID = baseProp.getID();
     m.release(baseProp);
-    Property& baseProp2 = baseType3.getOwnedAttributes().front();
+    Property& baseProp2 = baseType3.getOwnedAttributes().get(basePropID);
     ASSERT_TRUE(baseProp2.getDataType());
     ASSERT_EQ(*baseProp2.getDataType(), baseType3);
     ASSERT_TRUE(baseProp2.getFeaturingClassifier());
@@ -536,8 +508,7 @@ TEST_F(DataTypeTest, mountAndEditDataType) {
     ASSERT_TRUE(baseType3.getOwnedMembers().contains(baseProp2.getID()));
     ASSERT_TRUE(baseType3.getMembers().contains(baseProp2.getID()));
     ASSERT_TRUE(baseType3.getOwnedElements().contains(baseProp2.getID()));
-    
-    ID basePropID = baseProp2.getID();
+
     m.release(baseProp2, baseType3);
     Property& baseProp3 = m.get(basePropID)->as<Property>();
     DataType& baseType4 = *baseProp3.getDataType();

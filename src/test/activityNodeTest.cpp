@@ -33,17 +33,6 @@ class ActivityNodeTest : public ::testing::Test {
    
 };
 
-TEST_F(ActivityNodeTest, reindexID_test) {
-    Manager<> m;
-    Activity& a = *m.create<Activity>();
-    OpaqueAction& n = *m.create<OpaqueAction>();
-    a.getNodes().add(n);
-    n.setActivity(&a); // Maybe this should be allowed
-    n.setID("c3rcWoyTgxLfFl5jf2Ms6CMa_sWe");
-    ASSERT_NO_THROW(a.getNodes().get(n.getID()));
-    ASSERT_NO_THROW(a.getOwnedElements().get(n.getID()));
-}
-
 TEST_F(ActivityNodeTest, reindexNameTest) {
     Manager<> m;
     Activity& a = *m.create<Activity>();

@@ -2,10 +2,12 @@
   package:
     packagedElements:
       - class:
+          id: eFTIp_&18VO2Hh9zYx8VQc75jVlx
           ownedTemplateSignature:
             redefinableTemplateSignature:
               id: BXOJoKsvBCVhMIwUbxRV5ibHYMDf
       - class:
+          id: RAPpSu&jfJx&WBoxhHqzaKa&YwBR
           templateBindings:
             - templateBinding:
                 signature: BXOJoKsvBCVhMIwUbxRV5ibHYMDf

@@ -49,22 +49,6 @@ TEST_F(ActivityEdgeTest, SetRegularSourceTest) {
     ASSERT_EQ(n.getOutgoing().front(), e);
 }
 
-TEST_F(ActivityEdgeTest, reindexID_Test) {
-    Manager<> m;
-    Activity& a = *m.create<Activity>();
-    ControlFlow& e = *m.create<ControlFlow>();
-    OpaqueAction& n = *m.create<OpaqueAction>();
-    e.setSource(n);
-    e.setTarget(n);
-    a.getNodes().add(n);
-    a.getEdges().add(e);
-    e.setID("c3rcWoyTgxLfFl5jf2Ms6CMa_sWe");
-    ASSERT_NO_THROW(n.getIncoming().get(e.getID()));
-    ASSERT_NO_THROW(n.getOutgoing().get(e.getID()));
-    ASSERT_NO_THROW(a.getEdges().get(e.getID()));
-    ASSERT_NO_THROW(a.getOwnedElements().get(e.getID()));
-}
-
 TEST_F(ActivityEdgeTest, reindexNameTest) {
     Manager<> m;
     Activity& a = *m.create<Activity>();

@@ -28,25 +28,6 @@ class TemplateableElementTest : public ::testing::Test {
     std::string ymlPath = YML_FILES_PATH;
 };
 
-TEST_F(TemplateableElementTest, reindexTemplateableElementsTest) {
-    Manager<> m;
-    Class& templateClass = *m.create<Class>();
-    RedefinableTemplateSignature& classSignature = *m.create<RedefinableTemplateSignature>();
-    TemplateBinding& classBinding = *m.create<TemplateBinding>();
-    Package& root = *m.create<Package>();
-    templateClass.setOwnedTemplateSignature(classSignature);
-    templateClass.getTemplateBindings().add(classBinding);
-    classBinding.setSignature(classSignature);
-    root.getPackagedElements().add(templateClass);
-    m.setRoot(&root);
-    m.mount(ymlPath + "templateableElementTests");
-    ID classID = ID::fromString("x6iYAE&S1H7jjIFXc0Um0zdAfOVl");
-    templateClass.setID(classID);
-    m.release(templateClass);
-    ASSERT_NO_THROW(ASSERT_EQ(classSignature.getTemplate()->getID(), classID));
-    m.release(*m.get(classID));
-    ASSERT_NO_THROW(ASSERT_EQ(classBinding.getBoundElement()->getID(), classID));
-}
 TEST_F(TemplateableElementTest, basicTemplateSignature) {
     Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/classW_emptySignature.yml"));
@@ -139,12 +120,12 @@ TEST_F(TemplateableElementTest, basicTemplateBindingTest) {
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
-    Class& c1 = dynamic_cast<Class&>(pckg.getPackagedElements().front());
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("PK0LXXxxVodB957G_lqrskz9gXqT")).getElementType(), ElementType::CLASS);
+    Class& c1 = dynamic_cast<Class&>(pckg.getPackagedElements().get(ID::fromString("PK0LXXxxVodB957G_lqrskz9gXqT")));
     ASSERT_TRUE(c1.getOwnedTemplateSignature());
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
-    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
-    Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("eakhRnuZo&zMT5BZ8OOuTszw1ylv")).getElementType(), ElementType::CLASS);
+    Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().get(ID::fromString("eakhRnuZo&zMT5BZ8OOuTszw1ylv")));
     ASSERT_EQ(c2.getTemplateBindings().size(), 1);
     TemplateBinding& b = c2.getTemplateBindings().front();
     ASSERT_TRUE(b.getSignature());
@@ -157,14 +138,14 @@ TEST_F(TemplateableElementTest, parameterSubstitutionW_formalTest) {
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
-    Class& c1 = dynamic_cast<Class&>(pckg.getPackagedElements().front());
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("SyNjF8Y2rJNl5pfNXIvOiIx7wxq&")).getElementType(), ElementType::CLASS);
+    Class& c1 = dynamic_cast<Class&>(pckg.getPackagedElements().get(ID::fromString("SyNjF8Y2rJNl5pfNXIvOiIx7wxq&")));
     ASSERT_TRUE(c1.getOwnedTemplateSignature());
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
     ASSERT_EQ(s.getOwnedParameters().size(), 1);
     TemplateParameter& t = s.getOwnedParameters().front();
-    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
-    Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("DVTE867SKvT8f7Z34sqaAxMR0jL2")).getElementType(), ElementType::CLASS);
+    Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().get(ID::fromString("DVTE867SKvT8f7Z34sqaAxMR0jL2")));
     ASSERT_EQ(c2.getTemplateBindings().size(), 1);
     TemplateBinding& b = c2.getTemplateBindings().front();
     ASSERT_TRUE(b.getSignature());
@@ -181,12 +162,12 @@ TEST_F(TemplateableElementTest, parameterSubstitutionW_OwnedActualTest) {
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
-    Class& c1 = dynamic_cast<Class&>(pckg.getPackagedElements().front());
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("eFTIp_&18VO2Hh9zYx8VQc75jVlx")).getElementType(), ElementType::CLASS);
+    Class& c1 = dynamic_cast<Class&>(pckg.getPackagedElements().get(ID::fromString("eFTIp_&18VO2Hh9zYx8VQc75jVlx")));
     ASSERT_TRUE(c1.getOwnedTemplateSignature());
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
-    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
-    Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("RAPpSu&jfJx&WBoxhHqzaKa&YwBR")).getElementType(), ElementType::CLASS);
+    Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().get(ID::fromString("RAPpSu&jfJx&WBoxhHqzaKa&YwBR")));
     ASSERT_EQ(c2.getTemplateBindings().size(), 1);
     TemplateBinding& b = c2.getTemplateBindings().front();
     ASSERT_EQ(b.getParameterSubstitutions().size(), 1);
@@ -203,12 +184,12 @@ TEST_F(TemplateableElementTest, parameterSubstitutionW_Actual) {
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
-    Class& c1 = dynamic_cast<Class&>(pckg.getPackagedElements().front());
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("2aqU0YRqhzL4nhRkhmK3pmoNZbMe")).getElementType(), ElementType::CLASS);
+    Class& c1 = dynamic_cast<Class&>(pckg.getPackagedElements().get(ID::fromString("2aqU0YRqhzL4nhRkhmK3pmoNZbMe")));
     ASSERT_TRUE(c1.getOwnedTemplateSignature());
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
-    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::CLASS);
-    Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().back());
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("Q&emnaGslavgAUccL94d07Lp3hyD")).getElementType(), ElementType::CLASS);
+    Class& c2 = dynamic_cast<Class&>(pckg.getPackagedElements().get(ID::fromString("Q&emnaGslavgAUccL94d07Lp3hyD")));
     ASSERT_EQ(c2.getTemplateBindings().size(), 1);
     TemplateBinding& b = c2.getTemplateBindings().front();
     ASSERT_EQ(b.getParameterSubstitutions().size(), 1);

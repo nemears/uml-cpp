@@ -419,10 +419,10 @@ TEST_F(ClassTest, basicGeneralizationTest) {
     Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
-    Class* general = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
+    Class* general = dynamic_cast<Class*>(&pckg->getPackagedElements().get("general"));
     ASSERT_TRUE(general->getName().compare("general") == 0);
     ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::CLASS);
-    Class* specific = dynamic_cast<Class*>(&pckg->getPackagedElements().back());
+    Class* specific = dynamic_cast<Class*>(&pckg->getPackagedElements().get("specific"));
     ASSERT_TRUE(specific->getName().compare("specific") == 0);
     ASSERT_TRUE(specific->getGeneralizations().size() == 1);
     ASSERT_TRUE(specific->getGenerals().size() == 1);

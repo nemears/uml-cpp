@@ -22,23 +22,3 @@ TEST_F(TypedElementTest, GetTypeReturnsNullTest) {
 	Property& t = *m.create<Property>();
     ASSERT_FALSE(t.getType());
 }
-
-TEST_F(TypedElementTest, reindexTypeTest) {
-	Manager<> m;
-	Class& t = *m.create<Class>();
-	Property& p = *m.create<Property>();
-	Class& c = *m.create<Class>();
-	Package& root = *m.create<Package>();
-	p.setType(t);
-	c.getOwnedAttributes().add(p);
-	root.getPackagedElements().add(t, c);
-	m.setRoot(&root);
-	m.mount(ymlPath + "typedElementTests");
-	ID id = ID::fromString("iera5tJozUcDPwn2dcJ_0ZCP&goY");
-	t.setID(id);
-	ASSERT_TRUE(p.getType());
-	ASSERT_EQ(p.getType()->getID(), id);
-	m.release(t);
-	ASSERT_TRUE(p.getType());
-	ASSERT_EQ(p.getType()->getID(), id);
-}

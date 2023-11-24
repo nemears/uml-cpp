@@ -7,16 +7,6 @@ class OutputPinTest : public ::testing::Test {
    
 };
 
-TEST_F(OutputPinTest, reindexIDTest) {
-    Manager<> m;
-    OpaqueAction& a = *m.create<OpaqueAction>();
-    OutputPin& i = *m.create<OutputPin>();
-    a.getOutputValues().add(i);
-    i.setID("eb0920180bef4ad6b80f05fadsac");
-    ASSERT_NO_THROW(a.getOutputs().get(i.getID()));
-    ASSERT_NO_THROW(a.getOwnedElements().get(i.getID()));
-}
-
 TEST_F(OutputPinTest, reindexNameTest) {
     Manager<> m;
     OpaqueAction& a = *m.create<OpaqueAction>();

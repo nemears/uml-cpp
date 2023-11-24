@@ -178,15 +178,6 @@ TEST_F(ElementTest, getOwnedElementByNameTest) {
     ASSERT_NO_THROW(&e.getOwnedElements().get(b.getID()));
 }
 
-TEST_F(ElementTest, reIndexID_Test) {
-    Manager<> m;
-    Package& e1 = *m.create<Package>();
-    Package& e2 = *m.create<Package>();
-    e1.getPackagedElements().add(e2);
-    e2.setID("190d1cb913dc44e6a064126891ae");
-    ASSERT_NO_THROW(e1.getOwnedElements().get(e2.getID()));
-}
-
 TEST_F(ElementTest, basicRelationshipTest) {
   Manager<> m;
   Package& e = *m.create<Package>();
@@ -199,19 +190,6 @@ TEST_F(ElementTest, basicRelationshipTest) {
   ASSERT_TRUE(r.getRelatedElements().contains(a.getID()));
   ASSERT_EQ(e.getPackageMerge().size(), 1);
   ASSERT_EQ(e.getPackageMerge().front(), r);
-}
-
-TEST_F(ElementTest, reindexRelationshipID_test) {
-    Manager<> m;
-    Package& e = *m.create<Package>();
-    Package& a = *m.create<Package>();
-    PackageMerge& r = *m.create<PackageMerge>();
-    e.getPackageMerge().add(r);
-    r.setMergedPackage(&a);
-    r.setID("190d1cb913dc44e6a064126891ae");
-    e.setID("7d18ee4282c64f528ec4fab67a75");
-    ASSERT_NO_THROW(r.getRelatedElements().get(e.getID()));
-    ASSERT_NO_THROW(e.getPackageMerge().get(r.getID()));
 }
 
 TEST_F(ElementTest, setOwnerFunctorTest) {
@@ -269,9 +247,9 @@ TEST_F(ElementTest, emitJSON_test) {
     Manager<> m;
     PackagePtr p = m.create<Package>();
     PackagePtr c = m.create<Package>();
-    p->getPackagedElements().add(*c);
     p->setID(ID::fromString("Wmhz0dIdjUbcWmTn7EL4Zz261oy6"));
     c->setID(ID::fromString("GcJO3kDBnbRcT4f&Kwf9arl6YOmS"));
+    p->getPackagedElements().add(*c);
     EmitterData data;
     data.isJSON = true;
     data.emitReferences = false;

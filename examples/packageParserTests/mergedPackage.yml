@@ -2,8 +2,10 @@
   package:
     packageMerges:
       - packageMerge:
+          id: 7PJxQhyjuuWylik9y2fgpNDXmMdv
           mergedPackage: HdQGnHEztfzbMvcBURUAEPRWuw7M # load before
       - packageMerge:
+          id: YMWnZxTsjR02JwbsajyyG7_oMKQ7
           mergedPackage: Primitive_Types_WZcyDDLemQ97 # load before this one
     packagedElements:
       - class:

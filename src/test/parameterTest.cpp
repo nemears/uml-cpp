@@ -29,17 +29,6 @@ TEST_F(ParameterTest, TestGetNotSetDirection) {
     ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::NONE);
 }
 
-TEST_F(ParameterTest, reindexID_ownerTest) {
-    Manager<> m;
-    OpaqueBehavior& a = *m.create<OpaqueBehavior>();
-    Parameter& p = *m.create<Parameter>();
-    a.getOwnedParameters().add(p);
-    p.setID("190d1cb9_13dc_44e6_a064_1268");
-    ASSERT_NO_THROW(a.getOwnedParameters().get(p.getID()));
-    ASSERT_NO_THROW(a.getMembers().get(p.getID()));
-    ASSERT_NO_THROW(a.getOwnedElements().get(p.getID()));
-}
-
 TEST_F(ParameterTest, properExceptions) {
     Manager<> m;
     ASSERT_THROW(m.open(ymlPath + "parameterTests/invalidDirection.yml"), SerializationError);

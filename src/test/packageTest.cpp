@@ -155,12 +155,12 @@ TEST_F(PackageTest, removeOwnedStereotype) {
     Manager<> m;
     Profile& p = *m.create<Profile>();
     Stereotype& s = *m.create<Stereotype>();
+    s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
     p.getPackagedElements().add(s);
     p.getPackagedElements().remove(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
     ASSERT_EQ(p.getPackagedElements().size(), 0);
     Package& pp = *m.create<Package>();
-    s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
     p.getPackagedElements().add(pp);
     p.getPackagedElements().add(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
@@ -254,8 +254,10 @@ TEST_F(PackageTest, parse3PackagesTest) {
     ASSERT_TRUE(pckg2->getNamespace() == pckg1);
     ASSERT_TRUE(pckg3->getNamespace() == pckg1);
     ASSERT_TRUE(pckg1->getOwnedElements().size() == 2);
-    ASSERT_TRUE(*pckg1->getOwnedElements().begin() == *pckg3);
-    ASSERT_TRUE(*(pckg1->getOwnedElements().begin()++) == *pckg2);
+    SetIterator<Element> it = pckg1->getOwnedElements().begin();
+    ASSERT_EQ(*it, *pckg2);
+    ++it;
+    ASSERT_EQ(*it, *pckg3);
     ASSERT_TRUE(pckg2->getOwner() == pckg1);
     ASSERT_TRUE(pckg3->getOwner() == pckg1);
     ASSERT_TRUE(pckg2->getPackagedElements().size() == 1);
@@ -313,9 +315,9 @@ TEST_F(PackageTest, basicPackageMerge) {
     Package* bPckg = &m2.getRoot()->as<Package>();
     ASSERT_TRUE(bPckg->getPackagedElements().size() == 2);
     ASSERT_TRUE(bPckg->getPackagedElements().front().getElementType() == ElementType::PACKAGE);
-    Package* pckg1 = dynamic_cast<Package*>(&bPckg->getPackagedElements().front());
+    Package* pckg1 = dynamic_cast<Package*>(&bPckg->getPackagedElements().get(ID::fromString("CLZW&6KK6mcu4qLEXNULDidsDpkX")));
     ASSERT_TRUE(bPckg->getPackagedElements().back().getElementType() == ElementType::PACKAGE);
-    Package* pckg2 = dynamic_cast<Package*>(&bPckg->getPackagedElements().back());
+    Package* pckg2 = dynamic_cast<Package*>(&bPckg->getPackagedElements().get(ID::fromString("NrvESaGrSk1vI2aksOyHy8cJ8221")));
     ASSERT_TRUE(pckg2->getPackageMerge().size() == 1);
     PackageMerge* m = &pckg2->getPackageMerge().front();
     ASSERT_TRUE(m->getMergedPackage() == pckg1);
@@ -330,8 +332,8 @@ TEST_F(PackageTest, externalMergedPackageTest) {
     ASSERT_TRUE(mm.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &mm.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 2);
-    PackageMerge* m = &pckg->getPackageMerge().front();
-    PackageMerge* m2 = &pckg->getPackageMerge().back();
+    PackageMerge* m = &pckg->getPackageMerge().back();
+    PackageMerge* m2 = &pckg->getPackageMerge().front();
     ASSERT_TRUE(m->getMergedPackage());
     PackagePtr p2 = m->getMergedPackage();
     ASSERT_TRUE(p2->getPackagedElements().size() == 2);
@@ -342,8 +344,8 @@ TEST_F(PackageTest, externalMergedPackageTest) {
     Property* p = &c->getOwnedAttributes().front();
     PackagePtr primPack = m2->getMergedPackage();
     ASSERT_TRUE(primPack->getPackagedElements().front().getElementType() == ElementType::PRIMITIVE_TYPE);
-    PrimitiveType* b = dynamic_cast<PrimitiveType*>(&primPack->getPackagedElements().front());
-    ASSERT_TRUE(p->getType() == b);
+    PrimitiveType& b = primPack->getPackagedElements().get("bool").as<PrimitiveType>();
+    ASSERT_TRUE(*p->getType() == b);
 }
 
 TEST_F(PackageTest, emitVerySimplePackageTest) {
@@ -556,11 +558,11 @@ TEST_F(PackageTest, internalProfileapplication) {
   ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
   Package& pckg = m.getRoot()->as<Package>();
   ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-  ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::PACKAGE);
-  Package& applying = dynamic_cast<Package&>(pckg.getPackagedElements().front());
+  ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("3l8cYkYl_KVsMsQtR5ax2IE76CsM")).getElementType(), ElementType::PACKAGE);
+  Package& applying = pckg.getPackagedElements().get(ID::fromString("3l8cYkYl_KVsMsQtR5ax2IE76CsM")).as<Package>();
   ASSERT_EQ(applying.getProfileApplications().size(), 1);
-  ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::PROFILE);
-  Profile& profile = dynamic_cast<Profile&>(pckg.getPackagedElements().back());
+  ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("ZjvD1bCxVklVQI7SsmtE_kS3oIIc")).getElementType(), ElementType::PROFILE);
+  Profile& profile = pckg.getPackagedElements().get(ID::fromString("ZjvD1bCxVklVQI7SsmtE_kS3oIIc")).as<Profile>();
   ProfileApplication& application = applying.getProfileApplications().front();
   ASSERT_EQ(application.getAppliedProfile()->getID(), profile.getID());
 }
@@ -667,13 +669,12 @@ TEST_F(PackageTest, parseAppliedStereotypeTest) {
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& root = m.getRoot()->as<Package>();
     ASSERT_EQ(root.getPackagedElements().size(), 2);
-    ASSERT_EQ(root.getPackagedElements().front().getElementType(), ElementType::PACKAGE);
-    Package& applying = dynamic_cast<Package&>(root.getPackagedElements().front());
+    ASSERT_EQ(root.getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD")).getElementType(), ElementType::PACKAGE);
+    Package& applying = dynamic_cast<Package&>(root.getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD")));
     ASSERT_EQ(applying.getProfileApplications().size(), 1);
     ProfileApplication& application = applying.getProfileApplications().front();
     ASSERT_TRUE(application.getAppliedProfile());
-    ASSERT_EQ(root.getPackagedElements().back().getElementType(), ElementType::PROFILE);
-    Profile& profile = dynamic_cast<Profile&>(root.getPackagedElements().back());
+    Profile& profile = dynamic_cast<Profile&>(root.getPackagedElements().get(ID::fromString("PPkaUpbLRkxoN76k6_qR9xv6FruX")));
     ASSERT_EQ(application.getAppliedProfile()->getID(), profile.getID());
     ASSERT_EQ(applying.getPackagedElements().size(), 1);
     ASSERT_EQ(applying.getPackagedElements().front().getElementType(), ElementType::PACKAGE);

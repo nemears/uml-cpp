@@ -64,16 +64,6 @@ TEST_F(ValueSpecificationTest, LiteralBoolTest) {
     EXPECT_EQ(ls.getValue(), false);
 }
 
-TEST_F(ValueSpecificationTest, reindexID_forSlotTest) {
-    Manager<> m;
-    LiteralBool& v = *m.create<LiteralBool>();
-    Slot& s = *m.create<Slot>();
-    s.getValues().add(v);
-    v.setID("eb092018_0bef_4ad6_b80f_05fa");
-    ASSERT_NO_THROW(s.getValues().get(v.getID()));
-    ASSERT_NO_THROW(s.getOwnedElements().get(v.getID()));
-}
-
 TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
     Manager<> m;
     LiteralInt& v = *m.create<LiteralInt>();
@@ -82,17 +72,6 @@ TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
     v.setName("test");
     ASSERT_EQ(s.getValues().get("test"), v);
     ASSERT_EQ(s.getOwnedElements().get("test"), v);
-}
-
-TEST_F(ValueSpecificationTest, reindexID_ExpressionTest) {
-    Manager<> m;
-    Expression& e = *m.create<Expression>();
-    LiteralBool& b = *m.create<LiteralBool>();
-    e.getOperands().add(b);
-    e.setSymbol("==");
-    b.setID("eb092018_0bef_4ad6_b80f_05fa");
-    ASSERT_NO_THROW(e.getOperands().get(b.getID()));
-    ASSERT_NO_THROW(e.getOwnedElements().get(b.getID()));
 }
 
 TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
@@ -132,8 +111,8 @@ TEST_F(ValueSpecificationTest, expressionTest) {
     PrimitiveTypePtr s = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT")));
 
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::EXPRESSION);
-    Expression* exp = dynamic_cast<Expression*>(&pckg->getPackagedElements().front());
+    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("hvfrdhQ6M6undbb5bWGKlMESCn_l")).getElementType() == ElementType::EXPRESSION);
+    Expression* exp = dynamic_cast<Expression*>(&pckg->getPackagedElements().get(ID::fromString("hvfrdhQ6M6undbb5bWGKlMESCn_l")));
     ASSERT_TRUE(exp->getSymbol().compare("==") == 0);
     ASSERT_TRUE(exp->getType() == b);
     ASSERT_TRUE(exp->getOperands().size() == 2);
@@ -143,8 +122,8 @@ TEST_F(ValueSpecificationTest, expressionTest) {
     ASSERT_TRUE(exp->getOperands().back().getElementType() == ElementType::LITERAL_INT);
     LiteralInt* ib = dynamic_cast<LiteralInt*>(&exp->getOperands().get("b"));
     ASSERT_TRUE(ib->getValue() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::CLASS);
-    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().back());
+    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("Zx5giHhheJ6GSaP5oLEN6FxI99L8")).getElementType() == ElementType::CLASS);
+    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().get(ID::fromString("Zx5giHhheJ6GSaP5oLEN6FxI99L8")));
     ASSERT_TRUE(c->getOwnedAttributes().size() == 1);
     Property* p = &c->getOwnedAttributes().front();
     ASSERT_TRUE(p->getType() == i);

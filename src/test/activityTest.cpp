@@ -138,10 +138,10 @@ TEST_F(ActivityTest, emitActivityTest) {
     Manager<> m;
     Activity& activity = *m.create<Activity>();
     CentralBufferNode& objectNode = *m.create<CentralBufferNode>();
-    objectNode.setOrdering(ObjectNodeOrderingKind::UNORDERED);
-    activity.getNodes().add(objectNode);
     objectNode.setID("objectNode__________________");
     activity.setID("activity____________________");
+    objectNode.setOrdering(ObjectNodeOrderingKind::UNORDERED);
+    activity.getNodes().add(objectNode);
     std::string expectedEmit = R""""(activity:
   id: activity____________________
   nodes:

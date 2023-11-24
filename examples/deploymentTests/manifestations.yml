@@ -8,8 +8,10 @@
           name: artifact
           manifestations:
             - manifestation:
+                id: elQJOxECf35h96KkZu2YEsie9kHJ
                 utilizedElement: HPylwSjRzCyu&YVrkO1V_z0g0RGg
             - manifestation:
+                id: wO29nIB3PeOeFX0TaaHppiyUn83B
                 utilizedElement: pNMfBcFpCg0vhc06VYZFdkgu3ZPq
       - class:
           name: utilizedEl2

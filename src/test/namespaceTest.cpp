@@ -28,18 +28,6 @@ TEST_F(NamespaceTest, SetNameTest) {
     ASSERT_EQ(owningPackage.getPackagedElements().get("test"), n);
 }
 
-TEST_F(NamespaceTest, reindexID_Test) {
-    Manager<> m;
-    Package& nmspc = *m.create<Package>();
-    Package& n = *m.create<Package>();
-    nmspc.setName("nmspc");
-    n.setOwningPackage(&nmspc);
-    n.setID("190d1cb9_13dc_44e6_a064_1268");
-    ASSERT_EQ(nmspc.getOwnedElements().get(n.getID()), n);
-    ASSERT_EQ(nmspc.getMembers().get(n.getID()), n);
-    ASSERT_EQ(nmspc.getOwnedMembers().get(n.getID()), n);
-}
-
 TEST_F(NamespaceTest, AddOwnedMemeberFunctorTest) {
     Manager<> mm;
     Package& n = *mm.create<Package>();

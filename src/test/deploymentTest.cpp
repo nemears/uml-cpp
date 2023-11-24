@@ -324,8 +324,8 @@ TEST_F(DeploymentTest, parseManifestationsTest) {
     ASSERT_EQ(pckg.getPackagedElements().get("artifact").getElementType(), ElementType::ARTIFACT);
     Artifact& artifact = pckg.getPackagedElements().get("artifact").as<Artifact>();
     ASSERT_EQ(artifact.getManifestations().size(), 2);
-    Manifestation& m1 = artifact.getManifestations().front();
-    Manifestation& m2 = artifact.getManifestations().back();
+    Manifestation& m2 = artifact.getManifestations().get(ID::fromString("wO29nIB3PeOeFX0TaaHppiyUn83B"));
+    Manifestation& m1 = artifact.getManifestations().get(ID::fromString("elQJOxECf35h96KkZu2YEsie9kHJ"));
     ASSERT_TRUE(m2.getUtilizedElement());
     ASSERT_EQ(m2.getUtilizedElement()->getID(), c1.getID());
     ASSERT_EQ(pckg.getPackagedElements().get("utilizedEl2").getElementType(), ElementType::CLASS);

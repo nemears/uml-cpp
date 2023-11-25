@@ -38,9 +38,6 @@ class TestSet : public AbstractSet {
         void remove(ID id) override {}
     public:
         void setRoot(SetNode* node) override {
-            // if (m_root && node) {
-            //     // node->m_parent = this->m_root->m_parent;
-            // }
             m_root = node;
         }
         SetNode* getRoot() const override {
@@ -115,13 +112,19 @@ void isValidRedBlackTree(SetNode* root) {
 TEST_F(SetTest, RedBlackAlwaysLeft) {
     Manager<> m;
     TestSet set;
-    PackagePtr pckgA = m.create<Package>();
     SetNode a;
+    SetNode b;
+    SetNode c;
+    SetNode d;
+    SetNode e;
+    SetNode f;
+    SetNode g;
+    SetNode h;
+    PackagePtr pckgA = m.create<Package>();
     a.m_ptr = pckgA;
     a.set = &set;
     PackagePtr pckgB = m.create<Package>();
     pckgB->setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
-    SetNode b;
     b.m_ptr = pckgB;
     b.set = &set;
     set.setRoot(&a);
@@ -129,42 +132,36 @@ TEST_F(SetTest, RedBlackAlwaysLeft) {
     set.getRoot()->insert(&b);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     PackagePtr pckgC = m.create<Package>();
-    SetNode c;
     c.m_ptr = pckgC;
     c.set = &set;
     set.getRoot()->insert(&c);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     PackagePtr pckgD = m.create<Package>();
     pckgD->setID("BAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    SetNode d;
     d.m_ptr = pckgD;
     d.set = &set;
     set.getRoot()->insert(&d);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     PackagePtr pckgE = m.create<Package>();
     pckgE->setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    SetNode e;
     e.m_ptr = pckgE;
     e.set = &set;
     set.getRoot()->insert(&e);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     PackagePtr pckgF = m.create<Package>();
     pckgF->setID("ABAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    SetNode f;
     f.m_ptr = pckgF;
     f.set = &set;
     set.getRoot()->insert(&f);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     PackagePtr pckgG = m.create<Package>();
     pckgG->setID("ABBAAAAAAAAAAAAAAAAAAAAAAAAA");
-    SetNode g;
     g.m_ptr = pckgG;
     g.set = &set;
     set.getRoot()->insert(&g);
     ASSERT_NO_FATAL_FAILURE(isValidRedBlackTree(set.getRoot()));
     PackagePtr pckgH = m.create<Package>();
     pckgH->setID("ABBBAAAAAAAAAAAAAAAAAAAAAAAA");
-    SetNode h;
     h.m_ptr = pckgH;
     h.set = &set;
     set.getRoot()->insert(&h);

@@ -1,5 +1,4 @@
-#ifndef _UML_OBJECT_FLOW_H_
-#define _UML_OBJECT_FLOW_H_
+#pragma once
 
 #include "activityEdge.h"
 
@@ -18,9 +17,7 @@ namespace UML {
             CustomSingleton<Behavior, ObjectFlow> m_selection = CustomSingleton<Behavior, ObjectFlow>(this);
             TypedSet<Behavior, ObjectFlow>& getTransformationSingleton();
             TypedSet<Behavior, ObjectFlow>& getSelectionSingleton();
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
             ObjectFlow();
         public:
             virtual ~ObjectFlow();
@@ -40,5 +37,3 @@ namespace UML {
             };
     };
 }
-
-#endif

@@ -22,7 +22,6 @@ namespace UML {
             CustomSingleton<Property, ConnectorEnd> m_definingEnd = CustomSingleton<Property, ConnectorEnd>(this);
             TypedSet<ConnectableElement, ConnectorEnd>& getRoleSingleton();
             TypedSet<Property, ConnectorEnd>& getDefiningEndSingleton();
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             ConnectorEnd();
         public:

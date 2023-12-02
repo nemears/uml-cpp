@@ -12,11 +12,10 @@
 
 using namespace UML;
 
-void Class::restoreReference(Element* el) {
-    EncapsulatedClassifier::restoreReference(el);
-    if (el->isSubClassOf(ElementType::RECEPTION)) {
-        Reception& reception = el->as<Reception>();
-        if (m_ownedReceptions.contains(reception.getID()) && reception.getFeaturingClassifier().id() == ID::nullID() && reception.getNamespace().id() == m_id) {
+void Class::restoreReferences() {
+    EncapsulatedClassifier::restoreReferences();
+    for (auto& reception : m_ownedReceptions) {
+        if (reception.getFeaturingClassifier().id() == ID::nullID() && reception.getNamespace().id() == m_id) {
             reception.m_featuringClassifier.innerAdd(*this);
         }
     }

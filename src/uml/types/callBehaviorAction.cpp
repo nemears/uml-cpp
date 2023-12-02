@@ -20,11 +20,6 @@ TypedSet<Behavior, CallBehaviorAction>& CallBehaviorAction::getBehaviorSingleton
     return m_behavior;
 }
 
-void CallBehaviorAction::referenceReindexed(ID newID) {
-    CallAction::referenceReindexed(newID);
-    m_behavior.reindex(newID);
-}
-
 void CallBehaviorAction::referenceErased(ID id) {
     CallAction::referenceErased(id);
     m_behavior.eraseElement(id);

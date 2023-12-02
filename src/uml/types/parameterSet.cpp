@@ -11,11 +11,6 @@
 
 using namespace UML;
 
-void ParameterSet::referenceReindexed(ID newID) {
-    NamedElement::referenceReindexed(newID);
-    m_parameters.reindex(newID);
-}
-
 void ParameterSet::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     m_parameters.eraseElement(id);

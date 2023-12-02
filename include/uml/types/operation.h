@@ -1,5 +1,4 @@
-#ifndef _UML_OPERATION_H_
-#define _UML_OPERATION_H_
+#pragma once
 
 #include "behavioralFeature.h"
 #include "templateableElement.h"
@@ -33,9 +32,7 @@ namespace UML {
             CustomSingleton<DataType, Operation> m_dataType = CustomSingleton<DataType, Operation>(this);
             CustomSingleton<Interface, Operation> m_interface = CustomSingleton<Interface, Operation>(this);
             CustomOrderedSet<Parameter, Operation> m_operationOwnedParameters = CustomOrderedSet<Parameter, Operation>(this);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
             void restoreReferences() override;
             TypedSet<Type, Operation>& getTypeSingleton();
             TypedSet<Class, Operation>& getClassSingleton();
@@ -67,5 +64,3 @@ namespace UML {
             };
     };
 }
-
-#endif

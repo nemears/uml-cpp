@@ -9,21 +9,9 @@
 
 using namespace UML;
 
-void InstanceValue::referenceReindexed(ID newID) {
-    ValueSpecification::referenceReindexed(newID);
-    m_instance.reindex(newID);
-}
-
 void InstanceValue::referenceErased(ID id) {
     ValueSpecification::referenceErased(id);
     m_instance.eraseElement(id);
-}
-
-void InstanceValue::restoreReference(Element* el) {
-    ValueSpecification::restoreReference(el);
-    if (m_instance.get().id() == el->getID()) {
-        el->setReference(this);
-    }
 }
 
 TypedSet<InstanceSpecification, InstanceValue>& InstanceValue::getInstanceSingleton() {

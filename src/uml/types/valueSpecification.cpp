@@ -10,16 +10,6 @@
 
 using namespace UML;
 
-void ValueSpecification::referenceReindexed(ID newID) {
-    PackageableElement::referenceReindexed(newID);
-    // TODO type
-}
-
-void ValueSpecification::restoreReference(Element* el) {
-    PackageableElement::restoreReference(el);
-    // TODO type
-}
-
 void ValueSpecification::referenceErased(ID id) {
     TypedElement::referenceErased(id);
     PackageableElement::referenceErased(id);

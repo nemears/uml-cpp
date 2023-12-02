@@ -1,5 +1,4 @@
-#ifndef _UML_PARAMETER_SET_H_
-#define _UML_PARAMETER_SET_H_
+#pragma once
 
 #include "namedElement.h"
 #include "constraint.h"
@@ -15,7 +14,6 @@ namespace UML {
         protected:
             CustomSet<Constraint, ParameterSet> m_conditions = CustomSet<Constraint, ParameterSet>(this);
             CustomSet<Parameter, ParameterSet> m_parameters = CustomSet<Parameter, ParameterSet>(this);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             ParameterSet();
         public:
@@ -29,5 +27,3 @@ namespace UML {
     };
 
 }
-
-#endif

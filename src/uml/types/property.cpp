@@ -18,7 +18,6 @@ void Property::SetPropertyTypePolicy::apply(Type& el, Property& me) {
     }
     [[maybe_unused]] SetLock assocLock = me.lockEl(*me.getAssociation());
     me.getAssociation()->m_endTypes.innerAdd(el);
-    me.getAssociation()->setReference(&el);
     if (!me.getAssociation()->isSubClassOf(ElementType::EXTENSION)) {
         return;
     }
@@ -36,7 +35,6 @@ void Property::RemovePropertyTypePolicy::apply(Type& el, Property& me) {
     if (me.getAssociation()->getEndTypes().contains(el.getID())) {
         [[maybe_unused]] SetLock assocLock = me.lockEl(*me.getAssociation());
         me.getAssociation()->m_endTypes.innerRemove(el.getID());
-        me.getAssociation()->removeReference(el.getID());
     }
     if (!me.getAssociation()->isSubClassOf(ElementType::EXTENSION)) {
         return;
@@ -61,24 +59,6 @@ void Property::RemoveRedefinedPropertyPolicy::apply(Property& el, Property& me) 
     }
 }
 
-void Property::referenceReindexed(ID newID) {
-    StructuralFeature::referenceReindexed(newID);
-    ConnectableElement::referenceReindexed(newID);
-    m_association.reindex(newID);
-}
-
-void Property::restoreReference(Element* el) {
-    StructuralFeature::restoreReference(el);
-    ConnectableElement::restoreReference(el);
-    if (m_redefinedProperties.contains(el->getID())) {
-        el->setReference(this);
-        if (m_featuringClassifier.get() && !m_redefinitionContext.contains(m_featuringClassifier.get().id())) {
-            [[maybe_unused]] SetLock lock = lockEl(*m_featuringClassifier.get());
-            m_redefinitionContext.innerAdd(m_featuringClassifier.get().id());
-        }
-    }
-}
-
 void Property::restoreReferences() {
     StructuralFeature::restoreReferences();
     if (m_namespace->get() && !m_featuringClassifier.get()) {
@@ -87,6 +67,11 @@ void Property::restoreReferences() {
             if (clazz.getAttributes().contains(m_id)) {
                 m_featuringClassifier.innerAdd(clazz);
             }
+        }
+    }
+    if (!m_redefinedProperties.empty()) {
+        if (m_featuringClassifier.get() && !m_redefinitionContext.contains(m_featuringClassifier.get().id())) {
+            m_redefinitionContext.innerAdd(m_featuringClassifier.get().id());
         }
     }
 }

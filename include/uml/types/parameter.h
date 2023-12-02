@@ -1,5 +1,4 @@
-#ifndef _UML_PARAMETER_H_
-#define _UML_PARAMETER_H_
+#pragma once
 
 #include "multiplicityElement.h"
 #include "connectableElement.h"
@@ -46,7 +45,6 @@ namespace UML {
             ParameterEffectKind m_effect = ParameterEffectKind::NONE;
             TypedSet<Operation, Parameter>& getOperationSingleton();
             TypedSet<ValueSpecification, Parameter>& getDefaultValueSingleton();
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             Parameter();
         public:
@@ -75,4 +73,3 @@ namespace UML {
             };
     };
 }
-#endif

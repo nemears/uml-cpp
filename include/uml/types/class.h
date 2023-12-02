@@ -23,7 +23,7 @@ namespace UML{
             CustomOrderedSet<Operation, Class> m_ownedOperations = CustomOrderedSet<Operation, Class>(this);
             CustomOrderedSet<Classifier, Class> m_nestedClassifiers = CustomOrderedSet<Classifier, Class>(this);
             CustomSet<Reception, Class> m_ownedReceptions = CustomSet<Reception, Class>(this);
-            void restoreReference(Element* el) override;
+            void restoreReferences() override;
             Class();
         public:
             virtual ~Class();

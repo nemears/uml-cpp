@@ -35,22 +35,17 @@ void Package::RemovePackageableElementPolicy::apply(PackageableElement& el, Pack
     }
 }
 
-void Package::referenceReindexed(ID newID) {
-    Namespace::referenceReindexed(newID);
-    PackageableElement::referenceReindexed(newID);
-}
-
 void Package::referenceErased(ID id) {
     Namespace::referenceErased(id);
     PackageableElement::referenceErased(id);
 }
 
-void Package::restoreReference(Element* el) {
-    Element::restoreReference(el);
-    if (el->isSubClassOf(ElementType::STEREOTYPE) && getPackagedElements().contains(el->getID()) && !getOwnedStereotypes().contains(el->getID())) {
-        m_ownedStereotypes.add(el->as<Stereotype>());
-    }
-}
+// void Package::restoreReference(Element* el) {
+//     Element::restoreReference(el);
+//     if (el->isSubClassOf(ElementType::STEREOTYPE) && getPackagedElements().contains(el->getID()) && !getOwnedStereotypes().contains(el->getID())) {
+//         m_ownedStereotypes.add(el->as<Stereotype>());
+//     }
+// }
 
 Package::Package() : Element(ElementType::PACKAGE) {
     m_packagedElements.subsets(m_ownedMembers);

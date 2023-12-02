@@ -14,8 +14,6 @@ void Association::AddMemberEndPolicy::apply(Property& el, Association& me) {
         if (el.getType().loaded() && !me.getEndTypes().contains(el.getType().id())) {
             [[maybe_unused]] SetLock typeLock = me.lockEl(*el.getType());
             me.m_endTypes.innerAdd(*el.getType());
-            el.getType()->setReference(&me);
-            me.setReference(el.getType().ptr());
         }
     }
 }
@@ -25,15 +23,8 @@ void Association::RemoveMemberEndPolicy::apply(Property& el, Association& me) {
         if (me.getEndTypes().contains(el.getType().id())) {
             [[maybe_unused]] SetLock typeLock = me.lockEl(*el.getType());
             me.m_endTypes.innerRemove(el.getType().id());
-            el.getType()->removeReference(me.getID());
-            me.removeReference(el.getType().id());
         }
     }
-}
-
-void Association::referenceReindexed(ID newID) {
-    Classifier::referenceReindexed(newID);
-    Relationship::referenceReindexed(newID);
 }
 
 void Association::restoreReferences() {
@@ -43,13 +34,6 @@ void Association::restoreReferences() {
         if (prop.getType() && !m_endTypes.contains(prop.getType().id())) {
             m_endTypes.add(prop.getType().id());
         }
-    }
-}
-
-void Association::restoreReference(Element* el) {
-    Element::restoreReference(el);
-    if (m_endTypes.contains(el->getID())) {
-        el->setReference(this);
     }
 }
 

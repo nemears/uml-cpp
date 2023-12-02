@@ -38,14 +38,6 @@ TypedSet<InterruptibleActivityRegion, ActivityEdge>& ActivityEdge::getInterrupts
     return m_interrupts;
 }
 
-void ActivityEdge::referenceReindexed(ID newID) {
-    NamedElement::referenceReindexed(newID);
-    RedefinableElement::referenceReindexed(newID);
-    m_source.reindex(newID);
-    m_target.reindex(newID);
-    m_inGroups.reindex(newID);
-}
-
 void ActivityEdge::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     RedefinableElement::referenceErased(id);

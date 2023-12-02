@@ -1,5 +1,4 @@
-#ifndef _UML_ACTION_H_
-#define _UML_ACTION_H_
+#pragma once
 
 #include "executableNode.h"
 #include "inputPin.h"
@@ -34,5 +33,3 @@ namespace UML {
             };
     };
 }
-
-#endif

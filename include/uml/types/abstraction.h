@@ -1,5 +1,4 @@
-#ifndef _UML_ABSTRACTION_H_
-#define _UML_ABSTRACTION_H_
+#pragma once
 
 #include "dependency.h"
 
@@ -23,5 +22,3 @@ namespace UML {
             };
     };
 }
-
-#endif

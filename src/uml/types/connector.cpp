@@ -51,29 +51,6 @@ TypedSet<Association, Connector>& Connector::getTypeSingleton() {
     return m_type;
 }
 
-void Connector::referenceReindexed(ID newID) {
-    Feature::referenceReindexed(newID);
-    m_type.reindex(newID);
-    m_contracts.reindex(newID);
-}
-
-void Connector::restoreReference(Element* el) {
-    Feature::restoreReference(el);
-    if (
-            m_ends.contains(el->getID()) && 
-            el->as<ConnectorEnd>().getRole() && 
-            el->as<ConnectorEnd>().getRole()->getType() && 
-            m_type.get()
-        )
-    {
-        for (auto& assocEnd : m_type.get()->getMemberEnds()) {
-            if (assocEnd.getType().id() == el->as<ConnectorEnd>().getRole()->getType().id() && !el->as<ConnectorEnd>().getDefiningEnd()) {
-                el->as<ConnectorEnd>().m_definingEnd.innerAdd(assocEnd);
-            }
-        }
-    }
-}
-
 void Connector::referenceErased(ID id) {
     Feature::referenceErased(id);
     m_type.eraseElement(id);
@@ -86,6 +63,17 @@ void Connector::restoreReferences() {
             StructuredClassifier& clazz = m_namespace->get()->as<StructuredClassifier>();
             if (clazz.getOwnedConnectors().contains(m_id) && !m_featuringClassifier.get()) {
                 m_featuringClassifier.innerAdd(clazz);
+            }
+        }
+    }
+    if (m_type.get()) {
+        for (auto& connectorEnd : m_ends) {
+            if (connectorEnd.getRole() && !connectorEnd.getDefiningEnd()) {
+                for (auto& memberEnd : m_type.get()->getMemberEnds()) {
+                    if (memberEnd.getType().id() == connectorEnd.getRole()->getType().id()) {
+                        connectorEnd.m_definingEnd.innerAdd(memberEnd);
+                    }
+                }
             }
         }
     }

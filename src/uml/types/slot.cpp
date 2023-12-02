@@ -15,19 +15,9 @@
 
 using namespace UML;
 
-void Slot::referenceReindexed(ID newID) {
-    Element::referenceReindexed(newID);
-    m_definingFeature.reindex(newID);
-}
-
 void Slot::referenceErased(ID id) {
     Element::referenceErased(id);
     m_definingFeature.eraseElement(id);
-}
-
-void Slot::restoreReference(Element* el) {
-    Element::restoreReference(el);
-    // m_definingFeature.restore(el);
 }
 
 TypedSet<StructuralFeature, Slot>& Slot::getDefiningFeatureSingleton() {

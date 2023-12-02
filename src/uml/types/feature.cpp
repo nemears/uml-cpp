@@ -12,22 +12,11 @@
 
 using namespace UML;
 
-void Feature::referenceReindexed(ID newID) {
-    RedefinableElement::referenceReindexed(newID);
-    NamedElement::referenceReindexed(newID);
-    m_featuringClassifier.reindex(newID);
-}
-
 void Feature::referenceErased(ID id) {
     RedefinableElement::referenceErased(id);
     NamedElement::referenceErased(id);
     m_featuringClassifier.eraseElement(id);
 }
-
-// void Feature::restoreReference(Element* el) {
-//     RedefinableElement::restoreReference(el);
-//     m_featuringClassifier.restore(el);
-// }
 
 TypedSet<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
     return m_featuringClassifier;

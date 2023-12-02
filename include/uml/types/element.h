@@ -263,12 +263,7 @@ namespace UML {
             CustomSet<InstanceSpecification, Element, DoNothingAdd<InstanceSpecification, Element>, DoNothingRemove<InstanceSpecification, Element>>* m_appliedStereotype;
             void setOwner(Element* el);
             void setOwnerByID(ID id);
-            void setReference(Element* referencing);
-            void removeReference(ID referencing);
-            void setReference(ID id);
-            virtual void referenceReindexed(ID newID);
             virtual void restoreReferences();
-            virtual void restoreReference(Element* el);
             virtual void referenceErased(ID id);
             SetLock lockEl(Element& el);
             Element(ElementType elementType);

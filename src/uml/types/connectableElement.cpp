@@ -9,25 +9,19 @@
 
 using namespace UML;
 
-void ConnectableElement::referenceReindexed(ID newID) {
-    TypedElement::referenceReindexed(newID);
-    ParameterableElement::referenceReindexed(newID);
-    m_ends.reindex(newID);
-}
-
-void ConnectableElement::restoreReference(Element* el) {
-    TypedElement::restoreReference(el);
-    ParameterableElement::restoreReference(el);
-    if (m_ends.contains(el->getID())) {
-        el->setReference(this);
-    }
-    if (el->isSubClassOf(ElementType::CONNECTOR_END)) {
-        ConnectorEnd& end = el->as<ConnectorEnd>();
-        if (end.getRole().id() == m_id && !m_ends.contains(end.getID())) {
-            m_ends.innerAdd(end);
-        }
-    }
-}
+// void ConnectableElement::restoreReferences() {
+//     TypedElement::restoreReferences();
+//     ParameterableElement::restoreReferences();
+//     if (m_ends.contains(el->getID())) {
+//         el->setReference(this);
+//     }
+//     if (el->isSubClassOf(ElementType::CONNECTOR_END)) {
+//         ConnectorEnd& end = el->as<ConnectorEnd>();
+//         if (end.getRole().id() == m_id && !m_ends.contains(end.getID())) {
+//             m_ends.innerAdd(end);
+//         }
+//     }
+// }
 
 void ConnectableElement::referenceErased(ID id) {
     TypedElement::referenceErased(id);

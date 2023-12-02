@@ -111,16 +111,17 @@ ElementPtr parse(std::string data, ParserData& metaData) {
         ret = parseNode(rootNodes[0], metaData);
         // TODO parseScope
         if (rootNodes.size() == 2) {
-            YAML::Node references = rootNodes[1];
-            if (!references.IsSequence()) {
-                throw SerializationError("reference list is not a list!" + getLineNumber(references));
-            }
-            for (size_t i = 0; i < references.size(); i++) {
-                ID referenceID = ID::fromString(references[i].as<string>());
-                if (ret->m_node->m_references.find(referenceID) == ret->m_node->m_references.end()) {
-                    ret->m_node->setReference(referenceID);
-                }
-            }
+            // TODO remove
+            // YAML::Node references = rootNodes[1];
+            // if (!references.IsSequence()) {
+            //     throw SerializationError("reference list is not a list!" + getLineNumber(references));
+            // }
+            // for (size_t i = 0; i < references.size(); i++) {
+            //     ID referenceID = ID::fromString(references[i].as<string>());
+            //     if (ret->m_node->m_references.find(referenceID) == ret->m_node->m_references.end()) {
+            //         ret->m_node->setReference(referenceID);
+            //     }
+            // }
         }
     } else {
         ret = parseNode(rootNodes[0], metaData);

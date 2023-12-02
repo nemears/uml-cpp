@@ -1,5 +1,4 @@
-#ifndef _UML_RELATIONSHIP_H_
-#define _UML_RELATIONSHIP_H_
+#pragma once
 
 #include "uml/set/set.h"
 
@@ -7,7 +6,6 @@ namespace UML {
     class Relationship : virtual public Element {
         protected:
             CustomReadOnlySet<Element, Relationship> m_relatedElements = CustomReadOnlySet<Element, Relationship>(this);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             Relationship();
         public:
@@ -19,5 +17,3 @@ namespace UML {
             };
     };
 }
-
-#endif

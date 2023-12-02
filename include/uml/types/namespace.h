@@ -1,5 +1,4 @@
-#ifndef _UML_NAMESPACE_H_
-#define _UML_NAMESPACE_H_
+#pragma once
 
 #include "namedElement.h"
 #include "constraint.h"
@@ -42,7 +41,6 @@ namespace UML{
             CustomSet<ElementImport, Namespace, AddElementImportPolicy, RemoveElementImportPolicy> m_elementImports = CustomSet<ElementImport, Namespace, AddElementImportPolicy, RemoveElementImportPolicy>(this);
             CustomSet<PackageImport, Namespace, AddPackageImportPolicy, RemovePackageImportPolicy> m_packageImports = CustomSet<PackageImport, Namespace, AddPackageImportPolicy, RemovePackageImportPolicy>(this);
             CustomReadOnlySet<PackageableElement, Namespace> m_importedMembers = CustomReadOnlySet<PackageableElement, Namespace>(this);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             Namespace();
         public:
@@ -60,4 +58,3 @@ namespace UML{
             };
     };
 }
-#endif

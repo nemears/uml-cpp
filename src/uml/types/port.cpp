@@ -94,16 +94,6 @@ void Port::RemoveTypePolicy::apply(Type& el, Port& me) {
     }
 }
 
-void Port::restoreReference(Element* el) {
-    Property::restoreReference(el);
-}
-
-void Port::referenceReindexed(ID newID) {
-    Property::referenceReindexed(newID);
-    m_required.reindex(newID);
-    m_provided.reindex(newID);
-}
-
 void Port::referenceErased(ID id) {
     Property::referenceErased(id);
     m_required.eraseElement(id);

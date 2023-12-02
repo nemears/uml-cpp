@@ -40,11 +40,6 @@ void Namespace::RemovePackageImportPolicy::apply(PackageImport& el, Namespace& m
     }
 }
 
-void Namespace::referenceReindexed(ID newID) {
-    NamedElement::referenceReindexed(newID);
-    m_members.reindex(newID);
-}
-
 void Namespace::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     m_members.eraseElement(id);

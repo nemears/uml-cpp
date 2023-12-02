@@ -15,11 +15,6 @@ TypedSet<Namespace, Constraint>& Constraint::getContextSingleton() {
     return m_context;
 }
 
-void Constraint::referenceReindexed(ID newID) {
-    PackageableElement::referenceReindexed(newID);
-    m_constrainedElements.reindex(newID);
-}
-
 void Constraint::referenceErased(ID id) {
     PackageableElement::referenceErased(id);
     m_constrainedElements.eraseElement(id);

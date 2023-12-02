@@ -1,5 +1,4 @@
-#ifndef _UML_TEMPLATE_SIGNATURE_H_
-#define _UML_TEMPLATE_SIGNATURE_H_
+#pragma once
 
 #include "element.h"
 #include "templateParameter.h"
@@ -23,7 +22,6 @@ namespace UML {
             CustomSingleton<TemplateableElement, TemplateSignature> m_template = CustomSingleton<TemplateableElement, TemplateSignature>(this);
             CustomOrderedSet<TemplateParameter, TemplateSignature> m_parameters = CustomOrderedSet<TemplateParameter, TemplateSignature>(this);
             CustomOrderedSet<TemplateParameter, TemplateSignature> m_ownedParameters = CustomOrderedSet<TemplateParameter, TemplateSignature>(this);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<TemplateableElement, TemplateSignature>& getTemplateSingleton();
             TemplateSignature();
@@ -41,5 +39,3 @@ namespace UML {
             };
     };
 }
-
-#endif

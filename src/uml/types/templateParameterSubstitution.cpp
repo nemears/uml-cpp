@@ -8,22 +8,6 @@
 
 using namespace UML;
 
-void TemplateParameterSubstitution::referenceReindexed(ID newID) {
-    Element::referenceReindexed(newID);
-    m_formal.reindex(newID);
-    m_actual.reindex(newID);
-}
-
-void TemplateParameterSubstitution::restoreReference(Element* el) {
-    Element::restoreReference(el);
-    if (m_formal.get().id() == el->getID()) {
-        el->setReference(this);
-    }
-    if (m_actual.get().id() == el->getID()) {
-        el->setReference(this);
-    }
-}
-
 void TemplateParameterSubstitution::referenceErased(ID id) {
     Element::referenceErased(id);
     m_formal.eraseElement(id);

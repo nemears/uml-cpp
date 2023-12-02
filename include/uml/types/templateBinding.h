@@ -1,5 +1,4 @@
-#ifndef _UML_TEMPLATE_BINDING_H_
-#define _UML_TEMPLATE_BINDING_H_
+#pragma once
 
 #include "directedRelationship.h"
 #include "templateParameterSubstitution.h"
@@ -23,7 +22,6 @@ namespace UML {
             CustomSingleton<TemplateableElement, TemplateBinding> m_boundElement = CustomSingleton<TemplateableElement, TemplateBinding>(this);
             CustomSingleton<TemplateSignature, TemplateBinding> m_signature = CustomSingleton<TemplateSignature, TemplateBinding>(this);
             CustomSet<TemplateParameterSubstitution, TemplateBinding> m_parameterSubstitutions = CustomSet<TemplateParameterSubstitution, TemplateBinding>(this);
-            void restoreReference(Element* el) override;
             TypedSet<TemplateableElement, TemplateBinding>& getBoundElementSingleton();
             TypedSet<TemplateSignature, TemplateBinding>& getSignatureSingleton();
             TemplateBinding();
@@ -44,5 +42,3 @@ namespace UML {
             };
     };
 }
-
-#endif

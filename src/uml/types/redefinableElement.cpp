@@ -11,12 +11,6 @@
 
 using namespace UML;
 
-
-void RedefinableElement::referenceReindexed(ID newID) {
-    m_redefinedElement.reindex(newID);
-    m_redefinitionContext.reindex(newID);
-}
-
 void RedefinableElement::referenceErased(ID id) {
     m_redefinedElement.eraseElement(id);
     m_redefinitionContext.eraseElement(id);

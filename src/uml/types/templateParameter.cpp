@@ -6,12 +6,6 @@
 
 using namespace UML;
 
-void TemplateParameter::referenceReindexed(ID newID) {
-    Element::referenceReindexed(newID);
-    m_parameteredElement.reindex(newID);
-    m_default.reindex(newID);
-}
-
 void TemplateParameter::referenceErased(ID id) {
     Element::referenceErased(id);
     m_parameteredElement.eraseElement(id);

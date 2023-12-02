@@ -387,10 +387,6 @@ namespace UML {
                                         delete node;
                                         throw SetStateException("Duplicate element added to set!");
                                     } else {
-                                        // I don't know if this works with multiple tree roots with unrelated sets 
-                                        // TODO it doesn't deploymentTest.mountAndEdit
-                                        // TODO test that!
-
                                         node->copyData(existingNode);
 
                                         existingNode->set->innerRemove(node->m_ptr.id());
@@ -400,8 +396,6 @@ namespace UML {
                                             m_opposite->skip = true;
                                         }
 
-                                        // addNodeToSet(node);
-                                        // TODO keep orderedSet stuff? ClassTest.addCompositePropertyTest
                                         continue;
                                     }
                                 }
@@ -640,6 +634,10 @@ namespace UML {
                         stack.push_front(superset);
                     }
                 } while (!stack.empty());
+
+                // references
+                this->m_el.m_node->setReference(&node->m_ptr);
+                node->m_ptr.m_node->setReference(m_el.getID(), m_el.m_node);
             }
 
             void innerAdd(T& el) override {
@@ -881,6 +879,13 @@ namespace UML {
                     }
                 } while (!queue.empty());
 
+                // references
+                m_el.m_node->removeReference(&node->m_ptr);
+                // we don't remove anything from other side
+                // TODO remove some stuff from this side because this can just stack up useless NodeReference objects 
+                // because they aren't being cleared until release, not really that bad though, just causes some extra 
+                // computation and some minimal memory being stored
+
                 delete node;
             }
 
@@ -933,15 +938,12 @@ namespace UML {
                 [[maybe_unused]] SetLock elLock = m_el.m_manager->lockEl(el);
                 [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 innerAdd(el);
-                el.m_node->setReference(m_el);
-                m_el.m_node->setReference(el);
                 handleOppositeAdd(el);
             }
             void add(ID id) {
                 // "lock" elements we are editing
                 [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 innerAdd(id);
-                m_el.m_node->setReference(id);
             }
             void handleOppositeRemove(Element& el) override {
                 if (m_opposite->skip) {
@@ -989,7 +991,7 @@ namespace UML {
                 [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 T* el = 0;
                 try {
-                    el = &m_el.m_node->m_references.at(id).node->m_managerElementMemory->template as<T>(); // should be safe because we have a ptr
+                    el = &m_el.m_node->m_references.at(id).node->m_element->template as<T>(); // should be safe because we have a ptr
                 } catch (std::exception& e) {
                     throw SetStateException("Could not find el with id of " + id.string() + " in set");
                 }
@@ -1003,8 +1005,6 @@ namespace UML {
                 }
                 AbstractSet* setThatNodeWasAdded = result->set;
                 innerRemove(id);
-                el->m_node->removeReference(m_el);
-                m_el.m_node->removeReference(*el);
                 setThatNodeWasAdded->handleOppositeRemove(*el);
             }
             /**
@@ -1026,7 +1026,7 @@ namespace UML {
                 [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 T* el = 0;
                 try {
-                    el = &m_el.m_node->m_references.at(id).node->m_managerElementMemory->template as<T>(); // should be safe because we have a ptr
+                    el = &m_el.m_node->m_references.at(id).node->m_element->template as<T>(); // should be safe because we have a ptr
                 } catch (std::exception& e) {
                     throw SetStateException("Could not find el with id of " + id.string() + " in set");
                 }

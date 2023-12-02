@@ -45,8 +45,6 @@ void Classifier::AddGeneralPolicy::apply(Classifier& el, Classifier& me) {
         if (mem.getVisibility() != VisibilityKind::PRIVATE) {
             [[maybe_unused]] SetLock memLck = me.lockEl(mem);
             me.m_inheritedMembers.innerAdd(mem);
-            me.m_node->setReference(mem);
-            mem.m_node->setReference(me);
         }
     }
 }
@@ -56,8 +54,6 @@ void Classifier::RemoveGeneralPolicy::apply(Classifier& el, Classifier& me) {
         if (mem.getVisibility() != VisibilityKind::PRIVATE && me.m_inheritedMembers.contains(mem)) {
             [[maybe_unused]] SetLock memLck = me.lockEl(mem);
             me.m_inheritedMembers.innerRemove(mem.getID());
-            me.m_node->removeReference(mem);
-            mem.m_node->removeReference(me);
         }
     }
 }
@@ -66,10 +62,10 @@ void Classifier::AddOwnedMemberPolicy::apply(NamedElement& el, Classifier& me) {
     if (el.getVisibility() != VisibilityKind::PRIVATE) {
         for (auto& pair : me.m_node->m_references) {
             if (pair.second.node && 
-                pair.second.node->m_managerElementMemory && 
-                pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
-                pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(me.getID())) {
-                    pair.second.node->m_managerElementMemory->as<Classifier>().m_inheritedMembers.innerAdd(el);
+                pair.second.node->m_element && 
+                pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER) && 
+                pair.second.node->m_element->as<Classifier>().m_generals.contains(me.getID())) {
+                    pair.second.node->m_element->as<Classifier>().m_inheritedMembers.innerAdd(el);
             }
         }
     }
@@ -84,11 +80,11 @@ void Classifier::RemoveOwnedMemberPolicy::apply(NamedElement& el, Classifier& me
             if (!pair.second.node) {
                 continue;
             }
-            if (pair.second.node->m_managerElementMemory && 
-                pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER) && 
-                pair.second.node->m_managerElementMemory->as<Classifier>().m_generals.contains(me.getID()) &&
-                pair.second.node->m_managerElementMemory->as<Classifier>().m_inheritedMembers.contains(me.getID())) {
-                    pair.second.node->m_managerElementMemory->as<Classifier>().m_inheritedMembers.innerRemove(el.getID());
+            if (pair.second.node->m_element && 
+                pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER) && 
+                pair.second.node->m_element->as<Classifier>().m_generals.contains(me.getID()) &&
+                pair.second.node->m_element->as<Classifier>().m_inheritedMembers.contains(me.getID())) {
+                    pair.second.node->m_element->as<Classifier>().m_inheritedMembers.innerRemove(el.getID());
             }
         }
     }
@@ -102,24 +98,14 @@ TypedSet<ClassifierTemplateParameter, Classifier>& Classifier::getTemplateParame
     return m_classifierTemplateParameter;
 }
 
-
-void Classifier::referenceReindexed(ID newID) {
-    Namespace::referenceReindexed(newID);
-    PackageableElement::referenceReindexed(newID); // todo non super call meth
-    m_generals.reindex(newID);
-    m_powerTypeExtent.reindex(newID);
-}
-
 void Classifier::restoreReferences() {
-    // Namespace::restoreReferences();
-    // PackageableElement::restoreReferences();
-    for ([[maybe_unused]] auto& _generalization : m_generalizations) {
-        // load through loop
+    Namespace::restoreReferences();
+    PackageableElement::restoreReferences();
+    for (auto& generalization : m_generalizations) {
+        if (generalization.getGeneral() && !m_generals.contains(generalization.getGeneral().id())) {
+            m_generals.add(*generalization.getGeneral());
+        }
     }
-}
-
-void Classifier::restoreReference(Element* el) {
-    Type::restoreReference(el);
 }
 
 void Classifier::referenceErased(ID id) {

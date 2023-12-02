@@ -17,13 +17,13 @@ void Usage::RemoveClientPolicy::apply(NamedElement& el, Usage& me) {
                     Classifier* front = queue.front();
                     queue.pop_front();
                     for (auto& pair : front->m_node->m_references) {
-                        if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+                        if (!pair.second.node || !pair.second.node->m_element) {
                             // TODO maybe aquire so not lossy
                             continue;
                         }
                         
-                        if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
-                            Port& port = pair.second.node->m_managerElementMemory->as<Port>();
+                        if (pair.second.node->m_element->isSubClassOf(ElementType::PORT)) {
+                            Port& port = pair.second.node->m_element->as<Port>();
                             if (port.isConjugated()) {
                                 if (port.getProvided().contains(supplier.getID())) {
                                     port.getProvided().innerRemove(supplier.getID());
@@ -33,9 +33,9 @@ void Usage::RemoveClientPolicy::apply(NamedElement& el, Usage& me) {
                                     port.getRequired().innerRemove(supplier.getID());
                                 }
                             }
-                        } else if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
-                            if (pair.second.node->m_managerElementMemory->as<Classifier>().getGenerals().contains(*front)) {
-                                queue.push_back(&pair.second.node->m_managerElementMemory->as<Classifier>());
+                        } else if (pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER)) {
+                            if (pair.second.node->m_element->as<Classifier>().getGenerals().contains(*front)) {
+                                queue.push_back(&pair.second.node->m_element->as<Classifier>());
                             }
                         }
                     }
@@ -54,13 +54,13 @@ void Usage::AddClientPolicy::apply(NamedElement& el, Usage& me) {
                     Classifier* front = queue.front();
                     queue.pop_front();
                     for (auto& pair : front->m_node->m_references) {
-                        if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+                        if (!pair.second.node || !pair.second.node->m_element) {
                             // TODO maybe aquire so not lossy
                             continue;
                         }
 
-                        if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
-                            Port& port = pair.second.node->m_managerElementMemory->as<Port>();
+                        if (pair.second.node->m_element->isSubClassOf(ElementType::PORT)) {
+                            Port& port = pair.second.node->m_element->as<Port>();
                             if (port.getType().id() == front->getID()) {
                                 if (port.isConjugated()) {
                                     port.getProvided().innerAdd(supplier.as<Interface>());
@@ -68,9 +68,9 @@ void Usage::AddClientPolicy::apply(NamedElement& el, Usage& me) {
                                     port.getRequired().innerAdd(supplier.as<Interface>());
                                 }
                             }
-                        } else if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
-                            if (pair.second.node->m_managerElementMemory->as<Classifier>().getGenerals().contains(*front)) {
-                                queue.push_back(&pair.second.node->m_managerElementMemory->as<Classifier>());
+                        } else if (pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER)) {
+                            if (pair.second.node->m_element->as<Classifier>().getGenerals().contains(*front)) {
+                                queue.push_back(&pair.second.node->m_element->as<Classifier>());
                             }
                         }
                     }

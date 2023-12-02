@@ -1,5 +1,4 @@
-#ifndef _UML_INVOCATION_ACTION_H_
-#define _UML_INVOCATION_ACTION_H_
+#pragma once
 
 #include "action.h"
 #include"uml/set/orderedSet.h"
@@ -14,7 +13,6 @@ namespace UML {
             CustomSingleton<Port, InvocationAction> m_onPort = CustomSingleton<Port, InvocationAction>(this);
             TypedSet<InputPin, InvocationAction>& getArgumentsSet();
             TypedSet<Port, InvocationAction>& getOnPortSingleton();
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             InvocationAction();
         public:
@@ -31,5 +29,3 @@ namespace UML {
             };
     };
 }
-
-#endif

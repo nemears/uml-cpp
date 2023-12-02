@@ -37,9 +37,7 @@ namespace UML {
             CustomSet<Behavior, Connector> m_contracts = CustomSet<Behavior, Connector>(this);
             CustomOrderedSet<ConnectorEnd, Connector, AddEndPolicy, RemoveEndPolicy> m_ends = CustomOrderedSet<ConnectorEnd, Connector, AddEndPolicy, RemoveEndPolicy>(this);
             TypedSet<Association, Connector>& getTypeSingleton();
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
             void restoreReferences() override;
             Connector();
         public:

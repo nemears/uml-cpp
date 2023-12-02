@@ -1,5 +1,4 @@
-#ifndef _UML_ACTION_INPUT_PIN_H_
-#define _UML_ACTION_INPUT_PIN_H_
+#pragma once
 
 #include "inputPin.h"
 #include "action.h"
@@ -29,5 +28,3 @@ namespace UML {
             };
     };
 }
-
-#endif

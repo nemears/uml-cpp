@@ -1,5 +1,4 @@
-#ifndef _UML_EXTENSION_HANDLER_H_
-#define _UML_EXTENSION_HANDLER_H_
+#pragma once
 
 #include "element.h"
 #include "uml/set/singleton.h"
@@ -27,7 +26,6 @@ namespace UML {
             TypedSet<ExecutableNode, ExceptionHandler>& getProtectedNodeSingleton();
             TypedSet<ExecutableNode, ExceptionHandler>& getHandlerBodySingleton();
             TypedSet<ObjectNode, ExceptionHandler>& getExceptionInputSingleton();
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             ExceptionHandler();
         public:
@@ -54,5 +52,3 @@ namespace UML {
             }
     };
 }
-
-#endif

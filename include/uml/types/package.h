@@ -1,5 +1,4 @@
-#ifndef _UML_PACKAGE_H_
-#define _UML_PACKAGE_H_
+#pragma once
 
 #include "packageableElement.h"
 #include "namespace.h"
@@ -37,9 +36,7 @@ namespace UML {
             CustomSet<PackageMerge, Package> m_packageMerge = CustomSet<PackageMerge, Package>(this);
             CustomReadOnlySet<Stereotype, Package> m_ownedStereotypes = CustomReadOnlySet<Stereotype, Package>(this);
             CustomSet<ProfileApplication, Package> m_profileApplications = CustomSet<ProfileApplication, Package>(this);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
             Package();
         public:
             virtual ~Package();
@@ -53,5 +50,3 @@ namespace UML {
             };
     };
 }
-
-#endif

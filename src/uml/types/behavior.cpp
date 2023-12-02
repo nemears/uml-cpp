@@ -11,11 +11,6 @@
 
 using namespace UML;
 
-void Behavior::referenceReindexed(ID newID) {
-    Class::referenceReindexed(newID);
-    m_specification.reindex(newID);
-}
-
 void Behavior::referenceErased(ID id) {
     Class::referenceErased(id);
     m_specification.eraseElement(id);

@@ -1,5 +1,4 @@
-#ifndef _UML_INSTANCE_SPECIFICATION_H_
-#define _UML_INSTANCE_SPECIFICATION_H_
+#pragma once
 
 #include "packageableElement.h"
 #include "deployedArtifact.h"
@@ -25,7 +24,6 @@ namespace UML{
             CustomSet<Classifier, InstanceSpecification> m_classifiers = CustomSet<Classifier, InstanceSpecification>(this);
             CustomSet<Slot, InstanceSpecification> m_slots = CustomSet<Slot, InstanceSpecification>(this);
             CustomSingleton <ValueSpecification, InstanceSpecification> m_specification = CustomSingleton<ValueSpecification, InstanceSpecification>(this);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<ValueSpecification, InstanceSpecification>& getSpecificationSingleton();
             InstanceSpecification();
@@ -43,5 +41,3 @@ namespace UML{
             };
     };
 }
-
-#endif

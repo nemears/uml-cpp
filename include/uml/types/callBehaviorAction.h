@@ -12,7 +12,6 @@ namespace UML {
         protected:
             CustomSingleton<Behavior, CallBehaviorAction> m_behavior = CustomSingleton<Behavior, CallBehaviorAction>(this);
             TypedSet<Behavior, CallBehaviorAction>& getBehaviorSingleton();
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             CallBehaviorAction();
         public:

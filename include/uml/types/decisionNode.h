@@ -19,7 +19,6 @@ namespace UML {
             CustomSingleton<Behavior, DecisionNode> m_decisionInput = CustomSingleton<Behavior, DecisionNode>(this);
             TypedSet<ObjectFlow, DecisionNode>& getDecisionInputFlowSingleton();
             TypedSet<Behavior, DecisionNode>& getDecisionInputSingleton();
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             DecisionNode();
         public:

@@ -2,11 +2,6 @@
 
 using namespace UML;
 
-void Comment::referenceReindexed(ID newID) {
-    Element::referenceReindexed(newID);
-    m_annotatedElements.reindex(newID);
-}
-
 void Comment::referenceErased(ID id) {
     Element::referenceErased(id);
     m_annotatedElements.eraseElement(id);

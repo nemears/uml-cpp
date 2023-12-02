@@ -22,12 +22,6 @@ TypedSet<Behavior, DecisionNode>& DecisionNode::getDecisionInputSingleton() {
     return m_decisionInput;
 }
 
-void DecisionNode::referenceReindexed(ID newID) {
-    ControlNode::referenceReindexed(newID);
-    m_decisionInputFlow.reindex(newID);
-    m_decisionInput.reindex(newID);
-}
-
 void DecisionNode::referenceErased(ID id) {
     ControlNode::referenceErased(id);
     m_decisionInputFlow.eraseElement(id);

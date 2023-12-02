@@ -18,8 +18,6 @@ namespace UML {
             void innerAdd(T& el) override {
                 if (this->m_root && el.getID() != this->m_root->m_ptr.id()) {
                     [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
-                    (*this->m_root->m_ptr).m_node->removeReference(this->m_el);
-                    this->m_el.m_node->removeReference(*this->m_root->m_ptr);
                     T& elToRemove = this->m_root->m_ptr->template as<T>();
                     // remove
                     this->innerRemove(this->m_root->m_ptr.id());
@@ -27,15 +25,10 @@ namespace UML {
                 }
                 // add
                 PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerAdd(el);
-                el.m_node->setReference(this->m_el);
-                this->m_el.m_node->setReference(el);
             }
             void innerAdd(ID id) {
                if (this->m_root && (id == ID::nullID() || id != this->m_root->m_ptr.id())) {
                     [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
-
-                    (*this->m_root->m_ptr).m_node->removeReference(this->m_el);
-                    this->m_el.m_node->removeReference(*this->m_root->m_ptr);
 
                     T& elToRemove = this->m_root->m_ptr->template as<T>();
                     // remove
@@ -46,7 +39,6 @@ namespace UML {
                 if (id != ID::nullID()) {
                     // add
                     PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerAdd(id);
-                    this->m_el.m_node->setReference(id);
                 }
             }
         
@@ -67,21 +59,13 @@ namespace UML {
                         return;
                     }
                     [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
-
-                    (*this->m_root->m_ptr).m_node->removeReference(this->m_el);
-                    this->m_el.m_node->removeReference(*this->m_root->m_ptr);
                     T& elToRemove = this->m_root->m_ptr->template as<T>();
-                    // remove
                     this->innerRemove(this->m_root->m_ptr.id());
                     this->handleOppositeRemove(elToRemove);
                 }
                 if (el) {
                     [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*el);
-                    // add
                     PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerAdd(*el);
-                    el->m_node->setReference(this->m_el);
-                    this->m_el.m_node->setReference(*el);
-                    // handle opposites
                     this->handleOppositeAdd(*el);
                 }
             }
@@ -91,19 +75,13 @@ namespace UML {
                 if (this->m_root && (id == ID::nullID() || id != this->m_root->m_ptr.id())) {
                     [[maybe_unused]] SetLock elLock = this->m_el.m_manager->lockEl(*this->m_root->m_ptr);
 
-                    (*this->m_root->m_ptr).m_node->removeReference(this->m_el);
-                    this->m_el.m_node->removeReference(*this->m_root->m_ptr);
-
                     T& elToRemove = this->m_root->m_ptr->template as<T>();
-                    // remove
                     this->innerRemove(this->m_root->m_ptr.id());
-                    // handle opposites
                     this->handleOppositeRemove(elToRemove);
                 }
                 if (id != ID::nullID()) {
                     // add
                     PrivateSet<T,U, AdditionPolicy, RemovalPolicy>::innerAdd(id);
-                    this->m_el.m_node->setReference(id);
                 }
             }
 

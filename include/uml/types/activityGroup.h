@@ -22,7 +22,6 @@ namespace UML {
             CustomReadOnlySet<ActivityGroup, ActivityGroup> m_subGroups = CustomReadOnlySet<ActivityGroup, ActivityGroup>(this);
             TypedSet<Activity, ActivityGroup>& getInActivitySingleton();
             TypedSet<ActivityGroup, ActivityGroup>& getSuperGroupSingleton();
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             ActivityGroup();
         public:

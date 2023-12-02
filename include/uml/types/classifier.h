@@ -65,9 +65,7 @@ namespace UML {
             CustomSet<NamedElement, Classifier, AddOwnedMemberPolicy, RemoveOwnedMemberPolicy> m_classifierOwnedMembers = CustomSet<NamedElement, Classifier, AddOwnedMemberPolicy, RemoveOwnedMemberPolicy>(this);
             TypedSet<RedefinableTemplateSignature, Classifier>& getOwnedTemplateSignatureSingleton();
             TypedSet<ClassifierTemplateParameter, Classifier>& getTemplateParameterSingleton();
-            void referenceReindexed(ID newID) override;
             void restoreReferences() override;
-            void restoreReference(Element* el) override;
             void referenceErased(ID id) override;
             Classifier();
         public:

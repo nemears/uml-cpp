@@ -16,19 +16,12 @@ void Generalization::AddGeneralPolicy::apply(Classifier& el, Generalization& me)
     if (me.getSpecific() && !me.getSpecific()->getGenerals().contains(el.getID())) {
         me.getSpecific()->getGenerals().add(el);
     }
-    // el.setReference(&m_el);
 }
 
 void Generalization::RemoveGeneralPolicy::apply(Classifier& el, Generalization& me) {
     if (me.getSpecific() && me.getSpecific()->getGenerals().contains(el.getID())) {
         me.getSpecific()->getGenerals().remove(el);
     }
-    // el.removeReference(m_el.getID());
-}
-
-void Generalization::referenceReindexed(ID newID) {
-    DirectedRelationship::referenceReindexed(newID);
-    m_generalizationSets.reindex(newID);
 }
 
 void Generalization::referenceErased(ID id) {
@@ -36,13 +29,10 @@ void Generalization::referenceErased(ID id) {
     m_generalizationSets.eraseElement(id);
 }
 
-void Generalization::restoreReference(Element* el) {
-    DirectedRelationship::restoreReference(el);
-    // m_general.restore(el);
-    if (m_specific.get().id() == el->getID() && m_general.get() && !m_specific.get()->getGenerals().contains(m_general.get().id())) {
+void Generalization::restoreReferences() {
+    DirectedRelationship::restoreReferences();
+    if (m_specific.get() && m_general.get() && !m_specific.get()->getGenerals().contains(m_general.get().id())) {
         m_specific.get()->getGenerals().add(*m_general.get());
-    } else if (m_general.get().id() == el->getID()) {
-        m_general.get()->setReference(this);
     }
 }
 

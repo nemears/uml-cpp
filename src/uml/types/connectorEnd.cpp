@@ -19,12 +19,6 @@ TypedSet<Property, ConnectorEnd>& ConnectorEnd::getDefiningEndSingleton() {
     return m_definingEnd;
 }
 
-void ConnectorEnd::referenceReindexed(ID newID) {
-    MultiplicityElement::referenceReindexed(newID);
-    m_role.reindex(newID);
-    m_definingEnd.reindex(newID);
-}
-
 void ConnectorEnd::referenceErased(ID id) {
     MultiplicityElement::referenceErased(id);
     m_role.eraseElement(id);

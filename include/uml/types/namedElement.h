@@ -1,5 +1,4 @@
-#ifndef _UML_NAMED_ELEMENT_H_
-#define _UML_NAMED_ELEMENT_H_
+#pragma once
 
 #include <string>
 #include "element.h"
@@ -46,7 +45,6 @@ namespace UML{
             CustomSet<Dependency, NamedElement, DoNothingAdd<Dependency,NamedElement>, DoNothingRemove<Dependency,NamedElement>>* m_clientDependencies;
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             void updateQualifiedName(std::string absoluteNamespace);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<Namespace, NamedElement>& getNamespaceSingleton();
             NamedElement();
@@ -67,5 +65,3 @@ namespace UML{
             void setNamespace(ID id);
     };
 }
-
-#endif

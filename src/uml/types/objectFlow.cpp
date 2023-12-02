@@ -21,20 +21,10 @@ TypedSet<Behavior, ObjectFlow>& ObjectFlow::getSelectionSingleton() {
     return m_selection;
 }
 
-void ObjectFlow::referenceReindexed(ID newID) {
-    ActivityEdge::referenceReindexed(newID);
-    m_transformation.reindex(newID);
-    m_selection.reindex(newID);
-}
-
 void ObjectFlow::referenceErased(ID id) {
     ActivityEdge::referenceErased(id);
     m_transformation.eraseElement(id);
     m_selection.eraseElement(id);
-}
-
-void ObjectFlow::restoreReference(Element* el) {
-    NamedElement::restoreReference(el);
 }
 
 ObjectFlow::ObjectFlow() : Element(ElementType::OBJECT_FLOW) {

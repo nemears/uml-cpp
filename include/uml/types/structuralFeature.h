@@ -1,5 +1,4 @@
-#ifndef _UML_STRUCTURAL_FEATURE_H_
-#define _UML_STRUCTURAL_FEATURE_H_
+#pragma once
 
 #include "typedElement.h"
 #include "multiplicityElement.h"
@@ -9,9 +8,7 @@ namespace UML {
     class StructuralFeature : virtual public TypedElement, public MultiplicityElement, public Feature {
         protected:
             bool m_readOnly = false;
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
             StructuralFeature();
         public:
             class InvalidValueException: public std::exception {
@@ -31,5 +28,3 @@ namespace UML {
             };
     };
 }
-
-#endif

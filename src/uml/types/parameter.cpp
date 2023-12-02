@@ -19,11 +19,6 @@ TypedSet<ValueSpecification, Parameter>& Parameter::getDefaultValueSingleton() {
     return m_defaultValue;
 }
 
-void Parameter::referenceReindexed(ID newID) {
-    ConnectableElement::referenceReindexed(newID);
-    m_parameterSets.reindex(newID);
-}
-
 void Parameter::referenceErased(ID id) {
     ConnectableElement::referenceErased(id);
     m_parameterSets.eraseElement(id);

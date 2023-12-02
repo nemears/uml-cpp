@@ -8,11 +8,6 @@
 
 using namespace UML;
 
-void Dependency::referenceReindexed(ID newID) {
-    PackageableElement::referenceReindexed(newID);
-    Relationship::referenceReindexed(newID);
-}
-
 // void Dependency::restoreReference(Element* el) {
 //     PackageableElement::restoreReference(el);
 //     Relationship::restoreReference(el);

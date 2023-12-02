@@ -13,9 +13,7 @@ namespace UML {
 
         protected:
             CustomReadOnlySet<ConnectorEnd, ConnectableElement> m_ends = CustomReadOnlySet<ConnectorEnd, ConnectableElement>(this);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
             ConnectableElement();
         public:
             virtual ~ConnectableElement();

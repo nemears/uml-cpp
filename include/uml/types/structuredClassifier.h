@@ -1,5 +1,4 @@
-#ifndef _UML_STRUCTURED_CLASSIFIER_H_
-#define _UML_STRUCTURED_CLASSIFIER_H_
+#pragma once
 
 #include "classifier.h"
 #include "connector.h"
@@ -27,7 +26,6 @@ namespace UML {
             CustomReadOnlySet<Property, StructuredClassifier> m_parts = CustomReadOnlySet<Property, StructuredClassifier>(this);
             CustomSet<Connector, StructuredClassifier> m_ownedConnectors = CustomSet<Connector, StructuredClassifier>(this);
             void restoreReferences() override;
-            void restoreReference(Element* el) override;
             StructuredClassifier();
         public:
             virtual ~StructuredClassifier();
@@ -41,5 +39,3 @@ namespace UML {
             };
     };
 }
-
-#endif

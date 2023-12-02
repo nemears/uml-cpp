@@ -4,10 +4,6 @@
 
 using namespace UML;
 
-void ParameterableElement::referenceReindexed(ID newID) {
-    m_templateParameter.reindex(newID);
-}
-
 void ParameterableElement::referenceErased(ID id) {
     m_templateParameter.eraseElement(id);
 }

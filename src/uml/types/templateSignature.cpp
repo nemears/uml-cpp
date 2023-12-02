@@ -6,11 +6,6 @@
 
 using namespace UML;
 
-void TemplateSignature::referenceReindexed(ID newID) {
-    Element::referenceReindexed(newID);
-    m_parameters.reindex(newID);
-}
-
 void TemplateSignature::referenceErased(ID id) {
     Element::referenceErased(id);
     m_parameters.eraseElement(id);

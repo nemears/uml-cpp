@@ -15,11 +15,11 @@ void BehavioredClassifier::RemoveInterfaceRealizationPolicy::apply(InterfaceReal
             Classifier* front = queue.front();
             queue.pop_front();
             for (auto& pair : front->m_node->m_references) {
-                if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+                if (!pair.second.node || !pair.second.node->m_element) {
                     // TODO aquire?
                 }
-                if (pair.second.node && pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
-                    Port& port = pair.second.node->m_managerElementMemory->as<Port>();
+                if (pair.second.node && pair.second.node->m_element->isSubClassOf(ElementType::PORT)) {
+                    Port& port = pair.second.node->m_element->as<Port>();
                     if (front->getID() == port.getType().id()) {
                         if (port.isConjugated()) {
                             if (port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
@@ -31,9 +31,9 @@ void BehavioredClassifier::RemoveInterfaceRealizationPolicy::apply(InterfaceReal
                             }
                         }
                     }
-                } else if (pair.second.node && pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
-                    if (pair.second.node->m_managerElementMemory->as<Classifier>().getGenerals().contains(*front)) {
-                        queue.push_back(&pair.second.node->m_managerElementMemory->as<Classifier>());
+                } else if (pair.second.node && pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER)) {
+                    if (pair.second.node->m_element->as<Classifier>().getGenerals().contains(*front)) {
+                        queue.push_back(&pair.second.node->m_element->as<Classifier>());
                     }
                 }
             }   
@@ -48,11 +48,11 @@ void BehavioredClassifier::AddInterfaceRealizationPolicy::apply(InterfaceRealiza
             Classifier* front = queue.front();
             queue.pop_front();
             for (auto& pair : front->m_node->m_references) {
-                if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+                if (!pair.second.node || !pair.second.node->m_element) {
                     // TODO aquire?
                 }
-                if (pair.second.node && pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT)) {
-                    Port& port = pair.second.node->m_managerElementMemory->as<Port>();
+                if (pair.second.node && pair.second.node->m_element->isSubClassOf(ElementType::PORT)) {
+                    Port& port = pair.second.node->m_element->as<Port>();
                     if (port.getType().id() == front->m_id) {
                         if (port.isConjugated()) {
                             if (!port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
@@ -64,9 +64,9 @@ void BehavioredClassifier::AddInterfaceRealizationPolicy::apply(InterfaceRealiza
                             }
                         }
                     }
-                } else if (pair.second.node && pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
-                    if (pair.second.node->m_managerElementMemory->as<Classifier>().getGenerals().contains(*front)) {
-                        queue.push_back(&pair.second.node->m_managerElementMemory->as<Classifier>());
+                } else if (pair.second.node && pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER)) {
+                    if (pair.second.node->m_element->as<Classifier>().getGenerals().contains(*front)) {
+                        queue.push_back(&pair.second.node->m_element->as<Classifier>());
                     }
                 }
             }

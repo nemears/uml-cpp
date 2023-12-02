@@ -16,50 +16,8 @@ bool isValidID(std::string strn) {
     return std::regex_match (strn, std::regex("(?:[A-Za-z0-9_&]{28})"));
 }
 
-void Element::setReference(Element* referencing) {
-    if (m_node->m_references.count(referencing->getID())) {
-        m_node->m_references[referencing->getID()].count++;
-    } else {
-        m_node->m_references[referencing->getID()] = ManagerNode::NodeReference{referencing->m_node, 1};
-    }
-}
-
-void Element::setReference(ID id) {
-    if (m_node->m_references.count(id)) {
-        m_node->m_references[id].count++;
-    } else {
-        // TODO maybe check if loaded? cause this can be called when the element of the id is not released
-        m_node->m_references[id] = ManagerNode::NodeReference{0, 1};
-    }
-}
-
-void Element::removeReference(ID referencing) {
-    if (m_node->m_references[referencing].count > 1) {
-        m_node->m_references[referencing].count--;
-    } else {
-        m_node->m_references.erase(referencing);
-    }
-}
-
-void Element::referenceReindexed(ID newID) {
-    m_ownedElements->reindex(newID);
-    m_owner->reindex(newID);
-    m_ownedComments->reindex(newID);
-    m_appliedStereotype->reindex(newID);
-}
-
 void Element::restoreReferences() {
     // nothing
-}
-
-void Element::restoreReference(Element* el) {
-    if (m_node->m_references.count(el->getID())) {
-        m_node->m_references[el->getID()].node = el->m_node;
-    } else {
-        throw ManagerStateException("Bad state, should have reference if we are restoring a reference");
-    }
-    // m_ownedElements->restore(el);
-    // m_owner->restore(el);
 }
 
 void Element::referenceErased(ID id) {
@@ -505,17 +463,8 @@ Set<Comment, Element>& Element::getOwnedComments() {
     return *m_ownedComments;
 }
 
-// void SetReferenceFunctor::operator()(Element& el) const {
-//     el.setReference(&m_el);
-// }
-
-// void RemoveReferenceFunctor::operator()(Element& el) const {
-//     el.removeReference(m_el.getID());
-// }
-
 void Element::setOwner(ID id) {
     m_owner->innerAdd(id);
-    m_node->setReference(id);
 }
 
 }

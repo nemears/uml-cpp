@@ -18,14 +18,6 @@ TypedSet<Activity, ActivityNode>& ActivityNode::getActivitySingleton() {
     return m_activity;
 }
 
-void ActivityNode::referenceReindexed(ID newID) {
-    NamedElement::referenceReindexed(newID);
-    RedefinableElement::referenceReindexed(newID);
-    m_incoming.reindex(newID);
-    m_outgoing.reindex(newID);
-    m_inGroups.reindex(newID);
-}
-
 void ActivityNode::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     RedefinableElement::referenceErased(id);

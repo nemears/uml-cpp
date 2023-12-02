@@ -1,5 +1,4 @@
-#ifndef _UML_GENERALIZATION_H_
-#define _UML_GENERALIZATION_H_
+#pragma once
 
 #include "directedRelationship.h"
 #include "uml/set/singleton.h"
@@ -27,9 +26,8 @@ namespace UML {
             CustomSingleton<Classifier, Generalization, AddGeneralPolicy, RemoveGeneralPolicy> m_general = CustomSingleton<Classifier, Generalization, AddGeneralPolicy, RemoveGeneralPolicy>(this);
             CustomSingleton<Classifier, Generalization> m_specific = CustomSingleton<Classifier, Generalization>(this);
             CustomSet<GeneralizationSet, Generalization> m_generalizationSets = CustomSet<GeneralizationSet, Generalization>(this);
-            void referenceReindexed(ID newID) override;
+            void restoreReferences() override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
             TypedSet<Classifier, Generalization>& getGeneralSingleton();
             TypedSet<Classifier, Generalization>& getSpecificSingleton();
             Generalization();
@@ -50,5 +48,3 @@ namespace UML {
             };
     };
 }
-
-#endif

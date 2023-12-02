@@ -10,18 +10,6 @@
 
 using namespace UML;
 
-void TypedElement::referenceReindexed(ID newID) {
-    NamedElement::referenceReindexed(newID);
-    m_type.reindex(newID);
-}
-
-void TypedElement::restoreReference(Element* el) {
-    NamedElement::restoreReference(el);
-    if (m_type.get().id() == el->getID()) {
-        el->setReference(this);
-    }
-}
-
 void TypedElement::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     m_type.eraseElement(id);

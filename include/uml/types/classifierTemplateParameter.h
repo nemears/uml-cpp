@@ -18,7 +18,6 @@ namespace UML {
             CustomSingleton<Classifier, ClassifierTemplateParameter> m_classifierParameteredElement = CustomSingleton<Classifier, ClassifierTemplateParameter>(this);
             CustomSet<Classifier, ClassifierTemplateParameter> m_constrainingClassifiers = CustomSet<Classifier, ClassifierTemplateParameter>(this);
             TypedSet<Classifier, ClassifierTemplateParameter>& getParameteredElementSingleton();
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             ClassifierTemplateParameter();
         public:

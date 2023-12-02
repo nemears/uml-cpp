@@ -16,11 +16,6 @@
 
 using namespace UML;
 
-void InstanceSpecification::referenceReindexed(ID newID) {
-    PackageableElement::referenceReindexed(newID);
-    m_classifiers.reindex(newID);
-}
-
 void InstanceSpecification::referenceErased(ID id) {
     PackageableElement::referenceErased(id);
     m_classifiers.eraseElement(id);

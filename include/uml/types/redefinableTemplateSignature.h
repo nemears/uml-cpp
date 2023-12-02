@@ -1,5 +1,4 @@
-#ifndef _UML_REDEFINABLE_TEMPLATE_SIGNATURE_H_
-#define _UML_REDEFINABLE_TEMPLATE_SIGNATURE_H_
+#pragma once
 
 #include "redefinableElement.h"
 #include "templateSignature.h"
@@ -37,7 +36,6 @@ namespace UML {
             CustomSet<TemplateParameter, RedefinableTemplateSignature, AddParameterPolicy, RemoveParameterPolicy> m_redefinableTemplateSignatureParameters = CustomSet<TemplateParameter, RedefinableTemplateSignature, AddParameterPolicy, RemoveParameterPolicy>(this);
             CustomReadOnlySet<TemplateParameter, RedefinableTemplateSignature> m_inheritedParameters = CustomReadOnlySet<TemplateParameter, RedefinableTemplateSignature>(this);
             TypedSet<Classifier, RedefinableTemplateSignature>& getClassifierSingleton();
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             RedefinableTemplateSignature();
         public:
@@ -55,5 +53,3 @@ namespace UML {
             }
     };
 }
-
-#endif

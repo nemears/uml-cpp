@@ -20,11 +20,6 @@ TypedSet<Port, InvocationAction>& InvocationAction::getOnPortSingleton() {
     return m_onPort;
 }
 
-void InvocationAction::referenceReindexed(ID newID) {
-    Action::referenceReindexed(newID);
-    m_onPort.reindex(newID);
-}
-
 void InvocationAction::referenceErased(ID id) {
     Action::referenceErased(id);
     m_onPort.eraseElement(id);

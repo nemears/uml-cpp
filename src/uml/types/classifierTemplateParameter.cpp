@@ -18,11 +18,6 @@ TypedSet<Classifier, ClassifierTemplateParameter>& ClassifierTemplateParameter::
     return m_classifierParameteredElement;
 }
 
-void ClassifierTemplateParameter::referenceReindexed(ID newID) {
-    TemplateParameter::referenceReindexed(newID);
-    m_constrainingClassifiers.reindex(newID);
-}
-
 void ClassifierTemplateParameter::referenceErased(ID id) {
     TemplateParameter::referenceErased(id);
     m_constrainingClassifiers.eraseElement(id);

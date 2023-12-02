@@ -38,15 +38,15 @@ void StructuredClassifier::restoreReferences() {
     }
 }
 
-void StructuredClassifier::restoreReference(Element* el) {
-    Classifier::restoreReference(el);
-    if (el->isSubClassOf(ElementType::CONNECTOR)) {
-        Connector& connector = el->as<Connector>();
-        if (connector.getNamespace().id() == m_id && connector.getFeaturingClassifier().id() == ID::nullID() && m_ownedConnectors.contains(connector.getID())) {
-            connector.m_featuringClassifier.innerAdd(*this);
-        }
-    }
-}
+// void StructuredClassifier::restoreReference(Element* el) {
+//     Classifier::restoreReference(el);
+//     if (el->isSubClassOf(ElementType::CONNECTOR)) {
+//         Connector& connector = el->as<Connector>();
+//         if (connector.getNamespace().id() == m_id && connector.getFeaturingClassifier().id() == ID::nullID() && m_ownedConnectors.contains(connector.getID())) {
+//             connector.m_featuringClassifier.innerAdd(*this);
+//         }
+//     }
+// }
 
 StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_CLASSIFIER) {
     m_roles.subsets(m_members);

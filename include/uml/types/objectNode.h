@@ -1,5 +1,4 @@
-#ifndef _UML_OBJECT_NODE_H_
-#define _UML_OBJECT_NODE_H_
+#pragma once
 
 #include "activityNode.h"
 #include "typedElement.h"
@@ -29,7 +28,6 @@ namespace UML {
             ObjectNodeOrderingKind m_ordering = ObjectNodeOrderingKind::FIFO;
             TypedSet<ValueSpecification, ObjectNode>& getUpperBoundSingleton();
             TypedSet<Behavior, ObjectNode>& getSelectionSingleton();
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             ObjectNode();
         public:
@@ -54,5 +52,3 @@ namespace UML {
             };
     };
 }
-
-#endif

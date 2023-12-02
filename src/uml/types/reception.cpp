@@ -15,14 +15,16 @@ TypedSet<Signal, Reception>& Reception::getSignalSingleton() {
     return m_signal;
 }
 
-void Reception::referenceReindexed(ID newID) {
-    BehavioralFeature::referenceReindexed(newID);
-    m_signal.reindex(newID);
-}
-
 void Reception::referenceErased(ID id) {
     BehavioralFeature::referenceErased(id);
     m_signal.eraseElement(id);
+}
+
+void Reception::restoreReferences() {
+    BehavioralFeature::restoreReferences();
+    if (m_namespace->get().id() != ID::nullID() && m_featuringClassifier.get().id() == ID::nullID()) {
+        m_featuringClassifier.innerAdd(m_namespace->get().id());
+    }
 }
 
 Reception::Reception() : Element(ElementType::RECEPTION) {

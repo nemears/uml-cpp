@@ -22,8 +22,6 @@ void RedefinableTemplateSignature::AddExtendedSignaturePolicy::apply(Redefinable
         if (!me.m_inheritedParameters.contains(param)) {
             [[maybe_unused]] SetLock paramLck = me.lockEl(param);
             me.m_inheritedParameters.innerAdd(param);
-            me.m_node->setReference(param);
-            param.m_node->setReference(me);
         }
     }
 }
@@ -43,8 +41,6 @@ void RedefinableTemplateSignature::RemoveExtendedSignaturePolicy::apply(Redefina
         if (me.m_inheritedParameters.contains(param) && !parametersToKeep.count(param.getID())) {
             [[maybe_unused]] SetLock paramLck = me.lockEl(param);
             me.m_inheritedParameters.innerRemove(param.getID());
-            me.m_node->removeReference(param);
-            param.m_node->removeReference(me);
         }
     }
 }
@@ -54,8 +50,6 @@ void RedefinableTemplateSignature::AddParameterPolicy::apply(TemplateParameter& 
         if (!sig->getInheritedParameters().contains(el.getID())) {
             [[maybe_unused]] SetLock sigLock = me.lockEl(*sig);
             sig->m_inheritedParameters.innerAdd(el.as<TemplateParameter>());
-            sig->m_node->setReference(me);
-            me.m_node->setReference(*sig);
         }   
     }
 }
@@ -73,19 +67,12 @@ void RedefinableTemplateSignature::RemoveParameterPolicy::apply(TemplateParamete
         if (ogSig->getInheritedParameters().contains(el.getID()) && !parametersToKeep.count(el.getID())) {
             [[maybe_unused]] SetLock ogSigLock = me.lockEl(*ogSig);
             ogSig->m_inheritedParameters.innerRemove(el.getID());
-            ogSig->m_node->removeReference(me);
-            me.m_node->removeReference(*ogSig);
         }
     }
 }
 
 TypedSet<Classifier, RedefinableTemplateSignature>& RedefinableTemplateSignature::getClassifierSingleton() {
     return m_classifier;
-}
-
-void RedefinableTemplateSignature::referenceReindexed(ID newID) {
-    RedefinableElement::referenceReindexed(newID);
-    TemplateSignature::referenceReindexed(newID);
 }
 
 void RedefinableTemplateSignature::referenceErased(ID id) {

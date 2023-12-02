@@ -2,11 +2,6 @@
 
 using namespace UML;
 
-void Relationship::referenceReindexed(ID newID) {
-    Element::referenceReindexed(newID);
-    m_relatedElements.reindex(newID);
-}
-
 void Relationship::referenceErased(ID id) {
     Element::referenceErased(id);
     m_relatedElements.eraseElement(id);

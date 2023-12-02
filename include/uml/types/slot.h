@@ -20,9 +20,7 @@ namespace UML {
             CustomSingleton<StructuralFeature, Slot> m_definingFeature = CustomSingleton<StructuralFeature, Slot>(this);
             CustomOrderedSet<ValueSpecification, Slot> m_values = CustomOrderedSet<ValueSpecification, Slot>(this);
             CustomSingleton<InstanceSpecification, Slot> m_owningInstance = CustomSingleton<InstanceSpecification, Slot>(this);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
             TypedSet<StructuralFeature, Slot>& getDefiningFeatureSingleton();
             TypedSet<InstanceSpecification, Slot>& getOwningInstanceSingleton();
             Slot();

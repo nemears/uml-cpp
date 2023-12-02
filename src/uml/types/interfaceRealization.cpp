@@ -13,13 +13,13 @@ using namespace UML;
 void InterfaceRealization::RemoveContractPolicy::apply(Interface& el, InterfaceRealization& me) {
     if (me.getImplementingClassifier()) {
         for (auto& pair : me.m_implementingClassifier.get()->m_node->m_references) {
-            if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+            if (!pair.second.node || !pair.second.node->m_element) {
                 // TODO aquire to not have loss, get rid of continue
                 continue;
             }
-            if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
-                pair.second.node->m_managerElementMemory->as<Port>().getType().id() == me.m_implementingClassifier.get().id()) {
-                    Port& port = pair.second.node->m_managerElementMemory->as<Port>();
+            if (pair.second.node->m_element->isSubClassOf(ElementType::PORT) && 
+                pair.second.node->m_element->as<Port>().getType().id() == me.m_implementingClassifier.get().id()) {
+                    Port& port = pair.second.node->m_element->as<Port>();
                     [[maybe_unused]] SetLock portLck = me.lockEl(port);
                     if (port.isConjugated()) {
                         if (port.getRequired().contains(el.getID())) {
@@ -38,13 +38,13 @@ void InterfaceRealization::RemoveContractPolicy::apply(Interface& el, InterfaceR
 void InterfaceRealization::SetContractPolicy::apply(Interface& el, InterfaceRealization& me) {
     if (me.getImplementingClassifier()) {
         for (auto& pair : me.m_implementingClassifier.get()->m_node->m_references) {
-            if (!pair.second.node || !pair.second.node->m_managerElementMemory) {
+            if (!pair.second.node || !pair.second.node->m_element) {
                 // TODO aquire to not have loss, get rid of continue
                 continue;
             }
-            if (pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::PORT) && 
-                pair.second.node->m_managerElementMemory->as<Port>().getType().id() == me.m_implementingClassifier.get().id()) {
-                    Port& port = pair.second.node->m_managerElementMemory->as<Port>();
+            if (pair.second.node->m_element->isSubClassOf(ElementType::PORT) && 
+                pair.second.node->m_element->as<Port>().getType().id() == me.m_implementingClassifier.get().id()) {
+                    Port& port = pair.second.node->m_element->as<Port>();
                     [[maybe_unused]] SetLock portLck = me.lockEl(port);
                     if (port.isConjugated()) {
                         if (!port.getRequired().contains(el.getID())) {

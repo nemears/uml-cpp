@@ -1,5 +1,4 @@
-#ifndef _UML_PARAMETERABLE_ELEMENT_H_
-#define _UML_PARAMETERABLE_ELEMENT_H_
+#pragma once
 
 #include "element.h"
 #include "uml/set/singleton.h"
@@ -20,7 +19,6 @@ namespace UML {
         protected:
             CustomSingleton<TemplateParameter, ParameterableElement> m_templateParameter = CustomSingleton<TemplateParameter, ParameterableElement>(this);
             CustomSingleton<TemplateParameter, ParameterableElement> m_owningTemplateParameter = CustomSingleton<TemplateParameter, ParameterableElement>(this);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             TypedSet<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
             TypedSet<TemplateParameter, ParameterableElement>& getTemplateParameterSingleton();
@@ -41,5 +39,3 @@ namespace UML {
             };
     };
 }
-
-#endif

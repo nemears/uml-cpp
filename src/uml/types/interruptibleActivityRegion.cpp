@@ -12,11 +12,6 @@
 
 using namespace UML;
 
-void InterruptibleActivityRegion::referenceReindexed(ID newID) {
-    ActivityGroup::referenceReindexed(newID);
-    m_interruptingEdges.reindex(newID);
-}
-
 void InterruptibleActivityRegion::referenceErased(ID id) {
     ActivityGroup::referenceErased(id);
     m_interruptingEdges.eraseElement(id);

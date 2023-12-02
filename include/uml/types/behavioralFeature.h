@@ -24,7 +24,6 @@ namespace UML {
             CustomSet<ParameterSet, BehavioralFeature> m_ownedParameterSets = CustomSet<ParameterSet, BehavioralFeature>(this);
             bool m_returnSpecified = false;
             CallConcurrencyKind m_concurrency = CallConcurrencyKind::Sequential;
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             BehavioralFeature();
         public:

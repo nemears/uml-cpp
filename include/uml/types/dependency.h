@@ -13,7 +13,6 @@ namespace UML {
         protected:
             CustomSet<NamedElement, Dependency> m_clients = CustomSet<NamedElement, Dependency>(this);
             CustomSet<NamedElement, Dependency> m_suppliers = CustomSet<NamedElement, Dependency>(this);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             Dependency();
         public:

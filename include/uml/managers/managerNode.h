@@ -1,8 +1,7 @@
-#ifndef _UML_MANAGERS_MANAGER_NODE_H_
-#define _UML_MANAGERS_MANAGER_NODE_H_
+#pragma once
 
 #include <unordered_map>
-#include <list>
+#include <unordered_set>
 #include <mutex>
 #include "uml/id.h"
 
@@ -17,24 +16,31 @@ namespace UML {
      * its place in the reference graph
     **/
     struct ManagerNode {
-        Element* m_managerElementMemory = 0;
-        // std::string m_path;
+
+        // The element this node is representing
+        Element* m_element = 0;
         bool m_mountedFlag = false;
         struct NodeReference {
+            // The node of the referenced element
+            // whether released or not it should have a node because we are referencing it
             ManagerNode* node = 0;
-            size_t count = 0;
+
+            // list of ptrs to the reference owned by this element
+            std::unordered_set<AbstractUmlPtr*> ptrs;
         };
         std::unordered_map<ID, NodeReference> m_references;
-        std::list<AbstractUmlPtr*> m_ptrs; // list to UmlPtr*'s
+
+        // list of all of the ptrs representing the element of this node
+        std::unordered_set<AbstractUmlPtr*> m_ptrs;
         std::mutex m_mtx;
         std::mutex m_ptrsMtx;
         ManagerNode(){};
-        // ManagerNode(const ManagerNode& rhs);
         ManagerNode& operator=(const ManagerNode& rhs);
-        void setReference(Element& el);
-        void setReference(ID id);
-        void removeReference(Element& el);
-        void restoreReference(Element* el);
+
+        // methods
+        void setReference(AbstractUmlPtr* ptr);
+        void setReference(ID id, ManagerNode* node);
+        void removeReference(AbstractUmlPtr* ptr);
         void restoreReferences();
         void releasePtrs();
         void referenceErased(ID id);
@@ -44,5 +50,3 @@ namespace UML {
         void assingPtr(AbstractUmlPtr* ptr);
     };
 }
-
-#endif

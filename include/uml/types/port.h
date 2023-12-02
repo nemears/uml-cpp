@@ -1,5 +1,4 @@
-#ifndef _UML_PORT_H_
-#define _UML_PORT_H_
+#pragma once
 
 #include "property.h"
 
@@ -31,8 +30,6 @@ namespace UML {
             bool m_isBehavior = false;
             bool m_isConjugated = false;
             bool m_isService = true;
-            void restoreReference(Element* el) override;
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
             void restoreReferences() override;
             Port();
@@ -52,5 +49,3 @@ namespace UML {
             }
     };
 }
-
-#endif

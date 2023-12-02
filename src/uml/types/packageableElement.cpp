@@ -10,16 +10,6 @@
 
 using namespace UML;
 
-void PackageableElement::referenceReindexed(ID newID) {
-    NamedElement::referenceReindexed(newID);
-    ParameterableElement::referenceReindexed(newID);
-}
-
-void PackageableElement::restoreReference(Element* el) {
-    Element::restoreReference(el);
-    ParameterableElement::restoreReference(el);
-}
-
 void PackageableElement::referenceErased(ID id) {
     NamedElement::referenceErased(id);
     ParameterableElement::referenceErased(id);

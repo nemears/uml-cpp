@@ -17,13 +17,8 @@ void NamedElement::UpdateQualifiedNamePolicy::apply(Namespace& el, NamedElement&
     me.updateQualifiedName(el.getQualifiedName());
 }
 
-void NamedElement::RemoveQualifiedNamePolicy::apply(Namespace& el, __attribute__((unused)) NamedElement& me) {
+void NamedElement::RemoveQualifiedNamePolicy::apply(__attribute__((unused))Namespace& el, NamedElement& me) {
     me.updateQualifiedName("");
-}
-
-void NamedElement::referenceReindexed(ID newID) {
-    Element::referenceReindexed(newID);
-    m_clientDependencies->reindex(newID);
 }
 
 void NamedElement::referenceErased(ID id) {
@@ -82,9 +77,9 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
             std::vector<Classifier*> clazzs;
             for (auto& pair : m_node->m_references) {
                 // find use as inherited member through references and remove
-                if (pair.second.node->m_managerElementMemory && pair.second.node->m_managerElementMemory->isSubClassOf(ElementType::CLASSIFIER)) {
-                    if (pair.second.node->m_managerElementMemory->as<Classifier>().m_inheritedMembers.contains(m_id)) {
-                        clazzs.push_back(&pair.second.node->m_managerElementMemory->as<Classifier>());
+                if (pair.second.node->m_element && pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER)) {
+                    if (pair.second.node->m_element->as<Classifier>().m_inheritedMembers.contains(m_id)) {
+                        clazzs.push_back(&pair.second.node->m_element->as<Classifier>());
                     }
                 }
             }
@@ -108,5 +103,4 @@ bool NamedElement::isSubClassOf(ElementType eType) const {
 
 void NamedElement::setNamespace(ID id) {
     m_namespace->innerAdd(id);
-    m_node->setReference(id);
 }

@@ -12,12 +12,6 @@
 
 using namespace UML;
 
-void GeneralizationSet::referenceReindexed(ID newID) {
-    PackageableElement::referenceReindexed(newID);
-    m_powerType.reindex(newID);
-    m_generalizations.reindex(newID);
-}
-
 void GeneralizationSet::referenceErased(ID id) {
     PackageableElement::referenceErased(id);
     m_powerType.eraseElement(id);

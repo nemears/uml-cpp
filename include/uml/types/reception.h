@@ -1,5 +1,4 @@
-#ifndef _UML_RECEPTION_H_
-#define _UML_RECEPTION_H_
+#pragma once
 
 #include "behavioralFeature.h"
 #include "signal.h"
@@ -17,8 +16,8 @@ namespace UML {
         protected:
             CustomSingleton<Signal, Reception> m_signal = CustomSingleton<Signal, Reception>(this);
             TypedSet<Signal, Reception>& getSignalSingleton();
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
+            void restoreReferences() override;
             Reception();
         public:
             virtual ~Reception();
@@ -32,5 +31,3 @@ namespace UML {
             };
     };
 }
-
-#endif

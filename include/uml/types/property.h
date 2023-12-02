@@ -1,5 +1,4 @@
-#ifndef _UML_PROPERTY_H_
-#define _UML_PROPERTY_H_
+#pragma once
 
 #include "structuralFeature.h"
 #include "connectableElement.h"
@@ -62,9 +61,7 @@ namespace UML{
             CustomSingleton<Interface, Property> m_interface = CustomSingleton<Interface, Property>(this);
             CustomSet<Property, Property, AddRedefinedPropertyPolicy, RemoveRedefinedPropertyPolicy> m_redefinedProperties = CustomSet<Property, Property, AddRedefinedPropertyPolicy, RemoveRedefinedPropertyPolicy>(this);
             CustomSingleton<Type, Property, SetPropertyTypePolicy, RemovePropertyTypePolicy> m_propertyType = CustomSingleton<Type, Property, SetPropertyTypePolicy, RemovePropertyTypePolicy>(this);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
             void restoreReferences() override;
             TypedSet<ValueSpecification, Property>& getDefaultValueSingleton();
             TypedSet<Class, Property>& getClassSingleton();
@@ -117,4 +114,3 @@ namespace UML{
             };
     };
 }
-#endif

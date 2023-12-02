@@ -23,6 +23,15 @@ namespace UML {
         };
     };
 
+    template <
+                class T, 
+                class U, 
+                class AdditionPolicy,
+                class RemovalPolicy,
+                class AllocationPolicy
+            >
+    class PrivateSet;
+
     class AbstractUmlPtr {
 
         template <class SerializationPolicy, typename PersistencePolicy> friend class Manager;
@@ -46,6 +55,14 @@ namespace UML {
         template <class SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class AbstractAccessPolicy;
         template <class U> friend class UmlPtr;
+        template <
+                class V, 
+                class U, 
+                class AdditionPolicy,
+                class RemovalPolicy,
+                class AllocationPolicy
+            >
+        friend class PrivateSet;
 
         private:
             AbstractManager* m_manager = 0;

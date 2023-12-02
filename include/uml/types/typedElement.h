@@ -1,5 +1,4 @@
-#ifndef _UML_TYPED_ELEMENT_H_
-#define _UML_TYPED_ELEMENT_H_
+#pragma once
 
 #include "namedElement.h"
 #include "uml/set/singleton.h"
@@ -15,9 +14,7 @@ namespace UML{
 
         protected:
             CustomSingleton<Type, TypedElement> m_type = CustomSingleton<Type, TypedElement>(this);
-            void referenceReindexed(ID newID) override;
             void referenceErased(ID id) override;
-            void restoreReference(Element* el) override;
             TypedSet<Type, TypedElement>& getTypeSingleton();
             TypedElement();
         public:
@@ -32,5 +29,3 @@ namespace UML{
             };
     };
 }
-
-#endif

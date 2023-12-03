@@ -64,7 +64,8 @@ void Classifier::AddOwnedMemberPolicy::apply(NamedElement& el, Classifier& me) {
             if (pair.second.node && 
                 pair.second.node->m_element && 
                 pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER) && 
-                pair.second.node->m_element->as<Classifier>().m_generals.contains(me.getID())) {
+                pair.second.node->m_element->as<Classifier>().m_generals.contains(me.getID()) &&
+                !pair.second.node->m_element->as<Classifier>().m_inheritedMembers.contains(el.getID())) {
                     pair.second.node->m_element->as<Classifier>().m_inheritedMembers.innerAdd(el);
             }
         }

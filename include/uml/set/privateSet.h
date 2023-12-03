@@ -1179,7 +1179,7 @@ namespace UML {
                     } else {
                         // It is a divider node, try to adjust to redefine
                         if (this->m_redefines.empty()) {
-                            throw SetStateException("Report to Developer! \nI know don't throw errors in destructor :( \nTODO remove this when confident in destructor and ready to release");
+                            // throw SetStateException("Report to Developer! \nI know don't throw errors in destructor :( \nTODO remove this when confident in destructor and ready to release");
                         }
 
                         std::list<SetNode*> stack;

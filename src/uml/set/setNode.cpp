@@ -240,7 +240,7 @@ SetNode::~SetNode() {
             }
 
             if (succesor->set != set) {
-                throw SetStateException("deleting node and swaping values, nodes do not have same set! contact dev!");
+                // throw SetStateException("deleting node and swaping values, nodes do not have same set! contact dev!");
             }
             notSwapped = false;
         } else if (m_left) {
@@ -261,7 +261,7 @@ SetNode::~SetNode() {
                 }
             } else {
                 // this should be impossible to get to
-                throw SetStateException("deleteFromTree node->m_left->m_color == BLACK");
+                // throw SetStateException("deleteFromTree node->m_left->m_color == BLACK");
             }
         } else if (m_right) {
             if (m_right->m_color == RedOrBlack::RED) {
@@ -281,7 +281,7 @@ SetNode::~SetNode() {
                 }
             } else {
                 // this should be impossible to get to
-                throw SetStateException("deleteFromTree node->m_right->m_color == BLACK");
+                // throw SetStateException("deleteFromTree node->m_right->m_color == BLACK");
             }
         } else if (m_color == RedOrBlack::BLACK && !m_left && !m_right) {
             // black and no children 
@@ -310,14 +310,14 @@ SetNode::~SetNode() {
                     if (parent->m_left == node) {
                         sibling = parent->m_right;
                         if (!sibling) {
-                            throw SetStateException("node deletion special case does not have sibling! Contact dev!");
+                            // throw SetStateException("node deletion special case does not have sibling! Contact dev!");
                         }
                         closeCousin = sibling->m_left;
                         distantCousin = sibling->m_right;
                     } else {
                         sibling = parent->m_left;
                         if (!sibling) {
-                            throw SetStateException("node deletion special case does not have sibling! Contact dev!");
+                            // throw SetStateException("node deletion special case does not have sibling! Contact dev!");
                         }
                         closeCousin = sibling->m_right;
                         distantCousin = sibling->m_left;
@@ -396,7 +396,7 @@ SetNode::~SetNode() {
             }
         } else {
             // error, should be impossible
-            throw SetStateException("Unhandled edge case in Red Black Tree deleteFromTree, contact developer!");
+            // throw SetStateException("Unhandled edge case in Red Black Tree deleteFromTree, contact developer!");
         }
     } while (!notSwapped);
 }

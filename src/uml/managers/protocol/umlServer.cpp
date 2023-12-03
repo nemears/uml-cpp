@@ -71,7 +71,6 @@ void UmlServer::handleMessage(ID id, std::string buff) {
         EmitterData data;
         data.mode = SerializationMode::WHOLE;
         data.isJSON = false;
-        data.emitReferences = false;
         std::string dump = emit(*getRoot(), data);
         int bytesSent = send(info.socket, dump.c_str(), dump.size() + 1, 0);
         if (bytesSent <= 0) {

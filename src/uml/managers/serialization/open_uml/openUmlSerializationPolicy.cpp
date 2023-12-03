@@ -26,7 +26,6 @@ ElementPtr OpenUmlSerializationPolicy::parseWhole(std::string data, AbstractMana
 
 std::string OpenUmlSerializationPolicy::emitIndividual(Element& el, __attribute__((unused))AbstractManager& manager) {
     EmitterData data;
-    data.emitReferences = true;
     return emit(el, data);
 }
 
@@ -72,61 +71,19 @@ std::string emit(Element& el, EmitterData& data) {
     YAML::Emitter emitter;
     if (data.isJSON) {
         emitter << YAML::DoubleQuoted << YAML::Flow;
-        if (data.emitReferences) {
-            emitter << YAML::BeginMap;
-        }
-    } else if (data.emitReferences) {
-        emitter << YAML::BeginDoc;
     }
     emitter << YAML::BeginMap;
     emitElementData(emitter, el, data);
     emitter << YAML::EndMap;
-    if (data.emitReferences) {
-        if (data.isJSON) {
-            emitter << YAML::EndMap << YAML::BeginMap;
-        } else {
-            emitter << YAML::EndDoc << YAML::BeginDoc;
-        }
-        emitter << YAML::BeginSeq;
-        for (auto reference : el.m_node->m_references) {
-            emitter << reference.first.string();
-        }
-        emitter << YAML::EndSeq;
-        if (data.isJSON) {
-            emitter << YAML::EndMap;
-        } else {
-            emitter << YAML::EndDoc;
-        }
-    }
     return emitter.c_str();
 }
 
 ElementPtr parse(std::string data, ParserData& metaData) {
     std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
-    ElementPtr ret;
     if (rootNodes.empty()) {
         throw SerializationError("could not parse data supplied to manager! Is it JSON or YAML?");
     }
-    if (metaData.mode == SerializationMode::INDIVIDUAL) {
-        ret = parseNode(rootNodes[0], metaData);
-        // TODO parseScope
-        if (rootNodes.size() == 2) {
-            // TODO remove
-            // YAML::Node references = rootNodes[1];
-            // if (!references.IsSequence()) {
-            //     throw SerializationError("reference list is not a list!" + getLineNumber(references));
-            // }
-            // for (size_t i = 0; i < references.size(); i++) {
-            //     ID referenceID = ID::fromString(references[i].as<string>());
-            //     if (ret->m_node->m_references.find(referenceID) == ret->m_node->m_references.end()) {
-            //         ret->m_node->setReference(referenceID);
-            //     }
-            // }
-        }
-    } else {
-        ret = parseNode(rootNodes[0], metaData);
-    }
-    return ret;
+    return parseNode(rootNodes[0], metaData);
 }
 
 }

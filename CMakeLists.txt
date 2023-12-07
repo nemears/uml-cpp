@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.12.0)
-project(uml-cpp VERSION 0.3.0)
+project(uml-cpp VERSION 0.3.1)
 include(CTest)
 enable_testing()
 
-option(UML_CLIENT_SERVER "allows for building of src/cpp/uml/managers for restful server client classes" ON)
 option(UML_BUILD_TESTS "build tests for uml library" ON)
 option(UML_DEBUG "builds with debug tools and without optimizations" OFF)
 option(NIX_BUILD "indicates that the paths to the libs are not in the libs folder, must set GTEST_PATH and YAML_CPP_PATH" OFF)
@@ -60,20 +59,11 @@ IF(WIN32)
     set(gtest_force_shared_crt ON)
 ENDIF()
 
-if (NOT NIX_BUILD)
-    # Google Test dependency
-    add_subdirectory(${GTEST_PATH})
-
-    # yaml-cpp dependency
-    add_subdirectory(${YAML_CPP_PATH})
-    set(YAML_CPP_BUILD_TESTS OFF)
-else()
-    find_package(PkgConfig)
-    pkg_check_modules(GTEST REQUIRED gtest)
-    pkg_check_modules(GTEST_MAIN REQUIRED gtest_main)
-    include_directories(${YAML_CPP_PATH}/include ${GTEST_INCLUDE_DIRS} ${GTEST_MAIN_INCLUDE_DIRS})
-    link_directories(${YAML_CPP_PATH}/lib ${GTEST_LIBRARY_DIRS} ${GTEST_MAIN_LIBRARY_DIRS})
-endif()
+find_package(PkgConfig)
+pkg_check_modules(GTEST REQUIRED gtest)
+pkg_check_modules(GTEST_MAIN REQUIRED gtest_main)
+include_directories(${YAML_CPP_PATH}/include ${GTEST_INCLUDE_DIRS} ${GTEST_MAIN_INCLUDE_DIRS})
+link_directories(${YAML_CPP_PATH}/lib ${GTEST_LIBRARY_DIRS} ${GTEST_MAIN_LIBRARY_DIRS})
 
 if (WEBSOCKET_BUILD)
     find_package(PkgConfig)
@@ -93,10 +83,6 @@ if (WEBSOCKET_BUILD)
     )
 endif()
 
-# src
-if(NOT UML_CLIENT_SERVER)
-    add_definitions( -DNO_UML_CLIENT_SERVER)
-endif()
 add_library(uml STATIC 
 
     # core
@@ -141,24 +127,9 @@ add_library(uml STATIC
     src/uml/types/valuePin.cpp src/uml/types/actionInputPin.cpp src/uml/types/invocationAction.cpp src/uml/types/callAction.cpp 
     src/uml/types/callBehaviorAction.cpp src/uml/types/elementImport.cpp src/uml/types/packageImport.cpp 
     src/uml/types/redefinableTemplateSignature.cpp src/uml/types/classifierTemplateParameter.cpp src/uml/types/parameterSet.cpp
-    
-    # protocol
-    src/uml/managers/protocol/umlServer.cpp src/uml/managers/protocol/serverPersistencePolicy.cpp src/uml/managers/protocol/umlClient.cpp
 )
 target_include_directories(uml PUBLIC include)
 target_link_libraries(uml PUBLIC yaml-cpp)
-if (UML_CLIENT_SERVER)
-    add_executable(uml-server src/uml/managers/protocol/main.cpp)
-    target_link_libraries(uml-server PUBLIC uml)
-    target_link_libraries(uml-server PRIVATE Threads::Threads)
-    if (UML_DEBUG AND UML_ADDRESS_SANITIZER) 
-        target_link_libraries(uml-server PRIVATE -fsanitize=address -fno-omit-frame-pointer)
-    endif()
-    if(WIN32)
-        target_link_libraries(uml-server PRIVATE wsock32 ws2_32)
-        target_link_libraries(uml PRIVATE wsock32 ws2_32)
-    endif()
-endif()
 if (WEBSOCKET_BUILD)
     target_include_directories(uml-kitchen-cpp PUBLIC include)
     target_link_libraries(uml-kitchen-cpp PUBLIC uml ${ASIO_LIBRARIES})
@@ -166,9 +137,6 @@ endif()
 if (UML_BUILD_TESTS)
     add_subdirectory(src/test)
     list(TRANSFORM umltestSources PREPEND "src/test/")
-    if (UML_CLIENT_SERVER)
-        list(APPEND umltestSources src/test/restfulTest.cpp)
-    endif()
     if (WEBSOCKET_BUILD)
         list(APPEND umltestSources src/test/umlKitchenTest.cpp)
     endif()
@@ -192,6 +160,9 @@ if (UML_BUILD_TESTS)
     endif()
     add_test(umltest umltest)
 endif()
+
+install(TARGETS uml)
+install(DIRECTORY include/uml DESTINATION include)
 
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

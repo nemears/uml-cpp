@@ -1,5 +1,4 @@
-#ifndef _UML_UML_STABLE_H_
-#define _UML_UML_STABLE_H_
+#pragma once
 
 /**
  * Comprehensive include of all stable non-abstract parts of the api
@@ -87,7 +86,6 @@
 #include "uml/types/valuePin.h"
 
 #include "uml/managers/manager.h"
-#include "uml/managers/protocol/umlClient.h"
 
 namespace UML {
     typedef UmlPtr<PrimitiveType> PrimitiveTypePtr;
@@ -98,5 +96,3 @@ namespace UML {
     typedef UmlPtr<PackageImport> PackageImportPtr;
     typedef UmlPtr<EnumerationLiteral> EnumerationLiteralPtr;
 }
-
-#endif

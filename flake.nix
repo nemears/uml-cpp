@@ -50,6 +50,10 @@
               Libs: -L$out/lib -luml
               Cflags: -I$out/include" > $out/lib/uml-cpp.pc
             '';
+
+            shellHook = ''
+            export PKG_CONFIG_PATH=$out/lib:$PKG_CONFIG_PATH
+            '';
           };
 
           packages.default = self.packages.${system}.uml-cpp;

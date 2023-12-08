@@ -28,21 +28,28 @@
               valgrind
             ];
           };
-          
-          # build flake with nix build
-          packages.uml-cpp = derivation {
+
+          packages.uml-cpp = pkgs.stdenv.mkDerivation {
             name = "uml-cpp";
             src = ./.;
-            inherit system;
-            inherit (pkgs) cmake pkg-config clang gnumake coreutils gtest yaml-cpp websocketpp asio openssl;
-            # environment variables for builder
-            yamlcpp = pkgs.yaml-cpp;
-            gtestdev = pkgs.gtest.dev;
-            pkgconfig = pkgs.pkg-config;
-            openssldev = pkgs.openssl.dev;
-            # build with bash and builder script
-            builder = "${pkgs.bash}/bin/bash";
-            args = [ ./builder.sh ];
+            buildInputs = with pkgs; [cmake pkg-config clang gnumake coreutils yaml-cpp];
+            cmakeFlags = [
+              "-DUML_BUILD_TESTS=OFF"
+            ];
+            installPhase = 
+            ''
+              mkdir -p $out/lib $out/include
+              cp -r libuml.a $out/lib
+              cp -r $src/include/uml $out/include
+              touch $out/lib/uml-cpp.pc
+              echo "prefix=$out
+
+              Name: uml
+              Description: uml modeling C++ api
+              Version: 0.3.1
+              Libs: -L$out/lib -luml
+              Cflags: -I$out/include" > $out/lib/uml-cpp.pc
+            '';
           };
 
           packages.default = self.packages.${system}.uml-cpp;

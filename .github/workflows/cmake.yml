@@ -20,7 +20,7 @@ jobs:
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}
-      run: mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} 
+      run: mkdir build; cd build; cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{github.workspace}}
 
     - name: Build
       working-directory: ${{github.workspace}}/build

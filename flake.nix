@@ -39,14 +39,14 @@
             installPhase = 
             ''
               mkdir -p $out/lib $out/include
-              cp -r libuml.a $out/lib
+              cp -r libuml.so $out/lib
               cp -r $src/include/uml $out/include
               touch $out/lib/uml-cpp.pc
               echo "prefix=$out
 
               Name: uml
               Description: uml modeling C++ api
-              Version: 0.3.1
+              Version: 0.3.2
               Libs: -L$out/lib -luml
               Cflags: -I$out/include" > $out/lib/uml-cpp.pc
             '';

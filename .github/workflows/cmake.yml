@@ -17,10 +17,14 @@ jobs:
     steps:
     - name: Install build dependencies
       run: sudo apt-get install -y clang googletest libyaml-cpp-dev
+    
+    - uses: actions/checkout@v2
+    - name: "create and enter build dir"
+      run: mkdir build; cd build
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}
-      run: mkdir build; cd build; cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{github.workspace}}
+      run: cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ..
 
     - name: Build
       working-directory: ${{github.workspace}}/build

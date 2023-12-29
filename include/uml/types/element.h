@@ -211,7 +211,6 @@ namespace UML {
         friend class AbstractAccessPolicy;
         friend struct ManagerNode;
         template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
-        // friend class UmlClient;
         friend class UmlServer;
         friend class ElementDoesntExistException;
         friend class Slot;

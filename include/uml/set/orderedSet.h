@@ -72,10 +72,14 @@ namespace UML {
             OrderedSetNode* orderedNode = dynamic_cast<OrderedSetNode*>(node);
             if (orderedNode->m_prev) {
                 m_prev = orderedNode->m_prev;
+                m_prev->m_next= this;
+                orderedNode->m_prev = 0;
             }
 
             if (orderedNode->m_next) {
                 m_next = orderedNode->m_next;
+                m_next->m_prev = this;
+                orderedNode->m_next = 0;
             }
 
             OrderedSetNodeAllocationPolicyInterface* orderedSet = getOrderedSet(this->set);
@@ -84,13 +88,30 @@ namespace UML {
                 throw SetStateException("bad state, non orderedSetNode tried to add to orderedSet!");
             }
 
-            if (orderedSet->getFront() == node) {
+            if (orderedSet->getFront()->m_ptr.id() == node->m_ptr.id()) {
                 orderedSet->setFront(this);
             }
 
-            if (orderedSet->getBack() == node) {
+            if (orderedSet->getBack()->m_ptr.id() == node->m_ptr.id()) {
                 orderedSet->setBack(this);
             }
+        }
+
+        SetNode* placeholder() override {
+            OrderedSetNode* ret = new OrderedSetNode();
+            ret->set = this->set;
+            ret->m_prev = this->m_prev;
+            ret->m_next = this->m_next;
+
+            OrderedSetNodeAllocationPolicyInterface* orderedSet = getOrderedSet(this->set);
+
+            if (orderedSet->getFront()->m_ptr.id() == this->m_ptr.id()) {
+                orderedSet->setFront(ret);
+            }
+            if (orderedSet->getBack()->m_ptr.id() == this->m_ptr.id()) {
+                orderedSet->setBack(ret);
+            }
+            return ret;
         }
 
         virtual ~OrderedSetNode() {
@@ -162,9 +183,15 @@ namespace UML {
                 validSets = rhs.validSets;
             }
             T& operator*() {
+                if (!curr) {
+                    throw SetStateException("Cannot access iterator beacuse it has ended!");
+                }
                 return curr->m_ptr->as<T>();
             }
             UmlPtr<T> operator->() {
+                if (!curr) {
+                    throw SetStateException("Cannot access iterator beacuse it has ended!");
+                }
                 return curr->m_ptr;
             }
             OrderedSetIterator& operator++() {
@@ -397,9 +424,16 @@ namespace UML {
                         orderedSet->setFront(orderedSetNode);
                     }
 
-                    if (orderedSet->getBack() && orderedSetNode->m_prev != orderedSet->getBack() && orderedSetNode->m_ptr.id() != orderedSet->getBack()->m_ptr.id()) {
-                        orderedSetNode->m_prev = orderedSet->getBack();
-                        orderedSetNode->m_prev->m_next = orderedSetNode;                        
+                    if (orderedSet->getBack()) {
+                        OrderedSetNode* back = orderedSet->getBack();
+                        if (orderedSetNode->m_prev != back && orderedSetNode->m_ptr.id() != back->m_ptr.id()) {
+                            orderedSetNode->m_prev = back;
+                            orderedSetNode->m_prev->m_next = orderedSetNode;                        
+                        } else if (orderedSetNode->m_ptr.id() == back->m_ptr.id() && back->m_prev) {
+                            // edge case
+                            orderedSetNode->m_prev = back->m_prev;
+                            orderedSetNode->m_prev->m_next = orderedSetNode;
+                        }
                     }
                     orderedSet->setBack(orderedSetNode);
                 } while (!queue.empty());

@@ -402,3 +402,9 @@ SetNode::~SetNode() {
 }
 
 void SetNode::copyData(SetNode* node) {}
+
+SetNode* SetNode::placeholder() {
+    SetNode* ret = new SetNode;
+    ret->set = this->set;
+    return ret;
+}

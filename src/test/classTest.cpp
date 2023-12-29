@@ -1011,3 +1011,51 @@ TEST_F(ClassTest, parseConnectorTest) {
     ASSERT_TRUE(end2.getDefiningEnd());
     ASSERT_EQ(*end2.getDefiningEnd(), assocEnd2);
 }
+
+TEST_F(ClassTest, DiagramElementTest) {
+  Manager<> m;
+  ASSERT_NO_THROW(m.open(ymlPath + "classTests/diagramElement.yml"));
+  std::unordered_set<ID> ownedAttributes = {
+    ID::fromString("UMUZ4IGiaApjD5Okua3rlWzey_Gz"), 
+    ID::fromString("AS1O&HB89UHuO5mwEs&kmyStr8bC"),
+    ID::fromString("pRC&nYUTPsFa3FF8A7I4hc1upU&H"),
+    ID::fromString("gKpLJKf9u_PpyJ5T3VqjqD0Mt0oa"),
+    ID::fromString("IKA1tRlsZ6HY_empbuQiXG9IHv_R")
+  };
+  Class& root = m.getRoot()->as<Class>();
+  for (auto& attribute : root.getOwnedAttributes()) {
+    ASSERT_TRUE(ownedAttributes.count(attribute.getID()));
+    ownedAttributes.erase(attribute.getID());
+  }
+  ASSERT_TRUE(ownedAttributes.empty());
+}
+
+TEST_F(ClassTest, classOwnedAttributeIteratorTest) {
+  Manager<> m;
+  ClassPtr clazz = m.create<Class>();
+  PropertyPtr property1 = m.create<Property>();
+  PropertyPtr property2 = m.create<Property>();
+  PropertyPtr property3 = m.create<Property>();
+  PropertyPtr property4 = m.create<Property>();
+  PropertyPtr property5 = m.create<Property>();
+  property5->setAggregation(AggregationKind::COMPOSITE);
+  clazz->getOwnedAttributes().add(property1);
+  clazz->getOwnedAttributes().add(property2);
+  clazz->getOwnedAttributes().add(property3);
+  clazz->getOwnedAttributes().add(property4);
+  clazz->getOwnedAttributes().add(property5);
+  OrderedSetIterator<Property> it = clazz->getOwnedAttributes().begin();
+
+  // test iterator
+  ASSERT_EQ(*it, *property1);
+  ++it;
+  ASSERT_EQ(*it, *property2);
+  ++it;
+  ASSERT_EQ(*it, *property3);
+  ++it;
+  ASSERT_EQ(*it, *property4);
+  ++it;
+  ASSERT_EQ(*it, *property5);
+  ++it;
+  ASSERT_EQ(it, clazz->getOwnedAttributes().end());
+}

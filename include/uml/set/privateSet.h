@@ -387,9 +387,10 @@ namespace UML {
                                         delete node;
                                         throw SetStateException("Duplicate element added to set!");
                                     } else {
-                                        node->copyData(existingNode);
-
+                                        SetNode* placeholder = existingNode->placeholder();
                                         existingNode->set->innerRemove(node->m_ptr.id());
+                                        node->copyData(placeholder);
+                                        delete placeholder;
 
                                         // I kind of get why we have to do this but I forget specifics
                                         if (node->m_ptr.loaded()) {

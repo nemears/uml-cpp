@@ -52,7 +52,7 @@
             '';
 
             shellHook = ''
-            export PKG_CONFIG_PATH=$out/lib:$PKG_CONFIG_PATH
+            export PKG_CONFIG_PATH_FOR_TARGET=$out/lib:$PKG_CONFIG_PATH_FOR_TARGET
             '';
           };
 

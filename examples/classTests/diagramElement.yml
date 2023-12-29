@@ -1,0 +1,62 @@
+class:
+  id: JyJLXpOZyw01guSKghjxNcRxd8Zy
+  name: DiagramElement
+  ownedAttributes:
+    - property:
+        id: IKA1tRlsZ6HY_empbuQiXG9IHv_R
+        name: modelElement
+        type: XI35viryLd5YduwnSbWpxSs3npcu
+    - property:
+        id: gKpLJKf9u_PpyJ5T3VqjqD0Mt0oa
+        name: sharedStyle
+        type: Jq6tOLJHyVZilh3qLtnYYmsHkSsS
+        lowerValue:
+          literalInt:
+            id: fRygdk8LJwt3UsA_8WVZw9JlsOqf
+            value: 0
+        upperValue:
+          literalInt:
+            id: splcMOtXKeyAt5dQmyEjikGIhn9M
+            value: 1
+        association: lMDVxmUicvVlwEu86FLu6R07Zmme
+    - property:
+        id: pRC&nYUTPsFa3FF8A7I4hc1upU&H
+        name: localStyle
+        type: Jq6tOLJHyVZilh3qLtnYYmsHkSsS
+        lowerValue:
+          literalInt:
+            id: 1PXQ1MQ8V8hv02uoYvwwU3VaPD6p
+            value: 0
+        upperValue:
+          literalInt:
+            id: ObXXUJkFSGbYFW1axrw0O65z2sOU
+            value: 1
+        association: GGXYlRByI1SXEXVa3xj8xfT1dwxj
+    - property:
+        id: AS1O&HB89UHuO5mwEs&kmyStr8bC
+        name: owningElement
+        type: JyJLXpOZyw01guSKghjxNcRxd8Zy
+        lowerValue:
+          literalInt:
+            id: qJy6UyEylE8QJeBAVGefweb8Q61A
+            value: 0
+        upperValue:
+          literalInt:
+            id: FguJC3bdDLmNV21cHlb_7tZQb0mk
+            value: 1
+        association: YgwX_EqbrRPJ4M9MXMJOQOu6WD4X
+    - property:
+        id: UMUZ4IGiaApjD5Okua3rlWzey_Gz
+        name: ownedElement
+        type: JyJLXpOZyw01guSKghjxNcRxd8Zy
+        lowerValue:
+          literalInt:
+            id: VjMBDrPl_iITaI_Ia_9BA1XFqdxx
+            value: 0
+        upperValue:
+          literalUnlimitedNatural:
+            id: SXOS0ber5uslc12ZTOn_77ELBAHo
+            value: "*"
+        aggregation: composite
+        isComposite: true
+        association: YgwX_EqbrRPJ4M9MXMJOQOu6WD4X

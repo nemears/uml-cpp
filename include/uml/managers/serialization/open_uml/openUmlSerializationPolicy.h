@@ -19,6 +19,7 @@ namespace UML {
         public:
             SerializationMode mode = SerializationMode::INDIVIDUAL;
             AbstractManager* manager = 0;
+            bool update = false; // update flag
     };
 
     class OpenUmlSerializationPolicy {

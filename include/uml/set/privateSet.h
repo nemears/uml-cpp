@@ -992,7 +992,11 @@ namespace UML {
                 [[maybe_unused]] SetLock myLock = m_el.m_manager->lockEl(m_el);
                 T* el = 0;
                 try {
-                    el = &m_el.m_node->m_references.at(id).node->m_element->template as<T>(); // should be safe because we have a ptr
+                    ManagerNode* node = m_el.m_node->m_references.at(id).node;
+                    if (!node->m_element) {
+                        m_el.m_manager->get(id);
+                    }
+                    el = &node->m_element->template as<T>(); // should be safe because we have a ptr
                 } catch (std::exception& e) {
                     throw SetStateException("Could not find el with id of " + id.string() + " in set");
                 }

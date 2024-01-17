@@ -453,7 +453,7 @@ namespace UML {
                 m_graph.erase(id);
             };
 
-            bool exists(ID id) {
+            bool exists(ID id) override {
                 // lock graph for access
                 std::shared_lock<std::shared_timed_mutex> graphLock(m_graphMtx);
                 return m_graph.count(id);
@@ -512,6 +512,7 @@ namespace UML {
             }
 
             ElementPtr open(std::string path) override {
+                // doesn't clear, just adds to the current graph
                 setRoot(SerializationPolicy::parseWhole(PersistencePolicy::getProjectData(path), *this).ptr());
                 std::list<ElementPtr> queue;
                 queue.push_back(m_root);
@@ -527,6 +528,12 @@ namespace UML {
             }
 
             ElementPtr open() override {
+                // {
+                //     // clear all elements
+                //     std::unique_lock<std::shared_timed_mutex> graphLock(m_graphMtx);
+                //     m_root = ElementPtr();
+                //     m_graph.clear();
+                // }
                 setRoot(SerializationPolicy::parseWhole(PersistencePolicy::getProjectData(), *this).ptr());
                 std::list<ElementPtr> queue;
                 queue.push_back(m_root);

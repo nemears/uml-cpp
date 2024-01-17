@@ -269,3 +269,13 @@ TEST_F(UmlManagerTest, overwriteRootTest) {
     m.getRoot().release();
     m.get(m.getRoot().id());
 }
+
+TEST_F(UmlManagerTest, loadBadFileTest) {
+    Manager<> m;
+    ASSERT_THROW(m.open(ymlPath + "notafile.yml"), FilePersistenceError);
+}
+
+TEST_F(UmlManagerTest, duplicateElementTest) {
+    Manager<> m;
+    ASSERT_THROW(m.open(ymlPath + "uml-cafe/duplicateElementGettingThrough.yml"), SerializationError);
+}

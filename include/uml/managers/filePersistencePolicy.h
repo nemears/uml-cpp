@@ -19,4 +19,14 @@ namespace UML {
             void mount(std::string mountPath);
             virtual ~FilePersistencePolicy();
     };
+
+    class FilePersistenceError : public std::exception {
+        private:
+            std::string m_msg;
+        public:
+            FilePersistenceError(std::string msg) : m_msg(msg) {};
+            virtual const char* what() const throw() {
+                return m_msg.c_str();
+            }
+    };
 }

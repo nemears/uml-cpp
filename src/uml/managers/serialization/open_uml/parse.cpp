@@ -18,7 +18,26 @@ void parseFeatures(YAML::Node node, T& el, ParserData& data, void (*parser)(YAML
 template <class T, class ... Funcs>
 UmlPtr<T> createAndParse(YAML::Node node, ParserData& data, Funcs... funcs) {
     if (node.IsMap()) {
-        UmlPtr<T> ret = data.manager->create<T>();
+        UmlPtr<T> ret;
+        if (node["id"]) {
+            if (!node["id"].IsScalar()) {
+                throw SerializationError("Could not parse id of element because it is not a scalar value " + getLineNumber(node["id"]));
+            }
+            string idString = node["id"].as<string>();
+            if (!isValidID(idString)) {
+                throw SerializationError("Could not parse id of element because it is not a valid id. A valid id is a 28 character url safe base64 encoded string " + getLineNumber(node["id"]));
+            }
+            ID id = ID::fromString(idString);
+            if (data.manager->loaded(id)) {
+                // update
+                data.update = true;
+                ret = data.manager->get(id);
+            } else {
+                ret = data.manager->create<T>();
+            }
+        } else {
+            ret = data.manager->create<T>();
+        }
         parseFeatures(node, *ret, data, funcs...);
         return ret;
     } else {
@@ -43,19 +62,30 @@ void parseScope(YAML::Node node, T& el, ParserData& data, bool (*parser)(YAML::N
 
 template <class T, class U, class S>
 void parseSet(YAML::Node node, U& el, ParserData& data, string key, S& (U::*sequenceSignature)()) {
+    if (data.update) {
+        // remove all elements
+        (el.*sequenceSignature)().clear();
+    }
     if (node[key]) {
         if (!node[key].IsSequence()) {
             throw SerializationError("Could not parse set " + key + "because it's data was not a sequence! " + getLineNumber(node[key]));
         }
+        
         for (size_t i = 0; i < node[key].size(); i++) {
             if (node[key][i].IsMap()) {
                 (el.*sequenceSignature)().add(parseNode(node[key][i], data));
             } else if (node[key][i].IsScalar()) {
-                (el.*sequenceSignature)().add(ID::fromString(node[key][i].as<string>()));
+                ID id = ID::fromString(node[key][i].as<string>());
+                if (data.update) {
+                    (el.*sequenceSignature)().add(data.manager->get(id)->as<T>());
+                } else {
+                    (el.*sequenceSignature)().add(id);
+                }
             } else {
                 throw SerializationError("cannot parse entry of set! " + getLineNumber(node[key][i]));
             }
         }
+        
     }
 }
 
@@ -66,10 +96,16 @@ bool parseSingleton(YAML::Node node, U& el, ParserData& data, string key, void (
             // assuming this is an owned singleton and we are parsing a project serialized in whole
             (el.*elMutator)(parseNode(node[key], data)->as<T>());
         } else if (node[key].IsScalar()) {
-            try {
-                (el.*idMutator)(ID::fromString(node[key].as<string>()));
+            ID id;
+             try {
+                id = ID::fromString(node[key].as<string>());
             } catch (InvalidUmlID_Exception& exception) {
                 throw SerializationError("singleton value must be an ID which is a base64 encoded 28 character string! " + getLineNumber(node[key]));
+            }
+            if (data.update) {
+                (el.*elMutator)(data.manager->get(id)->as<T>());
+            } else {
+                (el.*idMutator)(id);
             }
         } else {
             throw SerializationError("Singleton " + key + " for element type " + Element::elementTypeToString(U::elementType()) + " could not be serialized because it was not a map or scalar " + getLineNumber(node[key]));
@@ -1374,7 +1410,9 @@ void parseElementFeatures(YAML::Node node, Element& el, ParserData& data) {
         if (!isValidID(idString)) {
             throw SerializationError("Could not parse id of element because it is not a valid id. A valid id is a 28 character url safe base64 encoded string " + getLineNumber(node["id"]));
         }
-        el.setID(idString);
+        if (!data.update) {
+            el.setID(idString);   
+        }
     }
     parseSet<Comment>(node, el, data, "ownedComments", &Element::getOwnedComments);
     parseSet<InstanceSpecification>(node, el, data, "appliedStereotypes", &Element::getAppliedStereotypes);
@@ -1777,7 +1815,25 @@ bool parseDeploymentScope(YAML::Node node, Deployment& deployment, ParserData& d
 
 bool parseElementScope(YAML::Node node, Element& el, ParserData& data) {
     if (node["owner"]) {
-        el.setOwner(ID::fromString(node["owner"].as<string>()));
+        ID id = ID::fromString(node["owner"].as<string>());
+        if (data.update){
+            ElementPtr owner = data.manager->get(id);
+            if (el.isSubClassOf(ElementType::VALUE_SPECIFICATION)) {
+                if (owner->isSubClassOf(ElementType::SLOT)) {
+                    Slot& slot = owner->as<Slot>();
+                    
+                    // ordered set, assume add to end
+                    if (!slot.getValues().contains(el.getID())) {
+                        slot.getValues().add(el.as<ValueSpecification>());
+                    }
+                }
+            }
+
+            // TODO
+
+        } else {
+            el.setOwner(id);
+        }
         return true;
     }
     return false;

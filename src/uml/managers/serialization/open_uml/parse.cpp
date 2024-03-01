@@ -103,7 +103,11 @@ bool parseSingleton(YAML::Node node, U& el, ParserData& data, string key, void (
                 throw SerializationError("singleton value must be an ID which is a base64 encoded 28 character string! " + getLineNumber(node[key]));
             }
             if (data.update) {
-                (el.*elMutator)(data.manager->get(id)->as<T>());
+                try {
+                    (el.*elMutator)(data.manager->get(id)->as<T>());
+                } catch (std::exception& _e) {
+                    (el.*idMutator)(id);
+                }
             } else {
                 (el.*idMutator)(id);
             }

@@ -32,6 +32,7 @@
           packages.uml-cpp = pkgs.stdenv.mkDerivation {
             name = "uml-cpp";
             src = ./.;
+            nativeBuildInputs = with pkgs; [pkg-config];
             buildInputs = with pkgs; [cmake pkg-config clang gnumake coreutils yaml-cpp];
             cmakeFlags = [
               "-DUML_BUILD_TESTS=OFF"
@@ -49,10 +50,6 @@
               Version: 0.3.4
               Libs: -L$out/lib -luml
               Cflags: -I$out/include" > $out/lib/uml-cpp.pc
-            '';
-
-            shellHook = ''
-            export PKG_CONFIG_PATH_FOR_TARGET=$out/lib:$PKG_CONFIG_PATH_FOR_TARGET
             '';
           };
 

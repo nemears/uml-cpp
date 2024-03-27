@@ -39,17 +39,19 @@
             ];
             installPhase = 
             ''
-              mkdir -p $out/lib $out/include
+              mkdir -p $out/lib/pkgconfig $out/include
               cp -r libuml.so $out/lib
               cp -r $src/include/uml $out/include
-              touch $out/lib/uml-cpp.pc
+              touch $out/lib/pkgconfig/uml-cpp.pc
               echo "prefix=$out
 
               Name: uml
               Description: uml modeling C++ api
               Version: 0.3.4
               Libs: -L$out/lib -luml
-              Cflags: -I$out/include" > $out/lib/uml-cpp.pc
+              Cflags: -I$out/include" > $out/lib/pkgconfig/uml-cpp.pc
+
+              export PKG_CONFIG_PATH=PKG_CONFIG_PATH:$out/lib/pkgconfig
             '';
           };
 

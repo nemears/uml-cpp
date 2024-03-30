@@ -47,7 +47,7 @@
 
               Name: uml
               Description: uml modeling C++ api
-              Version: 0.3.4
+              Version: 0.3.5
               Libs: -L$out/lib -luml
               Cflags: -I$out/include" > $out/lib/pkgconfig/uml-cpp.pc
 

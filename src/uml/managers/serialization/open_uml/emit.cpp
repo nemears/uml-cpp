@@ -1305,7 +1305,7 @@ void emitActionFeatures(YAML::Emitter& emitter, Action& action, EmitterData& dat
     emitCompositeSet<Constraint>(emitter, action, data, "localPostconditions", &Action::getLocalPostconditions);
 }
 
-void emitActionInputPinFeatures(YAML::Emitter& emitter, ActionInputPin& actionInputPin, EmitterData& data) {
+void emitActionInputPinFeatures(YAML::Emitter& emitter, ActionInputPin& actionInputPin, __attribute__((unused)) EmitterData& data) {
     emitSingleton(emitter, actionInputPin, "fromAction", &ActionInputPin::getFromAction);
 }
 
@@ -1315,7 +1315,7 @@ void emitActivityFeatures(YAML::Emitter& emitter, Activity& activity, EmitterDat
     emitCompositeSet<ActivityPartition>(emitter, activity, data, "partitions", &Activity::getPartitions);
 }
 
-void emitActivityEdgeFeatures(YAML::Emitter& emitter, ActivityEdge& activityEdge, EmitterData& data) {
+void emitActivityEdgeFeatures(YAML::Emitter& emitter, ActivityEdge& activityEdge, __attribute__((unused)) EmitterData& data) {
     emitSingleton(emitter, activityEdge, "target", &ActivityEdge::getTarget);
     emitSingleton(emitter, activityEdge, "source", &ActivityEdge::getSource);
     emitSingleton(emitter, activityEdge, "guard", &ActivityEdge::getGuard);
@@ -1323,13 +1323,13 @@ void emitActivityEdgeFeatures(YAML::Emitter& emitter, ActivityEdge& activityEdge
     emitSet<ActivityPartition>(emitter, activityEdge, "inPartitions", &ActivityEdge::getInPartitions);
 }
 
-void emitActivityNodeFeatures(YAML::Emitter& emitter, ActivityNode& activityNode, EmitterData& data) {
+void emitActivityNodeFeatures(YAML::Emitter& emitter, ActivityNode& activityNode, __attribute__((unused)) EmitterData& data) {
     emitSet<ActivityEdge>(emitter, activityNode, "incoming", &ActivityNode::getIncoming);
     emitSet<ActivityEdge>(emitter, activityNode, "outgoing", &ActivityNode::getOutgoing);
     emitSet<ActivityPartition>(emitter, activityNode, "inPartitions", &ActivityNode::getInPartitions);
 }
 
-void emitActivityParameterNodeFeatures(YAML::Emitter& emitter, ActivityParameterNode& activityParameterNode, EmitterData& data) {
+void emitActivityParameterNodeFeatures(YAML::Emitter& emitter, ActivityParameterNode& activityParameterNode, __attribute__((unused)) EmitterData& data) {
     emitSingleton(emitter, activityParameterNode, "parameter", &ActivityParameterNode::getParameter);
 }
 
@@ -1388,7 +1388,7 @@ void emitCallActionFeatures(YAML::Emitter& emitter, CallAction& callAction, Emit
     emitCompositeSet<OutputPin>(emitter, callAction, data, "results", &CallAction::getResults);
 }
 
-void emitCallBehaviorActionFeatures(YAML::Emitter& emitter, CallBehaviorAction& callBehaviorAction, EmitterData& data) {
+void emitCallBehaviorActionFeatures(YAML::Emitter& emitter, CallBehaviorAction& callBehaviorAction, __attribute__((unused)) EmitterData& data) {
     emitSingleton(emitter, callBehaviorAction, "behavior", &CallBehaviorAction::getBehavior);
 }
 
@@ -1404,11 +1404,11 @@ void emitClassifierFeatures(YAML::Emitter& emitter, Classifier& classifier, Emit
     emitSet<GeneralizationSet>(emitter, classifier, "powertypeExtent", &Classifier::getPowerTypeExtent);
 }
 
-void emitClassifierTemplateParameter(YAML::Emitter& emitter, ClassifierTemplateParameter& classifierTemplateParameter, EmitterData& data) {
+void emitClassifierTemplateParameter(YAML::Emitter& emitter, ClassifierTemplateParameter& classifierTemplateParameter, __attribute__((unused)) EmitterData& data) {
     emitSet<Classifier>(emitter, classifierTemplateParameter, "constrainingClassifiers", &ClassifierTemplateParameter::getConstrainingClassifiers);
 }
 
-void emitCommentFeatures(YAML::Emitter& emitter, Comment& comment, EmitterData& data) {
+void emitCommentFeatures(YAML::Emitter& emitter, Comment& comment, __attribute__((unused)) EmitterData& data) {
     emitSet<Element>(emitter, comment, "annotatedElements", &Comment::getAnnotatedElements);
     if (!comment.getBody().empty()) {
         emitter << "body" << YAML::Value << comment.getBody();
@@ -1422,7 +1422,7 @@ void emitConnectorFeatures(YAML::Emitter& emitter, Connector& connector, Emitter
     emitSingleton<Association>(emitter, connector, "type", &Connector::getType);
 }
 
-void emitConnectorEndFeatures(YAML::Emitter& emitter, ConnectorEnd& connectorEnd, EmitterData& data) {
+void emitConnectorEndFeatures(YAML::Emitter& emitter, ConnectorEnd& connectorEnd, __attribute__((unused)) EmitterData& data) {
     emitSingleton<ConnectableElement>(emitter, connectorEnd, "role", &ConnectorEnd::getRole);
 }
 
@@ -1436,17 +1436,17 @@ void emitDataTypeFeatures(YAML::Emitter& emitter, DataType& dataType, EmitterDat
     emitCompositeSet<Operation>(emitter, dataType, data, "ownedOperations", &DataType::getOwnedOperations);
 }
 
-void emitDecisionNodeFeatures(YAML::Emitter& emitter, DecisionNode& decisionNode, EmitterData& data) {
+void emitDecisionNodeFeatures(YAML::Emitter& emitter, DecisionNode& decisionNode, __attribute__((unused)) EmitterData& data) {
     emitSingleton(emitter, decisionNode, "decisionInput", &DecisionNode::getDecisionInput);
     emitSingleton(emitter, decisionNode, "decisionInputFlow", &DecisionNode::getDecisionInputFlow);
 }
 
-void emitDependencyFeatures(YAML::Emitter& emitter, Dependency& dependency, EmitterData& data) {
+void emitDependencyFeatures(YAML::Emitter& emitter, Dependency& dependency, __attribute__((unused)) EmitterData& data) {
     emitSet<NamedElement>(emitter, dependency, "suppliers", &Dependency::getSuppliers);
     emitSet<NamedElement>(emitter, dependency, "clients", &Dependency::getClients);
 }
 
-void emitDeploymentFeatures(YAML::Emitter& emitter, Deployment& deployment, EmitterData& data) {
+void emitDeploymentFeatures(YAML::Emitter& emitter, Deployment& deployment, __attribute__((unused)) EmitterData& data) {
     emitSet<DeployedArtifact>(emitter, deployment, "deployedArtifacts", &Deployment::getDeployedArtifacts);
 }
 
@@ -1481,7 +1481,7 @@ void emitVisibilityKind(YAML::Emitter& emitter, T& elWithVisibility) {
     }
 }
 
-void emitElementImportFeatures(YAML::Emitter& emitter, ElementImport& elementImport, EmitterData& data) {
+void emitElementImportFeatures(YAML::Emitter& emitter, ElementImport& elementImport, __attribute__((unused)) EmitterData& data) {
     emitSingleton<PackageableElement>(emitter, elementImport, "importedElement", &ElementImport::getImportedElement);
     if (!elementImport.getAlias().empty()) {
         emitter << "alias" << YAML::Value << elementImport.getAlias();
@@ -1493,7 +1493,7 @@ void emitEnumerationFeatures(YAML::Emitter& emitter, Enumeration& enumeration, E
     emitCompositeSet<EnumerationLiteral>(emitter, enumeration, data, "ownedLiterals", &Enumeration::getOwnedLiterals);
 }
 
-void emitExceptionHandlerFeatures(YAML::Emitter& emitter, ExceptionHandler& exceptionHandler, EmitterData& data) {
+void emitExceptionHandlerFeatures(YAML::Emitter& emitter, ExceptionHandler& exceptionHandler, __attribute__((unused)) EmitterData& data) {
     emitSingleton(emitter, exceptionHandler, "handlerBody", &ExceptionHandler::getHandlerBody);
     emitSingleton(emitter, exceptionHandler, "exceptionInput", &ExceptionHandler::getExceptionInput);
     emitSet<Classifier>(emitter, exceptionHandler, "exceptionTypes", &ExceptionHandler::getExceptionTypes);
@@ -1518,18 +1518,18 @@ void emitExtensionFeatures(YAML::Emitter& emitter, Extension& extension, Emitter
     // }
 }
 
-void emitFeatureFeatures(YAML::Emitter& emitter, Feature& feature, EmitterData& data) {
+void emitFeatureFeatures(YAML::Emitter& emitter, Feature& feature, __attribute__((unused)) EmitterData& data) {
     if (feature.isStatic()) {
         emitter << "isStatic" << YAML::Value << true;
     }
 }
 
-void emitGeneralizationFeatures(YAML::Emitter& emitter, Generalization& generalization, EmitterData& data) {
+void emitGeneralizationFeatures(YAML::Emitter& emitter, Generalization& generalization, __attribute__((unused)) EmitterData& data) {
     emitSingleton<Classifier>(emitter, generalization, "general", &Generalization::getGeneral);
     emitSet<GeneralizationSet>(emitter, generalization, "generalizationSets", &Generalization::getGeneralizationSets);
 }
 
-void emitGeneralizationSetFeatures(YAML::Emitter& emitter, GeneralizationSet& generalizationSet, EmitterData& data) {
+void emitGeneralizationSetFeatures(YAML::Emitter& emitter, GeneralizationSet& generalizationSet, __attribute__((unused)) EmitterData& data) {
     emitter << "isCovering" << YAML::Value << generalizationSet.isCovering();
     emitter << "isDisjoint" << YAML::Value << generalizationSet.isDisjoint();
     emitSingleton<Classifier>(emitter, generalizationSet, "powertype", &GeneralizationSet::getPowerType);
@@ -1542,7 +1542,7 @@ void emitInstanceSpecificationFeatures(YAML::Emitter& emitter, InstanceSpecifica
     emitSet<Classifier>(emitter, specification, "classifiers", &InstanceSpecification::getClassifiers);
 }
 
-void emitInstanceValueFeatures(YAML::Emitter& emitter, InstanceValue& instanceValue, EmitterData& data) {
+void emitInstanceValueFeatures(YAML::Emitter& emitter, InstanceValue& instanceValue, __attribute__((unused)) EmitterData& data) {
     emitSingleton<InstanceSpecification>(emitter, instanceValue, "instance", &InstanceValue::getInstance);
 }
 
@@ -1554,7 +1554,7 @@ void emitInterfaceFeatures(YAML::Emitter& emitter, Interface& interface, Emitter
     // emitSet<Interface>(emitter, interface, data, "redefinedInterfaces", &Interface::getRedefinedInterfaces);
 }
 
-void emitInterfaceRealizationFeatures(YAML::Emitter& emitter, InterfaceRealization& interfaceRealization, EmitterData& data) {
+void emitInterfaceRealizationFeatures(YAML::Emitter& emitter, InterfaceRealization& interfaceRealization, __attribute__((unused)) EmitterData& data) {
     // emitSet<NamedElement, InterfaceRealization>(emitter, interfaceRealization, "clients", &Dependency::getClients, &InterfaceRealization::getImplementingClassifier);
     // emitSet<NamedElement, InterfaceRealization>(emitter, interfaceRealization, "suppliers", &Dependency::getSuppliers, &InterfaceRealization::getContract);
     emitSingleton<Interface>(emitter, interfaceRealization, "contract", &InterfaceRealization::getContract);
@@ -1569,25 +1569,25 @@ void emitJoinNodeFeatures(YAML::Emitter& emitter, JoinNode& joinNode, EmitterDat
     emitOwnedSingleton(emitter, joinNode, data, "joinSpec", &JoinNode::getJoinSpec);
 }
 
-void emitLiteralBoolFeatures(YAML::Emitter& emitter, LiteralBool& literalBool, EmitterData& data) {
+void emitLiteralBoolFeatures(YAML::Emitter& emitter, LiteralBool& literalBool, __attribute__((unused)) EmitterData& data) {
     emitter << "value" << YAML::Value << literalBool.getValue();
 }
 
-void emitLiteralIntFeatures(YAML::Emitter& emitter, LiteralInt& literalInt, EmitterData& data) {
+void emitLiteralIntFeatures(YAML::Emitter& emitter, LiteralInt& literalInt, __attribute__((unused)) EmitterData& data) {
     emitter << "value" << YAML::Value << literalInt.getValue();
 }
 
-void emitLiteralRealFeatures(YAML::Emitter& emitter, LiteralReal& literalReal, EmitterData& data) {
+void emitLiteralRealFeatures(YAML::Emitter& emitter, LiteralReal& literalReal, __attribute__((unused)) EmitterData& data) {
     emitter << "value" << YAML::Value << literalReal.getValue();
 }
 
-void emitLiteralStringFeatures(YAML::Emitter& emitter, LiteralString& literalString, EmitterData& data) {
+void emitLiteralStringFeatures(YAML::Emitter& emitter, LiteralString& literalString, __attribute__((unused)) EmitterData& data) {
     if (!literalString.getValue().empty()) {
         emitter << "value" << YAML::Value << literalString.getValue();
     }
 }
 
-void emitLiteralUnlimitedNaturalFeatures(YAML::Emitter& emitter, LiteralUnlimitedNatural& literalUnlimitedNatural, EmitterData& data) {
+void emitLiteralUnlimitedNaturalFeatures(YAML::Emitter& emitter, LiteralUnlimitedNatural& literalUnlimitedNatural, __attribute__((unused)) EmitterData& data) {
     emitter << "value" << YAML::Value;
     if (literalUnlimitedNatural.isInfinite()) {
         emitter << "*";
@@ -1596,11 +1596,11 @@ void emitLiteralUnlimitedNaturalFeatures(YAML::Emitter& emitter, LiteralUnlimite
     }
 }
 
-void emitManifestationFeatures(YAML::Emitter& emitter, Manifestation& manifestation, EmitterData& data) {
+void emitManifestationFeatures(YAML::Emitter& emitter, Manifestation& manifestation, __attribute__((unused)) EmitterData& data) {
     emitSingleton(emitter, manifestation, "utilizedElement", &Manifestation::getUtilizedElement);
 }
 
-void emitModelFeatures(YAML::Emitter& emitter, Model& model, EmitterData& data) {
+void emitModelFeatures(YAML::Emitter& emitter, Model& model, __attribute__((unused)) EmitterData& data) {
     if (!model.getViewpoint().empty()) {
         emitter << "viewpoint" << YAML::Value << model.getViewpoint();
     }
@@ -1625,7 +1625,7 @@ void emitMultiplicityElementFeatures(YAML::Emitter& emitter, MultiplicityElement
     }
 }
 
-void emitNamedElementFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterData& data) {
+void emitNamedElementFeatures(YAML::Emitter& emitter, NamedElement& el, __attribute__((unused)) EmitterData& data) {
     if (!el.getName().empty()) {
         emitter << "name" << YAML::Value << el.getName();
     }
@@ -1633,7 +1633,7 @@ void emitNamedElementFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterD
     emitSet<Dependency>(emitter, el, "clientDependencies", &NamedElement::getClientDependencies);
 }
 
-void emitNamedElementDeploymentTargetFeatures(YAML::Emitter& emitter, NamedElement& el, EmitterData& data) {
+void emitNamedElementDeploymentTargetFeatures(YAML::Emitter& emitter, NamedElement& el, __attribute__((unused)) EmitterData& data) {
     if (!el.getName().empty()) {
         emitter << "name" << YAML::Value << el.getName();
     }
@@ -1652,7 +1652,7 @@ void emitNamespaceFeatures(YAML::Emitter& emitter, Namespace& nmspc, EmitterData
     emitCompositeSet<Constraint>(emitter, nmspc, data, "ownedRules", &Namespace::getOwnedRules);
 }
 
-void emitObjectFlowFeatures(YAML::Emitter& emitter, ObjectFlow& objectFlow, EmitterData& data) {
+void emitObjectFlowFeatures(YAML::Emitter& emitter, ObjectFlow& objectFlow, __attribute__((unused)) EmitterData& data) {
     emitSingleton(emitter, objectFlow, "transformation", &ObjectFlow::getTransformation);
     emitSingleton(emitter, objectFlow, "selection", &ObjectFlow::getSelection);
 }
@@ -1702,12 +1702,12 @@ void emitPackageFeatures(YAML::Emitter& emitter, Package& package, EmitterData& 
     emitCompositeSet<ProfileApplication>(emitter, package, data, "profileApplications", &Package::getProfileApplications);
 }
 
-void emitPackageImportFeatures(YAML::Emitter& emitter, PackageImport& packageImport, EmitterData& data) {
+void emitPackageImportFeatures(YAML::Emitter& emitter, PackageImport& packageImport, __attribute__((unused)) EmitterData& data) {
     emitSingleton<Package>(emitter, packageImport, "importedPackage", &PackageImport::getImportedPackage);
     emitVisibilityKind(emitter, packageImport);
 }
 
-void emitPackageMergeFeatures(YAML::Emitter& emitter, PackageMerge& packageMerge, EmitterData& data) {
+void emitPackageMergeFeatures(YAML::Emitter& emitter, PackageMerge& packageMerge, __attribute__((unused)) EmitterData& data) {
     emitSingleton<Package>(emitter, packageMerge, "mergedPackage", &PackageMerge::getMergedPackage);
 }
 
@@ -1729,6 +1729,7 @@ void emitParameterFeatures(YAML::Emitter& emitter, Parameter& parameter, Emitter
             }
             case ParameterDirectionKind::RETURN : {
                 emitter << "return";
+                break;
             }
             default : {
                 throw SerializationError(" bad direction");
@@ -1745,7 +1746,7 @@ void emitParameterFeatures(YAML::Emitter& emitter, Parameter& parameter, Emitter
     emitSet<ParameterSet>(emitter, parameter, "parameterSets", &Parameter::getParameterSets);
 }
 
-void emitParameterableElementFeatures(YAML::Emitter& emitter, ParameterableElement& parameterableElement, EmitterData& data) {
+void emitParameterableElementFeatures(YAML::Emitter& emitter, ParameterableElement& parameterableElement, __attribute__((unused)) EmitterData& data) {
     if (!parameterableElement.getOwningTemplateParameter()) {
         emitSingleton<TemplateParameter>(emitter, parameterableElement, "templateParameter", &ParameterableElement::getTemplateParameter);
     }
@@ -1756,13 +1757,13 @@ void emitParameterSetFeatures(YAML::Emitter& emitter, ParameterSet& parameterSet
     emitCompositeSet<Constraint>(emitter, parameterSet, data, "conditions", &ParameterSet::getConditions);
 }
 
-void emitPinFeatures(YAML::Emitter& emitter, Pin& pin, EmitterData& data) {
+void emitPinFeatures(YAML::Emitter& emitter, Pin& pin, __attribute__((unused)) EmitterData& data) {
     if (pin.isControl()) {
         emitter << "isControl" << YAML::Value << true;
     }
 }
 
-void emitPortFeatures(YAML::Emitter& emitter, Port& port, EmitterData& data) {
+void emitPortFeatures(YAML::Emitter& emitter, Port& port, __attribute__((unused)) EmitterData& data) {
     if (port.isBehavior()) {
         emitter << "isBehavior" << YAML::Value << true;
     }
@@ -1774,7 +1775,7 @@ void emitPortFeatures(YAML::Emitter& emitter, Port& port, EmitterData& data) {
     }
 }
 
-void emitProfileApplicationFeatures(YAML::Emitter& emitter, ProfileApplication& profileApplication, EmitterData& data) {
+void emitProfileApplicationFeatures(YAML::Emitter& emitter, ProfileApplication& profileApplication, __attribute__((unused)) EmitterData& data) {
     emitSingleton<Profile>(emitter, profileApplication, "appliedProfile", &ProfileApplication::getAppliedProfile);
 }
 
@@ -1802,11 +1803,11 @@ void emitPropertyFeatures(YAML::Emitter& emitter, Property& property, EmitterDat
     emitSet<Property>(emitter, property, "redefinedProperties", &Property::getRedefinedProperties);
 }
 
-void emitReceptionFeatures(YAML::Emitter& emitter, Reception& reception, EmitterData& data) {
+void emitReceptionFeatures(YAML::Emitter& emitter, Reception& reception, __attribute__((unused)) EmitterData& data) {
     emitSingleton<Signal>(emitter, reception, "signal", &Reception::getSignal);
 }
 
-void emitRedefinableTemplateSignatureFeatures(YAML::Emitter& emitter, RedefinableTemplateSignature& redefinableTemplateSignature, EmitterData& data) {
+void emitRedefinableTemplateSignatureFeatures(YAML::Emitter& emitter, RedefinableTemplateSignature& redefinableTemplateSignature, __attribute__((unused)) EmitterData& data) {
     emitSet<RedefinableTemplateSignature>(emitter, redefinableTemplateSignature, "extendedSignatures", &RedefinableTemplateSignature::getExtendedSignatures);
 }
 
@@ -1819,7 +1820,7 @@ void emitSlotFeatures(YAML::Emitter& emitter, Slot& slot, EmitterData& data) {
     emitSingleton<StructuralFeature>(emitter, slot, "definingFeature", &Slot::getDefiningFeature);
 }
 
-void emitStructuralFeatureFeatures(YAML::Emitter& emitter, StructuralFeature& structuralFeature, EmitterData& data) {
+void emitStructuralFeatureFeatures(YAML::Emitter& emitter, StructuralFeature& structuralFeature, __attribute__((unused)) EmitterData& data) {
     if (structuralFeature.isReadOnly()) {
         emitter << "isReadOnly" << YAML::Value << true;
     }
@@ -1860,7 +1861,7 @@ void emitTemplateSignatureFeatures(YAML::Emitter& emitter, TemplateSignature& si
     emitSet<TemplateParameter>(emitter, signature, "parameters", &TemplateSignature::getParameters, &TemplateSignature::getOwnedParameters);
 }
 
-void emitTypedElementFeatures(YAML::Emitter& emitter, TypedElement& typedElement, EmitterData& data) {
+void emitTypedElementFeatures(YAML::Emitter& emitter, TypedElement& typedElement, __attribute__((unused)) EmitterData& data) {
     emitSingleton<Type>(emitter, typedElement, "type", &TypedElement::getType);
 }
 
@@ -1868,59 +1869,59 @@ void emitValuePinFeatures(YAML::Emitter& emitter, ValuePin& valuePin, EmitterDat
     emitOwnedSingleton(emitter, valuePin, data, "value", &ValuePin::getValue);
 }
 
-bool emitActivityEdgeScope(YAML::Emitter& emitter, ActivityEdge& activityEdge, EmitterData& data) {
+bool emitActivityEdgeScope(YAML::Emitter& emitter, ActivityEdge& activityEdge, __attribute__((unused)) EmitterData& data) {
     return emitSingleton(emitter, activityEdge, "activity", &ActivityEdge::getActivity);
 }
 
-bool emitActivityNodeScope(YAML::Emitter& emitter, ActivityNode& activityNode, EmitterData& data) {
+bool emitActivityNodeScope(YAML::Emitter& emitter, ActivityNode& activityNode, __attribute__((unused)) EmitterData& data) {
     return emitSingleton(emitter, activityNode, "activity", &ActivityNode::getActivity);
 }
 
-bool emitActivityGroupScope(YAML::Emitter& emitter, ActivityGroup& activityGroup, EmitterData& data) {
+bool emitActivityGroupScope(YAML::Emitter& emitter, ActivityGroup& activityGroup, __attribute__((unused)) EmitterData& data) {
     return emitSingleton(emitter, activityGroup, "inActivity", &ActivityGroup::getInActivity);
 }
 
-bool emitActivityPartitionScope(YAML::Emitter& emitter, ActivityPartition& activityPartition, EmitterData& data) {
+bool emitActivityPartitionScope(YAML::Emitter& emitter, ActivityPartition& activityPartition, __attribute__((unused)) EmitterData& data) {
     return emitSingleton(emitter, activityPartition, "superPartition", &ActivityPartition::getSuperPartition);
 }
 
-bool emitConstraintScope(YAML::Emitter& emitter, Constraint& constraint, EmitterData& data) {
+bool emitConstraintScope(YAML::Emitter& emitter, Constraint& constraint, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<Namespace>(emitter, constraint, "context", &Constraint::getContext);
 }
 
-bool emitDeploymentScope(YAML::Emitter& emitter, Deployment& deployment, EmitterData& data) {
+bool emitDeploymentScope(YAML::Emitter& emitter, Deployment& deployment, __attribute__((unused)) EmitterData& data) {
     return emitSingleton(emitter, deployment, "location", &Deployment::getLocation);
 }
 
-bool emitElementScope(YAML::Emitter& emitter, Element& el, EmitterData& data) {
+bool emitElementScope(YAML::Emitter& emitter, Element& el, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<Element>(emitter, el, "owner", &Element::getOwner);
 }
 
-bool emitElementImportScope(YAML::Emitter& emitter, ElementImport& elementImport, EmitterData& data) {
+bool emitElementImportScope(YAML::Emitter& emitter, ElementImport& elementImport, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<Namespace>(emitter, elementImport, "importingNamespace", &ElementImport::getImportingNamespace);
 }
 
-bool emitEnumerationLiteralScope(YAML::Emitter& emitter, EnumerationLiteral& literal, EmitterData& data) {
+bool emitEnumerationLiteralScope(YAML::Emitter& emitter, EnumerationLiteral& literal, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<Enumeration>(emitter, literal, "enumeration", &EnumerationLiteral::getEnumeration);
 }
 
-bool emitExceptionHandlerScope(YAML::Emitter& emitter, ExceptionHandler& exceptionHandler, EmitterData& data) {
+bool emitExceptionHandlerScope(YAML::Emitter& emitter, ExceptionHandler& exceptionHandler, __attribute__((unused)) EmitterData& data) {
     return emitSingleton(emitter, exceptionHandler, "protectedNode", &ExceptionHandler::getProtectedNode);
 }
 
-bool emitGeneralizationScope(YAML::Emitter& emitter, Generalization& generalization, EmitterData& data) {
+bool emitGeneralizationScope(YAML::Emitter& emitter, Generalization& generalization, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<Classifier>(emitter, generalization, "specific", &Generalization::getSpecific);
 }
 
-bool emitInterfaceRealizationScope(YAML::Emitter& emitter, InterfaceRealization& interfaceRealization, EmitterData& data) {
+bool emitInterfaceRealizationScope(YAML::Emitter& emitter, InterfaceRealization& interfaceRealization, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<BehavioredClassifier>(emitter, interfaceRealization, "implementingClassifier", &InterfaceRealization::getImplementingClassifier);
 }
 
-bool emitNamedElementScope(YAML::Emitter& emitter, NamedElement& namedElement, EmitterData& data) {
+bool emitNamedElementScope(YAML::Emitter& emitter, NamedElement& namedElement, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<Namespace>(emitter, namedElement, "namespace", &NamedElement::getNamespace);
 }
 
-bool emitOperationScope(YAML::Emitter& emitter, Operation& operation, EmitterData& data) {
+bool emitOperationScope(YAML::Emitter& emitter, Operation& operation, __attribute__((unused)) EmitterData& data) {
     if (emitSingleton<Class>(emitter, operation, "class", &Operation::getClass)) {
         return true;
     } else if (emitSingleton<DataType>(emitter, operation, "dataType", &Operation::getDataType)) {
@@ -1931,31 +1932,31 @@ bool emitOperationScope(YAML::Emitter& emitter, Operation& operation, EmitterDat
     return false;
 }
 
-bool emitPackageableElementScope(YAML::Emitter& emitter, PackageableElement& el, EmitterData& data) {
+bool emitPackageableElementScope(YAML::Emitter& emitter, PackageableElement& el, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<Package>(emitter, el, "owningPackage", &PackageableElement::getOwningPackage);
 }
 
-bool emitPackageImportScope(YAML::Emitter& emitter, PackageImport& packageImport, EmitterData& data) {
+bool emitPackageImportScope(YAML::Emitter& emitter, PackageImport& packageImport, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<Namespace>(emitter, packageImport, "importingNamespace", &PackageImport::getImportingNamespace);
 }
 
-bool emitPackageMergeScope(YAML::Emitter& emitter, PackageMerge& packageMerge, EmitterData& data) {
+bool emitPackageMergeScope(YAML::Emitter& emitter, PackageMerge& packageMerge, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<Package>(emitter, packageMerge, "receivingPackage", &PackageMerge::getReceivingPackage);
 }
 
-bool emitParameterScope(YAML::Emitter& emitter, Parameter& parameter, EmitterData& data) {
+bool emitParameterScope(YAML::Emitter& emitter, Parameter& parameter, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<Operation>(emitter, parameter, "operation", &Parameter::getOperation);
 }
 
-bool emitParameterableElementScope(YAML::Emitter& emitter, ParameterableElement& el, EmitterData& data) {
+bool emitParameterableElementScope(YAML::Emitter& emitter, ParameterableElement& el, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<TemplateParameter>(emitter, el, "owningTemplateParameter", &ParameterableElement::getOwningTemplateParameter);
 }
 
-bool emitProfileApplicationScope(YAML::Emitter& emitter, ProfileApplication& profileApplication, EmitterData& data) {
+bool emitProfileApplicationScope(YAML::Emitter& emitter, ProfileApplication& profileApplication, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<Package>(emitter, profileApplication, "applyingPackage", &ProfileApplication::getApplyingPackage);
 }
 
-bool emitPropertyScope(YAML::Emitter& emitter, Property& property, EmitterData& data) {
+bool emitPropertyScope(YAML::Emitter& emitter, Property& property, __attribute__((unused)) EmitterData& data) {
     if (emitSingleton<Class>(emitter, property, "class", &Property::getClass)) {
         return true;
     } else if (emitSingleton<DataType>(emitter, property, "dataType", &Property::getDataType)) {
@@ -1968,27 +1969,27 @@ bool emitPropertyScope(YAML::Emitter& emitter, Property& property, EmitterData& 
     return false;
 }
 
-bool emitRedefinableTemplateSignatureScope(YAML::Emitter& emitter, RedefinableTemplateSignature& redefinableTemplateSignature, EmitterData& data) {
+bool emitRedefinableTemplateSignatureScope(YAML::Emitter& emitter, RedefinableTemplateSignature& redefinableTemplateSignature, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<Classifier>(emitter, redefinableTemplateSignature, "classifier", &RedefinableTemplateSignature::getClassifier);
 }
 
-bool emitSlotScope(YAML::Emitter& emitter, Slot& slot, EmitterData& data) {
+bool emitSlotScope(YAML::Emitter& emitter, Slot& slot, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<InstanceSpecification>(emitter, slot, "owningInstance", &Slot::getOwningInstance);
 }
 
-bool emitTemplateBindingScope(YAML::Emitter& emitter, TemplateBinding& templateBinding, EmitterData& data) {
+bool emitTemplateBindingScope(YAML::Emitter& emitter, TemplateBinding& templateBinding, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<TemplateableElement>(emitter, templateBinding, "boundElement", &TemplateBinding::getBoundElement);
 }
 
-bool emitTemplateParameterScope(YAML::Emitter& emitter, TemplateParameter& templateParameter, EmitterData& data) {
+bool emitTemplateParameterScope(YAML::Emitter& emitter, TemplateParameter& templateParameter, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<TemplateSignature>(emitter, templateParameter, "signature", &TemplateParameter::getSignature);
 }
 
-bool emitTemplateParameterSubstitutionScope(YAML::Emitter& emitter, TemplateParameterSubstitution& templateParameterSubstitution, EmitterData& data) {
+bool emitTemplateParameterSubstitutionScope(YAML::Emitter& emitter, TemplateParameterSubstitution& templateParameterSubstitution, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<TemplateBinding>(emitter, templateParameterSubstitution, "templateBinding", &TemplateParameterSubstitution::getTemplateBinding);
 }
 
-bool emitTemplateSignatureScope(YAML::Emitter& emitter, TemplateSignature& signature, EmitterData& data) {
+bool emitTemplateSignatureScope(YAML::Emitter& emitter, TemplateSignature& signature, __attribute__((unused)) EmitterData& data) {
     return emitSingleton<TemplateableElement>(emitter, signature, "template", &TemplateSignature::getTemplate);
 }
     

@@ -13,10 +13,10 @@ using namespace UML;
 void Connector::SetTypePolicy::apply(Association& el, Connector& me) {
     for (auto& end : me.getEnds()) {
         if (end.getRole() && end.getRole()->getType().id() != ID::nullID()) {
-            SetLock endLck = me.lockEl(end);
+            // __attribute__((unused)) SetLock endLck = me.lockEl(end);
             for (auto& assocEnd : el.getMemberEnds()) {
                 if (assocEnd.getType().id() == end.getRole()->getType().id()) {
-                    SetLock assocEndLock = me.lockEl(assocEnd);
+                    // __attribute__((unused)) SetLock assocEndLock = me.lockEl(assocEnd);
                     end.m_definingEnd.innerAdd(assocEnd);
                     break;
                 }
@@ -34,7 +34,7 @@ void Connector::AddEndPolicy::apply(ConnectorEnd& el, Connector& me) {
         if (el.getRole() && el.getRole()->getType()) {
             for (auto& assocEnd : me.getType()->getMemberEnds()) {
                 if (assocEnd.getType().id() == el.getRole()->getType().id()) {
-                    SetLock assocEndLck = me.lockEl(assocEnd);
+                    // __attribute__((unused)) SetLock assocEndLck = me.lockEl(assocEnd);
                     el.m_definingEnd.innerAdd(assocEnd);
                     break;
                 }

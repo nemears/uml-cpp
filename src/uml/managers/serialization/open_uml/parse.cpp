@@ -115,6 +115,9 @@ bool parseSingleton(YAML::Node node, U& el, ParserData& data, string key, void (
             throw SerializationError("Singleton " + key + " for element type " + Element::elementTypeToString(U::elementType()) + " could not be serialized because it was not a map or scalar " + getLineNumber(node[key]));
         }
         return true;
+    } else if (data.update) {
+        // set to null ID
+        (el.*idMutator)(ID::nullID());
     }
     return false;
 }
@@ -1475,7 +1478,7 @@ void parseExtensionFeatures(YAML::Node node, Extension& extension, ParserData& d
     // }
 }
 
-void parseFeatureFeatures(YAML::Node node, Feature& feature, ParserData& data) {
+void parseFeatureFeatures(YAML::Node node, Feature& feature, __attribute__((unused)) ParserData& data) {
     parseBoolean(node, feature, "isStatic", &Feature::setStatic);
 }
 
@@ -1522,23 +1525,23 @@ void parseJoinNodeFeatures(YAML::Node node, JoinNode& joinNode, ParserData& data
     parseSingleton(node, joinNode, data, "joinSpec", &JoinNode::setJoinSpec, &JoinNode::setJoinSpec);
 }
 
-void parseLiteralBoolFeatures(YAML::Node node, LiteralBool& literalBool, ParserData& data) {
+void parseLiteralBoolFeatures(YAML::Node node, LiteralBool& literalBool, __attribute__((unused)) ParserData& data) {
     parseBoolean(node, literalBool, "value", &LiteralBool::setValue);
 }
 
-void parseLiteralIntegerFeatures(YAML::Node node, LiteralInt& literalInt, ParserData& data) {
+void parseLiteralIntegerFeatures(YAML::Node node, LiteralInt& literalInt, __attribute__((unused)) ParserData& data) {
     parseInt(node, literalInt, "value", &LiteralInt::setValue);
 }
 
-void parseLiteralRealFeatures(YAML::Node node, LiteralReal& literalReal, ParserData& data) {
+void parseLiteralRealFeatures(YAML::Node node, LiteralReal& literalReal, __attribute__((unused)) ParserData& data) {
     parseDouble(node, literalReal, "value", &LiteralReal::setValue);
 }
 
-void parseLiteralStringFeatures(YAML::Node node, LiteralString& literalString, ParserData& data) {
+void parseLiteralStringFeatures(YAML::Node node, LiteralString& literalString, __attribute__((unused)) ParserData& data) {
     parseString(node, literalString, "value", &LiteralString::setValue);
 }
 
-void parseLiteralUnlimitedNaturalFeatures(YAML::Node node, LiteralUnlimitedNatural& literalUnlimitedNatural, ParserData& data) {
+void parseLiteralUnlimitedNaturalFeatures(YAML::Node node, LiteralUnlimitedNatural& literalUnlimitedNatural, __attribute__((unused)) ParserData& data) {
     // special parsing
     if (node["value"]) {
         if (!node["value"].IsScalar()) {
@@ -1557,7 +1560,7 @@ void parseManifestationFeatures(YAML::Node node, Manifestation& manifestation, P
     parseSingleton(node, manifestation, data, "utilizedElement", &Manifestation::setUtilizedElement, &Manifestation::setUtilizedElement);
 }
 
-void parseModelFeatures(YAML::Node node, Model& model, ParserData& data) {
+void parseModelFeatures(YAML::Node node, Model& model, __attribute__((unused)) ParserData& data) {
     parseString(node, model, "viewpoint", &Model::setViewpoint);
 }
 
@@ -1697,11 +1700,11 @@ void parseParameterSetFeatures(YAML::Node node, ParameterSet& parameterSet, Pars
     parseSet<Constraint>(node, parameterSet, data, "conditions", &ParameterSet::getConditions);
 }
 
-void parsePinFeatures(YAML::Node node, Pin& pin, ParserData& data) {
+void parsePinFeatures(YAML::Node node, Pin& pin, __attribute__((unused)) ParserData& data) {
     parseBoolean(node, pin, "isControl", &Pin::setIsControl);
 }
 
-void parsePortFeatures(YAML::Node node, Port& port, ParserData& data) {
+void parsePortFeatures(YAML::Node node, Port& port, __attribute__((unused)) ParserData& data) {
     parseBoolean(node, port, "isBehavior", &Port::setIsBehavior);
     parseBoolean(node, port, "isConjugated", &Port::setIsConjugated);
     parseBoolean(node, port, "isService", &Port::setIsService);
@@ -1749,7 +1752,7 @@ void parseSlotFeatures(YAML::Node node, Slot& slot, ParserData& data) {
     parseSingleton<StructuralFeature>(node, slot, data, "definingFeature", &Slot::setDefiningFeature, &Slot::setDefiningFeature);
 }
 
-void parseStructuralFeatureFeatures(YAML::Node node, StructuralFeature& structuralFeature, ParserData& data) {
+void parseStructuralFeatureFeatures(YAML::Node node, StructuralFeature& structuralFeature, __attribute__((unused)) ParserData& data) {
     parseBoolean(node, structuralFeature, "isReadOnly", &StructuralFeature::setReadOnly);
 }
 
@@ -1847,7 +1850,7 @@ bool parseElementImportScope(YAML::Node node, ElementImport& elementImport, Pars
     return parseSingleton<Namespace>(node, elementImport, data, "importingNamespace", &ElementImport::setImportingNamespace, &ElementImport::setImportingNamespace);
 }
 
-bool parseEnumerationLiteralScope(YAML::Node node, EnumerationLiteral& literal, ParserData& data) {
+bool parseEnumerationLiteralScope(YAML::Node node, EnumerationLiteral& literal, __attribute__((unused)) ParserData& data) {
     if (node["enumeration"]) {
         if (!node["enumeration"].IsScalar()) {
             throw SerializationError("Could not parse enumeration literal's owning eneruation, must be a scalar " + getLineNumber(node["enumeration"]));
@@ -1870,7 +1873,7 @@ bool parseInterfaceRealizationScope(YAML::Node node , InterfaceRealization& inte
     return parseSingleton<BehavioredClassifier>(node, interfaceRealization, data, "implementingClassifier", &InterfaceRealization::setImplementingClassifier, &InterfaceRealization::setImplementingClassifier);
 }
 
-bool parseNamedElementScope(YAML::Node node, NamedElement& namedElement, ParserData& data) {
+bool parseNamedElementScope(YAML::Node node, NamedElement& namedElement, __attribute__((unused)) ParserData& data) {
     if (node["namespace"]) {
         namedElement.setNamespace(ID::fromString(node["namespace"].as<string>()));
         return true;
@@ -1914,17 +1917,16 @@ bool parseProfileApplicationScope(YAML::Node node, ProfileApplication& profileAp
 }
 
 bool parsePropertyScope(YAML::Node node, Property& property, ParserData& data) {
-    if (node["class"] && node["class"].IsScalar()) {
-        property.setClass(ID::fromString(node["class"].as<string>()));
+    if (parseSingleton<Class>(node, property, data, "class", &Property::setClass, &Property::setClass)) {
         return true;
-    } else if (node["dataType"] && node["dataType"].IsScalar()) {
-        property.setDataType(ID::fromString(node["dataType"].as<string>()));
+    }
+    if (parseSingleton<DataType>(node, property, data, "dataType", &Property::setDataType, &Property::setDataType)) {
         return true;
-    } else if (node["interface"] && node["interface"].IsScalar()) {
-        property.setInterface(ID::fromString(node["interface"].as<string>()));
+    }
+    if (parseSingleton<Interface>(node, property, data, "interface", &Property::setInterface, &Property::setInterface)) {
         return true;
-    } else if (node["owningAssociation"]) {
-        property.setOwningAssociation(ID::fromString(node["owningAssociation"].as<string>()));
+    }
+    if (parseSingleton<Association>(node, property, data, "owningAssociation", &Property::setOwningAssociation, &Property::setOwningAssociation)) {
         return true;
     }
     return false;

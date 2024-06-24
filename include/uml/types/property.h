@@ -61,6 +61,7 @@ namespace UML{
             CustomSingleton<Interface, Property> m_interface = CustomSingleton<Interface, Property>(this);
             CustomSet<Property, Property, AddRedefinedPropertyPolicy, RemoveRedefinedPropertyPolicy> m_redefinedProperties = CustomSet<Property, Property, AddRedefinedPropertyPolicy, RemoveRedefinedPropertyPolicy>(this);
             CustomSingleton<Type, Property, SetPropertyTypePolicy, RemovePropertyTypePolicy> m_propertyType = CustomSingleton<Type, Property, SetPropertyTypePolicy, RemovePropertyTypePolicy>(this);
+            CustomSet<Property, Property> m_subsettedProperties = CustomSet<Property, Property>(this);
             void referenceErased(ID id) override;
             void restoreReferences() override;
             TypedSet<ValueSpecification, Property>& getDefaultValueSingleton();
@@ -101,6 +102,7 @@ namespace UML{
             void setInterface(Interface& interface_uml);
             void setInterface(ID id);
             Set<Property, Property>& getRedefinedProperties();
+            Set<Property, Property>& getSubsettedProperties();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PROPERTY;

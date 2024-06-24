@@ -1733,6 +1733,7 @@ void parsePropertyFeatures(YAML::Node node, Property& property, ParserData& data
     parseSingleton<ValueSpecification>(node, property, data, "defaultValue", &Property::setDefaultValue, &Property::setDefaultValue);
     parseSingleton<Association>(node, property, data, "association", &Property::setAssociation, &Property::setAssociation);
     parseSet<Property>(node, property, data, "redefinedProperties", &Property::getRedefinedProperties);
+    parseSet<Property>(node, property, data, "subsettedProperties", &Property::getSubsettedProperties);
 }
 
 void parseReceptionFeatures(YAML::Node node, Reception& reception, ParserData& data) {

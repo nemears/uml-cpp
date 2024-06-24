@@ -17,6 +17,8 @@
               clang
               gnumake
               pkg-config
+              gtest
+              yaml-cpp
 
               # dev dependencies
               websocketpp 

@@ -1801,6 +1801,7 @@ void emitPropertyFeatures(YAML::Emitter& emitter, Property& property, EmitterDat
         emitSingleton<Association>(emitter, property, "association", &Property::getAssociation);
     }
     emitSet<Property>(emitter, property, "redefinedProperties", &Property::getRedefinedProperties);
+    emitSet<Property>(emitter, property, "subsettedProperties", &Property::getSubsettedProperties);
 }
 
 void emitReceptionFeatures(YAML::Emitter& emitter, Reception& reception, __attribute__((unused)) EmitterData& data) {

@@ -267,6 +267,10 @@ Set<Property, Property>& Property::getRedefinedProperties() {
     return m_redefinedProperties;
 }
 
+Set<Property, Property>& Property::getSubsettedProperties() {
+    return m_redefinedProperties;
+}
+
 bool Property::isSubClassOf(ElementType eType) const {
     bool ret = StructuralFeature::isSubClassOf(eType);
 

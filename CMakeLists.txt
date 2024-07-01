@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12.0)
-project(uml-cpp VERSION 0.3.5)
+project(uml-cpp VERSION 0.3.6)
 include(CTest)
 enable_testing()
 

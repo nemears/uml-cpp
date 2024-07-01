@@ -1,7 +1,7 @@
 {
   description = "A flake for building and developing uml-cpp with nix";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-23.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
   outputs = { self, nixpkgs, flake-utils }:
@@ -49,7 +49,7 @@
 
               Name: uml
               Description: uml modeling C++ api
-              Version: 0.3.5
+              Version: 0.3.6
               Libs: -L$out/lib -luml
               Cflags: -I$out/include" > $out/lib/pkgconfig/uml-cpp.pc
 

@@ -689,7 +689,12 @@ namespace UML {
 
             void removeDividerNode(SetNode* dividerNodeToDelete, SetNode* remainingChild) {
                 SetNode* successor = dividerNodeToDelete->m_parent;
+                if (!remainingChild) {
+                    throw SetStateException("Bad input remaining child must not be null!");
+                }
+                
                 remainingChild->m_parent = successor;
+
                 if (successor) {
                     if (successor->m_left == dividerNodeToDelete) {
                         successor->m_left = remainingChild;
@@ -1266,6 +1271,18 @@ namespace UML {
                         }
                         for (auto superset : currSet->m_superSets) {
                             stack.push_front(superset);
+                        }
+                    } else if (currSet->m_root && node) {
+                        if (!currSet->m_root->m_ptr) {
+                            if (currSet->m_root->m_left == oldRoot) {
+                                currSet->m_root->m_left = node;
+                            } else if (currSet->m_root->m_right == oldRoot) {
+                                currSet->m_root->m_right = node;
+                            } else {
+                                // throw SetStateException("Bad state for set! TODO, this may be valid?");
+                            }
+                        } else {
+                            // throw SetStateException("Bad state for set. While setting root, a superset was found to have a non-divider root that is not in the current root of this set! Contact dev!");
                         }
                     }
                 } while (!stack.empty());

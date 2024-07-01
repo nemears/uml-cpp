@@ -1059,3 +1059,16 @@ TEST_F(ClassTest, classOwnedAttributeIteratorTest) {
   ++it;
   ASSERT_EQ(it, clazz->getOwnedAttributes().end());
 }
+
+// Special case 6/30/24
+TEST_F(ClassTest, propretyAndGeneralizationClearTest) {
+  Manager<> m;
+  auto clazz = m.create<Class>();
+  auto generalization = m.create<Generalization>();
+  auto property = m.create<Property>();
+  auto property2 = m.create<Property>();
+  clazz->getGeneralizations().add(generalization);
+  clazz->getOwnedAttributes().add(property);
+  clazz->getOwnedAttributes().add(property2);
+  clazz->getOwnedAttributes().clear();
+}

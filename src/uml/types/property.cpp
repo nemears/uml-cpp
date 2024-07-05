@@ -268,7 +268,7 @@ Set<Property, Property>& Property::getRedefinedProperties() {
 }
 
 Set<Property, Property>& Property::getSubsettedProperties() {
-    return m_redefinedProperties;
+    return m_subsettedProperties;
 }
 
 bool Property::isSubClassOf(ElementType eType) const {

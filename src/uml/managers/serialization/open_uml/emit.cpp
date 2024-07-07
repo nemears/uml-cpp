@@ -1,4 +1,6 @@
 #include "uml/managers/serialization/open_uml/emit.h"
+#include "uml/types/stereotype.h"
+#include <yaml-cpp/emitter.h>
 
 using namespace std;
 
@@ -1222,7 +1224,8 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitClassifierFeatures,
                         emitStructuredClassifierFeatures,
                         emitBehavioredClassifierFeatures,
-                        emitClassFeatures);
+                        emitClassFeatures,
+                        emitStereotypeFeatures);
             break;
         }
         case ElementType::TEMPLATE_BINDING : {
@@ -1819,6 +1822,10 @@ void emitSignalFeatures(YAML::Emitter& emitter, Signal& signal, EmitterData& dat
 void emitSlotFeatures(YAML::Emitter& emitter, Slot& slot, EmitterData& data) {
     emitCompositeSet<ValueSpecification>(emitter, slot, data, "values", &Slot::getValues);
     emitSingleton<StructuralFeature>(emitter, slot, "definingFeature", &Slot::getDefiningFeature);
+}
+
+void emitStereotypeFeatures(YAML::Emitter& emitter, Stereotype& stereotype, __attribute__((unused)) EmitterData& data) {
+    emitSingleton<Profile>(emitter, stereotype, "profile", &Stereotype::getProfile);
 }
 
 void emitStructuralFeatureFeatures(YAML::Emitter& emitter, StructuralFeature& structuralFeature, __attribute__((unused)) EmitterData& data) {

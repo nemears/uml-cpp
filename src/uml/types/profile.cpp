@@ -8,16 +8,10 @@
 using namespace UML;
 
 Profile::Profile() : Element(ElementType::PROFILE) {
-    m_profileOwnedStereotypes.redefines(m_ownedStereotypes);
-    m_profileOwnedStereotypes.opposite(&Stereotype::getProfileSingleton);
 }
 
 Profile::~Profile() {
     
-}
-
-ReadOnlySet<Stereotype, Profile>& Profile::getOwnedStereotypes() {
-    return m_profileOwnedStereotypes;
 }
 
 bool Profile::isSubClassOf(ElementType eType) const {

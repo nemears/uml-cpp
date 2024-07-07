@@ -1,4 +1,5 @@
 #include "uml/managers/serialization/open_uml/parse.h"
+#include "uml/types/stereotype.h"
 
 using namespace std;
 
@@ -969,7 +970,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseClassifierFeatures,
                     parseStructuredClassifierFeatures,
                     parseBehavioredClassifierFeatures,
-                    parseClassFeatures);
+                    parseClassFeatures,
+                    parseStereotypeFeatures);
         parseScope(node, ret->as<Stereotype>(), data, 
                     parsePackageableElementScope,
                     parseParameterableElementScope,
@@ -1751,6 +1753,11 @@ void parseSignalFeatures(YAML::Node node, Signal& signal, ParserData& data) {
 void parseSlotFeatures(YAML::Node node, Slot& slot, ParserData& data) {
     parseSet<ValueSpecification>(node, slot, data, "values", &Slot::getValues);
     parseSingleton<StructuralFeature>(node, slot, data, "definingFeature", &Slot::setDefiningFeature, &Slot::setDefiningFeature);
+}
+
+void parseStereotypeFeatures(YAML::Node node, Stereotype& stereotype, ParserData& data) {
+    // TODO we might not need this but keeping it for now
+
 }
 
 void parseStructuralFeatureFeatures(YAML::Node node, StructuralFeature& structuralFeature, __attribute__((unused)) ParserData& data) {

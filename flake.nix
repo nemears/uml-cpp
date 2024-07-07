@@ -16,6 +16,7 @@
               cmake 
               clang
               gnumake
+              glibc
               pkg-config
               gtest
               yaml-cpp

@@ -39,8 +39,6 @@ void Stereotype::restoreReferences() {
 
 Stereotype::Stereotype() : Element(ElementType::STEREOTYPE) {
     m_stereotypeOwningPackage.redefines(m_owningPackage);
-    m_profile.subsets(m_stereotypeOwningPackage);
-    m_profile.opposite(&Profile::getOwnedStereotypes);
 }
 
 Stereotype::~Stereotype() {

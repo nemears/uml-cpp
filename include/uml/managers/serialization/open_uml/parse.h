@@ -81,6 +81,7 @@ namespace UML {
     void parseRedefinableTemplateSignatureFeatures(YAML::Node node, RedefinableTemplateSignature& redefinableTemplateSignature, ParserData& data);
     void parseSignalFeatures(YAML::Node node, Signal& signal, ParserData& data);
     void parseSlotFeatures(YAML::Node node, Slot& slot, ParserData& data);
+    void  parseStereotypeFeatures(YAML::Node node, Stereotype& stereotype, ParserData& data);
     void parseStructuralFeatureFeatures(YAML::Node node, StructuralFeature& structuralFeature, ParserData& data);
     void parseStructuredClassifierFeatures(YAML::Node node, StructuredClassifier& structuredClassifier, ParserData& data);
     void parseTemplateableElementFeatures(YAML::Node node, TemplateableElement& templateableElement, ParserData& data);

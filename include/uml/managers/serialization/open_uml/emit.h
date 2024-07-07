@@ -1,5 +1,6 @@
 #pragma once
 
+#include "uml/types/stereotype.h"
 #include "yaml-cpp/yaml.h"
 #include "openUmlSerializationPolicy.h"
 #include "uml/uml-stable.h"
@@ -80,6 +81,7 @@ namespace UML {
     void emitRedefinableTemplateSignatureFeatures(YAML::Emitter& emitter, RedefinableTemplateSignature& redefinableTemplateSignature, EmitterData& data);
     void emitSignalFeatures(YAML::Emitter& emitter, Signal& signal, EmitterData& data);
     void emitSlotFeatures(YAML::Emitter& emitter, Slot& slot, EmitterData& data);
+    void emitStereotypeFeatures(YAML::Emitter& emitter, Stereotype& stereotype, EmitterData& data);
     void emitStructuralFeatureFeatures(YAML::Emitter& emitter, StructuralFeature& structuralFeature, EmitterData& data);
     void emitStructuredClassifierFeatures(YAML::Emitter& emitter, StructuredClassifier& structuredClassifier, EmitterData& data);
     void emitTemplateableElementFeatures(YAML::Emitter& emitter, TemplateableElement& templateableElement, EmitterData& data);

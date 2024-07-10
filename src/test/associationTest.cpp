@@ -406,25 +406,25 @@ TEST_F(AssociationTest, emitAssociationTest) {
     pckg.getPackagedElements().add(clazz);
     pckg.getPackagedElements().add(type);
     pckg.getPackagedElements().add(associtaion);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: "zN&UM2AHrXX07rAiNxTmmMwLYI1O"
   packagedElements:
-    - class:
+    - Class:
         id: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
         ownedAttributes:
-          - property:
+          - Property:
               id: FqaulNq6bCe_8J5M0Ff2oCCaQD05
               type: m8K65o0wEqtIznmEPmuXaTph2JJu
               association: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5"
-    - association:
+    - Association:
         id: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5"
         memberEnds:
           - FqaulNq6bCe_8J5M0Ff2oCCaQD05
         navigableOwnedEnds:
-          - property:
+          - Property:
               id: "k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"
               type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
-    - primitiveType:
+    - PrimitiveType:
         id: m8K65o0wEqtIznmEPmuXaTph2JJu)"""";
     std::string generatedEmit;
     EmitterData data;

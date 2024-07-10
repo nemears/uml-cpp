@@ -1,6 +1,6 @@
 ---
-  class:
+  Class:
     ownedAttributes:
-      - property:
+      - Property:
           name: test
 ...

@@ -228,19 +228,19 @@ TEST_F(ValueSpecificationTest, testEmitLiteralUnlimitedNatural) {
     p.getPackagedElements().add(l3);
     p.getPackagedElements().add(ln);
 
-    string expectedEmit = R""""(package:
+    string expectedEmit = R""""(Package:
   id: e_ob7tgbN16Plhj_sTAOVD5ijLrL
   packagedElements:
-    - literalUnlimitedNatural:
+    - LiteralUnlimitedNatural:
         id: "8&K_0aLhvQDM12ZeYg9nPiSrexHo"
         value: 9999
-    - literalUnlimitedNatural:
+    - LiteralUnlimitedNatural:
         id: 7bYUY3yFUBrfPmzKKrV2NJmXuECA
         value: 0
-    - literalUnlimitedNatural:
+    - LiteralUnlimitedNatural:
         id: puJaUTZsLPdGJkJSJtdX51MIA2ch
         value: "*"
-    - literalNull:
+    - LiteralNull:
         id: 4gA4RgL9vKTRYd61D99y1d_Yggj6)"""";
     string generatedEmit;
     EmitterData data;

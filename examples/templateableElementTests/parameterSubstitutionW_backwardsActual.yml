@@ -1,20 +1,20 @@
 ---
-  package:
+  Package:
     packageMerges:
-      - packageMerge:
+      - PackageMerge:
           mergedPackage: Primitive_Types_WZcyDDLemQ97
     packagedElements:
-      - class:
+      - Class:
           id: 2aqU0YRqhzL4nhRkhmK3pmoNZbMe
           ownedTemplateSignature:
-            redefinableTemplateSignature:
+            RedefinableTemplateSignature:
               id: fwxRqHbsLGJ5FwcCaFBAGIP1Kp3x
-      - class:
+      - Class:
           id: Q&emnaGslavgAUccL94d07Lp3hyD
           templateBindings:
-            - templateBinding:
+            - TemplateBinding:
                 signature: fwxRqHbsLGJ5FwcCaFBAGIP1Kp3x
                 parameterSubstitutions:
-                  - templateParameterSubstitution:
+                  - TemplateParameterSubstitution:
                       actual: bool_bzkcabSy3CiFd&HmJOtnVRK
 ...

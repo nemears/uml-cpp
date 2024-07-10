@@ -1,9 +1,9 @@
 ---
-  property:
+  Property:
     name: "test"
     lowerValue: 
-      literalInt:
+      LiteralInt:
         value: 0
     upperValue: 
-      literalInt:
+      LiteralInt:
         value: 1

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12.0)
-project(uml-cpp VERSION 0.3.6)
+project(uml-cpp VERSION 0.4.0)
 include(CTest)
 enable_testing()
 
@@ -97,8 +97,8 @@ add_library(uml SHARED
     src/uml/managers/abstractManager.cpp src/uml/managers/managerNode.cpp
     src/uml/managers/filePersistencePolicy.cpp
     ## serialization
-    src/uml/managers/serialization/open_uml/openUmlSerializationPolicy.cpp
-    src/uml/managers/serialization/open_uml/emit.cpp src/uml/managers/serialization/open_uml/parse.cpp
+    src/uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.cpp
+    src/uml/managers/serialization/uml-cafe/emit.cpp src/uml/managers/serialization/uml-cafe/parse.cpp
 
     # types
     src/uml/types/element.cpp  src/uml/types/namedElement.cpp src/uml/types/namespace.cpp src/uml/types/package.cpp 

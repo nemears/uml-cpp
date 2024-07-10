@@ -1,16 +1,16 @@
 ---
-  class:
+  Class:
     name: two_templates
     ownedOperations:
-      - operation:
+      - Operation:
           ownedTemplateSignature:
-            templateSignature:
+            TemplateSignature:
               ownedParameters:
-                - templateParameter:
+                - TemplateParameter:
                     id: fGtHlUWITxbIKyNFeKCXI4d_3EAc
-      - operation:
+      - Operation:
           ownedTemplateSignature:
-            templateSignature:
+            TemplateSignature:
               parameters:
                 - fGtHlUWITxbIKyNFeKCXI4d_3EAc
 ...

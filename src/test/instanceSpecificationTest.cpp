@@ -236,7 +236,7 @@ TEST_F(InstanceSpecificationTest, simpleInstanceEmitTest) {
     inst.setID("3XvQFHIrqSmU7WAXA7fVzkw1v2U3");
     inst.setName("simple");
     inst.setVisibility(VisibilityKind::PROTECTED);
-    std::string expectedEmit = R""""(instanceSpecification:
+    std::string expectedEmit = R""""(InstanceSpecification:
   id: 3XvQFHIrqSmU7WAXA7fVzkw1v2U3
   name: simple
   visibility: protected)"""";
@@ -257,12 +257,12 @@ TEST_F(InstanceSpecificationTest, simpleSlotTest) {
     Slot& s = *m.create<Slot>();
     s.setID("w6arMVW4Plw0aLOBWLE9_8Xo_UL&");
     inst.getSlots().add(s);
-    std::string expectedEmit = R""""(instanceSpecification:
+    std::string expectedEmit = R""""(InstanceSpecification:
   id: yaogA9yjaFoD_RdGQzRrwe1826Aj
   name: slot
   visibility: protected
   slots:
-    - slot:
+    - Slot:
         id: "w6arMVW4Plw0aLOBWLE9_8Xo_UL&")"""";
     std::string generatedEmit;
     EmitterData data;
@@ -290,14 +290,14 @@ TEST_F(InstanceSpecificationTest, emitSpecificationTest) {
     LiteralString& str = *m.create<LiteralString>();
     inst.setID("fsU5Fw&5REaNv4NCvC0d4qZnXg4C");
     str.setID("nVzJ8mHx1yrRlct0ot34p7uBaVvC");
-    str.setValue("ooga");
+    str.setValue("gato");
     inst.setSpecification(&str);
-    std::string expectedEmit = R""""(instanceSpecification:
+    std::string expectedEmit = R""""(InstanceSpecification:
   id: "fsU5Fw&5REaNv4NCvC0d4qZnXg4C"
   specification:
-    literalString:
+    LiteralString:
       id: nVzJ8mHx1yrRlct0ot34p7uBaVvC
-      value: ooga)"""";
+      value: gato)"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

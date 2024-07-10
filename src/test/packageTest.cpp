@@ -354,7 +354,7 @@ TEST_F(PackageTest, emitVerySimplePackageTest) {
     p.setID("_SljVdCSVuBAkmgXqFcopy8&D9oN");
     p.setName("package");
     p.setVisibility(VisibilityKind::PACKAGE);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: "_SljVdCSVuBAkmgXqFcopy8&D9oN"
   name: package
   visibility: package)"""";
@@ -390,15 +390,15 @@ TEST_F(PackageTest, emitMergedPackageTest) {
     merge.setMergedPackage(&merged);
     pckg.getPackagedElements().add(mergin);
     pckg.getPackagedElements().add(merged);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: la_AO7XKQcEsH1P2LHcSk4ELzoEV
   packagedElements:
-    - package:
+    - Package:
         id: "orUaM2sY9dz&YP83TqfGaHO5SBY4"
-    - package:
+    - Package:
         id: SXE9QBb0rYOmBFbahGIQLhMxlYNq
         packageMerges:
-          - packageMerge:
+          - PackageMerge:
               id: "I7c2Z27FF1w&WX4NHKdfIkbNuhDA"
               mergedPackage: "orUaM2sY9dz&YP83TqfGaHO5SBY4")"""";
     std::string generatedEmit;
@@ -601,27 +601,28 @@ TEST_F(PackageTest, emitProfileTest) {
     profile.getPackagedElements().add(stereotype);
     profile.getPackagedElements().add(extension);
     profile.getPackagedElements().add(metaClass);
-    std::string expectedEmit = R""""(profile:
+    std::string expectedEmit = R""""(Profile:
   id: "83lphS&gucqvJwW&KSzVmTSMMG1z"
   packagedElements:
-    - extension:
+    - Extension:
         id: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"
         memberEnds:
           - "cEoEHKDqYcoIOtYwIqrMbz&WG1G_"
         ownedEnd:
-          extensionEnd:
+          ExtensionEnd:
             id: "t&ZWitKKpMcvG9Dzwh23wSbP1hr5"
             type: 7PJxQhyjuuWylik9y2fgpNDXmMdv
-    - class:
+    - Class:
         id: JHMJw4rDUtZrQUJ1JP1rMynWvEsK
   ownedStereotypes:
-    - stereotype:
+    - Stereotype:
         id: 7PJxQhyjuuWylik9y2fgpNDXmMdv
         ownedAttributes:
-          - property:
+          - Property:
               id: "cEoEHKDqYcoIOtYwIqrMbz&WG1G_"
               type: JHMJw4rDUtZrQUJ1JP1rMynWvEsK
-              association: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ")"""";
+              association: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"
+        profile: "83lphS&gucqvJwW&KSzVmTSMMG1z")"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;
@@ -644,15 +645,15 @@ TEST_F(PackageTest, emitProfileApplication) {
     applying.getProfileApplications().add(application);
     root.getPackagedElements().add(applying);
     root.getPackagedElements().add(profile);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: BW5iaVf_WdBebuIH3yi9beXpG5Yi
   packagedElements:
-    - profile:
+    - Profile:
         id: R12X_VJHWWUKmJS_F8JotXJZzsNB
-    - package:
+    - Package:
         id: "BtO&7RDq4sOe2Cb3hl_bByknWtDU"
         profileApplications:
-          - profileApplication:
+          - ProfileApplication:
               id: QbTzWJmjUCFjrufpPQc9qyeQdK3R
               appliedProfile: R12X_VJHWWUKmJS_F8JotXJZzsNB)"""";
     std::string generatedEmit;
@@ -727,44 +728,45 @@ TEST_F(PackageTest, emitAppliedStereotypeTest) {
     applying.getPackagedElements().add(stereotypedEl);
     root.getPackagedElements().add(applying);
     root.getPackagedElements().add(profile);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: "jswJELYwKd_wleha5klF&GJFcU_0"
   packagedElements:
-    - package:
+    - Package:
         id: "Lf963Dxo5MFIqi9ip7&Nj4l1f1yj"
         packagedElements:
-          - package:
+          - Package:
               id: "wX&KNwgtwFYOQ0B4eIweaaRz&QC1"
               appliedStereotypes:
-                - instanceSpecification:
+                - InstanceSpecification:
                     id: "l3q&INpC6kqcdavsgIMSrSNNpGEt"
                     classifiers:
                       - x5r8XggyW2DI5c3RyAS8r_arWh79
         profileApplications:
-          - profileApplication:
+          - ProfileApplication:
               id: MUiSKR6gArugHOb1RqZtF5_uhflV
               appliedProfile: "I3QrZblFek6tdX&j70kCP8u4QNAh"
-    - profile:
+    - Profile:
         id: "I3QrZblFek6tdX&j70kCP8u4QNAh"
         packagedElements:
-          - extension:
+          - Extension:
               id: "jjf&mHlwFSAjJXsBqng4IlxfYIJh"
               memberEnds:
                 - "cEoEHKDqYcoIOtYwIqrMbz&WG1G_"
               ownedEnd:
-                extensionEnd:
+                ExtensionEnd:
                   id: "FK1SGxJ2lV&5RtbRhiGU9jR0zAsw"
                   type: x5r8XggyW2DI5c3RyAS8r_arWh79
-          - class:
+          - Class:
               id: JHMJw4rDUtZrQUJ1JP1rMynWvEsK
         ownedStereotypes:
-          - stereotype:
+          - Stereotype:
               id: x5r8XggyW2DI5c3RyAS8r_arWh79
               ownedAttributes:
-                - property:
+                - Property:
                     id: "cEoEHKDqYcoIOtYwIqrMbz&WG1G_"
                     type: JHMJw4rDUtZrQUJ1JP1rMynWvEsK
-                    association: "jjf&mHlwFSAjJXsBqng4IlxfYIJh")"""";
+                    association: "jjf&mHlwFSAjJXsBqng4IlxfYIJh"
+              profile: "I3QrZblFek6tdX&j70kCP8u4QNAh")"""";
     std::string generatedEmit;
     EmitterData data;
     data.mode = SerializationMode::WHOLE;

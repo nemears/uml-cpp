@@ -1,7 +1,7 @@
 ---
-  class:
+  Class:
     classifierBehavior:
-      opaqueBehavior:
+      OpaqueBehavior:
         id: XAl&QqW5GrH2xaiAS5Yw9kp_qwE7
         name: test
 ...

@@ -109,16 +109,16 @@ TEST_F(DependencyTest, basicDependencyEmitTest) {
     dependency.setName("test");
     dependency.getClients().add(client);
     dependency.getSuppliers().add(supplier);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: "oT59r8w9_ZlGzo2NFpN&vJgH_4YJ"
   packagedElements:
-    - package:
+    - Package:
         id: "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         clientDependencies:
           - "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
-    - package:
+    - Package:
         id: uONNU0sKPVjLALJuw2pHcNqljgkg
-    - dependency:
+    - Dependency:
         id: "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
         name: test
         suppliers:
@@ -189,32 +189,32 @@ TEST_F(DependencyTest, emitAllDependencySubClassesTest) {
     usage.setName("u");
     usage.getClients().add(client);
     usage.getSuppliers().add(supplier);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: "oT59r8w9_ZlGzo2NFpN&vJgH_4YJ"
   packagedElements:
-    - realization:
+    - Realization:
         id: V5lXdO3DLF2UCpqipGloE976L6QN
         name: r
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
         clients:
           - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
-    - package:
+    - Package:
         id: "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
         clientDependencies:
           - V5lXdO3DLF2UCpqipGloE976L6QN
           - ouZEty1jCLeAk_tZzWBKblwwBdGm
           - "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
-    - package:
+    - Package:
         id: uONNU0sKPVjLALJuw2pHcNqljgkg
-    - usage:
+    - Usage:
         id: ouZEty1jCLeAk_tZzWBKblwwBdGm
         name: u
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
         clients:
           - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
-    - abstraction:
+    - Abstraction:
         id: "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
         name: test
         suppliers:

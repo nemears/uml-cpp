@@ -1,7 +1,6 @@
-#include "uml/managers/serialization/open_uml/openUmlSerializationPolicy.h"
-#include "uml/managers/serialization/open_uml/emit.h"
-#include "uml/managers/serialization/open_uml/parse.h"
-#include "yaml-cpp/yaml.h"
+#include "uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.h"
+#include "uml/managers/serialization/uml-cafe/emit.h"
+#include "uml/managers/serialization/uml-cafe/parse.h"
 
 using namespace std;
 

@@ -1,21 +1,21 @@
 {
-    "package" : {
+    "Package" : {
         "id" : "MhWS1eEMhQaQFwOw3jbAzQEHQDTJ",
         "name" : "JSON_pckg",
         "packagedElements" : [
             {
-                "package" : {
+                "Package" : {
                     "id" : "mv8Uw0Dc1k9KN3xfrFeBptGHds5F",
                     "name" : "JSON_child"
                 }
             },
             {
-                "class" : {
+                "Class" : {
                     "id" : "SJ&eBrh4Hgk47ZfODRBKyQOMKdWL",
                     "name" : "JSON_class",
                     "ownedAttributes" : [
                         {
-                            "property" : {
+                            "Property" : {
                                 "id" : "g_Sfk2gKhIRkpd3tk4ZyxEUYzn&8",
                                 "name" : "JSON_attribute"
                             }

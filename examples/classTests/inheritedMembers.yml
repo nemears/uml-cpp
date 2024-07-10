@@ -1,26 +1,26 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - class:
+      - Class:
           id: B&VGFkRlQAPppBnQy5BQPtWhSrYV
           name: general
           ownedAttributes:
-            - property:
+            - Property:
                 name: prop1
-      - class:
+      - Class:
           name: specific
           generalizations:
-            - generalization:
+            - Generalization:
                 general: B&VGFkRlQAPppBnQy5BQPtWhSrYV
-      - class:
+      - Class:
           id: "&FgUHSqnpwRczACXqRbQ3NbTywkm"
           name: private
           ownedAttributes:
-            - property:
+            - Property:
                 visibility: private
-      - class:
+      - Class:
           id: hWVMp5upOkVsWnkrfl0I6O5bQsbO
           generalizations:
-            - generalization:
+            - Generalization:
                 general: "&FgUHSqnpwRczACXqRbQ3NbTywkm"
 ...

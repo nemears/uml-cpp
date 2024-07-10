@@ -254,6 +254,6 @@ TEST_F(ElementTest, emitJSON_test) {
     data.isJSON = true;
     data.mode = SerializationMode::WHOLE;
     std::string generatedEmit = emit(*p, data);
-    std::string expectedEmit = "{\"package\": {\"id\": \"Wmhz0dIdjUbcWmTn7EL4Zz261oy6\", \"packagedElements\": [{\"package\": {\"id\": \"GcJO3kDBnbRcT4f&Kwf9arl6YOmS\"}}]}}";
+    std::string expectedEmit = "{\"Package\": {\"id\": \"Wmhz0dIdjUbcWmTn7EL4Zz261oy6\", \"packagedElements\": [{\"Package\": {\"id\": \"GcJO3kDBnbRcT4f&Kwf9arl6YOmS\"}}]}}";
     ASSERT_EQ(generatedEmit, expectedEmit);
 }

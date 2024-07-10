@@ -245,43 +245,43 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
     pckg.getPackagedElements().add(c1);
     pckg.getPackagedElements().add(c2);
 
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: b4EasFCBjochdruOQfxBubQw3VlD
   packagedElements:
-    - package:
+    - Package:
         id: fMWs7G1YTFU1VQEAgNcZqt4lp6dB
         templateBindings:
-          - templateBinding:
+          - TemplateBinding:
               id: e_ob7tgbN16Plhj_sTAOVD5ijLrL
               parameterSubstitutions:
-                - templateParameterSubstitution:
+                - TemplateParameterSubstitution:
                     id: 7bYUY3yFUBrfPmzKKrV2NJmXuECA
                     formal: OLULeTlF1Rzf4U5IpNQVW1nYd29c
                     ownedActual:
-                      primitiveType:
+                      PrimitiveType:
                         id: "8&K_0aLhvQDM12ZeYg9nPiSrexHo"
-                - templateParameterSubstitution:
+                - TemplateParameterSubstitution:
                     id: puJaUTZsLPdGJkJSJtdX51MIA2ch
                     formal: Km4WF5rf3ohUeLTr99POiW7VMb_4
                     actual: 4gA4RgL9vKTRYd61D99y1d_Yggj6
               signature: nOh5namt9s4oOvimAXQpR8nJHfTF
-    - package:
+    - Package:
         id: NYok8HRGpv_rOfAmfrRB94uwOZrb
         ownedTemplateSignature:
-          templateSignature:
+          TemplateSignature:
             id: nOh5namt9s4oOvimAXQpR8nJHfTF
             ownedParameters:
-              - templateParameter:
+              - TemplateParameter:
                   id: OLULeTlF1Rzf4U5IpNQVW1nYd29c
                   ownedDefault:
-                    package:
+                    Package:
                       id: GZaiGksTjm4GeM2GdJ5BXuajWnGU
-              - templateParameter:
+              - TemplateParameter:
                   id: Km4WF5rf3ohUeLTr99POiW7VMb_4
                   default: a2arTP9Z2LteDWsjTS0ziALCWlXU
-    - primitiveType:
+    - PrimitiveType:
         id: 4gA4RgL9vKTRYd61D99y1d_Yggj6
-    - package:
+    - Package:
         id: a2arTP9Z2LteDWsjTS0ziALCWlXU)"""";
     std::string generatedEmit;
     EmitterData data;

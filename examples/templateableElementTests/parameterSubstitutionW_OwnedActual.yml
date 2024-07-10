@@ -1,19 +1,19 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - class:
+      - Class:
           id: eFTIp_&18VO2Hh9zYx8VQc75jVlx
           ownedTemplateSignature:
-            redefinableTemplateSignature:
+            RedefinableTemplateSignature:
               id: BXOJoKsvBCVhMIwUbxRV5ibHYMDf
-      - class:
+      - Class:
           id: RAPpSu&jfJx&WBoxhHqzaKa&YwBR
           templateBindings:
-            - templateBinding:
+            - TemplateBinding:
                 signature: BXOJoKsvBCVhMIwUbxRV5ibHYMDf
                 parameterSubstitutions:
-                  - templateParameterSubstitution:
+                  - TemplateParameterSubstitution:
                       ownedActual:
-                        primitiveType:
+                        PrimitiveType:
                           name: test
 ...

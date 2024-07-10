@@ -1,7 +1,7 @@
 ---
-  opaqueBehavior:
+  OpaqueBehavior:
     ownedParameters:
-      - parameter:
+      - Parameter:
           name: test
           direction: in
 ...

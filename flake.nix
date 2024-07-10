@@ -16,7 +16,6 @@
               cmake 
               clang
               gnumake
-              glibc
               pkg-config
               gtest
               yaml-cpp
@@ -50,7 +49,7 @@
 
               Name: uml
               Description: uml modeling C++ api
-              Version: 0.3.6
+              Version: 0.4.0
               Libs: -L$out/lib -luml
               Cflags: -I$out/include" > $out/lib/pkgconfig/uml-cpp.pc
 

@@ -1,19 +1,19 @@
 ---
-  profile:
+  Profile:
     ownedStereotypes:
-      - stereotype:
+      - Stereotype:
           id: cLvWpn5ofnVR_f2lob3ofVyLu0Fc
     packagedElements:
-      - extension:
+      - Extension:
           name: ext
           memberEnds:
-            - property:
+            - Property:
                 name: member end
                 type: cEoEHKDqYcoIOtYwIqrMbz&WG1G_
           ownedEnd:
-            extensionEnd:
+            ExtensionEnd:
               type: cLvWpn5ofnVR_f2lob3ofVyLu0Fc
-      - class:
+      - Class:
           id: cEoEHKDqYcoIOtYwIqrMbz&WG1G_
           name: meta class
 ...

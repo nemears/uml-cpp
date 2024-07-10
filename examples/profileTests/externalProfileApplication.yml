@@ -1,6 +1,6 @@
 ---
-  package:
+  Package:
     profileApplications:
-      - profileApplication:
+      - ProfileApplication:
           appliedProfile: XIf5yPHTzLz4NDkVLLwDamOWscKb
 ...

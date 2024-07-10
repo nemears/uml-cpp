@@ -1,30 +1,30 @@
 ---
-  package :
+  Package :
     packagedElements:
-    - class :
+    - Class :
         name : "clazz1"
         id : wve24hkcPVSmqMP&DCzk3gn&wu9W
-    - class :
+    - Class :
         name : "clazz2"
         id : Na3CGFoA8ZP10TB5n8psjAgGaaTE
         ownedAttributes: 
-          - property :
+          - Property :
               name : "prop"
               id: 5FxkUgQY7nE4Z_gf3OmVcxnPnZfe
               type : wve24hkcPVSmqMP&DCzk3gn&wu9W
-    - instanceSpecification :
+    - InstanceSpecification :
         id : x2zUOks6utCje0z&ID4EOM91HJuj
         classifiers : 
           - wve24hkcPVSmqMP&DCzk3gn&wu9W
-    - instanceSpecification :
+    - InstanceSpecification :
         id : 6CB8GbwIp4Ii0rKfx4YSVRoiZvmc
         classifiers : 
           - Na3CGFoA8ZP10TB5n8psjAgGaaTE
         slots :
-          - slot :
+          - Slot :
               id : 9ILRQCX87_7ianEyqeSRpTDTV_oY
               definingFeature: 5FxkUgQY7nE4Z_gf3OmVcxnPnZfe
               values : 
-                - instanceValue:
+                - InstanceValue:
                     instance: x2zUOks6utCje0z&ID4EOM91HJuj
 ...

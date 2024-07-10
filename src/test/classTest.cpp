@@ -478,11 +478,11 @@ TEST_F(ClassTest, emitClassWAttribute) {
     p.setName("prop");
     p.setVisibility(VisibilityKind::PRIVATE);
     c.getOwnedAttributes().add(p);
-    std::string expectedEmit = R""""(class:
+    std::string expectedEmit = R""""(Class:
   id: hWVMp5upOkVsWnkrfl0I6O5bQsbO
   name: Class
   ownedAttributes:
-    - property:
+    - Property:
         id: 61255etITfg0LgPLZaU1PEByTjo3
         name: prop
         visibility: private)"""";
@@ -509,16 +509,16 @@ TEST_F(ClassTest, emitClassWAttributeNOperation) {
     o.setVisibility(VisibilityKind::PROTECTED);
     c.getOwnedAttributes().add(p);
     c.getOwnedOperations().add(o);
-    std::string expectedEmit = R""""(class:
+    std::string expectedEmit = R""""(Class:
   id: b0XPjtodVDLoVu2YCMwBWYqglsoX
   name: Class
   ownedAttributes:
-    - property:
+    - Property:
         id: kfuX2BvkrRFhMX4UAfchHJgL8sER
         name: prop
         visibility: private
   ownedOperations:
-    - operation:
+    - Operation:
         id: "ESKTcd5FmF2q4O&WI_Oiu5FrXHeN"
         name: op
         visibility: protected)"""";
@@ -552,27 +552,27 @@ TEST_F(ClassTest, emitFilledInOperation) {
     c.getOwnedBehaviors().add(b);
     o.getMethods().add(b);
     c.getOwnedOperations().add(o);
-    std::string expectedEmit = R""""(class:
+    std::string expectedEmit = R""""(Class:
   id: 6cCDjqUmkrXZ46z7CcNaTDso4SfQ
   name: Class
   ownedBehaviors:
-    - opaqueBehavior:
+    - OpaqueBehavior:
         id: "&_DLItAl_5ASwPNvNVqXaIwEiLOx"
         name: opaque
         specification: Y3WV0c_Wa_zfOTb6zo9BAiIqRhn7
         ownedParameters:
-          - parameter:
+          - Parameter:
               id: C7lT8BaQxmMi7cnZLIjjWCVD3k_9
               name: opaquePee
   ownedOperations:
-    - operation:
+    - Operation:
         id: Y3WV0c_Wa_zfOTb6zo9BAiIqRhn7
         name: op
         visibility: protected
         methods:
           - "&_DLItAl_5ASwPNvNVqXaIwEiLOx"
         ownedParameters:
-          - parameter:
+          - Parameter:
               id: "s2q_fjRnyV_Gst&gAQ4JTr3crFNU"
               name: pee)"""";
     std::string generatedEmit;
@@ -630,22 +630,22 @@ TEST_F(ClassTest, nestedClassifierEmitTest) {
     clazz.getNestedClassifiers().add(enumeration);
     clazz.getNestedClassifiers().add(opaqueBehavior);
     clazz.getNestedClassifiers().add(primitiveType);
-    std::string expectedEmit = R""""(class:
+    std::string expectedEmit = R""""(Class:
   id: "5mOWzor&UjeUs13VT9&HYj5DKh&Y"
   nestedClassifiers:
-    - artifact:
+    - Artifact:
         id: F_exblp0xsz5k1lmTLDtjBrFWqS6
-    - association:
+    - Association:
         id: oOgal3or1U2zY9ktKohwQS6ChLw7
-    - class:
+    - Class:
         id: "4Q6XfIWChz&mfIB_6Vc71mnxHDpU"
-    - dataType:
+    - DataType:
         id: "Nw3c30z1PCo3GNs6QFh&wt9fVVzf"
-    - enumeration:
+    - Enumeration:
         id: lItnoDw_Ka4bfYaRnzrdFZnwqY3X
-    - opaqueBehavior:
+    - OpaqueBehavior:
         id: j82g9_8Al4Vcp1PQ0wsS4ia9_MR4
-    - primitiveType:
+    - PrimitiveType:
         id: FTjeJqMozlqjetKextwOJiSIeZA7)"""";
     std::string generatedEmit;
     EmitterData data;

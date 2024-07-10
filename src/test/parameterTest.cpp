@@ -50,17 +50,17 @@ TEST_F(ParameterTest, emitParameterWMultiplicityTest) {
     p.setLowerValue(&low);
     p.setUpperValue(&high);
     b.getOwnedParameters().add(p);
-    std::string expectedEmit = R""""(opaqueBehavior:
+    std::string expectedEmit = R""""(OpaqueBehavior:
   id: SeJ_0hSPaIa4EYap3sXgRQm4LuSn
   ownedParameters:
-    - parameter:
+    - Parameter:
         id: QzBhVkqNSRAZMlkHU6cQ3d_Wm8FT
         lowerValue:
-          literalInt:
+          LiteralInt:
             id: K2_2cpL966uyziy9e2pGb60cCR5X
             value: 0
         upperValue:
-          literalInt:
+          LiteralInt:
             id: "sGGXJFNinAvKyKVSgc&JAlMWsbw5"
             value: 5)"""";
     std::string generatedEmit;

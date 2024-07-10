@@ -1,12 +1,12 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - class:
+      - Class:
           id: YsrsegXREkwl5jRdU&nVBnbtB9VM
           name: general
-      - class:
+      - Class:
           name: specific
           generalizations:
-            - generalization:
+            - Generalization:
                 general: YsrsegXREkwl5jRdU&nVBnbtB9VM
 ...

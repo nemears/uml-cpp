@@ -1,37 +1,37 @@
 ---
-  package :
+  Package :
     packageMerges:
-      - packageMerge:
+      - PackageMerge:
           mergedPackage: Primitive_Types_WZcyDDLemQ97
     packagedElements :
-      - class :
+      - Class :
           ownedAttributes :
-            - property :
+            - Property :
                 name : "testString"
                 id : AdFNMlpKcSme_TfTG1VtOadFKJEa
                 type : string_L&R5eAEq6f3LUNtUmzHzT
                 defaultValue: 
-                  literalString:
+                  LiteralString:
                     value: "testValue"
-            - property :
+            - Property :
                 name : "testInt"
                 id : b7WuOyr0pTtcKTpjYhUEGWwtiKsF
                 type : int_r9nNbBukx47IomXrT2raqtc4
                 defaultValue: 
-                  literalInt:
+                  LiteralInt:
                     value: -444
-            - property :
+            - Property :
                 name : "testReal"
                 id : IbvDPTajVf6kSwhqmboTku8J6KfA
                 type : real_aZG&w6yl61bXVWutgeyScN9
                 defaultValue: 
-                  literalReal:
+                  LiteralReal:
                     value: 555.888
-            - property :
+            - Property :
                 name : "testBool"
                 id : ay7dVfIlrnb5mU8_OvWXRJoW4tQe
                 type : bool_bzkcabSy3CiFd&HmJOtnVRK
                 defaultValue: 
-                  literalBool:
+                  LiteralBool:
                     value: false
 ...

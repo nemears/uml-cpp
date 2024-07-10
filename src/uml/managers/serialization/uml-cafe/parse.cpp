@@ -1,4 +1,4 @@
-#include "uml/managers/serialization/open_uml/parse.h"
+#include "uml/managers/serialization/uml-cafe/parse.h"
 #include "uml/types/stereotype.h"
 
 using namespace std;
@@ -169,8 +169,8 @@ string getLineNumber(YAML::Node node) {
 
 ElementPtr parseNode(YAML::Node node, ParserData& data) {
     ElementPtr ret;
-    if (node["abstraction"]) {
-        ret = createAndParse<Abstraction>(node["abstraction"], data,
+    if (node["Abstraction"]) {
+        ret = createAndParse<Abstraction>(node["Abstraction"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -182,8 +182,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["actionInputPin"]) {
-        ret = createAndParse<ActionInputPin>(node["actionInputPin"], data,
+    } else if (node["ActionInputPin"]) {
+        ret = createAndParse<ActionInputPin>(node["ActionInputPin"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures,
@@ -196,8 +196,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["activity"] && node["activity"].IsMap()) {
-        ret = createAndParse<Activity>(node["activity"], data,
+    } else if (node["Activity"] && node["Activity"].IsMap()) {
+        ret = createAndParse<Activity>(node["Activity"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseNamespaceFeatures,
@@ -214,8 +214,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["activityFinalNode"]) {
-        ret = createAndParse<ActivityFinalNode>(node["activityFinalNode"], data, 
+    } else if (node["ActivityFinalNode"]) {
+        ret = createAndParse<ActivityFinalNode>(node["ActivityFinalNode"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures);
@@ -223,8 +223,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["activityParameterNode"]) {
-        ret = createAndParse<ActivityParameterNode>(node["activityParameterNode"], data,
+    } else if (node["ActivityParameterNode"]) {
+        ret = createAndParse<ActivityParameterNode>(node["ActivityParameterNode"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures,
@@ -235,8 +235,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["activityPartition"]) {
-        ret = createAndParse<ActivityPartition>(node["activityPartition"], data,
+    } else if (node["ActivityPartition"]) {
+        ret = createAndParse<ActivityPartition>(node["ActivityPartition"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityPartitionFeatures);
@@ -245,8 +245,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityGroupScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["artifact"]) {
-        ret = createAndParse<Artifact>(node["artifact"], data, 
+    } else if (node["Artifact"]) {
+        ret = createAndParse<Artifact>(node["Artifact"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseNamespaceFeatures,
@@ -259,8 +259,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["association"]) {
-        ret = createAndParse<Association>(node["association"], data,
+    } else if (node["Association"]) {
+        ret = createAndParse<Association>(node["Association"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseNamespaceFeatures,
@@ -273,8 +273,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["callBehaviorAction"]) {
-        ret = createAndParse<CallBehaviorAction>(node["callBehaviorAction"], data,
+    } else if (node["CallBehaviorAction"]) {
+        ret = createAndParse<CallBehaviorAction>(node["CallBehaviorAction"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures,
@@ -287,8 +287,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    }else if (node["centralBufferNode"]) {
-        ret = createAndParse<CentralBufferNode>(node["centralBufferNode"], data,
+    }else if (node["CentralBufferNode"]) {
+        ret = createAndParse<CentralBufferNode>(node["CentralBufferNode"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures,
@@ -298,8 +298,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["class"] && node["class"].IsMap()) {
-        ret = createAndParse<Class>(node["class"], data,
+    } else if (node["Class"] && node["Class"].IsMap()) {
+        ret = createAndParse<Class>(node["Class"], data,
                     parseElementFeatures,
                     parseNamespaceFeatures,
                     parseNamedElementFeatures,
@@ -314,21 +314,21 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope, 
                     parseElementScope);
-    } else if (node["classifierTemplateParameter"]) {
-        ret = createAndParse<ClassifierTemplateParameter>(node["classifierTemplateParameter"], data,
+    } else if (node["ClassifierTemplateParameter"]) {
+        ret = createAndParse<ClassifierTemplateParameter>(node["ClassifierTemplateParameter"], data,
                     parseElementFeatures,
                     parseTemplateParameterFeatures,
                     parseClassifierTemplateParameterFeatures);
         parseScope(node, ret->as<ClassifierTemplateParameter>(), data, 
                     parseTemplateParameterScope,
                     parseElementScope);
-    } else if (node["comment"]) {
-        ret = createAndParse<Comment>(node["comment"], data,
+    } else if (node["Comment"]) {
+        ret = createAndParse<Comment>(node["Comment"], data,
                     parseElementFeatures,
                     parseCommentFeatures);
         parseScope(node, ret->as<Comment>(), data, parseElementScope);
-    } else if (node["connector"]) {
-        ret = createAndParse<Connector>(node["connector"], data,
+    } else if (node["Connector"]) {
+        ret = createAndParse<Connector>(node["Connector"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseFeatureFeatures,
@@ -336,15 +336,15 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
         parseScope(node, ret->as<Connector>(), data,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["connectorEnd"]) {
-        ret = createAndParse<ConnectorEnd>(node["connectorEnd"], data,
+    } else if (node["ConnectorEnd"]) {
+        ret = createAndParse<ConnectorEnd>(node["ConnectorEnd"], data,
                     parseElementFeatures,
                     parseMultiplicityElementFeatures,
                     parseConnectorEndFeatures);
         parseScope(node, ret->as<ConnectorEnd>(), data,
                     parseElementScope);
-    } else if (node["constraint"]) {
-        ret = createAndParse<Constraint>(node["constraint"], data, 
+    } else if (node["Constraint"]) {
+        ret = createAndParse<Constraint>(node["Constraint"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -355,8 +355,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["controlFlow"]) {
-        ret = createAndParse<ControlFlow>(node["controlFlow"], data,
+    } else if (node["ControlFlow"]) {
+        ret = createAndParse<ControlFlow>(node["ControlFlow"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityEdgeFeatures);
@@ -364,8 +364,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityEdgeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["dataStoreNode"]) {
-        ret = createAndParse<DataStoreNode>(node["dataStoreNode"], data,
+    } else if (node["DataStoreNode"]) {
+        ret = createAndParse<DataStoreNode>(node["DataStoreNode"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures,
@@ -375,8 +375,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["dataType"] && node["dataType"].IsMap()) {
-        ret = createAndParse<DataType>(node["dataType"], data, 
+    } else if (node["DataType"] && node["DataType"].IsMap()) {
+        ret = createAndParse<DataType>(node["DataType"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseNamespaceFeatures,
@@ -389,8 +389,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["decisionNode"]) {
-        ret = createAndParse<DecisionNode>(node["decisionNode"], data, 
+    } else if (node["DecisionNode"]) {
+        ret = createAndParse<DecisionNode>(node["DecisionNode"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures,
@@ -399,8 +399,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["dependency"]) {
-        ret = createAndParse<Dependency>(node["dependency"], data, 
+    } else if (node["Dependency"]) {
+        ret = createAndParse<Dependency>(node["Dependency"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -410,8 +410,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["deployment"]) {
-        ret = createAndParse<Deployment>(node["deployment"], data,
+    } else if (node["Deployment"]) {
+        ret = createAndParse<Deployment>(node["Deployment"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -422,13 +422,13 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["elementImport"]) {
-        ret = createAndParse<ElementImport>(node["elementImport"], data,
+    } else if (node["ElementImport"]) {
+        ret = createAndParse<ElementImport>(node["ElementImport"], data,
                     parseElementFeatures,
                     parseElementImportFeatures);
         parseScope(node, ret->as<ElementImport>(), data, parseElementImportScope, parseElementScope);
-    } else if (node["enumeration"] && node["enumeration"].IsMap()) {
-        ret = createAndParse<Enumeration>(node["enumeration"], data,
+    } else if (node["Enumeration"] && node["Enumeration"].IsMap()) {
+        ret = createAndParse<Enumeration>(node["Enumeration"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseNamespaceFeatures,
@@ -442,8 +442,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["enumerationLiteral"]) {
-        ret = createAndParse<EnumerationLiteral>(node["enumerationLiteral"], data, 
+    } else if (node["EnumerationLiteral"]) {
+        ret = createAndParse<EnumerationLiteral>(node["EnumerationLiteral"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -454,15 +454,15 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["exceptionHandler"]) {
-        ret = createAndParse<ExceptionHandler>(node["exceptionHandler"], data,
+    } else if (node["ExceptionHandler"]) {
+        ret = createAndParse<ExceptionHandler>(node["ExceptionHandler"], data,
                     parseElementFeatures,
                     parseExceptionHandlerFeatures);
         parseScope(node, ret->as<ExceptionHandler>(), data, 
                     parseExceptionHandlerScope,
                     parseElementScope);
-    } else if (node["expression"]) {
-        ret = createAndParse<Expression>(node["expression"], data,
+    } else if (node["Expression"]) {
+        ret = createAndParse<Expression>(node["Expression"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -473,8 +473,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["extension"]) {
-        ret = createAndParse<Extension>(node["extension"], data,
+    } else if (node["Extension"]) {
+        ret = createAndParse<Extension>(node["Extension"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseNamespaceFeatures,
@@ -487,8 +487,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["extensionEnd"]) {
-        ret = createAndParse<ExtensionEnd>(node["extensionEnd"], data,
+    } else if (node["ExtensionEnd"]) {
+        ret = createAndParse<ExtensionEnd>(node["ExtensionEnd"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseTypedElementFeatures,
@@ -501,8 +501,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["finalNode"]) {
-        ret = createAndParse<FinalNode>(node["finalNode"], data, 
+    } else if (node["FinalNode"]) {
+        ret = createAndParse<FinalNode>(node["FinalNode"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures);
@@ -510,8 +510,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["flowFinalNode"]) {
-        ret = createAndParse<FlowFinalNode>(node["flowFinalNode"], data, 
+    } else if (node["FlowFinalNode"]) {
+        ret = createAndParse<FlowFinalNode>(node["FlowFinalNode"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures);
@@ -519,8 +519,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["forkNode"]) {
-        ret = createAndParse<ForkNode>(node["forkNode"], data, 
+    } else if (node["ForkNode"]) {
+        ret = createAndParse<ForkNode>(node["ForkNode"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures);
@@ -528,15 +528,15 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["generalization"]) {
-        ret = createAndParse<Generalization>(node["generalization"], data, 
+    } else if (node["Generalization"]) {
+        ret = createAndParse<Generalization>(node["Generalization"], data, 
                     parseElementFeatures,
                     parseGeneralizationFeatures);
         parseScope(node, ret->as<Generalization>(), data, 
                     parseGeneralizationScope,
                     parseElementScope);
-    } else if (node["generalizationSet"]) {
-        ret = createAndParse<GeneralizationSet>(node["generalizationSet"], data,
+    } else if (node["GeneralizationSet"]) {
+        ret = createAndParse<GeneralizationSet>(node["GeneralizationSet"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -546,8 +546,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["initialNode"]) {
-        ret = createAndParse<InitialNode>(node["initialNode"], data,
+    } else if (node["InitialNode"]) {
+        ret = createAndParse<InitialNode>(node["InitialNode"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures);
@@ -555,8 +555,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["inputPin"]) {
-        ret = createAndParse<InputPin>(node["inputPin"], data,
+    } else if (node["InputPin"]) {
+        ret = createAndParse<InputPin>(node["InputPin"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures,
@@ -568,8 +568,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["instanceSpecification"]) {
-        ret = createAndParse<InstanceSpecification>(node["instanceSpecification"], data, 
+    } else if (node["InstanceSpecification"]) {
+        ret = createAndParse<InstanceSpecification>(node["InstanceSpecification"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -580,8 +580,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["instanceValue"]) {
-        ret = createAndParse<InstanceValue>(node["instanceValue"], data,
+    } else if (node["InstanceValue"]) {
+        ret = createAndParse<InstanceValue>(node["InstanceValue"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseTypedElementFeatures,
@@ -592,8 +592,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["interface"] && node["interface"].IsMap()) {
-        ret = createAndParse<Interface>(node["interface"], data,
+    } else if (node["Interface"] && node["Interface"].IsMap()) {
+        ret = createAndParse<Interface>(node["Interface"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseNamespaceFeatures,
@@ -606,8 +606,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["interfaceRealization"]) {
-        ret = createAndParse<InterfaceRealization>(node["interfaceRealization"], data, 
+    } else if (node["InterfaceRealization"]) {
+        ret = createAndParse<InterfaceRealization>(node["InterfaceRealization"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -620,8 +620,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["joinNode"]) {
-        ret = createAndParse<JoinNode>(node["joinNode"], data, 
+    } else if (node["JoinNode"]) {
+        ret = createAndParse<JoinNode>(node["JoinNode"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures,
@@ -630,8 +630,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["literalBool"]) {
-        ret = createAndParse<LiteralBool>(node["literalBool"], data,
+    } else if (node["LiteralBool"]) {
+        ret = createAndParse<LiteralBool>(node["LiteralBool"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseTypedElementFeatures,
@@ -642,8 +642,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["literalInt"]) {
-        ret = createAndParse<LiteralInt>(node["literalInt"], data,
+    } else if (node["LiteralInt"]) {
+        ret = createAndParse<LiteralInt>(node["LiteralInt"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseTypedElementFeatures,
@@ -654,8 +654,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["literalNull"]) {
-        ret = createAndParse<LiteralNull>(node["literalNull"], data,
+    } else if (node["LiteralNull"]) {
+        ret = createAndParse<LiteralNull>(node["LiteralNull"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseTypedElementFeatures,
@@ -665,8 +665,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["literalReal"]) {
-        ret = createAndParse<LiteralReal>(node["literalReal"], data,
+    } else if (node["LiteralReal"]) {
+        ret = createAndParse<LiteralReal>(node["LiteralReal"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseTypedElementFeatures,
@@ -676,8 +676,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parsePackageableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["literalString"]) {
-        ret = createAndParse<LiteralString>(node["literalString"], data,
+    } else if (node["LiteralString"]) {
+        ret = createAndParse<LiteralString>(node["LiteralString"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseTypedElementFeatures,
@@ -687,8 +687,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parsePackageableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["literalUnlimitedNatural"]) {
-        ret = createAndParse<LiteralUnlimitedNatural>(node["literalUnlimitedNatural"], data,
+    } else if (node["LiteralUnlimitedNatural"]) {
+        ret = createAndParse<LiteralUnlimitedNatural>(node["LiteralUnlimitedNatural"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseTypedElementFeatures,
@@ -698,8 +698,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parsePackageableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["mergeNode"]) {
-        ret = createAndParse<MergeNode>(node["mergeNode"], data, 
+    } else if (node["MergeNode"]) {
+        ret = createAndParse<MergeNode>(node["MergeNode"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures);
@@ -707,8 +707,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["manifestation"]) {
-        ret = createAndParse<Manifestation>(node["manifestation"], data,
+    } else if (node["Manifestation"]) {
+        ret = createAndParse<Manifestation>(node["Manifestation"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -718,8 +718,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["model"]) {
-        ret = createAndParse<Model>(node["model"], data,
+    } else if (node["Model"]) {
+        ret = createAndParse<Model>(node["Model"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseNamespaceFeatures,
@@ -732,8 +732,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["objectFlow"]) {
-        ret = createAndParse<ObjectFlow>(node["objectFlow"], data,
+    } else if (node["ObjectFlow"]) {
+        ret = createAndParse<ObjectFlow>(node["ObjectFlow"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityEdgeFeatures,
@@ -742,8 +742,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityEdgeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["opaqueAction"]) {
-        ret = createAndParse<OpaqueAction>(node["opaqueAction"], data,
+    } else if (node["OpaqueAction"]) {
+        ret = createAndParse<OpaqueAction>(node["OpaqueAction"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures,
@@ -754,8 +754,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["opaqueBehavior"]) {
-        ret = createAndParse<OpaqueBehavior>(node["opaqueBehavior"], data,
+    } else if (node["OpaqueBehavior"]) {
+        ret = createAndParse<OpaqueBehavior>(node["OpaqueBehavior"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseNamespaceFeatures,
@@ -770,8 +770,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["operation"] && node["operation"].IsMap()) {
-        ret = createAndParse<Operation>(node["operation"], data, 
+    } else if (node["Operation"] && node["Operation"].IsMap()) {
+        ret = createAndParse<Operation>(node["Operation"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -783,8 +783,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["outputPin"]) {
-        ret = createAndParse<OutputPin>(node["outputPin"], data,
+    } else if (node["OutputPin"]) {
+        ret = createAndParse<OutputPin>(node["OutputPin"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures,
@@ -796,8 +796,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseActivityNodeScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["package"]) {
-        ret = createAndParse<Package>(node["package"], data, 
+    } else if (node["Package"]) {
+        ret = createAndParse<Package>(node["Package"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseNamespaceFeatures,
@@ -809,22 +809,22 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope, 
                     parseNamedElementScope, 
                     parseElementScope);
-    } else if (node["packageImport"]) {
-        ret = createAndParse<PackageImport>(node["packageImport"], data,
+    } else if (node["PackageImport"]) {
+        ret = createAndParse<PackageImport>(node["PackageImport"], data,
                     parseElementFeatures,
                     parsePackageImportFeatures);
         parseScope(node, ret->as<PackageImport>(), data, 
                     parsePackageImportScope,
                     parseElementScope);
-    } else if (node["packageMerge"]) {
-        ret = createAndParse<PackageMerge>(node["packageMerge"], data,
+    } else if (node["PackageMerge"]) {
+        ret = createAndParse<PackageMerge>(node["PackageMerge"], data,
                     parseElementFeatures,
                     parsePackageMergeFeatures);
         parseScope(node, ret->as<PackageMerge>(), data,
                     parsePackageMergeScope,
                     parseElementScope);
-    } else if (node["parameter"]) {
-        ret = createAndParse<Parameter>(node["parameter"], data, 
+    } else if (node["Parameter"]) {
+        ret = createAndParse<Parameter>(node["Parameter"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseTypedElementFeatures, // parseConnectableElements
@@ -834,16 +834,16 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["parameterSet"]) {
-        ret = createAndParse<ParameterSet>(node["parameterSet"], data, 
+    } else if (node["ParameterSet"]) {
+        ret = createAndParse<ParameterSet>(node["ParameterSet"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterSetFeatures);
         parseScope(node, ret->as<ParameterSet>(), data,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["port"]) {
-        ret = createAndParse<Port>(node["port"], data,
+    } else if (node["Port"]) {
+        ret = createAndParse<Port>(node["Port"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseFeatureFeatures,
@@ -858,8 +858,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["primitiveType"]) {
-        ret = createAndParse<PrimitiveType>(node["primitiveType"], data,
+    } else if (node["PrimitiveType"]) {
+        ret = createAndParse<PrimitiveType>(node["PrimitiveType"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseNamespaceFeatures,
@@ -872,8 +872,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["profile"]) {
-        ret = createAndParse<Profile>(node["profile"], data,
+    } else if (node["Profile"]) {
+        ret = createAndParse<Profile>(node["Profile"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -885,15 +885,15 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["profileApplication"]) {
-        ret = createAndParse<ProfileApplication>(node["profileApplication"], data,
+    } else if (node["ProfileApplication"]) {
+        ret = createAndParse<ProfileApplication>(node["ProfileApplication"], data,
                     parseElementFeatures,
                     parseProfileApplicationFeatures);
         parseScope(node, ret->as<ProfileApplication>(), data,
                     parseProfileApplicationScope,
                     parseElementScope);
-    } else if (node["property"]) {
-        ret = createAndParse<Property>(node["property"], data,
+    } else if (node["Property"]) {
+        ret = createAndParse<Property>(node["Property"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseFeatureFeatures,
@@ -908,8 +908,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["reception"]) {
-        ret = createAndParse<Reception>(node["reception"], data,
+    } else if (node["Reception"]) {
+        ret = createAndParse<Reception>(node["Reception"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseFeatureFeatures,
@@ -918,8 +918,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
         parseScope(node, ret->as<Reception>(), data, 
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["realization"]) {
-        ret = createAndParse<Realization>(node["realization"], data, 
+    } else if (node["Realization"]) {
+        ret = createAndParse<Realization>(node["Realization"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -930,8 +930,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["redefinableTemplateSignature"]) {
-        ret = createAndParse<RedefinableTemplateSignature>(node["redefinableTemplateSignature"], data,
+    } else if (node["RedefinableTemplateSignature"]) {
+        ret = createAndParse<RedefinableTemplateSignature>(node["RedefinableTemplateSignature"], data,
                     parseElementFeatures,
                     parseTemplateSignatureFeatures,
                     parseRedefinableTemplateSignatureFeatures);
@@ -939,8 +939,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseRedefinableTemplateSignatureScope,
                     parseTemplateSignatureScope,
                     parseElementScope);
-    } else if (node["signal"]) {
-        ret = createAndParse<Signal>(node["signal"], data,
+    } else if (node["Signal"]) {
+        ret = createAndParse<Signal>(node["Signal"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -953,15 +953,15 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["slot"]) {
-        ret = createAndParse<Slot>(node["slot"], data, 
+    } else if (node["Slot"]) {
+        ret = createAndParse<Slot>(node["Slot"], data, 
                     parseElementFeatures,
                     parseSlotFeatures);
         parseScope(node, ret->as<Slot>(), data, 
                     parseSlotScope,
                     parseElementScope);
-    } else if (node["stereotype"]) {
-        ret = createAndParse<Stereotype>(node["stereotype"], data,
+    } else if (node["Stereotype"]) {
+        ret = createAndParse<Stereotype>(node["Stereotype"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseNamespaceFeatures,
@@ -977,32 +977,32 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["templateBinding"] && node["templateBinding"].IsMap()) {
-        ret = createAndParse<TemplateBinding>(node["templateBinding"], data,
+    } else if (node["TemplateBinding"] && node["TemplateBinding"].IsMap()) {
+        ret = createAndParse<TemplateBinding>(node["TemplateBinding"], data,
                     parseElementFeatures,
                     parseTemplateBindingFeatures);
         parseScope(node, ret->as<TemplateBinding>(), data, parseTemplateBindingScope, parseElementScope);
-    } else if (node["templateParameter"]) {
-        ret = createAndParse<TemplateParameter>(node["templateParameter"], data,
+    } else if (node["TemplateParameter"]) {
+        ret = createAndParse<TemplateParameter>(node["TemplateParameter"], data,
                     parseElementFeatures,
                     parseTemplateParameterFeatures);
         parseScope(node, ret->as<TemplateParameter>(), data,
                     parseTemplateParameterScope,
                     parseElementScope);
-    } else if (node["templateParameterSubstitution"]) {
-        ret = createAndParse<TemplateParameterSubstitution>(node["templateParameterSubstitution"], data,
+    } else if (node["TemplateParameterSubstitution"]) {
+        ret = createAndParse<TemplateParameterSubstitution>(node["TemplateParameterSubstitution"], data,
                         parseElementFeatures,
                         parseTemplateParameterSubstitutionFeatures);
         parseScope(node, ret->as<TemplateParameterSubstitution>(), data, parseTemplateParameterSubstitutionScope, parseElementScope);
-    } else if (node["templateSignature"]) {
-        ret = createAndParse<TemplateSignature>(node["templateSignature"], data,
+    } else if (node["TemplateSignature"]) {
+        ret = createAndParse<TemplateSignature>(node["TemplateSignature"], data,
                     parseElementFeatures,
                     parseTemplateSignatureFeatures);
         parseScope(node, ret->as<TemplateSignature>(), data,
                     parseTemplateSignatureScope,
                     parseElementScope);
-    } else if (node["usage"]) {
-        ret = createAndParse<Usage>(node["usage"], data, 
+    } else if (node["Usage"]) {
+        ret = createAndParse<Usage>(node["Usage"], data, 
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseParameterableElementFeatures,
@@ -1012,8 +1012,8 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseParameterableElementScope,
                     parseNamedElementScope,
                     parseElementScope);
-    } else if (node["valuePin"]) {
-        ret = createAndParse<ValuePin>(node["valuePin"], data,
+    } else if (node["ValuePin"]) {
+        ret = createAndParse<ValuePin>(node["ValuePin"], data,
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseActivityNodeFeatures,

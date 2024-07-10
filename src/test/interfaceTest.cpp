@@ -179,30 +179,30 @@ TEST_F(InterfaceTest, emitInterfaceTest) {
     realization.setContract(interface_uml);
     implementing.getInterfaceRealizations().add(realization);
     root.getPackagedElements().add(interface_uml, general, implementing);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: efOYpQ48NuwY3f2xX0u9WkxcjfY6
   packagedElements:
-    - interface:
+    - Interface:
         id: "fqag25FXykqQlo_bQWmS&cAB6338"
         generalizations:
-          - generalization:
+          - Generalization:
               id: 9mSwZjJaig2cKZA98jZku3nU74eH
               general: msHdxlZxjCCYwm2GLlDyaIq3KX4o
         ownedAttributes:
-          - property:
+          - Property:
               id: Jp2IhMjC2qNN7cIYPXiFZU4vDdun
         ownedOperations:
-          - operation:
+          - Operation:
               id: kbreSzh_ys_8SepvJR6Q58tzWdFI
         nestedClassifiers:
-          - dataType:
+          - DataType:
               id: "TeIMyndF4nm_NOTbFZ&vZDLXxvtC"
-    - interface:
+    - Interface:
         id: msHdxlZxjCCYwm2GLlDyaIq3KX4o
-    - class:
+    - Class:
         id: GqrX5Ta8KQDdFfaHrau08OS7Et3n
         interfaceRealizations:
-          - interfaceRealization:
+          - InterfaceRealization:
               id: IFDK1OePanvL7GwUxLspBo4p2JjA
               contract: "fqag25FXykqQlo_bQWmS&cAB6338")"""";
     std::string generatedEmit;
@@ -255,45 +255,45 @@ TEST_F(InterfaceTest, emitPortWInterfaceTest) {
     port.setIsConjugated(true);
     port.setIsService(false);
     root.getPackagedElements().add(implementing, interface_uml, encapsulated);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: epLFcWN0KeMt8t5mAuF4TUCa75ns
   packagedElements:
-    - class:
+    - Class:
         id: 508FPtzv15GguudyAK6odJA7Rxoa
         interfaceRealizations:
-          - interfaceRealization:
+          - InterfaceRealization:
               id: "65&HAREuzThGM38K2m82T1NWR28N"
               contract: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY"
-    - interface:
+    - Interface:
         id: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY"
-    - class:
+    - Class:
         id: "R3dx7zjpK3&3NGLh0DVLt9Yolka8"
         ownedAttributes:
-          - port:
+          - Port:
               id: loA63PcT8hpUsfQkDvU1p0YT4vRj
               type: 508FPtzv15GguudyAK6odJA7Rxoa
               isBehavior: true
               isConjugated: true
               isService: false)"""";
-    std::string expectedEmit2 = R""""(package:
+    std::string expectedEmit2 = R""""(Package:
   id: epLFcWN0KeMt8t5mAuF4TUCa75ns
   packagedElements:
-    - class:
+    - Class:
         id: 508FPtzv15GguudyAK6odJA7Rxoa
         interfaceRealizations:
-          - interfaceRealization:
+          - InterfaceRealization:
               id: "65&HAREuzThGM38K2m82T1NWR28N"
               contract: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY"
-    - class:
+    - Class:
         id: "R3dx7zjpK3&3NGLh0DVLt9Yolka8"
         ownedAttributes:
-          - port:
+          - Port:
               id: loA63PcT8hpUsfQkDvU1p0YT4vRj
               type: 508FPtzv15GguudyAK6odJA7Rxoa
               isBehavior: true
               isConjugated: true
               isService: false
-    - interface:
+    - Interface:
         id: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY")"""";
     std::string generatedEmit;
     EmitterData data;

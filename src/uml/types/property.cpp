@@ -80,6 +80,7 @@ void Property::referenceErased(ID id) {
     StructuralFeature::referenceErased(id);
     DeploymentTarget::referenceErased(id);
     m_association.eraseElement(id);
+    m_subsettedProperties.eraseElement(id);
 }
 
 TypedSet<ValueSpecification, Property>& Property::getDefaultValueSingleton() {

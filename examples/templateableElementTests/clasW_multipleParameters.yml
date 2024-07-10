@@ -1,18 +1,18 @@
 ---
-  class:
+  Class:
     ownedTemplateSignature:
-      redefinableTemplateSignature:
+      RedefinableTemplateSignature:
         ownedParameters:
-          - templateParameter:
+          - TemplateParameter:
               ownedParameteredElement:
-                primitiveType:
+                PrimitiveType:
                   name: long
-          - templateParameter:
+          - TemplateParameter:
               ownedParameteredElement:
-                instanceSpecification:
+                InstanceSpecification:
                   name: test
-          - templateParameter:
+          - TemplateParameter:
               ownedParameteredElement:
-                literalInt:
+                LiteralInt:
                   value: 1
 ...

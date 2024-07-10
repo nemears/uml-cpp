@@ -1,11 +1,11 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - class :
+      - Class :
           id: J5Y0janY19dgKxqwQ1YYfFgMgXmD
           ownedAttributes:
-            - property:
+            - Property:
                 type: UKqPzBXPjVPhV89kTmNr7xRc7Z_&
-      - class :
+      - Class :
           id : UKqPzBXPjVPhV89kTmNr7xRc7Z_&
 ...

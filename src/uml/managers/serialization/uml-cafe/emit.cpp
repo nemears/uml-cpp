@@ -1,4 +1,4 @@
-#include "uml/managers/serialization/open_uml/emit.h"
+#include "uml/managers/serialization/uml-cafe/emit.h"
 #include "uml/types/stereotype.h"
 #include <yaml-cpp/emitter.h>
 
@@ -219,7 +219,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, abstraction, data, "abstraction",
+            emitElementTypeAndData(emitter, abstraction, data, "Abstraction",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -233,7 +233,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, actionInputPin, data, "actionInputPin", 
+            emitElementTypeAndData(emitter, actionInputPin, data, "ActionInputPin", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures,
@@ -251,7 +251,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, activity, data, "activity",
+            emitElementTypeAndData(emitter, activity, data, "Activity",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -271,7 +271,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, activityFinalNode, data, "activityFinalNode", 
+            emitElementTypeAndData(emitter, activityFinalNode, data, "ActivityFinalNode", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures);
@@ -283,7 +283,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, activityParameterNode, data, "activityParameterNode",
+            emitElementTypeAndData(emitter, activityParameterNode, data, "ActivityParameterNode",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures,
@@ -299,7 +299,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityGroupScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, activityPartition, data, "activityPartition",
+            emitElementTypeAndData(emitter, activityPartition, data, "ActivityPartition",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityPartitionFeatures);
@@ -312,7 +312,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope, 
                         emitElementScope);
-            emitElementTypeAndData(emitter, artifact, data, "artifact",
+            emitElementTypeAndData(emitter, artifact, data, "Artifact",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -329,7 +329,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, association, data, "association",
+            emitElementTypeAndData(emitter, association, data, "Association",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -345,7 +345,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, callBehaviorAction, data, "callBehaviorAction",
+            emitElementTypeAndData(emitter, callBehaviorAction, data, "CallBehaviorAction",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures,
@@ -362,7 +362,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, centralBufferNode, data, "centralBufferNode",
+            emitElementTypeAndData(emitter, centralBufferNode, data, "CentralBufferNode",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures,
@@ -377,7 +377,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope, 
                         emitElementScope);
-            emitElementTypeAndData(emitter, clazz, data, "class",
+            emitElementTypeAndData(emitter, clazz, data, "Class",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -394,7 +394,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, classifierTemplateParameter, data,
                         emitTemplateParameterScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, classifierTemplateParameter, data, "classifierTemplateParameter", 
+            emitElementTypeAndData(emitter, classifierTemplateParameter, data, "ClassifierTemplateParameter", 
                         emitElementFeatures,
                         emitTemplateParameterFeatures,
                         emitClassifierTemplateParameter);
@@ -403,7 +403,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         case ElementType::COMMENT : {
             Comment& comment = el.as<Comment>();
             emitScope(emitter, comment, data, emitElementScope);
-            emitElementTypeAndData(emitter, comment, data, "comment", emitElementFeatures, emitCommentFeatures);
+            emitElementTypeAndData(emitter, comment, data, "Comment", emitElementFeatures, emitCommentFeatures);
             break;
         }
         case ElementType::CONNECTOR : {
@@ -411,7 +411,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, connector, data,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, connector, data, "connector",
+            emitElementTypeAndData(emitter, connector, data, "Connector",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitFeatureFeatures,
@@ -422,7 +422,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             ConnectorEnd& connectorEnd = el.as<ConnectorEnd>();
             emitScope(emitter, connectorEnd, data,
                         emitElementScope);
-            emitElementTypeAndData(emitter, connectorEnd, data, "connectorEnd",
+            emitElementTypeAndData(emitter, connectorEnd, data, "ConnectorEnd",
                         emitElementFeatures,
                         emitMultiplicityElementFeatures,
                         emitConnectorEndFeatures);
@@ -434,7 +434,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitConstraintScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, constraint, data, "constraint",
+            emitElementTypeAndData(emitter, constraint, data, "Constraint",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitConstraintFeatures);
@@ -446,7 +446,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityEdgeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, controlFlow, data, "controlFlow",
+            emitElementTypeAndData(emitter, controlFlow, data, "ControlFlow",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityEdgeFeatures);
@@ -458,7 +458,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, dataStoreNode, data, "dataStoreNode",
+            emitElementTypeAndData(emitter, dataStoreNode, data, "DataStoreNode",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures,
@@ -473,7 +473,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope, 
                         emitElementScope);
-            emitElementTypeAndData(emitter, dataType, data, "dataType",
+            emitElementTypeAndData(emitter, dataType, data, "DataType",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -489,7 +489,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, decisionNode, data, "decisionNode", 
+            emitElementTypeAndData(emitter, decisionNode, data, "DecisionNode", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures,
@@ -503,7 +503,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, dependency, data, "dependency",
+            emitElementTypeAndData(emitter, dependency, data, "Dependency",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -518,7 +518,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, deployment, data, "deployment",
+            emitElementTypeAndData(emitter, deployment, data, "Deployment",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -530,7 +530,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, elementImport, data,
                         emitElementImportScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, elementImport, data, "elementImport",
+            emitElementTypeAndData(emitter, elementImport, data, "ElementImport",
                         emitElementFeatures,
                         emitElementImportFeatures);
             break;
@@ -542,7 +542,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, enumeration, data, "enumeration", 
+            emitElementTypeAndData(emitter, enumeration, data, "Enumeration", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -561,7 +561,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope, 
                         emitElementScope);
-            emitElementTypeAndData(emitter, literal, data, "enumerationLiteral", 
+            emitElementTypeAndData(emitter, literal, data, "EnumerationLiteral", 
                         emitElementFeatures, 
                         emitNamedElementFeatures, 
                         emitParameterableElementFeatures,
@@ -573,7 +573,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, exceptionHandler, data,
                         emitExceptionHandlerScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, exceptionHandler, data, "exceptionHandler", 
+            emitElementTypeAndData(emitter, exceptionHandler, data, "ExceptionHandler", 
                         emitElementFeatures,
                         emitExceptionHandlerFeatures);
             break;
@@ -585,7 +585,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, expression, data, "expression",
+            emitElementTypeAndData(emitter, expression, data, "Expression",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitTypedElementFeatures,
@@ -600,7 +600,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, extension, data, "extension", 
+            emitElementTypeAndData(emitter, extension, data, "Extension", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -617,7 +617,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, extensionEnd, data, "extensionEnd",
+            emitElementTypeAndData(emitter, extensionEnd, data, "ExtensionEnd",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitTypedElementFeatures,
@@ -632,7 +632,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, finalNode, data, "finalNode", 
+            emitElementTypeAndData(emitter, finalNode, data, "FinalNode", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures);
@@ -644,7 +644,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, flowFinalNode, data, "flowFinalNode", 
+            emitElementTypeAndData(emitter, flowFinalNode, data, "FlowFinalNode", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures);
@@ -656,7 +656,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, forkNode, data, "forkNode", 
+            emitElementTypeAndData(emitter, forkNode, data, "ForkNode", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures);
@@ -667,7 +667,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, generalization, data,
                         emitGeneralizationScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, generalization, data, "generalization",
+            emitElementTypeAndData(emitter, generalization, data, "Generalization",
                         emitElementFeatures,
                         emitGeneralizationFeatures);
             break;
@@ -679,7 +679,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, generalizationSet, data, "generalizationSet",
+            emitElementTypeAndData(emitter, generalizationSet, data, "GeneralizationSet",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -692,7 +692,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, initialNode, data, "initialNode", 
+            emitElementTypeAndData(emitter, initialNode, data, "InitialNode", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures);
@@ -704,7 +704,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, inputPin, data, "inputPin", 
+            emitElementTypeAndData(emitter, inputPin, data, "InputPin", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures,
@@ -721,7 +721,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope, 
                         emitElementScope);
-            emitElementTypeAndData(emitter, inst, data, "instanceSpecification", 
+            emitElementTypeAndData(emitter, inst, data, "InstanceSpecification", 
                         emitElementFeatures, 
                         emitNamedElementDeploymentTargetFeatures, 
                         emitParameterableElementFeatures,
@@ -736,7 +736,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, instanceValue, data, "instanceValue",
+            emitElementTypeAndData(emitter, instanceValue, data, "InstanceValue",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitTypedElementFeatures,
@@ -751,7 +751,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, interface, data, "interface", 
+            emitElementTypeAndData(emitter, interface, data, "Interface", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -769,7 +769,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, interfaceRealization, data, "interfaceRealization",
+            emitElementTypeAndData(emitter, interfaceRealization, data, "InterfaceRealization",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -784,7 +784,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, joinNode, data, "joinNode", 
+            emitElementTypeAndData(emitter, joinNode, data, "JoinNode", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures,
@@ -798,7 +798,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, literalBool, data, "literalBool",
+            emitElementTypeAndData(emitter, literalBool, data, "LiteralBool",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -813,7 +813,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, literalInt, data, "literalInt",
+            emitElementTypeAndData(emitter, literalInt, data, "LiteralInt",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -828,7 +828,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, literalNull, data, "literalNull",
+            emitElementTypeAndData(emitter, literalNull, data, "LiteralNull",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -842,7 +842,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, literalReal, data, "literalReal",
+            emitElementTypeAndData(emitter, literalReal, data, "LiteralReal",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -857,7 +857,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, literalString, data, "literalString",
+            emitElementTypeAndData(emitter, literalString, data, "LiteralString",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -872,7 +872,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, literalUnlimitedNatural, data, "literalUnlimitedNatural",
+            emitElementTypeAndData(emitter, literalUnlimitedNatural, data, "LiteralUnlimitedNatural",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -886,7 +886,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, mergeNode, data, "mergeNode", 
+            emitElementTypeAndData(emitter, mergeNode, data, "MergeNode", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures);
@@ -899,7 +899,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, manifestation, data, "manifestation", 
+            emitElementTypeAndData(emitter, manifestation, data, "Manifestation", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -913,7 +913,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, model, data, "model", 
+            emitElementTypeAndData(emitter, model, data, "Model", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -929,7 +929,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityEdgeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, objectFlow, data, "objectFlow",
+            emitElementTypeAndData(emitter, objectFlow, data, "ObjectFlow",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityEdgeFeatures,
@@ -942,7 +942,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, opaqueAction, data, "opaqueAction",
+            emitElementTypeAndData(emitter, opaqueAction, data, "OpaqueAction",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures,
@@ -958,7 +958,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, opaqueBehavior, data, "opaqueBehavior", 
+            emitElementTypeAndData(emitter, opaqueBehavior, data, "OpaqueBehavior", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -979,7 +979,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, operation, data, "operation", 
+            emitElementTypeAndData(emitter, operation, data, "Operation", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -994,7 +994,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, outputPin, data, "outputPin", 
+            emitElementTypeAndData(emitter, outputPin, data, "OutputPin", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures,
@@ -1011,7 +1011,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope, 
                         emitNamedElementScope, 
                         emitElementScope);
-            emitElementTypeAndData(emitter, package, data, "package",
+            emitElementTypeAndData(emitter, package, data, "Package",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -1025,7 +1025,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, packageImport, data,
                         emitPackageImportScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, packageImport, data, "packageImport",
+            emitElementTypeAndData(emitter, packageImport, data, "PackageImport",
                         emitPackageImportFeatures,
                         emitElementFeatures);
             break;
@@ -1033,7 +1033,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         case ElementType::PACKAGE_MERGE : {
             PackageMerge& packageMerge = el.as<PackageMerge>();
             emitScope(emitter, packageMerge, data, emitPackageMergeScope, emitElementScope);
-            emitElementTypeAndData(emitter, packageMerge, data, "packageMerge", emitElementFeatures, emitPackageMergeFeatures);
+            emitElementTypeAndData(emitter, packageMerge, data, "PackageMerge", emitElementFeatures, emitPackageMergeFeatures);
             break;
         }
         case ElementType::PARAMETER : {
@@ -1042,7 +1042,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, parameter, data, "parameter", 
+            emitElementTypeAndData(emitter, parameter, data, "Parameter", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitTypedElementFeatures,
@@ -1055,7 +1055,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, parameterSet, data, 
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, parameterSet, data, "parameterSet",
+            emitElementTypeAndData(emitter, parameterSet, data, "ParameterSet",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterSetFeatures);
@@ -1068,7 +1068,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope, 
                         emitElementScope);
-            emitElementTypeAndData(emitter, port, data, "port",
+            emitElementTypeAndData(emitter, port, data, "Port",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitFeatureFeatures,
@@ -1087,7 +1087,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, primitiveType, data, "primitiveType", 
+            emitElementTypeAndData(emitter, primitiveType, data, "PrimitiveType", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -1104,7 +1104,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, profile, data, "profile", 
+            emitElementTypeAndData(emitter, profile, data, "Profile", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -1117,7 +1117,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, profileApplication, data,
                         emitProfileApplicationScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, profileApplication, data, "profileApplication",
+            emitElementTypeAndData(emitter, profileApplication, data, "ProfileApplication",
                         emitElementFeatures,
                         emitProfileApplicationFeatures);
             break;
@@ -1129,7 +1129,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope, 
                         emitElementScope);
-            emitElementTypeAndData(emitter, property, data, "property",
+            emitElementTypeAndData(emitter, property, data, "Property",
                         emitElementFeatures,
                         emitNamedElementDeploymentTargetFeatures,
                         emitFeatureFeatures,
@@ -1146,7 +1146,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, reception, data,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, reception, data, "reception",
+            emitElementTypeAndData(emitter, reception, data, "Reception",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitFeatureFeatures,
@@ -1160,7 +1160,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitRedefinableTemplateSignatureScope,
                         emitTemplateSignatureScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, redefinableTemplateSignature, data, "redefinableTemplateSignature",
+            emitElementTypeAndData(emitter, redefinableTemplateSignature, data, "RedefinableTemplateSignature",
                         emitElementFeatures,
                         emitTemplateSignatureFeatures,
                         emitRedefinableTemplateSignatureFeatures);
@@ -1173,7 +1173,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, realization, data, "realization",
+            emitElementTypeAndData(emitter, realization, data, "Realization",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -1188,7 +1188,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, signal, data, "signal", 
+            emitElementTypeAndData(emitter, signal, data, "Signal", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -1203,7 +1203,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, slot, data,
                         emitSlotScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, slot, data, "slot", 
+            emitElementTypeAndData(emitter, slot, data, "Slot", 
                         emitElementFeatures,
                         emitSlotFeatures);
             break;
@@ -1215,7 +1215,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, stereotype, data, "stereotype",
+            emitElementTypeAndData(emitter, stereotype, data, "Stereotype",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitNamespaceFeatures,
@@ -1233,7 +1233,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, templateBinding, data,
                         emitTemplateBindingScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, templateBinding, data, "templateBinding",
+            emitElementTypeAndData(emitter, templateBinding, data, "TemplateBinding",
                         emitElementFeatures,
                         emitTemplateBindingFeatures);
             break;
@@ -1243,7 +1243,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, templateParameter, data, 
                         emitTemplateParameterScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, templateParameter, data, "templateParameter",
+            emitElementTypeAndData(emitter, templateParameter, data, "TemplateParameter",
                         emitElementFeatures,
                         emitTemplateParameterFeatures);
             break;
@@ -1253,7 +1253,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitScope(emitter, templateParameterSubstitution, data,
                         emitTemplateParameterSubstitutionScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, templateParameterSubstitution, data, "templateParameterSubstitution", 
+            emitElementTypeAndData(emitter, templateParameterSubstitution, data, "TemplateParameterSubstitution", 
                         emitElementFeatures,
                         emitTemplateParameterSubstitutionFeatures);
             break;
@@ -1261,7 +1261,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         case ElementType::TEMPLATE_SIGNATURE : {
             TemplateSignature& templateSignature = el.as<TemplateSignature>();
             emitScope(emitter, templateSignature, data, emitTemplateSignatureScope, emitElementScope);
-            emitElementTypeAndData(emitter, templateSignature, data, "templateSignature",
+            emitElementTypeAndData(emitter, templateSignature, data, "TemplateSignature",
                         emitElementFeatures,
                         emitTemplateSignatureFeatures);
             break;
@@ -1273,7 +1273,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, usage, data, "usage",
+            emitElementTypeAndData(emitter, usage, data, "Usage",
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
@@ -1286,7 +1286,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitActivityNodeScope,
                         emitNamedElementScope,
                         emitElementScope);
-            emitElementTypeAndData(emitter, valuePin, data, "valuePin", 
+            emitElementTypeAndData(emitter, valuePin, data, "ValuePin", 
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitActivityNodeFeatures,

@@ -144,10 +144,10 @@ TEST_F(BehavioredClassifierTest, simpleClassEmitTest) {
     clazz.setID("E0q8HmS9yU_Qk9ct2XLjnuJOXxwc");
     bhv.setID("C1cleV_7fGQEgHdOfOYZ319RoCNu");
     clazz.setClassifierBehavior(bhv);
-    std::string expectedEmit = R""""(class:
+    std::string expectedEmit = R""""(Class:
   id: E0q8HmS9yU_Qk9ct2XLjnuJOXxwc
   classifierBehavior:
-    opaqueBehavior:
+    OpaqueBehavior:
       id: C1cleV_7fGQEgHdOfOYZ319RoCNu)"""";
     std::string generatedEmit;
     EmitterData data;

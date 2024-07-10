@@ -1,19 +1,19 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - class:
+      - Class:
           id: Y9ZCX7pp5W2D_OwPCFgTz&gcTRSc
           name: general
           powertypeExtent:
             - iav6FFkHBjBCffo8xBUsjyq1mtQe
-      - class:
+      - Class:
           name: specific
           generalizations:
-            - generalization:
+            - Generalization:
                 id: SoPUNRxlXkN3lwefnzrpowEcjka6
                 generalizationSets:
                   - iav6FFkHBjBCffo8xBUsjyq1mtQe
-      - generalizationSet:
+      - GeneralizationSet:
           id: iav6FFkHBjBCffo8xBUsjyq1mtQe
           name: set
           isCovering: true

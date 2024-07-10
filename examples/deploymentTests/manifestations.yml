@@ -1,19 +1,19 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - class:
+      - Class:
           name: utilizedEl1
           id: pNMfBcFpCg0vhc06VYZFdkgu3ZPq
-      - artifact:
+      - Artifact:
           name: artifact
           manifestations:
-            - manifestation:
+            - Manifestation:
                 id: elQJOxECf35h96KkZu2YEsie9kHJ
                 utilizedElement: HPylwSjRzCyu&YVrkO1V_z0g0RGg
-            - manifestation:
+            - Manifestation:
                 id: wO29nIB3PeOeFX0TaaHppiyUn83B
                 utilizedElement: pNMfBcFpCg0vhc06VYZFdkgu3ZPq
-      - class:
+      - Class:
           name: utilizedEl2
           id: HPylwSjRzCyu&YVrkO1V_z0g0RGg
 ...

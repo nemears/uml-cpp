@@ -1,22 +1,22 @@
 ---
-  class :
+  Class :
     name : "test"
     id : ngexGd&4bt_&42ZZzdNtFU6GBq&x
     ownedOperations :
-      - operation :
+      - Operation :
           name : isValid
           id : 26&4LRqmfXz7nt4ZiygBVglOzGeD
           methods :
             - mEaEOlbgEXAE_peo&rm2JzrVI6tk
     ownedBehaviors:
-      - opaqueBehavior :
+      - OpaqueBehavior :
           id : mEaEOlbgEXAE_peo&rm2JzrVI6tk
           name : isValid
           bodies : 
-            - literalString: 
+            - LiteralString: 
                 value: "return true"
           ownedParameters :
-            - parameter :
+            - Parameter :
                 name : "debug"
             #     type : BOOL
                 id : Sc8u1tx8VV5S5108MWGxk&zmbRWr

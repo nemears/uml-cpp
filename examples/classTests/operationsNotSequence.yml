@@ -1,6 +1,6 @@
 ---
-  class:
+  Class:
     ownedOperations:
-      operation:
+      Operation:
         name: wrong
 ...

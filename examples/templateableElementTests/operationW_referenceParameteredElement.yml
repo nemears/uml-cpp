@@ -1,13 +1,13 @@
 ---
-  class:
+  Class:
     ownedAttributes:
-      - property:
+      - Property:
           id: B2dyPF44MATTZ02XsQwgcbeBsq&d
     ownedOperations:
-      - operation:
+      - Operation:
           ownedTemplateSignature:
-            templateSignature:
+            TemplateSignature:
               ownedParameters:
-                - templateParameter:
+                - TemplateParameter:
                     parameteredElement: B2dyPF44MATTZ02XsQwgcbeBsq&d
 ...

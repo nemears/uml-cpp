@@ -1,10 +1,10 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - instanceSpecification:
+      - InstanceSpecification:
           id: HQci2EpoewLIakXPsMAjHKpLkByC
           classifiers: 
             - wkz5zWQPLT7RaxpqT3RDFMeF0bA7
-      - class:
+      - Class:
           id: wkz5zWQPLT7RaxpqT3RDFMeF0bA7
 ...

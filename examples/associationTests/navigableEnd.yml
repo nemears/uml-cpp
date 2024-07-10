@@ -1,24 +1,24 @@
 ---
-  package:
+  Package:
     packageMerges:
-      - packageMerge:
+      - PackageMerge:
           mergedPackage: Primitive_Types_WZcyDDLemQ97
     packagedElements:
-      - class:
+      - Class:
           id: m7pAITPBHxM9c1_aPbfnMLUOC5Dc
           name: type
-      - class:
+      - Class:
           id : J&Po&gVCdSwvJrBK5kl4V1Fn5RoH
           name: hasAssociation
           ownedAttributes:
-            - property:
+            - Property:
                 id: KpMoyOIGjkm&tB8F_zGExQejc7T7
                 name: memberEnd
                 type: m7pAITPBHxM9c1_aPbfnMLUOC5Dc
-      - association:
+      - Association:
           name: association
           navigableOwnedEnds:
-            - property:
+            - Property:
                 type: real_aZG&w6yl61bXVWutgeyScN9
           memberEnds:
             - KpMoyOIGjkm&tB8F_zGExQejc7T7

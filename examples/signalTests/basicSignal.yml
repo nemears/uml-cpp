@@ -1,15 +1,15 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - signal:
+      - Signal:
           id: 9cmazxFIXj8T8&3W0B0F1ZPb_B2I
           name: signal
           ownedAttributes:
-            - property:
+            - Property:
                 name: prop
-      - class:
+      - Class:
           name: class
           ownedReceptions:
-            - reception:
+            - Reception:
                 signal: 9cmazxFIXj8T8&3W0B0F1ZPb_B2I
 ...

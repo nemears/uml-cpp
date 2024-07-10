@@ -1,49 +1,49 @@
 ---
-  package:
+  Package:
     name: root
     packagedElements:
-      - opaqueBehavior:
+      - OpaqueBehavior:
           id: uLHn5GsNBUhrk9cgTO&qLw5LO068
           name: contract
-      - association:
+      - Association:
           id: mmUnLGAGcUocJQlNkF2BxGUzadjY
           name: association
           ownedEnds:
-            - property:
+            - Property:
                 name: end1
                 id: M9ZGTQkG1WO2gKcI09vxkurZQCl3
                 type: 4KnC&UayVI&wv4mWulF16tHeh4uG
-            - property:
+            - Property:
                 name: end2
                 id: zs9ybLuu9NPl8OlITlLFS6_WAm9y
                 type: BVoGn6JfgDNRYmfqmU294H8xWIA8
-      - dataType:
+      - DataType:
           id: 4KnC&UayVI&wv4mWulF16tHeh4uG
           name: type1
-      - dataType:
+      - DataType:
           id: BVoGn6JfgDNRYmfqmU294H8xWIA8
           name: type2
-      - class:
+      - Class:
           name: clazz
           ownedAttributes:
-            - property:
+            - Property:
                 name: prop2
                 id: NW6DWntx1lGgFCSfboMcasD9kaEL
                 type: BVoGn6JfgDNRYmfqmU294H8xWIA8
-            - property:
+            - Property:
                 name: prop1
                 id: _si9BntQM2Vwl0qh1bXGnBi3fAKI
                 type: 4KnC&UayVI&wv4mWulF16tHeh4uG
           ownedConnectors:
-            - connector:
+            - Connector:
                 type: mmUnLGAGcUocJQlNkF2BxGUzadjY
                 contracts:
                   - uLHn5GsNBUhrk9cgTO&qLw5LO068
                 ends:
-                  - connectorEnd:
+                  - ConnectorEnd:
                       id: Xa_ufGeUWxU5cUPY3f8VfRdmsH1V
                       role: NW6DWntx1lGgFCSfboMcasD9kaEL
-                  - connectorEnd:
+                  - ConnectorEnd:
                       id: iluwBJEOrucpPYWRjAf2Wl0Y7xJb
                       role: _si9BntQM2Vwl0qh1bXGnBi3fAKI
 ...

@@ -1,11 +1,11 @@
 --- 
-opaqueBehavior: 
+OpaqueBehavior: 
   bodies: 
-    - literalString:
+    - LiteralString:
         value: one
-    - literalString:
+    - LiteralString:
         value: 1
-    - literalString: 
+    - LiteralString: 
         value: true
   id: i0wopIpBjBHdekQ57DbWeHfWmQp3
   name: test

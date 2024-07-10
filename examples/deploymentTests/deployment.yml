@@ -1,12 +1,12 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - instanceSpecification:
+      - InstanceSpecification:
           id: Jt6XmZTswJx65TX1YvUwImGDheZT
           deployments:
-            - deployment:
+            - Deployment:
                 deployedArtifacts:
                   - 8WVnUgtn8Dm&IAAet1mFpLnbwSLh
-      - artifact:
+      - Artifact:
           id: 8WVnUgtn8Dm&IAAet1mFpLnbwSLh
 ...

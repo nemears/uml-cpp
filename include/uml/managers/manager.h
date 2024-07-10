@@ -3,9 +3,8 @@
 #include "uml/types/element.h"
 #include "abstractManager.h"
 #include "filePersistencePolicy.h"
-#include "serialization/open_uml/openUmlSerializationPolicy.h"
+#include "serialization/uml-cafe/openUmlSerializationPolicy.h"
 #include "uml/umlPtr.h"
-#include "uml/set/readOnlySet.h"
 #include <shared_mutex>
 
 namespace UML {

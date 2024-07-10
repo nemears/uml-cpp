@@ -300,24 +300,24 @@ TEST_F(PropertyTest, emitRedefinedPropertyTest) {
     ASSERT_NO_THROW(prop.getRedefinedProperties().add(redefined));
     pckg.getPackagedElements().add(b);
     pckg.getPackagedElements().add(s);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: RC5KnOAfUJQY6BnxohDHLqrMadYI
   packagedElements:
-    - class:
+    - Class:
         id: "Y8UtleiQO3UuN4GEqSzai0G8&GqC"
         generalizations:
-          - generalization:
+          - Generalization:
               id: RL5_MDmj_CskU1njfiL74QSxP7Bw
               general: yzUVzVw8sod2KyBH5LxX_OLI7HrV
         ownedAttributes:
-          - property:
+          - Property:
               id: sVhU3UWy392YuTfewtNoyaWLhAQw
               redefinedProperties:
                 - 9m50Dir0MgpEaLu8ghn7cSlZ5Yzh
-    - class:
+    - Class:
         id: yzUVzVw8sod2KyBH5LxX_OLI7HrV
         ownedAttributes:
-          - property:
+          - Property:
               id: 9m50Dir0MgpEaLu8ghn7cSlZ5Yzh)"""";
     std::string generatedEmit;
     EmitterData data;

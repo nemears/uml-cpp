@@ -1,30 +1,30 @@
 ---
-  package:
+  Package:
     packageMerges:
-      - packageMerge:
+      - PackageMerge:
           mergedPackage: Primitive_Types_WZcyDDLemQ97
     packagedElements:
-      - expression:
+      - Expression:
           id: hvfrdhQ6M6undbb5bWGKlMESCn_l
           name: packagedExpression
           type: bool_bzkcabSy3CiFd&HmJOtnVRK
           symbol: ==
           operands:
-            - literalInt:
+            - LiteralInt:
                 name: a
                 value: 1
-            - literalInt:
+            - LiteralInt:
                 name: b
                 value: 2
-      - class:
+      - Class:
           id: Zx5giHhheJ6GSaP5oLEN6FxI99L8
           ownedAttributes:
-            - property:
+            - Property:
                 type: int_r9nNbBukx47IomXrT2raqtc4
                 defaultValue:
-                  expression:
+                  Expression:
                     symbol: ++
                     operands:
-                      - literalInt:
+                      - LiteralInt:
                           value: 1
 ...

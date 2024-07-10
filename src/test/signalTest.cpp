@@ -92,19 +92,19 @@ TEST_F(SignalTest, emitSignalTest) {
     signal.getOwnedAttributes().add(attr);
     clazz.getOwnedReceptions().add(reception);
     reception.setSignal(signal);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: "IJabcFrKrE9yxVT&qQUQ2&xzVxpd"
   packagedElements:
-    - class:
+    - Class:
         id: HdQGnHEztfzbMvcBURUAEPRWuw7M
         ownedReceptions:
-          - reception:
+          - Reception:
               id: Y2ANJRtpZRZNCwR7jFo2v_DVm8pZ
               signal: _sgqzW88lsR9bBTk8GyBRjYujfB5
-    - signal:
+    - Signal:
         id: _sgqzW88lsR9bBTk8GyBRjYujfB5
         ownedAttributes:
-          - property:
+          - Property:
               id: DSV8nQG_4VargpMXqb57S2dACThU)"""";
     std::string generatedEmit;
     EmitterData data;

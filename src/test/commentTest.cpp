@@ -50,10 +50,10 @@ TEST_F(CommentTest, commentEmitTest) {
     pckg.setID("zN&UM2AHrXX07rAiNxTmmMwLYI1O");
     comment.setID("FqaulNq6bCe_8J5M0Ff2oCCaQD05");
     pckg.getOwnedComments().add(comment);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: "zN&UM2AHrXX07rAiNxTmmMwLYI1O"
   ownedComments:
-    - comment:
+    - Comment:
         id: FqaulNq6bCe_8J5M0Ff2oCCaQD05)"""";
     std::string generatedEmit;
     EmitterData data;

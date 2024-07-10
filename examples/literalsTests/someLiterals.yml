@@ -1,12 +1,12 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - literalUnlimitedNatural:
+      - LiteralUnlimitedNatural:
           name: infinity
           value: "*"
-      - literalUnlimitedNatural:
+      - LiteralUnlimitedNatural:
           name: number
           value: 9
-      - literalNull:
+      - LiteralNull:
           name: nullLiteral
 ...

@@ -1,20 +1,20 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - class:
+      - Class:
           id: SyNjF8Y2rJNl5pfNXIvOiIx7wxq&
           ownedTemplateSignature:
-            redefinableTemplateSignature:
+            RedefinableTemplateSignature:
               id: t9DEpJVxrlACAQsPLxoHMRPPpDUq
               ownedParameters:
-                - templateParameter:
+                - TemplateParameter:
                     id: Yw0uEQ8ZDsgZx4bogVkuxvBL9CGR
-      - class:
+      - Class:
           id: DVTE867SKvT8f7Z34sqaAxMR0jL2
           templateBindings:
-            - templateBinding:
+            - TemplateBinding:
                 signature: t9DEpJVxrlACAQsPLxoHMRPPpDUq
                 parameterSubstitutions:
-                  - templateParameterSubstitution:
+                  - TemplateParameterSubstitution:
                       formal: Yw0uEQ8ZDsgZx4bogVkuxvBL9CGR
   ...

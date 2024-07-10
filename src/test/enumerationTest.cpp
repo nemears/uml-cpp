@@ -128,14 +128,14 @@ TEST_F(EnumerationTest, emitEnumerationWLiterals) {
     l2.setName("two");
     e.getOwnedLiterals().add(l1);
     e.getOwnedLiterals().add(l2);
-    std::string expectedEmit = R""""(enumeration:
+    std::string expectedEmit = R""""(Enumeration:
   id: a6ds7Q7pgI80WPT5vd2LbJn4dN2g
   name: enum
   ownedLiterals:
-    - enumerationLiteral:
+    - EnumerationLiteral:
         id: ki59FSBz84bR3hyOjfeHEg9LLtCA
         name: one
-    - enumerationLiteral:
+    - EnumerationLiteral:
         id: "IFMeIYNqJzfzBIOMdbuxl&rBBLwR"
         name: two)"""";
     std::string generatedEmit;

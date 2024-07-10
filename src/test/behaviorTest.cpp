@@ -77,16 +77,16 @@ TEST_F(BehaviorTest, emitBasicOpaqueBehavior) {
     o.setVisibility(VisibilityKind::PROTECTED);
     b.getOwnedAttributes().add(p);
     b.getOwnedOperations().add(o);
-    std::string expectedEmit = R""""(opaqueBehavior:
+    std::string expectedEmit = R""""(OpaqueBehavior:
   id: 0FTAvf5nrXsknnc60ziElK2TDb7D
   name: Opaque
   ownedAttributes:
-    - property:
+    - Property:
         id: YVV4HY0dc4OS0zPOc1HPLfyLmx39
         name: prop
         visibility: private
   ownedOperations:
-    - operation:
+    - Operation:
         id: P73WqZXNrYSV0fEtHqKAJTv3RDTD
         name: op
         visibility: protected)"""";

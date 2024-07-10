@@ -90,24 +90,24 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
     generalization.getGeneralizationSets().add(set);
     set.setPowerType(general);
     root.getPackagedElements().add(general, specific, set);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: UpJ207YoGcD0zWHbmtYZhLAYEhRP
   packagedElements:
-    - class:
+    - Class:
         id: mmUnLGAGcUocJQlNkF2BxGUzadjY
         powertypeExtent:
           - "uLHn5GsNBUhrk9cgTO&qLw5LO068"
-    - generalizationSet:
+    - GeneralizationSet:
         id: "uLHn5GsNBUhrk9cgTO&qLw5LO068"
         isCovering: false
         isDisjoint: false
         powertype: mmUnLGAGcUocJQlNkF2BxGUzadjY
         generalizations:
           - vGAiKV8tZmvkxePhhEns36Z654xF
-    - class:
+    - Class:
         id: wJ7Y3K6BmTpN3D2pEtbbBt5aMhuo
         generalizations:
-          - generalization:
+          - Generalization:
               id: vGAiKV8tZmvkxePhhEns36Z654xF
               general: mmUnLGAGcUocJQlNkF2BxGUzadjY
               generalizationSets:

@@ -1,11 +1,11 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - package:
+      - Package:
           id: 3l8cYkYl_KVsMsQtR5ax2IE76CsM
           profileApplications:
-            - profileApplication:
+            - ProfileApplication:
                 appliedProfile: ZjvD1bCxVklVQI7SsmtE_kS3oIIc
-      - profile:
+      - Profile:
           id: ZjvD1bCxVklVQI7SsmtE_kS3oIIc
 ...

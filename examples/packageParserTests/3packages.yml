@@ -1,15 +1,15 @@
 ---
-  package:
+  Package:
     id: HdQGnHEztfzbMvcBURUAEPRWuw7M
     packagedElements:
-      - package:
+      - Package:
           id: 8q2Rht9aAZlY0EnMGtEKlw5Odr_u
           packagedElements:
-            - class:
+            - Class:
                 id: IMFAEVPbMaMPSnkYnxMkdbqEIVGg
-      - package:
+      - Package:
           id: mxRlVDCtqT_rNCfbWRdG&gbA9mEK
           packagedElements:
-            - class:
+            - Class:
                 id: 88ZhPNbz1iQdMJlXPktDVMvpkyBD
 ...

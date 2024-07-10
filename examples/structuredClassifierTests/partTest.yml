@@ -1,6 +1,6 @@
 ---
-  class:
+  Class:
     ownedAttributes:
-      - property:
+      - Property:
           aggregation: COMPOSITE
 ...

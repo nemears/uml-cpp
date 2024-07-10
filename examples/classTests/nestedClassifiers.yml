@@ -1,18 +1,18 @@
 ---
-  class:
+  Class:
     nestedClassifiers:
-      - association:
+      - Association:
           name: assoc
-      - artifact:
+      - Artifact:
           name: art
-      - class:
+      - Class:
           name: class
-      - dataType:
+      - DataType:
           name: bigD
-      - enumeration:
+      - Enumeration:
           name: e
-      - opaqueBehavior:
+      - OpaqueBehavior:
           name: bb
-      - primitiveType:
+      - PrimitiveType:
           name: pp
 ...

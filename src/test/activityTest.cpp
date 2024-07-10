@@ -142,10 +142,10 @@ TEST_F(ActivityTest, emitActivityTest) {
     activity.setID("activity____________________");
     objectNode.setOrdering(ObjectNodeOrderingKind::UNORDERED);
     activity.getNodes().add(objectNode);
-    std::string expectedEmit = R""""(activity:
+    std::string expectedEmit = R""""(Activity:
   id: activity____________________
   nodes:
-    - centralBufferNode:
+    - CentralBufferNode:
         id: objectNode__________________
         ordering: unordered)"""";
     std::string generatedEmit;

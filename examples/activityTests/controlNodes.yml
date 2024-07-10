@@ -1,13 +1,13 @@
 ---
-  activity:
+  Activity:
     name: activity
     nodes:
-      - initialNode:
+      - InitialNode:
           id: xEJA6ePYRh_mvOJl4RkslAak0ZYw
           name: initialNode
           outgoing: 
             - vouMFtZaa68pLeGnb6xKJ4Q_pgzX
-      - forkNode:
+      - ForkNode:
           id: 6ofCcGAhMbs7XoEd2nALFx0OPk1M
           name: forkNode
           incoming:
@@ -16,7 +16,7 @@
             - EIQYuKIqAERcdTHPFe&MHY75rn4t
             - 2xCjDr3YxUt72I1dTMIokgVX8aPl
             - E6sFuO9lqn2IRaOhnXcyV5tHHejC
-      - joinNode:
+      - JoinNode:
           id: DybCFIZ1C75VzLoDZq2vu1nNli7c
           name: joinNode
           incoming: 
@@ -26,43 +26,43 @@
             - gOUi9NuBfRc_bmm_eVXWF_fenH8G
           inPartitions:
             - 6Fy7ykTXOzCLDlUKBCt33Rc9RuGb
-      - flowFinalNode:
+      - FlowFinalNode:
           id: usVWvgHugUPy5itFVtSx1Y&3rmkx
           name: flowFinalNode
           incoming:
             - E6sFuO9lqn2IRaOhnXcyV5tHHejC
           inPartitions:
             - 6Fy7ykTXOzCLDlUKBCt33Rc9RuGb
-      - activityFinalNode:
+      - ActivityFinalNode:
           id: _I8kQp2IvEtdXMG&3va9wPEQLeil
           name: activityFinalNode
           incoming:
             - gOUi9NuBfRc_bmm_eVXWF_fenH8G
     edges:
-      - controlFlow:
+      - ControlFlow:
           id: vouMFtZaa68pLeGnb6xKJ4Q_pgzX
           source: xEJA6ePYRh_mvOJl4RkslAak0ZYw
           target: 6ofCcGAhMbs7XoEd2nALFx0OPk1M
-      - controlFlow:
+      - ControlFlow:
           id: EIQYuKIqAERcdTHPFe&MHY75rn4t
           source: 6ofCcGAhMbs7XoEd2nALFx0OPk1M
           target: DybCFIZ1C75VzLoDZq2vu1nNli7c
-      - controlFlow:
+      - ControlFlow:
           id: 2xCjDr3YxUt72I1dTMIokgVX8aPl
           source: 6ofCcGAhMbs7XoEd2nALFx0OPk1M
           target: DybCFIZ1C75VzLoDZq2vu1nNli7c
-      - controlFlow:
+      - ControlFlow:
           id: E6sFuO9lqn2IRaOhnXcyV5tHHejC
           source: 6ofCcGAhMbs7XoEd2nALFx0OPk1M
           target: usVWvgHugUPy5itFVtSx1Y&3rmkx
           inPartitions:
             - 6Fy7ykTXOzCLDlUKBCt33Rc9RuGb
-      - controlFlow:
+      - ControlFlow:
           id: gOUi9NuBfRc_bmm_eVXWF_fenH8G
           source: DybCFIZ1C75VzLoDZq2vu1nNli7c
           target: _I8kQp2IvEtdXMG&3va9wPEQLeil
     partitions:
-      - activityPartition:
+      - ActivityPartition:
           id: 6Fy7ykTXOzCLDlUKBCt33Rc9RuGb
           name: partition
           nodes:

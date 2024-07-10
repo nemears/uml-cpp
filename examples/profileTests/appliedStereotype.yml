@@ -1,21 +1,21 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - package:
+      - Package:
           id: J5Y0janY19dgKxqwQ1YYfFgMgXmD
           profileApplications:
-            - profileApplication:
+            - ProfileApplication:
                 appliedProfile: PPkaUpbLRkxoN76k6_qR9xv6FruX
           packagedElements:
-            - package:
+            - Package:
                 appliedStereotypes:
-                  - instanceSpecification:
+                  - InstanceSpecification:
                       classifiers: 
                         - dKx8Rm8wx5a&paU5v&dgC0ocZ3xt
-      - profile:
+      - Profile:
           id: PPkaUpbLRkxoN76k6_qR9xv6FruX
           packagedElements:
-            - stereotype:
+            - Stereotype:
                 id: dKx8Rm8wx5a&paU5v&dgC0ocZ3xt
                 metaClass: PACKAGE
 ...

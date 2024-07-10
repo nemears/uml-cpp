@@ -1,9 +1,9 @@
 ---
-  package :
+  Package :
     packagedElements :
-      - class :
+      - Class :
           id : W2gUELk0mKh&Kqc5fjFCOuppln2b
-      - instanceSpecification :
+      - InstanceSpecification :
           id : 8SXVdBHWl9N6o6Uut3WImOPk6Ngw
           classifiers : 
             - W2gUELk0mKh&Kqc5fjFCOuppln2b

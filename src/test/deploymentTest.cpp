@@ -249,7 +249,7 @@ TEST_F(DeploymentTest, emitDeploymentTest) {
     d.setID("RP9VhYnGYcgWOqXxLt4_Xb3RAAM8");
     a.setID("bkwzmF3K0ddPG7CPwXVBZyyp8glc");
     d.getDeployedArtifacts().add(a);
-    std::string expectedEmit = R""""(deployment:
+    std::string expectedEmit = R""""(Deployment:
   id: RP9VhYnGYcgWOqXxLt4_Xb3RAAM8
   deployedArtifacts:
     - bkwzmF3K0ddPG7CPwXVBZyyp8glc)"""";
@@ -268,10 +268,10 @@ TEST_F(DeploymentTest, emitDeploymentTargetTest) {
     d.setID("hZ6hYVt147nLvdm70bATtgmwlQqN");
     prop.setID("0gLOuagM6UjFYi2401zvnoCpMn0M");
     prop.getDeployments().add(d);
-    std::string expectedEmit = R""""(property:
+    std::string expectedEmit = R""""(Property:
   id: 0gLOuagM6UjFYi2401zvnoCpMn0M
   deployments:
-    - deployment:
+    - Deployment:
         id: hZ6hYVt147nLvdm70bATtgmwlQqN)"""";
     std::string generatedEmit;
     EmitterData data;
@@ -294,16 +294,16 @@ TEST_F(DeploymentTest, emitArtifactTest) {
     a.getOwnedAttributes().add(p);
     a.getOwnedOperations().add(o);
     a.getNestedArtifacts().add(n);
-    std::string expectedEmit = R""""(artifact:
+    std::string expectedEmit = R""""(Artifact:
   id: dzpr85AOkv_Z2mLs8cKLbHnR5DBq
   ownedAttributes:
-    - property:
+    - Property:
         id: xr6rIEO8UBfSS2vlFWWNGPcNjVJv
   ownedOperations:
-    - operation:
+    - Operation:
         id: VdLJMfQodStjxL1RCzvyR6RLzCe5
   nestedArtifacts:
-    - artifact:
+    - Artifact:
         id: KWkfV0HFADssmGEBNUj1AwPB4SeC)"""";
     std::string generatedEmit;
     EmitterData data;
@@ -347,18 +347,18 @@ TEST_F(DeploymentTest, emitManifestationTest) {
     pckg.getPackagedElements().add(a);
     a.getManifestations().add(man);
     man.setUtilizedElement(&c);
-    std::string expectedEmit = R""""(package:
+    std::string expectedEmit = R""""(Package:
   id: "O4FknRxSbpxEJlw6HhHP&Wpq0AjD"
   packagedElements:
-    - artifact:
+    - Artifact:
         id: Ihue7RPPRluLEpIUbTV8Xqb68ofQ
         clientDependencies:
           - "UfyRMRUyPnad&lJcpSBOD17VSHtn"
         manifestations:
-          - manifestation:
+          - Manifestation:
               id: "UfyRMRUyPnad&lJcpSBOD17VSHtn"
               utilizedElement: 9mp2RmgjnYQrPtXIoOw9is1UUEyu
-    - class:
+    - Class:
         id: 9mp2RmgjnYQrPtXIoOw9is1UUEyu)"""";
     std::string generatedEmit;
     EmitterData data;

@@ -1,17 +1,17 @@
 ---
-  package:
+  Package:
     packagedElements:
-      - class:
+      - Class:
           id: efp5gW8d2yV5b9bKtY&OmBHJpUYw
           ownedAttributes:
-            - property:
+            - Property:
                 id: 6Mpm2vfQypGQmOQW7RV69iFAsF52
                 name: test  
-      - instanceSpecification:
+      - InstanceSpecification:
           id: sQCzPFXcFEeTenYV0l8pGDwWTpo1
           classifiers: 
             - efp5gW8d2yV5b9bKtY&OmBHJpUYw
           slots:
-            - slot:
+            - Slot:
                 definingFeature: 6Mpm2vfQypGQmOQW7RV69iFAsF52
 ...

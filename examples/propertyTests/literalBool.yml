@@ -1,14 +1,14 @@
 ---
-  package:
+  Package:
     packageMerges:
-      - packageMerge:
+      - PackageMerge:
           mergedPackage: Primitive_Types_WZcyDDLemQ97
     packagedElements:
-      - class:
+      - Class:
           ownedAttributes:
-            - property:
+            - Property:
                 type: bool_bzkcabSy3CiFd&HmJOtnVRK
                 defaultValue:
-                  literalBool:
+                  LiteralBool:
                     value: true
 ...

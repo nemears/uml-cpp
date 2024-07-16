@@ -35,8 +35,9 @@ namespace UML {
             void removeOpposite(__attribute__((unused)) T& el) override {}
     };
 
+
     template <class T, class DataTypePolicy, class ApiPolicy, class U>
-    class PrivateSet2 : public AbstractSet2 , public DataTypePolicy, protected ApiPolicy {
+    class PrivateSet2 : virtual public AbstractSet2 , virtual public DataTypePolicy, protected ApiPolicy {
         protected:
             U& m_el;
             OppositeInterface<T> m_opposite = NoOpposite<T>();
@@ -47,7 +48,7 @@ namespace UML {
             void runRemovePolicy(Element& el) override {
                 ApiPolicy::elementRemoved(el.as<T>(), m_el);
             }
-            bool oppositeEnabled() override {
+            bool oppositeEnabled() const override {
                 return m_opposite.enabled();
             }
             void oppositeAdd(Element& el) override {
@@ -56,10 +57,10 @@ namespace UML {
             void oppositeRemove(Element& el) override {
                 m_opposite.removeOpposite(el.as<T>());
             }
-            bool hasData() override {
+            bool hasData() const override {
                 return DataTypePolicy::hasData();
             }
-            bool containsData(UmlPtr<T> ptr) override {
+            bool containsData(UmlPtr<T> ptr) const override {
                 return DataTypePolicy::containsData(ptr);
             }
             bool removeData(UmlPtr<T> ptr) override {
@@ -219,7 +220,7 @@ namespace UML {
             }
         public:
             PrivateSet2(U& el) : m_el(el) {}
-            bool contains(UmlPtr<T> ptr) override {
+            bool contains(UmlPtr<T> ptr) const override {
                 if (m_rootRedefinedSet.get() != this) {
                     return m_rootRedefinedSet->contains(ptr);
                 }

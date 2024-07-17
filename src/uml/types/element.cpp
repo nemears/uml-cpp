@@ -9,6 +9,7 @@
 #include "uml/types/deployment.h"
 #include "uml/types/dataType.h"
 #include "uml/set/singleton.h"
+#include <memory>
 
 namespace UML {
 
@@ -27,11 +28,7 @@ void Element::referenceErased(ID id) {
     m_appliedStereotype->eraseElement(id);
 }
 
-SetLock Element::lockEl(Element& el) {
-    return m_manager->lockEl(el);
-}
-
-TypedSet<Element, Element>& Element::getOwnerSingleton() {
+Singleton<Element, Element>& Element::getOwnerSingleton() {
     return *m_owner;
 }
 
@@ -40,24 +37,19 @@ Element::Element(ElementType elementType) : m_elementType(elementType) {
     m_node = 0;
     m_id = ID::randomID();
 
-    m_owner = new CustomSingleton<Element, Element>(this);
+    m_owner = std::unique_ptr<Singleton<Element, Element>>(new Singleton<Element, Element>(this));
     m_owner->opposite(&Element::getOwnedElements);
 
-    m_ownedElements = new CustomReadOnlySet<Element, Element>(this);
+    m_ownedElements = std::unique_ptr<ReadOnlySet<Element, Element>(new ReadOnlySet<Element, Element>(this));
     m_ownedElements->opposite(&Element::getOwnerSingleton);
 
-    m_ownedComments = new CustomSet<Comment, Element>(this);
+    m_ownedComments = std::unique_ptr<Set<Comment, Element>>(new Set<Comment, Element>(this));
     m_ownedComments->subsets(*m_ownedElements);
 
-    m_appliedStereotype = new CustomSet<InstanceSpecification, Element>(this);
-    // m_appliedStereotype->subsets(*m_ownedElements);
+    m_appliedStereotypes = std::unique_ptr<Set<InstanceSpecification, Element>>(new Set<InstanceSpecification, Element>(this));
 }
 
 Element::~Element() {
-    delete m_appliedStereotype;
-    delete m_ownedComments;
-    delete m_owner;
-    delete m_ownedElements;
 }
 
 void Element::setID(std::string id) {
@@ -456,7 +448,7 @@ ReadOnlySet<Element, Element>& Element::getOwnedElements() {
 }
 
 Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
-    return *m_appliedStereotype;
+    return *m_appliedStereotypes;
 }
 
 Set<Comment, Element>& Element::getOwnedComments() {

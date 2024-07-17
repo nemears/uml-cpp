@@ -1,8 +1,6 @@
-#ifndef _UML_MANAGERS_ABSTRACT_MANAGER_H_
-#define _UML_MANAGERS_ABSTRACT_MANAGER_H_
+#pragma once
 
 #include "uml/types/element.h"
-#include "uml/set/setLock.h"
 
 namespace UML {
 
@@ -11,9 +9,7 @@ namespace UML {
 
     class AbstractManager {
 
-        template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
-        template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomSingleton;
-        template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomOrderedSet;
+        template <class T, class DataTypePolicy, class ApiPolicy, class U> friend class PrivateSet;
         template <class T> friend class UmlPtr;
         friend class Element;
 
@@ -42,7 +38,6 @@ namespace UML {
             virtual void destroyPtr(AbstractUmlPtr& ptr) = 0;
             virtual void assignPtr(AbstractUmlPtr& ptr) = 0;
             virtual void restorePtr(AbstractUmlPtr& ptr) = 0;
-            virtual SetLock lockEl(Element& el) = 0;
     };
 
     class ManagerStateException : public std::exception {
@@ -55,5 +50,3 @@ namespace UML {
             };
     };
 }
-
-#endif

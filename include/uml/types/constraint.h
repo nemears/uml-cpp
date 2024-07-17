@@ -1,6 +1,4 @@
-#ifndef _UML_CONSTRAINT_H_
-#define _UML_CONSTRAINT_H_
-
+#pragma once
 #include "packageableElement.h"
 #include "valueSpecification.h"
 #include "uml/set/set.h"
@@ -17,10 +15,10 @@ namespace UML {
         friend class Manager;
 
     protected:
-        CustomSingleton<Namespace, Constraint> m_context = CustomSingleton<Namespace, Constraint>(this);
-        CustomSet<Element, Constraint> m_constrainedElements = CustomSet<Element, Constraint>(this);
-        CustomSingleton<ValueSpecification, Constraint> m_specification = CustomSingleton<ValueSpecification, Constraint>(this);
-        TypedSet<Namespace, Constraint> &getContextSingleton();
+        Singleton<Namespace, Constraint> m_context = Singleton<Namespace, Constraint>(this);
+        Set<Element, Constraint> m_constrainedElements = Set<Element, Constraint>(this);
+        Singleton<ValueSpecification, Constraint> m_specification = Singleton<ValueSpecification, Constraint>(this);
+        Singleton<Namespace, Constraint>& getContextSingleton();
         void referenceErased(ID id) override;
         Constraint();
 
@@ -43,5 +41,3 @@ namespace UML {
         }
     };
 }
-
-#endif

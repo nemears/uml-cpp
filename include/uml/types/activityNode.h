@@ -19,13 +19,13 @@ namespace UML {
         friend class Activity;
 
         protected:
-            CustomSingleton<Activity, ActivityNode> m_activity = CustomSingleton<Activity, ActivityNode>(this);
-            CustomSet<ActivityEdge, ActivityNode> m_incoming = CustomSet<ActivityEdge, ActivityNode>(this);
-            CustomSet<ActivityEdge, ActivityNode> m_outgoing = CustomSet<ActivityEdge, ActivityNode>(this);
+            Singleton<Activity, ActivityNode> m_activity = Singleton<Activity, ActivityNode>(this);
+            Set<ActivityEdge, ActivityNode> m_incoming = Set<ActivityEdge, ActivityNode>(this);
+            Set<ActivityEdge, ActivityNode> m_outgoing = Set<ActivityEdge, ActivityNode>(this);
             CustomReadOnlySet<ActivityGroup, ActivityNode> m_inGroups = CustomReadOnlySet<ActivityGroup, ActivityNode>(this);
-            CustomSet<ActivityPartition, ActivityNode> m_inPartitions = CustomSet<ActivityPartition, ActivityNode>(this);
-            CustomSet<InterruptibleActivityRegion, ActivityNode> m_interruptibleRegions = CustomSet<InterruptibleActivityRegion, ActivityNode>(this);
-            TypedSet<Activity, ActivityNode>& getActivitySingleton();
+            Set<ActivityPartition, ActivityNode> m_inPartitions = Set<ActivityPartition, ActivityNode>(this);
+            Set<InterruptibleActivityRegion, ActivityNode> m_interruptibleRegions = Set<InterruptibleActivityRegion, ActivityNode>(this);
+            Singleton<Activity, ActivityNode>& getActivitySingleton();
             void referenceErased(ID id) override;
             ActivityNode();
         public:

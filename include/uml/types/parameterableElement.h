@@ -17,11 +17,11 @@ namespace UML {
         template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            CustomSingleton<TemplateParameter, ParameterableElement> m_templateParameter = CustomSingleton<TemplateParameter, ParameterableElement>(this);
-            CustomSingleton<TemplateParameter, ParameterableElement> m_owningTemplateParameter = CustomSingleton<TemplateParameter, ParameterableElement>(this);
+            Singleton<TemplateParameter, ParameterableElement> m_templateParameter = Singleton<TemplateParameter, ParameterableElement>(this);
+            Singleton<TemplateParameter, ParameterableElement> m_owningTemplateParameter = Singleton<TemplateParameter, ParameterableElement>(this);
             void referenceErased(ID id) override;
-            TypedSet<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
-            TypedSet<TemplateParameter, ParameterableElement>& getTemplateParameterSingleton();
+            Singleton<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
+            Singleton<TemplateParameter, ParameterableElement>& getTemplateParameterSingleton();
             ParameterableElement();
         public:
             ~ParameterableElement();

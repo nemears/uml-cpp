@@ -24,11 +24,10 @@ namespace UML {
     };
 
     template <
-                class T, 
-                class U, 
-                class AdditionPolicy,
-                class RemovalPolicy,
-                class AllocationPolicy
+                class T,
+                class DataTypePolicy,
+                class ApiPolicy,
+                class U
             >
     class PrivateSet;
 
@@ -51,16 +50,15 @@ namespace UML {
     template <class T = Element>
     class UmlPtr : public AbstractUmlPtr {
 
-        template <class U, class V> friend class Singleton;
+        template <class U, class ApiPolicy, class V> friend class Singleton;
         template <class SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class AbstractAccessPolicy;
         template <class U> friend class UmlPtr;
         template <
-                class V, 
-                class U, 
-                class AdditionPolicy,
-                class RemovalPolicy,
-                class AllocationPolicy
+                class V,
+                class DataTypePolicy,
+                class ApiPolicy,
+                class U
             >
         friend class PrivateSet;
 

@@ -12,8 +12,8 @@ namespace UML {
         template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            CustomSingleton<Action, ActionInputPin> m_fromAction = CustomSingleton<Action, ActionInputPin>(this);
-            TypedSet<Action, ActionInputPin>& getFromActionSingleton();
+            Singleton<Action, ActionInputPin> m_fromAction = Singleton<Action, ActionInputPin>(this);
+            Singleton<Action, ActionInputPin>& getFromActionSingleton();
             ActionInputPin();
         public:
             virtual ~ActionInputPin();

@@ -3,6 +3,7 @@
 
 #include "activityNode.h"
 #include "activityEdge.h"
+#include "uml/set/singleton.h"
 
 namespace UML {
 
@@ -15,13 +16,13 @@ namespace UML {
         friend class Activity;
 
         protected:
-            CustomSingleton<Activity, ActivityGroup> m_inActivity = CustomSingleton<Activity, ActivityGroup>(this);
-            CustomSingleton<ActivityGroup, ActivityGroup> m_superGroup = CustomSingleton<ActivityGroup, ActivityGroup>(this);
-            CustomReadOnlySet<ActivityNode, ActivityGroup> m_containedNodes = CustomReadOnlySet<ActivityNode, ActivityGroup>(this);
-            CustomReadOnlySet<ActivityEdge, ActivityGroup> m_containedEdges = CustomReadOnlySet<ActivityEdge, ActivityGroup>(this);
-            CustomReadOnlySet<ActivityGroup, ActivityGroup> m_subGroups = CustomReadOnlySet<ActivityGroup, ActivityGroup>(this);
-            TypedSet<Activity, ActivityGroup>& getInActivitySingleton();
-            TypedSet<ActivityGroup, ActivityGroup>& getSuperGroupSingleton();
+            Singleton<Activity, ActivityGroup> m_inActivity = Singleton<Activity, ActivityGroup>(this);
+            Singleton<ActivityGroup, ActivityGroup> m_superGroup = Singleton<ActivityGroup, ActivityGroup>(this);
+            ReadOnlySet<ActivityNode, ActivityGroup> m_containedNodes = ReadOnlySet<ActivityNode, ActivityGroup>(this);
+            ReadOnlySet<ActivityEdge, ActivityGroup> m_containedEdges = ReadOnlySet<ActivityEdge, ActivityGroup>(this);
+            ReadOnlySet<ActivityGroup, ActivityGroup> m_subGroups = ReadOnlySet<ActivityGroup, ActivityGroup>(this);
+            Singleton<Activity, ActivityGroup>& getInActivitySingleton();
+            Singleton<ActivityGroup, ActivityGroup>& getSuperGroupSingleton();
             void referenceErased(ID id) override;
             ActivityGroup();
         public:

@@ -2,6 +2,7 @@
 
 #include "namedElement.h"
 #include "parameterableElement.h"
+#include "uml/set/singleton.h"
 
 namespace UML {
 
@@ -13,9 +14,9 @@ namespace UML {
         friend class Package;
 
         protected:
-            CustomSingleton<Package, PackageableElement> m_owningPackage = CustomSingleton<Package, PackageableElement>(this);
+            Singleton<Package, PackageableElement> m_owningPackage = CustomSingleton<Package, PackageableElement>(this);
             void referenceErased(ID id) override;
-            TypedSet<Package, PackageableElement>& getOwningPackageSingleton();
+            Singleton<Package, PackageableElement>& getOwningPackageSingleton();
             PackageableElement();
         public:
             virtual ~PackageableElement() {};

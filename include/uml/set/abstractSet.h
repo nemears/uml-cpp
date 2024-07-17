@@ -1,128 +1,81 @@
 #pragma once
 
-#include "uml/types/namedElement.h"
-#include "setNode.h"
-#include "setLock.h"
-#include "doNothingPolicy.h"
-#include "uml/macros.h"
-#include "uml/forwardDeclarations.h"
+#include <memory>
+#include <unordered_set>
+#include "../types/element.h"
+#include "uml/umlPtr.h"
 
 namespace UML {
-
-    class SetStateException : public std::exception {
-        std::string m_msg;
-        public:
-            SetStateException(){};
-            SetStateException(std::string msg) : m_msg("Error in Uml Set: " + msg) {};
-            const char* what() const throw() override {
-                return m_msg.c_str();
-            };
-    };
-
-    template <class T, class U> class TypedSet;
-    template <class T>
-    class OrderedID_Set;
-    template <class T>
-    class OrderedPtrSet;
-    template <
-                class T, 
-                class U,
-                class AdditionPolicy,
-                class RemovalPolicy
-            >
-    class CustomOrderedSet;
-
     enum class SetType {
         SET,
+        SINGLETON,
         ORDERED_SET,
-        BAG,
-        LIST
+        LIST,
+        BAG
     };
 
     class AbstractSet {
 
-        template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
-        friend class OrderedSetNodeAllocationPolicy;
-        friend struct OrderedSetNode;
-        friend class SetNode;
-        template <class T>
-        friend class OrderedID_Set;
-        template <class T>
-        friend class OrderedPtrSet;
-        template <
-                class T, 
-                class U,
-                class AdditionPolicy,
-                class RemovalPolicy
-            >
-        friend class CustomOrderedSet;
+        template <class T, class U, class DataTypePolicy, class ApiPolicy>
+        friend class PrivateSet;
 
         protected:
-            SetNode* m_root = 0;
-
-            std::unordered_set<AbstractSet*> m_superSets;
-            std::unordered_set<AbstractSet*> m_subSets;
-            std::list<AbstractSet*> m_redefines;
-
-            AbstractSet* m_setToInstantiate = 0;
-
-            bool m_rootRedefinedSet = true;
-
+            std::unordered_set<std::shared_ptr<AbstractSet>> m_subSetsWithData;
+            std::unordered_set<std::shared_ptr<AbstractSet>> m_superSets;
+            std::unordered_set<std::shared_ptr<AbstractSet>> m_subSets;
+            std::unordered_set<std::shared_ptr<AbstractSet>> m_redefinedSets;
+            std::shared_ptr<AbstractSet> m_rootRedefinedSet;
             size_t m_size = 0;
-
-            // root
-            virtual void setRoot(SetNode* node) = 0;
-            virtual SetNode* getRoot() const = 0;
-
+            virtual bool hasData() const = 0;
+            virtual bool containsData(AbstractUmlPtr ptr) const = 0;
+            virtual bool removeData(AbstractUmlPtr ptr) = 0;
             virtual void runAddPolicy(Element& el) = 0;
             virtual void runRemovePolicy(Element& el) = 0;
-            virtual bool oppositeEnabled() = 0;
+            virtual bool oppositeEnabled() const = 0;
             virtual void oppositeAdd(Element& el) = 0;
             virtual void oppositeRemove(Element& el) = 0;
-            virtual void handleOppositeRemove(Element& el) = 0;
-            virtual SetType setType() const = 0;
-            virtual void adjustSuperSets(SetNode* node) = 0;
-            virtual SetNode* createNode(Element& el) = 0;
-            virtual SetNode* createNode(ID id) = 0;
-            virtual void innerRemove(ID id) = 0;
-            virtual void remove(ID id) = 0;
-
+            virtual void nonOppositeAdd(AbstractUmlPtr ptr) = 0;
+            virtual void innerAdd(AbstractUmlPtr ptr) = 0;
+            virtual void nonOppositeRemove(AbstractUmlPtr ptr) = 0;
+            virtual void innerRemove(AbstractUmlPtr ptr) = 0;
+            virtual void allocatePtr(AbstractUmlPtr ptr) = 0;
+            virtual void deAllocatePtr(AbstractUmlPtr ptr) = 0;
+            class iterator {
+                protected:
+                    virtual AbstractUmlPtr getCurr() const = 0;
+                    virtual void next() = 0;
+                    virtual std::unique_ptr<iterator> clone() const = 0;
+                public:
+                    virtual ~iterator() {}
+            };
         public:
-            AbstractSet& operator=(AbstractSet&&) = delete;
-
-            /**
-             * this set subsets the set supplied, meaning all elements within this set will be contained within the set supplied
-             * but this set will not necessarily have all of the elements within the set supplied
-             * @param subsetOf the set that we are a subset of
-             **/
-            void subsets(AbstractSet* subsetOf) {
-                if (!subsetOf->m_rootRedefinedSet) {
-                    for (auto redefinedSet : subsetOf->m_redefines) {
-                        if (redefinedSet->m_rootRedefinedSet) {
-                            subsetOf = redefinedSet;
-                            break;
-                        }
-                    }
-                }
-                if (!this->m_superSets.count(subsetOf)) {
-                    this->m_superSets.insert(subsetOf);
-                    subsetOf->m_subSets.insert(this);
-                    // Handle ordered set, TODO other set types
-                    if (!m_setToInstantiate && subsetOf->setType() == SetType::ORDERED_SET) {
-                        if (subsetOf->m_setToInstantiate) {
-                            // we want highest up the tree orderedSet
-                            m_setToInstantiate = subsetOf->m_setToInstantiate;
-                        } else {
-                            m_setToInstantiate = subsetOf;
-                        }
-                    } else if (subsetOf->m_setToInstantiate) {
-                        m_setToInstantiate = subsetOf->m_setToInstantiate;
-                    }
-                }
+            virtual ~AbstractSet() {}
+            virtual void subsets(AbstractSet& superSet) {
+                superSet.m_rootRedefinedSet->m_subSets.insert(m_rootRedefinedSet);
+                m_subSets.insert(superSet.m_rootRedefinedSet); 
             }
-
-            void subsets(AbstractSet& subsetOf) {
-                subsets(&subsetOf);
+            virtual void redefines(AbstractSet& redefinedSet) {
+                for (std::shared_ptr<AbstractSet> superSet : m_rootRedefinedSet->m_superSets) {
+                    redefinedSet.m_rootRedefinedSet->m_superSets.insert(superSet);
+                }
+                for (std::shared_ptr<AbstractSet> subSet : m_rootRedefinedSet->m_subSets) {
+                    redefinedSet.m_rootRedefinedSet->m_subSets.insert(subSet);
+                }
+                for (std::shared_ptr<AbstractSet> alreadyRedefinedSet : m_rootRedefinedSet->m_redefinedSets) {
+                    redefinedSet.m_rootRedefinedSet->m_redefinedSets.insert(alreadyRedefinedSet);
+                }
+                m_rootRedefinedSet->m_superSets.clear();
+                m_rootRedefinedSet->m_subSets.clear();
+                m_rootRedefinedSet->m_redefinedSets.clear();
+                redefinedSet.m_rootRedefinedSet->m_redefinedSets.insert(m_rootRedefinedSet);
+                m_rootRedefinedSet = redefinedSet.m_rootRedefinedSet;
             }
+            virtual bool contains(AbstractUmlPtr ptr) const = 0;
+            size_t size() const {
+                return m_size;
+            }
+            virtual SetType setType() const = 0;
+            virtual std::unique_ptr<iterator> begin() const = 0;
+            virtual std::unique_ptr<iterator> end() const = 0;
     };
 }

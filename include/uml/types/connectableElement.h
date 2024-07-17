@@ -3,7 +3,7 @@
 
 #include "typedElement.h"
 #include "parameterableElement.h"
-#include "uml/set/readOnlySet.h"
+#include "uml/set/doNothingPolicy.h"
 
 namespace UML {
 
@@ -12,12 +12,12 @@ namespace UML {
     class ConnectableElement : virtual public TypedElement, virtual public ParameterableElement {
 
         protected:
-            CustomReadOnlySet<ConnectorEnd, ConnectableElement> m_ends = CustomReadOnlySet<ConnectorEnd, ConnectableElement>(this);
+            ReadOnlySet<ConnectorEnd, DoNothingPolicy, ConnectableElement> m_ends = CustomReadOnlySet<ConnectorEnd, ConnectableElement>(this);
             void referenceErased(ID id) override;
             ConnectableElement();
         public:
             virtual ~ConnectableElement();
-            ReadOnlySet<ConnectorEnd, ConnectableElement>& getEnds();
+            ReadOnlySet<ConnectorEnd, DoNothingPolicy, ConnectableElement>& getEnds();
             bool isSubClassOf(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CONNECTABLE_ELEMENT;

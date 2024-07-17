@@ -1,16 +1,11 @@
-#ifndef _UML_ELEMENT_H_
-#define _UML_ELEMENT_H_
+#pragma once
 
 #include <string>
-#include <list>
-#include <regex>
 #include <exception>
 #include <memory>
-#include <unordered_map>
-#include <unordered_set>
+#include <list>
 #include "uml/id.h"
 #include "uml/set/doNothingPolicy.h"
-#include "uml/set/setLock.h"
 
 namespace YAML {
     class Node;
@@ -186,14 +181,14 @@ namespace UML {
     class InterfaceRealization;
     class Usage;
     class RedefinableTemplateSignature;
-    template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomSet;
-    template <class T, class U> class Set;
-    template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomReadOnlySet;
-    template <class T, class U> class ReadOnlySet;
-    template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomSingleton;
-    template <class T, class U> class Singleton;
-    template <class T, class U, class AdditionPolicy, class RemovalPolicy> class CustomOrderedSet;
-    template< class T, class U> class TypedSet;
+    template <class T, class U, class DataTypePolicy, class ApiPolicy = DoNothingPolicy>
+    class PrivateSet;
+    template <class T, class U, class ApiPolicy = DoNothingPolicy>
+    class Set;
+    template <class T>
+    class SetDataPolicy;
+    template<class T>
+    class SingletonDataPolicy;
     template <class T> class UmlPtr;
     typedef UmlPtr<Element> ElementPtr;
     class EmitterData;
@@ -235,10 +230,7 @@ namespace UML {
         friend class InterfaceRealization;
         friend class Usage;
         friend class RedefinableTemplateSignature;
-        template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomSingleton;
-        template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomSet;
-        template <class T, class U, class AdditionPolicy, class RemovalPolicy> friend class CustomOrderedSet;
-        template <class T, class U, class AdditionPolicy, class RemovalPolicy, class AllocationPolicy> friend class PrivateSet;
+        template <class T, class U, class DataTypePolicy, class ApiPolicy> friend class PrivateSet;
         template <class T> friend class UmlPtr;
         friend std::string emit(Element& el, EmitterData& data);
         friend ElementPtr parse(std::string data, ParserData& metaData);
@@ -253,18 +245,16 @@ namespace UML {
             const ElementType m_elementType;
 
             // owner
-            CustomSingleton<Element, Element, DoNothingAdd<Element, Element>, DoNothingRemove<Element, Element>>* m_owner;
-            TypedSet<Element, Element>& getOwnerSingleton();
-            
+            std::unique_ptr<PrivateSet<Element, Element, SingletonDataPolicy<Element>, DoNothingPolicy>> m_owner;
             // ownedElements
-            CustomReadOnlySet<Element, Element, DoNothingAdd<Element, Element>, DoNothingRemove<Element, Element>>* m_ownedElements;
-            CustomSet<Comment, Element, DoNothingAdd<Comment, Element>, DoNothingRemove<Comment, Element>>* m_ownedComments;
-            CustomSet<InstanceSpecification, Element, DoNothingAdd<InstanceSpecification, Element>, DoNothingRemove<InstanceSpecification, Element>>* m_appliedStereotype;
+            std::unique_ptr<PrivateSet<Element, Element, SetDataPolicy<Element>, DoNothingPolicy>> m_ownedElements;
+            std::unique_ptr<Set<Comment, Element, DoNothingPolicy>> m_ownedComments;
+            std::unique_ptr<Set<InstanceSpecification, Element, DoNothingPolicy>> m_appliedStereotypes;
+            PrivateSet<Element, Element, SingletonDataPolicy<Element>, DoNothingPolicy>& getOwnerSingleton();
             void setOwner(Element* el);
             void setOwnerByID(ID id);
             virtual void restoreReferences();
             virtual void referenceErased(ID id);
-            SetLock lockEl(Element& el);
             Element(ElementType elementType);
         public:
             Element(const Element&) = delete;
@@ -272,15 +262,15 @@ namespace UML {
             virtual ~Element();
             ID getID() const;
             ElementPtr getOwner() const;
-            ReadOnlySet<Element, Element>& getOwnedElements();
-            Set<Comment, Element>& getOwnedComments();
+            PrivateSet<Element, Element, SetDataPolicy<Element>, DoNothingPolicy>& getOwnedElements();
+            Set<Comment, Element, DoNothingPolicy>& getOwnedComments();
             /**
              * TODO: I am keeping it simple for now, instance specification of stereotype to
              *       hold tags and operations, but I think it would be cool to dynamically map
              *       methods if we load the stereotype before runtime. Also would be cool to have
              *       stereotype tags as keyword in yaml config for disk storage (not necessarily useful though?)
              **/
-            Set<InstanceSpecification, Element>& getAppliedStereotypes();
+            Set<InstanceSpecification, Element, DoNothingPolicy>& getAppliedStereotypes();
             virtual void setID(std::string id);
             void setID(ID id);
             static std::string elementTypeToString(ElementType eType);
@@ -308,26 +298,10 @@ namespace UML {
     };
 
     //Exceptions
-
     class InvalidID_Exception: public std::exception {
         public:
         virtual const char* what() const throw() {
             return "String of id is not a valid UUID4";
         }
     };
-    
-    class ElementDoesntExistException : public std::exception {
-        friend class Element;
-        private:
-            std::string msg;
-
-        public:
-            ElementDoesntExistException(const Element& el) : 
-                msg("Removed " + el.getElementTypeString() + " that isn't in the Sequence\nuuid: " + el.m_id.string())
-                {}
-            virtual const char* what() const throw() {
-                return msg.c_str();
-            }
-    };
 }
-#endif

@@ -35,10 +35,10 @@ namespace UML{
                 public:
                     void apply(PackageImport& el, Namespace& me);
             };
-            CustomReadOnlySet<NamedElement, Namespace> m_members = CustomReadOnlySet<NamedElement, Namespace>(this);
-            CustomReadOnlySet<NamedElement, Namespace> m_ownedMembers = CustomReadOnlySet<NamedElement, Namespace>(this);
-            CustomSet<Constraint, Namespace> m_ownedRules = CustomSet<Constraint, Namespace>(this);
-            CustomSet<ElementImport, Namespace, AddElementImportPolicy, RemoveElementImportPolicy> m_elementImports = CustomSet<ElementImport, Namespace, AddElementImportPolicy, RemoveElementImportPolicy>(this);
+            ReadOnlySet<NamedElement, Namespace> m_members = ReadOnlySet<NamedElement, Namespace>(this);
+            ReadOnlySet<NamedElement, Namespace> m_ownedMembers = ReadOnlySet<NamedElement, Namespace>(this);
+            Set<Constraint, Namespace> m_ownedRules = Set<Constraint, Namespace>(this);
+            Set<ElementImport, Namespace, AddElementImportPolicy, RemoveElementImportPolicy> m_elementImports = CustomSet<ElementImport, Namespace, AddElementImportPolicy, RemoveElementImportPolicy>(this);
             CustomSet<PackageImport, Namespace, AddPackageImportPolicy, RemovePackageImportPolicy> m_packageImports = CustomSet<PackageImport, Namespace, AddPackageImportPolicy, RemovePackageImportPolicy>(this);
             CustomReadOnlySet<PackageableElement, Namespace> m_importedMembers = CustomReadOnlySet<PackageableElement, Namespace>(this);
             void referenceErased(ID id) override;

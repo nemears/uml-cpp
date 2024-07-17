@@ -19,10 +19,10 @@ namespace UML {
         template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            CustomSet<ActivityNode, Activity> m_nodes = CustomSet<ActivityNode, Activity>(this);
-            CustomSet<ActivityEdge, Activity> m_edges = CustomSet<ActivityEdge, Activity>(this);
-            CustomSet<ActivityGroup, Activity> m_groups = CustomSet<ActivityGroup, Activity>(this);
-            CustomSet<ActivityPartition, Activity> m_partitions = CustomSet<ActivityPartition, Activity>(this);
+            Set<ActivityNode, Activity> m_nodes = Set<ActivityNode, Activity>(this);
+            Set<ActivityEdge, Activity> m_edges = Set<ActivityEdge, Activity>(this);
+            Set<ActivityGroup, Activity> m_groups = Set<ActivityGroup, Activity>(this);
+            Set<ActivityPartition, Activity> m_partitions = Set<ActivityPartition, Activity>(this);
             Activity();
         public:
             virtual ~Activity();

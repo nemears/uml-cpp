@@ -1,20 +1,11 @@
 #pragma once
 
 namespace UML {
-    template <class T, class U>
-    class DoNothingAdd {
-        public:
-            static void apply(T& el, U& me) {
-                (void) el;
-                (void) me;
-            }
-    };
-    template <class T, class U>
-    class DoNothingRemove {
-        public:
-            static void apply(T& el, U& me) {
-                (void) el;
-                (void) me;
-            }
+
+    class Element;
+
+    class DoNothingPolicy {
+        void addElement(__attribute__((unused)) Element& el, __attribute__((unused)) Element& me) {}
+        void removeElement(__attribute__((unused)) Element& el, __attribute__((unused)) Element& me) {}
     };
 }

@@ -1,10 +1,11 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include "element.h"
-// #include"uml/setsingleton.h"
+#include "uml/set/doNothingPolicy.h"
 
-namespace UML{
+namespace UML {
 
     class Namespace;
     class Dependency;
@@ -40,13 +41,15 @@ namespace UML{
                 public:
                     void apply(Namespace& el, NamedElement& me);
             };
-            CustomSingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy, RemoveQualifiedNamePolicy>* m_namespace;
-        protected:
-            CustomSet<Dependency, NamedElement, DoNothingAdd<Dependency,NamedElement>, DoNothingRemove<Dependency,NamedElement>>* m_clientDependencies;
+            class QualifiedNamePolicy {
+                // todo
+            };
+            std::unique_ptr<Singleton<Namespace, NamedElement, QualifiedNamePolicy>> m_namespace;
+            std::unique_ptr<Set<Dependency, NamedElement, DoNothingPolicy>>  m_clientDependencies;
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             void updateQualifiedName(std::string absoluteNamespace);
             void referenceErased(ID id) override;
-            TypedSet<Namespace, NamedElement>& getNamespaceSingleton();
+            Set<Namespace, NamedElement, DoNothingPolicy>& getNamespaceSingleton();
             NamedElement();
         public:
             virtual ~NamedElement();
@@ -54,7 +57,7 @@ namespace UML{
             virtual void setName(const std::string &name);
             std::string getQualifiedName();
             NamespacePtr getNamespace() const;
-            Set<Dependency, NamedElement>& getClientDependencies();
+            Set<Dependency, NamedElement, DoNothingPolicy>& getClientDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);
             bool isSubClassOf(ElementType eType) const override;

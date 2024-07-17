@@ -9,11 +9,6 @@
 
 namespace UML {
 
-    struct ThreadSafeSetLock : public SetLock {
-        std::unique_lock<std::mutex> m_lck;
-        ThreadSafeSetLock(ManagerNode& node) : m_lck(node.m_mtx) {}
-    };
-
     template <
             class SerializationPolicy = OpenUmlSerializationPolicy, 
             class PersistencePolicy = FilePersistencePolicy
@@ -85,10 +80,6 @@ namespace UML {
             void restorePtr(AbstractUmlPtr& ptr) override {
                 std::lock_guard<std::mutex> ptrsLck(ptr.m_node->m_ptrsMtx);
                 ptr.m_node->m_ptrs.insert(&ptr);
-            }
-
-            SetLock lockEl(Element& el) override {
-                return ThreadSafeSetLock(*el.m_node);
             }
         public:
             virtual ~Manager() {

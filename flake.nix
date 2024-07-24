@@ -73,8 +73,11 @@
             };
             version = "0.3.6";
           };
-
           packages.default = self.packages.${system}.uml-cpp;
+          overlay = final : prev: {
+            uml-cpp = self.packages.${system}.uml-cpp;
+            uml-cpp_0_3_6 = self.packages.${system}.uml-cpp_0_3_6;
+          };
         }
       );
 }

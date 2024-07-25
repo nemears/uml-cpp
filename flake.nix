@@ -64,19 +64,19 @@
             src = ./.;
             version = "0.4.0";
           };
-          packages.uml-cpp_0_3_6 = buildUmlCpp {
+          packages.uml-cpp_0_3_5 = buildUmlCpp {
             src = pkgs.fetchFromGitHub {
               owner = "nemears";
               repo = "uml-cpp";
-              rev = "v0.3.6";
-              hash = "sha256-crZCrVuUpW217dQ4WuN8qAcVtbMZSsbKhhHnnC8OEDc=";
+              rev = "v0.3.5";
+              hash = "sha256-HzzOe+9s67LwWlHWYIa+vxbWMBVCsVY7RXfFDkElwpY=";
             };
-            version = "0.3.6";
+            version = "0.3.5";
           };
           packages.default = self.packages.${system}.uml-cpp;
           overlay = final : prev: {
             uml-cpp = self.packages.${system}.uml-cpp;
-            uml-cpp_0_3_6 = self.packages.${system}.uml-cpp_0_3_6;
+            uml-cpp_0_3_5 = self.packages.${system}.uml-cpp_0_3_5;
           };
         }
       );

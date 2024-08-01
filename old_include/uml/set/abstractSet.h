@@ -2,7 +2,8 @@
 
 #include <memory>
 #include <unordered_set>
-#include <uml/umlPtr.h>
+#include "../types/element.h"
+#include "uml/umlPtr.h"
 
 namespace UML {
     enum class SetType {
@@ -13,18 +14,10 @@ namespace UML {
         BAG
     };
 
-    template <class T>
-    class SetDataPolicy;
-
     class AbstractSet {
 
         template <class T, class U, class DataTypePolicy, class ApiPolicy>
         friend class PrivateSet;
-        template <class T>
-        friend class SetDataPolicy;
-        template <class T>
-        friend class SingletonDataPolicy;
-        friend class Element;
 
         protected:
             std::unordered_set<std::shared_ptr<AbstractSet>> m_subSetsWithData;
@@ -34,47 +27,28 @@ namespace UML {
             std::shared_ptr<AbstractSet> m_rootRedefinedSet;
             size_t m_size = 0;
             virtual bool hasData() const = 0;
-            virtual bool containsData(ElementPtr ptr) const = 0;
-            virtual bool removeData(ElementPtr ptr) = 0;
+            virtual bool containsData(AbstractUmlPtr ptr) const = 0;
+            virtual bool removeData(AbstractUmlPtr ptr) = 0;
             virtual void runAddPolicy(Element& el) = 0;
             virtual void runRemovePolicy(Element& el) = 0;
             virtual bool oppositeEnabled() const = 0;
             virtual void oppositeAdd(Element& el) = 0;
             virtual void oppositeRemove(Element& el) = 0;
-            virtual void nonOppositeAdd(ElementPtr ptr) = 0;
-            virtual void innerAdd(ElementPtr ptr) = 0;
-            virtual void nonOppositeRemove(ElementPtr ptr) = 0;
-            virtual void innerRemove(ElementPtr ptr) = 0;
-            virtual void allocatePtr(ElementPtr ptr) = 0;
-            virtual void deAllocatePtr(ElementPtr ptr) = 0;
+            virtual void nonOppositeAdd(AbstractUmlPtr ptr) = 0;
+            virtual void innerAdd(AbstractUmlPtr ptr) = 0;
+            virtual void nonOppositeRemove(AbstractUmlPtr ptr) = 0;
+            virtual void innerRemove(AbstractUmlPtr ptr) = 0;
+            virtual void allocatePtr(AbstractUmlPtr ptr) = 0;
+            virtual void deAllocatePtr(AbstractUmlPtr ptr) = 0;
             class iterator {
-                template <class T>
-                friend class SetDataPolicy;
-                template <class T>
-                friend class SingletonDataPolicy;
                 protected:
-                    size_t m_hash = 0;
-                    virtual ElementPtr getCurr() const = 0;
+                    virtual AbstractUmlPtr getCurr() const = 0;
                     virtual void next() = 0;
                     virtual std::unique_ptr<iterator> clone() const = 0;
                 public:
-                    iterator() {}
-                    iterator(const iterator& rhs) {
-                        m_hash = rhs.m_hash;
-                    }
                     virtual ~iterator() {}
-                    bool operator==(const iterator& rhs) const {
-                        return rhs.m_hash == m_hash;
-                    }
-                    bool operator!=(const iterator& rhs) const {
-                        return rhs.m_hash != m_hash;
-                    }
-
             };
-            virtual std::unique_ptr<iterator> beginPtr() const = 0;
-            virtual std::unique_ptr<iterator> endPtr() const = 0;
         public:
-            AbstractSet() : m_rootRedefinedSet(this) {}
             virtual ~AbstractSet() {}
             virtual void subsets(AbstractSet& superSet) {
                 superSet.m_rootRedefinedSet->m_subSets.insert(m_rootRedefinedSet);
@@ -96,10 +70,12 @@ namespace UML {
                 redefinedSet.m_rootRedefinedSet->m_redefinedSets.insert(m_rootRedefinedSet);
                 m_rootRedefinedSet = redefinedSet.m_rootRedefinedSet;
             }
-            virtual bool contains(ElementPtr ptr) const = 0;
+            virtual bool contains(AbstractUmlPtr ptr) const = 0;
             size_t size() const {
                 return m_size;
             }
             virtual SetType setType() const = 0;
+            virtual std::unique_ptr<iterator> begin() const = 0;
+            virtual std::unique_ptr<iterator> end() const = 0;
     };
 }

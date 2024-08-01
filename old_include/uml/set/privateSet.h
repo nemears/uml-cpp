@@ -16,6 +16,7 @@ namespace UML {
                 return m_msg.c_str();
             };
     };
+
     template <class T>
     class OppositeInterface {
         public:
@@ -37,22 +38,16 @@ namespace UML {
     };
 
 
-    template <class T,  class U, class DataTypePolicy, class ApiPolicy>
+    template <class T,  class U, class DataTypePolicy, class ApiPolicy = DoNothingPolicy>
     class PrivateSet : virtual public AbstractSet , virtual public DataTypePolicy, protected ApiPolicy {
-
-        friend class Element;
-        friend class NamedElement;
-        template <class V, class W, class OtherDataTypePolicy, class OtherApiPolicy>
-        friend class PrivateSet;
-
         private:
             std::mutex m_mutex;
         protected:
             U& m_el;
             std::unique_ptr<OppositeInterface<T>> m_opposite = std::unique_ptr<NoOpposite<T>>(new NoOpposite<T>());
 
-            void allocatePtr(__attribute__((unused)) ElementPtr ptr) override {}            
-            void deAllocatePtr(__attribute__((unused)) ElementPtr ptr) override {}            
+            void allocatePtr(__attribute__((unused)) UmlPtr<T> ptr) {}            
+            void deAllocatePtr(__attribute__((unused)) UmlPtr<T> ptr) {}            
             void runAddPolicy(Element& el) override {
                 ApiPolicy::elementAdded(el.as<T>(), m_el);
             }
@@ -60,7 +55,7 @@ namespace UML {
                 ApiPolicy::elementRemoved(el.as<T>(), m_el);
             }
             bool oppositeEnabled() const override {
-                return m_opposite->enabled();
+                return m_opposite.enabled();
             }
             void oppositeAdd(Element& el) override {
                 m_opposite->addOpposite(el.as<T>());
@@ -71,13 +66,13 @@ namespace UML {
             bool hasData() const override {
                 return DataTypePolicy::hasData();
             }
-            bool containsData(ElementPtr ptr) const override {
+            bool containsData(UmlPtr<T> ptr) const override {
                 return DataTypePolicy::containsData(ptr);
             }
-            bool removeData(ElementPtr ptr) override {
+            bool removeData(UmlPtr<T> ptr) override {
                 return DataTypePolicy::removeData(ptr);
             }
-            void innerAdd(ElementPtr ptr) override {
+            void innerAdd(UmlPtr<T> ptr) override {
                 if (m_rootRedefinedSet.get() != this) {
                     return m_rootRedefinedSet->innerAdd(ptr);
                 }
@@ -121,7 +116,7 @@ namespace UML {
                     }
                 }
             }
-            void nonOppositeAdd(ElementPtr ptr) override {
+            void nonOppositeAdd(UmlPtr<T> ptr) override {
 
                 // look at supersets to allocate data
                 {
@@ -196,7 +191,7 @@ namespace UML {
                     }
                 }
             }
-            void innerRemove(ElementPtr ptr) override {
+            void innerRemove(UmlPtr<T> ptr) override {
                 if (m_rootRedefinedSet.get() != this) {
                     return m_rootRedefinedSet->innerRemove(ptr);
                 }
@@ -240,12 +235,7 @@ namespace UML {
                     }
                 }
             }
-            void weakRemove(UmlPtr<T> ptr) {
-                if (contains(ptr)) {
-                    innerRemove(ptr);
-                }
-            }
-            void nonOppositeRemove(ElementPtr ptr) override {
+            void nonOppositeRemove(UmlPtr<T> ptr) override {
                 // look at supersets to deallocate data
                 {
                     std::list<std::shared_ptr<AbstractSet>> queue;
@@ -333,11 +323,11 @@ namespace UML {
                 }
             }
         public:
-            PrivateSet(U* el) : m_el(*el) {}
-            PrivateSet& operator=(PrivateSet& rhs) = delete;
-            PrivateSet(PrivateSet& rhs) = delete;
+            PrivateSet(U* el) : m_el(*el) {
+                m_rootRedefinedSet = std::make_shared<PrivateSet<T, U, DataTypePolicy, ApiPolicy>>(this);
+            }
             virtual ~PrivateSet() {}
-            bool contains(ElementPtr ptr) const override {
+            bool contains(UmlPtr<T> ptr) const override {
                 if (m_rootRedefinedSet.get() != this) {
                     return m_rootRedefinedSet->contains(ptr);
                 }
@@ -364,10 +354,10 @@ namespace UML {
                             return true;
                         }
                         void addOpposite(T& el) override {
-                            (el.*signature)().nonOppositeAdd(UmlPtr<U>(&me));
+                            (el.*signature)().nonOppositeAdd(me);
                         }
                         void removeOpposite(T& el) override {
-                            (el.*signature)().nonOppositeRemove(UmlPtr<U>(&me));
+                            (el.*signature)().nonOppositeRemove(me.getID());
                         }
                 };
                 m_opposite = std::unique_ptr<OppositeInterfaceAdapter>(new OppositeInterfaceAdapter(m_el, oppositeSignature));

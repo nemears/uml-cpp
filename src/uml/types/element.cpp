@@ -1,15 +1,10 @@
 #include "uml/types/element.h"
+#include "uml/set/doNothingPolicy.h"
 #include "uml/umlPtr.h"
-#include "uml/types/comment.h"
-#include "uml/types/instanceSpecification.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/behavior.h"
-#include "uml/types/association.h"
-#include "uml/types/deployment.h"
-#include "uml/types/dataType.h"
 #include "uml/set/singleton.h"
+#include "uml/set/set.h"
 #include <memory>
+#include <regex>
 
 namespace UML {
 
@@ -22,31 +17,33 @@ void Element::restoreReferences() {
 }
 
 void Element::referenceErased(ID id) {
-    m_owner->eraseElement(id);
-    m_ownedElements->eraseElement(id);
-    m_ownedComments->eraseElement(id);
-    m_appliedStereotype->eraseElement(id);
+    m_owner->weakRemove(m_manager->createPtr(id));
+    m_ownedElements->weakRemove(m_manager->createPtr(id));
+    // m_ownedComments->innerRemove(m_manager->createPtr(id));
+    // m_appliedStereotype->eraseElement(id);
 }
 
-Singleton<Element, Element>& Element::getOwnerSingleton() {
+ReadOnlySingleton<Element, Element>& Element::getOwnerSingleton() {
     return *m_owner;
 }
 
-Element::Element(ElementType elementType) : m_elementType(elementType) {
+Element::Element(ElementType elementType) : 
+        m_elementType(elementType), 
+        m_owner(new ReadOnlySingleton<Element, Element>(this)),
+        m_ownedElements(new ReadOnlySet<Element, Element>(this))
+{
     m_manager = 0;
     m_node = 0;
     m_id = ID::randomID();
 
-    m_owner = std::unique_ptr<Singleton<Element, Element>>(new Singleton<Element, Element>(this));
     m_owner->opposite(&Element::getOwnedElements);
 
-    m_ownedElements = std::unique_ptr<ReadOnlySet<Element, Element>(new ReadOnlySet<Element, Element>(this));
     m_ownedElements->opposite(&Element::getOwnerSingleton);
 
-    m_ownedComments = std::unique_ptr<Set<Comment, Element>>(new Set<Comment, Element>(this));
-    m_ownedComments->subsets(*m_ownedElements);
+    // m_ownedComments = std::unique_ptr<Set<Comment, Element>>(new Set<Comment, Element>(this));
+    // m_ownedComments->subsets(*m_ownedElements);
 
-    m_appliedStereotypes = std::unique_ptr<Set<InstanceSpecification, Element>>(new Set<InstanceSpecification, Element>(this));
+    // m_appliedStereotypes = std::unique_ptr<Set<InstanceSpecification, Element>>(new Set<InstanceSpecification, Element>(this));
 }
 
 Element::~Element() {
@@ -435,28 +432,24 @@ ElementPtr Element::getOwner() const {
     return m_owner->get();
 }
 
-void Element::setOwner(Element* owner) {
-    m_owner->set(owner);
-}
-
-void Element::setOwnerByID(ID id) {
-   m_owner->set(id);
+void Element::setOwner(ElementPtr owner) {
+    m_owner->innerRemove(owner);
 }
 
 ReadOnlySet<Element, Element>& Element::getOwnedElements() {
     return *m_ownedElements;
 }
 
-Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
-    return *m_appliedStereotypes;
-}
+// Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
+//     return *m_appliedStereotypes;
+// }
 
-Set<Comment, Element>& Element::getOwnedComments() {
-    return *m_ownedComments;
-}
+// Set<Comment, Element>& Element::getOwnedComments() {
+//     return *m_ownedComments;
+// }
 
 void Element::setOwner(ID id) {
-    m_owner->innerAdd(id);
+    m_owner->innerAdd(m_manager->createPtr(id));
 }
 
 }

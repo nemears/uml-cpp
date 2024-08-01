@@ -1,23 +1,17 @@
 #pragma once
 
 #include "uml/types/element.h"
-#include "uml/types/namedElement.h"
 
 namespace UML {
 
     class AbstractUmlPtr;
     class AbstractSet;
-    class Element;
-    class NamedElement;
 
     class AbstractManager {
 
         template <class T, class DataTypePolicy, class ApiPolicy, class U> friend class PrivateSet;
-        template <class T, class U, class ApiPolicy>
-        friend class Singleton;
         template <class T> friend class UmlPtr;
         friend class Element;
-        friend class NamedElement;
 
         public:
             virtual Element* create(ElementType type) = 0;

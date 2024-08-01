@@ -5,7 +5,8 @@ namespace UML {
     class Element;
 
     class DoNothingPolicy {
-        void addElement(__attribute__((unused)) Element& el, __attribute__((unused)) Element& me) {}
-        void removeElement(__attribute__((unused)) Element& el, __attribute__((unused)) Element& me) {}
+        public:
+            void elementAdded(__attribute__((unused)) Element& el, __attribute__((unused)) Element& me) {}
+            void elementRemoved(__attribute__((unused)) Element& el, __attribute__((unused)) Element& me) {}
     };
 }

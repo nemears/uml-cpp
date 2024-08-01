@@ -1,7 +1,7 @@
 #pragma once
 
 #include "namedElement.h"
-//#include "parameterableElement.h"
+#include "parameterableElement.h"
 #include "uml/set/singleton.h"
 
 namespace UML {
@@ -9,12 +9,12 @@ namespace UML {
     class Package;
     typedef UmlPtr<Package> PackagePtr;
 
-    class PackageableElement : virtual public NamedElement /*, virtual public ParameterableElement*/ {
+    class PackageableElement : virtual public NamedElement , virtual public ParameterableElement {
 
         friend class Package;
 
         protected:
-            Singleton<Package, PackageableElement> m_owningPackage = Singleton<Package, PackageableElement>(this);
+            Singleton<Package, PackageableElement> m_owningPackage = CustomSingleton<Package, PackageableElement>(this);
             void referenceErased(ID id) override;
             Singleton<Package, PackageableElement>& getOwningPackageSingleton();
             PackageableElement();

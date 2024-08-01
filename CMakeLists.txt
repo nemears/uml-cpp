@@ -99,7 +99,7 @@ add_library(uml SHARED
 
     # types
     src/uml/types/element.cpp  src/uml/types/namedElement.cpp src/uml/types/namespace.cpp src/uml/types/package.cpp 
-    src/uml/types/packageableElement.cpp src/uml/types/templateableElement.cpp src/uml/types/parameterableElement.cpp 
+    src/uml/types/packageableElement.cpp #src/uml/types/templateableElement.cpp src/uml/types/parameterableElement.cpp 
     # src/uml/types/relationship.cpp src/uml/types/directedRelationship.cpp src/uml/types/packageMerge.cpp
     # src/uml/types/dependency.cpp src/uml/types/classifier.cpp src/uml/types/typedElement.cpp src/uml/types/feature.cpp 
     # src/uml/types/property.cpp src/uml/types/structuredClassifier.cpp src/uml/types/class.cpp src/uml/types/connectableElement.cpp 

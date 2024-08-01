@@ -151,24 +151,48 @@ namespace UML {
     };  
 
     class Element;
+    class ElementDoesntExistException;
+    class Relationship;
+    class DirectedRelationship;
+    class Comment;
+    class Slot;
+    class InstanceSpecification;
+    class Property;
+    class Association;
+    class AbstractAccessPolicy;
+    class AbstractManager;
+    class UmlServer;
+    struct ManagerNode;
+    class AddToMountFunctor;
+    class PackageMerge;
+    class Classifier;
+    class InstanceValue;
+    class Namespace;
+    class NamedElement;
+    class Generalization;
+    class Dependency;
+    class TemplateBinding;
+    class TemplateParameterSubstitution;
+    class TypedElement;
+    class Connector;
+    class ConnectableElement;
+    class Port;
+    class BehavioredClassifier;
+    class InterfaceRealization;
+    class Usage;
+    class RedefinableTemplateSignature;
     template <class T, class U, class DataTypePolicy, class ApiPolicy = DoNothingPolicy>
     class PrivateSet;
+    template <class T, class U, class ApiPolicy = DoNothingPolicy>
+    class Set;
     template <class T>
     class SetDataPolicy;
-    template <class T, class U, class ApiPolicy = DoNothingPolicy>
-    using ReadOnlySet = PrivateSet<T, U, SetDataPolicy<T>, ApiPolicy>;
     template<class T>
     class SingletonDataPolicy;
-    template <class T, class U, class ApiPolicy = DoNothingPolicy>
-    class Singleton;
-    template <class T, class U, class ApiPolicy = DoNothingPolicy>
-    using ReadOnlySingleton = PrivateSet<T, U, SingletonDataPolicy<T>, ApiPolicy>;
     template <class T> class UmlPtr;
     typedef UmlPtr<Element> ElementPtr;
     class EmitterData;
     class ParserData;
-    class AbstractManager;
-    struct ManagerNode;
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -179,12 +203,35 @@ namespace UML {
     class Element {
 
         friend class AbstractManager;
+        friend class AbstractAccessPolicy;
         friend struct ManagerNode;
         template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        friend class UmlServer;
+        friend class ElementDoesntExistException;
+        friend class Slot;
+        friend class Property;
+        friend class Association;
+        friend class AddToMountFunctor;
+        friend class PackageMerge;
+        friend class Classifier;
+        friend class InstanceValue;
+        friend class Namespace;
+        friend class InstanceSpecification;
+        friend class NamedElement;
+        friend class Generalization;
+        friend class Dependency;
+        friend class TemplateBinding;
+        friend class TemplateParameterSubstitution;
+        friend class TypedElement;
+        friend class Connector;
+        friend class ConnectableElement;
+        friend class Port;
+        friend class BehavioredClassifier;
+        friend class InterfaceRealization;
+        friend class Usage;
+        friend class RedefinableTemplateSignature;
         template <class T, class U, class DataTypePolicy, class ApiPolicy> friend class PrivateSet;
         template <class T> friend class UmlPtr;
-        template <class T, class U, class ApiPolicy>
-        friend class Singleton;
         friend std::string emit(Element& el, EmitterData& data);
         friend ElementPtr parse(std::string data, ParserData& metaData);
         friend bool parseElementScope(YAML::Node node, Element& el, ParserData& data);
@@ -198,13 +245,14 @@ namespace UML {
             const ElementType m_elementType;
 
             // owner
-            std::unique_ptr<ReadOnlySingleton<Element, Element>> m_owner;
+            std::unique_ptr<PrivateSet<Element, Element, SingletonDataPolicy<Element>, DoNothingPolicy>> m_owner;
             // ownedElements
-            std::unique_ptr<ReadOnlySet<Element, Element>> m_ownedElements;
-            //std::unique_ptr<Set<Comment, Element, DoNothingPolicy>> m_ownedComments;
-            //std::unique_ptr<Set<InstanceSpecification, Element, DoNothingPolicy>> m_appliedStereotypes;
-            ReadOnlySingleton<Element, Element>& getOwnerSingleton();
-            void setOwner(ElementPtr el);
+            std::unique_ptr<PrivateSet<Element, Element, SetDataPolicy<Element>, DoNothingPolicy>> m_ownedElements;
+            std::unique_ptr<Set<Comment, Element, DoNothingPolicy>> m_ownedComments;
+            std::unique_ptr<Set<InstanceSpecification, Element, DoNothingPolicy>> m_appliedStereotypes;
+            PrivateSet<Element, Element, SingletonDataPolicy<Element>, DoNothingPolicy>& getOwnerSingleton();
+            void setOwner(Element* el);
+            void setOwnerByID(ID id);
             virtual void restoreReferences();
             virtual void referenceErased(ID id);
             Element(ElementType elementType);
@@ -214,15 +262,15 @@ namespace UML {
             virtual ~Element();
             ID getID() const;
             ElementPtr getOwner() const;
-            ReadOnlySet<Element, Element>& getOwnedElements();
-            // Set<Comment, Element, DoNothingPolicy>& getOwnedComments();
+            PrivateSet<Element, Element, SetDataPolicy<Element>, DoNothingPolicy>& getOwnedElements();
+            Set<Comment, Element, DoNothingPolicy>& getOwnedComments();
             /**
              * TODO: I am keeping it simple for now, instance specification of stereotype to
              *       hold tags and operations, but I think it would be cool to dynamically map
              *       methods if we load the stereotype before runtime. Also would be cool to have
              *       stereotype tags as keyword in yaml config for disk storage (not necessarily useful though?)
              **/
-            // Set<InstanceSpecification, Element, DoNothingPolicy>& getAppliedStereotypes();
+            Set<InstanceSpecification, Element, DoNothingPolicy>& getAppliedStereotypes();
             virtual void setID(std::string id);
             void setID(ID id);
             static std::string elementTypeToString(ElementType eType);

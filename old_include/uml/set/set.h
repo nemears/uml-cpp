@@ -11,36 +11,33 @@
 namespace UML {
 
     template <class T>
-    class SetDataPolicy : virtual public AbstractSet {
+    class SetDataPolicy : public AbstractSet {
         private:        
             std::unordered_map<ID, UmlPtr<T>> m_data;
             class iterator : public AbstractSet::iterator {
-                friend class SetDataPolicy;
                 private:
                     std::weak_ptr<SetDataPolicy<T>> m_me;
-                    typename std::unordered_map<ID, UmlPtr<T>>::const_iterator m_dataIt;
-                    std::unordered_set<std::shared_ptr<AbstractSet>>::const_iterator m_subSetsWithDataIt;
+                    typename std::unordered_map<ID, UmlPtr<T>>::iterator m_dataIt;
+                    std::unordered_set<std::shared_ptr<AbstractSet>>::iterator m_subSetWithDataIt;
                     std::unique_ptr<AbstractSet::iterator> m_currSetIt;
                     std::unique_ptr<AbstractSet::iterator> clone() const override {
-                        return std::make_unique<iterator>(*this);
+                        return new iterator(*this);
                     }
-                    ElementPtr getCurr() const override {
-                        auto me = m_me.lock();
-                        if (m_dataIt != me->m_data.end()) {
-                            return m_dataIt->second;
+                    UmlPtr<T> getCurr() const override {
+                        if (m_dataIt != m_me->m_data.end()) {
+                            return *(m_dataIt->second);
                         } else {
                             return m_currSetIt->getCurr();
                         }
                     }
                     void next() override {
-                        auto me = m_me.lock();
-                        if (m_dataIt != me->m_data.end()) {
+                        if (m_dataIt != m_me->m_data.end()) {
                             m_dataIt++;
                         } else {
-                            std::shared_ptr<AbstractSet> currentSet = *m_subSetsWithDataIt;
+                            std::shared_ptr<AbstractSet> currentSet = *m_subSetWithDataIt;
                             if (!m_currSetIt) {
-                                m_currSetIt = currentSet->beginPtr()->clone();
-                            } else if (*m_currSetIt != *currentSet->endPtr()->clone()) {
+                                m_currSetIt = currentSet->begin().clone();
+                            } else if (m_currSetIt != currentSet->end().clone()) {
                                 m_currSetIt->next();
                             } else {
                                 throw SetStateException("iterating past end!");
@@ -48,15 +45,8 @@ namespace UML {
                         }
                     }
                 public:
-                    iterator() {};
-                    iterator(const iterator& rhs) : AbstractSet::iterator(rhs) {
-                        m_me = rhs.m_me.lock();
-                        m_dataIt = rhs.m_dataIt;
-                        m_subSetsWithDataIt = rhs.m_subSetsWithDataIt;
-                        m_currSetIt = rhs.m_currSetIt->clone();
-                    }
                     T& operator*() {
-                        return getCurr()->template as<T>();
+                        return *getCurr();
                     }
                     UmlPtr<T> operator->() {
                         return getCurr(); 
@@ -83,16 +73,10 @@ namespace UML {
                 return m_data.count(ptr.id()) > 0;
             }
             void addData(UmlPtr<T> ptr) {
-                m_data[ptr.id()] = ptr;
+                m_data.insert(ptr.id, ptr);
             }
-            bool removeData(UmlPtr<T> ptr) {
-                return m_data.erase(ptr.id()) == 1;
-            }
-            std::unique_ptr<AbstractSet::iterator> beginPtr() const override {
-                return std::unique_ptr<iterator>(new iterator(begin()));
-            }
-            std::unique_ptr<AbstractSet::iterator> endPtr() const override {
-                return std::make_unique<iterator>();
+            void removeData(UmlPtr<T> ptr) {
+                m_data.erase(ptr.id());
             }
         public:
             virtual ~SetDataPolicy() {}
@@ -105,25 +89,24 @@ namespace UML {
                 }
                 return UmlPtr<T>();
             }
-            iterator begin() const {
-                iterator ret;
-                ret.m_me = std::dynamic_pointer_cast<SetDataPolicy>(m_rootRedefinedSet);
-                ret.m_dataIt = m_data.begin();
-                ret.m_subSetsWithDataIt = m_subSetsWithData.begin();
+            std::unique_ptr<AbstractSet::iterator> begin() const override {
+                std::unique_ptr<iterator> ret(new iterator);
+                ret->m_me = m_rootRedefinedSet;
+                ret->m_dataIt = m_data.begin();
+                ret->m_subSetsWithDataIt = m_subSetsWithData.begin();
                 return ret;
             }
-            iterator end() const {
-                return iterator();
+            std::unique_ptr<AbstractSet::iterator> end() const override {
+                return std::unique_ptr<iterator>(new iterator);
             }
     };
-//     declaration at uml/types/element.h
-//     template <class T, class U, class ApiPolicy>
-//     using ReadOnlySet = PrivateSet<T, U, SetDataPolicy<T>, ApiPolicy>;
 
     template <class T, class U, class ApiPolicy = DoNothingPolicy>
-    class Set : public ReadOnlySet<T, U, ApiPolicy> {
+    using ReadOnlySet = PrivateSet<T, U, SetDataPolicy<T>, ApiPolicy>;
+
+    template <class T, class U, class ApiPolicy>
+    class Set : ReadOnlySet<T, U, ApiPolicy> {
         public:
-            Set (U* me) : ReadOnlySet<T, U, ApiPolicy>(me) {}
             void add(UmlPtr<T> ptr) {
                 innerAdd(ptr);
             }

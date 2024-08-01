@@ -1,21 +1,15 @@
 #include "uml/types/packageableElement.h"
 #include "uml/umlPtr.h"
 #include "uml/types/package.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
 
 using namespace UML;
 
 void PackageableElement::referenceErased(ID id) {
     NamedElement::referenceErased(id);
-    ParameterableElement::referenceErased(id);
+    // ParameterableElement::referenceErased(id);
 }
 
-TypedSet<Package, PackageableElement>& PackageableElement::getOwningPackageSingleton() {
+Singleton<Package, PackageableElement>& PackageableElement::getOwningPackageSingleton() {
     return m_owningPackage;
 }
 
@@ -43,9 +37,9 @@ void PackageableElement::setOwningPackage(ID id) {
 bool PackageableElement::isSubClassOf(ElementType eType) const {
     bool ret = NamedElement::isSubClassOf(eType);
 
-    if (!ret) {
-        ret = ParameterableElement::isSubClassOf(eType);
-    }
+    // if (!ret) {
+    //     ret = ParameterableElement::isSubClassOf(eType);
+    // }
 
     if (!ret) {
         ret = eType == ElementType::PACKAGEABLE_ELEMENT;

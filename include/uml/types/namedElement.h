@@ -2,7 +2,6 @@
 
 #include <string>
 #include "element.h"
-#include "uml/umlPtr.h"
 
 namespace UML {
 
@@ -53,7 +52,6 @@ namespace UML {
             ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>& getNamespaceSingleton();
             NamedElement();
         public:
-            virtual ~NamedElement();
             virtual std::string getName();
             virtual void setName(const std::string &name);
             std::string getQualifiedName();

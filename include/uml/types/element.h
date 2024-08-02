@@ -157,6 +157,8 @@ namespace UML {
     class SetDataPolicy;
     template <class T, class U, class ApiPolicy = DoNothingPolicy>
     using ReadOnlySet = PrivateSet<T, U, SetDataPolicy<T>, ApiPolicy>;
+    template <class T, class U, class ApiPolicy = DoNothingPolicy>
+    class Set;
     template<class T>
     class SingletonDataPolicy;
     template <class T, class U, class ApiPolicy = DoNothingPolicy>
@@ -185,6 +187,8 @@ namespace UML {
         template <class T> friend class UmlPtr;
         template <class T, class U, class ApiPolicy>
         friend class Singleton;
+        template <class T, class U, class ApiPolicy>
+        friend class Set;
         friend std::string emit(Element& el, EmitterData& data);
         friend ElementPtr parse(std::string data, ParserData& metaData);
         friend bool parseElementScope(YAML::Node node, Element& el, ParserData& data);

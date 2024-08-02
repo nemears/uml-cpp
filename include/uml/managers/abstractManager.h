@@ -15,6 +15,8 @@ namespace UML {
         template <class T, class DataTypePolicy, class ApiPolicy, class U> friend class PrivateSet;
         template <class T, class U, class ApiPolicy>
         friend class Singleton;
+        template <class T, class U, class ApiPolicy>
+        friend class Set;
         template <class T> friend class UmlPtr;
         friend class Element;
         friend class NamedElement;

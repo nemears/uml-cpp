@@ -351,6 +351,12 @@ namespace UML {
                 }
                 return false;
             }
+            bool contains(ID id) const {
+                return contains(m_el.m_manager->createPtr(id));
+            }
+            bool contains(T& el) const {
+                return contains(UmlPtr<T>(&el));
+            }
             template <class S>
             void opposite(S& (T::*oppositeSignature)()) {
                 class OppositeInterfaceAdapter : public OppositeInterface<T> {

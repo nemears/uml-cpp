@@ -1,5 +1,6 @@
 #pragma once
 
+#include <exception>
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
@@ -105,6 +106,20 @@ namespace UML {
                 }
                 return UmlPtr<T>();
             }
+            UmlPtr<T> get(ID id) {
+                try {
+                    return m_data.at(id);
+                } catch(std::exception& exception) {
+                    for (auto subSetWithData : m_subSetsWithData) {
+                        if (subSetWithData->setType() == SetType::SET) {
+                            try {
+                                return std::dynamic_pointer_cast<SetDataPolicy>(subSetWithData)->m_data.at(id);
+                            } catch (std::exception&) {}
+                        }
+                    }
+                }
+                return UmlPtr<T>();
+            }
             iterator begin() const {
                 iterator ret;
                 ret.m_me = std::dynamic_pointer_cast<SetDataPolicy>(m_rootRedefinedSet);
@@ -116,31 +131,37 @@ namespace UML {
                 return iterator();
             }
     };
+
 //     declaration at uml/types/element.h
 //     template <class T, class U, class ApiPolicy>
 //     using ReadOnlySet = PrivateSet<T, U, SetDataPolicy<T>, ApiPolicy>;
 
-    template <class T, class U, class ApiPolicy = DoNothingPolicy>
+    template <class T, class U, class ApiPolicy>
     class Set : public ReadOnlySet<T, U, ApiPolicy> {
         public:
             Set (U* me) : ReadOnlySet<T, U, ApiPolicy>(me) {}
             void add(UmlPtr<T> ptr) {
-                innerAdd(ptr);
+                this->innerAdd(ptr);
             }
             void add(ID& id) {
-                innerAdd(UmlPtr<T>(id));
+                this->innerAdd(this->m_el.m_manager->createPtr(id));
             }
             void add(T& el) {
-                innerAdd(UmlPtr<T>(el));
+                this->innerAdd(UmlPtr<T>(&el));
             }
             void remove(UmlPtr<T> ptr) {
-                innerRemove(ptr);
+                this->innerRemove(ptr);
             }
             void remove(ID& id) {
-                innerRemove(UmlPtr<T>(id));
+                this->innerRemove(UmlPtr<T>(id));
             }
             void remove(T& el) {
-                innerRemove(UmlPtr<T>(el));
+                this->innerRemove(UmlPtr<T>(&el));
+            }
+            void clear() {
+                while (this->front()) {
+                    remove(this->front());
+                }
             }
     };
 }

@@ -89,13 +89,14 @@ if (WEBSOCKET_BUILD)
 endif()
 
 add_library(uml SHARED 
+    src/uml/id.cpp
 
     # managers
-    #src/uml/managers/abstractManager.cpp src/uml/managers/managerNode.cpp
-    #src/uml/managers/filePersistencePolicy.cpp
+    src/uml/managers/abstractManager.cpp src/uml/managers/managerNode.cpp
+    src/uml/managers/filePersistencePolicy.cpp
     ## serialization
-    #src/uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.cpp
-    #src/uml/managers/serialization/uml-cafe/emit.cpp src/uml/managers/serialization/uml-cafe/parse.cpp
+    src/uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.cpp
+    src/uml/managers/serialization/uml-cafe/emit.cpp src/uml/managers/serialization/uml-cafe/parse.cpp
 
     # types
     src/uml/types/element.cpp  src/uml/types/namedElement.cpp src/uml/types/namespace.cpp src/uml/types/package.cpp 

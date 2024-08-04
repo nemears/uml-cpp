@@ -44,14 +44,14 @@ IF(UNIX)
         message(STATUS "debug build")
         if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
             add_compile_options(-fstandalone-debug)
+            #         elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+            #             add_compile_options(-fsanitize=address)
         endif()
         # add_compile_options(-Og)
     ENDIF()
 ENDIF()
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang") 
-    option(UML_ADDRESS_SANITIZER "link executables to google address sanitizer" OFF)
-endif()
+option(UML_ADDRESS_SANITIZER "link executables to google address sanitizer" OFF)
 
 # Headers
 include_directories(include)
@@ -97,6 +97,8 @@ add_library(uml SHARED
     ## serialization
     src/uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.cpp
     src/uml/managers/serialization/uml-cafe/emit.cpp src/uml/managers/serialization/uml-cafe/parse.cpp
+    # set
+    src/uml/set/abstractSet.cpp
 
     # types
     src/uml/types/element.cpp  src/uml/types/namedElement.cpp src/uml/types/namespace.cpp src/uml/types/package.cpp 
@@ -157,7 +159,7 @@ if (UML_BUILD_TESTS)
             target_link_libraries(umltest PUBLIC ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} ${ASIO_LIBRARIES} ${OPENSSL_LIBRARIES} uml uml-kitchen-cpp)
         endif()
     endif()
-    if (UML_DEBUG AND UML_ADDRESS_SANITIZER) 
+    if (UML_DEBUG) 
         message("address sanitizer")
         target_link_libraries(umltest PRIVATE -fsanitize=address -fno-omit-frame-pointer)
     endif()

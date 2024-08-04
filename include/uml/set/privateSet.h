@@ -78,8 +78,9 @@ namespace UML {
                 return DataTypePolicy::removeData(ptr);
             }
             void innerAdd(ElementPtr ptr) override {
-                if (m_rootRedefinedSet.get() != this) {
-                    return m_rootRedefinedSet->innerAdd(ptr);
+                auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
+                if (rootRedefinedSet.get() != m_structure.get()) {
+                    return rootRedefinedSet->m_set.innerAdd(ptr);
                 }
 
                 std::lock_guard<std::mutex> setLock(m_mutex);
@@ -88,11 +89,11 @@ namespace UML {
                
                 // increase size, run policies, and opposite
                 {
-                    std::list<std::shared_ptr<AbstractSet>> queue;
-                    std::unordered_set<std::shared_ptr<AbstractSet>> visited;
-                    queue.push_back(m_rootRedefinedSet);
+                    std::list<std::shared_ptr<SetStructure>> queue;
+                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
+                    queue.push_back(rootRedefinedSet);
                     while (!queue.empty()) {
-                        std::shared_ptr<AbstractSet> front = queue.front();
+                        auto front = queue.front();
                         queue.pop_front();
                         if (visited.count(front)) {
                             continue;
@@ -100,21 +101,21 @@ namespace UML {
                         visited.insert(front);
                         bool oppositeRan = false;
                         if (ptr.loaded()) {
-                            if (!oppositeRan && front->oppositeEnabled()) {
-                                front->oppositeAdd(*ptr);
+                            if (!oppositeRan && front->m_set.oppositeEnabled()) {
+                                front->m_set.oppositeAdd(*ptr);
                                 oppositeRan = true;
                             }
                         }
-                        for (std::shared_ptr<AbstractSet> redefinedSet : front->m_redefinedSets) {
+                        for (std::shared_ptr<SetStructure> redefinedSet : front->m_redefinedSets) {
                             if (ptr.loaded()) {
-                                if (!oppositeRan && front->oppositeEnabled()) {
-                                    front->oppositeAdd(*ptr);
+                                if (!oppositeRan && front->m_set.oppositeEnabled()) {
+                                    front->m_set.oppositeAdd(*ptr);
                                     oppositeRan = true;
                                 }
                             }
                         }
                         if (!oppositeRan) {
-                            for (std::shared_ptr<AbstractSet> superSet : front->m_superSets) {
+                            for (std::shared_ptr<SetStructure> superSet : front->m_superSets) {
                                 queue.push_back(superSet);
                             }
                         }
@@ -123,11 +124,13 @@ namespace UML {
             }
             void nonOppositeAdd(ElementPtr ptr) override {
 
+                auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
+
                 // look at supersets to allocate data
                 {
-                    std::list<std::shared_ptr<AbstractSet>> queue;
-                    std::unordered_set<std::shared_ptr<AbstractSet>> visited;
-                    queue.push_back(m_rootRedefinedSet);
+                    std::list<std::shared_ptr<SetStructure>> queue;
+                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
+                    queue.push_back(rootRedefinedSet);
                     while (!queue.empty()) {
                         auto front = queue.front();
                         queue.pop_front();
@@ -135,8 +138,8 @@ namespace UML {
                             continue;
                         }
                         visited.insert(front);
-                        front->allocatePtr(ptr);
-                        for (auto superSet : m_superSets) {
+                        front->m_set.allocatePtr(ptr);
+                        for (auto superSet : front->m_superSets) {
                             queue.push_back(superSet);
                         }
                     }
@@ -147,20 +150,20 @@ namespace UML {
 
                 // mark superSets that we have data
                 {
-                    std::list<std::shared_ptr<AbstractSet>> queue;
-                    std::unordered_set<std::shared_ptr<AbstractSet>> visited;
-                    for (auto superSet : m_superSets) {
+                    std::list<std::shared_ptr<SetStructure>> queue;
+                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
+                    for (auto superSet : rootRedefinedSet->m_superSets) {
                         queue.push_back(superSet);
                     }
                     while (!queue.empty()) {
-                        std::shared_ptr<AbstractSet> front = queue.front();
+                        auto front = queue.front();
                         queue.pop_front();
                         if (visited.count(front)) {
                             continue;
                         }
                         visited.insert(front);
-                        front->m_subSetsWithData.insert(m_rootRedefinedSet);
-                        if (!front->hasData()) {
+                        front->m_subSetsWithData.insert(rootRedefinedSet);
+                        if (!front->m_set.hasData()) {
                             for (auto superSet : front->m_superSets) {
                                 queue.push_back(superSet);
                             }
@@ -170,35 +173,36 @@ namespace UML {
                 
                 // increase size, run policies 
                 {
-                    std::list<std::shared_ptr<AbstractSet>> queue;
-                    std::unordered_set<std::shared_ptr<AbstractSet>> visited;
-                    queue.push_back(m_rootRedefinedSet);
+                    std::list<std::shared_ptr<SetStructure>> queue;
+                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
+                    queue.push_back(rootRedefinedSet);
                     while (!queue.empty()) {
-                        std::shared_ptr<AbstractSet> front = queue.front();
+                        auto front = queue.front();
                         queue.pop_front();
                         if (visited.count(front)) {
                             continue;
                         }
                         visited.insert(front);
-                        if (ptr.loaded()) {
-                            front->runAddPolicy(*ptr);
-                        }
                         front->m_size++;
-                        for (std::shared_ptr<AbstractSet> redefinedSet : front->m_redefinedSets) {
+                        if (ptr.loaded()) {
+                            front->m_set.runAddPolicy(*ptr);
+                        }
+                        for (auto redefinedSet : front->m_redefinedSets) {
                             if (ptr.loaded()) {
-                                redefinedSet->runAddPolicy(*ptr);
+                                redefinedSet->m_set.runAddPolicy(*ptr);
                             }
                             redefinedSet->m_size++;
                         }
-                        for (std::shared_ptr<AbstractSet> superSet : front->m_superSets) {
+                        for (auto superSet : front->m_superSets) {
                             queue.push_back(superSet);
                         }
                     }
                 }
             }
             void innerRemove(ElementPtr ptr) override {
-                if (m_rootRedefinedSet.get() != this) {
-                    return m_rootRedefinedSet->innerRemove(ptr);
+                auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
+                if (rootRedefinedSet.get() != m_structure.get()) {
+                    return rootRedefinedSet->m_set.innerRemove(ptr);
                 }
 
                 std::lock_guard<std::mutex> setLock(m_mutex);
@@ -207,9 +211,9 @@ namespace UML {
 
                 // run opposite
                 {
-                    std::list<std::shared_ptr<AbstractSet>> queue;
-                    std::unordered_set<std::shared_ptr<AbstractSet>> visited;
-                    queue.push_back(m_rootRedefinedSet);
+                    std::list<std::shared_ptr<SetStructure>> queue;
+                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
+                    queue.push_back(rootRedefinedSet);
                     while (!queue.empty()) {
                         auto front = queue.front();
                         queue.pop_front();
@@ -219,21 +223,21 @@ namespace UML {
                         visited.insert(front);
                         bool oppositeRan = false;
                         if (ptr.loaded()) {
-                            if (!oppositeRan && front->oppositeEnabled()) {
-                                front->oppositeRemove(*ptr);
+                            if (!oppositeRan && front->m_set.oppositeEnabled()) {
+                                front->m_set.oppositeRemove(*ptr);
                                 oppositeRan = true;
                             }
                         }
-                        for (std::shared_ptr<AbstractSet> redefinedSet : front->m_redefinedSets) {
+                        for (auto redefinedSet : front->m_redefinedSets) {
                             if (ptr.loaded()) {
-                                if (!oppositeRan && front->oppositeEnabled()) {
-                                    redefinedSet->oppositeRemove(*ptr);
+                                if (!oppositeRan && front->m_set.oppositeEnabled()) {
+                                    redefinedSet->m_set.oppositeRemove(*ptr);
                                     oppositeRan = true;
                                 }
                             }
                         }
                         if (!oppositeRan) {
-                            for (std::shared_ptr<AbstractSet> superSet : front->m_superSets) {
+                            for (auto superSet : front->m_superSets) {
                                 queue.push_back(superSet);
                             }
                         }
@@ -246,11 +250,12 @@ namespace UML {
                 }
             }
             void nonOppositeRemove(ElementPtr ptr) override {
+                auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
                 // look at supersets to deallocate data
                 {
-                    std::list<std::shared_ptr<AbstractSet>> queue;
-                    std::unordered_set<std::shared_ptr<AbstractSet>> visited;
-                    queue.push_back(m_rootRedefinedSet);
+                    std::list<std::shared_ptr<SetStructure>> queue;
+                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
+                    queue.push_back(rootRedefinedSet);
                     while (!queue.empty()) {
                         auto front = queue.front();
                         queue.pop_front();
@@ -258,8 +263,8 @@ namespace UML {
                             continue;
                         }
                         visited.insert(front);
-                        front->deAllocatePtr(ptr);
-                        for (auto superSet : m_superSets) {
+                        front->m_set.deAllocatePtr(ptr);
+                        for (auto superSet : front->m_superSets) {
                             queue.push_back(superSet);
                         }
                     }
@@ -267,9 +272,9 @@ namespace UML {
                 
                 // remove
                 {
-                    std::list<std::shared_ptr<AbstractSet>> queue;
-                    queue.push_back(m_rootRedefinedSet);
-                    std::unordered_set<std::shared_ptr<AbstractSet>> visited;
+                    std::list<std::shared_ptr<SetStructure>> queue;
+                    queue.push_back(rootRedefinedSet);
+                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
                     while (!queue.empty()) {
                         auto front = queue.front();
                         queue.pop_front();
@@ -277,11 +282,11 @@ namespace UML {
                             continue;
                         }
                         visited.insert(front);
-                        if (front->containsData(ptr)) {
-                            front->removeData(ptr);
-                            if (!front->hasData()) {
+                        if (front->m_set.containsData(ptr)) {
+                            front->m_set.removeData(ptr);
+                            if (!front->m_set.hasData()) {
                                 // remove us from all super sets m_subSetsWithData unordered_set
-                                std::list<std::shared_ptr<AbstractSet>> adjustQueue;
+                                std::list<std::shared_ptr<SetStructure>> adjustQueue;
                                 for (auto superSet : front->m_superSets) {
                                     adjustQueue.push_back(superSet);
                                 }
@@ -289,7 +294,7 @@ namespace UML {
                                     auto adjustFront = adjustQueue.front();
                                     adjustQueue.pop_front();
                                     adjustFront->m_subSetsWithData.erase(front);
-                                    if (!adjustFront->hasData()) {
+                                    if (!adjustFront->m_set.hasData()) {
                                         for (auto adjustSuperSet : front->m_superSets) {
                                             adjustQueue.push_back(adjustSuperSet);
                                         }
@@ -306,9 +311,9 @@ namespace UML {
 
                 // run removal policies adjust size
                 {
-                    std::list<std::shared_ptr<AbstractSet>> queue;
-                    std::unordered_set<std::shared_ptr<AbstractSet>> visited;
-                    queue.push_back(m_rootRedefinedSet);
+                    std::list<std::shared_ptr<SetStructure>> queue;
+                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
+                    queue.push_back(rootRedefinedSet);
                     while (!queue.empty()) {
                         auto front = queue.front();
                         queue.pop_front();
@@ -317,16 +322,16 @@ namespace UML {
                         }
                         visited.insert(front);
                         if (ptr.loaded()) {
-                            front->runRemovePolicy(*ptr);
+                            front->m_set.runRemovePolicy(*ptr);
                         }
                         front->m_size--;
-                        for (std::shared_ptr<AbstractSet> redefinedSet : front->m_redefinedSets) {
+                        for (auto redefinedSet : front->m_redefinedSets) {
                             if (ptr.loaded()) {
-                                redefinedSet->runRemovePolicy(*ptr);
+                                redefinedSet->m_set.runRemovePolicy(*ptr);
                             }
                             redefinedSet->m_size--;
                         }
-                        for (std::shared_ptr<AbstractSet> superSet : front->m_superSets) {
+                        for (auto superSet : front->m_superSets) {
                             queue.push_back(superSet);
                         }
                     }
@@ -338,14 +343,14 @@ namespace UML {
             PrivateSet(PrivateSet& rhs) = delete;
             virtual ~PrivateSet() {}
             bool contains(ElementPtr ptr) const override {
-                if (m_rootRedefinedSet.get() != this) {
-                    return m_rootRedefinedSet->contains(ptr);
+                if (m_structure->m_rootRedefinedSet.get() != m_structure.get()) {
+                    return m_structure->m_rootRedefinedSet->m_set.contains(ptr);
                 }
                 if (containsData(ptr)) {
                     return true;
                 }
-                for (std::shared_ptr<AbstractSet> setWithData : m_subSetsWithData) {
-                    if (setWithData->contains(ptr)) {
+                for (auto setWithData : m_structure->m_subSetsWithData) {
+                    if (setWithData->m_set.contains(ptr)) {
                         return true;
                     }
                 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "uml/set/doNothingPolicy.h"
+#include "uml/set/abstractSet.h"
 #include "uml/set/privateSet.h"
 #include "uml/umlPtr.h"
 #include <memory>
@@ -13,7 +13,7 @@ namespace UML {
             class iterator : public AbstractSet::iterator {
                 friend class SingletonDataPolicy;
                 private:
-                    std::weak_ptr<SingletonDataPolicy<T>> m_me;
+                    std::weak_ptr<SetStructure> m_me;
                     bool m_done = true;
                     std::unique_ptr<AbstractSet::iterator> clone() const override {
                         return std::make_unique<iterator>(*this);
@@ -22,13 +22,14 @@ namespace UML {
                         if (m_done) {
                             return UmlPtr<T>();
                         }
-                        return m_me.lock()->m_data;
+                        return dynamic_cast<SingletonDataPolicy&>(m_me.lock()->m_set).m_data;
                     }
                     void next() override {
                         m_done = true;
                         m_hash = 0;
                     }
                 public:
+                    iterator() {};
                     iterator(const iterator& rhs) : AbstractSet::iterator(rhs) {
                         m_me = rhs.m_me.lock();
                         m_done = rhs.m_done;
@@ -68,32 +69,42 @@ namespace UML {
                 m_data = UmlPtr<T>();
                 return true;
             }
-        public:
             std::unique_ptr<AbstractSet::iterator> beginPtr() const override {
-                auto val = get();
-                if (val) {
-                    std::unique_ptr<iterator> ret = std::unique_ptr<iterator>();
-                    std::hash<ID> hasher;
-                    ret->m_hash = hasher(val.id());
-                    ret->m_me = std::dynamic_pointer_cast<SingletonDataPolicy>(m_rootRedefinedSet);
-                    ret->m_done = false;
-                    return ret;
-                }
-                return endPtr();
+                return std::unique_ptr<AbstractSet::iterator>(new iterator(begin()));
             }
             std::unique_ptr<AbstractSet::iterator> endPtr() const override {
-                return std::unique_ptr<iterator>();
+                return std::unique_ptr<AbstractSet::iterator>(new iterator(end()));
             }
+        public:
             UmlPtr<T> get() const {
                 if (m_data) {
                     return m_data;
                 }
-                for (auto subSetWithData : m_subSetsWithData) {
-                    if (*subSetWithData->beginPtr() != *subSetWithData->endPtr()) {
-                        return UmlPtr<T>(subSetWithData->beginPtr()->getCurr());
+                for (auto subSetWithData : m_structure->m_subSetsWithData) {
+                    auto end = subSetWithData->m_set.endPtr();
+                    auto begin = subSetWithData->m_set.beginPtr();
+                    if (*begin != *end) {
+                        return UmlPtr<T>(subSetWithData->m_set.beginPtr()->getCurr());
                     }
                 }
                 return UmlPtr<T>();
+            }
+            iterator begin() const {
+                auto val = get();
+                if (val) {
+                    iterator ret;
+                    std::hash<ID> hasher;
+                    ret.m_hash = hasher(val.id());
+                    ret.m_me = m_structure;
+                    ret.m_done = false;
+                    return ret;
+                }
+                return end();
+            }
+            iterator end() const {
+                iterator ret;
+                ret.m_me = m_structure;
+                return iterator();
             }
             SetType setType() const override {
                 return SetType::SINGLETON;

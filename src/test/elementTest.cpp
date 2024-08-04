@@ -34,7 +34,7 @@ TEST_F(ElementTest, UmlPtrComparisonTest) {
     ASSERT_TRUE(!pckg->getOwningPackage());
     ASSERT_EQ(child->getOwningPackage(), pckg);
     ASSERT_EQ(*(child->getOwningPackage()), *pckg);
-    ASSERT_EQ(child->getNamespace(), pckg);
+    ASSERT_EQ(*child->getNamespace(), pckg);
     ASSERT_EQ(*(child->getNamespace()), *pckg);
     ASSERT_EQ(child->getOwner(), pckg);
     ASSERT_EQ(*(child->getOwner()), *pckg);

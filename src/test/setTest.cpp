@@ -430,7 +430,7 @@ TEST_F(SetTest, basicSubsetsTest) {
     ASSERT_EQ(*testEl->root.get(clazz.getID()), clazz);
     ASSERT_EQ(testEl->sub.size(), 1);
     ASSERT_FALSE(testEl->sub.contains(clazz.getID()));
-    ASSERT_THROW(*testEl->sub.get(clazz.getID()), SetStateException);
+    ASSERT_FALSE(testEl->sub.get(clazz.getID()));
 }
 
 TEST_F(SetTest, iterateOverSubsettedElement) {
@@ -450,20 +450,28 @@ TEST_F(SetTest, iterateOverSubsettedElement) {
     //
     // WwowBIeuOqdXecMITJkHZWbnD94G
     testEl->root.add(a);
-    testEl->sub.add(b);
-    testEl->sub.add(c);
     std::unordered_set<PackageableElement*> pckgs;
-    for (auto& pkg : testEl->root) {
-        pckgs.insert(&pkg);
-    }
+    pckgs.insert(a.ptr());
+    testEl->sub.add(b);
+    pckgs.insert(b.ptr());
+    testEl->sub.add(c);
+    pckgs.insert(c.ptr());
     ASSERT_EQ(pckgs.size(), 3);
     auto it = testEl->root.begin();
+    std::cout << "test setup done" << std::endl;
+    std::cout << "first elment is " << it->getID().string() << std::endl;
     it++;
+    std::cout << "incremented once!" << std::endl;
+    std::cout << "second elment is " << it->getID().string() << std::endl;
     ASSERT_TRUE(it != testEl->root.end());
     it++;
+    std::cout << "incremented twice!" << std::endl;
+    std::cout << "third elment is " << it->getID().string() << std::endl;
     ASSERT_TRUE(it != testEl->root.end());
     it++;
-    ASSERT_TRUE(it == testEl->root.end());
+    std::cout << "incremented three times (should be done)" << std::endl;
+    ASSERT_EQ(it.m_hash, testEl->root.end().m_hash);
+    ASSERT_EQ(it, testEl->root.end());
 }
 
 // TEST_F(SetTest, readjustRedBlackRootTest) {

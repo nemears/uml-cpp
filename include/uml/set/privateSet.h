@@ -2,6 +2,7 @@
 
 #include "abstractSet.h"
 #include "uml/set/doNothingPolicy.h"
+#include "uml/types/element.h"
 #include <memory>
 #include <mutex>
 #include <unordered_set>
@@ -51,8 +52,6 @@ namespace UML {
             U& m_el;
             std::unique_ptr<OppositeInterface<T>> m_opposite = std::unique_ptr<NoOpposite<T>>(new NoOpposite<T>());
 
-            void allocatePtr(__attribute__((unused)) ElementPtr ptr) override {}            
-            void deAllocatePtr(__attribute__((unused)) ElementPtr ptr) override {}            
             void runAddPolicy(Element& el) override {
                 ApiPolicy::elementAdded(el.as<T>(), m_el);
             }
@@ -121,6 +120,8 @@ namespace UML {
                         }
                     }
                 }
+                m_el.m_node->setReference(&ptr);
+                ptr.m_node->setReference(m_el.getID(), m_el.m_node);
             }
             void nonOppositeAdd(ElementPtr ptr) override {
 
@@ -138,7 +139,7 @@ namespace UML {
                             continue;
                         }
                         visited.insert(front);
-                        front->m_set.allocatePtr(ptr);
+                        front->m_set.allocatePtr(ptr, *rootRedefinedSet);
                         for (auto superSet : front->m_superSets) {
                             queue.push_back(superSet);
                         }
@@ -206,7 +207,6 @@ namespace UML {
                 }
 
                 std::lock_guard<std::mutex> setLock(m_mutex);
-
                 nonOppositeRemove(ptr);
 
                 // run opposite
@@ -243,6 +243,8 @@ namespace UML {
                         }
                     }
                 }
+
+                m_el.m_node->removeReference(&ptr);
             }
             void weakRemove(UmlPtr<T> ptr) {
                 if (contains(ptr)) {
@@ -271,6 +273,7 @@ namespace UML {
                 }
                 
                 // remove
+                std::shared_ptr<SetStructure> setwithEl;
                 {
                     std::list<std::shared_ptr<SetStructure>> queue;
                     queue.push_back(rootRedefinedSet);
@@ -283,6 +286,7 @@ namespace UML {
                         }
                         visited.insert(front);
                         if (front->m_set.containsData(ptr)) {
+                            setwithEl = front;
                             front->m_set.removeData(ptr);
                             if (!front->m_set.hasData()) {
                                 // remove us from all super sets m_subSetsWithData unordered_set
@@ -295,15 +299,15 @@ namespace UML {
                                     adjustQueue.pop_front();
                                     adjustFront->m_subSetsWithData.erase(front);
                                     if (!adjustFront->m_set.hasData()) {
-                                        for (auto adjustSuperSet : front->m_superSets) {
+                                        for (auto adjustSuperSet : adjustFront->m_superSets) {
                                             adjustQueue.push_back(adjustSuperSet);
                                         }
                                     }
                                 }
                             }
                         } else {
-                            for (auto superSet : front->m_superSets) {
-                                queue.push_back(superSet);
+                            for (auto subSet : front->m_subSets) {
+                                queue.push_back(subSet);
                             }
                         }
                     }
@@ -313,7 +317,7 @@ namespace UML {
                 {
                     std::list<std::shared_ptr<SetStructure>> queue;
                     std::unordered_set<std::shared_ptr<SetStructure>> visited;
-                    queue.push_back(rootRedefinedSet);
+                    queue.push_back(setwithEl);
                     while (!queue.empty()) {
                         auto front = queue.front();
                         queue.pop_front();
@@ -336,6 +340,7 @@ namespace UML {
                         }
                     }
                 }
+
             }
         public:
             PrivateSet(U* el) : m_el(*el) {}

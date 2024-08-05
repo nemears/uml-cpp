@@ -27,7 +27,7 @@ namespace UML {
             bool containsData(UmlPtr<T> ptr) {
                 return m_data.count(ptr);
             }
-            void allocatePtr(UmlPtr<T> ptr) {
+            void allocatePtr(UmlPtr<T> ptr) override {
                 OrderedUmlPtr<T> orderedPtr(ptr);
                 if (!m_first) {
                     m_first = orderedPtr;
@@ -37,7 +37,7 @@ namespace UML {
                 m_last = orderedPtr;
                 m_allData.insert(orderedPtr.id(), orderedPtr);
             }
-            void deAllocatePtr(UmlPtr<T> ptr) {
+            void deAllocatePtr(UmlPtr<T> ptr) override {
                 auto orderedPtr = m_allData.at(ptr.id());
                 if (orderedPtr.m_prev) {
                     orderedPtr.m_prev.m_next = orderedPtr.m_next;

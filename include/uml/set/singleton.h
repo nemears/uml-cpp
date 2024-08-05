@@ -8,7 +8,7 @@
 namespace UML {
     template <class T>
     class SingletonDataPolicy : virtual public AbstractSet {
-        private:
+        protected:
             UmlPtr<T> m_data;
             class iterator : public AbstractSet::iterator {
                 friend class SingletonDataPolicy;
@@ -49,6 +49,11 @@ namespace UML {
                     }
             };
         protected:
+            void allocatePtr(ElementPtr ptr, __attribute__((unused)) SetStructure& set) override {
+                if (m_data && m_data.id() != ptr.id()) {
+                    innerRemove(m_data);
+                }
+            }
             bool hasData() const {
                 return m_data.has();
             }
@@ -56,10 +61,7 @@ namespace UML {
                 return ptr.id() == m_data.id(); // TODO rn we are allowing null
             }
             void addData(UmlPtr<T> ptr) {
-                if (m_data && m_data.id() != ptr.id()) {
-                    // we need to remove the data before adding it
-                    innerRemove(m_data);
-                }
+                
                 m_data = ptr;
             }
             bool removeData(UmlPtr<T> ptr) {
@@ -116,16 +118,26 @@ namespace UML {
 
     template <class T, class U, class ApiPolicy>
     class Singleton : public ReadOnlySingleton<T,U,ApiPolicy> {
+        private:
+            void setHelper(UmlPtr<T> ptr) {
+               if (this->m_data && this->m_data.id() != ptr.id()) {
+                    // we need to remove the data before adding it
+                    this->innerRemove(this->m_data);
+                }
+                if (ptr) { 
+                    this->innerAdd(ptr);
+                }
+            }
         public:
             Singleton(U* me) : ReadOnlySingleton<T, U, ApiPolicy>(me) {}
             void set(UmlPtr<T> ptr) {
-                this->addData(ptr);
+                this->setHelper(ptr);
             }
             void set(T& ref) {
-                this->addData(UmlPtr<T>(&ref));
+                this->setHelper(UmlPtr<T>(&ref));
             }
             void set(ID id) {
-                this->addData(this->m_el.m_manager->createPtr(id));
+                this->setHelper(this->m_el.m_manager->createPtr(id));
             }
     };
 }

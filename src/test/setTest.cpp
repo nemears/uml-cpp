@@ -559,7 +559,9 @@ TEST_F(SetTest, removeFromSubsettedSequenceTest) {
     UmlPtr<Test3SubsetsElement> testEl = m.create<Test3SubsetsElement>();
     Package& pckg = *m.create<Package>();
     testEl->sub.add(pckg);
+    std::cout << "about to remove element" << std::endl;
     testEl->sub.remove(pckg);
+    std::cout << "removed element" << std::endl;
     ASSERT_EQ(testEl->sub.size(), 0);
     ASSERT_EQ(testEl->intermediate.size(), 0);
     ASSERT_EQ(testEl->root.size(), 0);
@@ -567,7 +569,9 @@ TEST_F(SetTest, removeFromSubsettedSequenceTest) {
     ASSERT_FALSE(testEl->intermediate.contains(pckg));
     ASSERT_FALSE(testEl->root.contains(pckg));
     testEl->sub.add(pckg);
+    std::cout << "about to remove element" << std::endl;
     testEl->intermediate.remove(pckg);
+    std::cout << "removed element" << std::endl;
     ASSERT_EQ(testEl->sub.size(), 0);
     ASSERT_EQ(testEl->intermediate.size(), 0);
     ASSERT_EQ(testEl->root.size(), 0);
@@ -882,15 +886,25 @@ TEST_F(SetTest, sharedSubsetEvenTreeTest) {
     Package& p2 = *m.create<Package>();
     testEl->set1.add(p1);
     testEl->set2.add(p2);
+    std::cout << "test setup finished" << std::endl;
     ASSERT_FALSE(testEl->set1.contains(p2.getID()));
+    std::cout << "set1 front: " << testEl->set1.front().id().string() << std::endl;
     ASSERT_EQ(*testEl->set1.front(), p1);
+    std::cout << "set2 front: " << testEl->set2.front().id().string() << std::endl;
     ASSERT_EQ(*testEl->set2.front(), p2);
+    std::cout << "root front: " << testEl->set2.front().id().string() << std::endl;
+    std::cout << "root begin: " << testEl->root.begin()->getID().string() << std::endl;
+    ASSERT_EQ(*testEl->root.front(), *testEl->root.begin());
     for (auto& el : testEl->root) {
+        std::cout << "current iteration: " << el.getID().string() << std::endl;
         ASSERT_TRUE(testEl->root.contains(el.getID()));
     }
+    std::cout << "done with regular iterator" << std::endl;
     for (const ID id : testEl->root.ids()) {
+        std::cout << "current iteration: " << id.string() << std::endl;
         ASSERT_TRUE(testEl->root.contains(id));
     }
+    std::cout << "done with id iterator" << std::endl;
     testEl->set1.remove(p1);
     ASSERT_EQ(testEl->set2.size(), 1);
     ASSERT_EQ(testEl->root.size(), 1);

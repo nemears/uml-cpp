@@ -6,12 +6,13 @@
 #include <unordered_set>
 #include "../umlPtr.h"
 #include "privateSet.h"
+#include "uml/set/abstractSet.h"
 
 namespace UML {
 
     template <class T>
     class SetDataPolicy : virtual public AbstractSet {
-        private:        
+        protected:        
             std::unordered_map<ID, UmlPtr<T>> m_data;
             class iterator : public AbstractSet::iterator {
                 friend class SetDataPolicy;
@@ -93,6 +94,14 @@ namespace UML {
                     }
             };
      protected:
+            void allocatePtr(ElementPtr ptr, SetStructure& set) override {
+                if (m_data.count(ptr.id())) {
+                    if (m_structure.get() == &set) {
+                        throw SetStateException("duplicate element added to set!");
+                    }
+                    nonOppositeRemove(ptr);
+                } 
+            }
             bool hasData() const {
                 return !m_data.empty();
             }
@@ -102,6 +111,14 @@ namespace UML {
             void addData(UmlPtr<T> ptr) {
                 if (!ptr) {
                     throw SetStateException("cannot add null ptr to set!");
+                }
+                if (m_data.count(ptr.id())) {
+                    throw SetStateException("duplicate element added to set!");
+                }
+                for (auto subSetWithData : m_structure->m_subSetsWithData) {
+                    if (subSetWithData->m_set.contains(ptr)) {
+                        throw SetStateException("duplicate element added to set!");
+                    }
                 }
                 m_data[ptr.id()] = ptr;
             }
@@ -122,6 +139,9 @@ namespace UML {
             UmlPtr<T> front() const {
                 if (m_data.size() > 0) {
                     return m_data.begin()->second;
+                }
+                if (!m_structure->m_subSetsWithData.empty()) {
+                    return UmlPtr<T>((*m_structure->m_subSetsWithData.begin())->m_set.beginPtr()->getCurr());
                 }
                 return UmlPtr<T>();
             }
@@ -149,8 +169,14 @@ namespace UML {
                 ret.m_me = m_structure;
                 ret.m_dataIt = m_data.begin();
                 std::hash<ID> hasher;
-                ret.m_hash = hasher(ret.m_dataIt->second.id());
                 ret.m_subSetsWithDataIt = m_structure->m_subSetsWithData.begin();
+                if (ret.m_dataIt != m_data.end()) {
+                    ret.m_hash = hasher(ret.m_dataIt->second.id());
+                } else if (ret.m_subSetsWithDataIt != m_structure->m_subSetsWithData.end()) {
+                    ret.m_currSetIt = (*ret.m_subSetsWithDataIt)->m_set.beginPtr(); 
+                    ret.m_hash = hasher(ret.m_currSetIt->getCurr().id());
+                    ret.m_iterateSubSets = true;
+                }
                 return ret;
             }
             iterator end() const {

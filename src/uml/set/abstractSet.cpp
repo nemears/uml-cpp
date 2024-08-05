@@ -60,6 +60,8 @@ namespace UML {
         m_structure->m_superSets.clear();
         m_structure->m_redefinedSets.clear();
         m_structure->m_subSetsWithData.clear();
+        m_structure->m_rootRedefinedSet.reset();
+        m_structure.reset();
     }
     void AbstractSet::subsets(AbstractSet& superSet) {
         auto rootRedefinedSet = m_structure->m_rootRedefinedSet;

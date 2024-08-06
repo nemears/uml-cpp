@@ -145,7 +145,7 @@ namespace UML {
                 }
                 return UmlPtr<T>();
             }
-            UmlPtr<T> get(ID id) {
+            UmlPtr<T> get(ID id) const {
                 try {
                     return m_data.at(id);
                 } catch(std::exception& exception) {

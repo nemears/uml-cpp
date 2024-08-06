@@ -3,6 +3,7 @@
 
 #include "uml/types/package.h"
 #include "uml/uml-stable.h"
+#include "uml/set/orderedSet.h"
 
 using namespace UML;
 
@@ -705,127 +706,126 @@ TEST_F(SetTest, setRedefinedWFunctors) {
     ASSERT_EQ(testEl->count, 0);
 }
 
-// TODO uncomment!
-// class TestOrderedSetElement : public Element {
-//     
-//     template <typename SerializationPolicy, typename PersistencePolciy> friend class Manager;
-// 
-//     public:
-//         OrderedSet<Package, TestOrderedSetElement> set = OrderedSet<Package, TestOrderedSetElement>(this);
-//         TestOrderedSetElement() : Element(ElementType::ELEMENT) {}
-//         ~TestOrderedSetElement() {}
-// };
-// 
-// TEST_F(SetTest, addToOrderedSetTest) {
-//     Manager<> m;
-//     UmlPtr<TestOrderedSetElement> testEl = m.create<TestOrderedSetElement>();
-//     Package& p = *m.create<Package>();
-//     p.setName("1");
-//     testEl->set.add(p);
-//     ASSERT_EQ(testEl->set.front(), p);
-//     ASSERT_EQ(testEl->set.back(), p);
-//     Package& p2 = *m.create<Package>();
-//     p2.setName("2");
-//     testEl->set.add(p2);
-//     ASSERT_EQ(testEl->set.front(), p);
-//     ASSERT_EQ(testEl->set.back(), p2);
-//     Package& p3 = *m.create<Package>();
-//     p3.setName("3");
-//     testEl->set.add(p3);
-//     ASSERT_EQ(testEl->set.front(), p);
-//     ASSERT_EQ(testEl->set.back(), p3);
-//     ASSERT_TRUE(testEl->set.contains(p.getID()));
-//     ASSERT_TRUE(testEl->set.contains("1"));
-//     ASSERT_EQ(testEl->set.get(p.getID()), p);
-//     ASSERT_EQ(testEl->set.get("1"), p);
-//     ASSERT_TRUE(testEl->set.contains(p2.getID()));
-//     ASSERT_TRUE(testEl->set.contains("2"));
-//     ASSERT_EQ(testEl->set.get(p2.getID()), p2);
-//     ASSERT_EQ(testEl->set.get("2"), p2);
-//     ASSERT_TRUE(testEl->set.contains(p3.getID()));
-//     ASSERT_TRUE(testEl->set.contains("3"));
-//     ASSERT_EQ(testEl->set.get(p3.getID()), p3);
-//     ASSERT_EQ(testEl->set.get("3"), p3);
-//     Package* ps[] = {&p, &p2, &p3};
-//     int i = 0;
-//     for (Package& pckg : testEl->set) {
-//         ASSERT_EQ(*ps[i], pckg);
-//         i++;
-//     }
-//     ASSERT_EQ(testEl->set.get(0), p);
-//     ASSERT_EQ(testEl->set.get(1), p2);
-//     ASSERT_EQ(testEl->set.get(2), p3);
-// }
-// 
-// class TestElementSubsetsOrderedSets : public Element {
-//     public:
-//         CustomOrderedSet<Package, TestElementSubsetsOrderedSets> root = CustomOrderedSet<Package, TestElementSubsetsOrderedSets>(this);
-//         CustomOrderedSet<Package, TestElementSubsetsOrderedSets> sub = CustomOrderedSet<Package, TestElementSubsetsOrderedSets>(this);
-//         TestElementSubsetsOrderedSets() : Element(ElementType::ELEMENT) {
-//             sub.subsets(root);
-//         }
-// };
-// 
-// TEST_F(SetTest, subsetOrderedSets) {
-//     Manager<> m;
-//     UmlPtr<TestElementSubsetsOrderedSets> testEl = m.create<TestElementSubsetsOrderedSets>();
-//     Package& p = *m.create<Package>();
-//     testEl->sub.add(p);
-//     ASSERT_EQ(testEl->sub.front(), p);
-//     ASSERT_FALSE(testEl->root.empty());
-//     ASSERT_EQ(testEl->root.size(), 1);
-//     ASSERT_EQ(testEl->root.front(), p);
-//     Package& c = *m.create<Package>();
-//     testEl->root.add(c);
-//     ASSERT_FALSE(testEl->sub.contains(c.getID()));
-//     ASSERT_TRUE(testEl->root.contains(c.getID()));
-//     ASSERT_EQ(testEl->root.back(), c);
-//     int i = 0;
-//     for (Package& pckg : testEl->sub) {
-//         i++;
-//     }
-//     ASSERT_EQ(i, 1);
-//     i = 0;
-//     for (PackageableElement& pckg : testEl->root) {
-//         i++;
-//     }
-//     ASSERT_EQ(i, 2);
-// }
-// 
-// class TestElementOrderedSubsetsSet : public Element {
-//     public:
-//         CustomSet<Package, TestElementOrderedSubsetsSet> root = CustomSet<Package, TestElementOrderedSubsetsSet>(this);
-//         CustomOrderedSet<Package, TestElementOrderedSubsetsSet> sub = CustomOrderedSet<Package, TestElementOrderedSubsetsSet>(this);
-//         TestElementOrderedSubsetsSet() : Element(ElementType::ELEMENT) {
-//             sub.subsets(root);
-//         }
-// };
-// 
-// TEST_F(SetTest, orderedSetSubSetsSet) {
-//     Manager<> m;
-//     UmlPtr<TestElementOrderedSubsetsSet> testEl = m.create<TestElementOrderedSubsetsSet>();
-//     Package& p = *m.create<Package>();
-//     testEl->sub.add(p);
-//     ASSERT_EQ(testEl->sub.front(), p);
-//     ASSERT_FALSE(testEl->root.empty());
-//     ASSERT_EQ(testEl->root.size(), 1);
-//     ASSERT_EQ(testEl->root.get(p.getID()), p);
-//     Package& c = *m.create<Package>();
-//     testEl->root.add(c);
-//     ASSERT_FALSE(testEl->sub.contains(c.getID()));
-//     ASSERT_TRUE(testEl->root.contains(c.getID()));
-//     ASSERT_EQ(testEl->root.get(c.getID()), c);
-//     int i = 0;
-//     for (Package& pckg : testEl->sub) {
-//         i++;
-//     }
-//     ASSERT_EQ(i, 1);
-//     i = 0;
-//     for (Package& pckg : testEl->root) {
-//         i++;
-//     }
-//     ASSERT_EQ(i, 2);
-// }
+class TestOrderedSetElement : public Element {
+    
+    template <typename SerializationPolicy, typename PersistencePolciy> friend class Manager;
+
+    public:
+        OrderedSet<Package, TestOrderedSetElement> set = OrderedSet<Package, TestOrderedSetElement>(this);
+        TestOrderedSetElement() : Element(ElementType::ELEMENT) {}
+        ~TestOrderedSetElement() {}
+};
+
+TEST_F(SetTest, addToOrderedSetTest) {
+    Manager<> m;
+    UmlPtr<TestOrderedSetElement> testEl = m.create<TestOrderedSetElement>();
+    Package& p = *m.create<Package>();
+    p.setName("1");
+    testEl->set.add(p);
+    ASSERT_EQ(*testEl->set.front(), p);
+    ASSERT_EQ(*testEl->set.back(), p);
+    Package& p2 = *m.create<Package>();
+    p2.setName("2");
+    testEl->set.add(p2);
+    ASSERT_EQ(*testEl->set.front(), p);
+    ASSERT_EQ(*testEl->set.back(), p2);
+    Package& p3 = *m.create<Package>();
+    p3.setName("3");
+    testEl->set.add(p3);
+    ASSERT_EQ(*testEl->set.front(), p);
+    ASSERT_EQ(*testEl->set.back(), p3);
+    ASSERT_TRUE(testEl->set.contains(p.getID()));
+    // ASSERT_TRUE(testEl->set.contains("1"));
+    ASSERT_EQ(*testEl->set.get(p.getID()), p);
+    // ASSERT_EQ(testEl->set.get("1"), p);
+    ASSERT_TRUE(testEl->set.contains(p2.getID()));
+    // ASSERT_TRUE(testEl->set.contains("2"));
+    ASSERT_EQ(*testEl->set.get(p2.getID()), p2);
+    // ASSERT_EQ(testEl->set.get("2"), p2);
+    ASSERT_TRUE(testEl->set.contains(p3.getID()));
+    // ASSERT_TRUE(testEl->set.contains("3"));
+    ASSERT_EQ(*testEl->set.get(p3.getID()), p3);
+    // ASSERT_EQ(testEl->set.get("3"), p3);
+    Package* ps[] = {&p, &p2, &p3};
+    int i = 0;
+    for (Package& pckg : testEl->set) {
+        ASSERT_EQ(*ps[i], pckg);
+        i++;
+    }
+    ASSERT_EQ(*testEl->set.get(0), p);
+    ASSERT_EQ(*testEl->set.get(1), p2);
+    ASSERT_EQ(*testEl->set.get(2), p3);
+}
+
+class TestElementSubsetsOrderedSets : public Element {
+    public:
+        OrderedSet<Package, TestElementSubsetsOrderedSets> root = OrderedSet<Package, TestElementSubsetsOrderedSets>(this);
+        OrderedSet<Package, TestElementSubsetsOrderedSets> sub = OrderedSet<Package, TestElementSubsetsOrderedSets>(this);
+        TestElementSubsetsOrderedSets() : Element(ElementType::ELEMENT) {
+            sub.subsets(root);
+        }
+};
+
+TEST_F(SetTest, subsetOrderedSets) {
+    Manager<> m;
+    UmlPtr<TestElementSubsetsOrderedSets> testEl = m.create<TestElementSubsetsOrderedSets>();
+    Package& p = *m.create<Package>();
+    testEl->sub.add(p);
+    ASSERT_EQ(*testEl->sub.front(), p);
+    ASSERT_FALSE(testEl->root.empty());
+    ASSERT_EQ(testEl->root.size(), 1);
+    ASSERT_EQ(*testEl->root.front(), p);
+    Package& c = *m.create<Package>();
+    testEl->root.add(c);
+    ASSERT_FALSE(testEl->sub.contains(c.getID()));
+    ASSERT_TRUE(testEl->root.contains(c.getID()));
+    ASSERT_EQ(*testEl->root.back(), c);
+    int i = 0;
+    for (Package& pckg : testEl->sub) {
+        i++;
+    }
+    ASSERT_EQ(i, 1);
+    i = 0;
+    for (PackageableElement& pckg : testEl->root) {
+        i++;
+    }
+    ASSERT_EQ(i, 2);
+}
+
+class TestElementOrderedSubsetsSet : public Element {
+    public:
+        Set<Package, TestElementOrderedSubsetsSet> root = Set<Package, TestElementOrderedSubsetsSet>(this);
+        OrderedSet<Package, TestElementOrderedSubsetsSet> sub = OrderedSet<Package, TestElementOrderedSubsetsSet>(this);
+        TestElementOrderedSubsetsSet() : Element(ElementType::ELEMENT) {
+            sub.subsets(root);
+        }
+};
+
+TEST_F(SetTest, orderedSetSubSetsSet) {
+    Manager<> m;
+    UmlPtr<TestElementOrderedSubsetsSet> testEl = m.create<TestElementOrderedSubsetsSet>();
+    Package& p = *m.create<Package>();
+    testEl->sub.add(p);
+    ASSERT_EQ(*testEl->sub.front(), p);
+    ASSERT_FALSE(testEl->root.empty());
+    ASSERT_EQ(testEl->root.size(), 1);
+    ASSERT_EQ(*testEl->root.get(p.getID()), p);
+    Package& c = *m.create<Package>();
+    testEl->root.add(c);
+    ASSERT_FALSE(testEl->sub.contains(c.getID()));
+    ASSERT_TRUE(testEl->root.contains(c.getID()));
+    ASSERT_EQ(*testEl->root.get(c.getID()), c);
+    int i = 0;
+    for (Package& pckg : testEl->sub) {
+        i++;
+    }
+    ASSERT_EQ(i, 1);
+    i = 0;
+    for (Package& pckg : testEl->root) {
+        i++;
+    }
+    ASSERT_EQ(i, 2);
+}
 
 class TestSingletonElement : public Element {
     public:
@@ -1266,46 +1266,46 @@ TEST_F(SetTest, AddElementThatIsInSuperSet) {
     ASSERT_TRUE(testEl->sub.contains(p.getID()));
 }
 
-// TODO uncomment!
-// TEST_F(SetTest, removeFirstElementFromOrderedSetTest) {
-//     Manager<> m;
-//     UmlPtr<TestOrderedSetElement> testEl = m.create<TestOrderedSetElement>();
-//     Package& p = *m.create<Package>();
-//     testEl->set.add(p);
-//     testEl->set.remove(p);
-//     ASSERT_TRUE(testEl->set.empty());
-//     ASSERT_EQ(testEl->set.size(), 0);
-//     ASSERT_THROW(testEl->set.front(), SetStateException);
-// }
-// 
-// TEST_F(SetTest, removeLastElementFromOrderedSetTest) {
-//     Manager<> m;
-//     UmlPtr<TestOrderedSetElement> testEl = m.create<TestOrderedSetElement>();
-//     Package& p = *m.create<Package>();
-//     testEl->set.add(p);
-//     Package& p2 = *m.create<Package>();
-//     testEl->set.add(p2);
-//     testEl->set.remove(p2);
-//     ASSERT_EQ(testEl->set.back(), p);
-//     ASSERT_FALSE(testEl->set.contains(p2.getID()));
-//     ASSERT_EQ(testEl->set.size(), 1);
-// }
-// 
-// TEST_F(SetTest, removeMiddleElementFromOrderedSetTest) {
-//     Manager<> m;
-//     UmlPtr<TestOrderedSetElement> testEl = m.create<TestOrderedSetElement>();
-//     Package& p = *m.create<Package>();
-//     testEl->set.add(p);
-//     Package& p2 = *m.create<Package>();
-//     testEl->set.add(p2);
-//     Package& p3 = *m.create<Package>();
-//     testEl->set.add(p3);
-//     testEl->set.remove(p2);
-//     OrderedSetIterator it = testEl->set.begin();
-//     it++;
-//     ASSERT_EQ(*it, p3);
-// }
-// 
+TEST_F(SetTest, removeFirstElementFromOrderedSetTest) {
+    Manager<> m;
+    UmlPtr<TestOrderedSetElement> testEl = m.create<TestOrderedSetElement>();
+    Package& p = *m.create<Package>();
+    testEl->set.add(p);
+    testEl->set.remove(p);
+    ASSERT_TRUE(testEl->set.empty());
+    ASSERT_EQ(testEl->set.size(), 0);
+    ASSERT_EQ(testEl->set.front(), PackagePtr());
+}
+
+TEST_F(SetTest, removeLastElementFromOrderedSetTest) {
+    Manager<> m;
+    UmlPtr<TestOrderedSetElement> testEl = m.create<TestOrderedSetElement>();
+    Package& p = *m.create<Package>();
+    testEl->set.add(p);
+    Package& p2 = *m.create<Package>();
+    testEl->set.add(p2);
+    testEl->set.remove(p2);
+    ASSERT_EQ(*testEl->set.back(), p);
+    ASSERT_FALSE(testEl->set.contains(p2.getID()));
+    ASSERT_EQ(testEl->set.size(), 1);
+}
+
+TEST_F(SetTest, removeMiddleElementFromOrderedSetTest) {
+    Manager<> m;
+    UmlPtr<TestOrderedSetElement> testEl = m.create<TestOrderedSetElement>();
+    Package& p = *m.create<Package>();
+    testEl->set.add(p);
+    Package& p2 = *m.create<Package>();
+    testEl->set.add(p2);
+    Package& p3 = *m.create<Package>();
+    testEl->set.add(p3);
+    testEl->set.remove(p2);
+    auto it = testEl->set.begin();
+    it++;
+    ASSERT_EQ(*it, p3);
+}
+
+// uncomment?
 // TEST_F(SetTest, removeFromSuperSetTest) {
 //     Manager<> m;
 //     UmlPtr<TestSubsetsElement> testEl = m.create<TestSubsetsElement>();

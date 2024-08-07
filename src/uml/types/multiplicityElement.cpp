@@ -1,28 +1,20 @@
 #include "uml/types/multiplicityElement.h"
-#include "uml/types/literalInt.h"
-#include "uml/umlPtr.h"
-#include "uml/types/package.h"
-#include "uml/types/behavior.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/association.h"
-#include "uml/types/dataType.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void MultiplicityElement::AddLowerPolicy::apply(ValueSpecification& el, MultiplicityElement& me) {
-    if (el.isSubClassOf(ElementType::LITERAL_INT)) {
+void MultiplicityElement::LowerPolicy::elementAdded(ValueSpecification& el, MultiplicityElement& me) {
+    if (el.is(ElementType::LITERAL_INT)) {
         if (dynamic_cast<LiteralInt&>(el).getValue() >= 0) {
             me.setLower(dynamic_cast<LiteralInt&>(el).getValue());
         }
     }
-    else if (el.isSubClassOf(ElementType::EXPRESSION)) {
+    else if (el.is(ElementType::EXPRESSION)) {
         // TODO evaluate expression
     }
 }
 
-void MultiplicityElement::RemoveLowerPolicy::apply(__attribute__((unused)) ValueSpecification& el, MultiplicityElement& me) {
+void MultiplicityElement::LowerPolicy::elementRemoved(__attribute__((unused)) ValueSpecification& el, MultiplicityElement& me) {
     if (me.m_lowSpecified) {
         me.m_lower = -1;
         me.m_lowSpecified = false;
@@ -30,18 +22,18 @@ void MultiplicityElement::RemoveLowerPolicy::apply(__attribute__((unused)) Value
     }
 }
 
-void MultiplicityElement::AddUpperPolicy::apply(ValueSpecification& el, MultiplicityElement& me) {
-    if (el.isSubClassOf(ElementType::LITERAL_INT)) {
+void MultiplicityElement::UpperPolicy::elementAdded(ValueSpecification& el, MultiplicityElement& me) {
+    if (el.is(ElementType::LITERAL_INT)) {
         if (dynamic_cast<LiteralInt&>(el).getValue() >= 0) {
             me.setUpper(dynamic_cast<LiteralInt&>(el).getValue());
         }
     }
-    else if (el.isSubClassOf(ElementType::EXPRESSION)) {
+    else if (el.is(ElementType::EXPRESSION)) {
         // TODO evaluate expression
     }
 }
 
-void MultiplicityElement::RemoveUpperPolicy::apply(__attribute__((unused)) ValueSpecification& el, MultiplicityElement& me) {
+void MultiplicityElement::UpperPolicy::elementRemoved(__attribute__((unused)) ValueSpecification& el, MultiplicityElement& me) {
     if (me.m_upSpecified) {
         me.m_upper = -1;
         me.m_upSpecified = false;
@@ -49,11 +41,11 @@ void MultiplicityElement::RemoveUpperPolicy::apply(__attribute__((unused)) Value
     }
 }
 
-TypedSet<ValueSpecification, MultiplicityElement>& MultiplicityElement::getLowerValueSingleton() {
+Singleton<ValueSpecification, MultiplicityElement, MultiplicityElement::LowerPolicy>& MultiplicityElement::getLowerValueSingleton() {
     return m_lowVal;
 }
 
-TypedSet<ValueSpecification, MultiplicityElement>& MultiplicityElement::getUpperValueSingleton() {
+Singleton<ValueSpecification, MultiplicityElement, MultiplicityElement::UpperPolicy>& MultiplicityElement::getUpperValueSingleton() {
     return m_upVal;
 }
 
@@ -171,8 +163,8 @@ void MultiplicityElement::setIsUnique(bool isUnique) {
     m_isUnique = isUnique;
 }
 
-bool MultiplicityElement::isSubClassOf(ElementType eType) const {
-    bool ret = Element::isSubClassOf(eType);
+bool MultiplicityElement::is(ElementType eType) const {
+    bool ret = Element::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::MULTIPLICITY_ELEMENT;

@@ -1,19 +1,12 @@
 #include "uml/types/packageImport.h"
-#include "uml/types/behavior.h"
-#include "uml/umlPtr.h"
-#include "uml/types/property.h"
+#include "uml/types/namespace.h"
 #include "uml/types/package.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/generalizationSet.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/types/packageableElement.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void PackageImport::AddImportedPackagePolicy::apply(Package& el, PackageImport& me) {
+void PackageImport::ImportedPackagePolicy::elementAdded(Package& el, PackageImport& me) {
     el.m_packagedElements.packageImportsAdd.insert(UmlPtr<PackageImport>(&me));
     el.m_packagedElements.packageImportsRemove.insert(UmlPtr<PackageImport>(&me));
 
@@ -26,7 +19,7 @@ void PackageImport::AddImportedPackagePolicy::apply(Package& el, PackageImport& 
     }
 }
 
-void PackageImport::RemoveImportedPackagePolicy::apply(Package& el, PackageImport& me) {
+void PackageImport::ImportedPackagePolicy::elementRemoved(Package& el, PackageImport& me) {
     std::unordered_set<UmlPtr<PackageImport>>::iterator addIt = el.m_packagedElements.packageImportsAdd.find(UmlPtr<PackageImport>(&me));
     if (addIt != el.m_packagedElements.packageImportsAdd.end()) {
         el.m_packagedElements.packageImportsAdd.erase(addIt);
@@ -56,8 +49,37 @@ PackageImport::~PackageImport() {
 
 }
 
-IMPLEMENT_SINGLETON(ImportedPackage, m_importedPackage, Package, PackageImport);
-IMPLEMENT_SINGLETON(ImportingNamespace, m_importingNamespace, Namespace, PackageImport);
+void PackageImport::setImportedPackage(ID id) {
+    m_importedPackage.set(id);
+}
+
+void PackageImport::setImportedPackage(Package& pckg) {
+    m_importedPackage.set(pckg);
+}
+
+void PackageImport::setImportedPackage(PackagePtr pckg) {
+    m_importedPackage.set(pckg);
+}
+
+PackagePtr PackageImport::getImportedPackage() const {
+    return m_importedPackage.get();
+}
+
+void PackageImport::setImportingNamespace(ID id) {
+    m_importingNamespace.set(id);
+}
+
+void PackageImport::setImportingNamespace(Namespace& nmspc) {
+    m_importingNamespace.set(nmspc);
+}
+
+void PackageImport::setImportingNamespace(NamespacePtr nmspc) {
+    m_importingNamespace.set(nmspc);
+}
+
+NamespacePtr PackageImport::getImportingNamespace() const {
+    return m_importingNamespace.get();
+}
 
 VisibilityKind PackageImport::getVisibility() const {
     return m_visibility;
@@ -66,8 +88,8 @@ void PackageImport::setVisibility(VisibilityKind visibility) {
     m_visibility = visibility;
 }
 
-bool PackageImport::isSubClassOf(ElementType eType) const {
-    bool ret = DirectedRelationship::isSubClassOf(eType);
+bool PackageImport::is(ElementType eType) const {
+    bool ret = DirectedRelationship::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::PACKAGE_IMPORT;

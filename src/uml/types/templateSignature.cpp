@@ -1,17 +1,13 @@
-#include "uml/types/templateSignature.h"
-#include "uml/types/templateableElement.h"
-#include "uml/types/templateParameter.h"
-#include "uml/types/parameterableElement.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void TemplateSignature::referenceErased(ID id) {
     Element::referenceErased(id);
-    m_parameters.eraseElement(id);
+    eraseFromSet(id, m_parameters);
 }
 
-TypedSet<TemplateableElement, TemplateSignature>& TemplateSignature::getTemplateSingleton() {
+Singleton<TemplateableElement, TemplateSignature>& TemplateSignature::getTemplateSingleton() {
     return m_template;
 }
 
@@ -51,8 +47,8 @@ OrderedSet<TemplateParameter, TemplateSignature>& TemplateSignature::getParamete
     return m_parameters;
 }
 
-bool TemplateSignature::isSubClassOf(ElementType eType) const {
-    bool ret = Element::isSubClassOf(eType);
+bool TemplateSignature::is(ElementType eType) const {
+    bool ret = Element::is(eType);
 
     if (!ret) {
         return eType == ElementType::TEMPLATE_SIGNATURE;

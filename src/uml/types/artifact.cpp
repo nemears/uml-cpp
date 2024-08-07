@@ -1,12 +1,4 @@
-#include "uml/types/artifact.h"
-#include "uml/types/property.h"
-#include "uml/types/operation.h"
-#include "uml/types/manifestation.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -41,11 +33,11 @@ Set<Manifestation, Artifact>& Artifact::getManifestations() {
 }
 
 
-bool Artifact::isSubClassOf(ElementType eType) const {
-    bool ret = Classifier::isSubClassOf(eType);
+bool Artifact::is(ElementType eType) const {
+    bool ret = Classifier::is(eType);
 
     if (!ret) {
-        ret = DeployedArtifact::isSubClassOf(eType);
+        ret = DeployedArtifact::is(eType);
     }
 
     if (!ret) {

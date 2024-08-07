@@ -1,19 +1,10 @@
-#include "uml/types/parameterSet.h"
-#include "uml/types/parameter.h"
-#include "uml/types/package.h"
-#include "uml/types/dataType.h"
-#include "uml/types/behavior.h"
-#include "uml/types/operation.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void ParameterSet::referenceErased(ID id) {
     NamedElement::referenceErased(id);
-    m_parameters.eraseElement(id);
+    eraseFromSet(id, m_parameters);
 }
 
 ParameterSet::ParameterSet() : Element(ElementType::PARAMETER_SET) {
@@ -33,8 +24,8 @@ Set<Parameter, ParameterSet>& ParameterSet::getParameters() {
     return m_parameters;
 }
 
-bool ParameterSet::isSubClassOf(ElementType eType) const {
-    if (NamedElement::isSubClassOf(eType)) {
+bool ParameterSet::is(ElementType eType) const {
+    if (NamedElement::is(eType)) {
         return true;
     }
 

@@ -1,13 +1,4 @@
-#include "uml/types/operation.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/behavior.h"
-#include "uml/types/parameter.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -19,28 +10,28 @@ void Operation::referenceErased(ID id) {
 void Operation::restoreReferences() {
     BehavioralFeature::restoreReferences();
     if (m_namespace->get() && !m_featuringClassifier.get()) {
-        if (m_namespace->get()->isSubClassOf(ElementType::CLASSIFIER)) {
+        if (m_namespace->get()->is(ElementType::CLASSIFIER)) {
             Classifier& clazz = m_namespace->get()->as<Classifier>();
             if (clazz.getFeatures().contains(m_id)) {
-                m_featuringClassifier.innerAdd(clazz);
+                m_featuringClassifier.innerAdd(&clazz);
             }
         }
     }
 }
 
-TypedSet<Type, Operation>& Operation::getTypeSingleton() {
+Singleton<Type, Operation>& Operation::getTypeSingleton() {
     return m_type;
 }
 
-TypedSet<Class, Operation>& Operation::getClassSingleton() {
+Singleton<Class, Operation>& Operation::getClassSingleton() {
     return m_class;
 }
 
-TypedSet<DataType, Operation>& Operation::getDataTypeSingleton() {
+Singleton<DataType, Operation>& Operation::getDataTypeSingleton() {
     return m_dataType;
 }
 
-TypedSet<Interface, Operation>& Operation::getInterfaceSingleton() {
+Singleton<Interface, Operation>& Operation::getInterfaceSingleton() {
     return m_interface;
 }
 
@@ -130,15 +121,15 @@ OrderedSet<Parameter, Operation>& Operation::getOwnedParameters() {
     return m_operationOwnedParameters;
 }
 
-bool Operation::isSubClassOf(ElementType eType) const {
-    bool ret = BehavioralFeature::isSubClassOf(eType);
+bool Operation::is(ElementType eType) const {
+    bool ret = BehavioralFeature::is(eType);
 
     if (!ret) {
-        ret = TemplateableElement::isSubClassOf(eType);
+        ret = TemplateableElement::is(eType);
     }
 
     if (!ret) {
-        ret = ParameterableElement::isSubClassOf(eType);
+        ret = ParameterableElement::is(eType);
     }
 
     if (!ret) {

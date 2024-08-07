@@ -1,16 +1,10 @@
-#include "uml/types/usage.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void Usage::RemoveClientPolicy::apply(NamedElement& el, Usage& me) {
+void Usage::ClientPolicy::elementRemoved(NamedElement& el, Usage& me) {
     for (auto& supplier : me.m_suppliers) {
-        if (supplier.isSubClassOf(ElementType::INTERFACE_UML) && el.isSubClassOf(ElementType::CLASSIFIER)) {
+        if (supplier.is(ElementType::INTERFACE_UML) && el.is(ElementType::CLASSIFIER)) {
             // for (auto& pair : el.m_node->m_references) {
                 std::list<Classifier*> queue = {&el.as<Classifier>()};
                 while (!queue.empty()) {
@@ -22,18 +16,18 @@ void Usage::RemoveClientPolicy::apply(NamedElement& el, Usage& me) {
                             continue;
                         }
                         
-                        if (pair.second.node->m_element->isSubClassOf(ElementType::PORT)) {
+                        if (pair.second.node->m_element->is(ElementType::PORT)) {
                             Port& port = pair.second.node->m_element->as<Port>();
                             if (port.isConjugated()) {
                                 if (port.getProvided().contains(supplier.getID())) {
-                                    port.getProvided().innerRemove(supplier.getID());
+                                    port.getProvided().innerRemove(&supplier);
                                 }
                             } else {
                                 if (port.getRequired().contains(supplier.getID())) {
-                                    port.getRequired().innerRemove(supplier.getID());
+                                    port.getRequired().innerRemove(&supplier);
                                 }
                             }
-                        } else if (pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER)) {
+                        } else if (pair.second.node->m_element->is(ElementType::CLASSIFIER)) {
                             if (pair.second.node->m_element->as<Classifier>().getGenerals().contains(*front)) {
                                 queue.push_back(&pair.second.node->m_element->as<Classifier>());
                             }
@@ -45,10 +39,10 @@ void Usage::RemoveClientPolicy::apply(NamedElement& el, Usage& me) {
     }
 }
 
-void Usage::AddClientPolicy::apply(NamedElement& el, Usage& me) {
-    if (el.isSubClassOf(ElementType::CLASSIFIER)) {
+void Usage::ClientPolicy::elementAdded(NamedElement& el, Usage& me) {
+    if (el.is(ElementType::CLASSIFIER)) {
         for (auto& supplier : me.getSuppliers()) {
-            if (supplier.isSubClassOf(ElementType::INTERFACE_UML)) {
+            if (supplier.is(ElementType::INTERFACE_UML)) {
                 std::list<Classifier*> queue = {&el.as<Classifier>()};
                 while(!queue.empty()) {
                     Classifier* front = queue.front();
@@ -59,16 +53,16 @@ void Usage::AddClientPolicy::apply(NamedElement& el, Usage& me) {
                             continue;
                         }
 
-                        if (pair.second.node->m_element->isSubClassOf(ElementType::PORT)) {
+                        if (pair.second.node->m_element->is(ElementType::PORT)) {
                             Port& port = pair.second.node->m_element->as<Port>();
                             if (port.getType().id() == front->getID()) {
                                 if (port.isConjugated()) {
-                                    port.getProvided().innerAdd(supplier.as<Interface>());
+                                    port.getProvided().innerAdd(&supplier);
                                 } else {
-                                    port.getRequired().innerAdd(supplier.as<Interface>());
+                                    port.getRequired().innerAdd(&supplier);
                                 }
                             }
-                        } else if (pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER)) {
+                        } else if (pair.second.node->m_element->is(ElementType::CLASSIFIER)) {
                             if (pair.second.node->m_element->as<Classifier>().getGenerals().contains(*front)) {
                                 queue.push_back(&pair.second.node->m_element->as<Classifier>());
                             }
@@ -78,7 +72,6 @@ void Usage::AddClientPolicy::apply(NamedElement& el, Usage& me) {
                 }
             }
         }
-        
     }
 }
 
@@ -90,8 +83,8 @@ Usage::~Usage() {
     
 }
 
-bool Usage::isSubClassOf(ElementType eType) const {
-    bool ret = Dependency::isSubClassOf(eType);
+bool Usage::is(ElementType eType) const {
+    bool ret = Dependency::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::USAGE;

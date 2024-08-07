@@ -1,24 +1,14 @@
-#include "uml/types/property.h"
-#include "uml/types/package.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-#include "uml/types/extension.h"
-#include "uml/types/extensionEnd.h"
-#include "uml/umlPtr.h"
+#include "uml/types/structuredClassifier.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void Property::SetPropertyTypePolicy::apply(Type& el, Property& me) {
+void Property::PropertyTypePolicy::elementAdded(Type& el, Property& me) {
     if (!me.getAssociation()) {
         return;
     }
-    [[maybe_unused]] SetLock assocLock = me.lockEl(*me.getAssociation());
-    me.getAssociation()->m_endTypes.innerAdd(el);
-    if (!me.getAssociation()->isSubClassOf(ElementType::EXTENSION)) {
+    me.getAssociation()->m_endTypes.innerAdd(ElementPtr(&el));
+    if (!me.getAssociation()->is(ElementType::EXTENSION)) {
         return;
     }
     Extension& extension = me.getAssociation()->as<Extension>();
@@ -28,15 +18,14 @@ void Property::SetPropertyTypePolicy::apply(Type& el, Property& me) {
     extension.m_metaClass.set(el.as<Class>());
 }
 
-void Property::RemovePropertyTypePolicy::apply(Type& el, Property& me) {
+void Property::PropertyTypePolicy::elementRemoved(Type& el, Property& me) {
     if (!me.getAssociation()) {
         return;
     }
     if (me.getAssociation()->getEndTypes().contains(el.getID())) {
-        [[maybe_unused]] SetLock assocLock = me.lockEl(*me.getAssociation());
-        me.getAssociation()->m_endTypes.innerRemove(el.getID());
+        me.getAssociation()->m_endTypes.innerRemove(ElementPtr(&el));
     }
-    if (!me.getAssociation()->isSubClassOf(ElementType::EXTENSION)) {
+    if (!me.getAssociation()->is(ElementType::EXTENSION)) {
         return;
     }
     Extension& extension = me.getAssociation()->as<Extension>();
@@ -45,33 +34,31 @@ void Property::RemovePropertyTypePolicy::apply(Type& el, Property& me) {
     }
 }
 
-void Property::AddRedefinedPropertyPolicy::apply(Property& el, Property& me) {
+void Property::RedefinedPropertyPolicy::elementAdded(Property& el, Property& me) {
     if (me.getFeaturingClassifier() && !me.m_redefinitionContext.contains(me.getFeaturingClassifier().id())) {
-        [[maybe_unused]] SetLock lock = me.lockEl(*me.getFeaturingClassifier());
-        me.m_redefinitionContext.innerAdd(*me.getFeaturingClassifier());
+        me.m_redefinitionContext.innerAdd(me.getFeaturingClassifier());
     }
 }
 
-void Property::RemoveRedefinedPropertyPolicy::apply(Property& el, Property& me) {
+void Property::RedefinedPropertyPolicy::elementRemoved(Property& el, Property& me) {
     if (me.m_redefinedElement.empty() && me.getFeaturingClassifier() && !me.m_redefinitionContext.empty()) {
-        [[maybe_unused]] SetLock lock = me.lockEl(*me.getFeaturingClassifier());
-        me.m_redefinitionContext.innerRemove(me.getFeaturingClassifier().id());
+        me.m_redefinitionContext.innerRemove(me.getFeaturingClassifier());
     }
 }
 
 void Property::restoreReferences() {
     StructuralFeature::restoreReferences();
     if (m_namespace->get() && !m_featuringClassifier.get()) {
-        if (m_namespace->get()->isSubClassOf(ElementType::CLASSIFIER)) {
+        if (m_namespace->get()->is(ElementType::CLASSIFIER)) {
             Classifier& clazz = m_namespace->get()->as<Classifier>();
             if (clazz.getAttributes().contains(m_id)) {
-                m_featuringClassifier.innerAdd(clazz);
+                m_featuringClassifier.innerAdd(ElementPtr(&clazz));
             }
         }
     }
     if (!m_redefinedProperties.empty()) {
         if (m_featuringClassifier.get() && !m_redefinitionContext.contains(m_featuringClassifier.get().id())) {
-            m_redefinitionContext.innerAdd(m_featuringClassifier.get().id());
+            m_redefinitionContext.innerAdd(m_featuringClassifier.get());
         }
     }
 }
@@ -79,31 +66,31 @@ void Property::restoreReferences() {
 void Property::referenceErased(ID id) {
     StructuralFeature::referenceErased(id);
     DeploymentTarget::referenceErased(id);
-    m_association.eraseElement(id);
-    m_subsettedProperties.eraseElement(id);
+    eraseFromSet(id, m_association);
+    eraseFromSet(id, m_subsettedProperties);
 }
 
-TypedSet<ValueSpecification, Property>& Property::getDefaultValueSingleton() {
+Singleton<ValueSpecification, Property>& Property::getDefaultValueSingleton() {
     return m_defaultValue;
 }
 
-TypedSet<Class, Property>& Property::getClassSingleton() {
+Singleton<Class, Property>& Property::getClassSingleton() {
     return m_class;
 }
 
-TypedSet<DataType, Property>& Property::getDataTypeSingleton() {
+Singleton<DataType, Property>& Property::getDataTypeSingleton() {
     return m_dataType;
 }
 
-TypedSet<Association, Property>& Property::getAssociationSingleton() {
+Singleton<Association, Property>& Property::getAssociationSingleton() {
     return m_association;
 }
 
-TypedSet<Association, Property>& Property::getOwningAssociationSingleton() {
+Singleton<Association, Property>& Property::getOwningAssociationSingleton() {
     return m_owningAssociation;
 }
 
-TypedSet<Interface, Property>& Property::getInterfaceSingleton() {
+Singleton<Interface, Property>& Property::getInterfaceSingleton() {
     return m_interface;
 }
 
@@ -141,15 +128,18 @@ bool Property::isComposite() {
 
 void Property::setComposite(bool composite) {
     if (!composite && m_composite) {
-        if (m_featuringClassifier.get() && m_featuringClassifier.get()->isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
+        if (m_featuringClassifier.get() && m_featuringClassifier.get()->is(ElementType::STRUCTURED_CLASSIFIER)) {
             // TODO test that removeFromJustThisSet function is safe
-            m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.removeFromJustThisSet(m_id); // TODO test
+            //m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.removeFromJustThisSet(m_id); // TODO test
+            // remove and add again instead of removeFromJustThisSet (simpler)
+            m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.innerRemove(ElementPtr(this));
+            m_featuringClassifier.get()->as<StructuredClassifier>().m_ownedAttributes.add(this);
         }
     }
     m_composite = composite;
     if (m_composite) {
-        if (m_featuringClassifier.get() && m_featuringClassifier.get()->isSubClassOf(ElementType::STRUCTURED_CLASSIFIER)) {
-            m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.innerAdd(*this);
+        if (m_featuringClassifier.get() && m_featuringClassifier.get()->is(ElementType::STRUCTURED_CLASSIFIER)) {
+            m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.innerAdd(this);
         }
     }
 }
@@ -264,7 +254,7 @@ void Property::setInterface(ID id) {
     m_interface.set(id);
 }
 
-Set<Property, Property>& Property::getRedefinedProperties() {
+Set<Property, Property, Property::RedefinedPropertyPolicy>& Property::getRedefinedProperties() {
     return m_redefinedProperties;
 }
 
@@ -272,15 +262,15 @@ Set<Property, Property>& Property::getSubsettedProperties() {
     return m_subsettedProperties;
 }
 
-bool Property::isSubClassOf(ElementType eType) const {
-    bool ret = StructuralFeature::isSubClassOf(eType);
+bool Property::is(ElementType eType) const {
+    bool ret = StructuralFeature::is(eType);
 
     if (!ret) {
-        ret = ConnectableElement::isSubClassOf(eType);
+        ret = ConnectableElement::is(eType);
     }
 
     if (!ret) {
-        ret = DeploymentTarget::isSubClassOf(eType);
+        ret = DeploymentTarget::is(eType);
     }
 
     if (!ret) {

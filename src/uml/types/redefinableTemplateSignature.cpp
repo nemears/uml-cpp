@@ -1,32 +1,18 @@
-#include "uml/types/redefinableTemplateSignature.h"
-#include "uml/types/templateableElement.h"
-#include "uml/types/templateParameter.h"
-#include "uml/types/parameterableElement.h"
-#include "uml/types/property.h"
-#include "uml/types/generalization.h"
-#include "uml/types/package.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void RedefinableTemplateSignature::AddExtendedSignaturePolicy::apply(RedefinableTemplateSignature& el, RedefinableTemplateSignature& me) {
+void RedefinableTemplateSignature::ExtendedSignaturePolicy::elementAdded(RedefinableTemplateSignature& el, RedefinableTemplateSignature& me) {
     el.m_redefinableTemplateSignatureParameters.addSignatures.insert(UmlPtr<RedefinableTemplateSignature>(&me));
     el.m_redefinableTemplateSignatureParameters.removeSignatures.insert(UmlPtr<RedefinableTemplateSignature>(&me));
     for (auto& param : el.getParameters()) {
         if (!me.m_inheritedParameters.contains(param)) {
-            [[maybe_unused]] SetLock paramLck = me.lockEl(param);
             me.m_inheritedParameters.innerAdd(param);
         }
     }
 }
 
-void RedefinableTemplateSignature::RemoveExtendedSignaturePolicy::apply(RedefinableTemplateSignature& el, RedefinableTemplateSignature& me) {
+void RedefinableTemplateSignature::ExtendedSignaturePolicy::elementRemoved(RedefinableTemplateSignature& el, RedefinableTemplateSignature& me) {
     el.m_redefinableTemplateSignatureParameters.addSignatures.erase(UmlPtr<RedefinableTemplateSignature>(&me));
     el.m_redefinableTemplateSignatureParameters.removeSignatures.erase(UmlPtr<RedefinableTemplateSignature>(&me));
     std::unordered_set<ID> parametersToKeep;
@@ -39,22 +25,20 @@ void RedefinableTemplateSignature::RemoveExtendedSignaturePolicy::apply(Redefina
     }
     for (auto& param : el.getParameters()) {
         if (me.m_inheritedParameters.contains(param) && !parametersToKeep.count(param.getID())) {
-            [[maybe_unused]] SetLock paramLck = me.lockEl(param);
             me.m_inheritedParameters.innerRemove(param.getID());
         }
     }
 }
 
-void RedefinableTemplateSignature::AddParameterPolicy::apply(TemplateParameter& el, RedefinableTemplateSignature& me) {
+void RedefinableTemplateSignature::ParameterPolicy::elementAdded(TemplateParameter& el, RedefinableTemplateSignature& me) {
     for (auto sig : addSignatures) {
         if (!sig->getInheritedParameters().contains(el.getID())) {
-            [[maybe_unused]] SetLock sigLock = me.lockEl(*sig);
-            sig->m_inheritedParameters.innerAdd(el.as<TemplateParameter>());
+            sig->m_inheritedParameters.innerAdd(&el);
         }   
     }
 }
 
-void RedefinableTemplateSignature::RemoveParameterPolicy::apply(TemplateParameter& el, RedefinableTemplateSignature& me) {
+void RedefinableTemplateSignature::ParameterPolicy::elementRemoved(TemplateParameter& el, RedefinableTemplateSignature& me) {
     for (auto ogSig : removeSignatures) {
         std::unordered_set<ID> parametersToKeep;
         for (auto& sig : ogSig->getExtendedSignatures()) {
@@ -65,13 +49,12 @@ void RedefinableTemplateSignature::RemoveParameterPolicy::apply(TemplateParamete
             }
         }
         if (ogSig->getInheritedParameters().contains(el.getID()) && !parametersToKeep.count(el.getID())) {
-            [[maybe_unused]] SetLock ogSigLock = me.lockEl(*ogSig);
-            ogSig->m_inheritedParameters.innerRemove(el.getID());
+            ogSig->m_inheritedParameters.innerRemove(el);
         }
     }
 }
 
-TypedSet<Classifier, RedefinableTemplateSignature>& RedefinableTemplateSignature::getClassifierSingleton() {
+Singleton<Classifier, RedefinableTemplateSignature>& RedefinableTemplateSignature::getClassifierSingleton() {
     return m_classifier;
 }
 
@@ -120,11 +103,11 @@ ReadOnlySet<TemplateParameter, RedefinableTemplateSignature>& RedefinableTemplat
     return m_inheritedParameters;
 }
 
-bool RedefinableTemplateSignature::isSubClassOf(ElementType eType) const {
-    bool ret = RedefinableElement::isSubClassOf(eType);
+bool RedefinableTemplateSignature::is(ElementType eType) const {
+    bool ret = RedefinableElement::is(eType);
 
     if (!ret) {
-        ret = TemplateSignature::isSubClassOf(eType);
+        ret = TemplateSignature::is(eType);
     }
 
     if (!ret) {

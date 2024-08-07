@@ -3,6 +3,8 @@
 #include "abstractSet.h"
 #include "uml/set/doNothingPolicy.h"
 #include "uml/types/element.h"
+#include "uml/types/interfaceRealization.h"
+#include "uml/types/reception.h"
 #include <memory>
 #include <mutex>
 #include <unordered_set>
@@ -43,6 +45,19 @@ namespace UML {
 
         friend class Element;
         friend class NamedElement;
+        // TODO do we need these friends? we can do it without by moving the sets around and redefinition
+        friend class Package;
+        friend class Property;
+        friend class Class;
+        friend class Operation;
+        friend class BehavioredClassifier;
+        friend class Usage;
+        friend class Connector;
+        friend class InterfaceRealization;
+        friend class Reception;
+        friend T;
+        friend U;
+        friend ApiPolicy;
         template <class V, class W, class OtherDataTypePolicy, class OtherApiPolicy>
         friend class PrivateSet;
 
@@ -246,7 +261,7 @@ namespace UML {
 
                 m_el.m_node->removeReference(&ptr);
             }
-            void weakRemove(UmlPtr<T> ptr) {
+            void weakRemove(ElementPtr ptr) override {
                 if (contains(ptr)) {
                     innerRemove(ptr);
                 }

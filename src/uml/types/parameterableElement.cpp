@@ -1,18 +1,16 @@
-#include "uml/types/parameterableElement.h"
-#include "uml/types/templateableElement.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void ParameterableElement::referenceErased(ID id) {
-    m_templateParameter.eraseElement(id);
+    eraseFromSet(id, m_templateParameter);
 }
 
-TypedSet<TemplateParameter, ParameterableElement>& ParameterableElement::getOwningTemplateParameterSingleton() {
+Singleton<TemplateParameter, ParameterableElement>& ParameterableElement::getOwningTemplateParameterSingleton() {
     return m_owningTemplateParameter;
 }
 
-TypedSet<TemplateParameter, ParameterableElement>& ParameterableElement::getTemplateParameterSingleton() {
+Singleton<TemplateParameter, ParameterableElement>& ParameterableElement::getTemplateParameterSingleton() {
     return m_templateParameter;
 }
 
@@ -59,8 +57,8 @@ void ParameterableElement::setTemplateParameter(ID id) {
     m_templateParameter.set(id);
 }
 
-bool ParameterableElement::isSubClassOf(ElementType eType) const {
-    bool ret = Element::isSubClassOf(eType);
+bool ParameterableElement::is(ElementType eType) const {
+    bool ret = Element::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::PARAMETERABLE_ELEMENT;

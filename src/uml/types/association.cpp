@@ -1,28 +1,19 @@
-#include "uml/types/association.h"
-#include "uml/types/property.h"
-#include "uml/umlPtr.h"
-#include "uml/types/package.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void Association::AddMemberEndPolicy::apply(Property& el, Association& me) {
+void Association::MemberEndPolicy::elementAdded(Property& el, Association& me) {
     if (el.getType()) {
         if (el.getType().loaded() && !me.getEndTypes().contains(el.getType().id())) {
-            [[maybe_unused]] SetLock typeLock = me.lockEl(*el.getType());
-            me.m_endTypes.innerAdd(*el.getType());
+            me.m_endTypes.innerAdd(el.getType());
         }
     }
 }
 
-void Association::RemoveMemberEndPolicy::apply(Property& el, Association& me) {
+void Association::MemberEndPolicy::elementRemoved(Property& el, Association& me) {
     if (el.getType()) {
         if (me.getEndTypes().contains(el.getType().id())) {
-            [[maybe_unused]] SetLock typeLock = me.lockEl(*el.getType());
-            me.m_endTypes.innerRemove(el.getType().id());
+            me.m_endTypes.innerRemove(el.getType());
         }
     }
 }
@@ -32,7 +23,7 @@ void Association::restoreReferences() {
     Relationship::restoreReferences();
     for (auto& prop : m_memberEnds) {
         if (prop.getType() && !m_endTypes.contains(prop.getType().id())) {
-            m_endTypes.add(prop.getType().id());
+            m_endTypes.add(prop.getType());
         }
     }
 }
@@ -57,7 +48,7 @@ Association::~Association() {
     
 }
 
-OrderedSet<Property, Association>& Association::getMemberEnds() {
+OrderedSet<Property, Association, Association::MemberEndPolicy>& Association::getMemberEnds() {
     return m_memberEnds;
 }
 
@@ -73,11 +64,11 @@ Set<Type, Association>& Association::getEndTypes() {
     return m_endTypes;
 }
 
-bool Association::isSubClassOf(ElementType eType) const {
-    bool ret = Relationship::isSubClassOf(eType);
+bool Association::is(ElementType eType) const {
+    bool ret = Relationship::is(eType);
 
     if (!ret) {
-        ret = Classifier::isSubClassOf(eType);
+        ret = Classifier::is(eType);
     }
 
     if (!ret) {

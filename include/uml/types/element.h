@@ -151,6 +151,7 @@ namespace UML {
     };  
 
     class Element;
+    class AbstractSet;
     template <class T, class U, class DataTypePolicy, class ApiPolicy = DoNothingPolicy>
     class PrivateSet;
     template <class T>
@@ -171,6 +172,9 @@ namespace UML {
     class ParserData;
     class AbstractManager;
     struct ManagerNode;
+    class InstanceSpecification;
+    class Comment;
+    class Classifier; // TODO remove this is because of weird policy in Classifier members set
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -192,6 +196,10 @@ namespace UML {
         friend std::string emit(Element& el, EmitterData& data);
         friend ElementPtr parse(std::string data, ParserData& metaData);
         friend bool parseElementScope(YAML::Node node, Element& el, ParserData& data);
+        friend class Classifier; // TODO remove
+        friend class BehavioredClassifier;
+        friend class Usage;
+        friend class InterfaceRealization;
 
         private:
         protected:
@@ -205,13 +213,14 @@ namespace UML {
             std::unique_ptr<ReadOnlySingleton<Element, Element>> m_owner;
             // ownedElements
             std::unique_ptr<ReadOnlySet<Element, Element>> m_ownedElements;
-            //std::unique_ptr<Set<Comment, Element, DoNothingPolicy>> m_ownedComments;
-            //std::unique_ptr<Set<InstanceSpecification, Element, DoNothingPolicy>> m_appliedStereotypes;
+            std::unique_ptr<Set<Comment, Element, DoNothingPolicy>> m_ownedComments;
+            std::unique_ptr<Set<InstanceSpecification, Element, DoNothingPolicy>> m_appliedStereotypes;
             ReadOnlySingleton<Element, Element>& getOwnerSingleton();
             void setOwner(ElementPtr el);
             virtual void restoreReferences();
             virtual void referenceErased(ID id);
             Element(ElementType elementType);
+            void eraseFromSet(ID id, AbstractSet& set);
         public:
             Element(const Element&) = delete;
             Element& operator=(const Element&) = delete;
@@ -219,23 +228,23 @@ namespace UML {
             ID getID() const;
             ElementPtr getOwner() const;
             ReadOnlySet<Element, Element>& getOwnedElements();
-            // Set<Comment, Element, DoNothingPolicy>& getOwnedComments();
+            Set<Comment, Element, DoNothingPolicy>& getOwnedComments();
             /**
              * TODO: I am keeping it simple for now, instance specification of stereotype to
              *       hold tags and operations, but I think it would be cool to dynamically map
              *       methods if we load the stereotype before runtime. Also would be cool to have
              *       stereotype tags as keyword in yaml config for disk storage (not necessarily useful though?)
              **/
-            // Set<InstanceSpecification, Element, DoNothingPolicy>& getAppliedStereotypes();
+            Set<InstanceSpecification, Element, DoNothingPolicy>& getAppliedStereotypes();
             virtual void setID(std::string id);
             void setID(ID id);
             static std::string elementTypeToString(ElementType eType);
             static ElementType elementType() {
                 return ElementType::ELEMENT;
             };
-            virtual bool isSubClassOf(ElementType eType) const;
+            virtual bool is(ElementType eType) const;
             template <class T = Element> T& as() {
-                if (this->isSubClassOf(T::elementType())) {
+                if (this->is(T::elementType())) {
                     return dynamic_cast<T&>(*this);
                 }
                 throw InvalidElementCastException(getElementTypeString().c_str() , elementTypeToString(T::elementType()).c_str());

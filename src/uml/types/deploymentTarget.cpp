@@ -1,10 +1,4 @@
-#include "uml/types/deploymentTarget.h"
-#include "uml/types/deployment.h"
-#include "uml/types/profile.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -22,8 +16,8 @@ Set<Deployment, DeploymentTarget>& DeploymentTarget::getDeployments() {
     return m_deployments;
 }
 
-bool DeploymentTarget::isSubClassOf(ElementType eType) const {
-    bool ret = NamedElement::isSubClassOf(eType);
+bool DeploymentTarget::is(ElementType eType) const {
+    bool ret = NamedElement::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::DEPLOYMENT_TARGET;

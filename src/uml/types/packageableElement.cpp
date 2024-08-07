@@ -1,6 +1,4 @@
-#include "uml/types/packageableElement.h"
-#include "uml/umlPtr.h"
-#include "uml/types/package.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -34,12 +32,12 @@ void PackageableElement::setOwningPackage(ID id) {
     m_owningPackage.set(id);
 }
 
-bool PackageableElement::isSubClassOf(ElementType eType) const {
-    bool ret = NamedElement::isSubClassOf(eType);
+bool PackageableElement::is(ElementType eType) const {
+    bool ret = NamedElement::is(eType);
 
-    // if (!ret) {
-    //     ret = ParameterableElement::isSubClassOf(eType);
-    // }
+    if (!ret) {
+        ret = ParameterableElement::is(eType);
+    }
 
     if (!ret) {
         ret = eType == ElementType::PACKAGEABLE_ELEMENT;

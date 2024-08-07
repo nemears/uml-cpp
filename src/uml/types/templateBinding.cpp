@@ -1,23 +1,12 @@
-#include "uml/types/templateBinding.h"
-#include "uml/types/templateParameterSubstitution.h"
-#include "uml/types/templateableElement.h"
-#include "uml/types/templateSignature.h"
-#include "uml/types/namespace.h"
-#include "uml/types/parameterableElement.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-TypedSet<TemplateableElement, TemplateBinding>& TemplateBinding::getBoundElementSingleton() {
+Singleton<TemplateableElement, TemplateBinding>& TemplateBinding::getBoundElementSingleton() {
     return m_boundElement;
 }
 
-TypedSet<TemplateSignature, TemplateBinding>& TemplateBinding::getSignatureSingleton() {
+Singleton<TemplateSignature, TemplateBinding>& TemplateBinding::getSignatureSingleton() {
     return m_signature;
 }
 
@@ -70,8 +59,8 @@ Set<TemplateParameterSubstitution, TemplateBinding>& TemplateBinding::getParamet
     return m_parameterSubstitutions;
 }
 
-bool TemplateBinding::isSubClassOf(ElementType eType) const {
-    bool ret = DirectedRelationship::isSubClassOf(eType);
+bool TemplateBinding::is(ElementType eType) const {
+    bool ret = DirectedRelationship::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::TEMPLATE_BINDING;

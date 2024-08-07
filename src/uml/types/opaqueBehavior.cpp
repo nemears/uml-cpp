@@ -1,10 +1,4 @@
-#include "uml/types/opaqueBehavior.h"
-#include "uml/types/literalString.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 namespace UML {
 
@@ -20,8 +14,8 @@ OrderedSet<LiteralString, OpaqueBehavior>& OpaqueBehavior::getBodies() {
     return m_bodies;
 }
 
-bool OpaqueBehavior::isSubClassOf(ElementType eType) const {
-    bool ret = Behavior::isSubClassOf(eType);
+bool OpaqueBehavior::is(ElementType eType) const {
+    bool ret = Behavior::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::OPAQUE_BEHAVIOR;

@@ -1,12 +1,4 @@
-#include "uml/types/valueSpecification.h"
-#include "uml/types/package.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -19,11 +11,11 @@ ValueSpecification::ValueSpecification() : Element(ElementType::VALUE_SPECIFICAT
 
 }
 
-bool ValueSpecification::isSubClassOf(ElementType eType) const {
-    bool ret = TypedElement::isSubClassOf(eType);
+bool ValueSpecification::is(ElementType eType) const {
+    bool ret = TypedElement::is(eType);
 
     if (!ret) {
-        ret = PackageableElement::isSubClassOf(eType);
+        ret = PackageableElement::is(eType);
     }
 
     if (!ret) {

@@ -1,12 +1,8 @@
-#include "uml/types/templateableElement.h"
-#include "uml/types/templateSignature.h"
-#include "uml/types/templateBinding.h"
-#include "uml/types/parameterableElement.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-TypedSet<TemplateSignature, TemplateableElement>& TemplateableElement::getOwnedTemplateSignatureSingleton() {
+Singleton<TemplateSignature, TemplateableElement>& TemplateableElement::getOwnedTemplateSignatureSingleton() {
     return m_ownedTemplateSignature;
 }
 
@@ -41,8 +37,8 @@ Set<TemplateBinding, TemplateableElement>& TemplateableElement::getTemplateBindi
     return m_templateBindings;
 }
 
-bool TemplateableElement::isSubClassOf(ElementType eType) const {
-    bool ret = Element::isSubClassOf(eType);
+bool TemplateableElement::is(ElementType eType) const {
+    bool ret = Element::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::TEMPLATEABLE_ELEMENT;

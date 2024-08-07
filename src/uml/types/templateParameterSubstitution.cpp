@@ -1,32 +1,27 @@
-#include "uml/types/templateParameterSubstitution.h"
-#include "uml/types/templateBinding.h"
-#include "uml/types/templateParameter.h"
-#include "uml/types/parameterableElement.h"
-#include "uml/types/templateSignature.h"
-#include "uml/types/templateableElement.h"
-#include "uml/umlPtr.h"
+#include "uml/set/singleton.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void TemplateParameterSubstitution::referenceErased(ID id) {
     Element::referenceErased(id);
-    m_formal.eraseElement(id);
-    m_actual.eraseElement(id);
+    eraseFromSet(id, m_formal);
+    eraseFromSet(id, m_actual);
 }
 
-TypedSet<TemplateParameter, TemplateParameterSubstitution>& TemplateParameterSubstitution::getFormalSingleton() {
+Singleton<TemplateParameter, TemplateParameterSubstitution>& TemplateParameterSubstitution::getFormalSingleton() {
     return m_formal;
 }
 
-TypedSet<TemplateBinding, TemplateParameterSubstitution>& TemplateParameterSubstitution::getTemplateBindingSingleton() {
+Singleton<TemplateBinding, TemplateParameterSubstitution>& TemplateParameterSubstitution::getTemplateBindingSingleton() {
     return m_templateBinding;
 }
 
-TypedSet<ParameterableElement, TemplateParameterSubstitution>& TemplateParameterSubstitution::getActualSingleton() {
+Singleton<ParameterableElement, TemplateParameterSubstitution>& TemplateParameterSubstitution::getActualSingleton() {
     return m_actual;
 }
 
-TypedSet<ParameterableElement, TemplateParameterSubstitution>& TemplateParameterSubstitution::getOwnedActualSingleton() {
+Singleton<ParameterableElement, TemplateParameterSubstitution>& TemplateParameterSubstitution::getOwnedActualSingleton() {
     return m_ownedActual;
 }
 
@@ -105,8 +100,8 @@ void TemplateParameterSubstitution::setOwnedActual(ID id) {
     m_ownedActual.set(id);
 }
 
-bool TemplateParameterSubstitution::isSubClassOf(ElementType eType) const {
-    bool ret = Element::isSubClassOf(eType);
+bool TemplateParameterSubstitution::is(ElementType eType) const {
+    bool ret = Element::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::TEMPLATE_PARAMETER_SUBSTITUTION;

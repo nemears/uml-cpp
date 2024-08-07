@@ -1,36 +1,26 @@
 #include "uml/types/structuredClassifier.h"
-#include "uml/types/property.h"
-#include "uml/types/type.h"
-#include "uml/types/connectableElement.h"
-#include "uml/types/package.h"
-#include "uml/types/generalization.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void StructuredClassifier::AddPartPolicy::apply(Property& el, StructuredClassifier& me) {
+void StructuredClassifier::PartPolicy::elementAdded(Property& el, StructuredClassifier& me) {
     if (el.isComposite() && !me.m_parts.contains(el)) {
-        me.m_parts.innerAdd(el);
+        me.m_parts.innerAdd(&el);
     }
 }
 
 void StructuredClassifier::RemovePartPolicy::apply(Property& el, StructuredClassifier& me) {
     if (el.isComposite() && me.m_parts.contains(el)) {
-        me.m_parts.innerRemove(el.getID());
+        me.m_parts.innerRemove(&el);
     }
 }
 
 void StructuredClassifier::restoreReferences() {
     Classifier::restoreReferences();
-    std::list<ID> props;
+    std::list<PropertyPtr> props;
     for (auto& prop : m_ownedAttributes) {
         if (prop.isComposite() && !m_parts.contains(prop)) {
-            props.push_back(prop.getID());
+            props.push_back(&prop);
         }
     }
     for (auto prop : props) {
@@ -62,7 +52,7 @@ StructuredClassifier::~StructuredClassifier() {
     
 }
 
-Set<Property, StructuredClassifier>& StructuredClassifier::getOwnedAttributes() {
+Set<Property, StructuredClassifier, StructuredClassifier::PartPolicy>& StructuredClassifier::getOwnedAttributes() {
     return m_ownedAttributes;
 }
 
@@ -78,8 +68,8 @@ Set<Connector, StructuredClassifier>& StructuredClassifier::getOwnedConnectors()
     return m_ownedConnectors;
 }
 
-bool StructuredClassifier::isSubClassOf(ElementType eType) const {
-    bool ret = Classifier::isSubClassOf(eType);
+bool StructuredClassifier::is(ElementType eType) const {
+    bool ret = Classifier::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::STRUCTURED_CLASSIFIER;

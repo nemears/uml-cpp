@@ -1,19 +1,10 @@
-#include "uml/types/redefinableElement.h"
-#include "uml/types/behavior.h"
-#include "uml/types/package.h"
-#include "uml/types/property.h"
-#include "uml/types/generalization.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/deployment.h"
-#include "uml/types/interface.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void RedefinableElement::referenceErased(ID id) {
-    m_redefinedElement.eraseElement(id);
-    m_redefinitionContext.eraseElement(id);
+    eraseFromSet(id, m_redefinedElement);
+    eraseFromSet(id, m_redefinitionContext);
 }
 
 RedefinableElement::RedefinableElement() : Element(ElementType::REDEFINABLE_ELEMENT) {
@@ -32,8 +23,8 @@ ReadOnlySet<Classifier, RedefinableElement>& RedefinableElement::getRedefinition
     return m_redefinitionContext;
 }
 
-bool RedefinableElement::isSubClassOf(ElementType eType) const {
-    bool ret = NamedElement::isSubClassOf(eType);
+bool RedefinableElement::is(ElementType eType) const {
+    bool ret = NamedElement::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::REDEFINABLE_ELEMENT;

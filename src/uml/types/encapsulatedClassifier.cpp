@@ -1,25 +1,16 @@
-#include "uml/types/encapsulatedClassifier.h"
-#include "uml/types/property.h"
-#include "uml/types/generalization.h"
-#include "uml/types/package.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void EncapsulatedClassifier::AddOwnedAttributePolicy::apply(Property& el, EncapsulatedClassifier& me) {
-    if (el.isSubClassOf(ElementType::PORT) && !me.m_ownedPorts.contains(el.getID())) {
-        me.m_ownedPorts.add(el.as<Port>());
+void EncapsulatedClassifier::OwnedAttributePolicy::elementAdded(Property& el, EncapsulatedClassifier& me) {
+    if (el.is(ElementType::PORT) && !me.m_ownedPorts.contains(el.getID())) {
+        me.m_ownedPorts.innerAdd(&el);
     }
 }
 
-void EncapsulatedClassifier::RemoveOwnedAttributePolicy::apply(Property& el, EncapsulatedClassifier& me) {
-    if (el.isSubClassOf(ElementType::PORT) && me.m_ownedPorts.contains(el.getID())) {
-        me.m_ownedPorts.remove(el.getID());
+void EncapsulatedClassifier::OwnedAttributePolicy::elementRemoved(Property& el, EncapsulatedClassifier& me) {
+    if (el.is(ElementType::PORT) && me.m_ownedPorts.contains(el.getID())) {
+        me.m_ownedPorts.innerRemove(&el);
     }
 }
 
@@ -36,8 +27,8 @@ ReadOnlySet<Port, EncapsulatedClassifier>& EncapsulatedClassifier::getOwnedPorts
     return m_ownedPorts;
 }
 
-bool EncapsulatedClassifier::isSubClassOf(ElementType eType) const {
-    bool ret = StructuredClassifier::isSubClassOf(eType);
+bool EncapsulatedClassifier::is(ElementType eType) const {
+    bool ret = StructuredClassifier::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::ENCAPSULATED_CLASSIFIER;

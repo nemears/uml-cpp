@@ -1,19 +1,13 @@
-#include "uml/types/profileApplication.h"
-#include "uml/types/profile.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/set/singleton.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-TypedSet<Profile, ProfileApplication>& ProfileApplication::getAppliedProfileSingleton() {
+Singleton<Profile, ProfileApplication>& ProfileApplication::getAppliedProfileSingleton() {
     return m_appliedProfile;
 }
 
-TypedSet<Package, ProfileApplication>& ProfileApplication::getApplyingPackageSingleton() {
+Singleton<Package, ProfileApplication>& ProfileApplication::getApplyingPackageSingleton() {
     return m_applyingPackage;
 }
 
@@ -60,8 +54,8 @@ void ProfileApplication::setApplyingPackage(ID id) {
     m_applyingPackage.set(id);
 }
 
-bool ProfileApplication::isSubClassOf(ElementType eType) const {
-    bool ret = DirectedRelationship::isSubClassOf(eType);
+bool ProfileApplication::is(ElementType eType) const {
+    bool ret = DirectedRelationship::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::PROFILE_APPLICATION;

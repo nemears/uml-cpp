@@ -1,14 +1,4 @@
-#include "uml/types/class.h"
-#include "uml/types/operation.h"
-#include "uml/types/property.h"
-#include "uml/types/generalization.h"
-#include "uml/types/package.h"
-#include "uml/types/dataType.h"
-#include "uml/types/behavior.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -16,7 +6,7 @@ void Class::restoreReferences() {
     EncapsulatedClassifier::restoreReferences();
     for (auto& reception : m_ownedReceptions) {
         if (reception.getFeaturingClassifier().id() == ID::nullID() && reception.getNamespace().id() == m_id) {
-            reception.m_featuringClassifier.innerAdd(*this);
+            reception.m_featuringClassifier.innerAdd(this);
         }
     }
 }
@@ -52,11 +42,11 @@ Set<Reception, Class>& Class::getOwnedReceptions() {
     return m_ownedReceptions;
 }
 
-bool Class::isSubClassOf(ElementType eType) const {
-    bool ret = EncapsulatedClassifier::isSubClassOf(eType);
+bool Class::is(ElementType eType) const {
+    bool ret = EncapsulatedClassifier::is(eType);
 
     if (!ret) {
-        ret = BehavioredClassifier::isSubClassOf(eType);
+        ret = BehavioredClassifier::is(eType);
     }
 
     if (!ret) {

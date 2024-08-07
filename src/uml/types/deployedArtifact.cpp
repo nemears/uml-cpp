@@ -1,10 +1,4 @@
-#include "uml/types/deployedArtifact.h"
-#include "uml/types/profile.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -16,8 +10,8 @@ DeployedArtifact::~DeployedArtifact() {
 
 }
 
-bool DeployedArtifact::isSubClassOf(ElementType eType) const {
-    bool ret = NamedElement::isSubClassOf(eType);
+bool DeployedArtifact::is(ElementType eType) const {
+    bool ret = NamedElement::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::DEPLOYED_ARTIFACT;

@@ -1,37 +1,25 @@
-#include "uml/types/elementImport.h"
-#include "uml/types/behavior.h"
-#include "uml/umlPtr.h"
-#include "uml/types/property.h"
-#include "uml/types/package.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/generalizationSet.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/set/singleton.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void ElementImport::AddImportedElementPolicy::apply(PackageableElement& el, ElementImport& me) {
+void ElementImport::ImportedElementPolicy::elementAdded(PackageableElement& el, ElementImport& me) {
     if (me.getImportingNamespace()) {
-        [[maybe_unused]] SetLock importingNamespaceLock = me.lockEl(*me.getImportingNamespace());
         me.getImportingNamespace()->m_importedMembers.innerAdd(el);
     }
 }
 
-void ElementImport::RemoveImportedElementPolicy::apply(PackageableElement& el, ElementImport& me) {
+void ElementImport::ImportedElementPolicy::elementRemoved(PackageableElement& el, ElementImport& me) {
     if (me.getImportingNamespace()) {
-        [[maybe_unused]] SetLock importingNamespaceLock = me.lockEl(*me.getImportingNamespace());
-        me.getImportingNamespace()->m_importedMembers.innerRemove(el.getID());
+        me.getImportingNamespace()->m_importedMembers.innerRemove(el);
     }
 }
 
-TypedSet<PackageableElement, ElementImport>& ElementImport::getImportedElementSingleton() {
+Singleton<PackageableElement, ElementImport>& ElementImport::getImportedElementSingleton() {
     return m_importedElement;
 }
 
-TypedSet<Namespace, ElementImport>& ElementImport::getImportingNamespaceSingleton() {
+Singleton<Namespace, ElementImport>& ElementImport::getImportingNamespaceSingleton() {
     return m_importingNamespace;
 }
 
@@ -101,8 +89,8 @@ void ElementImport::setVisibility(VisibilityKind visibility) {
     m_visibility = visibility;
 }
 
-bool ElementImport::isSubClassOf(ElementType eType) const {
-    bool ret = DirectedRelationship::isSubClassOf(eType);
+bool ElementImport::is(ElementType eType) const {
+    bool ret = DirectedRelationship::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::ELEMENT_IMPORT;

@@ -1,31 +1,31 @@
-#include "uml/types/package.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void Package::PackageableElementPolicy::elementAdded(PackageableElement& el, Package& me) {
-    // for (const UmlPtr<PackageImport>& import : packageImportsAdd) {
-    //     if (import->getImportingNamespace()) {
-    //         if (!import->getImportingNamespace()->getImportedMembers().contains(el.getID())) {
-    //             import->getImportingNamespace()->m_importedMembers.add(el);
-    //         }
-    //     }
-    // }
-    // if (el.isSubClassOf(ElementType::STEREOTYPE) && !me.getOwnedStereotypes().contains(el.getID())) {
-    //     me.m_ownedStereotypes.add(el.as<Stereotype>());
-    // }
+    for (const UmlPtr<PackageImport>& import : packageImportsAdd) {
+        if (import->getImportingNamespace()) {
+            if (!import->getImportingNamespace()->getImportedMembers().contains(el.getID())) {
+                import->getImportingNamespace()->m_importedMembers.innerAdd(ElementPtr(&el));
+            }
+        }
+    }
+    if (el.is(ElementType::STEREOTYPE) && !me.getOwnedStereotypes().contains(el.getID())) {
+        me.m_ownedStereotypes.innerAdd(ElementPtr(&el));
+    }
 }
 
 void Package::PackageableElementPolicy::elementRemoved(PackageableElement& el, Package& me) {
-    // for (const UmlPtr<PackageImport>& import : packageImportsRemove) {
-    //     if (import->getImportingNamespace()) {
-    //         if (import->getImportingNamespace()->getImportedMembers().contains(el.getID())) {
-    //             import->getImportingNamespace()->m_importedMembers.remove(el.getID());
-    //         }
-    //     }
-    // }
-    // if (el.isSubClassOf(ElementType::STEREOTYPE) && me.getOwnedStereotypes().contains(el.getID())) {
-    //     me.m_ownedStereotypes.remove(el.getID());
-    // }
+    for (const UmlPtr<PackageImport>& import : packageImportsRemove) {
+        if (import->getImportingNamespace()) {
+            if (import->getImportingNamespace()->getImportedMembers().contains(el.getID())) {
+                import->getImportingNamespace()->m_importedMembers.innerRemove(ElementPtr(&el));
+            }
+        }
+    }
+    if (el.is(ElementType::STEREOTYPE) && me.getOwnedStereotypes().contains(el.getID())) {
+        me.m_ownedStereotypes.innerRemove(ElementPtr(&el));
+    }
 }
 
 void Package::referenceErased(ID id) {
@@ -43,11 +43,11 @@ void Package::referenceErased(ID id) {
 Package::Package() : Element(ElementType::PACKAGE) {
     m_packagedElements.subsets(m_ownedMembers);
     m_packagedElements.opposite(&PackageableElement::getOwningPackageSingleton);
-    // m_packageMerge.subsets(*m_ownedElements);
-    // m_packageMerge.opposite(&PackageMerge::getReceivingPackageSingleton);
-    // m_ownedStereotypes.subsets(m_packagedElements);
-    // m_profileApplications.subsets(*m_ownedElements);
-    // m_profileApplications.opposite(&ProfileApplication::getApplyingPackageSingleton);
+    m_packageMerge.subsets(*m_ownedElements);
+    m_packageMerge.opposite(&PackageMerge::getReceivingPackageSingleton);
+    m_ownedStereotypes.subsets(m_packagedElements);
+    m_profileApplications.subsets(*m_ownedElements);
+    m_profileApplications.opposite(&ProfileApplication::getApplyingPackageSingleton);
 }
 
 Package::~Package() {
@@ -58,28 +58,28 @@ Set<PackageableElement, Package, Package::PackageableElementPolicy>& Package::ge
     return m_packagedElements;
 }
 
-// Set<PackageMerge, Package>& Package::getPackageMerge() {
-//     return m_packageMerge;
-// }
-// 
-// Set<ProfileApplication, Package>& Package::getProfileApplications() {
-//     return m_profileApplications;
-// }
-// 
-// ReadOnlySet<Stereotype, Package>& Package::getOwnedStereotypes() {
-//     return m_ownedStereotypes;
-// }
+Set<PackageMerge, Package>& Package::getPackageMerge() {
+    return m_packageMerge;
+}
 
-bool Package::isSubClassOf(ElementType eType) const {
-    bool ret = PackageableElement::isSubClassOf(eType);
+Set<ProfileApplication, Package>& Package::getProfileApplications() {
+    return m_profileApplications;
+}
+
+ReadOnlySet<Stereotype, Package>& Package::getOwnedStereotypes() {
+    return m_ownedStereotypes;
+}
+
+bool Package::is(ElementType eType) const {
+    bool ret = PackageableElement::is(eType);
 
     if (!ret) {
-        ret = Namespace::isSubClassOf(eType);
+        ret = Namespace::is(eType);
     }
 
-    // if (!ret) {
-    //     ret = TemplateableElement::isSubClassOf(eType);
-    // }
+    if (!ret) {
+        ret = TemplateableElement::is(eType);
+    }
 
     if (!ret) {
         ret = eType == ElementType::PACKAGE;

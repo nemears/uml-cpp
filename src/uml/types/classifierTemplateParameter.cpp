@@ -1,26 +1,15 @@
-#include "uml/types/classifierTemplateParameter.h"
-#include "uml/types/templateableElement.h"
-#include "uml/types/parameterableElement.h"
-#include "uml/types/property.h"
-#include "uml/types/generalization.h"
-#include "uml/types/package.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/set/singleton.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-TypedSet<Classifier, ClassifierTemplateParameter>& ClassifierTemplateParameter::getParameteredElementSingleton() {
+Singleton<Classifier, ClassifierTemplateParameter>& ClassifierTemplateParameter::getParameteredElementSingleton() {
     return m_classifierParameteredElement;
 }
 
 void ClassifierTemplateParameter::referenceErased(ID id) {
     TemplateParameter::referenceErased(id);
-    m_constrainingClassifiers.eraseElement(id);
+    eraseFromSet(id, m_constrainingClassifiers);
 }
 
 ClassifierTemplateParameter::ClassifierTemplateParameter() : Element(ElementType::CLASSIFIER_TEMPLATE_PARAMETER) {
@@ -64,9 +53,9 @@ void ClassifierTemplateParameter::setAllowSubstitutable(bool allowSubstitutable)
     m_allowSubstitutable = allowSubstitutable;
 }
 
-bool ClassifierTemplateParameter::isSubClassOf(ElementType eType) const {
+bool ClassifierTemplateParameter::is(ElementType eType) const {
     bool ret = false;
-    if ((ret = TemplateParameter::isSubClassOf(eType))) {
+    if ((ret = TemplateParameter::is(eType))) {
         return ret;
     }
 

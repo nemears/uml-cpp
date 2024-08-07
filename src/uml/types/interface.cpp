@@ -1,11 +1,4 @@
-#include "uml/types/interface.h"
-#include "uml/types/operation.h"
-#include "uml/types/manifestation.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -35,8 +28,8 @@ OrderedSet<Classifier, Interface>& Interface::getNestedClassifiers() {
     return m_nestedClassifiers;
 }
 
-bool Interface::isSubClassOf(ElementType eType) const {
-    bool ret = Classifier::isSubClassOf(eType);
+bool Interface::is(ElementType eType) const {
+    bool ret = Classifier::is(eType);
     
     if (!ret) {
         ret = eType == ElementType::INTERFACE_UML;

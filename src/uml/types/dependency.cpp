@@ -1,10 +1,4 @@
-#include "uml/types/dependency.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -39,11 +33,11 @@ Set<NamedElement, Dependency>& Dependency::getSuppliers() {
     return m_suppliers;
 }
 
-bool Dependency::isSubClassOf(ElementType eType) const {
-    bool ret = DirectedRelationship::isSubClassOf(eType);
+bool Dependency::is(ElementType eType) const {
+    bool ret = DirectedRelationship::is(eType);
 
     if (!ret) {
-        ret = PackageableElement::isSubClassOf(eType);
+        ret = PackageableElement::is(eType);
     }
 
     if (!ret) {

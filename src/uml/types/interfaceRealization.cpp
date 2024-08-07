@@ -1,33 +1,26 @@
 #include "uml/types/interfaceRealization.h"
-#include "uml/types/operation.h"
-#include "uml/types/manifestation.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/set/singleton.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void InterfaceRealization::RemoveContractPolicy::apply(Interface& el, InterfaceRealization& me) {
+void InterfaceRealization::ContractPolicy::elementRemoved(Interface& el, InterfaceRealization& me) {
     if (me.getImplementingClassifier()) {
         for (auto& pair : me.m_implementingClassifier.get()->m_node->m_references) {
             if (!pair.second.node || !pair.second.node->m_element) {
                 // TODO aquire to not have loss, get rid of continue
                 continue;
             }
-            if (pair.second.node->m_element->isSubClassOf(ElementType::PORT) && 
+            if (pair.second.node->m_element->is(ElementType::PORT) && 
                 pair.second.node->m_element->as<Port>().getType().id() == me.m_implementingClassifier.get().id()) {
                     Port& port = pair.second.node->m_element->as<Port>();
-                    [[maybe_unused]] SetLock portLck = me.lockEl(port);
                     if (port.isConjugated()) {
                         if (port.getRequired().contains(el.getID())) {
-                            port.m_required.innerRemove(el.getID());
+                            port.m_required.innerRemove(&el);
                         }
                     } else {
                         if (port.getProvided().contains(el.getID())) {
-                            port.m_provided.innerRemove(el.getID());
+                            port.m_provided.innerRemove(&el);
                         }
                     }
             }
@@ -35,24 +28,23 @@ void InterfaceRealization::RemoveContractPolicy::apply(Interface& el, InterfaceR
     }
 }
 
-void InterfaceRealization::SetContractPolicy::apply(Interface& el, InterfaceRealization& me) {
+void InterfaceRealization::ContractPolicy::elementAdded(Interface& el, InterfaceRealization& me) {
     if (me.getImplementingClassifier()) {
         for (auto& pair : me.m_implementingClassifier.get()->m_node->m_references) {
             if (!pair.second.node || !pair.second.node->m_element) {
                 // TODO aquire to not have loss, get rid of continue
                 continue;
             }
-            if (pair.second.node->m_element->isSubClassOf(ElementType::PORT) && 
+            if (pair.second.node->m_element->is(ElementType::PORT) && 
                 pair.second.node->m_element->as<Port>().getType().id() == me.m_implementingClassifier.get().id()) {
                     Port& port = pair.second.node->m_element->as<Port>();
-                    [[maybe_unused]] SetLock portLck = me.lockEl(port);
                     if (port.isConjugated()) {
                         if (!port.getRequired().contains(el.getID())) {
-                            port.m_required.innerAdd(el);
+                            port.m_required.innerAdd(&el);
                         }
                     } else {
                         if (!port.getProvided().contains(el.getID())) {
-                             port.m_provided.innerAdd(el);
+                             port.m_provided.innerAdd(&el);
                         }
                     }
             }
@@ -60,11 +52,11 @@ void InterfaceRealization::SetContractPolicy::apply(Interface& el, InterfaceReal
     }
 }
 
-TypedSet<Interface, InterfaceRealization>& InterfaceRealization::getContractSingleton() {
+Singleton<Interface, InterfaceRealization, InterfaceRealization::ContractPolicy>& InterfaceRealization::getContractSingleton() {
     return m_contract;
 }
 
-TypedSet<BehavioredClassifier, InterfaceRealization>& InterfaceRealization::getImplementingClassifierSingleton() {
+Singleton<BehavioredClassifier, InterfaceRealization>& InterfaceRealization::getImplementingClassifierSingleton() {
     return m_implementingClassifier;
 }
 
@@ -111,8 +103,8 @@ void InterfaceRealization::setImplementingClassifier(ID id) {
     m_implementingClassifier.set(id);
 }
 
-bool InterfaceRealization::isSubClassOf(ElementType eType) const {
-    bool ret = Realization::isSubClassOf(eType);
+bool InterfaceRealization::is(ElementType eType) const {
+    bool ret = Realization::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::INTERFACE_REALIZATION;

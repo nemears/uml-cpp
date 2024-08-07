@@ -1,34 +1,24 @@
-#include "uml/types/classifier.h"
-#include "uml/types/package.h"
-#include "uml/types/property.h"
-#include "uml/types/generalization.h"
-#include "uml/umlPtr.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void Classifier::AddGeneralizationPolicy::apply(Generalization& el, Classifier& me) {
+void Classifier::GeneralizationPolicy::elementAdded(Generalization& el, Classifier& me) {
     if (el.getGeneral() && !me.m_generals.contains(el.getGeneral().id())) {
         if (el.as<Generalization>().getGeneral().loaded()) {
             me.m_generals.add(el.getGeneral());
         } else {
-            me.m_generals.add(el.getGeneral().id());
+            me.m_generals.add(el.getGeneral());
         }
     }
 }
 
-void Classifier::RemoveGeneralizationPolicy::apply(Generalization& el, Classifier& me) {
+void Classifier::GeneralizationPolicy::elementRemoved(Generalization& el, Classifier& me) {
     if (el.getGeneral() && me.m_generals.contains(el.getGeneral().id())) {
-        me.m_generals.remove(el.getGeneral().id());
+        me.m_generals.remove(el.getGeneral());
     }
 }
 
-void Classifier::AddGeneralPolicy::apply(Classifier& el, Classifier& me) {
+void Classifier::GeneralPolicy::elementAdded(Classifier& el, Classifier& me) {
     bool createGeneralization = true;
     for (auto& generalization : me.m_generalizations) {
         if (generalization.getGeneral().id() == el.getID()) {
@@ -43,36 +33,34 @@ void Classifier::AddGeneralPolicy::apply(Classifier& el, Classifier& me) {
     }
     for (auto& mem : el.m_members) {
         if (mem.getVisibility() != VisibilityKind::PRIVATE) {
-            [[maybe_unused]] SetLock memLck = me.lockEl(mem);
-            me.m_inheritedMembers.innerAdd(mem);
+            me.m_inheritedMembers.innerAdd(ElementPtr(&mem));
         }
     }
 }
 
-void Classifier::RemoveGeneralPolicy::apply(Classifier& el, Classifier& me) {
+void Classifier::GeneralPolicy::elementRemoved(Classifier& el, Classifier& me) {
     for (NamedElement& mem : el.m_members) {
         if (mem.getVisibility() != VisibilityKind::PRIVATE && me.m_inheritedMembers.contains(mem)) {
-            [[maybe_unused]] SetLock memLck = me.lockEl(mem);
-            me.m_inheritedMembers.innerRemove(mem.getID());
+            me.m_inheritedMembers.innerRemove(ElementPtr(&mem));
         }
     }
 }
 
-void Classifier::AddOwnedMemberPolicy::apply(NamedElement& el, Classifier& me) {
+void Classifier::OwnedMemberPolicy::elementAdded(NamedElement& el, Classifier& me) {
     if (el.getVisibility() != VisibilityKind::PRIVATE) {
         for (auto& pair : me.m_node->m_references) {
             if (pair.second.node && 
                 pair.second.node->m_element && 
-                pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER) && 
+                pair.second.node->m_element->is(ElementType::CLASSIFIER) && 
                 pair.second.node->m_element->as<Classifier>().m_generals.contains(me.getID()) &&
                 !pair.second.node->m_element->as<Classifier>().m_inheritedMembers.contains(el.getID())) {
-                    pair.second.node->m_element->as<Classifier>().m_inheritedMembers.innerAdd(el);
+                    pair.second.node->m_element->as<Classifier>().m_inheritedMembers.innerAdd(ElementPtr(&el));
             }
         }
     }
 }
 
-void Classifier::RemoveOwnedMemberPolicy::apply(NamedElement& el, Classifier& me) {
+void Classifier::OwnedMemberPolicy::elementRemoved(NamedElement& el, Classifier& me) {
     if (el.getVisibility() != VisibilityKind::PRIVATE) {
         for (auto& pair : me.m_node->m_references) {
             if (!pair.second.node && me.m_manager->loaded(pair.first)) {
@@ -82,20 +70,20 @@ void Classifier::RemoveOwnedMemberPolicy::apply(NamedElement& el, Classifier& me
                 continue;
             }
             if (pair.second.node->m_element && 
-                pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER) && 
+                pair.second.node->m_element->is(ElementType::CLASSIFIER) && 
                 pair.second.node->m_element->as<Classifier>().m_generals.contains(me.getID()) &&
                 pair.second.node->m_element->as<Classifier>().m_inheritedMembers.contains(me.getID())) {
-                    pair.second.node->m_element->as<Classifier>().m_inheritedMembers.innerRemove(el.getID());
+                    pair.second.node->m_element->as<Classifier>().m_inheritedMembers.innerRemove(&el);
             }
         }
     }
 }
 
-TypedSet<RedefinableTemplateSignature, Classifier>& Classifier::getOwnedTemplateSignatureSingleton() {
+Singleton<RedefinableTemplateSignature, Classifier>& Classifier::getOwnedTemplateSignatureSingleton() {
     return m_classifierOwnedTemplateSignature;
 }
 
-TypedSet<ClassifierTemplateParameter, Classifier>& Classifier::getTemplateParameterSingleton() {
+Singleton<ClassifierTemplateParameter, Classifier>& Classifier::getTemplateParameterSingleton() {
     return m_classifierTemplateParameter;
 }
 
@@ -114,8 +102,8 @@ void Classifier::referenceErased(ID id) {
     Type::referenceErased(id);
     RedefinableElement::referenceErased(id);
     TemplateableElement::referenceErased(id);
-    m_generals.eraseElement(id);
-    m_powerTypeExtent.eraseElement(id);
+    eraseFromSet(id, m_generals);
+    eraseFromSet(id, m_powerTypeExtent);
 }
 
 Classifier::Classifier() : Element(ElementType::CLASSIFIER) {
@@ -153,11 +141,11 @@ ReadOnlySet<Property, Classifier>& Classifier::getAttributes() {
     return m_attributes;
 }
 
-Set<Generalization, Classifier>& Classifier::getGeneralizations() {
+Set<Generalization, Classifier, Classifier::GeneralizationPolicy>& Classifier::getGeneralizations() {
     return m_generalizations;
 }
 
-Set<Classifier, Classifier>& Classifier::getGenerals() {
+Set<Classifier, Classifier, Classifier::GeneralPolicy>& Classifier::getGenerals() {
     return m_generals;
 }
 
@@ -209,19 +197,19 @@ void Classifier::setTemplateParameter(ID id) {
     m_classifierTemplateParameter.set(id);
 }
 
-bool Classifier::isSubClassOf(ElementType eType) const {
-    bool ret = Namespace::isSubClassOf(eType);
+bool Classifier::is(ElementType eType) const {
+    bool ret = Namespace::is(eType);
 
     if (!ret) {
-        ret = Type::isSubClassOf(eType);
+        ret = Type::is(eType);
     }
 
     if (!ret) {
-        ret = RedefinableElement::isSubClassOf(eType);
+        ret = RedefinableElement::is(eType);
     }
 
     if (!ret) {
-        ret = TemplateableElement::isSubClassOf(eType);
+        ret = TemplateableElement::is(eType);
     }
 
     if (!ret) {

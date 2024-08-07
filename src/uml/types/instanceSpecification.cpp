@@ -1,27 +1,14 @@
-#include "uml/types/instanceSpecification.h"
-#include "uml/types/slot.h"
-#include "uml/types/behavior.h"
-#include "uml/types/valueSpecification.h"
-#include "uml/types/generalization.h"
-#include "uml/types/dataType.h"
-#include "uml/types/property.h"
-#include "uml/types/package.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
-
-#include <iostream>
+#include "uml/set/singleton.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void InstanceSpecification::referenceErased(ID id) {
     PackageableElement::referenceErased(id);
-    m_classifiers.eraseElement(id);
+    eraseFromSet(id, m_classifiers);
 }
 
-TypedSet<ValueSpecification, InstanceSpecification>& InstanceSpecification::getSpecificationSingleton() {
+Singleton<ValueSpecification, InstanceSpecification>& InstanceSpecification::getSpecificationSingleton() {
     return m_specification;
 }
 
@@ -59,15 +46,15 @@ Set<Slot, InstanceSpecification>& InstanceSpecification::getSlots() {
     return m_slots;
 }
 
-bool InstanceSpecification::isSubClassOf(ElementType eType) const {
-    bool ret = PackageableElement::isSubClassOf(eType);
+bool InstanceSpecification::is(ElementType eType) const {
+    bool ret = PackageableElement::is(eType);
 
     if (!ret) {
-        ret = DeploymentTarget::isSubClassOf(eType);
+        ret = DeploymentTarget::is(eType);
     }
 
     if (!ret) {
-        ret = DeployedArtifact::isSubClassOf(eType);
+        ret = DeployedArtifact::is(eType);
     }
 
     if (!ret) {

@@ -4,7 +4,7 @@ using namespace UML;
 
 void Relationship::referenceErased(ID id) {
     Element::referenceErased(id);
-    m_relatedElements.eraseElement(id);
+    eraseFromSet(id, m_relatedElements);
 }
 
 Relationship::Relationship() : Element(ElementType::RELATIONSHIP) {
@@ -19,8 +19,8 @@ ReadOnlySet<Element, Relationship>& Relationship::getRelatedElements() {
     return m_relatedElements;
 }
 
-bool Relationship::isSubClassOf(ElementType eType) const {
-    bool ret = Element::isSubClassOf(eType);
+bool Relationship::is(ElementType eType) const {
+    bool ret = Element::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::RELATIONSHIP;

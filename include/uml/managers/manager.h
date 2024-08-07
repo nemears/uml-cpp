@@ -6,6 +6,7 @@
 #include "serialization/uml-cafe/openUmlSerializationPolicy.h"
 #include "uml/umlPtr.h"
 #include <shared_mutex>
+#include <vector>
 
 namespace UML {
 

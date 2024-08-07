@@ -1,23 +1,14 @@
-#include "uml/types/constraint.h"
-#include "uml/types/package.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-#include "uml/types/valueSpecification.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-TypedSet<Namespace, Constraint>& Constraint::getContextSingleton() {
+Singleton<Namespace, Constraint>& Constraint::getContextSingleton() {
     return m_context;
 }
 
 void Constraint::referenceErased(ID id) {
     PackageableElement::referenceErased(id);
-    m_constrainedElements.eraseElement(id);
+    eraseFromSet(id, m_constrainedElements);
 }
 
 Constraint::Constraint() : Element(ElementType::CONSTRAINT) {
@@ -71,8 +62,8 @@ void Constraint::setSpecification(ID id) {
 }
 
 
-bool Constraint::isSubClassOf(ElementType eType) const {
-    bool ret = PackageableElement::isSubClassOf(eType);
+bool Constraint::is(ElementType eType) const {
+    bool ret = PackageableElement::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::CONSTRAINT;

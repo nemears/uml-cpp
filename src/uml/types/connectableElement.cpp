@@ -1,11 +1,4 @@
-#include "uml/types/connectableElement.h"
-#include "uml/types/behavior.h"
-#include "uml/types/package.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -41,11 +34,11 @@ ReadOnlySet<ConnectorEnd, ConnectableElement>& ConnectableElement::getEnds() {
     return m_ends;
 }
 
-bool ConnectableElement::isSubClassOf(ElementType eType) const {
-    bool ret = TypedElement::isSubClassOf(eType);
+bool ConnectableElement::is(ElementType eType) const {
+    bool ret = TypedElement::is(eType);
 
     if (!ret) {
-        ret = ParameterableElement::isSubClassOf(eType);
+        ret = ParameterableElement::is(eType);
     }
 
     if (!ret) {

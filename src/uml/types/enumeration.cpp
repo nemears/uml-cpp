@@ -1,9 +1,4 @@
-#include "uml/types/enumeration.h"
-#include "uml/types/enumerationLiteral.h"
-#include "uml/types/behavior.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -20,8 +15,8 @@ OrderedSet<EnumerationLiteral, Enumeration>& Enumeration::getOwnedLiterals() {
     return m_ownedLiterals;
 }
 
-bool Enumeration::isSubClassOf(ElementType eType) const {
-    bool ret = DataType::isSubClassOf(eType);
+bool Enumeration::is(ElementType eType) const {
+    bool ret = DataType::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::ENUMERATION;

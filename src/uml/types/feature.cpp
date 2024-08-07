@@ -1,24 +1,14 @@
-#include "uml/types/feature.h"
-#include "uml/types/behavior.h"
-#include "uml/types/package.h"
-#include "uml/types/property.h"
-#include "uml/types/generalization.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void Feature::referenceErased(ID id) {
     RedefinableElement::referenceErased(id);
     NamedElement::referenceErased(id);
-    m_featuringClassifier.eraseElement(id);
+    eraseFromSet(id, m_featuringClassifier);
 }
 
-TypedSet<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
+Singleton<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
     return m_featuringClassifier;
 }
 
@@ -46,8 +36,8 @@ void Feature::setStatic(bool isStatic) {
     m_static = isStatic;
 }
 
-bool Feature::isSubClassOf(ElementType eType) const {
-    bool ret = RedefinableElement::isSubClassOf(eType);
+bool Feature::is(ElementType eType) const {
+    bool ret = RedefinableElement::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::FEATURE;

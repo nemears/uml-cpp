@@ -1,24 +1,15 @@
 #include "uml/types/generalization.h"
-#include "uml/types/behavior.h"
-#include "uml/umlPtr.h"
-#include "uml/types/property.h"
-#include "uml/types/package.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/generalizationSet.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void Generalization::AddGeneralPolicy::apply(Classifier& el, Generalization& me) {
+void Generalization::GeneralPolicy::elementAdded(Classifier& el, Generalization& me) {
     if (me.getSpecific() && !me.getSpecific()->getGenerals().contains(el.getID())) {
         me.getSpecific()->getGenerals().add(el);
     }
 }
 
-void Generalization::RemoveGeneralPolicy::apply(Classifier& el, Generalization& me) {
+void Generalization::GeneralPolicy::elementRemoved(Classifier& el, Generalization& me) {
     if (me.getSpecific() && me.getSpecific()->getGenerals().contains(el.getID())) {
         me.getSpecific()->getGenerals().remove(el);
     }
@@ -26,7 +17,7 @@ void Generalization::RemoveGeneralPolicy::apply(Classifier& el, Generalization& 
 
 void Generalization::referenceErased(ID id) {
     DirectedRelationship::referenceErased(id);
-    m_generalizationSets.eraseElement(id);
+    eraseFromSet(id, m_generalizationSets);
 }
 
 void Generalization::restoreReferences() {
@@ -36,11 +27,11 @@ void Generalization::restoreReferences() {
     }
 }
 
-TypedSet<Classifier, Generalization>& Generalization::getGeneralSingleton() {
+Singleton<Classifier, Generalization, Generalization::GeneralPolicy>& Generalization::getGeneralSingleton() {
     return m_general;
 }
 
-TypedSet<Classifier, Generalization>& Generalization::getSpecificSingleton() {
+Singleton<Classifier, Generalization>& Generalization::getSpecificSingleton() {
     return m_specific;
 }
 
@@ -92,8 +83,8 @@ Set<GeneralizationSet, Generalization>& Generalization::getGeneralizationSets() 
     return m_generalizationSets;
 }
 
-bool Generalization::isSubClassOf(ElementType eType) const {
-    bool ret = DirectedRelationship::isSubClassOf(eType);
+bool Generalization::is(ElementType eType) const {
+    bool ret = DirectedRelationship::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::GENERALIZATION;

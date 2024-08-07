@@ -1,23 +1,14 @@
-#include "uml/types/dataType.h"
-#include "uml/types/operation.h"
-#include "uml/types/property.h"
-#include "uml/types/generalization.h"
-#include "uml/types/package.h"
-#include "uml/types/behavior.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-TypedSet<Property, DataType>& DataType::getOwnedAttributesSet() {
-    return m_ownedAttributes;
-}
-
-TypedSet<Operation, DataType>& DataType::getOwnedOperationsSet() {
-    return m_ownedOperations;
-}
+// OrderedSet<Property, DataType>& DataType::getOwnedAttributesSet() {
+//     return m_ownedAttributes;
+// }
+// 
+// OrderedSet<Operation, DataType>& DataType::getOwnedOperationsSet() {
+//     return m_ownedOperations;
+// }
 
 DataType::DataType() : Element(ElementType::DATA_TYPE) {
     m_ownedAttributes.subsets(m_attributes);
@@ -40,8 +31,8 @@ OrderedSet<Operation, DataType>& DataType::getOwnedOperations() {
     return m_ownedOperations;
 }
 
-bool DataType::isSubClassOf(ElementType eType) const {
-    bool ret = Classifier::isSubClassOf(eType);
+bool DataType::is(ElementType eType) const {
+    bool ret = Classifier::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::DATA_TYPE;

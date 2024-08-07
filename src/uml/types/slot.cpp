@@ -1,30 +1,17 @@
-#include "uml/types/slot.h"
-#include "uml/types/instanceSpecification.h"
-#include "uml/types/structuralFeature.h"
-#include "uml/types/valueSpecification.h"
-#include "uml/types/behavior.h"
-#include "uml/types/property.h"
-#include "uml/types/dataType.h"
-#include "uml/types/generalization.h"
-#include "uml/types/package.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void Slot::referenceErased(ID id) {
     Element::referenceErased(id);
-    m_definingFeature.eraseElement(id);
+    eraseFromSet(id, m_definingFeature);
 }
 
-TypedSet<StructuralFeature, Slot>& Slot::getDefiningFeatureSingleton() {
+Singleton<StructuralFeature, Slot>& Slot::getDefiningFeatureSingleton() {
     return m_definingFeature;
 }
 
-TypedSet<InstanceSpecification, Slot>& Slot::getOwningInstanceSingleton() {
+Singleton<InstanceSpecification, Slot>& Slot::getOwningInstanceSingleton() {
     return m_owningInstance;
 }
 
@@ -74,8 +61,8 @@ void Slot::setOwningInstance(ID id) {
     m_owningInstance.set(id);
 }
 
-bool Slot::isSubClassOf(ElementType eType) const {
-    bool ret = Element::isSubClassOf(eType);
+bool Slot::is(ElementType eType) const {
+    bool ret = Element::is(eType);
 
     if(!ret) {
         ret = eType == ElementType::SLOT;

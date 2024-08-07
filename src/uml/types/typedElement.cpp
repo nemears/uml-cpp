@@ -1,21 +1,13 @@
-#include "uml/types/typedElement.h"
-#include "uml/types/package.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void TypedElement::referenceErased(ID id) {
     NamedElement::referenceErased(id);
-    m_type.eraseElement(id);
+    eraseFromSet(id, m_type);
 }
 
-TypedSet<Type, TypedElement>& TypedElement::getTypeSingleton() {
+Singleton<Type, TypedElement>& TypedElement::getTypeSingleton() {
     return m_type;
 }
 
@@ -43,8 +35,8 @@ void TypedElement::setType(ID id) {
     m_type.set(id);
 }
 
-bool TypedElement::isSubClassOf(ElementType eType) const {
-    bool ret = NamedElement::isSubClassOf(eType);
+bool TypedElement::is(ElementType eType) const {
+    bool ret = NamedElement::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::TYPED_ELEMENT;

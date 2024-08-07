@@ -4,7 +4,7 @@ using namespace UML;
 
 void Comment::referenceErased(ID id) {
     Element::referenceErased(id);
-    m_annotatedElements.eraseElement(id);
+    eraseFromSet(id, m_annotatedElements);
 }
 
 Comment::Comment() : Element(ElementType::COMMENT) {
@@ -27,8 +27,8 @@ Set<Element, Comment>& Comment::getAnnotatedElements() {
     return m_annotatedElements;
 }
 
-bool Comment::isSubClassOf(ElementType eType) const {
-    bool ret = Element::isSubClassOf(eType);
+bool Comment::is(ElementType eType) const {
+    bool ret = Element::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::COMMENT;

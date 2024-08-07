@@ -1,9 +1,4 @@
-#include "uml/types/expression.h"
-#include "uml/types/behavior.h"
-#include "uml/types/association.h"
-#include "uml/types/dataType.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -27,8 +22,8 @@ void Expression::setSymbol(const std::string& sym) {
     m_symbol = sym;
 }
 
-bool Expression::isSubClassOf(ElementType eType) const {
-    bool ret = ValueSpecification::isSubClassOf(eType);
+bool Expression::is(ElementType eType) const {
+    bool ret = ValueSpecification::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::EXPRESSION;

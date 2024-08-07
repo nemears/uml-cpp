@@ -1,9 +1,9 @@
-#include "uml/types/namedElement.h"
-#include "uml/types/element.h"
-#include "uml/set/singleton.h"
-#include "uml/types/namespace.h"
+#include "uml/uml-stable.h"
+#include <vector>
 
 using namespace UML;
+
+typedef UmlPtr<Classifier> ClassifierPtr;
 
 void NamedElement::UpdateQualifiedNamePolicy::elementAdded(Namespace& el, NamedElement& me) {
     me.updateQualifiedName(el.getQualifiedName());
@@ -15,7 +15,7 @@ void NamedElement::UpdateQualifiedNamePolicy::elementRemoved(__attribute__((unus
 
 void NamedElement::referenceErased(ID id) {
     Element::referenceErased(id);
-    // m_clientDependencies->eraseElement(id);
+    eraseFromSet(id, *m_clientDependencies);
 }
 
 ReadOnlySingleton<Namespace, NamedElement, NamedElement::UpdateQualifiedNamePolicy>& NamedElement::getNamespaceSingleton() {
@@ -51,36 +51,36 @@ NamespacePtr NamedElement::getNamespace() const {
     return m_namespace->get();
 }
 
-// Set<Dependency, NamedElement>& NamedElement::getClientDependencies() {
-//     return *m_clientDependencies;
-// }
+Set<Dependency, NamedElement>& NamedElement::getClientDependencies() {
+    return *m_clientDependencies;
+}
 
 VisibilityKind NamedElement::getVisibility() {
     return m_visibility;
 }
 
 void NamedElement::setVisibility(VisibilityKind visibility) {
-//     if (m_visibility != visibility) {
-//         if (visibility == VisibilityKind::PRIVATE) {
-//             std::vector<Classifier*> clazzs;
-//             for (auto& pair : m_node->m_references) {
-//                 // find use as inherited member through references and remove
-//                 if (pair.second.node->m_element && pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER)) {
-//                     if (pair.second.node->m_element->as<Classifier>().m_inheritedMembers.contains(m_id)) {
-//                         clazzs.push_back(&pair.second.node->m_element->as<Classifier>());
-//                     }
-//                 }
-//             }
-//             for (auto& clazz : clazzs) {
-//                 clazz->m_inheritedMembers.innerRemove(m_id);
-//             }
-//         }
-//     }
+    if (m_visibility != visibility) {
+        if (visibility == VisibilityKind::PRIVATE) {
+            std::vector<ClassifierPtr> clazzs;
+            for (auto& pair : m_node->m_references) {
+                // find use as inherited member through references and remove
+                if (pair.second.node->m_element && pair.second.node->m_element->is(ElementType::CLASSIFIER)) {
+                    if (pair.second.node->m_element->as<Classifier>().m_inheritedMembers.contains(m_id)) {
+                        clazzs.push_back(&pair.second.node->m_element->as<Classifier>());
+                    }
+                }
+            }
+            for (auto& clazz : clazzs) {
+                clazz->m_inheritedMembers.innerRemove(ElementPtr(this));
+            }
+        }
+    }
     m_visibility = visibility;
 }
 
-bool NamedElement::isSubClassOf(ElementType eType) const {
-    bool ret = Element::isSubClassOf(eType);
+bool NamedElement::is(ElementType eType) const {
+    bool ret = Element::is(eType);
     
     if (!ret) {
         ret = eType == ElementType::NAMED_ELEMENT;

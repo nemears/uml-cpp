@@ -1,14 +1,8 @@
-#include "uml/types/enumerationLiteral.h"
-#include "uml/types/enumeration.h"
-#include "uml/types/behavior.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-TypedSet<Enumeration, EnumerationLiteral>& EnumerationLiteral::getEnumerationSingleton() {
+Singleton<Enumeration, EnumerationLiteral>& EnumerationLiteral::getEnumerationSingleton() {
     return m_enumeration;
 }
 
@@ -37,8 +31,8 @@ void EnumerationLiteral::setEnumeration(ID id) {
     m_enumeration.set(id);
 }
 
-bool EnumerationLiteral::isSubClassOf(ElementType eType) const {
-    bool ret = InstanceSpecification::isSubClassOf(eType);
+bool EnumerationLiteral::is(ElementType eType) const {
+    bool ret = InstanceSpecification::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::ENUMERATION_LITERAL;

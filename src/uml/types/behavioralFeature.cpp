@@ -1,19 +1,12 @@
-#include "uml/types/behavioralFeature.h"
-#include "uml/types/behavior.h"
-#include "uml/types/parameter.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void BehavioralFeature::referenceErased(ID id) {
     Namespace::referenceErased(id);
     Feature::referenceErased(id);
-    m_methods.eraseElement(id);
-    m_raisedExceptions.eraseElement(id);
+    eraseFromSet(id, m_methods);
+    eraseFromSet(id, m_raisedExceptions);
 }
 
 BehavioralFeature::BehavioralFeature() : Element(ElementType::BEHAVIORAL_FEATURE) {
@@ -54,11 +47,11 @@ void BehavioralFeature::setConcurrency(CallConcurrencyKind concurrency) {
     m_concurrency = concurrency;
 }
 
-bool BehavioralFeature::isSubClassOf(ElementType eType) const {
-    bool ret = Feature::isSubClassOf(eType);
+bool BehavioralFeature::is(ElementType eType) const {
+    bool ret = Feature::is(eType);
 
     if (!ret) {
-        ret = Namespace::isSubClassOf(eType);
+        ret = Namespace::is(eType);
     }
 
     if (!ret) {

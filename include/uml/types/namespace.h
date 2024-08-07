@@ -6,6 +6,9 @@
 namespace UML{
 
     class Constraint;
+    class ElementImport;
+    class PackageImport;
+    class PackageableElement;
 
     /**
      * A Namespace is an Element in a model that contains a set of NamedElements that can be identified by name
@@ -17,28 +20,20 @@ namespace UML{
         friend class PackageImport;
 
         protected:
-            // class AddElementImportPolicy {
-            //     public:
-            //         void apply(ElementImport& el, Namespace& me);
-            // };
-            // class RemoveElementImportPolicy {
-            //     public:
-            //         void apply(ElementImport& el, Namespace& me);
-            // };
-            // class AddPackageImportPolicy {
-            //     public:
-            //         void apply(PackageImport& el, Namespace& me);
-            // };
-            // class RemovePackageImportPolicy {
-            //     public:
-            //         void apply(PackageImport& el, Namespace& me);
-            // };
+            struct ElementImportPolicy {
+                void elementAdded(ElementImport& el, Namespace& me);
+                void elementRemoved(ElementImport& el, Namespace& me);
+            };
+            struct PackageImportPolicy {
+                void elementAdded(PackageImport& el, Namespace& me);
+                void elementRemoved(PackageImport& el, Namespace& me);
+            };
             ReadOnlySet<NamedElement, Namespace> m_members = ReadOnlySet<NamedElement, Namespace>(this);
             ReadOnlySet<NamedElement, Namespace> m_ownedMembers = ReadOnlySet<NamedElement, Namespace>(this);
-            // Set<Constraint, Namespace> m_ownedRules = Set<Constraint, Namespace>(this);
-            // Set<ElementImport, Namespace, AddElementImportPolicy, RemoveElementImportPolicy> m_elementImports = CustomSet<ElementImport, Namespace, AddElementImportPolicy, RemoveElementImportPolicy>(this);
-            // CustomSet<PackageImport, Namespace, AddPackageImportPolicy, RemovePackageImportPolicy> m_packageImports = CustomSet<PackageImport, Namespace, AddPackageImportPolicy, RemovePackageImportPolicy>(this);
-            // CustomReadOnlySet<PackageableElement, Namespace> m_importedMembers = CustomReadOnlySet<PackageableElement, Namespace>(this);
+            Set<Constraint, Namespace> m_ownedRules = Set<Constraint, Namespace>(this);
+            Set<ElementImport, Namespace, ElementImportPolicy> m_elementImports = Set<ElementImport, Namespace, ElementImportPolicy>(this);
+            Set<PackageImport, Namespace, PackageImportPolicy> m_packageImports = Set<PackageImport, Namespace, PackageImportPolicy>(this);
+            ReadOnlySet<PackageableElement, Namespace> m_importedMembers = ReadOnlySet<PackageableElement, Namespace>(this);
             void referenceErased(ID id) override;
             Namespace();
         public:
@@ -46,11 +41,11 @@ namespace UML{
             void setName(const std::string& name) override;
             ReadOnlySet<NamedElement, Namespace>& getMembers();
             ReadOnlySet<NamedElement, Namespace>& getOwnedMembers();
-            // Set<Constraint, Namespace>& getOwnedRules();
-            // ReadOnlySet<PackageableElement, Namespace>& getImportedMembers();
-            // Set<ElementImport, Namespace>& getElementImports();
-            // Set<PackageImport, Namespace>& getPackageImports();
-            bool isSubClassOf(ElementType eType) const override;
+            Set<Constraint, Namespace>& getOwnedRules();
+            ReadOnlySet<PackageableElement, Namespace>& getImportedMembers();
+            Set<ElementImport, Namespace, ElementImportPolicy>& getElementImports();
+            Set<PackageImport, Namespace, PackageImportPolicy>& getPackageImports();
+            bool is(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::NAMESPACE;
             };

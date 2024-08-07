@@ -1,27 +1,18 @@
-#include "uml/types/parameter.h"
-#include "uml/types/package.h"
-#include "uml/types/dataType.h"
-#include "uml/types/behavior.h"
-#include "uml/types/operation.h"
-#include "uml/types/association.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-TypedSet<Operation, Parameter>& Parameter::getOperationSingleton() {
+Singleton<Operation, Parameter>& Parameter::getOperationSingleton() {
     return m_operation;
 }
 
-TypedSet<ValueSpecification, Parameter>& Parameter::getDefaultValueSingleton() {
+Singleton<ValueSpecification, Parameter>& Parameter::getDefaultValueSingleton() {
     return m_defaultValue;
 }
 
 void Parameter::referenceErased(ID id) {
     ConnectableElement::referenceErased(id);
-    m_parameterSets.eraseElement(id);
+    eraseFromSet(id, m_parameterSets);
 }
 
 Parameter::Parameter() : Element(ElementType::PARAMETER) {
@@ -115,11 +106,11 @@ Set<ParameterSet, Parameter>& Parameter::getParameterSets() {
     return m_parameterSets;
 }
 
-bool Parameter::isSubClassOf(ElementType eType) const {
-    bool ret = ConnectableElement::isSubClassOf(eType);
+bool Parameter::is(ElementType eType) const {
+    bool ret = ConnectableElement::is(eType);
 
     if (!ret) {
-        ret = MultiplicityElement::isSubClassOf(eType);
+        ret = MultiplicityElement::is(eType);
     }
 
     if (!ret) {

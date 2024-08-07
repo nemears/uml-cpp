@@ -38,6 +38,7 @@ namespace UML {
             virtual void innerAdd(ElementPtr ptr) = 0;
             virtual void nonOppositeRemove(ElementPtr ptr) = 0;
             virtual void innerRemove(ElementPtr ptr) = 0;
+            virtual void weakRemove(ElementPtr ptr) = 0;
             virtual void allocatePtr(__attribute__((unused)) ElementPtr ptr, __attribute__((unused)) SetStructure& set) {}
             virtual void deAllocatePtr(__attribute__((unused)) ElementPtr ptr) {}
 

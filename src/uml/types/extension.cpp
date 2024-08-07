@@ -1,28 +1,22 @@
-#include "uml/types/extension.h"
-#include "uml/types/extensionEnd.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/set/singleton.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void Extension::ExtensionAddMemberEndPolicy::apply(Property& el, Extension& me) {
+void Extension::MemberEndPolicy::elementAdded(Property& el, Extension& me) {
     // TODO validate that el is owned by a meta-class
     if (el.getType() && el.getType().loaded() && me.m_ownedEnd.get().id() != el.getID()) {
         me.m_metaClass.set(el.getType()->as<Class>());
     }
 }
 
-void Extension::ExtensionRemoveMemberEndPolicy::apply(Property& el, Extension& me) {
+void Extension::MemberEndPolicy::elementRemoved(Property& el, Extension& me) {
     if (el.getType() && me.m_ownedEnd.get().id() != el.getID()) {
         me.m_metaClass.set(0);
     }
 }
 
-TypedSet<ExtensionEnd, Extension>& Extension::getOwnedEndSingleton() {
+Singleton<ExtensionEnd, Extension>& Extension::getOwnedEndSingleton() {
     return m_ownedEnd;
 }
 
@@ -67,8 +61,8 @@ ClassPtr Extension::getMetaClass() const {
     return m_metaClass.get();
 }
 
-bool Extension::isSubClassOf(ElementType eType) const {
-    bool ret = Association::isSubClassOf(eType);
+bool Extension::is(ElementType eType) const {
+    bool ret = Association::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::EXTENSION;

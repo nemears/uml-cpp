@@ -1,9 +1,4 @@
-#include "uml/types/element.h"
-#include "uml/set/doNothingPolicy.h"
-#include "uml/umlPtr.h"
-#include "uml/set/singleton.h"
-#include "uml/set/set.h"
-#include <memory>
+#include "uml/uml-stable.h"
 #include <regex>
 
 namespace UML {
@@ -17,14 +12,20 @@ void Element::restoreReferences() {
 }
 
 void Element::referenceErased(ID id) {
-    m_owner->weakRemove(m_manager->createPtr(id));
-    m_ownedElements->weakRemove(m_manager->createPtr(id));
+    eraseFromSet(id, *m_owner);
+    eraseFromSet(id, *m_ownedElements);
+    eraseFromSet(id, *m_ownedComments);
+    eraseFromSet(id, *m_appliedStereotypes);
     // m_ownedComments->innerRemove(m_manager->createPtr(id));
     // m_appliedStereotype->eraseElement(id);
 }
 
 ReadOnlySingleton<Element, Element>& Element::getOwnerSingleton() {
     return *m_owner;
+}
+
+void Element::eraseFromSet(ID id, AbstractSet& set) {
+    set.weakRemove(m_manager->createPtr(id));
 }
 
 Element::Element(ElementType elementType) : 
@@ -66,7 +67,7 @@ ElementType Element::getElementType() const {
     return m_elementType;
 }
 
-bool Element::isSubClassOf(ElementType eType) const {
+bool Element::is(ElementType eType) const {
     return eType == ElementType::ELEMENT;
 }
 
@@ -440,13 +441,13 @@ ReadOnlySet<Element, Element>& Element::getOwnedElements() {
     return *m_ownedElements;
 }
 
-// Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
-//     return *m_appliedStereotypes;
-// }
+Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
+    return *m_appliedStereotypes;
+}
 
-// Set<Comment, Element>& Element::getOwnedComments() {
-//     return *m_ownedComments;
-// }
+Set<Comment, Element>& Element::getOwnedComments() {
+    return *m_ownedComments;
+}
 
 void Element::setOwner(ID id) {
     m_owner->innerAdd(m_manager->createPtr(id));

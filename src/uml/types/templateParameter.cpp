@@ -1,34 +1,30 @@
-#include "uml/types/templateParameter.h"
-#include "uml/types/templateSignature.h"
-#include "uml/types/parameterableElement.h"
-#include "uml/types/templateableElement.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void TemplateParameter::referenceErased(ID id) {
     Element::referenceErased(id);
-    m_parameteredElement.eraseElement(id);
-    m_default.eraseElement(id);
+    eraseFromSet(id, m_parameteredElement);
+    eraseFromSet(id, m_default);
 }
 
-TypedSet<TemplateSignature, TemplateParameter>& TemplateParameter::getSignatureSingleton() {
+Singleton<TemplateSignature, TemplateParameter>& TemplateParameter::getSignatureSingleton() {
     return m_signature;
 }
 
-TypedSet<ParameterableElement, TemplateParameter>& TemplateParameter::getParameteredElementSingleton() {
+Singleton<ParameterableElement, TemplateParameter>& TemplateParameter::getParameteredElementSingleton() {
     return m_parameteredElement;
 }
 
-TypedSet<ParameterableElement, TemplateParameter>& TemplateParameter::getOwnedParameteredElementSingleton() {
+Singleton<ParameterableElement, TemplateParameter>& TemplateParameter::getOwnedParameteredElementSingleton() {
     return m_ownedParameteredElement;
 }
 
-TypedSet<ParameterableElement, TemplateParameter>& TemplateParameter::getDefaultSingleton() {
+Singleton<ParameterableElement, TemplateParameter>& TemplateParameter::getDefaultSingleton() {
     return m_default;
 }
 
-TypedSet<ParameterableElement, TemplateParameter>& TemplateParameter::getOwnedDefaultSingleton() {
+Singleton<ParameterableElement, TemplateParameter>& TemplateParameter::getOwnedDefaultSingleton() {
     return m_ownedDefault;
 }
 
@@ -127,8 +123,8 @@ void TemplateParameter::setOwnedDefault(ID id) {
     m_ownedDefault.set(id);
 }
 
-bool TemplateParameter::isSubClassOf(ElementType eType) const {
-    bool ret = Element::isSubClassOf(eType);
+bool TemplateParameter::is(ElementType eType) const {
+    bool ret = Element::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::TEMPLATE_PARAMETER;

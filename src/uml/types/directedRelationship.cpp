@@ -19,8 +19,8 @@ ReadOnlySet<Element, DirectedRelationship>& DirectedRelationship::getSources() {
     return m_sources;
 }
 
-bool DirectedRelationship::isSubClassOf(ElementType eType) const {
-    bool ret = Relationship::isSubClassOf(eType);
+bool DirectedRelationship::is(ElementType eType) const {
+    bool ret = Relationship::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::DIRECTED_RELATIONSHIP;

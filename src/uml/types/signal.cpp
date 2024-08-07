@@ -1,12 +1,4 @@
-#include "uml/types/signal.h"
-#include "uml/types/interface.h"
-#include "uml/types/operation.h"
-#include "uml/types/manifestation.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -23,8 +15,8 @@ OrderedSet<Property, Signal>& Signal::getOwnedAttributes() {
     return m_ownedAttributes;
 }
 
-bool Signal::isSubClassOf(ElementType eType) const {
-    bool ret = Classifier::isSubClassOf(eType);
+bool Signal::is(ElementType eType) const {
+    bool ret = Classifier::is(eType);
     
     if (!ret) {
         ret = eType == ElementType::SIGNAL;

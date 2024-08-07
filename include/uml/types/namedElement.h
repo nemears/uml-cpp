@@ -36,16 +36,8 @@ namespace UML {
                     void elementAdded(Namespace& el, NamedElement& me);
                     void elementRemoved(Namespace& el, NamedElement& me);
             };
-            // class UpdateQualifiedNamePolicy {
-            //     public:
-            //         void apply(Namespace& el, NamedElement& me);
-            // };
-            // class RemoveQualifiedNamePolicy {
-            //     public:
-            //         void apply(Namespace& el, NamedElement& me);
-            // };
             std::unique_ptr<ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>> m_namespace;
-            //std::unique_ptr<Set<Dependency, NamedElement, DoNothingPolicy>>  m_clientDependencies;
+            std::unique_ptr<Set<Dependency, NamedElement, DoNothingPolicy>>  m_clientDependencies;
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             void updateQualifiedName(std::string absoluteNamespace);
             void referenceErased(ID id) override;
@@ -56,10 +48,10 @@ namespace UML {
             virtual void setName(const std::string &name);
             std::string getQualifiedName();
             NamespacePtr getNamespace() const;
-            // Set<Dependency, NamedElement, DoNothingPolicy>& getClientDependencies();
+            Set<Dependency, NamedElement, DoNothingPolicy>& getClientDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);
-            bool isSubClassOf(ElementType eType) const override;
+            bool is(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::NAMED_ELEMENT;
             };

@@ -1,12 +1,4 @@
-#include "uml/types/port.h"
-#include "uml/types/operation.h"
-#include "uml/types/manifestation.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -21,33 +13,33 @@ void Port::setPortInterfaces(BehavioredClassifier& clazz) {
         }
     }
     for (auto& dependency : clazz.getClientDependencies()) {
-        if (dependency.isSubClassOf(ElementType::USAGE)) {
+        if (dependency.is(ElementType::USAGE)) {
             for (auto& supplier : dependency.getSuppliers()) {
-                if (supplier.isSubClassOf(ElementType::INTERFACE_UML)) {
+                if (supplier.is(ElementType::INTERFACE_UML)) {
                     if (isConjugated()) {
-                       m_provided.innerAdd(supplier.as<Interface>());
+                       m_provided.innerAdd(&supplier);
                     } else {
-                        m_required.innerAdd(supplier.as<Interface>());
+                        m_required.innerAdd(&supplier);
                     }
                 }
             }
         }
     }
     for (auto& general : clazz.getGenerals()) {
-        if (general.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
+        if (general.is(ElementType::BEHAVIORED_CLASSIFIER)) {
             setPortInterfaces(general.as<BehavioredClassifier>());
         }
     }
 }
 
-void Port::SetTypePolicy::apply(Type& el, Port& me) {
-    if (el.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
+void Port::TypePolicy::elementAdded(Type& el, Port& me) {
+    if (el.is(ElementType::BEHAVIORED_CLASSIFIER)) {
         me.setPortInterfaces(el.as<BehavioredClassifier>());
-    } else if (el.isSubClassOf(ElementType::INTERFACE_UML)) {
+    } else if (el.is(ElementType::INTERFACE_UML)) {
         if (me.isConjugated()) {
-            me.m_required.innerAdd(el.as<Interface>());
+            me.m_required.innerAdd(&el);
         } else {
-            me.m_provided.innerAdd(el.as<Interface>());
+            me.m_provided.innerAdd(&el);
         }
     }
 }
@@ -56,36 +48,36 @@ void Port::removePortInterfaces(BehavioredClassifier& clazz) {
     for (auto& realization : clazz.getInterfaceRealizations()) {
         if (realization.getContract()) {
             if (isConjugated()) {
-                m_required.innerRemove(realization.getContract().id());
+                m_required.innerRemove(realization.getContract());
             } else {
-               m_provided.innerRemove(realization.getContract().id());
+               m_provided.innerRemove(realization.getContract());
             }
         }
     }
     for (auto& dependency : clazz.getClientDependencies()) {
-        if (dependency.isSubClassOf(ElementType::USAGE)) {
+        if (dependency.is(ElementType::USAGE)) {
             for (auto& supplier : dependency.getSuppliers()) {
-                if (supplier.isSubClassOf(ElementType::INTERFACE_UML)) {
+                if (supplier.is(ElementType::INTERFACE_UML)) {
                     if (isConjugated()) {
-                       m_provided.innerRemove(supplier.getID());
+                       m_provided.innerRemove(&supplier);
                     } else {
-                        m_required.innerRemove(supplier.getID());
+                        m_required.innerRemove(&supplier);
                     }
                 }
             }
         }
     }
     for (auto& general : clazz.getGenerals()) {
-        if (general.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
+        if (general.is(ElementType::BEHAVIORED_CLASSIFIER)) {
             removePortInterfaces(general.as<BehavioredClassifier>());
         }
     }
 }
 
-void Port::RemoveTypePolicy::apply(Type& el, Port& me) {
-    if (el.isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
+void Port::TypePolicy::elementRemoved(Type& el, Port& me) {
+    if (el.is(ElementType::BEHAVIORED_CLASSIFIER)) {
         me.removePortInterfaces(el.as<BehavioredClassifier>());
-    } else if (el.isSubClassOf(ElementType::INTERFACE_UML)) {
+    } else if (el.is(ElementType::INTERFACE_UML)) {
         if (me.isConjugated()) {
             me.m_required.remove(el.getID());
         } else {
@@ -96,19 +88,19 @@ void Port::RemoveTypePolicy::apply(Type& el, Port& me) {
 
 void Port::referenceErased(ID id) {
     Property::referenceErased(id);
-    m_required.eraseElement(id);
-    m_provided.eraseElement(id);
+    eraseFromSet(id, m_required);
+    eraseFromSet(id, m_provided);
 }
 
 void Port::restoreReferences() {
     if (m_type.get()) {
-        if (m_type.get()->isSubClassOf(ElementType::BEHAVIORED_CLASSIFIER)) {
+        if (m_type.get()->is(ElementType::BEHAVIORED_CLASSIFIER)) {
             setPortInterfaces(m_type.get()->as<BehavioredClassifier>());
-        } else if (m_type.get()->isSubClassOf(ElementType::INTERFACE_UML)) {
+        } else if (m_type.get()->is(ElementType::INTERFACE_UML)) {
             if (isConjugated() && !m_required.contains(m_type.get().id())) {
-                m_required.innerAdd(m_type.get()->as<Interface>());
+                m_required.innerAdd(m_type.get());
             } else if (!isConjugated() && !m_provided.contains(m_type.get().id())) {
-                m_provided.innerAdd(m_type.get()->as<Interface>());
+                m_provided.innerAdd(m_type.get());
             }
         }
     }
@@ -145,12 +137,12 @@ void Port::setIsConjugated(bool isConjugated) {
             oldProvided.push_back(provided);
         }
         for (auto& newProvided : oldRequired) {
-            m_required.innerRemove(newProvided.id());
-            m_provided.innerAdd(*newProvided);
+            m_required.innerRemove(newProvided);
+            m_provided.innerAdd(newProvided);
         }
         for (auto& newRequired : oldProvided) {
-            m_provided.innerRemove(newRequired.id());
-            m_required.innerAdd(*newRequired);
+            m_provided.innerRemove(newRequired);
+            m_required.innerAdd(newRequired);
         }
     }
     m_isConjugated = isConjugated;
@@ -172,8 +164,8 @@ ReadOnlySet<Interface, Port>& Port::getProvided() {
     return m_provided;
 }
 
-bool Port::isSubClassOf(ElementType eType) const {
-    bool ret = Property::isSubClassOf(eType);
+bool Port::is(ElementType eType) const {
+    bool ret = Property::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::PORT;

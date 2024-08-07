@@ -1,21 +1,12 @@
-#include "uml/types/packageMerge.h"
-#include "uml/types/package.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/packageMerge.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/interface.h"
-#include "uml/types/deployment.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-TypedSet<Package, PackageMerge>& PackageMerge::getReceivingPackageSingleton() {
+Singleton<Package, PackageMerge>& PackageMerge::getReceivingPackageSingleton() {
     return m_receivingPackage;
 }
 
-TypedSet<Package, PackageMerge>& PackageMerge::getMergedPackageSingleton() {
+Singleton<Package, PackageMerge>& PackageMerge::getMergedPackageSingleton() {
     return m_mergedPackage;
 }
 
@@ -62,8 +53,8 @@ void PackageMerge::setMergedPackage(ID id) {
     m_mergedPackage.set(id);
 }
 
-bool PackageMerge::isSubClassOf(ElementType eType) const {
-    bool ret = DirectedRelationship::isSubClassOf(eType);
+bool PackageMerge::is(ElementType eType) const {
+    bool ret = DirectedRelationship::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::PACKAGE_MERGE;

@@ -1,24 +1,15 @@
-#include "uml/types/generalizationSet.h"
-#include "uml/types/profile.h"
-#include "uml/types/artifact.h"
-#include "uml/types/operation.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/deployment.h"
-#include "uml/types/manifestation.h"
-#include "uml/umlPtr.h"
+#include "uml/set/singleton.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
 void GeneralizationSet::referenceErased(ID id) {
     PackageableElement::referenceErased(id);
-    m_powerType.eraseElement(id);
-    m_generalizations.eraseElement(id);
+    eraseFromSet(id, m_powerType);
+    eraseFromSet(id, m_generalizations);
 }
 
-TypedSet<Classifier, GeneralizationSet>& GeneralizationSet::getPowerTypeSingleton() {
+Singleton<Classifier, GeneralizationSet>& GeneralizationSet::getPowerTypeSingleton() {
     return m_powerType;
 }
 
@@ -67,8 +58,8 @@ Set<Generalization, GeneralizationSet>& GeneralizationSet::getGeneralizations() 
     return m_generalizations;
 }
 
-bool GeneralizationSet::isSubClassOf(ElementType eType) const {
-    bool ret = PackageableElement::isSubClassOf(eType);
+bool GeneralizationSet::is(ElementType eType) const {
+    bool ret = PackageableElement::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::GENERALIZATION_SET;

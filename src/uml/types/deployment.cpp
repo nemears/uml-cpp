@@ -1,16 +1,8 @@
-#include "uml/types/deployment.h"
-#include "uml/types/deployedArtifact.h"
-#include "uml/types/deploymentTarget.h"
-#include "uml/types/profile.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/umlPtr.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-TypedSet<DeploymentTarget, Deployment>& Deployment::getLocationSingleton() {
+Singleton<DeploymentTarget, Deployment>& Deployment::getLocationSingleton() {
     return m_location;
 }
 
@@ -45,8 +37,8 @@ void Deployment::setLocation(ID id) {
     m_location.set(id);
 }
 
-bool Deployment::isSubClassOf(ElementType eType) const {
-    bool ret = Dependency::isSubClassOf(eType);
+bool Deployment::is(ElementType eType) const {
+    bool ret = Dependency::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::DEPLOYMENT;

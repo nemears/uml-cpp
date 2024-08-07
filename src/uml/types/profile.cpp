@@ -1,9 +1,4 @@
-#include "uml/types/profile.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
@@ -14,8 +9,8 @@ Profile::~Profile() {
     
 }
 
-bool Profile::isSubClassOf(ElementType eType) const {
-    bool ret = Package::isSubClassOf(eType);
+bool Profile::is(ElementType eType) const {
+    bool ret = Package::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::PROFILE;

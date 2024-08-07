@@ -1,14 +1,8 @@
-#include "uml/types/behavioredClassifier.h"
-#include "uml/types/behavior.h"
-#include "uml/types/dataType.h"
-#include "uml/types/association.h"
-#include "uml/umlPtr.h"
-#include "uml/types/stereotype.h"
-#include "uml/types/deployment.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-void BehavioredClassifier::RemoveInterfaceRealizationPolicy::apply(InterfaceRealization& el, BehavioredClassifier& me) {
+void BehavioredClassifier::InterfaceRealizationPolicy::elementRemoved(InterfaceRealization& el, BehavioredClassifier& me) {
     if (el.getContract()) {
         std::list<Classifier*> queue = {&me};
         while (!queue.empty()) {
@@ -18,20 +12,20 @@ void BehavioredClassifier::RemoveInterfaceRealizationPolicy::apply(InterfaceReal
                 if (!pair.second.node || !pair.second.node->m_element) {
                     // TODO aquire?
                 }
-                if (pair.second.node && pair.second.node->m_element->isSubClassOf(ElementType::PORT)) {
+                if (pair.second.node && pair.second.node->m_element->is(ElementType::PORT)) {
                     Port& port = pair.second.node->m_element->as<Port>();
                     if (front->getID() == port.getType().id()) {
                         if (port.isConjugated()) {
                             if (port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
-                                port.m_required.innerRemove(el.getContract().id());
+                                port.m_required.innerRemove(el.getContract());
                             }
                         } else {
                             if (port.getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
-                                port.m_provided.innerRemove(el.getContract().id());
+                                port.m_provided.innerRemove(el.getContract());
                             }
                         }
                     }
-                } else if (pair.second.node && pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER)) {
+                } else if (pair.second.node && pair.second.node->m_element->is(ElementType::CLASSIFIER)) {
                     if (pair.second.node->m_element->as<Classifier>().getGenerals().contains(*front)) {
                         queue.push_back(&pair.second.node->m_element->as<Classifier>());
                     }
@@ -41,7 +35,7 @@ void BehavioredClassifier::RemoveInterfaceRealizationPolicy::apply(InterfaceReal
     }
 }
 
-void BehavioredClassifier::AddInterfaceRealizationPolicy::apply(InterfaceRealization& el, BehavioredClassifier& me) {
+void BehavioredClassifier::InterfaceRealizationPolicy::elementAdded(InterfaceRealization& el, BehavioredClassifier& me) {
     if (el.getContract()) {
         std::list<Classifier*> queue = {&me};
         while (!queue.empty()) {
@@ -51,20 +45,20 @@ void BehavioredClassifier::AddInterfaceRealizationPolicy::apply(InterfaceRealiza
                 if (!pair.second.node || !pair.second.node->m_element) {
                     // TODO aquire?
                 }
-                if (pair.second.node && pair.second.node->m_element->isSubClassOf(ElementType::PORT)) {
+                if (pair.second.node && pair.second.node->m_element->is(ElementType::PORT)) {
                     Port& port = pair.second.node->m_element->as<Port>();
                     if (port.getType().id() == front->m_id) {
                         if (port.isConjugated()) {
                             if (!port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
-                                port.m_required.innerAdd(*el.getContract());
+                                port.m_required.innerAdd(el.getContract());
                             }
                         } else {
                             if (!port.getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
-                                port.m_provided.innerAdd(*el.getContract());
+                                port.m_provided.innerAdd(el.getContract());
                             }
                         }
                     }
-                } else if (pair.second.node && pair.second.node->m_element->isSubClassOf(ElementType::CLASSIFIER)) {
+                } else if (pair.second.node && pair.second.node->m_element->is(ElementType::CLASSIFIER)) {
                     if (pair.second.node->m_element->as<Classifier>().getGenerals().contains(*front)) {
                         queue.push_back(&pair.second.node->m_element->as<Classifier>());
                     }
@@ -74,7 +68,7 @@ void BehavioredClassifier::AddInterfaceRealizationPolicy::apply(InterfaceRealiza
     }
 }
 
-TypedSet<Behavior, BehavioredClassifier>& BehavioredClassifier::getClassifierBehaviorSingleton() {
+Singleton<Behavior, BehavioredClassifier>& BehavioredClassifier::getClassifierBehaviorSingleton() {
     return m_classifierBehavior;
 }
 
@@ -109,12 +103,12 @@ void BehavioredClassifier::setClassifierBehavior(ID id) {
     m_classifierBehavior.set(id);
 }
 
-Set<InterfaceRealization, BehavioredClassifier>& BehavioredClassifier::getInterfaceRealizations() {
+Set<InterfaceRealization, BehavioredClassifier, BehavioredClassifier::InterfaceRealizationPolicy>& BehavioredClassifier::getInterfaceRealizations() {
     return m_interfaceRealizations;
 }
 
-bool BehavioredClassifier::isSubClassOf(ElementType eType) const {
-    bool ret = Classifier::isSubClassOf(eType);
+bool BehavioredClassifier::is(ElementType eType) const {
+    bool ret = Classifier::is(eType);
 
     if (!ret) {
         ret = eType == ElementType::BEHAVIORED_CLASSIFIER;

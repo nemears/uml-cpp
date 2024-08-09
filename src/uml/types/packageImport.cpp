@@ -1,7 +1,5 @@
 #include "uml/types/packageImport.h"
-#include "uml/types/namespace.h"
-#include "uml/types/package.h"
-#include "uml/types/packageableElement.h"
+#include "uml/set/singleton.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -13,7 +11,7 @@ void PackageImport::ImportedPackagePolicy::elementAdded(Package& el, PackageImpo
     if (me.getImportingNamespace()) {
         for (auto& pckgedEl : el.getPackagedElements()) {
             if (!me.getImportingNamespace()->getImportedMembers().contains(pckgedEl)) {
-                me.getImportingNamespace()->m_importedMembers.add(pckgedEl);
+                me.getImportingNamespace()->m_importedMembers.innerAdd(&pckgedEl);
             }
         }
     }
@@ -32,10 +30,14 @@ void PackageImport::ImportedPackagePolicy::elementRemoved(Package& el, PackageIm
     if (me.getImportingNamespace()) {
         for (auto& pckgedEl : el.getPackagedElements()) {
             if (me.getImportingNamespace()->getImportedMembers().contains(pckgedEl)) {
-                me.getImportingNamespace()->m_importedMembers.remove(pckgedEl.getID());
+                me.getImportingNamespace()->m_importedMembers.innerRemove(&pckgedEl);
             }
         }
     }
+}
+
+Singleton<Namespace, PackageImport>& PackageImport::getImportingNamespaceSingleton() {
+    return m_importingNamespace;
 }
 
 PackageImport::PackageImport() : Element(ElementType::PACKAGE_IMPORT) {

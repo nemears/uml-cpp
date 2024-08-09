@@ -1,21 +1,20 @@
-#include "uml/set/singleton.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
 
 void ElementImport::ImportedElementPolicy::elementAdded(PackageableElement& el, ElementImport& me) {
     if (me.getImportingNamespace()) {
-        me.getImportingNamespace()->m_importedMembers.innerAdd(el);
+        me.getImportingNamespace()->m_importedMembers.innerAdd(&el);
     }
 }
 
 void ElementImport::ImportedElementPolicy::elementRemoved(PackageableElement& el, ElementImport& me) {
     if (me.getImportingNamespace()) {
-        me.getImportingNamespace()->m_importedMembers.innerRemove(el);
+        me.getImportingNamespace()->m_importedMembers.innerRemove(&el);
     }
 }
 
-Singleton<PackageableElement, ElementImport>& ElementImport::getImportedElementSingleton() {
+Singleton<PackageableElement, ElementImport, ElementImport::ImportedElementPolicy>& ElementImport::getImportedElementSingleton() {
     return m_importedElement;
 }
 

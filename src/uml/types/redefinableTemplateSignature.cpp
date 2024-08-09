@@ -1,3 +1,4 @@
+#include "uml/types/redefinableTemplateSignature.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -7,7 +8,7 @@ void RedefinableTemplateSignature::ExtendedSignaturePolicy::elementAdded(Redefin
     el.m_redefinableTemplateSignatureParameters.removeSignatures.insert(UmlPtr<RedefinableTemplateSignature>(&me));
     for (auto& param : el.getParameters()) {
         if (!me.m_inheritedParameters.contains(param)) {
-            me.m_inheritedParameters.innerAdd(param);
+            me.m_inheritedParameters.innerAdd(&param);
         }
     }
 }
@@ -25,7 +26,7 @@ void RedefinableTemplateSignature::ExtendedSignaturePolicy::elementRemoved(Redef
     }
     for (auto& param : el.getParameters()) {
         if (me.m_inheritedParameters.contains(param) && !parametersToKeep.count(param.getID())) {
-            me.m_inheritedParameters.innerRemove(param.getID());
+            me.m_inheritedParameters.innerRemove(&param);
         }
     }
 }
@@ -49,7 +50,7 @@ void RedefinableTemplateSignature::ParameterPolicy::elementRemoved(TemplateParam
             }
         }
         if (ogSig->getInheritedParameters().contains(el.getID()) && !parametersToKeep.count(el.getID())) {
-            ogSig->m_inheritedParameters.innerRemove(el);
+            ogSig->m_inheritedParameters.innerRemove(&el);
         }
     }
 }
@@ -95,7 +96,7 @@ void RedefinableTemplateSignature::setClassifier(ID id) {
     m_classifier.set(id);
 }
 
-Set<RedefinableTemplateSignature, RedefinableTemplateSignature>& RedefinableTemplateSignature::getExtendedSignatures() {
+Set<RedefinableTemplateSignature, RedefinableTemplateSignature, RedefinableTemplateSignature::ExtendedSignaturePolicy>& RedefinableTemplateSignature::getExtendedSignatures() {
     return m_extendedSignatures;
 }
 

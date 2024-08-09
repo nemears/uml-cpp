@@ -1,5 +1,6 @@
 #pragma once
 
+#include "uml/types/element.h"
 #include <memory>
 #include <unordered_set>
 #include <uml/umlPtr.h>
@@ -15,6 +16,8 @@ namespace UML {
     std::ostream& operator<<(std::ostream& stream, const SetType& setType);
 
     class SetStructure;
+    template <class S, class WrapperPolicy>
+    class WrapperSet;
 
     class AbstractSet {
         template <class T, class U, class DataTypePolicy, class ApiPolicy>
@@ -24,6 +27,8 @@ namespace UML {
         template <class T>
         friend class SingletonDataPolicy;
         friend class Element;
+        template <class S, class WrapperPolicy>
+        friend class WrapperSet;
         protected:
             std::shared_ptr<SetStructure> m_structure;
             virtual bool hasData() const = 0;
@@ -42,14 +47,13 @@ namespace UML {
             virtual void allocatePtr(__attribute__((unused)) ElementPtr ptr, __attribute__((unused)) SetStructure& set) {}
             virtual void deAllocatePtr(__attribute__((unused)) ElementPtr ptr) {}
 
-            class IDSet;
-
             class iterator {
                 template <class T>
                 friend class SetDataPolicy;
                 template <class T>
                 friend class SingletonDataPolicy;
-                friend class IDSet;
+                template <class S, class WrapperPolicy>
+                friend class WrapperSet;
 
                 protected:
                     virtual ElementPtr getCurr() const = 0;
@@ -69,41 +73,6 @@ namespace UML {
                         return rhs.m_hash != m_hash;
                     }
             };
-            class IDSet {
-                protected:
-                    std::weak_ptr<SetStructure> m_set;
-                    class iterator {
-                        private:
-                            std::unique_ptr<AbstractSet::iterator> m_it;
-                        public:
-                            iterator(std::unique_ptr<AbstractSet::iterator> it) : m_it(std::move(it)) {}
-                            iterator(const iterator& rhs) : m_it(rhs.m_it->clone()) {}
-                            ID operator*() {
-                                return m_it->getCurr().id();
-                            }
-                            ElementPtr operator->() {
-                                return m_it->getCurr();
-                            }
-                            iterator operator++() {
-                                m_it->next();
-                                return *this;
-                            }
-                            iterator operator++(int) {
-                                m_it->next();
-                                return *this;
-                            }
-                            bool operator==(const iterator& rhs) const {
-                                return *rhs.m_it == *m_it;
-                            }
-                            bool operator!=(const iterator& rhs) const {
-                                return *rhs.m_it != *m_it;
-                            }
-                    };
-                public:
-                    IDSet(const AbstractSet* set) : m_set(set->m_structure) {}
-                    iterator begin();
-                    iterator end();
-            };
             virtual std::unique_ptr<iterator> beginPtr() const = 0;
             virtual std::unique_ptr<iterator> endPtr() const = 0;
         public:
@@ -114,9 +83,6 @@ namespace UML {
             virtual bool contains(ElementPtr ptr) const = 0;
             size_t size() const;
             bool empty() const;
-            IDSet ids() const {
-                return IDSet(this);
-            }
             virtual SetType setType() const = 0;
 
     };

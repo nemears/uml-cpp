@@ -16,8 +16,6 @@ namespace UML {
         protected:
             OrderedSet<Property, DataType> m_ownedAttributes = OrderedSet<Property, DataType>(this);
             OrderedSet<Operation, DataType> m_ownedOperations = OrderedSet<Operation, DataType>(this);
-            Singleton<Property, DataType>& getOwnedAttributesSet();
-            Singleton<Operation, DataType>& getOwnedOperationsSet();
             DataType();
         public:
             ~DataType();

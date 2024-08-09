@@ -9,7 +9,7 @@ void StructuredClassifier::PartPolicy::elementAdded(Property& el, StructuredClas
     }
 }
 
-void StructuredClassifier::RemovePartPolicy::apply(Property& el, StructuredClassifier& me) {
+void StructuredClassifier::PartPolicy::elementRemoved(Property& el, StructuredClassifier& me) {
     if (el.isComposite() && me.m_parts.contains(el)) {
         me.m_parts.innerRemove(&el);
     }

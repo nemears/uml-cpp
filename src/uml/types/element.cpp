@@ -31,7 +31,9 @@ void Element::eraseFromSet(ID id, AbstractSet& set) {
 Element::Element(ElementType elementType) : 
         m_elementType(elementType), 
         m_owner(new ReadOnlySingleton<Element, Element>(this)),
-        m_ownedElements(new ReadOnlySet<Element, Element>(this))
+        m_ownedElements(new ReadOnlySet<Element, Element>(this)),
+        m_ownedComments(new Set<Comment, Element>(this)),
+        m_appliedStereotypes(new Set<InstanceSpecification, Element>(this))
 {
     m_manager = 0;
     m_node = 0;

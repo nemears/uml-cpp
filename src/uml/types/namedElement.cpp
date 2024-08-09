@@ -1,3 +1,5 @@
+#include "uml/types/namedElement.h"
+#include "uml/types/dependency.h"
 #include "uml/uml-stable.h"
 #include <vector>
 
@@ -24,11 +26,12 @@ ReadOnlySingleton<Namespace, NamedElement, NamedElement::UpdateQualifiedNamePoli
 
 NamedElement::NamedElement() : 
     Element(ElementType::NAMED_ELEMENT),
-    m_namespace(new ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>(this))
+    m_namespace(new ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>(this)),
+    m_clientDependencies(new Set<Dependency, NamedElement>(this))
 {
     m_namespace->subsets(*m_owner);
     m_namespace->opposite(&Namespace::getOwnedMembers);
-    // m_clientDependencies->opposite(&Dependency::getClients);
+    m_clientDependencies->opposite(&Dependency::getClients);
 }
 
 void NamedElement::setName(const std::string &name) {

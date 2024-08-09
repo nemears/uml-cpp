@@ -1,10 +1,10 @@
 #pragma once
 
 #include "abstractSet.h"
+#include "wrapperSet.h"
 #include "uml/set/doNothingPolicy.h"
 #include "uml/types/element.h"
-#include "uml/types/interfaceRealization.h"
-#include "uml/types/reception.h"
+#include "uml/umlPtr.h"
 #include <memory>
 #include <mutex>
 #include <unordered_set>
@@ -55,6 +55,9 @@ namespace UML {
         friend class Connector;
         friend class InterfaceRealization;
         friend class Reception;
+        friend class Manifestation;
+        friend class ElementImport;
+        friend class PackageImport;
         friend T;
         friend U;
         friend ApiPolicy;
@@ -357,6 +360,12 @@ namespace UML {
                 }
 
             }
+            struct PtrPolicy {
+                UmlPtr<T> get(ElementPtr ptr) {
+                    return UmlPtr<T>(ptr);    
+                }
+            };
+            typedef WrapperSet<UmlPtr<T>, PtrPolicy> PtrSet;
         public:
             PrivateSet(U* el) : m_el(*el) {}
             PrivateSet& operator=(PrivateSet& rhs) = delete;
@@ -402,6 +411,12 @@ namespace UML {
                         }
                 };
                 m_opposite = std::unique_ptr<OppositeInterfaceAdapter>(new OppositeInterfaceAdapter(m_el, oppositeSignature));
+            }
+            PtrSet ptrs() const {
+                return PtrSet(this);
+            }
+            IDSet ids() const {
+                return IDSet(this);
             }
     };
 }

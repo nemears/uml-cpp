@@ -19,6 +19,7 @@ namespace UML {
             };
             struct ParameterPolicy {
                 std::unordered_set<UmlPtr<RedefinableTemplateSignature>> addSignatures;
+                std::unordered_set<UmlPtr<RedefinableTemplateSignature>> removeSignatures;
                 void elementAdded(TemplateParameter& el, RedefinableTemplateSignature& me);
                 void elementRemoved(TemplateParameter& el, RedefinableTemplateSignature& me);
             };
@@ -36,7 +37,7 @@ namespace UML {
             void setClassifier(Classifier& classifier);
             void setClassifier(ClassifierPtr classifier);
             void setClassifier(ID id);
-            Set<RedefinableTemplateSignature, RedefinableTemplateSignature>& getExtendedSignatures();
+            Set<RedefinableTemplateSignature, RedefinableTemplateSignature, ExtendedSignaturePolicy>& getExtendedSignatures();
             ReadOnlySet<TemplateParameter, RedefinableTemplateSignature>& getInheritedParameters();
             bool is(ElementType eType) const override;
             static ElementType elementType() {

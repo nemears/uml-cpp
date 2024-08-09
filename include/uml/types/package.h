@@ -10,6 +10,7 @@ namespace UML {
     class Stereotype;
     class ProfileApplication;
     class PackageMerge;
+    class PackageImport;
     void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
 
     class Package : public PackageableElement, public Namespace, public TemplateableElement {

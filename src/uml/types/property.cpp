@@ -101,7 +101,7 @@ Property::Property() : Element(ElementType::PROPERTY) {
     m_class.opposite(&Class::getOwnedAttributes);
     m_dataType.subsets(*m_namespace);
     m_dataType.subsets(m_featuringClassifier);
-    m_dataType.opposite(&DataType::getOwnedAttributesSet);
+    m_dataType.opposite(&DataType::getOwnedAttributes);
     m_association.opposite(&Association::getMemberEnds);
     m_owningAssociation.subsets(*m_namespace);
     m_owningAssociation.subsets(m_featuringClassifier);

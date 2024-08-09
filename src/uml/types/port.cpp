@@ -6,9 +6,9 @@ void Port::setPortInterfaces(BehavioredClassifier& clazz) {
     for (auto& realization : clazz.getInterfaceRealizations()) {
         if (realization.getContract()) {
             if (isConjugated()) {
-                m_required.add(*realization.getContract());
+                m_required.innerAdd(realization.getContract());
             } else {
-               m_provided.add(*realization.getContract());
+               m_provided.innerAdd(realization.getContract());
             }
         }
     }
@@ -79,9 +79,9 @@ void Port::TypePolicy::elementRemoved(Type& el, Port& me) {
         me.removePortInterfaces(el.as<BehavioredClassifier>());
     } else if (el.is(ElementType::INTERFACE_UML)) {
         if (me.isConjugated()) {
-            me.m_required.remove(el.getID());
+            me.m_required.innerRemove(&el);
         } else {
-            me.m_provided.remove(el.getID());
+            me.m_provided.innerRemove(&el);
         }
     }
 }

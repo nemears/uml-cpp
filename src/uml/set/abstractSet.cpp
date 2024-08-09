@@ -91,11 +91,4 @@ namespace UML {
     bool AbstractSet::empty() const {
         return m_structure->m_size == 0;
     }
-    AbstractSet::IDSet::iterator AbstractSet::IDSet::begin() {
-        return AbstractSet::IDSet::iterator(m_set.lock()->m_set.beginPtr());
-    }
-    AbstractSet::IDSet::iterator AbstractSet::IDSet::end() {
-        return AbstractSet::IDSet::iterator(m_set.lock()->m_set.endPtr());
-    }
-
 }

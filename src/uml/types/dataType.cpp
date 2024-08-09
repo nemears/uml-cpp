@@ -2,14 +2,6 @@
 
 using namespace UML;
 
-// OrderedSet<Property, DataType>& DataType::getOwnedAttributesSet() {
-//     return m_ownedAttributes;
-// }
-// 
-// OrderedSet<Operation, DataType>& DataType::getOwnedOperationsSet() {
-//     return m_ownedOperations;
-// }
-
 DataType::DataType() : Element(ElementType::DATA_TYPE) {
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_ownedMembers);

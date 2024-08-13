@@ -1,6 +1,7 @@
 #pragma once
 
 #include "property.h"
+#include "uml/set/indexableSet.h"
 
 namespace UML {
 
@@ -21,8 +22,8 @@ namespace UML {
                 void elementAdded(Type& el, Port& me);
                 void elementRemoved(Type& el, Port& me);
             };
-            ReadOnlySet<Interface, Port> m_required = ReadOnlySet<Interface, Port>(this);
-            ReadOnlySet<Interface, Port> m_provided = ReadOnlySet<Interface, Port>(this);
+            ReadOnlyIndexableSet<Interface, Port> m_required = ReadOnlyIndexableSet<Interface, Port>(this);
+            ReadOnlyIndexableSet<Interface, Port> m_provided = ReadOnlyIndexableSet<Interface, Port>(this);
             Singleton<Type, Port, TypePolicy> m_portType = Singleton<Type, Port, TypePolicy>(this);
             bool m_isBehavior = false;
             bool m_isConjugated = false;
@@ -38,8 +39,8 @@ namespace UML {
             void setIsConjugated(bool isConjugated);
             bool isService() const;
             void setIsService(bool isService);
-            ReadOnlySet<Interface, Port>& getRequired();
-            ReadOnlySet<Interface, Port>& getProvided();
+            ReadOnlyIndexableSet<Interface, Port>& getRequired();
+            ReadOnlyIndexableSet<Interface, Port>& getProvided();
             bool is(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PORT;

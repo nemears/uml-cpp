@@ -27,7 +27,7 @@ namespace UML {
         public:
             virtual ~ConnectorEnd();
             ConnectableElementPtr getRole() const;
-            void setRole(ConnectableElement* role);
+            void setRole(ConnectableElementPtr role);
             void setRole(ConnectableElement& role);
             void setRole(ID id);
             PropertyPtr getDefiningEnd() const;

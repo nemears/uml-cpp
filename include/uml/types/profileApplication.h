@@ -25,10 +25,10 @@ namespace UML {
             virtual ~ProfileApplication();
             ProfilePtr getAppliedProfile() const;
             void setAppliedProfile(Profile& profile);
-            void setAppliedProfile(Profile* profile);
+            void setAppliedProfile(ProfilePtr profile);
             void setAppliedProfile(ID id);
             PackagePtr getApplyingPackage() const;
-            void setApplyingPackage(Package* pckg);
+            void setApplyingPackage(PackagePtr pckg);
             void setApplyingPackage(Package& pckg);
             void setApplyingPackage(ID id);
             bool is(ElementType eType) const override;

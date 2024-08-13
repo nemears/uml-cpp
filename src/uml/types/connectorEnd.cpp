@@ -28,7 +28,7 @@ ConnectableElementPtr ConnectorEnd::getRole() const {
     return m_role.get();
 }
 
-void ConnectorEnd::setRole(ConnectableElement* role) {
+void ConnectorEnd::setRole(ConnectableElementPtr role) {
     m_role.set(role);
 }
 

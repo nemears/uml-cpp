@@ -42,7 +42,7 @@ ClassifierPtr GeneralizationSet::getPowerType() const {
     return m_powerType.get();
 }
 
-void GeneralizationSet::setPowerType(Classifier* powerType) {
+void GeneralizationSet::setPowerType(ClassifierPtr powerType) {
     m_powerType.set(powerType);
 }
 

@@ -4,6 +4,7 @@
 #include "type.h"
 #include "redefinableElement.h"
 #include "templateableElement.h"
+#include "uml/set/indexableSet.h"
 #include "uml/types/namedElement.h"
 
 namespace UML {
@@ -30,23 +31,26 @@ namespace UML {
         friend class ClassifierTemplateParameter;
 
         protected:
-            struct GeneralizationPolicy {
-                void elementAdded(Generalization& el, Classifier& me);
-                void elementRemoved(Generalization& el, Classifier& me);
+            class GeneralizationPolicy : public IndexablePolicy {
+                protected:
+                    void elementAdded(Generalization& el, Classifier& me);
+                    void elementRemoved(Generalization& el, Classifier& me);
             };
-            struct GeneralPolicy {
-                void elementAdded(Classifier& el, Classifier& me);
-                void elementRemoved(Classifier& el, Classifier& me);
+            class GeneralPolicy : public IndexablePolicy {
+                protected:
+                    void elementAdded(Classifier& el, Classifier& me);
+                    void elementRemoved(Classifier& el, Classifier& me);
             };
-            struct OwnedMemberPolicy {
-                void elementAdded(NamedElement& el, Classifier& me);
-                void elementRemoved(NamedElement& el, Classifier& me);
+            class OwnedMemberPolicy : public IndexablePolicy {
+                protected:
+                    void elementAdded(NamedElement& el, Classifier& me);
+                    void elementRemoved(NamedElement& el, Classifier& me);
             };
-            ReadOnlySet<Feature, Classifier> m_features = ReadOnlySet<Feature, Classifier>(this);
-            ReadOnlySet<Property, Classifier> m_attributes = ReadOnlySet<Property, Classifier>(this);
+            ReadOnlyIndexableSet<Feature, Classifier> m_features = ReadOnlyIndexableSet<Feature, Classifier>(this);
+            ReadOnlyIndexableSet<Property, Classifier> m_attributes = ReadOnlyIndexableSet<Property, Classifier>(this);
             Set<Generalization, Classifier, GeneralizationPolicy> m_generalizations = Set<Generalization, Classifier, GeneralizationPolicy>(this);
-            Set<Classifier, Classifier, GeneralPolicy> m_generals = Set<Classifier, Classifier, GeneralPolicy>(this);
-            ReadOnlySet<NamedElement, Classifier> m_inheritedMembers = ReadOnlySet<NamedElement, Classifier>(this);
+            IndexableSet<Classifier, Classifier, GeneralPolicy> m_generals = IndexableSet<Classifier, Classifier, GeneralPolicy>(this);
+            ReadOnlyIndexableSet<NamedElement, Classifier> m_inheritedMembers = ReadOnlyIndexableSet<NamedElement, Classifier>(this);
             Set<GeneralizationSet, Classifier> m_powerTypeExtent = Set<GeneralizationSet, Classifier>(this);
             Singleton<RedefinableTemplateSignature, Classifier> m_classifierOwnedTemplateSignature = Singleton<RedefinableTemplateSignature, Classifier>(this);
             Singleton<ClassifierTemplateParameter, Classifier> m_classifierTemplateParameter = Singleton<ClassifierTemplateParameter, Classifier>(this);
@@ -60,11 +64,11 @@ namespace UML {
             virtual ~Classifier();
             std::string getName() override;
             void setName(const std::string& name) override;
-            ReadOnlySet<Feature, Classifier>& getFeatures();
-            ReadOnlySet<Property, Classifier>& getAttributes();
+            ReadOnlyIndexableSet<Feature, Classifier>& getFeatures();
+            ReadOnlyIndexableSet<Property, Classifier>& getAttributes();
             Set<Generalization, Classifier, GeneralizationPolicy>& getGeneralizations();
-            Set<Classifier, Classifier, GeneralPolicy>& getGenerals();
-            ReadOnlySet<NamedElement, Classifier>& getInheritedMembers();
+            IndexableSet<Classifier, Classifier, GeneralPolicy>& getGenerals();
+            ReadOnlyIndexableSet<NamedElement, Classifier>& getInheritedMembers();
             Set<GeneralizationSet, Classifier>& getPowerTypeExtent();
             RedefinableTemplateSignaturePtr getOwnedTemplateSignature() const;
             void setOwnedTemplateSignature(RedefinableTemplateSignature* signature);

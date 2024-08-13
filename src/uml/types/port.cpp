@@ -156,11 +156,11 @@ void Port::setIsService(bool isService) {
     m_isService = isService;
 }
 
-ReadOnlySet<Interface, Port>& Port::getRequired() {
+ReadOnlyIndexableSet<Interface, Port>& Port::getRequired() {
     return m_required;
 }
 
-ReadOnlySet<Interface, Port>& Port::getProvided() {
+ReadOnlyIndexableSet<Interface, Port>& Port::getProvided() {
     return m_provided;
 }
 

@@ -19,7 +19,7 @@ EnumerationPtr EnumerationLiteral::getEnumeration() const {
     return m_enumeration.get();
 }
 
-void EnumerationLiteral::setEnumeration(Enumeration* enumeration) {
+void EnumerationLiteral::setEnumeration(EnumerationPtr enumeration) {
     m_enumeration.set(enumeration);
 }
 

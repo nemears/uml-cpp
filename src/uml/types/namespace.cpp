@@ -63,11 +63,11 @@ void Namespace::setName(const std::string& name) {
     }
 }
 
-ReadOnlySet<NamedElement, Namespace>& Namespace::getMembers() {
+ReadOnlyIndexableSet<NamedElement, Namespace>& Namespace::getMembers() {
     return m_members;
 }
 
-ReadOnlySet<NamedElement, Namespace>& Namespace::getOwnedMembers() {
+ReadOnlyIndexableSet<NamedElement, Namespace>& Namespace::getOwnedMembers() {
     return m_ownedMembers;
 }
 
@@ -75,7 +75,7 @@ Set<Constraint, Namespace>& Namespace::getOwnedRules() {
     return m_ownedRules;
 }
 
-ReadOnlySet<PackageableElement, Namespace>& Namespace::getImportedMembers() {
+ReadOnlyIndexableSet<PackageableElement, Namespace>& Namespace::getImportedMembers() {
     return m_importedMembers;
 }
 

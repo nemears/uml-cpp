@@ -50,3 +50,22 @@
 
 #include "uml/managers/manager.h"
 
+namespace UML {
+    typedef UmlPtr<ElementImport> ElementImportPtr;
+    typedef UmlPtr<EnumerationLiteral> EnumerationLiteralPtr;
+    typedef UmlPtr<Expression> ExpressionPtr;
+    typedef UmlPtr<Generalization> GeneralizationPtr;
+    typedef UmlPtr<InstanceValue> InstanceValuePtr;
+    typedef UmlPtr<LiteralBool> LiteralBoolPtr;
+    typedef UmlPtr<LiteralInt> LiteralIntPtr;
+    typedef UmlPtr<LiteralNull> LiteralNullPtr;
+    typedef UmlPtr<LiteralReal> LiteralRealPtr;
+    typedef UmlPtr<LiteralString> LiteralStringPtr;
+    typedef UmlPtr<LiteralUnlimitedNatural> LiteralUnlimitedNaturalPtr;
+    typedef UmlPtr<OpaqueBehavior> OpaqueBehaviorPtr;
+    typedef UmlPtr<PackageImport> PackageImportPtr;
+    typedef UmlPtr<PackageMerge> PackageMergePtr;
+    typedef UmlPtr<Parameter> ParameterPtr;
+    typedef UmlPtr<PrimitiveType> PrimitiveTypePtr;
+    typedef UmlPtr<Slot> SlotPtr;
+}

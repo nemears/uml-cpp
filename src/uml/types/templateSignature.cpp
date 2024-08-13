@@ -27,7 +27,7 @@ TemplateableElementPtr TemplateSignature::getTemplate() const {
     return m_template.get();
 }
 
-void TemplateSignature::setTemplate(TemplateableElement* temp) {
+void TemplateSignature::setTemplate(TemplateableElementPtr temp) {
     m_template.set(temp);
 }
 

@@ -6,6 +6,7 @@ namespace UML {
 
     class Extension;
     class Stereotype;
+    typedef UmlPtr<Stereotype> StereotypePtr;
 
     class ExtensionEnd : public Property {
 
@@ -19,7 +20,7 @@ namespace UML {
             virtual ~ExtensionEnd();
             TypePtr getType() const override;
             void setType(Stereotype& stereotype);
-            void setType(Stereotype* stereotype);
+            void setType(StereotypePtr stereotype);
             bool is(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::EXTENSION_END;

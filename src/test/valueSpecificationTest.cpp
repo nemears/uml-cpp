@@ -70,8 +70,7 @@ TEST_F(ValueSpecificationTest, reindexNameForSlotTest) {
     Slot& s = *m.create<Slot>();
     s.getValues().add(v);
     v.setName("test");
-    ASSERT_EQ(s.getValues().get("test"), v);
-    ASSERT_EQ(s.getOwnedElements().get("test"), v);
+    ASSERT_EQ(s.getValues().get("test"), &v);
 }
 
 TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
@@ -81,8 +80,7 @@ TEST_F(ValueSpecificationTest, reindexNameExpressionTest) {
     e.getOperands().add(b);
     e.setSymbol("==");
     b.setName("test");
-    ASSERT_EQ(e.getOperands().get("test"), b);
-    ASSERT_EQ(e.getOwnedElements().get("test"), b);
+    ASSERT_EQ(e.getOperands().get("test"), &b);
 }
 
 TEST_F(ValueSpecificationTest, LiteralUnlimitedNaturalTest) {
@@ -105,35 +103,35 @@ TEST_F(ValueSpecificationTest, expressionTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
-    PrimitiveTypePtr b = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("bool_bzkcabSy3CiFd&HmJOtnVRK")));
-    PrimitiveTypePtr i = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("int_r9nNbBukx47IomXrT2raqtc4")));
-    PrimitiveTypePtr r = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("real_aZG&w6yl61bXVWutgeyScN9")));
-    PrimitiveTypePtr s = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT")));
+    PrimitiveTypePtr b = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(ID::fromString("bool_bzkcabSy3CiFd&HmJOtnVRK"));
+    PrimitiveTypePtr i = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(ID::fromString("int_r9nNbBukx47IomXrT2raqtc4"));
+    PrimitiveTypePtr r = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(ID::fromString("real_aZG&w6yl61bXVWutgeyScN9"));
+    PrimitiveTypePtr s = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT"));
 
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("hvfrdhQ6M6undbb5bWGKlMESCn_l")).getElementType() == ElementType::EXPRESSION);
-    Expression* exp = dynamic_cast<Expression*>(&pckg->getPackagedElements().get(ID::fromString("hvfrdhQ6M6undbb5bWGKlMESCn_l")));
+    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("hvfrdhQ6M6undbb5bWGKlMESCn_l"))->getElementType() == ElementType::EXPRESSION);
+    ExpressionPtr exp = pckg->getPackagedElements().get(ID::fromString("hvfrdhQ6M6undbb5bWGKlMESCn_l"));
     ASSERT_TRUE(exp->getSymbol().compare("==") == 0);
     ASSERT_TRUE(exp->getType() == b);
     ASSERT_TRUE(exp->getOperands().size() == 2);
-    ASSERT_TRUE(exp->getOperands().front().getElementType() == ElementType::LITERAL_INT);
-    LiteralInt* a = dynamic_cast<LiteralInt*>(&exp->getOperands().get("a"));
+    ASSERT_TRUE(exp->getOperands().front()->getElementType() == ElementType::LITERAL_INT);
+    LiteralIntPtr a = exp->getOperands().get("a");
     ASSERT_TRUE(a->getValue() == 1);
-    ASSERT_TRUE(exp->getOperands().back().getElementType() == ElementType::LITERAL_INT);
-    LiteralInt* ib = dynamic_cast<LiteralInt*>(&exp->getOperands().get("b"));
+    ASSERT_TRUE(exp->getOperands().back()->getElementType() == ElementType::LITERAL_INT);
+    LiteralIntPtr ib = exp->getOperands().get("b");
     ASSERT_TRUE(ib->getValue() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("Zx5giHhheJ6GSaP5oLEN6FxI99L8")).getElementType() == ElementType::CLASS);
-    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().get(ID::fromString("Zx5giHhheJ6GSaP5oLEN6FxI99L8")));
+    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("Zx5giHhheJ6GSaP5oLEN6FxI99L8"))->getElementType() == ElementType::CLASS);
+    ClassPtr c = pckg->getPackagedElements().get(ID::fromString("Zx5giHhheJ6GSaP5oLEN6FxI99L8"));
     ASSERT_TRUE(c->getOwnedAttributes().size() == 1);
-    Property* p = &c->getOwnedAttributes().front();
+    PropertyPtr p = c->getOwnedAttributes().front();
     ASSERT_TRUE(p->getType() == i);
     ASSERT_TRUE(p->getDefaultValue());
     ASSERT_TRUE(p->getDefaultValue()->getElementType() == ElementType::EXPRESSION);
-    Expression* e2 = dynamic_cast<Expression*>(p->getDefaultValue().ptr());
+    ExpressionPtr e2 = p->getDefaultValue();
     ASSERT_TRUE(e2->getSymbol().compare("++") == 0);
     ASSERT_TRUE(e2->getOperands().size() == 1);
-    ASSERT_TRUE(e2->getOperands().front().getElementType() == ElementType::LITERAL_INT);
-    LiteralInt* pi = dynamic_cast<LiteralInt*>(&e2->getOperands().front());
+    ASSERT_TRUE(e2->getOperands().front()->getElementType() == ElementType::LITERAL_INT);
+    LiteralIntPtr pi = e2->getOperands().front();
     ASSERT_TRUE(pi->getValue() == 1);
 }
 
@@ -153,8 +151,8 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
     ASSERT_FALSE(m.loaded(expressionID));
     Expression& expression2 = m.get(expressionID)->as<Expression>();
     ASSERT_EQ(expression2.getOperands().size(), 2);
-    ASSERT_EQ(expression2.getOperands().front(), first);
-    ASSERT_EQ(expression2.getOperands().back(), last);
+    ASSERT_EQ(expression2.getOperands().front(), &first);
+    ASSERT_EQ(expression2.getOperands().back(), &last);
     ASSERT_EQ(expression2.getOwnedElements().size(), 2);
     ASSERT_TRUE(expression2.getOwnedElements().contains(last));
     ASSERT_TRUE(expression2.getOwnedElements().contains(first));
@@ -166,8 +164,8 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
     ASSERT_EQ(*expression2.getOperands().ids().begin(), firstID);
     LiteralReal& first2 = m.get(firstID)->as<LiteralReal>();
     ASSERT_EQ(expression2.getOperands().size(), 2);
-    ASSERT_EQ(expression2.getOperands().front(), first2);
-    ASSERT_EQ(expression2.getOperands().back(), last);
+    ASSERT_EQ(expression2.getOperands().front(), &first2);
+    ASSERT_EQ(expression2.getOperands().back(), &last);
     ASSERT_EQ(expression2.getOwnedElements().size(), 2);
     ASSERT_TRUE(expression2.getOwnedElements().contains(last));
     ASSERT_TRUE(expression2.getOwnedElements().contains(first2));
@@ -180,8 +178,8 @@ TEST_F(ValueSpecificationTest, mountExpressionTest) {
     LiteralReal& first3 = m.get(firstID)->as<LiteralReal>();
     Expression& expression3 = m.get(expressionID)->as<Expression>();
     ASSERT_EQ(expression3.getOperands().size(), 2);
-    ASSERT_EQ(expression3.getOperands().front(), first3);
-    ASSERT_EQ(expression3.getOperands().back(), last);
+    ASSERT_EQ(expression3.getOperands().front(), &first3);
+    ASSERT_EQ(expression3.getOperands().back(), &last);
     ASSERT_EQ(expression3.getOwnedElements().size(), 2);
     ASSERT_TRUE(expression3.getOwnedElements().contains(last));
     ASSERT_TRUE(expression3.getOwnedElements().contains(first3));
@@ -195,17 +193,17 @@ TEST_F(ValueSpecificationTest, testParsingSomeLiterals) {
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_EQ(pckg->getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg->getPackagedElements().get("infinity").getElementType(), ElementType::LITERAL_UNLIMITED_NATURAL);
-    LiteralUnlimitedNatural* n1 = dynamic_cast<LiteralUnlimitedNatural*>(&pckg->getPackagedElements().get("infinity"));
+    ASSERT_EQ(pckg->getPackagedElements().get("infinity")->getElementType(), ElementType::LITERAL_UNLIMITED_NATURAL);
+    LiteralUnlimitedNaturalPtr n1 = pckg->getPackagedElements().get("infinity");
     ASSERT_EQ(n1->getName(), "infinity");
     ASSERT_EQ(n1->isInfinite(), true);
-    ASSERT_EQ(pckg->getPackagedElements().get("number").getElementType(), ElementType::LITERAL_UNLIMITED_NATURAL);
-    LiteralUnlimitedNatural* n2 = dynamic_cast<LiteralUnlimitedNatural*>(&pckg->getPackagedElements().get("number"));
+    ASSERT_EQ(pckg->getPackagedElements().get("number")->getElementType(), ElementType::LITERAL_UNLIMITED_NATURAL);
+    LiteralUnlimitedNaturalPtr n2 = pckg->getPackagedElements().get("number");
     ASSERT_EQ(n2->getName(), "number");
     ASSERT_EQ(n2->isInfinite(), false);
     ASSERT_EQ(n2->getNumberValue(), 9);
-    ASSERT_EQ(pckg->getPackagedElements().get("nullLiteral").getElementType(), ElementType::LITERAL_NULL);
-    LiteralNull* n3 = dynamic_cast<LiteralNull*>(&pckg->getPackagedElements().get("nullLiteral"));
+    ASSERT_EQ(pckg->getPackagedElements().get("nullLiteral")->getElementType(), ElementType::LITERAL_NULL);
+    LiteralNullPtr n3 = pckg->getPackagedElements().get("nullLiteral");
     ASSERT_EQ(n3->getName(), "nullLiteral");
 }
 

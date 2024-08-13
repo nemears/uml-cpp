@@ -27,7 +27,7 @@ TemplateableElementPtr TemplateBinding::getBoundElement() const {
     return m_boundElement.get();
 }
 
-void TemplateBinding::setBoundElement(TemplateableElement* el) {
+void TemplateBinding::setBoundElement(TemplateableElementPtr el) {
     m_boundElement.set(el);
 }
 
@@ -43,7 +43,7 @@ TemplateSignaturePtr TemplateBinding::getSignature() const {
     return m_signature.get();
 }
 
-void TemplateBinding::setSignature(TemplateSignature* signature) {
+void TemplateBinding::setSignature(TemplateSignaturePtr signature) {
     m_signature.set(signature);
 }
 

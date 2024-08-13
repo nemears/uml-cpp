@@ -17,18 +17,18 @@ namespace UML{
         friend class Operation;
 
         protected:
-            OrderedSet<Property, Class> m_classOwnedAttrubutes = OrderedSet<Property, Class>(this);
-            OrderedSet<Operation, Class> m_ownedOperations = OrderedSet<Operation, Class>(this);
-            OrderedSet<Classifier, Class> m_nestedClassifiers = OrderedSet<Classifier, Class>(this);
-            Set<Reception, Class> m_ownedReceptions = Set<Reception, Class>(this);
+            IndexableOrderedSet<Property, Class> m_classOwnedAttrubutes = IndexableOrderedSet<Property, Class>(this);
+            IndexableOrderedSet<Operation, Class> m_ownedOperations = IndexableOrderedSet<Operation, Class>(this);
+            IndexableOrderedSet<Classifier, Class> m_nestedClassifiers = IndexableOrderedSet<Classifier, Class>(this);
+            IndexableSet<Reception, Class> m_ownedReceptions = IndexableSet<Reception, Class>(this);
             void restoreReferences() override;
             Class();
         public:
             virtual ~Class();
-            OrderedSet<Property, Class>& getOwnedAttributes();
-            OrderedSet<Operation, Class>& getOwnedOperations();
-            OrderedSet<Classifier, Class>& getNestedClassifiers();
-            Set<Reception, Class>& getOwnedReceptions();
+            IndexableOrderedSet<Property, Class>& getOwnedAttributes();
+            IndexableOrderedSet<Operation, Class>& getOwnedOperations();
+            IndexableOrderedSet<Classifier, Class>& getNestedClassifiers();
+            IndexableSet<Reception, Class>& getOwnedReceptions();
             bool is(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::CLASS;

@@ -24,7 +24,7 @@ namespace UML {
             Set<DeployedArtifact, Deployment>& getDeployedArtifacts();
             DeploymentTargetPtr getLocation() const;
             void setLocation(DeploymentTarget& location);
-            void setLocation(DeploymentTarget* location);
+            void setLocation(DeploymentTargetPtr location);
             void setLocation(ID id);
             bool is(ElementType eType) const override;
             static ElementType elementType() {

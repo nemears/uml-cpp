@@ -10,7 +10,7 @@ Expression::~Expression() {
     
 }
 
-OrderedSet<ValueSpecification, Expression>& Expression::getOperands() {
+IndexableOrderedSet<ValueSpecification, Expression>& Expression::getOperands() {
     return m_operands;
 }
 

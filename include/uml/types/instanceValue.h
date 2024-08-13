@@ -20,7 +20,7 @@ namespace UML {
             virtual ~InstanceValue();
             InstanceSpecificationPtr getInstance() const;
             void setInstance(InstanceSpecification& inst);
-            void setInstance(InstanceSpecification* inst);
+            void setInstance(InstanceSpecificationPtr inst);
             void setInstance(ID id);
             bool is(ElementType eType) const override;
             static ElementType elementType() {

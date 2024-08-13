@@ -9,6 +9,10 @@
 #include <mutex>
 #include <unordered_set>
 
+namespace YAML {
+    class Node;
+}
+
 namespace UML {
     class SetStateException : public std::exception {
         std::string m_msg;
@@ -41,7 +45,7 @@ namespace UML {
 
 
     template <class T,  class U, class DataTypePolicy, class ApiPolicy>
-    class PrivateSet : virtual public AbstractSet , virtual public DataTypePolicy, protected ApiPolicy {
+    class PrivateSet : virtual public AbstractSet , virtual public DataTypePolicy, virtual public ApiPolicy {
 
         friend class Element;
         friend class NamedElement;

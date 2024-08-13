@@ -3,7 +3,7 @@
 #include "packageableElement.h"
 #include "deployedArtifact.h"
 #include "deploymentTarget.h"
-#include "uml/set/set.h"
+#include "uml/set/indexableSet.h"
 
 namespace UML{
 
@@ -21,7 +21,7 @@ namespace UML{
 
         protected:
             bool m_setFlag = false;
-            Set<Classifier, InstanceSpecification> m_classifiers = Set<Classifier, InstanceSpecification>(this);
+            IndexableSet<Classifier, InstanceSpecification> m_classifiers = IndexableSet<Classifier, InstanceSpecification>(this);
             Set<Slot, InstanceSpecification> m_slots = Set<Slot, InstanceSpecification>(this);
             Singleton <ValueSpecification, InstanceSpecification> m_specification = Singleton<ValueSpecification, InstanceSpecification>(this);
             void referenceErased(ID id) override;
@@ -29,10 +29,10 @@ namespace UML{
             InstanceSpecification();
         public:
             virtual ~InstanceSpecification();
-            Set<Classifier, InstanceSpecification>& getClassifiers();
+            IndexableSet<Classifier, InstanceSpecification>& getClassifiers();
             Set<Slot, InstanceSpecification>& getSlots();
             ValueSpecificationPtr getSpecification() const;
-            void setSpecification(ValueSpecification* specification);
+            void setSpecification(ValueSpecificationPtr specification);
             void setSpecification(ValueSpecification& specification);
             void setSpecification(ID id);
             bool is(ElementType eType) const override;

@@ -2,6 +2,7 @@
 
 #include "namedElement.h"
 #include "uml/set/set.h"
+#include "uml/set/indexableSet.h"
 
 namespace UML{
 
@@ -9,6 +10,7 @@ namespace UML{
     class ElementImport;
     class PackageImport;
     class PackageableElement;
+    typedef UmlPtr<NamedElement> NamedElementPtr;
 
     /**
      * A Namespace is an Element in a model that contains a set of NamedElements that can be identified by name
@@ -28,21 +30,21 @@ namespace UML{
                 void elementAdded(PackageImport& el, Namespace& me);
                 void elementRemoved(PackageImport& el, Namespace& me);
             };
-            ReadOnlySet<NamedElement, Namespace> m_members = ReadOnlySet<NamedElement, Namespace>(this);
-            ReadOnlySet<NamedElement, Namespace> m_ownedMembers = ReadOnlySet<NamedElement, Namespace>(this);
+            ReadOnlyIndexableSet<NamedElement, Namespace> m_members = ReadOnlyIndexableSet<NamedElement, Namespace>(this);
+            ReadOnlyIndexableSet<NamedElement, Namespace> m_ownedMembers = ReadOnlyIndexableSet<NamedElement, Namespace>(this);
             Set<Constraint, Namespace> m_ownedRules = Set<Constraint, Namespace>(this);
             Set<ElementImport, Namespace, ElementImportPolicy> m_elementImports = Set<ElementImport, Namespace, ElementImportPolicy>(this);
             Set<PackageImport, Namespace, PackageImportPolicy> m_packageImports = Set<PackageImport, Namespace, PackageImportPolicy>(this);
-            ReadOnlySet<PackageableElement, Namespace> m_importedMembers = ReadOnlySet<PackageableElement, Namespace>(this);
+            ReadOnlyIndexableSet<PackageableElement, Namespace> m_importedMembers = ReadOnlyIndexableSet<PackageableElement, Namespace>(this);
             void referenceErased(ID id) override;
             Namespace();
         public:
             virtual ~Namespace();
             void setName(const std::string& name) override;
-            ReadOnlySet<NamedElement, Namespace>& getMembers();
-            ReadOnlySet<NamedElement, Namespace>& getOwnedMembers();
+            ReadOnlyIndexableSet<NamedElement, Namespace>& getMembers();
+            ReadOnlyIndexableSet<NamedElement, Namespace>& getOwnedMembers();
             Set<Constraint, Namespace>& getOwnedRules();
-            ReadOnlySet<PackageableElement, Namespace>& getImportedMembers();
+            ReadOnlyIndexableSet<PackageableElement, Namespace>& getImportedMembers();
             Set<ElementImport, Namespace, ElementImportPolicy>& getElementImports();
             Set<PackageImport, Namespace, PackageImportPolicy>& getPackageImports();
             bool is(ElementType eType) const override;

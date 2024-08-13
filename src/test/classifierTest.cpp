@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "uml/types/opaqueBehavior.h"
 #include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
 
@@ -6,7 +7,7 @@ using namespace UML;
 
 UML_SET_INTEGRATION_TEST(ClassifierGeneralization, Generalization, Class, &Classifier::getGeneralizations)
 UML_SET_INTEGRATION_TEST(ClassifierPowerTypeExtent, GeneralizationSet, Class, &Classifier::getPowerTypeExtent)
-UML_SINGLETON_INTEGRATION_TEST(ClassifierOwnedTemplateSignature, RedefinableTemplateSignature, Activity, &Classifier::getOwnedTemplateSignature, &Classifier::setOwnedTemplateSignature)
+UML_SINGLETON_INTEGRATION_TEST(ClassifierOwnedTemplateSignature, RedefinableTemplateSignature, OpaqueBehavior, &Classifier::getOwnedTemplateSignature, &Classifier::setOwnedTemplateSignature)
 UML_SINGLETON_INTEGRATION_TEST(RedefinableTemplateSignatureClassifier, PrimitiveType, RedefinableTemplateSignature, &RedefinableTemplateSignature::getClassifier, &RedefinableTemplateSignature::setClassifier)
 UML_SINGLETON_INTEGRATION_TEST(ClassifierTemplateParameter_, ClassifierTemplateParameter, Class, &Classifier::getTemplateParameter, &Classifier::setTemplateParameter)
 UML_SINGLETON_INTEGRATION_TEST(ClassifierTemplateParameterParameteredElement, OpaqueBehavior, ClassifierTemplateParameter, &ClassifierTemplateParameter::getParameteredElement, &ClassifierTemplateParameter::setParameteredElement)
@@ -24,7 +25,7 @@ TEST_F(ClassifierTest, GetOwnedAttributesTest) {
   ASSERT_EQ(classifier1.getOwnedAttributes().size(), 1);
   ASSERT_TRUE(classifier1.getOwnedAttributes().contains(prop));
 	ASSERT_FALSE(classifier1.getAttributes().empty());
-	ASSERT_EQ(classifier1.getAttributes().front(), prop);
+	ASSERT_EQ(*classifier1.getAttributes().front(), prop);
   ASSERT_TRUE(classifier1.getAttributes().contains(prop));
   ASSERT_EQ(classifier1.getFeatures().size(), 1);
   ASSERT_TRUE(classifier1.getFeatures().contains(prop));
@@ -50,9 +51,9 @@ TEST_F(ClassifierTest, addAttributeFunctorTest) {
   Property& p = *m.create<Property>();
   c.getOwnedAttributes().add(p);
   ASSERT_TRUE(c.getAttributes().size() == 1);
-  ASSERT_TRUE(&c.getAttributes().front() == &p);
+  ASSERT_TRUE(c.getAttributes().front() == &p);
   ASSERT_TRUE(c.getFeatures().size() == 1);
-  ASSERT_TRUE(&c.getFeatures().front() == &p);
+  ASSERT_TRUE(c.getFeatures().front() == &p);
   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
   ASSERT_TRUE(c.getMembers().contains(p.getID()));
 }
@@ -63,10 +64,10 @@ TEST_F(ClassifierTest, setClassifierTest) {
   Class& c = *m.create<Class>();
   p.setClass(&c);
   ASSERT_TRUE(c.getAttributes().size() == 1);
-  ASSERT_TRUE(&c.getAttributes().front() == &p);
+  ASSERT_TRUE(c.getAttributes().front() == &p);
   ASSERT_TRUE(p.getClass() == &c);
   ASSERT_TRUE(c.getFeatures().size() == 1);
-  ASSERT_TRUE(&c.getFeatures().front() == &p);
+  ASSERT_TRUE(c.getFeatures().front() == &p);
   ASSERT_TRUE(p.getFeaturingClassifier() == &c);
   ASSERT_TRUE(c.getMembers().contains(p.getID()));
 }
@@ -96,9 +97,9 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   gen1.setGeneral(&g1);
   s1.getGeneralizations().add(gen1);
   ASSERT_EQ(s1.getInheritedMembers().size(), 1);
-  ASSERT_EQ(s1.getInheritedMembers().front(), p1);
+  ASSERT_EQ(*s1.getInheritedMembers().front(), p1);
   ASSERT_EQ(s1.getMembers().size(), 1);
-  ASSERT_EQ(s1.getMembers().front(), p1);
+  ASSERT_EQ(*s1.getMembers().front(), p1);
   ASSERT_EQ(g1.getInheritedMembers().size(), 0);
   ASSERT_NO_THROW(s1.getGeneralizations().remove(gen1));
   ASSERT_EQ(s1.getInheritedMembers().size(), 0);
@@ -110,9 +111,9 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   g2.getOwnedAttributes().add(p2);
   s2.getGenerals().add(g2);
   ASSERT_TRUE(s2.getInheritedMembers().size() == 1);
-  ASSERT_TRUE(&s2.getInheritedMembers().front() == &p2);
+  ASSERT_TRUE(s2.getInheritedMembers().front() == &p2);
   ASSERT_TRUE(s2.getMembers().size() == 1);
-  ASSERT_TRUE(&s2.getMembers().front() == &p2);
+  ASSERT_TRUE(s2.getMembers().front() == &p2);
   ASSERT_EQ(g2.getInheritedMembers().size(), 0);
   ASSERT_NO_THROW(s2.getGenerals().remove(g2));
   ASSERT_TRUE(s2.getInheritedMembers().size() == 0);
@@ -126,9 +127,9 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   s3.getGeneralizations().add(gen3);
   gen3.setGeneral(&g3);
   ASSERT_EQ(s3.getInheritedMembers().size(), 1);
-  ASSERT_TRUE(&s3.getInheritedMembers().front() == &p3);
+  ASSERT_TRUE(s3.getInheritedMembers().front() == &p3);
   ASSERT_TRUE(s3.getMembers().size() == 1);
-  ASSERT_TRUE(&s3.getMembers().front() == &p3);
+  ASSERT_TRUE(s3.getMembers().front() == &p3);
   ASSERT_NO_THROW(s3.getGeneralizations().remove(gen3));
   ASSERT_TRUE(s3.getInheritedMembers().size() == 0);
   ASSERT_TRUE(s3.getMembers().size() == 0);
@@ -167,7 +168,7 @@ TEST_F(ClassifierTest, redefinableTemplateSignatureAddAndRemoveParametersWhenExt
   extendedSig->getParameters().add(*parameter);
   sigExtending->getExtendedSignatures().add(*extendedSig);
   ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
-  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), parameter);
   sigExtending->getExtendedSignatures().remove(*extendedSig);
   ASSERT_EQ(sigExtending->getInheritedParameters().size(), 0);
   RedefinableTemplateSignaturePtr otherSig = m.create<RedefinableTemplateSignature>();
@@ -175,10 +176,10 @@ TEST_F(ClassifierTest, redefinableTemplateSignatureAddAndRemoveParametersWhenExt
   sigExtending->getExtendedSignatures().add(*extendedSig);
   sigExtending->getExtendedSignatures().add(*otherSig);
   ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
-  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), parameter);
   sigExtending->getExtendedSignatures().remove(*extendedSig);
   ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
-  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), parameter);
   sigExtending->getExtendedSignatures().remove(*otherSig);
   ASSERT_EQ(sigExtending->getInheritedParameters().size(), 0);
   extendedSig->getParameters().remove(*parameter);
@@ -186,16 +187,16 @@ TEST_F(ClassifierTest, redefinableTemplateSignatureAddAndRemoveParametersWhenExt
   ASSERT_EQ(sigExtending->getInheritedParameters().size(), 0);
   extendedSig->getParameters().add(*parameter);
   ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
-  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), parameter);
   extendedSig->getParameters().remove(*parameter);
   ASSERT_EQ(sigExtending->getInheritedParameters().size(), 0);
   sigExtending->getExtendedSignatures().add(*otherSig);
   ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
-  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), parameter);
   extendedSig->getParameters().add(*parameter);
   ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
-  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), parameter);
   extendedSig->getParameters().remove(*parameter);
   ASSERT_EQ(sigExtending->getInheritedParameters().size(), 1);
-  ASSERT_EQ(sigExtending->getInheritedParameters().front(), *parameter);
+  ASSERT_EQ(sigExtending->getInheritedParameters().front(), parameter);
 }

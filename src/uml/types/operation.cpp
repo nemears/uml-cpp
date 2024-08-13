@@ -57,7 +57,7 @@ TypePtr Operation::getType() const {
     return m_type.get();
 }
 
-void Operation::setType(Type* type) {
+void Operation::setType(TypePtr type) {
     m_type.set(type);
 }
 
@@ -73,7 +73,7 @@ ClassPtr Operation::getClass() const {
     return m_class.get();
 }
 
-void Operation::setClass(Class* clazz) {
+void Operation::setClass(ClassPtr clazz) {
     m_class.set(clazz);
 }
 
@@ -89,7 +89,7 @@ DataTypePtr Operation::getDataType() const {
     return m_dataType.get();
 }
 
-void Operation::setDataType(DataType* dataType) {
+void Operation::setDataType(DataTypePtr dataType) {
     m_dataType.set(dataType);
 }
 
@@ -105,7 +105,7 @@ InterfacePtr Operation::getInterface() const {
     return m_interface.get();
 }
 
-void Operation::setInterface(Interface* interface_uml) {
+void Operation::setInterface(InterfacePtr interface_uml) {
     m_interface.set(interface_uml);
 }
 

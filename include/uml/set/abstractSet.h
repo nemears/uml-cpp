@@ -54,6 +54,7 @@ namespace UML {
                 friend class SingletonDataPolicy;
                 template <class S, class WrapperPolicy>
                 friend class WrapperSet;
+                friend class IndexablePolicy;
 
                 protected:
                     virtual ElementPtr getCurr() const = 0;

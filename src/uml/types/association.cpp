@@ -48,19 +48,19 @@ Association::~Association() {
     
 }
 
-OrderedSet<Property, Association, Association::MemberEndPolicy>& Association::getMemberEnds() {
+IndexableOrderedSet<Property, Association, Association::MemberEndPolicy>& Association::getMemberEnds() {
     return m_memberEnds;
 }
 
-OrderedSet<Property, Association>& Association::getOwnedEnds() {
+IndexableOrderedSet<Property, Association>& Association::getOwnedEnds() {
     return m_ownedEnds;
 }
 
-Set<Property, Association>& Association::getNavigableOwnedEnds() {
+IndexableSet<Property, Association>& Association::getNavigableOwnedEnds() {
     return m_navigableOwnedEnds;
 }
 
-Set<Type, Association>& Association::getEndTypes() {
+IndexableSet<Type, Association>& Association::getEndTypes() {
     return m_endTypes;
 }
 

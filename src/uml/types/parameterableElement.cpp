@@ -29,7 +29,7 @@ TemplateParameterPtr ParameterableElement::getOwningTemplateParameter() const {
     return m_owningTemplateParameter.get();
 }
 
-void ParameterableElement::setOwningTemplateParameter(TemplateParameter* parameter) {
+void ParameterableElement::setOwningTemplateParameter(TemplateParameterPtr parameter) {
     m_owningTemplateParameter.set(parameter);
 }
 
@@ -45,7 +45,7 @@ TemplateParameterPtr ParameterableElement::getTemplateParameter() const {
     return m_templateParameter.get();
 }
 
-void ParameterableElement::setTemplateParameter(TemplateParameter* parameter) {
+void ParameterableElement::setTemplateParameter(TemplateParameterPtr parameter) {
     m_templateParameter.set(parameter);
 }
 

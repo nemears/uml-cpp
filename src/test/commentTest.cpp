@@ -26,7 +26,7 @@ TEST_F(CommentTest, annotatedElementTest) {
     pckg.getPackagedElements().add(annotated);
     pckg.getOwnedComments().add(comment);
     ASSERT_EQ(pckg.getOwnedComments().size(), 1);
-    ASSERT_EQ(pckg.getOwnedComments().front(), comment);
+    ASSERT_EQ(pckg.getOwnedComments().front(), &comment);
     ASSERT_EQ(pckg.getOwnedElements().size(), 2);
     ASSERT_TRUE(comment.getOwner());
     ASSERT_EQ(*comment.getOwner(), pckg);
@@ -39,7 +39,7 @@ TEST_F(CommentTest, testBasicComment) {
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getOwnedComments().size(), 1);
-    Comment& comment = pckg.getOwnedComments().front();
+    Comment& comment = *pckg.getOwnedComments().front();
     ASSERT_EQ(comment.getBody(), "i am a comment!");
 }
 
@@ -73,7 +73,7 @@ TEST_F(CommentTest, mountAndEditCommentTest) {
     m.mount(ymlPath + "commentTests");
 
     m.release(comment);
-    Comment& comment2 = root.getOwnedComments().front();
+    Comment& comment2 = *root.getOwnedComments().front();
     ASSERT_TRUE(comment2.getOwner());
     ASSERT_EQ(*comment2.getOwner(), root);
     ASSERT_TRUE(root.getOwnedComments().contains(comment2.getID()));

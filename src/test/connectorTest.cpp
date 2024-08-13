@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "uml/types/opaqueBehavior.h"
 #include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
 
@@ -6,7 +7,7 @@ using namespace UML;
 
 UML_SET_INTEGRATION_TEST(ConnectorConnectorEnds, ConnectorEnd, Connector, &Connector::getEnds)
 UML_SINGLETON_INTEGRATION_TEST(ConnectorType, Association, Connector, &Connector::getType, &Connector::setType)
-UML_SET_INTEGRATION_TEST(ConnectorContracts, Activity, Connector, &Connector::getContracts)
+UML_SET_INTEGRATION_TEST(ConnectorContracts, OpaqueBehavior, Connector, &Connector::getContracts)
 UML_SINGLETON_INTEGRATION_TEST(ConnectorEndRole, Port, ConnectorEnd, &ConnectorEnd::getRole, &ConnectorEnd::setRole)
 
 class ConnectorTest : public ::testing::Test {};
@@ -272,7 +273,7 @@ TEST_F(ConnectorTest, typedConnectorTest) {
     ASSERT_EQ(*rear.getAssociation(), wheelAssociation);
     ASSERT_EQ(*rear.getFeaturingClassifier(), car);
     ASSERT_EQ(*rear.getType(), wheel);
-    ASSERT_EQ(rear.getEnds().front(), wheelEnd);
+    ASSERT_EQ(rear.getEnds().front(), &wheelEnd);
 
     // engine end
     ASSERT_TRUE(engineEnd.getRole());
@@ -294,5 +295,5 @@ TEST_F(ConnectorTest, typedConnectorTest) {
     ASSERT_EQ(*e.getAssociation(), engineAssociation);
     ASSERT_EQ(*e.getFeaturingClassifier(), car);
     ASSERT_EQ(*e.getType(), engine);
-    ASSERT_EQ(e.getEnds().front(), engineEnd);
+    ASSERT_EQ(e.getEnds().front(), &engineEnd);
 }

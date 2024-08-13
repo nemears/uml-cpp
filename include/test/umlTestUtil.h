@@ -30,14 +30,14 @@ namespace UML {
     //     }
     // };
 
-    template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
+    template <class V, class W, class U, class S>
     void setIntegrationTestBasic(S& (U::*acessor)()) {
         Manager<> m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
         ASSERT_NO_THROW(((*u).*acessor)().add(*t));
         ASSERT_EQ(((*u).*acessor)().size(), 1);
-        ASSERT_EQ(((*u).*acessor)().front(), *t);
+        ASSERT_EQ(((*u).*acessor)().front(), t);
         // ASSERT_NO_FATAL_FAILURE(recursiveSetContains(t.id(), &((*u).*acessor)()));
         ASSERT_NO_THROW(((*u).*acessor)().remove(*t));
         ASSERT_EQ(((*u).*acessor)().size(), 0);
@@ -49,7 +49,7 @@ namespace UML {
         ASSERT_TRUE(((*u).*acessor)().contains(*t));
     }
 
-    template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
+    template <class V, class W, class U = Element, class S>
     void setIntegrationTestReindex(S& (U::*acessor)()) {
         Manager<> m;
         UmlPtr<W> u = m.create<W>();
@@ -69,7 +69,7 @@ namespace UML {
         ASSERT_EQ(((*u).*acessor)().get(id), *t);
     }
 
-    template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
+    template <class V, class W, class U , class S>
     void setIntegrationTestMount(S& (U::*acessor)()) {
         Manager<> m;
         UmlPtr<W> u = m.create<W>();
@@ -80,11 +80,11 @@ namespace UML {
         m.mount(".");
         u.release();
         ASSERT_FALSE(u.loaded());
-        ASSERT_EQ(((*u).*acessor)().front(), *t);
-        ASSERT_EQ(&((*u).*acessor)().front(), t.ptr());
+        ASSERT_EQ(((*u).*acessor)().front(), t);
+        ASSERT_EQ(((*u).*acessor)().front().ptr(), t.ptr());
         t.release();
         ASSERT_FALSE(t.loaded());
-        ASSERT_EQ(((*u).*acessor)().front(), *t);
+        ASSERT_EQ(((*u).*acessor)().front(), t);
         ASSERT_NO_THROW(((*u).*acessor)().remove(*t));
         ASSERT_NO_THROW(((*u).*acessor)().add(*t2));
         ASSERT_NO_THROW(((*u).*acessor)().add(*t));
@@ -94,7 +94,7 @@ namespace UML {
         ASSERT_EQ(((*u).*acessor)().size(), 2);
     }
 
-    template <class V, class W, class T = Element, class U = Element, class S = Set<T,U>>
+    template <class V, class W, class U, class S>
     void setIntegrationTestErase(S& (U::*acessor)()) {
         Manager<> m;
         UmlPtr<W> u = m.create<W>();
@@ -123,7 +123,7 @@ namespace UML {
     }
 
     template <class V, class W, class T = Element, class U = Element>
-    void singletonIntegrationTestBasic(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
+    void singletonIntegrationTestBasic(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(UmlPtr<T>)) {
         Manager<> m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
@@ -138,7 +138,7 @@ namespace UML {
     }
 
     template <class V, class W, class T = Element, class U = Element>
-    void singletonIntegrationTestReindex(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
+    void singletonIntegrationTestReindex(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(UmlPtr<T>)) {
         Manager<> m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
@@ -150,7 +150,7 @@ namespace UML {
     }
 
     template <class V, class W, class T = Element, class U = Element>
-    void singletonIntegrationTestMount(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
+    void singletonIntegrationTestMount(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(UmlPtr<T>)) {
         Manager<> m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
@@ -176,7 +176,7 @@ namespace UML {
     }
 
     template <class V, class W, class T = Element, class U = Element>
-    void singletonIntegrationTestErase(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(T*)) {
+    void singletonIntegrationTestErase(UmlPtr<T> (U::*acessor)() const, void (U::*mutator)(UmlPtr<T>)) {
         Manager<> m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();

@@ -30,7 +30,7 @@ OperationPtr Parameter::getOperation() const {
     return m_operation.get();
 }
 
-void Parameter::setOperation(Operation* operation) {
+void Parameter::setOperation(OperationPtr operation) {
     m_operation.set(operation);
 }
 
@@ -62,15 +62,11 @@ ValueSpecificationPtr Parameter::getDefaultValue() const {
     return m_defaultValue.get();
 }
 
-void Parameter::setDefaultValue(ValueSpecification* defaultValue) {
+void Parameter::setDefaultValue(ValueSpecificationPtr defaultValue) {
     m_defaultValue.set(defaultValue);
 }
 
 void Parameter::setDefaultValue(ValueSpecification& defaultValue) {
-    m_defaultValue.set(defaultValue);
-}
-
-void Parameter::setDefaultValue(ValueSpecificationPtr defaultValue) {
     m_defaultValue.set(defaultValue);
 }
 

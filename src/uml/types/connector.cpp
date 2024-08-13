@@ -85,7 +85,7 @@ AssociationPtr Connector::getType() const {
     return m_type.get();
 }
 
-void Connector::setType(Association* type) {
+void Connector::setType(AssociationPtr type) {
     m_type.set(type);
 }
 
@@ -97,11 +97,11 @@ void Connector::setType(ID id) {
     m_type.set(id);
 }
 
-Set<Behavior, Connector>& Connector::getContracts() {
+IndexableSet<Behavior, Connector>& Connector::getContracts() {
     return m_contracts;
 }
 
-OrderedSet<ConnectorEnd, Connector, Connector::EndPolicy>& Connector::getEnds() {
+IndexableOrderedSet<ConnectorEnd, Connector, Connector::EndPolicy>& Connector::getEnds() {
     return m_ends;
 }
 

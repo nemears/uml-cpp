@@ -25,7 +25,7 @@ namespace UML {
             virtual ~TemplateableElement();
             TemplateSignaturePtr getOwnedTemplateSignature() const;
             void setOwnedTemplateSignature(TemplateSignature& signature);
-            void setOwnedTemplateSignature(TemplateSignature* signature);
+            void setOwnedTemplateSignature(TemplateSignaturePtr signature);
             void setOwnedTemplateSignature(ID id);
             Set<TemplateBinding, TemplateableElement>& getTemplateBindings();
             bool is(ElementType eType) const override;

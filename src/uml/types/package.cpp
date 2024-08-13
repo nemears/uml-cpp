@@ -1,3 +1,5 @@
+#include "uml/set/indexableSet.h"
+#include "uml/types/element.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -54,7 +56,7 @@ Package::~Package() {
     
 }
 
-Set<PackageableElement, Package, Package::PackageableElementPolicy>& Package::getPackagedElements() {
+IndexableSet<PackageableElement, Package, Package::PackageableElementPolicy>& Package::getPackagedElements() {
     return m_packagedElements;
 }
 
@@ -66,7 +68,7 @@ Set<ProfileApplication, Package>& Package::getProfileApplications() {
     return m_profileApplications;
 }
 
-ReadOnlySet<Stereotype, Package>& Package::getOwnedStereotypes() {
+ReadOnlyIndexableSet<Stereotype, Package>& Package::getOwnedStereotypes() {
     return m_ownedStereotypes;
 }
 

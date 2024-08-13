@@ -22,7 +22,7 @@ InstanceSpecification::~InstanceSpecification() {
     
 }
 
-Set<Classifier, InstanceSpecification>& InstanceSpecification::getClassifiers() {
+IndexableSet<Classifier, InstanceSpecification>& InstanceSpecification::getClassifiers() {
     return m_classifiers;
 }
 
@@ -30,7 +30,7 @@ ValueSpecificationPtr InstanceSpecification::getSpecification() const {
     return m_specification.get();
 }
 
-void InstanceSpecification::setSpecification(ValueSpecification* specification) {
+void InstanceSpecification::setSpecification(ValueSpecificationPtr specification) {
     m_specification.set(specification);
 }
 

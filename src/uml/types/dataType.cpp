@@ -15,11 +15,11 @@ DataType::~DataType() {
     
 }
 
-OrderedSet<Property, DataType>& DataType::getOwnedAttributes() {
+IndexableOrderedSet<Property, DataType>& DataType::getOwnedAttributes() {
     return m_ownedAttributes;
 }
 
-OrderedSet<Operation, DataType>& DataType::getOwnedOperations() {
+IndexableOrderedSet<Operation, DataType>& DataType::getOwnedOperations() {
     return m_ownedOperations;
 }
 

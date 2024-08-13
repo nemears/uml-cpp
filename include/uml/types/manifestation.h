@@ -19,7 +19,7 @@ namespace UML {
             virtual ~Manifestation();
             PackageableElementPtr getUtilizedElement() const;
             void setUtilizedElement(PackageableElement& utilizedElement);
-            void setUtilizedElement(PackageableElement* utilizedElement);
+            void setUtilizedElement(PackageableElementPtr utilizedElement);
             void setUtilizedElement(ID id);
             bool is(ElementType eType) const override;
             static ElementType elementType() {

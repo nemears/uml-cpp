@@ -24,11 +24,11 @@ namespace UML {
             virtual ~PackageMerge();
             PackagePtr getReceivingPackage() const;
             void setReceivingPackage(Package& receive);
-            void setReceivingPackage(Package* receive);
+            void setReceivingPackage(PackagePtr receive);
             void setReceivingPackage(ID id);
             PackagePtr getMergedPackage() const;
             void setMergedPackage(Package& merge);
-            void setMergedPackage(Package* merge);
+            void setMergedPackage(PackagePtr merge);
             void setMergedPackage(ID id);
             bool is(ElementType eType) const override;
             static ElementType elementType() {

@@ -17,7 +17,7 @@ TEST_F(PortTest, portWInterfaceType) {
     ASSERT_EQ(port.getRequired().size(), 0);
     ASSERT_TRUE(port.getClass());
 
-    ASSERT_EQ(port.getProvided().front(), type);
+    ASSERT_EQ(port.getProvided().front(), &type);
     ASSERT_EQ(*port.getClass(), encapsulatedClassifier);
     
     ASSERT_EQ(encapsulatedClassifier.getOwnedPorts().size(), 1);
@@ -32,7 +32,7 @@ TEST_F(PortTest, portWInterfaceType) {
 
     ASSERT_EQ(port.getProvided().size(), 0);
     ASSERT_EQ(port.getRequired().size(), 1);
-    ASSERT_EQ(port.getRequired().front(), type);
+    ASSERT_EQ(port.getRequired().front(), &type);
 }
 
 TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
@@ -58,16 +58,16 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 1);
 
-    ASSERT_EQ(port.getRequired().front(), usedInterface);
-    ASSERT_EQ(port.getProvided().front(), realizedInterface);
+    ASSERT_EQ(port.getRequired().front(), &usedInterface);
+    ASSERT_EQ(port.getProvided().front(), &realizedInterface);
 
     port.setIsConjugated(true);
 
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 1);
 
-    ASSERT_EQ(port.getRequired().front(), realizedInterface);
-    ASSERT_EQ(port.getProvided().front(), usedInterface);
+    ASSERT_EQ(port.getRequired().front(), &realizedInterface);
+    ASSERT_EQ(port.getProvided().front(), &usedInterface);
 
     port.setType(0);
 
@@ -79,8 +79,8 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
 
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 1);
-    ASSERT_EQ(port.getRequired().front(), realizedInterface);
-    ASSERT_EQ(port.getProvided().front(), usedInterface);
+    ASSERT_EQ(port.getRequired().front(), &realizedInterface);
+    ASSERT_EQ(port.getProvided().front(), &usedInterface);
 
     specific.getInterfaceRealizations().remove(realization);
 
@@ -91,8 +91,8 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
     
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 1);
-    ASSERT_EQ(port.getRequired().front(), realizedInterface);
-    ASSERT_EQ(port.getProvided().front(), usedInterface);
+    ASSERT_EQ(port.getRequired().front(), &realizedInterface);
+    ASSERT_EQ(port.getProvided().front(), &usedInterface);
 
     realization.setContract(0);
 
@@ -103,8 +103,8 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
 
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 1);
-    ASSERT_EQ(port.getRequired().front(), realizedInterface);
-    ASSERT_EQ(port.getProvided().front(), usedInterface);
+    ASSERT_EQ(port.getRequired().front(), &realizedInterface);
+    ASSERT_EQ(port.getProvided().front(), &usedInterface);
 
     usage.getClients().remove(general);
 
@@ -115,8 +115,8 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
 
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 1);
-    ASSERT_EQ(port.getRequired().front(), realizedInterface);
-    ASSERT_EQ(port.getProvided().front(), usedInterface);
+    ASSERT_EQ(port.getRequired().front(), &realizedInterface);
+    ASSERT_EQ(port.getProvided().front(), &usedInterface);
 
     specific.getInterfaceRealizations().remove(realization);
     usage.getClients().remove(general);
@@ -133,8 +133,8 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
 
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 1);
-    ASSERT_EQ(port.getRequired().front(), realizedInterface);
-    ASSERT_EQ(port.getProvided().front(), usedInterface);
+    ASSERT_EQ(port.getRequired().front(), &realizedInterface);
+    ASSERT_EQ(port.getProvided().front(), &usedInterface);
 
     general.getInterfaceRealizations().remove(realization);
 
@@ -152,6 +152,6 @@ TEST_F(PortTest, portW_TypeBehavioredClassifierW_Generals) {
 
     ASSERT_EQ(port.getRequired().size(), 1);
     ASSERT_EQ(port.getProvided().size(), 1);
-    ASSERT_EQ(port.getRequired().front(), realizedInterface);
-    ASSERT_EQ(port.getProvided().front(), usedInterface);
+    ASSERT_EQ(port.getRequired().front(), &realizedInterface);
+    ASSERT_EQ(port.getProvided().front(), &usedInterface);
 }

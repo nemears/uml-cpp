@@ -28,7 +28,7 @@ namespace UML {
             virtual ~TemplateSignature();
             TemplateableElementPtr getTemplate() const;
             void setTemplate(TemplateableElement& temp);
-            void setTemplate(TemplateableElement* temp);
+            void setTemplate(TemplateableElementPtr temp);
             void setTemplate(ID id);
             OrderedSet<TemplateParameter, TemplateSignature>& getOwnedParameters();
             OrderedSet<TemplateParameter, TemplateSignature>& getParameters();

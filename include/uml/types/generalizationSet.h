@@ -29,7 +29,7 @@ namespace UML {
             void setCovering(bool covering);
             void setDisjoint(bool disjoint);
             ClassifierPtr getPowerType() const;
-            void setPowerType(Classifier* powerType);
+            void setPowerType(ClassifierPtr powerType);
             void setPowerType(Classifier& powerType);
             void setPowerType(ID id);
             Set<Generalization, GeneralizationSet>& getGeneralizations();

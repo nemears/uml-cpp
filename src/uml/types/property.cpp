@@ -162,7 +162,7 @@ ValueSpecificationPtr Property::getDefaultValue() const {
     return m_defaultValue.get();
 }
 
-void Property::setDefaultValue(ValueSpecification* val) {
+void Property::setDefaultValue(ValueSpecificationPtr val) {
     m_defaultValue.set(val);
 }
 
@@ -178,7 +178,7 @@ DataTypePtr Property::getDataType() const {
     return m_dataType.get();
 }
 
-void Property::setDataType(DataType* dataType) {
+void Property::setDataType(DataTypePtr dataType) {
     m_dataType.set(dataType);
 }
 
@@ -194,7 +194,7 @@ ClassPtr Property::getClass() const {
     return m_class.get();
 }
 
-void Property::setClass(Class* clazz) {
+void Property::setClass(ClassPtr clazz) {
     m_class.set(clazz);
 }
 
@@ -210,7 +210,7 @@ AssociationPtr Property::getAssociation() const {
     return m_association.get();
 }
 
-void Property::setAssociation(Association* association) {
+void Property::setAssociation(AssociationPtr association) {
     m_association.set(association);
 }
 
@@ -226,7 +226,7 @@ AssociationPtr Property::getOwningAssociation() const {
     return m_owningAssociation.get();
 }
 
-void Property::setOwningAssociation(Association* association) {
+void Property::setOwningAssociation(AssociationPtr association) {
     m_owningAssociation.set(association);
 }
 
@@ -242,7 +242,7 @@ InterfacePtr Property::getInterface() const {
     return m_interface.get();
 }
 
-void Property::setInterface(Interface* interface_uml) {
+void Property::setInterface(InterfacePtr interface_uml) {
     m_interface.set(interface_uml);
 }
 

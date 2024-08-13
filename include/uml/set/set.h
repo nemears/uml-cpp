@@ -201,6 +201,11 @@ namespace UML {
             void add(T& el) {
                 this->innerAdd(UmlPtr<T>(&el));
             }
+            template <class ... Ts>
+            void add(T& el, Ts&... els) {
+                add(el);
+                add(els...);
+            }
             void remove(UmlPtr<T> ptr) {
                 this->innerRemove(ptr);
             }

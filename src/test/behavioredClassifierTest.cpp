@@ -22,9 +22,9 @@ TEST_F(BehavioredClassifierTest, addAndRemoveOwnedBehaviorTest) {
     OpaqueBehavior& bhv = *m.create<OpaqueBehavior>();
     clazz.getOwnedBehaviors().add(bhv);
     ASSERT_EQ(clazz.getOwnedBehaviors().size(), 1);
-    ASSERT_EQ(clazz.getOwnedBehaviors().front().getID(), bhv.getID());
+    ASSERT_EQ(clazz.getOwnedBehaviors().front()->getID(), bhv.getID());
     ASSERT_EQ(clazz.getOwnedMembers().size(), 1);
-    ASSERT_EQ(clazz.getOwnedMembers().front().getID(), bhv.getID());
+    ASSERT_EQ(clazz.getOwnedMembers().front()->getID(), bhv.getID());
     ASSERT_TRUE(bhv.getNamespace());
     ASSERT_EQ(bhv.getNamespace()->getID(), clazz.getID());
     clazz.getOwnedBehaviors().remove(bhv);
@@ -40,9 +40,9 @@ TEST_F(BehavioredClassifierTest, setAndRemoveClassifierBehaviorTest) {
     ASSERT_TRUE(clazz.getClassifierBehavior());
     ASSERT_EQ(clazz.getClassifierBehavior()->getID(), bhv.getID());
     ASSERT_EQ(clazz.getOwnedBehaviors().size(), 1);
-    ASSERT_EQ(clazz.getOwnedBehaviors().front().getID(), bhv.getID());
+    ASSERT_EQ(clazz.getOwnedBehaviors().front()->getID(), bhv.getID());
     ASSERT_EQ(clazz.getOwnedMembers().size(), 1);
-    ASSERT_EQ(clazz.getOwnedMembers().front().getID(), bhv.getID());
+    ASSERT_EQ(clazz.getOwnedMembers().front()->getID(), bhv.getID());
     ASSERT_TRUE(bhv.getNamespace());
     ASSERT_EQ(bhv.getNamespace()->getID(), clazz.getID());
     OpaqueBehavior& b2 = *m.create<OpaqueBehavior>();
@@ -50,9 +50,9 @@ TEST_F(BehavioredClassifierTest, setAndRemoveClassifierBehaviorTest) {
     ASSERT_TRUE(clazz.getClassifierBehavior());
     ASSERT_EQ(clazz.getClassifierBehavior()->getID(), b2.getID());
     ASSERT_EQ(clazz.getOwnedBehaviors().size(), 1);
-    ASSERT_EQ(clazz.getOwnedBehaviors().front().getID(), b2.getID());
+    ASSERT_EQ(clazz.getOwnedBehaviors().front()->getID(), b2.getID());
     ASSERT_EQ(clazz.getOwnedMembers().size(), 1);
-    ASSERT_EQ(clazz.getOwnedMembers().front().getID(), b2.getID());
+    ASSERT_EQ(clazz.getOwnedMembers().front()->getID(), b2.getID());
     ASSERT_TRUE(b2.getNamespace());
     ASSERT_EQ(b2.getNamespace()->getID(), clazz.getID());
     ASSERT_FALSE(bhv.getNamespace());
@@ -131,8 +131,8 @@ TEST_F(BehavioredClassifierTest, simpleClassTest) {
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::CLASS);
     Class& clazz = m.getRoot()->as<Class>();
     ASSERT_EQ(clazz.getOwnedBehaviors().size(), 1);
-    ASSERT_EQ(clazz.getOwnedBehaviors().front().getElementType(), ElementType::OPAQUE_BEHAVIOR);
-    OpaqueBehavior& bhv = clazz.getOwnedBehaviors().front().as<OpaqueBehavior>();
+    ASSERT_EQ(clazz.getOwnedBehaviors().front()->getElementType(), ElementType::OPAQUE_BEHAVIOR);
+    OpaqueBehavior& bhv = clazz.getOwnedBehaviors().front()->as<OpaqueBehavior>();
     ASSERT_TRUE(clazz.getClassifierBehavior());
     ASSERT_EQ(clazz.getClassifierBehavior()->getID(), bhv.getID());
 }

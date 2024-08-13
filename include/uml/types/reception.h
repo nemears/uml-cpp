@@ -21,7 +21,7 @@ namespace UML {
         public:
             virtual ~Reception();
             SignalPtr getSignal() const;
-            void setSignal(Signal* signal);
+            void setSignal(SignalPtr signal);
             void setSignal(Signal& signal);
             void setSignal(ID id);
             bool is(ElementType eType) const override;

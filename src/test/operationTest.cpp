@@ -28,8 +28,7 @@ TEST_F(OperationTest, reIndexNameTest) {
     OperationPtr o = m.create<Operation>();
     o->setClass(*c);
     o->setName("test");
-    ASSERT_EQ(c->getOwnedOperations().get("test"), *o);
-    ASSERT_EQ(c->getOwnedElements().get("test"), *o);
+    ASSERT_EQ(c->getOwnedOperations().get("test"), o);
 }
 
 TEST_F(OperationTest, AddMethodFunctorTest) {
@@ -38,7 +37,7 @@ TEST_F(OperationTest, AddMethodFunctorTest) {
     OpaqueBehavior& m = *mm.create<OpaqueBehavior>();
     o.getMethods().add(m);
     ASSERT_TRUE(o.getMethods().size() == 1);
-    ASSERT_TRUE(&o.getMethods().front() == &m);
+    ASSERT_TRUE(o.getMethods().front() == &m);
     ASSERT_TRUE(m.getSpecification() == &o);
     // ASSERT_TRUE(o.getMembers().size() == 1);
     // ASSERT_TRUE(o.getMembers().front() == &m);
@@ -54,7 +53,7 @@ TEST_F(OperationTest, SetSpecificationTest) {
     OpaqueBehavior& m = *mm.create<OpaqueBehavior>();
     m.setSpecification(&o);
     ASSERT_TRUE(o.getMethods().size() == 1);
-    ASSERT_TRUE(&o.getMethods().front() == &m);
+    ASSERT_TRUE(o.getMethods().front() == &m);
     ASSERT_TRUE(m.getSpecification() == & o);
     // ASSERT_TRUE(o.getMembers().size() == 1);
     // ASSERT_TRUE(o.getMembers().front() == &m);
@@ -70,13 +69,13 @@ TEST_F(OperationTest, AddParameterFunctorForAbstractOperationTest) {
     Parameter& p = *mm.create<Parameter>();
     o.getOwnedParameters().add(p);
     ASSERT_TRUE(o.getOwnedParameters().size() == 1);
-    ASSERT_TRUE(&o.getOwnedParameters().front() == &p);
+    ASSERT_TRUE(o.getOwnedParameters().front() == &p);
     ASSERT_TRUE(p.getOperation() == &o);
     ASSERT_TRUE(o.getMembers().size() == 1);
-    ASSERT_TRUE(&o.getMembers().front() == &p);
+    ASSERT_TRUE(o.getMembers().front() == &p);
     ASSERT_TRUE(p.getNamespace() == &o);
     ASSERT_TRUE(o.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&o.getOwnedElements().get(p.getID()) == &p);
+    ASSERT_TRUE(o.getOwnedElements().get(p.getID()) == &p);
     ASSERT_TRUE(p.getOwner() == &o);
 }
 
@@ -86,13 +85,13 @@ TEST_F(OperationTest, SetOperationAbstractOperationTest) {
     Parameter& p = *mm.create<Parameter>();
     p.setOperation(o);
     ASSERT_TRUE(o.getOwnedParameters().size() == 1);
-    ASSERT_TRUE(&o.getOwnedParameters().front() == &p);
+    ASSERT_TRUE(o.getOwnedParameters().front() == &p);
     ASSERT_TRUE(p.getOperation() == &o);
     ASSERT_TRUE(o.getMembers().size() == 1);
-    ASSERT_TRUE(&o.getMembers().front() == &p);
+    ASSERT_TRUE(o.getMembers().front() == &p);
     ASSERT_TRUE(p.getNamespace() == &o);
     ASSERT_TRUE(o.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&o.getOwnedElements().get(p.getID()) == &p);
+    ASSERT_TRUE(o.getOwnedElements().get(p.getID()) == &p);
     ASSERT_TRUE(p.getOwner() == &o);
 }
 
@@ -220,13 +219,13 @@ TEST_F(OperationTest, overrideParameterOperationTest) {
     ASSERT_TRUE(o.getOwnedElements().size() == 0);
 
     ASSERT_TRUE(o2.getOwnedParameters().size() == 1);
-    ASSERT_TRUE(&o2.getOwnedParameters().front() == &p);
+    ASSERT_TRUE(o2.getOwnedParameters().front() == &p);
     ASSERT_TRUE(o2.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(&o2.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(o2.getOwnedMembers().front() == &p);
     ASSERT_TRUE(o2.getMembers().size() == 1);
-    ASSERT_TRUE(&o2.getMembers().front() == &p);
+    ASSERT_TRUE(o2.getMembers().front() == &p);
     ASSERT_TRUE(o2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&o2.getOwnedElements().get(p.getID()) == &p);
+    ASSERT_TRUE(o2.getOwnedElements().get(p.getID()) == &p);
 
     ASSERT_TRUE(*p.getOperation() == o2);
     ASSERT_TRUE(*p.getNamespace() == o2);
@@ -296,7 +295,7 @@ TEST_F(OperationTest, OverrideSpecificationTest) {
     ASSERT_NO_THROW(m.setSpecification(&o2));
     ASSERT_TRUE(o.getMethods().size() == 0);
     ASSERT_TRUE(o2.getMethods().size() == 1);
-    ASSERT_TRUE(&o2.getMethods().front() == &m);
+    ASSERT_TRUE(o2.getMethods().front() == &m);
     ASSERT_TRUE(m.getSpecification() == &o2);
 }
 
@@ -313,18 +312,18 @@ TEST_F(OperationTest, basicParamTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
-    PrimitiveTypePtr b = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("bool_bzkcabSy3CiFd&HmJOtnVRK")));
-    PrimitiveTypePtr i = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("int_r9nNbBukx47IomXrT2raqtc4")));
-    PrimitiveTypePtr r = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("real_aZG&w6yl61bXVWutgeyScN9")));
-    PrimitiveTypePtr s = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT")));
+    PrimitiveTypePtr b = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(ID::fromString("bool_bzkcabSy3CiFd&HmJOtnVRK"));
+    PrimitiveTypePtr i = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(ID::fromString("int_r9nNbBukx47IomXrT2raqtc4"));
+    PrimitiveTypePtr r = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(ID::fromString("real_aZG&w6yl61bXVWutgeyScN9"));
+    PrimitiveTypePtr s = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT"));
 
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
-    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ClassPtr c = pckg->getPackagedElements().front();
     ASSERT_TRUE(c->getOwnedOperations().size() == 1);
-    Operation* o =&c->getOwnedOperations().front();
+    OperationPtr o = c->getOwnedOperations().front();
     ASSERT_TRUE(o->getOwnedParameters().size() == 1);
-    Parameter* p = &o->getOwnedParameters().front();
+    ParameterPtr p = o->getOwnedParameters().front();
     ASSERT_TRUE(p->getName().compare("testInt") == 0);
     ASSERT_TRUE(p->getType() == i);
     ASSERT_TRUE(p->getDirection() == ParameterDirectionKind::IN_UML);
@@ -358,15 +357,15 @@ TEST_F(OperationTest, mountAndEditOperationTest) {
     ASSERT_TRUE(op2.getOwner());
     ASSERT_EQ(*op2.getOwner(), clazz);
     ASSERT_EQ(op2.getMethods().size(), 1);
-    ASSERT_EQ(op2.getMethods().front(), bhv);
+    ASSERT_EQ(op2.getMethods().front(), &bhv);
     ASSERT_TRUE(bhv.getSpecification());
     ASSERT_EQ(*bhv.getSpecification(), op2);
     ASSERT_EQ(op2.getOwnedParameters().size(), 1);
-    ASSERT_EQ(op2.getOwnedParameters().front(), param);
+    ASSERT_EQ(op2.getOwnedParameters().front(), &param);
     ASSERT_EQ(op2.getOwnedMembers().size(), 1);
-    ASSERT_EQ(op2.getOwnedMembers().front(), param);
+    ASSERT_EQ(op2.getOwnedMembers().front(), &param);
     ASSERT_EQ(op2.getMembers().size(), 1);
-    ASSERT_EQ(op2.getMembers().front(), param);
+    ASSERT_EQ(op2.getMembers().front(), &param);
     ASSERT_EQ(op2.getOwnedElements().size(), 1);
     ASSERT_EQ(*op2.getOwnedElements().begin(), param);
 
@@ -387,7 +386,7 @@ TEST_F(OperationTest, mountAndEditOperationTest) {
     ASSERT_EQ(*param3.getOperation(), op3);
     ASSERT_EQ(op3.getOwnedParameters().size(), 1);
     ASSERT_TRUE(op3.getOwnedParameters().contains(paramID));
-    ASSERT_EQ(op3.getOwnedParameters().front(), param3);
+    ASSERT_EQ(op3.getOwnedParameters().front(), &param3);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(param3, op3));
 
     ID bhvID = bhv.getID();

@@ -25,7 +25,7 @@ DeploymentTargetPtr Deployment::getLocation() const {
     return m_location.get();
 }
 
-void Deployment::setLocation(DeploymentTarget* location) {
+void Deployment::setLocation(DeploymentTargetPtr location) {
     m_location.set(location);
 }
 

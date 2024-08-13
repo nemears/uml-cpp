@@ -2,6 +2,7 @@
 
 #include "classifier.h"
 #include "relationship.h"
+#include "uml/set/indexableSet.h"
 #include "uml/set/orderedSet.h"
 
 namespace UML {
@@ -11,30 +12,27 @@ namespace UML {
         friend class Property;
 
         protected:
-            struct MemberEndPolicy {
-                void elementAdded(Property& el, Association& me);
-                void elementRemoved(Property& el, Association& me);
+            class MemberEndPolicy : public IndexablePolicy {
+                protected:
+                    void elementAdded(Property& el, Association& me);
+                    void elementRemoved(Property& el, Association& me);
             };
-            class RemoveMemberEndPolicy {
-                public:
-                    static void apply(Property& el, Association& me);
-            };
-            OrderedSet<Property, Association, MemberEndPolicy> m_memberEnds = OrderedSet<Property, Association, MemberEndPolicy>(this);
-            OrderedSet<Property, Association> m_ownedEnds = OrderedSet<Property, Association>(this);
-            Set<Property, Association> m_navigableOwnedEnds = Set<Property, Association>(this);
-            Set<Type, Association> m_endTypes = Set<Type, Association>(this);
+            IndexableOrderedSet<Property, Association, MemberEndPolicy> m_memberEnds = IndexableOrderedSet<Property, Association, MemberEndPolicy>(this);
+            IndexableOrderedSet<Property, Association> m_ownedEnds = IndexableOrderedSet<Property, Association>(this);
+            IndexableSet<Property, Association> m_navigableOwnedEnds = IndexableSet<Property, Association>(this);
+            IndexableSet<Type, Association> m_endTypes = IndexableSet<Type, Association>(this);
             void restoreReferences() override;
             void referenceErased(ID id) override;
             Association();
         public:
             virtual ~Association();
-            OrderedSet<Property, Association, MemberEndPolicy>& getMemberEnds();
-            OrderedSet<Property, Association>& getOwnedEnds();
-            Set<Property, Association>& getNavigableOwnedEnds();
+            IndexableOrderedSet<Property, Association, MemberEndPolicy>& getMemberEnds();
+            IndexableOrderedSet<Property, Association>& getOwnedEnds();
+            IndexableSet<Property, Association>& getNavigableOwnedEnds();
             /**
              * endType is derived from the types of the member ends.
              **/
-            Set<Type, Association>& getEndTypes();
+            IndexableSet<Type, Association>& getEndTypes();
             bool is(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::ASSOCIATION;

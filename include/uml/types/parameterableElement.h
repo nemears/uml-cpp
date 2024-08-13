@@ -26,11 +26,11 @@ namespace UML {
         public:
             ~ParameterableElement();
             TemplateParameterPtr getOwningTemplateParameter() const;
-            void setOwningTemplateParameter(TemplateParameter* parameter);
+            void setOwningTemplateParameter(TemplateParameterPtr parameter);
             void setOwningTemplateParameter(TemplateParameter& parameter);
             void setOwningTemplateParameter(ID id);
             TemplateParameterPtr getTemplateParameter() const;
-            void setTemplateParameter(TemplateParameter* parameter);
+            void setTemplateParameter(TemplateParameterPtr parameter);
             void setTemplateParameter(TemplateParameter& parameter);
             void setTemplateParameter(ID id);
             bool is(ElementType eType) const override;

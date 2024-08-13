@@ -11,7 +11,7 @@ Signal::~Signal() {
     
 }
 
-OrderedSet<Property, Signal>& Signal::getOwnedAttributes() {
+IndexableOrderedSet<Property, Signal>& Signal::getOwnedAttributes() {
     return m_ownedAttributes;
 }
 

@@ -189,19 +189,30 @@ namespace UML {
                 this->innerAdd(ptr);
             }
             void add(ID& id) {
-                this->innerAdd(this->m_me.m_manager->createPtr(id));
+                this->innerAdd(this->m_el.m_manager->createPtr(id));
             }
             void add(T& el) {
                 this->innerAdd(UmlPtr<T>(&el));
+            }
+            template <class ... Ts>
+            void add(T& el, Ts& ... els) { 
+                add(el);
+                add(els...);
             }
             void remove(UmlPtr<T> ptr) {
                 this->innerRemove(ptr);
             }
             void remove(ID& id) {
-                this->innerRemove(this->m_me.m_manager->createPtr(id));
+                this->innerRemove(this->m_el.m_manager->createPtr(id));
             }
             void remove(T& el) {
                 this->innerRemove(UmlPtr<T>(&el));
             }
+            void clear() {
+                while (this->front()) {
+                    remove(this->front());
+                }
+            }
+
     };
 }

@@ -27,11 +27,11 @@ namespace UML {
         public:
             virtual ~InterfaceRealization();
             InterfacePtr getContract() const;
-            void setContract(Interface* contract);
+            void setContract(InterfacePtr contract);
             void setContract(Interface& contract);
             void setContract(ID id);
             BehavioredClassifierPtr getImplementingClassifier() const;
-            void setImplementingClassifier(BehavioredClassifier* implementingClassifier);
+            void setImplementingClassifier(BehavioredClassifierPtr implementingClassifier);
             void setImplementingClassifier(BehavioredClassifier& implementingClassifier);
             void setImplementingClassifier(ID id);
             bool is(ElementType eType) const override;

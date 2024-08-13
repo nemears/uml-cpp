@@ -52,19 +52,19 @@ StructuredClassifier::~StructuredClassifier() {
     
 }
 
-Set<Property, StructuredClassifier, StructuredClassifier::PartPolicy>& StructuredClassifier::getOwnedAttributes() {
+IndexableSet<Property, StructuredClassifier, StructuredClassifier::PartPolicy>& StructuredClassifier::getOwnedAttributes() {
     return m_ownedAttributes;
 }
 
-ReadOnlySet<ConnectableElement, StructuredClassifier>& StructuredClassifier::getRoles() {
+ReadOnlyIndexableSet<ConnectableElement, StructuredClassifier>& StructuredClassifier::getRoles() {
     return m_roles;
 }
 
-ReadOnlySet<Property, StructuredClassifier>& StructuredClassifier::getParts() {
+ReadOnlyIndexableSet<Property, StructuredClassifier>& StructuredClassifier::getParts() {
     return m_parts;
 }
 
-Set<Connector, StructuredClassifier>& StructuredClassifier::getOwnedConnectors() {
+IndexableSet<Connector, StructuredClassifier>& StructuredClassifier::getOwnedConnectors() {
     return m_ownedConnectors;
 }
 

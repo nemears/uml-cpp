@@ -75,7 +75,7 @@ InterfacePtr InterfaceRealization::getContract() const {
     return m_contract.get();
 }
 
-void InterfaceRealization::setContract(Interface* contract) {
+void InterfaceRealization::setContract(InterfacePtr contract) {
     m_contract.set(contract);
 }
 
@@ -91,7 +91,7 @@ BehavioredClassifierPtr InterfaceRealization::getImplementingClassifier() const 
     return m_implementingClassifier.get();
 }
 
-void InterfaceRealization::setImplementingClassifier(BehavioredClassifier* implementingClassifier) {
+void InterfaceRealization::setImplementingClassifier(BehavioredClassifierPtr implementingClassifier) {
     m_implementingClassifier.set(implementingClassifier);
 }
 

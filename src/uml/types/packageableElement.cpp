@@ -20,7 +20,7 @@ PackagePtr PackageableElement::getOwningPackage() const {
     return m_owningPackage.get();
 }
 
-void PackageableElement::setOwningPackage(Package* package) {
+void PackageableElement::setOwningPackage(PackagePtr package) {
     m_owningPackage.set(package);
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "uml/set/indexableSet.h"
 #include "uml/set/singleton.h"
 #include "uml/set/orderedSet.h"
 
@@ -18,7 +19,7 @@ namespace UML {
         
         protected:
             Singleton<StructuralFeature, Slot> m_definingFeature = Singleton<StructuralFeature, Slot>(this);
-            OrderedSet<ValueSpecification, Slot> m_values = OrderedSet<ValueSpecification, Slot>(this);
+            IndexableOrderedSet<ValueSpecification, Slot> m_values = IndexableOrderedSet<ValueSpecification, Slot>(this);
             Singleton<InstanceSpecification, Slot> m_owningInstance = Singleton<InstanceSpecification, Slot>(this);
             void referenceErased(ID id) override;
             Singleton<StructuralFeature, Slot>& getDefiningFeatureSingleton();
@@ -26,14 +27,14 @@ namespace UML {
             Slot();
         public:
             virtual ~Slot();
-            OrderedSet<ValueSpecification, Slot>& getValues();
+            IndexableOrderedSet<ValueSpecification, Slot>& getValues();
             StructuralFeaturePtr getDefiningFeature() const;
             void setDefiningFeature(StructuralFeature& definingFeature);
-            void setDefiningFeature(StructuralFeature* definingFeature);
+            void setDefiningFeature(StructuralFeaturePtr definingFeature);
             void setDefiningFeature(ID id);
             InstanceSpecificationPtr getOwningInstance() const;
             void setOwningInstance(InstanceSpecification& inst);
-            void setOwningInstance(InstanceSpecification* inst);
+            void setOwningInstance(InstanceSpecificationPtr inst);
             void setOwningInstance(ID id);
             class NullDefiningFeatureException : public std::exception {
                 public:

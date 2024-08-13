@@ -40,7 +40,7 @@ TemplateParameterPtr TemplateParameterSubstitution::getFormal() const {
     return m_formal.get();
 }
 
-void TemplateParameterSubstitution::setFormal(TemplateParameter* formal) {
+void TemplateParameterSubstitution::setFormal(TemplateParameterPtr formal) {
     m_formal.set(formal);
 }
 
@@ -56,7 +56,7 @@ TemplateBindingPtr TemplateParameterSubstitution::getTemplateBinding() const {
     return m_templateBinding.get();
 }
 
-void TemplateParameterSubstitution::setTemplateBinding(TemplateBinding* bind) {
+void TemplateParameterSubstitution::setTemplateBinding(TemplateBindingPtr bind) {
     m_templateBinding.set(bind);
 }
 
@@ -72,7 +72,7 @@ ParameterableElementPtr TemplateParameterSubstitution::getActual() const {
     return m_actual.get();
 }
 
-void TemplateParameterSubstitution::setActual(ParameterableElement* actual) {
+void TemplateParameterSubstitution::setActual(ParameterableElementPtr actual) {
     m_actual.set(actual);
 }
 
@@ -88,7 +88,7 @@ ParameterableElementPtr TemplateParameterSubstitution::getOwnedActual() const {
     return m_ownedActual.get();
 }
 
-void TemplateParameterSubstitution::setOwnedActual(ParameterableElement* actual) {
+void TemplateParameterSubstitution::setOwnedActual(ParameterableElementPtr actual) {
     m_ownedActual.set(actual);
 }
 

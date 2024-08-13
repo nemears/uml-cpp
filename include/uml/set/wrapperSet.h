@@ -42,6 +42,9 @@ namespace UML {
             iterator end() {
                 return iterator(m_set.lock()->m_set.endPtr());
             }
+            S front() {
+                return *begin();
+            }
     };
 
     struct IDPolicy {

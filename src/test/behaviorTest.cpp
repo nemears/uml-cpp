@@ -1,14 +1,15 @@
 #include "gtest/gtest.h"
+#include "uml/types/opaqueBehavior.h"
 #include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
 #include "test/uml-cpp-paths.h"
 
 using namespace UML;
 
-UML_SINGLETON_INTEGRATION_TEST(BehaviorSpecification, Operation, Activity, &Behavior::getSpecification, &Behavior::setSpecification)
+UML_SINGLETON_INTEGRATION_TEST(BehaviorSpecification, Operation, OpaqueBehavior, &Behavior::getSpecification, &Behavior::setSpecification)
 UML_SET_INTEGRATION_TEST(BehavioralFeatureOwnedParameters, Parameter, Operation, &BehavioralFeature::getOwnedParameters)
-UML_SET_INTEGRATION_TEST(BehavioralFeatureMethods, Activity, Operation, &BehavioralFeature::getMethods)
-UML_SET_INTEGRATION_TEST(BehavioralFeatureRaisedExceptions, Activity, Operation, &BehavioralFeature::getRaisedExceptions)
+UML_SET_INTEGRATION_TEST(BehavioralFeatureMethods, OpaqueBehavior, Operation, &BehavioralFeature::getMethods)
+UML_SET_INTEGRATION_TEST(BehavioralFeatureRaisedExceptions, OpaqueBehavior, Operation, &BehavioralFeature::getRaisedExceptions)
 UML_SET_INTEGRATION_TEST(BehaviorParameters, Parameter, OpaqueBehavior, &Behavior::getOwnedParameters)
 
 class BehaviorTest : public ::testing::Test {
@@ -38,9 +39,9 @@ TEST_F(BehaviorTest, parseMultipleSimpleBodies) {
     ASSERT_TRUE(bhv->getName().compare("test") == 0);
     ASSERT_TRUE(bhv->getID() == ID::fromString("i0wopIpBjBHdekQ57DbWeHfWmQp3"));
     ASSERT_TRUE(bhv->getBodies().size() == 3);
-    ASSERT_TRUE(bhv->getBodies().get(0).getValue().compare("one") == 0);
-    ASSERT_TRUE(bhv->getBodies().get(1).getValue().compare("1") == 0);
-    ASSERT_TRUE(bhv->getBodies().get(2).getValue().compare("true") == 0);
+    ASSERT_TRUE(bhv->getBodies().get(0)->getValue().compare("one") == 0);
+    ASSERT_TRUE(bhv->getBodies().get(1)->getValue().compare("1") == 0);
+    ASSERT_TRUE(bhv->getBodies().get(2)->getValue().compare("true") == 0);
 }
 
 TEST_F(BehaviorTest, parseParameter) {
@@ -49,7 +50,7 @@ TEST_F(BehaviorTest, parseParameter) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::OPAQUE_BEHAVIOR);
     OpaqueBehavior* bhv = &m.getRoot()->as<OpaqueBehavior>();
     ASSERT_TRUE(bhv->getOwnedParameters().size() == 1);
-    Parameter* param = &bhv->getOwnedParameters().front();
+    ParameterPtr param = bhv->getOwnedParameters().front();
     ASSERT_TRUE(param->getName().compare("test") == 0);
     ASSERT_TRUE(param->getDirection() == ParameterDirectionKind::IN_UML);
 }

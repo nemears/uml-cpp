@@ -21,7 +21,7 @@ namespace UML {
             virtual ~EnumerationLiteral();
             EnumerationPtr getEnumeration() const;
             void setEnumeration(Enumeration& enumeration);
-            void setEnumeration(Enumeration* enumeration);
+            void setEnumeration(EnumerationPtr enumeration);
             void setEnumeration(ID id);
             bool is(ElementType eType) const override;
             static ElementType elementType() {

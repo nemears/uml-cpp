@@ -23,13 +23,13 @@ TEST_F(PackageTest, addPackagedElementTest) {
     Package& e = *m.create<Package>();
     ASSERT_NO_THROW(p.getPackagedElements().add(e));
     ASSERT_EQ(p.getPackagedElements().size(), 1);
-    ASSERT_EQ(p.getPackagedElements().front(), e);
+    ASSERT_EQ(p.getPackagedElements().front(), &e);
     ASSERT_TRUE(e.getOwningPackage());
     ASSERT_EQ(*e.getOwningPackage(), p);
     ASSERT_EQ(p.getMembers().size(), 1);
-    ASSERT_EQ(p.getMembers().front(), e);
+    ASSERT_EQ(p.getMembers().front(), &e);
     ASSERT_EQ(p.getOwnedElements().size(), 1);
-    ASSERT_EQ(p.getOwnedElements().front(), e);
+    ASSERT_EQ(p.getOwnedElements().front(), &e);
     ASSERT_TRUE(e.getNamespace());
     ASSERT_EQ(*e.getNamespace(), p);
     ASSERT_EQ(*e.getOwner(), p);
@@ -41,12 +41,12 @@ TEST_F(PackageTest, setOwningPackageTest) {
     PackageableElement& e = *m.create<Package>();
     ASSERT_NO_THROW(e.setOwningPackage(&p));
     ASSERT_TRUE(p.getPackagedElements().size() == 1);
-    ASSERT_TRUE(&p.getPackagedElements().front() == &e);
+    ASSERT_TRUE(p.getPackagedElements().front() == &e);
     ASSERT_TRUE(e.getOwningPackage() == &p);
     ASSERT_TRUE(p.getMembers().size() == 1);
-    ASSERT_TRUE(&p.getMembers().front() == &e);
+    ASSERT_TRUE(p.getMembers().front() == &e);
     ASSERT_TRUE(p.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&p.getOwnedElements().get(e.getID()) == &e);
+    ASSERT_TRUE(p.getOwnedElements().get(e.getID()) == &e);
     ASSERT_TRUE(e.getNamespace() == &p);
     ASSERT_TRUE(e.getOwner() == &p);
 }
@@ -59,12 +59,12 @@ TEST_F(PackageTest, overwriteOwningPackageTest) {
     p1.getPackagedElements().add(e);
     ASSERT_NO_THROW(e.setOwningPackage(&p2));
     ASSERT_TRUE(p2.getPackagedElements().size() == 1);
-    ASSERT_TRUE(&p2.getPackagedElements().front() == &e);
+    ASSERT_TRUE(p2.getPackagedElements().front() == &e);
     ASSERT_TRUE(e.getOwningPackage() == &p2);
     ASSERT_TRUE(p2.getMembers().size() == 1);
-    ASSERT_TRUE(&p2.getMembers().front() == &e);
+    ASSERT_TRUE(p2.getMembers().front() == &e);
     ASSERT_TRUE(p2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&p2.getOwnedElements().get(e.getID()) == &e);
+    ASSERT_TRUE(p2.getOwnedElements().get(e.getID()) == &e);
     ASSERT_TRUE(e.getNamespace() == &p2);
     ASSERT_TRUE(e.getOwner() == &p2);
     ASSERT_TRUE(p1.getPackagedElements().size() == 0);
@@ -80,17 +80,17 @@ TEST_F(PackageTest, packageMergeTest) {
     m.setMergedPackage(&mp);
     p.getPackageMerge().add(m);
     ASSERT_EQ(p.getPackageMerge().size(), 1);
-    ASSERT_EQ(p.getPackageMerge().front(), m);
+    ASSERT_EQ(p.getPackageMerge().front(), &m);
     ASSERT_EQ(p.getOwnedElements().size(), 1);
-    ASSERT_EQ(p.getOwnedElements().get(m.getID()), m);
+    ASSERT_EQ(p.getOwnedElements().get(m.getID()), &m);
 
     ASSERT_EQ(*m.getMergedPackage(), mp);
     ASSERT_EQ(*m.getReceivingPackage(), p);
     ASSERT_EQ(m.getSources().size(), 1);
-    ASSERT_EQ(m.getSources().front(), p);
+    ASSERT_EQ(m.getSources().front(), &p);
     ASSERT_EQ(m.getTargets().size(), 1);
-    ASSERT_EQ(m.getTargets().front(), mp);
-    ASSERT_EQ(m.getTargets().front(), mp);
+    ASSERT_EQ(m.getTargets().front(), &mp);
+    ASSERT_EQ(m.getTargets().front(), &mp);
 }
 
 TEST_F(PackageTest, removePackageMergeTest) {
@@ -114,9 +114,9 @@ TEST_F(PackageTest, simpleStereotypeTest) {
     s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
     p.getPackagedElements().add(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
-    ASSERT_EQ(p.getOwnedStereotypes().front().getID(), s.getID());
+    ASSERT_EQ(p.getOwnedStereotypes().front()->getID(), s.getID());
     ASSERT_EQ(p.getPackagedElements().size(), 1);
-    ASSERT_EQ(p.getPackagedElements().front().getID(), s.getID());
+    ASSERT_EQ(p.getPackagedElements().front()->getID(), s.getID());
     ASSERT_EQ(p.getOwnedMembers().size(), 1);
     ASSERT_TRUE(p.getOwnedMembers().contains(s));
     ASSERT_EQ(p.getMembers().size(), 1);
@@ -242,33 +242,33 @@ TEST_F(PackageTest, parse3PackagesTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg1 = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg1->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg1->getPackagedElements().front().getElementType() == ElementType::PACKAGE);
-    ASSERT_TRUE(pckg1->getPackagedElements().back().getElementType() == ElementType::PACKAGE);
-    Package* pckg2 = dynamic_cast<Package*>(&pckg1->getPackagedElements().front());
-    Package* pckg3 = dynamic_cast<Package*>(&pckg1->getPackagedElements().back());
+    ASSERT_TRUE(pckg1->getPackagedElements().front()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE((pckg1->getPackagedElements().begin()++)->getElementType() == ElementType::PACKAGE);
+    PackagePtr pckg2 = pckg1->getPackagedElements().front();
+    PackagePtr pckg3 = &((pckg1->getPackagedElements().begin()++)->as<Package>());
     ASSERT_TRUE(pckg2->getOwningPackage() == pckg1);
     ASSERT_TRUE(pckg3->getOwningPackage() == pckg1);
     ASSERT_TRUE(pckg1->getMembers().size() == 2);
-    ASSERT_TRUE(&pckg1->getMembers().front() == pckg2);
-    ASSERT_TRUE(&pckg1->getMembers().back() == pckg3);
+    ASSERT_TRUE(pckg1->getMembers().front() == pckg2);
+    ASSERT_TRUE(*(pckg1->getMembers().begin()++) == *pckg3);
     ASSERT_TRUE(pckg2->getNamespace() == pckg1);
     ASSERT_TRUE(pckg3->getNamespace() == pckg1);
     ASSERT_TRUE(pckg1->getOwnedElements().size() == 2);
-    SetIterator<Element> it = pckg1->getOwnedElements().begin();
+    auto it = pckg1->getOwnedElements().begin();
     ASSERT_EQ(*it, *pckg2);
     ++it;
     ASSERT_EQ(*it, *pckg3);
     ASSERT_TRUE(pckg2->getOwner() == pckg1);
     ASSERT_TRUE(pckg3->getOwner() == pckg1);
     ASSERT_TRUE(pckg2->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg2->getPackagedElements().front().getElementType() == ElementType::CLASS);
-    Class* act1 = dynamic_cast<Class*>(&pckg2->getPackagedElements().front());
+    ASSERT_TRUE(pckg2->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ClassPtr act1 = pckg2->getPackagedElements().front();
     ASSERT_TRUE(act1->getOwningPackage() == pckg2);
     ASSERT_TRUE(act1->getNamespace() == pckg2);
     ASSERT_TRUE(act1->getOwner() == pckg2);
     ASSERT_TRUE(pckg3->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg3->getPackagedElements().front().getElementType() == ElementType::CLASS);
-    Class* act2 = dynamic_cast<Class*>(&pckg3->getPackagedElements().front());
+    ASSERT_TRUE(pckg3->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ClassPtr act2 = pckg3->getPackagedElements().front();
     ASSERT_TRUE(act2->getOwningPackage() == pckg3);
     ASSERT_TRUE(act2->getNamespace() == pckg3);
     ASSERT_TRUE(act2->getOwner() == pckg3);
@@ -314,12 +314,12 @@ TEST_F(PackageTest, basicPackageMerge) {
     ASSERT_TRUE(m2.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* bPckg = &m2.getRoot()->as<Package>();
     ASSERT_TRUE(bPckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(bPckg->getPackagedElements().front().getElementType() == ElementType::PACKAGE);
-    Package* pckg1 = dynamic_cast<Package*>(&bPckg->getPackagedElements().get(ID::fromString("CLZW&6KK6mcu4qLEXNULDidsDpkX")));
-    ASSERT_TRUE(bPckg->getPackagedElements().back().getElementType() == ElementType::PACKAGE);
-    Package* pckg2 = dynamic_cast<Package*>(&bPckg->getPackagedElements().get(ID::fromString("NrvESaGrSk1vI2aksOyHy8cJ8221")));
+    ASSERT_TRUE(bPckg->getPackagedElements().front()->getElementType() == ElementType::PACKAGE);
+    PackagePtr pckg1 = bPckg->getPackagedElements().get(ID::fromString("CLZW&6KK6mcu4qLEXNULDidsDpkX"));
+    ASSERT_TRUE((bPckg->getPackagedElements().begin()++)->getElementType() == ElementType::PACKAGE);
+    PackagePtr pckg2 = bPckg->getPackagedElements().get(ID::fromString("NrvESaGrSk1vI2aksOyHy8cJ8221"));
     ASSERT_TRUE(pckg2->getPackageMerge().size() == 1);
-    PackageMerge* m = &pckg2->getPackageMerge().front();
+    PackageMergePtr m = pckg2->getPackageMerge().front();
     ASSERT_TRUE(m->getMergedPackage() == pckg1);
     ASSERT_TRUE(m->getReceivingPackage() == pckg2);
 }
@@ -332,19 +332,19 @@ TEST_F(PackageTest, externalMergedPackageTest) {
     ASSERT_TRUE(mm.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &mm.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 2);
-    PackageMerge* m = &pckg->getPackageMerge().back();
-    PackageMerge* m2 = &pckg->getPackageMerge().front();
+    PackageMergePtr m = *(pckg->getPackageMerge().ptrs().begin()++);
+    PackageMergePtr m2 = pckg->getPackageMerge().front();
     ASSERT_TRUE(m->getMergedPackage());
     PackagePtr p2 = m->getMergedPackage();
     ASSERT_TRUE(p2->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
-    Class* c = &pckg->getPackagedElements().front().as<Class>();
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ClassPtr c = pckg->getPackagedElements().front();
     ASSERT_TRUE(c->getOwnedAttributes().size() == 1);
-    Property* p = &c->getOwnedAttributes().front();
+    PropertyPtr p = c->getOwnedAttributes().front();
     PackagePtr primPack = m2->getMergedPackage();
-    ASSERT_TRUE(primPack->getPackagedElements().front().getElementType() == ElementType::PRIMITIVE_TYPE);
-    PrimitiveType& b = primPack->getPackagedElements().get("bool").as<PrimitiveType>();
+    ASSERT_TRUE(primPack->getPackagedElements().front()->getElementType() == ElementType::PRIMITIVE_TYPE);
+    PrimitiveType& b = primPack->getPackagedElements().get("bool")->as<PrimitiveType>();
     ASSERT_TRUE(*p->getType() == b);
 }
 
@@ -411,13 +411,13 @@ TEST_F(PackageTest, emitMergedPackageTest) {
 
 void ASSERT_PROPER_DIRECTED_RELATIONSHIP_AQUIRE(DirectedRelationship& dr, Element& source, Element& target) {
     ASSERT_EQ(dr.getSources().size(), 1);
-    ASSERT_EQ(&dr.getSources().front(), &source);
+    ASSERT_EQ(dr.getSources().front(), &source);
     ASSERT_EQ(dr.getRelatedElements().contains(source.getID()), 1);
-    ASSERT_EQ(&dr.getRelatedElements().get(source.getID()), &source);
+    ASSERT_EQ(dr.getRelatedElements().get(source.getID()), &source);
     ASSERT_EQ(dr.getTargets().size(), 1);
-    ASSERT_EQ(&dr.getTargets().front(), &target);
+    ASSERT_EQ(dr.getTargets().front(), &target);
     ASSERT_EQ(dr.getRelatedElements().contains(target.getID()), 1);
-    ASSERT_EQ(&dr.getRelatedElements().get(target.getID()), &target);
+    ASSERT_EQ(dr.getRelatedElements().get(target.getID()), &target);
 }
 
 TEST_F(PackageTest, mountAndEditPackageTest) {
@@ -439,41 +439,41 @@ TEST_F(PackageTest, mountAndEditPackageTest) {
     m.mount(ymlPath + "packageParserTests");
     ID cID = c1.getID();
     m.release(c1);
-    Package& c2 = root.getPackagedElements().get(cID).as<Package>();
+    Package& c2 = root.getPackagedElements().get(cID)->as<Package>();
     ASSERT_TRUE(c2.getOwningPackage());
-    ASSERT_EQ(*c2.getOwningPackage(), root);
+    ASSERT_EQ(c2.getOwningPackage(), &root);
     ASSERT_EQ(c2.getPackageMerge().size(), 1);
-    ASSERT_EQ(&c2.getPackageMerge().front(), &merge);
+    ASSERT_EQ(c2.getPackageMerge().front(), &merge);
     ASSERT_TRUE(c2.getOwnedElements().contains(merge.getID()));
-    ASSERT_EQ(c2.getOwnedElements().get(merge.getID()), merge);
+    ASSERT_EQ(c2.getOwnedElements().get(merge.getID()), &merge);
     ASSERT_TRUE(merge.getReceivingPackage());
-    ASSERT_EQ(*merge.getReceivingPackage(), c2);
+    ASSERT_EQ(merge.getReceivingPackage(), &c2);
     ASSERT_TRUE(merge.getOwner());
-    ASSERT_EQ(*merge.getOwner(), c2);
+    ASSERT_EQ(merge.getOwner(), &c2);
     ASSERT_EQ(merge.getSources().size(), 1);
-    ASSERT_EQ(merge.getSources().front(), c2);
+    ASSERT_EQ(merge.getSources().front(), &c2);
     ASSERT_EQ(c2.getProfileApplications().size(), 1);
-    ASSERT_EQ(&c2.getProfileApplications().front(), &profileApplication);
+    ASSERT_EQ(c2.getProfileApplications().front(), &profileApplication);
     ASSERT_TRUE(c2.getOwnedElements().contains(profileApplication.getID()));
-    ASSERT_EQ(c2.getOwnedElements().get(profileApplication.getID()), profileApplication);
+    ASSERT_EQ(c2.getOwnedElements().get(profileApplication.getID()), &profileApplication);
     ASSERT_TRUE(profileApplication.getApplyingPackage());
     ASSERT_EQ(*profileApplication.getApplyingPackage(), c2);
     ASSERT_TRUE(profileApplication.getOwner());
     ASSERT_EQ(*profileApplication.getOwner(), c2);
     ASSERT_EQ(profileApplication.getSources().size(), 1);
-    ASSERT_EQ(profileApplication.getSources().front(), c2);
+    ASSERT_EQ(profileApplication.getSources().front(), &c2);
     ASSERT_EQ(c2.getPackagedElements().size(), 1);
-    ASSERT_EQ(&c2.getPackagedElements().front(), &stereotype);
+    ASSERT_EQ(c2.getPackagedElements().front(), &stereotype);
     ASSERT_EQ(c2.getOwnedStereotypes().size(), 1);
-    ASSERT_EQ(&c2.getOwnedStereotypes().front(), &stereotype);
+    ASSERT_EQ(c2.getOwnedStereotypes().front(), &stereotype);
     ASSERT_TRUE(stereotype.getOwningPackage());
     ASSERT_EQ(*stereotype.getOwningPackage(), c2);
     ASSERT_EQ(c2.getOwnedMembers().size(), 1);
-    ASSERT_EQ(c2.getOwnedMembers().front(), stereotype);
+    ASSERT_EQ(c2.getOwnedMembers().front(), &stereotype);
     ASSERT_EQ(c2.getMembers().size(), 1);
-    ASSERT_EQ(c2.getMembers().front(), stereotype);
+    ASSERT_EQ(c2.getMembers().front(), &stereotype);
     ASSERT_EQ(c2.getOwnedElements().size(), 3);
-    ASSERT_EQ(c2.getOwnedElements().get(stereotype.getID()), stereotype);
+    ASSERT_EQ(c2.getOwnedElements().get(stereotype.getID()), &stereotype);
     ASSERT_TRUE(stereotype.getNamespace());
     ASSERT_EQ(*stereotype.getNamespace(), c2);
     ASSERT_TRUE(stereotype.getOwner());
@@ -481,7 +481,7 @@ TEST_F(PackageTest, mountAndEditPackageTest) {
 
     m.release(merge);
     ASSERT_EQ(c2.getPackageMerge().size(), 1);
-    PackageMerge& merge2 = c2.getPackageMerge().front();
+    PackageMerge& merge2 = *c2.getPackageMerge().front();
     ASSERT_TRUE(merge2.getReceivingPackage());
     ASSERT_EQ(*merge2.getReceivingPackage(), c2);
     ASSERT_TRUE(merge2.getMergedPackage());
@@ -490,7 +490,7 @@ TEST_F(PackageTest, mountAndEditPackageTest) {
 
     m.release(profileApplication);
     ASSERT_EQ(c2.getProfileApplications().size(), 1);
-    ProfileApplication& profileApplication2 = c2.getProfileApplications().front();
+    ProfileApplication& profileApplication2 = *c2.getProfileApplications().front();
     ASSERT_TRUE(profileApplication2.getApplyingPackage());
     ASSERT_EQ(profileApplication2.getApplyingPackage(), &c2);
     ASSERT_TRUE(profileApplication2.getAppliedProfile());
@@ -499,7 +499,7 @@ TEST_F(PackageTest, mountAndEditPackageTest) {
 
     m.release(stereotype);
     ASSERT_EQ(c2.getOwnedStereotypes().size(), 1);
-    Stereotype& stereotype2 = c2.getOwnedStereotypes().front();
+    Stereotype& stereotype2 = *c2.getOwnedStereotypes().front();
     ASSERT_TRUE(stereotype2.getOwningPackage());
     ASSERT_EQ(stereotype2.getOwningPackage(), &c2);
     ASSERT_TRUE(stereotype2.getNamespace());
@@ -508,7 +508,7 @@ TEST_F(PackageTest, mountAndEditPackageTest) {
     ASSERT_EQ(stereotype2.getOwner(), &c2);
 
     m.release(merge2, c2);
-    ASSERT_EQ(*profileApplication2.getApplyingPackage()->getPackageMerge().front().getMergedPackage(), merged);
+    ASSERT_EQ(*profileApplication2.getApplyingPackage()->getPackageMerge().front()->getMergedPackage(), merged);
 }
 
 // TEST_F(PackageTest, parseStringTest) {
@@ -538,16 +538,16 @@ TEST_F(PackageTest, stereotypeWithExtensionTest) {
   ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PROFILE);
   Profile& profile = dynamic_cast<Profile&>(*m.getRoot());
   ASSERT_EQ(profile.getOwnedStereotypes().size(), 1);
-  Stereotype& s = profile.getOwnedStereotypes().front();
+  Stereotype& s = *profile.getOwnedStereotypes().front();
   ASSERT_EQ(profile.getPackagedElements().size(), 3);
-  ASSERT_EQ(profile.getPackagedElements().get("ext").getElementType(), ElementType::EXTENSION);
-  Extension& ext = dynamic_cast<Extension&>(profile.getPackagedElements().get("ext"));
+  ASSERT_EQ(profile.getPackagedElements().get("ext")->getElementType(), ElementType::EXTENSION);
+  Extension& ext = dynamic_cast<Extension&>(*profile.getPackagedElements().get("ext"));
   ASSERT_TRUE(ext.getOwnedEnd());
   ExtensionEnd& end = *ext.getOwnedEnd();
   ASSERT_TRUE(end.getType());
   ASSERT_EQ(end.getType()->getID(), s.getID());
-  Class& metaClass = profile.getPackagedElements().get("meta class").as<Class>();
-  Property& memberEnd = ext.getMemberEnds().get("member end");
+  Class& metaClass = profile.getPackagedElements().get("meta class")->as<Class>();
+  Property& memberEnd = *ext.getMemberEnds().get("member end");
   ASSERT_EQ(*memberEnd.getType(), metaClass);
   ASSERT_EQ(*ext.getMetaClass(), metaClass);
 }
@@ -558,12 +558,12 @@ TEST_F(PackageTest, internalProfileapplication) {
   ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
   Package& pckg = m.getRoot()->as<Package>();
   ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-  ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("3l8cYkYl_KVsMsQtR5ax2IE76CsM")).getElementType(), ElementType::PACKAGE);
-  Package& applying = pckg.getPackagedElements().get(ID::fromString("3l8cYkYl_KVsMsQtR5ax2IE76CsM")).as<Package>();
+  ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("3l8cYkYl_KVsMsQtR5ax2IE76CsM"))->getElementType(), ElementType::PACKAGE);
+  Package& applying = pckg.getPackagedElements().get(ID::fromString("3l8cYkYl_KVsMsQtR5ax2IE76CsM"))->as<Package>();
   ASSERT_EQ(applying.getProfileApplications().size(), 1);
-  ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("ZjvD1bCxVklVQI7SsmtE_kS3oIIc")).getElementType(), ElementType::PROFILE);
-  Profile& profile = pckg.getPackagedElements().get(ID::fromString("ZjvD1bCxVklVQI7SsmtE_kS3oIIc")).as<Profile>();
-  ProfileApplication& application = applying.getProfileApplications().front();
+  ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("ZjvD1bCxVklVQI7SsmtE_kS3oIIc"))->getElementType(), ElementType::PROFILE);
+  Profile& profile = pckg.getPackagedElements().get(ID::fromString("ZjvD1bCxVklVQI7SsmtE_kS3oIIc"))->as<Profile>();
+  ProfileApplication& application = *applying.getProfileApplications().front();
   ASSERT_EQ(application.getAppliedProfile()->getID(), profile.getID());
 }
 
@@ -574,7 +574,7 @@ TEST_F(PackageTest, externalProfileApplicationTest) {
   ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
   Package& pckg = m.getRoot()->as<Package>();
   ASSERT_EQ(pckg.getProfileApplications().size(), 1);
-  ProfileApplication& application = pckg.getProfileApplications().front();
+  ProfileApplication& application = *pckg.getProfileApplications().front();
   ASSERT_EQ(application.getAppliedProfile()->getID(), ID::fromString("XIf5yPHTzLz4NDkVLLwDamOWscKb"));
   //lazy
 }
@@ -670,24 +670,24 @@ TEST_F(PackageTest, parseAppliedStereotypeTest) {
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& root = m.getRoot()->as<Package>();
     ASSERT_EQ(root.getPackagedElements().size(), 2);
-    ASSERT_EQ(root.getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD")).getElementType(), ElementType::PACKAGE);
-    Package& applying = dynamic_cast<Package&>(root.getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD")));
+    ASSERT_EQ(root.getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD"))->getElementType(), ElementType::PACKAGE);
+    Package& applying = dynamic_cast<Package&>(*root.getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD")));
     ASSERT_EQ(applying.getProfileApplications().size(), 1);
-    ProfileApplication& application = applying.getProfileApplications().front();
+    ProfileApplication& application = *applying.getProfileApplications().front();
     ASSERT_TRUE(application.getAppliedProfile());
-    Profile& profile = dynamic_cast<Profile&>(root.getPackagedElements().get(ID::fromString("PPkaUpbLRkxoN76k6_qR9xv6FruX")));
+    Profile& profile = dynamic_cast<Profile&>(*root.getPackagedElements().get(ID::fromString("PPkaUpbLRkxoN76k6_qR9xv6FruX")));
     ASSERT_EQ(application.getAppliedProfile()->getID(), profile.getID());
     ASSERT_EQ(applying.getPackagedElements().size(), 1);
-    ASSERT_EQ(applying.getPackagedElements().front().getElementType(), ElementType::PACKAGE);
-    Package& typed = dynamic_cast<Package&>(applying.getPackagedElements().front());
+    ASSERT_EQ(applying.getPackagedElements().front()->getElementType(), ElementType::PACKAGE);
+    Package& typed = dynamic_cast<Package&>(*applying.getPackagedElements().front());
     ASSERT_EQ(typed.getAppliedStereotypes().size(), 1);
-    InstanceSpecification& stereotypeInst = typed.getAppliedStereotypes().front();
+    InstanceSpecification& stereotypeInst = *typed.getAppliedStereotypes().front();
     ASSERT_FALSE(stereotypeInst.getClassifiers().empty());
     ASSERT_EQ(stereotypeInst.getClassifiers().size(), 1);
-    ASSERT_EQ(stereotypeInst.getClassifiers().front().getElementType(), ElementType::STEREOTYPE);
+    ASSERT_EQ(stereotypeInst.getClassifiers().front()->getElementType(), ElementType::STEREOTYPE);
     ASSERT_EQ(profile.getOwnedStereotypes().size(), 1);
-    Stereotype& stereotype = profile.getOwnedStereotypes().front();
-    ASSERT_EQ(stereotypeInst.getClassifiers().front().getID(), stereotype.getID());
+    Stereotype& stereotype = *profile.getOwnedStereotypes().front();
+    ASSERT_EQ(stereotypeInst.getClassifiers().front()->getID(), stereotype.getID());
 }
 
 TEST_F(PackageTest, emitAppliedStereotypeTest) {
@@ -814,7 +814,7 @@ TEST_F(PackageTest, mountProfileTest) {
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(extension, profile2));
   ASSERT_TRUE(profile2.getPackagedElements().contains(stereotype));
   ASSERT_EQ(profile2.getOwnedStereotypes().size(), 1);
-  ASSERT_EQ(profile2.getOwnedStereotypes().front(), stereotype);
+  ASSERT_EQ(profile2.getOwnedStereotypes().front(), &stereotype);
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(stereotype, profile2));
 
   ID stereotypeID = stereotype.getID();
@@ -847,7 +847,7 @@ TEST_F(PackageTest, mountProfileTest) {
   ASSERT_EQ(stereotype3.getOwner().id(), profileID);
   Profile& profile4 = m.get(profileID)->as<Profile>();
   ASSERT_EQ(profile4.getOwnedStereotypes().size(), 1);
-  ASSERT_EQ(profile4.getOwnedStereotypes().front(), stereotype3);
+  ASSERT_EQ(profile4.getOwnedStereotypes().front(), &stereotype3);
   ASSERT_EQ(profile4.getPackagedElements().size(), 3);
   ASSERT_TRUE(profile4.getPackagedElements().contains(stereotype3));
   ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(stereotype3, profile4));
@@ -864,7 +864,7 @@ TEST_F(PackageTest, mountProfileTest) {
   ASSERT_TRUE(extension2.getOwnedEnd());
   ASSERT_EQ(*extension2.getOwnedEnd(), end);
   ASSERT_EQ(extension2.getOwnedEnds().size(), 1);
-  ASSERT_EQ(extension2.getOwnedEnds().front(), end);
+  ASSERT_EQ(extension2.getOwnedEnds().front(), &end);
   ASSERT_EQ(extension2.getMemberEnds().size(), 2);
   ASSERT_TRUE(extension2.getMemberEnds().contains(end));
   ASSERT_TRUE(extension2.getMemberEnds().contains(stereotypePropertyBaseClass));
@@ -917,14 +917,14 @@ TEST_F(PackageTest, mountProfileTest) {
   ASSERT_EQ(end3.getOwner().id(), extensionID);
   Extension& extension4 = m.get(extensionID)->as<Extension>();
   ASSERT_TRUE(extension4.getOwnedEnd());
-  ASSERT_EQ(*extension4.getOwnedEnd(), end3);
+  ASSERT_EQ(extension4.getOwnedEnd(), &end3);
   ASSERT_EQ(extension4.getOwnedEnds().size(), 1);
-  ASSERT_EQ(extension4.getOwnedEnds().front(), end3);
+  ASSERT_EQ(extension4.getOwnedEnds().front(), &end3);
   ASSERT_EQ(extension4.getMemberEnds().size(), 2);
   ASSERT_TRUE(extension4.getMemberEnds().contains(end3));
   ASSERT_TRUE(extension4.getMemberEnds().contains(stereotypePropertyBaseClass));
   ASSERT_EQ(extension4.getOwnedMembers().size(), 1);
-  ASSERT_EQ(extension4.getOwnedMembers().front(), end3);
+  ASSERT_EQ(extension4.getOwnedMembers().front(), &end3);
   ASSERT_EQ(extension4.getMembers().size(), 2);
   ASSERT_TRUE(extension4.getMembers().contains(end3));
   ASSERT_TRUE(extension4.getMembers().contains(stereotypePropertyBaseClass));
@@ -950,7 +950,7 @@ TEST_F(PackageTest, mountProfileTest) {
 //   ASSERT_EQ(applying2.getOwnedElements().size(), 1);
 //   ASSERT_EQ(applying2.getOwnedElements().ids().front(), stereotypeInstID);
   InstanceSpecification& stereotypeInst2 = m.get(stereotypeInstID)->as<InstanceSpecification>();
-  ASSERT_EQ(applying2.getAppliedStereotypes().front(), stereotypeInst2);
+  ASSERT_EQ(applying2.getAppliedStereotypes().front(), &stereotypeInst2);
 //   ASSERT_TRUE(stereotypeInst2.getOwner());
 //   ASSERT_EQ(*stereotypeInst2.getOwner(), applying2);
 //   ASSERT_EQ(applying2.getOwnedElements().front(), stereotypeInst2);
@@ -963,7 +963,7 @@ TEST_F(PackageTest, mountProfileTest) {
 //   ASSERT_EQ(stereotypeInst3.getOwner().id(), applyingID);
   Class& applying3 = m.get(applyingID)->as<Class>();
   ASSERT_EQ(applying3.getAppliedStereotypes().size(), 1);
-  ASSERT_EQ(applying3.getAppliedStereotypes().front(), stereotypeInst3);
+  ASSERT_EQ(applying3.getAppliedStereotypes().front(), &stereotypeInst3);
 //   ASSERT_EQ(applying3.getOwnedElements().size(), 1);
 //   ASSERT_EQ(applying3.getOwnedElements().front(), stereotypeInst3);
 //   ASSERT_EQ(*stereotypeInst3.getOwner(), applying3);

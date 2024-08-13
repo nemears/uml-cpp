@@ -47,7 +47,7 @@ TemplateSignaturePtr TemplateParameter::getSignature() const {
     return m_signature.get();
 }
 
-void TemplateParameter::setSignature(TemplateSignature* signature) {
+void TemplateParameter::setSignature(TemplateSignaturePtr signature) {
     m_signature.set(signature);
 }
 
@@ -63,7 +63,7 @@ ParameterableElementPtr TemplateParameter::getOwnedParameteredElement() const {
     return m_ownedParameteredElement.get();
 }
 
-void TemplateParameter::setOwnedParameteredElement(ParameterableElement* el) {
+void TemplateParameter::setOwnedParameteredElement(ParameterableElementPtr el) {
     m_ownedParameteredElement.set(el);
 }
 
@@ -79,7 +79,7 @@ ParameterableElementPtr TemplateParameter::getParameteredElement() const {
     return m_parameteredElement.get();
 }
 
-void TemplateParameter::setParameteredElement(ParameterableElement* el) {
+void TemplateParameter::setParameteredElement(ParameterableElementPtr el) {
     m_parameteredElement.set(el);
 }
 
@@ -95,7 +95,7 @@ ParameterableElementPtr TemplateParameter::getDefault() const {
     return m_default.get();
 }
 
-void TemplateParameter::setDefault(ParameterableElement* el) {
+void TemplateParameter::setDefault(ParameterableElementPtr el) {
     m_default.set(el);
 }
 
@@ -111,7 +111,7 @@ ParameterableElementPtr TemplateParameter::getOwnedDefault() const {
     return m_ownedDefault.get();
 }
 
-void TemplateParameter::setOwnedDefault(ParameterableElement* el) {
+void TemplateParameter::setOwnedDefault(ParameterableElementPtr el) {
     m_ownedDefault.set(el);
 }
 

@@ -30,12 +30,12 @@ TEST_F(SignalTest, basicSignalAndReceptionTest) {
     ASSERT_EQ(signal.getMembers().size(), 1);
     ASSERT_EQ(signal.getOwnedElements().size(), 1);
 
-    ASSERT_EQ(signal.getOwnedAttributes().front(), attr);
-    ASSERT_EQ(signal.getAttributes().front(), attr);
-    ASSERT_EQ(signal.getFeatures().front(), attr);
-    ASSERT_EQ(signal.getOwnedMembers().front(), attr);
-    ASSERT_EQ(signal.getMembers().front(), attr);
-    ASSERT_EQ(signal.getOwnedElements().front(), attr);
+    ASSERT_EQ(signal.getOwnedAttributes().front(), &attr);
+    ASSERT_EQ(signal.getAttributes().front(), &attr);
+    ASSERT_EQ(signal.getFeatures().front(), &attr);
+    ASSERT_EQ(signal.getOwnedMembers().front(), &attr);
+    ASSERT_EQ(signal.getMembers().front(), &attr);
+    ASSERT_EQ(signal.getOwnedElements().front(), &attr);
 
     ASSERT_TRUE(attr.getFeaturingClassifier());
     ASSERT_TRUE(attr.getNamespace());
@@ -68,11 +68,11 @@ TEST_F(SignalTest, parseSignalTest) {
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    Signal& signal = pckg.getPackagedElements().get("signal").as<Signal>();
-    Class& clazz = pckg.getPackagedElements().get("class").as<Class>();
+    Signal& signal = pckg.getPackagedElements().get("signal")->as<Signal>();
+    Class& clazz = pckg.getPackagedElements().get("class")->as<Class>();
     ASSERT_EQ(signal.getOwnedAttributes().size(), 1);
     ASSERT_EQ(clazz.getOwnedReceptions().size(), 1);
-    Reception& reception = clazz.getOwnedReceptions().front();
+    Reception& reception = *clazz.getOwnedReceptions().front();
     ASSERT_EQ(*reception.getSignal(), signal);
 }
 

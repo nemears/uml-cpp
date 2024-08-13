@@ -28,7 +28,7 @@ BehavioralFeaturePtr Behavior::getSpecification() const {
     return m_specification.get();
 }
 
-void Behavior::setSpecification(BehavioralFeature* specification) {
+void Behavior::setSpecification(BehavioralFeaturePtr specification) {
     m_specification.set(specification);
 }
 

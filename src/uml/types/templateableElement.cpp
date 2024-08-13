@@ -21,7 +21,7 @@ TemplateSignaturePtr TemplateableElement::getOwnedTemplateSignature() const {
     return m_ownedTemplateSignature.get();
 }
 
-void TemplateableElement::setOwnedTemplateSignature(TemplateSignature* signature) {
+void TemplateableElement::setOwnedTemplateSignature(TemplateSignaturePtr signature) {
     m_ownedTemplateSignature.set(signature);
 }
 

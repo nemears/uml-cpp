@@ -45,7 +45,7 @@ ExtensionEndPtr Extension::getOwnedEnd() const {
     return m_ownedEnd.get();
 }
 
-void Extension::setOwnedEnd(ExtensionEnd* end) {
+void Extension::setOwnedEnd(ExtensionEndPtr end) {
     m_ownedEnd.set(end);
 }
 

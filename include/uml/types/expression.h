@@ -1,7 +1,7 @@
 #pragma once
 
 #include "valueSpecification.h"
-#include"uml/set/orderedSet.h"
+#include"uml/set/indexableSet.h"
 
 namespace UML {
     class Expression : public ValueSpecification {
@@ -10,11 +10,11 @@ namespace UML {
 
         protected:
             std::string m_symbol = "";
-            OrderedSet<ValueSpecification, Expression> m_operands = OrderedSet<ValueSpecification, Expression>(this);
+            IndexableOrderedSet<ValueSpecification, Expression> m_operands = IndexableOrderedSet<ValueSpecification, Expression>(this);
             Expression();
         public:
             virtual ~Expression();
-            OrderedSet<ValueSpecification, Expression>& getOperands();
+            IndexableOrderedSet<ValueSpecification, Expression>& getOperands();
             std::string getSymbol();
             void setSymbol(const std::string& sym);
             bool is(ElementType eType) const override;

@@ -18,7 +18,7 @@ TypePtr ExtensionEnd::getType() const {
     return m_extensionType.get();
 }
 
-void ExtensionEnd::setType(Stereotype* type) {
+void ExtensionEnd::setType(StereotypePtr type) {
     m_extensionType.set(type);
 }
 

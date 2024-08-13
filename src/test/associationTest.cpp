@@ -27,11 +27,11 @@ TEST_F(AssociationTest, addMemberEndFunctorTest) {
     p.setType(c);
     ASSERT_NO_THROW(a.getMemberEnds().add(p));
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
-    ASSERT_TRUE(&a.getMemberEnds().front() == &p);
+    ASSERT_TRUE(a.getMemberEnds().front() == &p);
     ASSERT_TRUE(a.getMembers().size() == 1);
-    ASSERT_TRUE(&a.getMembers().front() == &p);
+    ASSERT_TRUE(a.getMembers().front() == &p);
     ASSERT_TRUE(a.getEndTypes().size() == 1);
-    ASSERT_TRUE(&a.getEndTypes().front() == &c);
+    ASSERT_TRUE(a.getEndTypes().front() == &c);
 
     ASSERT_TRUE(p.getAssociation() == &a);
 }
@@ -42,9 +42,9 @@ TEST_F(AssociationTest, setAssociationTest) {
     Association& a = *m.create<Association>();
     p.setAssociation(a);
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
-    ASSERT_TRUE(&a.getMemberEnds().front() == &p);
+    ASSERT_TRUE(a.getMemberEnds().front() == &p);
     ASSERT_TRUE(a.getMembers().size() == 1);
-    ASSERT_TRUE(&a.getMembers().front() == &p);
+    ASSERT_TRUE(a.getMembers().front() == &p);
 
     ASSERT_EQ(*p.getAssociation(), a);
 }
@@ -79,9 +79,9 @@ TEST_F(AssociationTest, overwriteAssociationW_OtherTest) {
     ASSERT_NO_THROW(a.getMemberEnds().add(p));
     ASSERT_NO_THROW(p.setAssociation(a2));
     ASSERT_EQ(a2.getMemberEnds().size(), 1);
-    ASSERT_EQ(&a2.getMemberEnds().front(), &p);
+    ASSERT_EQ(a2.getMemberEnds().front(), &p);
     ASSERT_EQ(a2.getMembers().size(), 1);
-    ASSERT_EQ(&a2.getMembers().front(), &p);
+    ASSERT_EQ(a2.getMembers().front(), &p);
 
     ASSERT_EQ(*p.getAssociation(), a2);
 
@@ -94,15 +94,15 @@ TEST_F(AssociationTest, addOwnedEndTest) {
     Association& a = *m.create<Association>();
     ASSERT_NO_THROW(a.getOwnedEnds().add(p));
     ASSERT_TRUE(a.getOwnedEnds().size() == 1);
-    ASSERT_TRUE(&a.getOwnedEnds().front() == &p);
+    ASSERT_TRUE(a.getOwnedEnds().front() == &p);
     ASSERT_TRUE(a.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(&a.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(a.getOwnedMembers().front() == &p);
     ASSERT_TRUE(a.getOwnedElements().size() == 1);
     ASSERT_TRUE(*a.getOwnedElements().begin() == p);
     ASSERT_TRUE(a.getFeatures().size() == 1);
-    ASSERT_TRUE(&a.getFeatures().front() == &p);
+    ASSERT_TRUE(a.getFeatures().front() == &p);
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
-    ASSERT_TRUE(&a.getMemberEnds().front() == &p);
+    ASSERT_TRUE(a.getMemberEnds().front() == &p);
 
     ASSERT_EQ(*p.getOwningAssociation(), a);
     ASSERT_EQ(*p.getAssociation(), a);
@@ -117,15 +117,15 @@ TEST_F(AssociationTest, setOwningAssociationTest) {
     Association& a = *m.create<Association>();
     ASSERT_NO_THROW(p.setOwningAssociation(a));
     ASSERT_TRUE(a.getOwnedEnds().size() == 1);
-    ASSERT_TRUE(&a.getOwnedEnds().front() == &p);
+    ASSERT_TRUE(a.getOwnedEnds().front() == &p);
     ASSERT_TRUE(a.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(&a.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(a.getOwnedMembers().front() == &p);
     ASSERT_TRUE(a.getOwnedElements().size() == 1);
     ASSERT_TRUE(*a.getOwnedElements().begin() == p);
     ASSERT_TRUE(a.getFeatures().size() == 1);
-    ASSERT_TRUE(&a.getFeatures().front() == &p);
+    ASSERT_TRUE(a.getFeatures().front() == &p);
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
-    ASSERT_TRUE(&a.getMemberEnds().front() == &p);
+    ASSERT_TRUE(a.getMemberEnds().front() == &p);
 
     ASSERT_EQ(*p.getOwningAssociation(), a);
     ASSERT_EQ(*p.getAssociation(), a);
@@ -189,15 +189,15 @@ TEST_F(AssociationTest, overwriteOwningAssociationTest) {
     ASSERT_TRUE(a.getOwnedElements().size() == 0);
 
     ASSERT_TRUE(a2.getOwnedEnds().size() == 1);
-    ASSERT_TRUE(&a2.getOwnedEnds().front() == &p);
+    ASSERT_TRUE(a2.getOwnedEnds().front() == &p);
     ASSERT_TRUE(a2.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(&a2.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(a2.getOwnedMembers().front() == &p);
     ASSERT_TRUE(a2.getOwnedElements().size() == 1);
     ASSERT_TRUE(*a2.getOwnedElements().begin() == p);
     ASSERT_TRUE(a2.getFeatures().size() == 1);
-    ASSERT_TRUE(&a2.getFeatures().front() == &p);
+    ASSERT_TRUE(a2.getFeatures().front() == &p);
     ASSERT_TRUE(a2.getMemberEnds().size() == 1);
-    ASSERT_TRUE(&a2.getMemberEnds().front() == &p);
+    ASSERT_TRUE(a2.getMemberEnds().front() == &p);
 
     ASSERT_EQ(*p.getOwningAssociation(), a2);
     ASSERT_EQ(*p.getAssociation(), a2);
@@ -212,17 +212,17 @@ TEST_F(AssociationTest, addNavigableOwnedEndTest) {
     Association& a = *m.create<Association>();
     a.getNavigableOwnedEnds().add(p);
     ASSERT_TRUE(a.getNavigableOwnedEnds().size() == 1);
-    ASSERT_TRUE(&a.getNavigableOwnedEnds().front() == &p);
+    ASSERT_TRUE(a.getNavigableOwnedEnds().front() == &p);
     ASSERT_TRUE(a.getOwnedEnds().size() == 1);
-    ASSERT_TRUE(&a.getOwnedEnds().front() == &p);
+    ASSERT_TRUE(a.getOwnedEnds().front() == &p);
     ASSERT_TRUE(a.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(&a.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(a.getOwnedMembers().front() == &p);
     ASSERT_TRUE(a.getOwnedElements().size() == 1);
     ASSERT_TRUE(*a.getOwnedElements().begin() == p);
     ASSERT_TRUE(a.getFeatures().size() == 1);
-    ASSERT_TRUE(&a.getFeatures().front() == &p);
+    ASSERT_TRUE(a.getFeatures().front() == &p);
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
-    ASSERT_TRUE(&a.getMemberEnds().front() == &p);
+    ASSERT_TRUE(a.getMemberEnds().front() == &p);
 
     ASSERT_EQ(*p.getOwningAssociation(), a);
     ASSERT_EQ(*p.getAssociation(), a);
@@ -290,15 +290,15 @@ TEST_F(AssociationTest, navigableOwnedEndOverwriteOwningAssociationTest) {
 
     ASSERT_TRUE(a2.getNavigableOwnedEnds().size() == 0);
     ASSERT_TRUE(a2.getOwnedEnds().size() == 1);
-    ASSERT_TRUE(&a2.getOwnedEnds().front() == &p);
+    ASSERT_TRUE(a2.getOwnedEnds().front() == &p);
     ASSERT_TRUE(a2.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(&a2.getOwnedMembers().front() == &p);
+    ASSERT_TRUE(a2.getOwnedMembers().front() == &p);
     ASSERT_TRUE(a2.getOwnedElements().size() == 1);
     ASSERT_TRUE(*a2.getOwnedElements().begin() == p);
     ASSERT_TRUE(a2.getFeatures().size() == 1);
-    ASSERT_TRUE(&a2.getFeatures().front() == &p);
+    ASSERT_TRUE(a2.getFeatures().front() == &p);
     ASSERT_TRUE(a2.getMemberEnds().size() == 1);
-    ASSERT_TRUE(&a2.getMemberEnds().front() == &p);
+    ASSERT_TRUE(a2.getMemberEnds().front() == &p);
 
     ASSERT_EQ(*p.getOwningAssociation(), a2);
     ASSERT_EQ(*p.getAssociation(), a2);
@@ -316,11 +316,11 @@ TEST_F(AssociationTest, reindexTypeTest) {
     ASSERT_NO_THROW(p.setType(c));
 
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
-    ASSERT_TRUE(&a.getMemberEnds().front() == &p);
+    ASSERT_TRUE(a.getMemberEnds().front() == &p);
     ASSERT_TRUE(a.getMembers().size() == 1);
-    ASSERT_TRUE(&a.getMembers().front() == &p);
+    ASSERT_TRUE(a.getMembers().front() == &p);
     ASSERT_TRUE(a.getEndTypes().size() == 1);
-    ASSERT_TRUE(&a.getEndTypes().front() == &c);
+    ASSERT_TRUE(a.getEndTypes().front() == &c);
 
     ASSERT_EQ(*p.getAssociation(), a);
 }
@@ -336,21 +336,21 @@ TEST_F(AssociationTest, parseNavigableOwnedEndAndMemberEndTest) {
     // TODO?
 
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg.getPackagedElements().get("type").getElementType(), ElementType::CLASS);
-    Class& type = m.get(pckg.getPackagedElements().get("type").getID())->as<Class>();
-    ASSERT_EQ(pckg.getPackagedElements().get("hasAssociation").getElementType(), ElementType::CLASS);
-    Class& c = *dynamic_cast<Class*>(&pckg.getPackagedElements().get("hasAssociation"));
+    ASSERT_EQ(pckg.getPackagedElements().get("type")->getElementType(), ElementType::CLASS);
+    Class& type = m.get(pckg.getPackagedElements().get("type")->getID())->as<Class>();
+    ASSERT_EQ(pckg.getPackagedElements().get("hasAssociation")->getElementType(), ElementType::CLASS);
+    Class& c = pckg.getPackagedElements().get("hasAssociation")->as<Class>();;
     ASSERT_EQ(c.getOwnedAttributes().size(), 1);
-    Property& p = c.getOwnedAttributes().front();
+    Property& p = *c.getOwnedAttributes().front();
     ASSERT_TRUE(p.getType());
     ASSERT_EQ(p.getType()->getID(), type.getID());
-    ASSERT_EQ(pckg.getPackagedElements().get("association").getElementType(), ElementType::ASSOCIATION);
-    Association& ass = dynamic_cast<Association&>(pckg.getPackagedElements().get("association"));
+    ASSERT_EQ(pckg.getPackagedElements().get("association")->getElementType(), ElementType::ASSOCIATION);
+    Association& ass = pckg.getPackagedElements().get("association")->as<Association>();
     ASSERT_EQ(ass.getMemberEnds().size(), 2);
     ASSERT_TRUE(ass.getMemberEnds().contains(p));
     // ASSERT_EQ(ass.getMemberEnds().back().getID(), p.getID());
     ASSERT_EQ(ass.getNavigableOwnedEnds().size(), 1);
-    Property& ne = ass.getNavigableOwnedEnds().front();
+    Property& ne = *ass.getNavigableOwnedEnds().front();
     ASSERT_TRUE(ne.getType());
     ASSERT_EQ(ne.getType()->getID(), ID::fromString("real_aZG&w6yl61bXVWutgeyScN9"));
 }
@@ -366,20 +366,20 @@ TEST_F(AssociationTest, parseOwnedEndAndMemberEndTest) {
     // TODO?
 
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg.getPackagedElements().get("type").getElementType(), ElementType::CLASS);
-    Class& type = m.get(pckg.getPackagedElements().get("type").getID())->as<Class>();
-    ASSERT_EQ(pckg.getPackagedElements().get("hasAssociation").getElementType(), ElementType::CLASS);
-    Class& c = *dynamic_cast<Class*>(&pckg.getPackagedElements().get("hasAssociation"));
+    ASSERT_EQ(pckg.getPackagedElements().get("type")->getElementType(), ElementType::CLASS);
+    Class& type = m.get(pckg.getPackagedElements().get("type")->getID())->as<Class>();
+    ASSERT_EQ(pckg.getPackagedElements().get("hasAssociation")->getElementType(), ElementType::CLASS);
+    Class& c = pckg.getPackagedElements().get("hasAssociation")->as<Class>();
     ASSERT_EQ(c.getOwnedAttributes().size(), 1);
-    Property& p = c.getOwnedAttributes().front();
+    Property& p = *c.getOwnedAttributes().front();
     ASSERT_TRUE(p.getType());
     ASSERT_EQ(p.getType()->getID(), type.getID());
-    ASSERT_EQ(pckg.getPackagedElements().get("association").getElementType(), ElementType::ASSOCIATION);
-    Association& ass = dynamic_cast<Association&>(pckg.getPackagedElements().get("association"));
+    ASSERT_EQ(pckg.getPackagedElements().get("association")->getElementType(), ElementType::ASSOCIATION);
+    Association& ass = pckg.getPackagedElements().get("association")->as<Association>();
     ASSERT_EQ(ass.getMemberEnds().size(), 2);
-    ASSERT_EQ(ass.getMemberEnds().get(ID::fromString("KpMoyOIGjkm&tB8F_zGExQejc7T7")).getID(), p.getID());
+    ASSERT_EQ(ass.getMemberEnds().get(ID::fromString("KpMoyOIGjkm&tB8F_zGExQejc7T7"))->getID(), p.getID());
     ASSERT_EQ(ass.getOwnedEnds().size(), 1);
-    Property& ne = ass.getOwnedEnds().front();
+    Property& ne = *ass.getOwnedEnds().front();
     ASSERT_TRUE(ne.getType());
     ASSERT_EQ(ne.getType()->getID(), ID::fromString("real_aZG&w6yl61bXVWutgeyScN9"));
 }
@@ -471,13 +471,13 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     ASSERT_TRUE(aProp2.getType());
     ASSERT_EQ(*aProp2.getType(), clazz);
     ASSERT_EQ(association.getNavigableOwnedEnds().size(), 1);
-    ASSERT_EQ(association.getNavigableOwnedEnds().front(), aProp2);
+    ASSERT_EQ(association.getNavigableOwnedEnds().front(), &aProp2);
     ASSERT_EQ(association.getOwnedEnds().size(), 1);
-    ASSERT_EQ(association.getOwnedEnds().front(), aProp2);
+    ASSERT_EQ(association.getOwnedEnds().front(), &aProp2);
     ASSERT_EQ(association.getMemberEnds().size(), 2);
     ASSERT_TRUE(association.getMemberEnds().contains(aProp2));
     ASSERT_EQ(association.getOwnedMembers().size(), 1);
-    ASSERT_EQ(association.getOwnedMembers().front(), aProp2);
+    ASSERT_EQ(association.getOwnedMembers().front(), &aProp2);
     ASSERT_EQ(association.getMembers().size(), 2);
     ASSERT_TRUE(association.getMembers().contains(aProp2));
     ASSERT_EQ(association.getOwnedElements().size(), 1);
@@ -501,7 +501,7 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     ASSERT_TRUE(aProp3.getOwner());
     ASSERT_EQ(*aProp3.getOwner(), association2);
     ASSERT_EQ(association2.getNavigableOwnedEnds().size(), 1);
-    ASSERT_EQ(association2.getNavigableOwnedEnds().front(), aProp3);
+    ASSERT_EQ(association2.getNavigableOwnedEnds().front(), &aProp3);
     ASSERT_EQ(association2.getOwnedEnds().size(), 1);
     ASSERT_TRUE(association2.getOwnedEnds().contains(aProp3));
     ASSERT_EQ(association2.getMemberEnds().size(), 2);
@@ -529,13 +529,13 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     ASSERT_TRUE(association2.getEndTypes().contains(type));
     ASSERT_TRUE(association2.getEndTypes().contains(clazz));
     ASSERT_EQ(clazz.getParts().size(), 1);
-    ASSERT_EQ(clazz.getParts().front(), cProp2);
+    ASSERT_EQ(clazz.getParts().front(), &cProp2);
     ASSERT_EQ(clazz.getOwnedAttributes().size(), 1);
-    ASSERT_EQ(clazz.getOwnedAttributes().front(), cProp2);
+    ASSERT_EQ(clazz.getOwnedAttributes().front(), &cProp2);
     ASSERT_EQ(clazz.getAttributes().size(), 1);
-    ASSERT_EQ(clazz.getAttributes().front(), cProp2);
+    ASSERT_EQ(clazz.getAttributes().front(), &cProp2);
     ASSERT_EQ(clazz.getFeatures().size(), 1);
-    ASSERT_EQ(clazz.getFeatures().front(), cProp2);
+    ASSERT_EQ(clazz.getFeatures().front(), &cProp2);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(cProp2, clazz));
 
     m.release(association2, cProp2);
@@ -559,19 +559,19 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     ASSERT_EQ(association4.getEndTypes().size(), 2);
     ASSERT_TRUE(m.loaded(aPropID));
     ASSERT_FALSE(m.loaded(clazzID));
-    Property& aProp4 = association4.getNavigableOwnedEnds().front();
+    Property& aProp4 = *association4.getNavigableOwnedEnds().front();
     ASSERT_TRUE(aProp4.getType());
     Class& clazz2 = m.get(clazzID)->as<Class>();
     ASSERT_EQ(*aProp4.getType(), clazz2);
     Property& cProp4 = m.get(cPropID)->as<Property>();
     ASSERT_EQ(clazz2.getParts().size(), 1);
-    ASSERT_EQ(clazz2.getParts().front(), cProp4);
+    ASSERT_EQ(clazz2.getParts().front(), &cProp4);
     ASSERT_EQ(clazz2.getOwnedAttributes().size(), 1);
-    ASSERT_EQ(clazz2.getOwnedAttributes().front(), cProp4);
+    ASSERT_EQ(clazz2.getOwnedAttributes().front(), &cProp4);
     ASSERT_EQ(clazz2.getAttributes().size(), 1);
-    ASSERT_EQ(clazz2.getAttributes().front(), cProp4);
+    ASSERT_EQ(clazz2.getAttributes().front(), &cProp4);
     ASSERT_EQ(clazz2.getFeatures().size(), 1);
-    ASSERT_EQ(clazz2.getFeatures().front(), cProp4);
+    ASSERT_EQ(clazz2.getFeatures().front(), &cProp4);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(cProp4, clazz2));
 
     m.release(clazz2, cProp4);
@@ -579,12 +579,12 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     ASSERT_TRUE(m.loaded(cPropID));
     Property& cProp5 = m.get(cPropID)->as<Property>();
     ASSERT_EQ(clazz3.getParts().size(), 1);
-    ASSERT_EQ(clazz3.getParts().front(), cProp5);
+    ASSERT_EQ(clazz3.getParts().front(), &cProp5);
     ASSERT_EQ(clazz3.getOwnedAttributes().size(), 1);
-    ASSERT_EQ(clazz3.getOwnedAttributes().front(), cProp5);
+    ASSERT_EQ(clazz3.getOwnedAttributes().front(), &cProp5);
     ASSERT_EQ(clazz3.getAttributes().size(), 1);
-    ASSERT_EQ(clazz3.getAttributes().front(), cProp5);
+    ASSERT_EQ(clazz3.getAttributes().front(), &cProp5);
     ASSERT_EQ(clazz3.getFeatures().size(), 1);
-    ASSERT_EQ(clazz3.getFeatures().front(), cProp5);
+    ASSERT_EQ(clazz3.getFeatures().front(), &cProp5);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(cProp5, clazz3));
 }

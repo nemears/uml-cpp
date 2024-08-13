@@ -123,7 +123,7 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
     ASSERT_TRUE(i.getClassifiers().contains(c.getID()));
     ASSERT_NO_THROW(m.release(c));
     ASSERT_TRUE(i.getClassifiers().size() != 0);
-    Class* c2 = &i.getClassifiers().front().as<Class>();
+    ClassPtr c2 = i.getClassifiers().front();
     ASSERT_TRUE(i.getOwner());
     ASSERT_TRUE(c2->getOwner());
     ASSERT_EQ(c2->getNamespace(), &p);
@@ -200,7 +200,7 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
             ASSERT_TRUE(pckg->getOwningPackage());
             m.release(*pckg->getOwningPackage());
         }
-        pckg = &pckg->getPackagedElements().front().as<Package>();
+        pckg = pckg->getPackagedElements().front();
     }
     Package& root3 = m.get(rootID)->as<Package>();
     ASSERT_EQ(root3.getID(), rootID);

@@ -25,7 +25,7 @@ PackagePtr PackageMerge::getReceivingPackage() const {
     return m_receivingPackage.get();
 }
 
-void PackageMerge::setReceivingPackage(Package* receiving) {
+void PackageMerge::setReceivingPackage(PackagePtr receiving) {
     m_receivingPackage.set(receiving);
 }
 
@@ -41,7 +41,7 @@ PackagePtr PackageMerge::getMergedPackage() const {
     return m_mergedPackage.get();
 }
 
-void PackageMerge::setMergedPackage(Package* merge) {
+void PackageMerge::setMergedPackage(PackagePtr merge) {
     m_mergedPackage.set(merge);
 }
 

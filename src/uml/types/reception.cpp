@@ -31,7 +31,7 @@ SignalPtr Reception::getSignal() const {
     return m_signal.get();
 }
 
-void Reception::setSignal(Signal* signal) {
+void Reception::setSignal(SignalPtr signal) {
     m_signal.set(signal);
 }
 

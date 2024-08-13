@@ -24,7 +24,7 @@ namespace UML {
             Set<Parameter, Behavior>& getOwnedParameters();
             BehavioralFeaturePtr getSpecification() const;
             void setSpecification(BehavioralFeature& specification);
-            void setSpecification(BehavioralFeature* specification);
+            void setSpecification(BehavioralFeaturePtr specification);
             void setSpecification(ID id);
             bool is(ElementType eType) const override;
             static ElementType elementType() {

@@ -30,7 +30,7 @@ PackageableElementPtr Manifestation::getUtilizedElement() const {
     return m_utilizedElement.get();
 }
 
-void Manifestation::setUtilizedElement(PackageableElement* utilizedElement) {
+void Manifestation::setUtilizedElement(PackageableElementPtr utilizedElement) {
     m_utilizedElement.set(utilizedElement);
 }
 

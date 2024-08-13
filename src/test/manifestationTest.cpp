@@ -16,13 +16,13 @@ TEST_F(ManifestationTest, setUtilizedElementTest) {
     ASSERT_TRUE(man.getUtilizedElement());
     ASSERT_EQ(*man.getUtilizedElement(), d);
     ASSERT_EQ(man.getSuppliers().size(), 1);
-    ASSERT_EQ(man.getSuppliers().front().getID(), d.getID());
+    ASSERT_EQ(man.getSuppliers().front()->getID(), d.getID());
     Dependency& d2 = *m.create<Dependency>();
     man.setUtilizedElement(d2);
     ASSERT_TRUE(man.getUtilizedElement());
     ASSERT_EQ(*man.getUtilizedElement(), d2);
     ASSERT_EQ(man.getSuppliers().size(), 1);
-    ASSERT_EQ(man.getSuppliers().front().getID(), d2.getID());
+    ASSERT_EQ(man.getSuppliers().front()->getID(), d2.getID());
     man.setUtilizedElement(0);
     ASSERT_FALSE(man.getUtilizedElement());
     ASSERT_EQ(man.getSuppliers().size(), 0);

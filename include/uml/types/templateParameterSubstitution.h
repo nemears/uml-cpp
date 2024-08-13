@@ -33,19 +33,19 @@ namespace UML {
             ~TemplateParameterSubstitution();
             TemplateParameterPtr getFormal() const;
             void setFormal(TemplateParameter& formal);
-            void setFormal(TemplateParameter* formal);
+            void setFormal(TemplateParameterPtr formal);
             void setFormal(ID id);
             TemplateBindingPtr getTemplateBinding() const;
             void setTemplateBinding(TemplateBinding& binding);
-            void setTemplateBinding(TemplateBinding* binding);
+            void setTemplateBinding(TemplateBindingPtr binding);
             void setTemplateBinding(ID id);
             ParameterableElementPtr getActual() const;
             void setActual(ParameterableElement& actual);
-            void setActual(ParameterableElement* actual);
+            void setActual(ParameterableElementPtr actual);
             void setActual(ID id);
             ParameterableElementPtr getOwnedActual() const;
             void setOwnedActual(ParameterableElement& actual);
-            void setOwnedActual(ParameterableElement* actual);
+            void setOwnedActual(ParameterableElementPtr actual);
             void setOwnedActual(ID id);
             bool is(ElementType eType) const override;
             static ElementType elementType() {

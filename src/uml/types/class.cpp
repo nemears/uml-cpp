@@ -26,19 +26,19 @@ Class::~Class() {
 
 }
 
-OrderedSet<Property, Class>& Class::getOwnedAttributes() {
+IndexableOrderedSet<Property, Class>& Class::getOwnedAttributes() {
     return m_classOwnedAttrubutes;
 }
 
-OrderedSet<Operation, Class>& Class::getOwnedOperations() {
+IndexableOrderedSet<Operation, Class>& Class::getOwnedOperations() {
     return m_ownedOperations;
 }
 
-OrderedSet<Classifier, Class>& Class::getNestedClassifiers() {
+IndexableOrderedSet<Classifier, Class>& Class::getNestedClassifiers() {
     return m_nestedClassifiers;
 }
 
-Set<Reception, Class>& Class::getOwnedReceptions() {
+IndexableSet<Reception, Class>& Class::getOwnedReceptions() {
     return m_ownedReceptions;
 }
 

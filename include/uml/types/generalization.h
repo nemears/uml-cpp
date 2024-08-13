@@ -30,12 +30,12 @@ namespace UML {
         public:
             virtual ~Generalization();
             ClassifierPtr getGeneral() const;
-            void setGeneral(Classifier* general);
+            void setGeneral(ClassifierPtr general);
             void setGeneral(Classifier& general);
             void setGeneral(ID id);
             ClassifierPtr getSpecific() const;
             void setSpecific(Classifier& specific);
-            void setSpecific(Classifier* specific);
+            void setSpecific(ClassifierPtr specific);
             void setSpecific(ID id);
             Set<GeneralizationSet, Generalization>& getGeneralizationSets();
             bool is(ElementType eType) const override;

@@ -28,11 +28,11 @@ namespace UML {
             ~TemplateBinding();
             TemplateableElementPtr getBoundElement() const;
             void setBoundElement(TemplateableElement& el);
-            void setBoundElement(TemplateableElement* el);
+            void setBoundElement(TemplateableElementPtr el);
             void setBoundElement(ID id);
             TemplateSignaturePtr getSignature() const;
             void setSignature(TemplateSignature& signature);
-            void setSignature(TemplateSignature* signature);
+            void setSignature(TemplateSignaturePtr signature);
             void setSignature(ID id);
             Set<TemplateParameterSubstitution, TemplateBinding>& getParameterSubstitutions();
             bool is(ElementType eType) const override;

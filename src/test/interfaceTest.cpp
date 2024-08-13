@@ -127,26 +127,26 @@ TEST_F(InterfaceTest, parseBasicInterfaceTest) {
     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
     Package& pckg = el->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg.getPackagedElements().get("interface").getElementType(), ElementType::INTERFACE_UML);
-    Interface& interface_uml = pckg.getPackagedElements().get("interface").as<Interface>();
+    ASSERT_EQ(pckg.getPackagedElements().get("interface")->getElementType(), ElementType::INTERFACE_UML);
+    Interface& interface_uml = pckg.getPackagedElements().get("interface")->as<Interface>();
     ASSERT_EQ(interface_uml.getOwnedAttributes().size(), 1);
     ASSERT_EQ(interface_uml.getOwnedOperations().size(), 1);
     ASSERT_EQ(interface_uml.getNestedClassifiers().size(), 1);
-    Property& prop = interface_uml.getOwnedAttributes().front();
-    Operation& op = interface_uml.getOwnedOperations().front();
-    ASSERT_EQ(interface_uml.getNestedClassifiers().front().getElementType(), ElementType::DATA_TYPE);
-    DataType& nested = interface_uml.getNestedClassifiers().front().as<DataType>();
+    Property& prop = *interface_uml.getOwnedAttributes().front();
+    Operation& op = *interface_uml.getOwnedOperations().front();
+    ASSERT_EQ(interface_uml.getNestedClassifiers().front()->getElementType(), ElementType::DATA_TYPE);
+    DataType& nested = interface_uml.getNestedClassifiers().front()->as<DataType>();
     ASSERT_EQ(prop.getName(), "prop");
     ASSERT_EQ(op.getName(), "op");
     ASSERT_EQ(nested.getName(), "nest");
     ASSERT_EQ(interface_uml.getGeneralizations().size(), 1);
-    Generalization& generalization = interface_uml.getGeneralizations().front();
+    Generalization& generalization = *interface_uml.getGeneralizations().front();
     ASSERT_TRUE(generalization.getGeneral());
     ASSERT_EQ(generalization.getGeneral()->getElementType(), ElementType::INTERFACE_UML);
     Interface& general = generalization.getGeneral()->as<Interface>();
-    Class& clazz = pckg.getPackagedElements().get("implementingClazz").as<Class>();
+    Class& clazz = pckg.getPackagedElements().get("implementingClazz")->as<Class>();
     ASSERT_EQ(clazz.getInterfaceRealizations().size(), 1);
-    InterfaceRealization& realization = clazz.getInterfaceRealizations().front();
+    InterfaceRealization& realization = *clazz.getInterfaceRealizations().front();
     ASSERT_TRUE(realization.getContract());
     ASSERT_EQ(*realization.getContract(), interface_uml);
 }
@@ -219,18 +219,18 @@ TEST_F(InterfaceTest, parsePortW_InterfaceTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    Class& implementing = pckg.getPackagedElements().get("implementing").as<Class>();
-    Interface& interface_uml = pckg.getPackagedElements().get("interface").as<Interface>();
-    Class& encapsulated = pckg.getPackagedElements().get("encapsulated").as<Class>();
+    Class& implementing = pckg.getPackagedElements().get("implementing")->as<Class>();
+    Interface& interface_uml = pckg.getPackagedElements().get("interface")->as<Interface>();
+    Class& encapsulated = pckg.getPackagedElements().get("encapsulated")->as<Class>();
     ASSERT_EQ(implementing.getInterfaceRealizations().size(), 1);
-    InterfaceRealization& realization = implementing.getInterfaceRealizations().front();
+    InterfaceRealization& realization = *implementing.getInterfaceRealizations().front();
     ASSERT_TRUE(realization.getContract());
     ASSERT_EQ(*realization.getContract(), interface_uml);
     ASSERT_EQ(encapsulated.getOwnedPorts().size(), 1);
-    Port& port = encapsulated.getOwnedPorts().front();
+    Port& port = *encapsulated.getOwnedPorts().front();
     ASSERT_TRUE(port.isConjugated());
     ASSERT_EQ(port.getRequired().size(), 1); // TODO fix type reference when opening
-    ASSERT_EQ(port.getRequired().front(), interface_uml);
+    ASSERT_EQ(port.getRequired().front(), &interface_uml);
 }
 
 TEST_F(InterfaceTest, emitPortWInterfaceTest) {
@@ -356,12 +356,12 @@ TEST_F(InterfaceTest, mountInterfaceTest) {
     ASSERT_EQ(interface2.getOwnedMembers().size(), 3);
     ASSERT_EQ(interface2.getMembers().size(), 3);
     ASSERT_EQ(interface2.getOwnedElements().size(), 3);
-    ASSERT_EQ(interface2.getOwnedAttributes().front(), prop);
-    ASSERT_EQ(interface2.getOwnedOperations().front(), op);
-    ASSERT_EQ(interface2.getNestedClassifiers().front(), nest);
+    ASSERT_EQ(interface2.getOwnedAttributes().front(), &prop);
+    ASSERT_EQ(interface2.getOwnedOperations().front(), &op);
+    ASSERT_EQ(interface2.getNestedClassifiers().front(), &nest);
 
-    ASSERT_EQ(pPort.getProvided().front(), interface2);
-    ASSERT_EQ(ePort.getProvided().front(), interface2);
+    ASSERT_EQ(pPort.getProvided().front(), &interface2);
+    ASSERT_EQ(ePort.getProvided().front(), &interface2);
 
     ID propertyID = prop.getID();
     m.release(prop);

@@ -25,7 +25,7 @@ Slot::~Slot() {
     
 }
 
-OrderedSet<ValueSpecification, Slot>& Slot::getValues() {
+IndexableOrderedSet<ValueSpecification, Slot>& Slot::getValues() {
     return m_values;
 }
 
@@ -33,7 +33,7 @@ StructuralFeaturePtr Slot::getDefiningFeature() const {
     return m_definingFeature.get();
 }
 
-void Slot::setDefiningFeature(StructuralFeature* definingFeature) {
+void Slot::setDefiningFeature(StructuralFeaturePtr definingFeature) {
     m_definingFeature.set(definingFeature);
 }
 
@@ -49,7 +49,7 @@ InstanceSpecificationPtr Slot::getOwningInstance() const {
     return m_owningInstance.get();
 }
 
-void Slot::setOwningInstance(InstanceSpecification* inst) {
+void Slot::setOwningInstance(InstanceSpecificationPtr inst) {
     m_owningInstance.set(inst);
 }
 

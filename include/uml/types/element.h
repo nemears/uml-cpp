@@ -193,6 +193,8 @@ namespace UML {
         friend class Singleton;
         template <class T, class U, class ApiPolicy>
         friend class Set;
+        template <class T, class U, class ApiPolicy>
+        friend class OrderedSet;
         friend std::string emit(Element& el, EmitterData& data);
         friend ElementPtr parse(std::string data, ParserData& metaData);
         friend bool parseElementScope(YAML::Node node, Element& el, ParserData& data);

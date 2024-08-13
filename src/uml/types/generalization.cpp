@@ -51,7 +51,7 @@ ClassifierPtr Generalization::getGeneral() const {
     return m_general.get();
 }
 
-void Generalization::setGeneral(Classifier* general) {
+void Generalization::setGeneral(ClassifierPtr general) {
     m_general.set(general);
 }
 
@@ -67,7 +67,7 @@ ClassifierPtr Generalization::getSpecific() const {
     return m_specific.get();
 }
 
-void Generalization::setSpecific(Classifier* specific) {
+void Generalization::setSpecific(ClassifierPtr specific) {
     m_specific.set(specific);
 }
 

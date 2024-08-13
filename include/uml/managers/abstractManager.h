@@ -18,6 +18,8 @@ namespace UML {
         template <class T, class U, class ApiPolicy>
         friend class Set;
         template <class T> friend class UmlPtr;
+        template <class T, class U, class ApiPolicy>
+        friend class OrderedSet;
         friend class Element;
         friend class NamedElement;
 

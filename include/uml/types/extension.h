@@ -1,6 +1,7 @@
 #pragma once
 
 #include "association.h"
+#include "uml/set/indexableSet.h"
 
 namespace UML {
 
@@ -21,12 +22,12 @@ namespace UML {
              * every model, but obviously it will be more efficient to just keep track of it by enum right now.
              **/
             // ElementType m_metaClass = ElementType::NOT_SET;
-            struct MemberEndPolicy {
+            struct MemberEndPolicy : public IndexablePolicy {
                 void elementAdded(Property& el, Extension& me);
                 void elementRemoved(Property& el, Extension& me);
             };
-            OrderedSet<Property, Extension, MemberEndPolicy> m_extensionMemberEnds = 
-                    OrderedSet<Property, Extension, MemberEndPolicy>(this);
+            IndexableOrderedSet<Property, Extension, MemberEndPolicy> m_extensionMemberEnds = 
+                    IndexableOrderedSet<Property, Extension, MemberEndPolicy>(this);
             Singleton<ExtensionEnd, Extension> m_ownedEnd = Singleton<ExtensionEnd, Extension>(this);
             Singleton<Class, Extension> m_metaClass = Singleton<Class, Extension>(this);
             bool m_setFlag = false;
@@ -39,7 +40,7 @@ namespace UML {
             // ElementType getMetaClass();
             ExtensionEndPtr getOwnedEnd() const;
             void setOwnedEnd(ExtensionEnd& end);
-            void setOwnedEnd(ExtensionEnd* end);
+            void setOwnedEnd(ExtensionEndPtr end);
             void setOwnedEnd(ID id);
             ClassPtr getMetaClass() const;
             bool is(ElementType eType) const override;

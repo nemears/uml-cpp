@@ -9,11 +9,11 @@ namespace UML {
         template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            OrderedSet<Property, Signal> m_ownedAttributes = OrderedSet<Property, Signal>(this);
+            IndexableOrderedSet<Property, Signal> m_ownedAttributes = IndexableOrderedSet<Property, Signal>(this);
             Signal();
         public:
             virtual ~Signal();
-            OrderedSet<Property, Signal>& getOwnedAttributes();
+            IndexableOrderedSet<Property, Signal>& getOwnedAttributes();
             bool is(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::SIGNAL;

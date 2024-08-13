@@ -20,15 +20,15 @@ TEST_F(ProfileApplicationTest, setProfileAndPackageTest) {
     ASSERT_TRUE(pa.getAppliedProfile());
     ASSERT_EQ(pa.getAppliedProfile()->getID(), profile.getID());
     ASSERT_EQ(pa.getTargets().size(), 1);
-    ASSERT_EQ(pa.getTargets().front().getID(), profile.getID());
+    ASSERT_EQ(pa.getTargets().front()->getID(), profile.getID());
     ASSERT_TRUE(pa.getApplyingPackage());
     ASSERT_EQ(pa.getApplyingPackage()->getID(), pckg.getID());
     ASSERT_EQ(pa.getSources().size(), 1);
-    ASSERT_EQ(pa.getSources().front().getID(), pckg.getID());
+    ASSERT_EQ(pa.getSources().front()->getID(), pckg.getID());
     ASSERT_TRUE(pa.getOwner());
     ASSERT_EQ(pa.getOwner()->getID(), pckg.getID());
     ASSERT_EQ(pckg.getProfileApplications().size(), 1);
-    ASSERT_EQ(pckg.getProfileApplications().front().getID(), pa.getID());
+    ASSERT_EQ(pckg.getProfileApplications().front()->getID(), pa.getID());
     ASSERT_EQ(pckg.getOwnedElements().size(), 1);
     ASSERT_EQ((*pckg.getOwnedElements().begin()).getID(), pa.getID());
 }
@@ -44,7 +44,7 @@ TEST_F(ProfileApplicationTest, removeProfileApplication) {
     ASSERT_TRUE(pa.getAppliedProfile());
     ASSERT_EQ(pa.getAppliedProfile()->getID(), profile.getID());
     ASSERT_EQ(pa.getTargets().size(), 1);
-    ASSERT_EQ(pa.getTargets().front().getID(), profile.getID());
+    ASSERT_EQ(pa.getTargets().front()->getID(), profile.getID());
     ASSERT_FALSE(pa.getApplyingPackage());
     ASSERT_EQ(pa.getSources().size(), 0);
     ASSERT_FALSE(pa.getOwner());
@@ -63,7 +63,7 @@ TEST_F(ProfileApplicationTest, setApplyingPackageNull) {
     ASSERT_TRUE(pa.getAppliedProfile());
     ASSERT_EQ(pa.getAppliedProfile()->getID(), profile.getID());
     ASSERT_EQ(pa.getTargets().size(), 1);
-    ASSERT_EQ(pa.getTargets().front().getID(), profile.getID());
+    ASSERT_EQ(pa.getTargets().front()->getID(), profile.getID());
     ASSERT_FALSE(pa.getApplyingPackage());
     ASSERT_EQ(pa.getSources().size(), 0);
     ASSERT_FALSE(pa.getOwner());

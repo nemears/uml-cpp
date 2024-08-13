@@ -24,7 +24,7 @@ TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
     ASSERT_NO_THROW(p.setDefaultValue(&ls));
     ASSERT_TRUE(p.getDefaultValue() == &ls);
     ASSERT_TRUE(p.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&p.getOwnedElements().get(ls.getID()) == &ls);
+    ASSERT_TRUE(p.getOwnedElements().get(ls.getID()) == &ls);
 }
 
 TEST_F(PropertyTest, reindexNameForClassifierTest) {
@@ -34,26 +34,24 @@ TEST_F(PropertyTest, reindexNameForClassifierTest) {
     p.setAggregation(AggregationKind::COMPOSITE);
     c.getOwnedAttributes().add(p);
     ASSERT_NO_THROW(p.setName("test"));
-    ASSERT_EQ(c.getOwnedElements().get("test"), p);
-    ASSERT_EQ(c.getMembers().get("test"), p);
-    ASSERT_EQ(c.getOwnedMembers().get("test"), p);
-    ASSERT_EQ(c.getFeatures().get("test"), p);
-    ASSERT_EQ(c.getAttributes().get("test"), p);
-    ASSERT_EQ(c.getOwnedAttributes().get("test"), p);
-    ASSERT_EQ(c.getRoles().get("test"), p);
-    ASSERT_EQ(c.getParts().get("test"), p);
+    ASSERT_EQ(c.getMembers().get("test"), &p);
+    ASSERT_EQ(c.getOwnedMembers().get("test"), &p);
+    ASSERT_EQ(c.getFeatures().get("test"), &p);
+    ASSERT_EQ(c.getAttributes().get("test"), &p);
+    ASSERT_EQ(c.getOwnedAttributes().get("test"), &p);
+    ASSERT_EQ(c.getRoles().get("test"), &p);
+    ASSERT_EQ(c.getParts().get("test"), &p);
 
     Association& a = *m.create<Association>();
     Property& p2 = *m.create<Property>();;
     a.getNavigableOwnedEnds().add(p2);
     ASSERT_NO_THROW(p2.setName("test"));
-    ASSERT_EQ(a.getNavigableOwnedEnds().get("test"), p2);
-    ASSERT_EQ(a.getOwnedEnds().get("test"), p2);
-    ASSERT_EQ(a.getMemberEnds().get("test"), p2);
-    ASSERT_EQ(a.getFeatures().get("test"), p2);
-    ASSERT_EQ(a.getOwnedMembers().get("test"), p2);
-    ASSERT_EQ(a.getMembers().get("test"), p2);
-    ASSERT_EQ(a.getOwnedElements().get("test"), p2);
+    ASSERT_EQ(a.getNavigableOwnedEnds().get("test"), &p2);
+    ASSERT_EQ(a.getOwnedEnds().get("test"), &p2);
+    ASSERT_EQ(a.getMemberEnds().get("test"), &p2);
+    ASSERT_EQ(a.getFeatures().get("test"), &p2);
+    ASSERT_EQ(a.getOwnedMembers().get("test"), &p2);
+    ASSERT_EQ(a.getMembers().get("test"), &p2);
 }
 
 TEST_F(PropertyTest, overwriteClassifierTest) {
@@ -64,7 +62,7 @@ TEST_F(PropertyTest, overwriteClassifierTest) {
     p1.getOwnedAttributes().add(c);
     c.setClass(&p2);
     ASSERT_EQ(p2.getAttributes().size(), 1);
-    ASSERT_EQ(p2.getAttributes().front(), c);
+    ASSERT_EQ(p2.getAttributes().front(), &c);
     ASSERT_TRUE(c.getFeaturingClassifier());
     ASSERT_EQ(*c.getFeaturingClassifier(), p2);
     ASSERT_EQ(p1.getAttributes().size(), 0);
@@ -78,7 +76,7 @@ TEST_F(PropertyTest, overwriteClassifierByAttributesAddTest) {
     p1.getOwnedAttributes().add(c);
     p2.getOwnedAttributes().add(c);
     ASSERT_EQ(p2.getAttributes().size(), 1);
-    ASSERT_EQ(p2.getAttributes().front(), c);
+    ASSERT_EQ(p2.getAttributes().front(), &c);
     ASSERT_TRUE(c.getFeaturingClassifier());
     ASSERT_EQ(*c.getFeaturingClassifier(), p2);
     ASSERT_EQ(p1.getAttributes().size(), 0);
@@ -99,11 +97,11 @@ TEST_F(PropertyTest, redefinePropertyTest) {
     s.getOwnedAttributes().add(prop);
     ASSERT_NO_THROW(prop.getRedefinedProperties().add(redefined));
     ASSERT_EQ(prop.getRedefinedProperties().size(), 1);
-    ASSERT_EQ(prop.getRedefinedProperties().front().getID(), redefined.getID());
+    ASSERT_EQ(prop.getRedefinedProperties().front()->getID(), redefined.getID());
     ASSERT_EQ(prop.getRedefinitionContext().size(), 1);
-    ASSERT_EQ(prop.getRedefinitionContext().front().getID(), s.getID());
+    ASSERT_EQ(prop.getRedefinitionContext().front()->getID(), s.getID());
     ASSERT_EQ(prop.getRedefinedElements().size(), 1);
-    ASSERT_EQ(prop.getRedefinedElements().front().getID(), redefined.getID());
+    ASSERT_EQ(prop.getRedefinedElements().front()->getID(), redefined.getID());
 
     ASSERT_EQ(b.getOwnedAttributes().size(), 1);
     ASSERT_TRUE(b.getOwnedAttributes().contains(redefined));
@@ -142,12 +140,12 @@ TEST_F(PropertyTest, forwardTypeTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
-    ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::CLASS);
-    Class& clazz1 = pckg->getPackagedElements().get(ID::fromString("5pyZRmwKoVZBKmqRI6qp93kvQYUR")).as<Class>();
-    Class& clazz2 = pckg->getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD")).as<Class>();
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ASSERT_TRUE((pckg->getPackagedElements().begin()++)->getElementType() == ElementType::CLASS);
+    Class& clazz1 = pckg->getPackagedElements().get(ID::fromString("5pyZRmwKoVZBKmqRI6qp93kvQYUR"))->as<Class>();
+    Class& clazz2 = pckg->getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD"))->as<Class>();
     ASSERT_TRUE(clazz2.getAttributes().size() == 1);
-    Property* prop = &clazz2.getAttributes().front();
+    PropertyPtr prop = clazz2.getAttributes().front();
     ASSERT_TRUE(prop->getType()->as<Class>() == clazz1);
 }
 
@@ -155,14 +153,14 @@ TEST_F(PropertyTest, backwardsTypeTest) {
     Manager<> m;
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/backwardTypeTest.yml").ptr());
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
-    Package* pckg = &m.getRoot()->as<Package>();
+    PackagePtr pckg = m.getRoot();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
-    ASSERT_TRUE(pckg->getPackagedElements().back().getElementType() == ElementType::CLASS);
-    Class& clazz1 = pckg->getPackagedElements().get(ID::fromString("UKqPzBXPjVPhV89kTmNr7xRc7Z_&")).as<Class>();
-    Class& clazz2 = pckg->getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD")).as<Class>();
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ASSERT_TRUE((pckg->getPackagedElements().begin()++)->getElementType() == ElementType::CLASS);
+    Class& clazz1 = pckg->getPackagedElements().get(ID::fromString("UKqPzBXPjVPhV89kTmNr7xRc7Z_&"))->as<Class>();
+    Class& clazz2 = pckg->getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD"))->as<Class>();
     ASSERT_TRUE(clazz2.getAttributes().size() == 1);
-    Property* prop = &clazz2.getAttributes().front();
+    PropertyPtr prop = clazz2.getAttributes().front();
     ASSERT_TRUE(prop->getType()->as<Class>() == clazz1);
 }
 
@@ -200,16 +198,16 @@ TEST_F(PropertyTest, literalBoolDefaultValueTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
-    PrimitiveType* b = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get("bool"));
+    PrimitiveTypePtr b = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get("bool");
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
-    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ClassPtr c = pckg->getPackagedElements().front();
     ASSERT_TRUE(c->getOwnedAttributes().size() == 1);
-    Property* p = &c->getOwnedAttributes().front();
+    PropertyPtr p = c->getOwnedAttributes().front();
     ASSERT_TRUE(p->getType() == b);
     ASSERT_TRUE(p->getDefaultValue());
     ASSERT_TRUE(p->getDefaultValue()->getElementType() == ElementType::LITERAL_BOOL);
-    LiteralBool* lb = dynamic_cast<LiteralBool*>(p->getDefaultValue().ptr());
+    LiteralBoolPtr lb = p->getDefaultValue();
     ASSERT_TRUE(lb->getValue());
 }
 
@@ -220,42 +218,42 @@ TEST_F(PropertyTest, literalsTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
-    PrimitiveType* b = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get("bool"));
-    PrimitiveType* i = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get("int"));
-    PrimitiveType* r = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get("real"));
-    PrimitiveType* s = dynamic_cast<PrimitiveType*>(&pckg->getPackageMerge().front().getMergedPackage()->getPackagedElements().get("string"));
+    PrimitiveTypePtr b = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get("bool");
+    PrimitiveTypePtr i = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get("int");
+    PrimitiveTypePtr r = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get("real");
+    PrimitiveTypePtr s = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get("string");
     
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg->getPackagedElements().front().getElementType() == ElementType::CLASS);
-    Class* c = dynamic_cast<Class*>(&pckg->getPackagedElements().front());
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ClassPtr c = pckg->getPackagedElements().front();
     ASSERT_TRUE(c->getOwnedAttributes().size() == 4);
-    Property* stringProp = &c->getOwnedAttributes().get(0);
+    PropertyPtr stringProp = c->getOwnedAttributes().get(0);
     ASSERT_TRUE(stringProp->getType());
     ASSERT_TRUE(stringProp->getType() == s);
     ASSERT_TRUE(stringProp->getDefaultValue());
     ASSERT_TRUE(stringProp->getDefaultValue()->getElementType() == ElementType::LITERAL_STRING);
     LiteralString* ls = dynamic_cast<LiteralString*>(stringProp->getDefaultValue().ptr());
     ASSERT_TRUE(ls->getValue().compare("testValue") == 0);
-    Property* intProp = &c->getOwnedAttributes().get(1);
+    PropertyPtr intProp = c->getOwnedAttributes().get(1);
     ASSERT_TRUE(intProp->getType());
     ASSERT_TRUE(intProp->getType() == i);
     ASSERT_TRUE(intProp->getDefaultValue());
     ASSERT_TRUE(intProp->getDefaultValue()->getElementType() == ElementType::LITERAL_INT);
-    LiteralInt* li =  dynamic_cast<LiteralInt*>(intProp->getDefaultValue().ptr());
+    LiteralIntPtr li =  intProp->getDefaultValue();
     ASSERT_TRUE(li->getValue() == -444);
-    Property* realProp = &c->getOwnedAttributes().get(2);
+    PropertyPtr realProp = c->getOwnedAttributes().get(2);
     ASSERT_TRUE(realProp->getType());
     ASSERT_TRUE(realProp->getType() == r);
     ASSERT_TRUE(realProp->getDefaultValue());
     ASSERT_TRUE(realProp->getDefaultValue()->getElementType() == ElementType::LITERAL_REAL);
-    LiteralReal* lr = dynamic_cast<LiteralReal*>(realProp->getDefaultValue().ptr());
+    LiteralRealPtr lr = realProp->getDefaultValue();
     ASSERT_TRUE(lr->getValue() == 555.888);
-    Property* boolProp = &c->getOwnedAttributes().get(3);
+    PropertyPtr boolProp = c->getOwnedAttributes().get(3);
     ASSERT_TRUE(boolProp->getType());
     ASSERT_TRUE(boolProp->getType() == b);
     ASSERT_TRUE(boolProp->getDefaultValue());
     ASSERT_TRUE(boolProp->getDefaultValue()->getElementType() == ElementType::LITERAL_BOOL);
-    LiteralBool* lb = dynamic_cast<LiteralBool*>(boolProp->getDefaultValue().ptr());
+    LiteralBoolPtr lb = boolProp->getDefaultValue();
     ASSERT_TRUE(lb->getValue() == false);
 }
 
@@ -265,18 +263,18 @@ TEST_F(PropertyTest, parseRedefinedPropertyTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("2luT6NreEKbmUKCHLqO4tfqxx5pX")).getElementType(), ElementType::CLASS);
-    Class& base = pckg.getPackagedElements().get(ID::fromString("2luT6NreEKbmUKCHLqO4tfqxx5pX")).as<Class>();
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("2luT6NreEKbmUKCHLqO4tfqxx5pX"))->getElementType(), ElementType::CLASS);
+    Class& base = pckg.getPackagedElements().get(ID::fromString("2luT6NreEKbmUKCHLqO4tfqxx5pX"))->as<Class>();
     ASSERT_EQ(base.getOwnedAttributes().size(), 1);
-    Property& redefined = base.getOwnedAttributes().front();
-    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("VI1AWv&JVnbq8P8mvFztq1W4v&0y")).getElementType(), ElementType::CLASS);
-    Class& spec = pckg.getPackagedElements().get(ID::fromString("VI1AWv&JVnbq8P8mvFztq1W4v&0y")).as<Class>();
+    Property& redefined = *base.getOwnedAttributes().front();
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("VI1AWv&JVnbq8P8mvFztq1W4v&0y"))->getElementType(), ElementType::CLASS);
+    Class& spec = pckg.getPackagedElements().get(ID::fromString("VI1AWv&JVnbq8P8mvFztq1W4v&0y"))->as<Class>();
     ASSERT_EQ(spec.getGenerals().size(), 1);
-    ASSERT_EQ(spec.getGenerals().front().getID(), base.getID());
+    ASSERT_EQ(spec.getGenerals().front()->getID(), base.getID());
     ASSERT_EQ(spec.getOwnedAttributes().size(), 1);
-    Property& prop = spec.getOwnedAttributes().front();
+    Property& prop = *spec.getOwnedAttributes().front();
     ASSERT_EQ(prop.getRedefinedProperties().size(), 1);
-    ASSERT_EQ(prop.getRedefinedProperties().front().getID(), redefined.getID());
+    ASSERT_EQ(prop.getRedefinedProperties().front()->getID(), redefined.getID());
 }
 
 TEST_F(PropertyTest, emitRedefinedPropertyTest) {
@@ -353,7 +351,7 @@ TEST_F(PropertyTest, mountPropertyTest) {
     ASSERT_NO_THROW(m.mount(ymlPath + "propertyTests"));
     // TODO explore tree (probably don't need to)
     ASSERT_NO_THROW(m.release(prop));
-    Property& prop2 = s.getOwnedAttributes().front();
+    Property& prop2 = *s.getOwnedAttributes().front();
     ASSERT_TRUE(prop2.getClass());
     ASSERT_EQ(prop2.getClass(), &s);
     ASSERT_TRUE(prop2.getNamespace());
@@ -365,18 +363,18 @@ TEST_F(PropertyTest, mountPropertyTest) {
     ASSERT_EQ(prop2.getOwnedElements().size(), 1);
     ASSERT_EQ(*prop2.getOwnedElements().begin(), defaultValue);
     ASSERT_EQ(prop2.getRedefinedProperties().size(), 1);
-    ASSERT_EQ(&prop2.getRedefinedProperties().front(), &redefined);
+    ASSERT_EQ(prop2.getRedefinedProperties().front(), &redefined);
     ASSERT_EQ(prop2.getRedefinedElements().size(), 1);
-    ASSERT_EQ(&prop2.getRedefinedElements().front(), &redefined);
+    ASSERT_EQ(prop2.getRedefinedElements().front(), &redefined);
     ASSERT_EQ(prop2.getRedefinitionContext().size(), 1);
-    ASSERT_EQ(&prop2.getRedefinitionContext().front(), &s);
+    ASSERT_EQ(prop2.getRedefinitionContext().front(), &s);
 
     ASSERT_EQ(s.getAttributes().size(), 1);
-    ASSERT_EQ(&s.getAttributes().front(), &prop2);
+    ASSERT_EQ(s.getAttributes().front(), &prop2);
     ASSERT_EQ(s.getFeatures().size(), 1);
-    ASSERT_EQ(&s.getFeatures().front(), &prop2);
+    ASSERT_EQ(s.getFeatures().front(), &prop2);
     ASSERT_EQ(s.getOwnedMembers().size(), 1);
-    ASSERT_EQ(&s.getOwnedMembers().front(), &prop2);
+    ASSERT_EQ(s.getOwnedMembers().front(), &prop2);
     ASSERT_EQ(s.getMembers().size(), 2);
     ASSERT_TRUE(s.getMembers().contains(redefined));
     ASSERT_TRUE(s.getMembers().contains(prop2));
@@ -386,11 +384,11 @@ TEST_F(PropertyTest, mountPropertyTest) {
 
     // Release the redefined prop
     ASSERT_NO_THROW(m.release(redefined));
-    Property& redefined2 = b.getOwnedAttributes().front();
+    Property& redefined2 = *b.getOwnedAttributes().front();
     ASSERT_EQ(prop2.getRedefinedProperties().size(), 1);
-    ASSERT_EQ(&prop2.getRedefinedProperties().front(), &redefined2);
+    ASSERT_EQ(prop2.getRedefinedProperties().front(), &redefined2);
     ASSERT_EQ(prop2.getRedefinedElements().size(), 1);
-    ASSERT_EQ(&prop2.getRedefinedElements().front(), &redefined2);
+    ASSERT_EQ(prop2.getRedefinedElements().front(), &redefined2);
     ASSERT_TRUE(redefined2.getType());
     ASSERT_EQ(redefined2.getType(), &m.get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT"))->as<Type>());
     ASSERT_TRUE(redefined2.getClass());
@@ -403,9 +401,9 @@ TEST_F(PropertyTest, mountPropertyTest) {
     m.release(redefined2, stringType);
     Property& redefined3 = m.get(redefinedID)->as<Property>();
     ASSERT_EQ(prop2.getRedefinedProperties().size(), 1);
-    ASSERT_EQ(&prop2.getRedefinedProperties().front(), &redefined3);
+    ASSERT_EQ(prop2.getRedefinedProperties().front(), &redefined3);
     ASSERT_EQ(prop2.getRedefinedElements().size(), 1);
-    ASSERT_EQ(&prop2.getRedefinedElements().front(), &redefined3);
+    ASSERT_EQ(prop2.getRedefinedElements().front(), &redefined3);
     ASSERT_TRUE(redefined3.getType());
     ASSERT_EQ(redefined3.getType(), &m.get(ID::fromString("string_L&R5eAEq6f3LUNtUmzHzT"))->as<Type>());
     ASSERT_TRUE(redefined3.getClass());
@@ -418,9 +416,9 @@ TEST_F(PropertyTest, mountPropertyTest) {
     m.release(prop2, defaultValue);
     Property& prop3 = m.get(propID)->as<Property>();
     ASSERT_TRUE(prop3.getDefaultValue());
-    ASSERT_TRUE(prop3.getDefaultValue()->isSubClassOf(ElementType::LITERAL_STRING));
+    ASSERT_TRUE(prop3.getDefaultValue()->is(ElementType::LITERAL_STRING));
     ASSERT_EQ(prop3.getOwnedElements().size(), 1);
-    ASSERT_EQ(prop3.getOwnedElements().front(), *prop3.getDefaultValue());
+    ASSERT_EQ(prop3.getOwnedElements().front(), prop3.getDefaultValue());
     LiteralString& defaultValue2 = prop3.getDefaultValue()->as<LiteralString>();
     ASSERT_TRUE(defaultValue2.getOwner());
     ASSERT_EQ(*defaultValue2.getOwner(), prop3);

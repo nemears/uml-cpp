@@ -23,7 +23,7 @@ InstanceSpecificationPtr  InstanceValue::getInstance() const {
     return m_instance.get();
 }
 
-void InstanceValue::setInstance(InstanceSpecification* inst) {
+void InstanceValue::setInstance(InstanceSpecificationPtr inst) {
     m_instance.set(inst);
 }
 

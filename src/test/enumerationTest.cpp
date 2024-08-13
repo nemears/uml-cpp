@@ -22,11 +22,11 @@ TEST_F(EnumerationTest, addOwnedLiteralTest) {
     EnumerationLiteral& l = *m.create<EnumerationLiteral>();
     ASSERT_NO_THROW(e.getOwnedLiterals().add(l));
     ASSERT_TRUE(e.getOwnedLiterals().size() == 1);
-    ASSERT_TRUE(&e.getOwnedLiterals().front() == &l);
+    ASSERT_TRUE(e.getOwnedLiterals().front() == &l);
     ASSERT_TRUE(e.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(&e.getOwnedMembers().front() == &l);
+    ASSERT_TRUE(e.getOwnedMembers().front() == &l);
     ASSERT_TRUE(e.getMembers().size() == 1);
-    ASSERT_TRUE(&e.getMembers().front() == &l);
+    ASSERT_TRUE(e.getMembers().front() == &l);
     ASSERT_TRUE(e.getOwnedElements().size() == 1);
     ASSERT_TRUE(*e.getOwnedElements().begin() == l);
 
@@ -41,11 +41,11 @@ TEST_F(EnumerationTest, setEnumerationTest) {
     EnumerationLiteral& l = *m.create<EnumerationLiteral>();
     ASSERT_NO_THROW(l.setEnumeration(&e));
     ASSERT_TRUE(e.getOwnedLiterals().size() == 1);
-    ASSERT_TRUE(&e.getOwnedLiterals().front() == &l);
+    ASSERT_TRUE(e.getOwnedLiterals().front() == &l);
     ASSERT_TRUE(e.getOwnedMembers().size() == 1);
-    ASSERT_TRUE(&e.getOwnedMembers().front() == &l);
+    ASSERT_TRUE(e.getOwnedMembers().front() == &l);
     ASSERT_TRUE(e.getMembers().size() == 1);
-    ASSERT_TRUE(&e.getMembers().front() == &l);
+    ASSERT_TRUE(e.getMembers().front() == &l);
     ASSERT_TRUE(e.getOwnedElements().size() == 1);
     ASSERT_TRUE(*e.getOwnedElements().begin() == l);
 
@@ -92,8 +92,8 @@ TEST_F(EnumerationTest, basicEnumerationTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::ENUMERATION);
     Enumeration* e = &m.getRoot()->as<Enumeration>();
     ASSERT_TRUE(e->getOwnedLiterals().size() == 2);
-    EnumerationLiteral* l1 = &e->getOwnedLiterals().front();
-    EnumerationLiteral* l2 = &e->getOwnedLiterals().back();
+    EnumerationLiteralPtr l1 = e->getOwnedLiterals().front();
+    EnumerationLiteralPtr l2 = e->getOwnedLiterals().back();
     ASSERT_TRUE(l1->getName().compare("one") == 0);
     ASSERT_TRUE(l2->getName().compare("two") == 0);
     ASSERT_TRUE(e->getOwnedMembers().contains(l1));
@@ -160,7 +160,7 @@ TEST_F(EnumerationTest, mountEnumerationTest) {
     ASSERT_FALSE(m.loaded(enumerationID));
     Enumeration& enumeration2 = m.get(enumerationID)->as<Enumeration>();
     ASSERT_EQ(enumeration2.getOwnedLiterals().size(), 1);
-    ASSERT_EQ(enumeration2.getOwnedLiterals().front(), enumerationLiteral);
+    ASSERT_EQ(enumeration2.getOwnedLiterals().front(), &enumerationLiteral);
     ASSERT_TRUE(enumerationLiteral.getEnumeration());
     ASSERT_EQ(*enumerationLiteral.getEnumeration(), enumeration2);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(enumerationLiteral, enumeration2));
@@ -173,7 +173,7 @@ TEST_F(EnumerationTest, mountEnumerationTest) {
     ASSERT_EQ(enumeration3.getOwnedLiterals().size(), 1);
     ASSERT_EQ(enumeration3.getOwnedMembers().size(), 1);
     EnumerationLiteral& enumerationLiteral2 = m.get(enumerationLiteralID)->as<EnumerationLiteral>();
-    ASSERT_EQ(enumeration3.getOwnedLiterals().front(), enumerationLiteral2);
+    ASSERT_EQ(enumeration3.getOwnedLiterals().front(), &enumerationLiteral2);
     ASSERT_TRUE(enumerationLiteral2.getEnumeration());
     ASSERT_EQ(*enumerationLiteral2.getEnumeration(), enumeration3);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(enumerationLiteral2, enumeration3));

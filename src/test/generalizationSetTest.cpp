@@ -30,16 +30,16 @@ TEST_F(GeneralizationSetTest, AddAndRemoveTosequencesTest) {
     Class& general = *m.create<Class>();
     set.getGeneralizations().add(generalization);
     ASSERT_EQ(generalization.getGeneralizationSets().size(), 1);
-    ASSERT_EQ(generalization.getGeneralizationSets().front(), set);
+    ASSERT_EQ(generalization.getGeneralizationSets().front(), &set);
     generalization.getGeneralizationSets().remove(set);
     ASSERT_EQ(set.getGeneralizations().size(), 0);
     generalization.getGeneralizationSets().add(set);
     ASSERT_EQ(set.getGeneralizations().size(), 1);
-    ASSERT_EQ(set.getGeneralizations().front(), generalization);
+    ASSERT_EQ(set.getGeneralizations().front(), &generalization);
 
     set.setPowerType(general);
     ASSERT_EQ(general.getPowerTypeExtent().size(), 1);
-    ASSERT_EQ(general.getPowerTypeExtent().front(), set);
+    ASSERT_EQ(general.getPowerTypeExtent().front(), &set);
     Class& general2 = *m.create<Class>();
     set.setPowerType(general2);
     ASSERT_EQ(general.getPowerTypeExtent().size(), 0);
@@ -53,22 +53,22 @@ TEST_F(GeneralizationSetTest, parseBasicGeneralizationSetTest) {
   ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
   Package& pckg = m.getRoot()->as<Package>();
   ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-  ASSERT_EQ(pckg.getPackagedElements().get("general").getElementType(), ElementType::CLASS);
-  Class& general = pckg.getPackagedElements().get("general").as<Class>();
+  ASSERT_EQ(pckg.getPackagedElements().get("general")->getElementType(), ElementType::CLASS);
+  Class& general = pckg.getPackagedElements().get("general")->as<Class>();
   ASSERT_EQ(general.getPowerTypeExtent().size(), 1);
-  ASSERT_EQ(pckg.getPackagedElements().get("specific").getElementType(), ElementType::CLASS);
-  Class& specific = pckg.getPackagedElements().get("specific").as<Class>();
+  ASSERT_EQ(pckg.getPackagedElements().get("specific")->getElementType(), ElementType::CLASS);
+  Class& specific = pckg.getPackagedElements().get("specific")->as<Class>();
   ASSERT_EQ(specific.getGeneralizations().size(), 1);
-  Generalization& generalization = specific.getGeneralizations().front();
+  Generalization& generalization = *specific.getGeneralizations().front();
   ASSERT_EQ(generalization.getGeneralizationSets().size(), 1);
-  ASSERT_EQ(pckg.getPackagedElements().get("set").getElementType(), ElementType::GENERALIZATION_SET);
-  GeneralizationSet& set = pckg.getPackagedElements().get("set").as<GeneralizationSet>();
-  ASSERT_EQ(general.getPowerTypeExtent().front(), set);
-  ASSERT_EQ(generalization.getGeneralizationSets().front(), set);
+  ASSERT_EQ(pckg.getPackagedElements().get("set")->getElementType(), ElementType::GENERALIZATION_SET);
+  GeneralizationSet& set = pckg.getPackagedElements().get("set")->as<GeneralizationSet>();
+  ASSERT_EQ(general.getPowerTypeExtent().front(), &set);
+  ASSERT_EQ(generalization.getGeneralizationSets().front(), &set);
   ASSERT_TRUE(set.getPowerType());
   ASSERT_EQ(*set.getPowerType(), general);
   ASSERT_EQ(set.getGeneralizations().size(), 1);
-  ASSERT_EQ(set.getGeneralizations().front(), generalization);
+  ASSERT_EQ(set.getGeneralizations().front(), &generalization);
   ASSERT_TRUE(set.isCovering());
   ASSERT_TRUE(set.isDisjoint());
 }
@@ -143,7 +143,7 @@ TEST_F(GeneralizationSetTest, mountGeneralizationSet) {
   ASSERT_TRUE(set2.getPowerType());
   ASSERT_EQ(*set2.getPowerType(), general);
   ASSERT_EQ(set2.getGeneralizations().size(), 1);
-  ASSERT_EQ(set2.getGeneralizations().front(), generalization);
+  ASSERT_EQ(set2.getGeneralizations().front(), &generalization);
 
   ID generalID = general.getID();
   m.release(set2, general);
@@ -154,10 +154,10 @@ TEST_F(GeneralizationSetTest, mountGeneralizationSet) {
   ASSERT_TRUE(set3.getPowerType());
   ASSERT_EQ(set3.getPowerType().id(), generalID);
   ASSERT_EQ(set3.getGeneralizations().size(), 1);
-  ASSERT_EQ(set3.getGeneralizations().front(), generalization);
+  ASSERT_EQ(set3.getGeneralizations().front(), &generalization);
   Class& general2 = m.get(generalID)->as<Class>();
   ASSERT_EQ(general2.getPowerTypeExtent().size(), 1);
-  ASSERT_EQ(general2.getPowerTypeExtent().front(), set3);
+  ASSERT_EQ(general2.getPowerTypeExtent().front(), &set3);
 
   m.release(set3, general2);
   ASSERT_FALSE(m.loaded(generalID));
@@ -170,7 +170,7 @@ TEST_F(GeneralizationSetTest, mountGeneralizationSet) {
   ASSERT_TRUE(set4.getPowerType());
   ASSERT_EQ(*set4.getPowerType(), general3);
   ASSERT_EQ(set4.getGeneralizations().size(), 1);
-  ASSERT_EQ(set4.getGeneralizations().front(), generalization);
+  ASSERT_EQ(set4.getGeneralizations().front(), &generalization);
 
   ID generalizationID = generalization.getID();
   m.release(set4, generalization);
@@ -184,7 +184,7 @@ TEST_F(GeneralizationSetTest, mountGeneralizationSet) {
   ASSERT_EQ(set5.getGeneralizations().ids().front(), generalizationID);
   Generalization& generalization2 = m.get(generalizationID)->as<Generalization>();
   ASSERT_EQ(generalization2.getGeneralizationSets().size(), 1);
-  ASSERT_EQ(generalization2.getGeneralizationSets().front(), set5);
+  ASSERT_EQ(generalization2.getGeneralizationSets().front(), &set5);
 
   m.release(set5, generalization2);
   ASSERT_FALSE(m.loaded(generalizationID));
@@ -197,5 +197,5 @@ TEST_F(GeneralizationSetTest, mountGeneralizationSet) {
   ASSERT_TRUE(set6.getPowerType());
   ASSERT_EQ(*set6.getPowerType(), general3);
   ASSERT_EQ(set6.getGeneralizations().size(), 1);
-  ASSERT_EQ(set6.getGeneralizations().front(), generalization3);
+  ASSERT_EQ(set6.getGeneralizations().front(), &generalization3);
 }

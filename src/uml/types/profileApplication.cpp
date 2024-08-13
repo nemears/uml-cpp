@@ -26,7 +26,7 @@ ProfilePtr ProfileApplication::getAppliedProfile() const {
     return m_appliedProfile.get();
 }
 
-void ProfileApplication::setAppliedProfile(Profile* profile) {
+void ProfileApplication::setAppliedProfile(ProfilePtr profile) {
     m_appliedProfile.set(profile);
 }
 
@@ -42,7 +42,7 @@ PackagePtr ProfileApplication::getApplyingPackage() const {
     return m_applyingPackage.get();
 }
 
-void ProfileApplication::setApplyingPackage(Package* pckg) {
+void ProfileApplication::setApplyingPackage(PackagePtr pckg) {
     m_applyingPackage.set(pckg);
 }
 

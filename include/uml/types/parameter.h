@@ -50,12 +50,11 @@ namespace UML {
             virtual ~Parameter();
             OperationPtr getOperation() const;
             void setOperation(Operation& operation);
-            void setOperation(Operation* operation);
+            void setOperation(OperationPtr operation);
             void setOperation(ID id);
             ParameterDirectionKind getDirection();
             void setDirection(ParameterDirectionKind direction);
             ValueSpecificationPtr getDefaultValue() const;
-            void setDefaultValue(ValueSpecification* defaultValue);
             void setDefaultValue(ValueSpecification& defaultValue);
             void setDefaultValue(ValueSpecificationPtr defaultValue);
             void setDefaultValue(ID id);

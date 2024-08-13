@@ -23,7 +23,7 @@ EncapsulatedClassifier::~EncapsulatedClassifier() {
 
 }
 
-ReadOnlySet<Port, EncapsulatedClassifier>& EncapsulatedClassifier::getOwnedPorts() {
+ReadOnlyIndexableSet<Port, EncapsulatedClassifier>& EncapsulatedClassifier::getOwnedPorts() {
     return m_ownedPorts;
 }
 

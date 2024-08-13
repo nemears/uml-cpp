@@ -36,23 +36,23 @@ namespace UML {
             virtual ~TemplateParameter();
             TemplateSignaturePtr getSignature() const;
             void setSignature(TemplateSignature& signature);
-            void setSignature(TemplateSignature* signature);
+            void setSignature(TemplateSignaturePtr signature);
             void setSignature(ID id);
             ParameterableElementPtr getOwnedParameteredElement() const;
             void setOwnedParameteredElement(ParameterableElement& el);
-            void setOwnedParameteredElement(ParameterableElement* el);
+            void setOwnedParameteredElement(ParameterableElementPtr el);
             void setOwnedParameteredElement(ID id);
             ParameterableElementPtr getParameteredElement() const;
             void setParameteredElement(ParameterableElement& el);
-            void setParameteredElement(ParameterableElement* el);
+            void setParameteredElement(ParameterableElementPtr el);
             void setParameteredElement(ID id);
             ParameterableElementPtr getDefault() const;
             void setDefault(ParameterableElement& el);
-            void setDefault(ParameterableElement* el);
+            void setDefault(ParameterableElementPtr el);
             void setDefault(ID id);
             ParameterableElementPtr getOwnedDefault() const;
             void setOwnedDefault(ParameterableElement& el);
-            void setOwnedDefault(ParameterableElement* el);
+            void setOwnedDefault(ParameterableElementPtr el);
             void setOwnedDefault(ID id);
             bool is(ElementType eType) const override;
             static ElementType elementType() {

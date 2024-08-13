@@ -14,13 +14,13 @@ namespace UML {
         friend class Operation;
 
         protected:
-            OrderedSet<Property, DataType> m_ownedAttributes = OrderedSet<Property, DataType>(this);
-            OrderedSet<Operation, DataType> m_ownedOperations = OrderedSet<Operation, DataType>(this);
+            IndexableOrderedSet<Property, DataType> m_ownedAttributes = IndexableOrderedSet<Property, DataType>(this);
+            IndexableOrderedSet<Operation, DataType> m_ownedOperations = IndexableOrderedSet<Operation, DataType>(this);
             DataType();
         public:
             ~DataType();
-            OrderedSet<Property, DataType>& getOwnedAttributes();
-            OrderedSet<Operation, DataType>& getOwnedOperations();
+            IndexableOrderedSet<Property, DataType>& getOwnedAttributes();
+            IndexableOrderedSet<Operation, DataType>& getOwnedOperations();
             bool is(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::DATA_TYPE;

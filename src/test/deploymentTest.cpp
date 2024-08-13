@@ -27,13 +27,13 @@ TEST_F(DeploymentTest, basicDeploymentTest) {
     ASSERT_TRUE(deployment.getLocation());
     ASSERT_EQ(deployment.getLocation()->getID(), location.getID());
     ASSERT_EQ(deployment.getClients().size(), 1);
-    ASSERT_EQ(deployment.getClients().front().getID(), location.getID());
+    ASSERT_EQ(deployment.getClients().front()->getID(), location.getID());
     ASSERT_TRUE(deployment.getOwner());
     ASSERT_EQ(deployment.getOwner()->getID(), location.getID());
     ASSERT_EQ(deployment.getDeployedArtifacts().size(), 1);
-    ASSERT_EQ(deployment.getDeployedArtifacts().front().getID(), artifact.getID());
+    ASSERT_EQ(deployment.getDeployedArtifacts().front()->getID(), artifact.getID());
     ASSERT_EQ(deployment.getSuppliers().size(), 1);
-    ASSERT_EQ(deployment.getSuppliers().front().getID(), artifact.getID());
+    ASSERT_EQ(deployment.getSuppliers().front()->getID(), artifact.getID());
     deployment.setLocation(0);
     deployment.getDeployedArtifacts().remove(artifact);
     ASSERT_FALSE(deployment.getLocation());
@@ -196,16 +196,16 @@ TEST_F(DeploymentTest, parseBasicDeploymentTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::INSTANCE_SPECIFICATION);
-    InstanceSpecification& inst = pckg.getPackagedElements().front().as<InstanceSpecification>();
+    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification& inst = pckg.getPackagedElements().front()->as<InstanceSpecification>();
     ASSERT_EQ(inst.getDeployments().size(), 1);
-    Deployment& deployment = inst.getDeployments().front();
-    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::ARTIFACT);
-    Artifact& artifact = pckg.getPackagedElements().back().as<Artifact>();
+    Deployment& deployment = *inst.getDeployments().front();
+    ASSERT_EQ((pckg.getPackagedElements().begin()++)->getElementType(), ElementType::ARTIFACT);
+    Artifact& artifact = (pckg.getPackagedElements().begin()++)->as<Artifact>();
     ASSERT_TRUE(deployment.getLocation());
     ASSERT_EQ(deployment.getLocation()->getID(), inst.getID());
     ASSERT_EQ(deployment.getDeployedArtifacts().size(), 1);
-    ASSERT_EQ(deployment.getDeployedArtifacts().front().getID(), artifact.getID());
+    ASSERT_EQ(deployment.getDeployedArtifacts().front()->getID(), artifact.getID());
 }
 
 TEST_F(DeploymentTest, basicArtifactTest) {
@@ -214,21 +214,21 @@ TEST_F(DeploymentTest, basicArtifactTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::INSTANCE_SPECIFICATION);
-    InstanceSpecification& inst = pckg.getPackagedElements().front().as<InstanceSpecification>();
+    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::INSTANCE_SPECIFICATION);
+    InstanceSpecification& inst = pckg.getPackagedElements().front()->as<InstanceSpecification>();
     ASSERT_EQ(inst.getDeployments().size(), 1);
-    Deployment& deployment = inst.getDeployments().front();
-    ASSERT_EQ(pckg.getPackagedElements().back().getElementType(), ElementType::ARTIFACT);
-    Artifact& artifact = pckg.getPackagedElements().back().as<Artifact>();
+    Deployment& deployment = *inst.getDeployments().front();
+    ASSERT_EQ((pckg.getPackagedElements().begin()++)->getElementType(), ElementType::ARTIFACT);
+    Artifact& artifact = (pckg.getPackagedElements().begin()++)->as<Artifact>();
     ASSERT_TRUE(deployment.getLocation());
     ASSERT_EQ(deployment.getLocation()->getID(), inst.getID());
     ASSERT_EQ(deployment.getDeployedArtifacts().size(), 1);
-    ASSERT_EQ(deployment.getDeployedArtifacts().front().getID(), artifact.getID());
+    ASSERT_EQ(deployment.getDeployedArtifacts().front()->getID(), artifact.getID());
     ASSERT_EQ(artifact.getOwnedAttributes().size(), 1);
-    Property& prop = artifact.getOwnedAttributes().front();
+    Property& prop = *artifact.getOwnedAttributes().front();
     ASSERT_EQ(prop.getName(), "prop");
     ASSERT_EQ(artifact.getOwnedOperations().size(), 1);
-    Operation& op = artifact.getOwnedOperations().front();
+    Operation& op = *artifact.getOwnedOperations().front();
     ASSERT_EQ(op.getName(), "op");
 }
 
@@ -238,7 +238,7 @@ TEST_F(DeploymentTest, nestedArtifactTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::ARTIFACT);
     Artifact& artifact = m.getRoot()->as<Artifact>();
     ASSERT_EQ(artifact.getNestedArtifacts().size(), 1);
-    Artifact& nest = artifact.getNestedArtifacts().front();
+    Artifact& nest = *artifact.getNestedArtifacts().front();
     ASSERT_EQ(nest.getName(), "nest");
 }
 
@@ -319,18 +319,18 @@ TEST_F(DeploymentTest, parseManifestationsTest) {
     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg.getPackagedElements().get("utilizedEl1").getElementType(), ElementType::CLASS);
-    Class& c1 = pckg.getPackagedElements().get("utilizedEl1").as<Class>();
-    ASSERT_EQ(pckg.getPackagedElements().get("artifact").getElementType(), ElementType::ARTIFACT);
-    Artifact& artifact = pckg.getPackagedElements().get("artifact").as<Artifact>();
+    ASSERT_EQ(pckg.getPackagedElements().get("utilizedEl1")->getElementType(), ElementType::CLASS);
+    Class& c1 = pckg.getPackagedElements().get("utilizedEl1")->as<Class>();
+    ASSERT_EQ(pckg.getPackagedElements().get("artifact")->getElementType(), ElementType::ARTIFACT);
+    Artifact& artifact = pckg.getPackagedElements().get("artifact")->as<Artifact>();
     ASSERT_EQ(artifact.getManifestations().size(), 2);
-    Manifestation& m2 = artifact.getManifestations().get(ID::fromString("wO29nIB3PeOeFX0TaaHppiyUn83B"));
-    Manifestation& m1 = artifact.getManifestations().get(ID::fromString("elQJOxECf35h96KkZu2YEsie9kHJ"));
+    Manifestation& m2 = *artifact.getManifestations().get(ID::fromString("wO29nIB3PeOeFX0TaaHppiyUn83B"));
+    Manifestation& m1 = *artifact.getManifestations().get(ID::fromString("elQJOxECf35h96KkZu2YEsie9kHJ"));
     ASSERT_TRUE(m2.getUtilizedElement());
     ASSERT_EQ(m2.getUtilizedElement()->getID(), c1.getID());
-    ASSERT_EQ(pckg.getPackagedElements().get("utilizedEl2").getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().get("utilizedEl2")->getElementType(), ElementType::CLASS);
     ASSERT_TRUE(m1.getUtilizedElement());
-    ASSERT_EQ(m1.getUtilizedElement()->getID(), pckg.getPackagedElements().get("utilizedEl2").getID());
+    ASSERT_EQ(m1.getUtilizedElement()->getID(), pckg.getPackagedElements().get("utilizedEl2")->getID());
 }
 
 TEST_F(DeploymentTest, emitManifestationTest) {
@@ -388,7 +388,7 @@ TEST_F(DeploymentTest, mountAndEditArtifactTest) {
 
     ID aID = artifact.getID();
     m.release(artifact);
-    Artifact& artifact2 = root.getPackagedElements().front().as<Artifact>();
+    Artifact& artifact2 = root.getPackagedElements().front()->as<Artifact>();
     ASSERT_TRUE(artifact2.getOwningPackage());
     ASSERT_EQ(*artifact2.getOwningPackage(), root);
     ASSERT_TRUE(artifact2.getNamespace());
@@ -415,7 +415,7 @@ TEST_F(DeploymentTest, mountAndEditArtifactTest) {
     
     ID pid = prop.getID();
     m.release(prop);
-    Property& prop2 = artifact3.getOwnedAttributes().front();
+    Property& prop2 = *artifact3.getOwnedAttributes().front();
     ASSERT_TRUE(prop2.getFeaturingClassifier());
     ASSERT_EQ(*prop2.getFeaturingClassifier(), artifact3);
     ASSERT_TRUE(prop2.getNamespace());
@@ -448,7 +448,7 @@ TEST_F(DeploymentTest, mountAndEditArtifactTest) {
 
     ID oid = op.getID();
     m.release(op);
-    Operation& op2 = artifact4.getOwnedOperations().front();
+    Operation& op2 = *artifact4.getOwnedOperations().front();
     ASSERT_TRUE(op2.getFeaturingClassifier());
     ASSERT_EQ(*op2.getFeaturingClassifier(), artifact4);
     ASSERT_TRUE(op2.getFeaturingClassifier());
@@ -481,7 +481,7 @@ TEST_F(DeploymentTest, mountAndEditArtifactTest) {
 
     ID nid = nest.getID();
     m.release(nest);
-    Artifact& nest2 = artifact5.getNestedArtifacts().front();
+    Artifact& nest2 = *artifact5.getNestedArtifacts().front();
     ASSERT_TRUE(nest2.getNamespace());
     ASSERT_EQ(*nest2.getNamespace(), artifact5);
     ASSERT_TRUE(nest2.getOwner());
@@ -505,7 +505,7 @@ TEST_F(DeploymentTest, mountAndEditArtifactTest) {
     ID mid = manifestation.getID();
     ID uid = utilizedElement.getID();
     m.release(manifestation);
-    Manifestation& manifestation2 = artifact6.getManifestations().front();
+    Manifestation& manifestation2 = *artifact6.getManifestations().front();
     ASSERT_TRUE(manifestation2.getOwner());
     ASSERT_TRUE(manifestation2.getClients().contains(artifact6.getID()));
     ASSERT_EQ(*manifestation2.getOwner(), artifact6);
@@ -563,16 +563,16 @@ TEST_F(DeploymentTest, mountDeploymentTest) {
     ASSERT_TRUE(deployment2.getLocation());
     ASSERT_EQ(*deployment2.getLocation(), deploymentTarget);
     ASSERT_EQ(deployment2.getClients().size(), 1);
-    ASSERT_EQ(deployment2.getClients().front(), deploymentTarget);
+    ASSERT_EQ(deployment2.getClients().front(), &deploymentTarget);
     ASSERT_TRUE(deployment2.getOwner());
     ASSERT_EQ(*deployment2.getOwner(), deploymentTarget);
     ASSERT_EQ(deployment2.getDeployedArtifacts().size(), 1);
-    ASSERT_EQ(deployment2.getDeployedArtifacts().front(), artifact);
+    ASSERT_EQ(deployment2.getDeployedArtifacts().front(), &artifact);
     ASSERT_EQ(deployment2.getSuppliers().size(), 1);
-    ASSERT_EQ(deployment2.getSuppliers().front(), artifact);
+    ASSERT_EQ(deployment2.getSuppliers().front(), &artifact);
     ASSERT_TRUE(deploymentTarget.getDeployments().contains(deploymentID));
     ASSERT_EQ(deploymentTarget.getDeployments().size(), 1);
-    ASSERT_EQ(deploymentTarget.getDeployments().front(), deployment2);
+    ASSERT_EQ(deploymentTarget.getDeployments().front(), &deployment2);
 
     ID deploymentTargetID = deploymentTarget.getID();
     ID artifactID = artifact.getID();
@@ -587,15 +587,15 @@ TEST_F(DeploymentTest, mountDeploymentTest) {
     ASSERT_TRUE(deployment3.getOwner());
     ASSERT_EQ(deployment3.getOwner().id(), deploymentTargetID);
     ASSERT_EQ(deployment3.getDeployedArtifacts().size(), 1);
-    ASSERT_EQ(deployment3.getDeployedArtifacts().front(), artifact);
+    ASSERT_EQ(deployment3.getDeployedArtifacts().front(), &artifact);
     ASSERT_EQ(deployment3.getSuppliers().size(), 1);
-    ASSERT_EQ(deployment3.getSuppliers().front(), artifact);
+    ASSERT_EQ(deployment3.getSuppliers().front(), &artifact);
     InstanceSpecification& deploymentTarget2 = m.get(deploymentTargetID)->as<InstanceSpecification>();
     ASSERT_TRUE(deploymentTarget2.getDeployments().contains(deploymentID));
     ASSERT_EQ(deploymentTarget2.getDeployments().size(), 1);
-    ASSERT_EQ(deploymentTarget2.getDeployments().front(), deployment3);
+    ASSERT_EQ(deploymentTarget2.getDeployments().front(), &deployment3);
     ASSERT_EQ(deploymentTarget2.getClientDependencies().size(), 1);
-    ASSERT_EQ(deploymentTarget2.getClientDependencies().front(), deployment3);
+    ASSERT_EQ(deploymentTarget2.getClientDependencies().front(), &deployment3);
     ASSERT_EQ(deploymentTarget2.getOwnedElements().size(), 1);
     ASSERT_EQ(*deploymentTarget2.getOwnedElements().begin(), deployment3);
 
@@ -614,16 +614,16 @@ TEST_F(DeploymentTest, mountDeploymentTest) {
     ASSERT_TRUE(deployment4.getLocation());
     ASSERT_EQ(*deployment4.getLocation(), deploymentTarget3);
     ASSERT_EQ(deployment4.getClients().size(), 1);
-    ASSERT_EQ(deployment4.getClients().front(), deploymentTarget3);
+    ASSERT_EQ(deployment4.getClients().front(), &deploymentTarget3);
     ASSERT_TRUE(deployment4.getOwner());
     ASSERT_EQ(*deployment4.getOwner(), deploymentTarget3);
     ASSERT_EQ(deployment4.getDeployedArtifacts().size(), 1);
-    ASSERT_EQ(deployment4.getDeployedArtifacts().front(), artifact);
+    ASSERT_EQ(deployment4.getDeployedArtifacts().front(), &artifact);
     ASSERT_EQ(deployment4.getSuppliers().size(), 1);
-    ASSERT_EQ(deployment4.getSuppliers().front(), artifact);
+    ASSERT_EQ(deployment4.getSuppliers().front(), &artifact);
     ASSERT_TRUE(deploymentTarget3.getDeployments().contains(deploymentID));
     ASSERT_EQ(deploymentTarget3.getDeployments().size(), 1);
-    ASSERT_EQ(deploymentTarget3.getDeployments().front(), deployment4);
+    ASSERT_EQ(deploymentTarget3.getDeployments().front(), &deployment4);
 
     m.release(deployment4, artifact);
     ASSERT_FALSE(m.loaded(deploymentID));
@@ -632,7 +632,7 @@ TEST_F(DeploymentTest, mountDeploymentTest) {
     ASSERT_TRUE(deployment5.getLocation());
     ASSERT_EQ(*deployment5.getLocation(), deploymentTarget3);
     ASSERT_EQ(deployment5.getClients().size(), 1);
-    ASSERT_EQ(deployment5.getClients().front(), deploymentTarget3);
+    ASSERT_EQ(deployment5.getClients().front(), &deploymentTarget3);
     ASSERT_TRUE(deployment5.getOwner());
     ASSERT_EQ(*deployment5.getOwner(), deploymentTarget3);
     ASSERT_EQ(deployment5.getDeployedArtifacts().size(), 1);
@@ -641,7 +641,7 @@ TEST_F(DeploymentTest, mountDeploymentTest) {
     ASSERT_TRUE(deployment5.getSuppliers().contains(artifactID));
     Artifact& artifact2 = m.get(artifactID)->as<Artifact>();
     ASSERT_EQ(deployment5.getDeployedArtifacts().size(), 1);
-    ASSERT_EQ(deployment5.getDeployedArtifacts().front(), artifact2);
+    ASSERT_EQ(deployment5.getDeployedArtifacts().front(), &artifact2);
     ASSERT_EQ(deployment5.getSuppliers().size(), 1);
-    ASSERT_EQ(deployment5.getSuppliers().front(), artifact2);
+    ASSERT_EQ(deployment5.getSuppliers().front(), &artifact2);
 }

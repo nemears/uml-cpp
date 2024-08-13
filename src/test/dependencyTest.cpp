@@ -25,15 +25,15 @@ TEST_F(DependencyTest, addClientAndSupplierTest) {
     dep.getClients().add(client);
     dep.getSuppliers().add(supplier);
     ASSERT_EQ(dep.getClients().size(), 1);
-    ASSERT_EQ(dep.getClients().front().getID(), client.getID());
+    ASSERT_EQ(dep.getClients().front()->getID(), client.getID());
     ASSERT_EQ(dep.getSources().size(), 1);
-    ASSERT_EQ(dep.getSources().front().getID(), client.getID());
+    ASSERT_EQ(dep.getSources().front()->getID(), client.getID());
     ASSERT_EQ(dep.getSuppliers().size(), 1);
-    ASSERT_EQ(dep.getSuppliers().front().getID(), supplier.getID());
+    ASSERT_EQ(dep.getSuppliers().front()->getID(), supplier.getID());
     ASSERT_EQ(dep.getTargets().size(), 1);
-    ASSERT_EQ(dep.getTargets().front().getID(), supplier.getID());
+    ASSERT_EQ(dep.getTargets().front()->getID(), supplier.getID());
     ASSERT_EQ(client.getClientDependencies().size(), 1);
-    ASSERT_EQ(client.getClientDependencies().front(), dep);
+    ASSERT_EQ(*client.getClientDependencies().front(), dep);
 }
 
 TEST_F(DependencyTest, removeClientAndSupplierTest) {
@@ -44,13 +44,13 @@ TEST_F(DependencyTest, removeClientAndSupplierTest) {
     dep.getClients().add(client);
     dep.getSuppliers().add(supplier);
     ASSERT_EQ(dep.getClients().size(), 1);
-    ASSERT_EQ(dep.getClients().front().getID(), client.getID());
+    ASSERT_EQ(dep.getClients().front()->getID(), client.getID());
     ASSERT_EQ(dep.getSources().size(), 1);
-    ASSERT_EQ(dep.getSources().front().getID(), client.getID());
+    ASSERT_EQ(dep.getSources().front()->getID(), client.getID());
     ASSERT_EQ(dep.getSuppliers().size(), 1);
-    ASSERT_EQ(dep.getSuppliers().front().getID(), supplier.getID());
+    ASSERT_EQ(dep.getSuppliers().front()->getID(), supplier.getID());
     ASSERT_EQ(dep.getTargets().size(), 1);
-    ASSERT_EQ(dep.getTargets().front().getID(), supplier.getID());
+    ASSERT_EQ(dep.getTargets().front()->getID(), supplier.getID());
     dep.getClients().remove(client);
     dep.getSuppliers().remove(supplier);
     ASSERT_EQ(dep.getClients().size(), 0);
@@ -66,13 +66,13 @@ TEST_F(DependencyTest, setAndRemoveFromClientTest) {
     Dependency& dependency = *m.create<Dependency>();
     client.getClientDependencies().add(dependency);
     ASSERT_EQ(client.getClientDependencies().size(), 1);
-    ASSERT_EQ(client.getClientDependencies().front(), dependency);
+    ASSERT_EQ(*client.getClientDependencies().front(), dependency);
     ASSERT_EQ(dependency.getClients().size(), 1);
-    ASSERT_EQ(dependency.getClients().front().getID(), client.getID());
+    ASSERT_EQ(dependency.getClients().front()->getID(), client.getID());
     ASSERT_EQ(dependency.getSources().size(), 1);
-    ASSERT_EQ(dependency.getSources().front().getID(), client.getID());
+    ASSERT_EQ(dependency.getSources().front()->getID(), client.getID());
     ASSERT_EQ(dependency.getRelatedElements().size(), 1);
-    ASSERT_EQ(dependency.getRelatedElements().front(), client);
+    ASSERT_EQ(*dependency.getRelatedElements().front(), client);
     client.getClientDependencies().remove(dependency);
     ASSERT_EQ(client.getClientDependencies().size(), 0);
     ASSERT_EQ(dependency.getClients().size(), 0);
@@ -85,12 +85,12 @@ TEST_F(DependencyTest, basicDependencyTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg.getPackagedElements().get("dependency").getElementType(), ElementType::DEPENDENCY);
-    Dependency& dep = pckg.getPackagedElements().get("dependency").as<Dependency>();
+    ASSERT_EQ(pckg.getPackagedElements().get("dependency")->getElementType(), ElementType::DEPENDENCY);
+    Dependency& dep = pckg.getPackagedElements().get("dependency")->as<Dependency>();
     ASSERT_EQ(dep.getClients().size(), 1);
-    ASSERT_EQ(dep.getClients().front().getID(), pckg.getPackagedElements().get("client").getID());
+    ASSERT_EQ(dep.getClients().front()->getID(), pckg.getPackagedElements().get("client")->getID());
     ASSERT_EQ(dep.getSuppliers().size(), 1);
-    ASSERT_EQ(dep.getSuppliers().front().getID(), pckg.getPackagedElements().get("supplier").getID());
+    ASSERT_EQ(dep.getSuppliers().front()->getID(), pckg.getPackagedElements().get("supplier")->getID());
 }
 
 TEST_F(DependencyTest, basicDependencyEmitTest) {
@@ -139,26 +139,26 @@ TEST_F(DependencyTest, parseAllTheSubclassesTest) {
     ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 5);
-    ASSERT_EQ(pckg.getPackagedElements().get("abstraction").getElementType(), ElementType::ABSTRACTION);
-    Abstraction& abs = pckg.getPackagedElements().get("abstraction").as<Abstraction>();
+    ASSERT_EQ(pckg.getPackagedElements().get("abstraction")->getElementType(), ElementType::ABSTRACTION);
+    Abstraction& abs = pckg.getPackagedElements().get("abstraction")->as<Abstraction>();
     ASSERT_EQ(abs.getClients().size(), 1);
-    ASSERT_EQ(abs.getClients().front().getID(), pckg.getPackagedElements().get("client").getID());
+    ASSERT_EQ(abs.getClients().front()->getID(), pckg.getPackagedElements().get("client")->getID());
     ASSERT_EQ(abs.getSuppliers().size(), 1);
-    ASSERT_EQ(abs.getSuppliers().front().getID(), pckg.getPackagedElements().get("supplier").getID());
+    ASSERT_EQ(abs.getSuppliers().front()->getID(), pckg.getPackagedElements().get("supplier")->getID());
 
-    ASSERT_EQ(pckg.getPackagedElements().get("realization").getElementType(), ElementType::REALIZATION);
-    Realization& real = pckg.getPackagedElements().get("realization").as<Realization>();
+    ASSERT_EQ(pckg.getPackagedElements().get("realization")->getElementType(), ElementType::REALIZATION);
+    Realization& real = pckg.getPackagedElements().get("realization")->as<Realization>();
     ASSERT_EQ(real.getClients().size(), 1);
-    ASSERT_EQ(real.getClients().front().getID(), pckg.getPackagedElements().get("client").getID());
+    ASSERT_EQ(real.getClients().front()->getID(), pckg.getPackagedElements().get("client")->getID());
     ASSERT_EQ(real.getSuppliers().size(), 1);
-    ASSERT_EQ(real.getSuppliers().front().getID(), pckg.getPackagedElements().get("supplier").getID());
+    ASSERT_EQ(real.getSuppliers().front()->getID(), pckg.getPackagedElements().get("supplier")->getID());
 
-    ASSERT_EQ(pckg.getPackagedElements().get("usage").getElementType(), ElementType::USAGE);
-    Usage& usage = pckg.getPackagedElements().get("usage").as<Usage>();
+    ASSERT_EQ(pckg.getPackagedElements().get("usage")->getElementType(), ElementType::USAGE);
+    Usage& usage = pckg.getPackagedElements().get("usage")->as<Usage>();
     ASSERT_EQ(usage.getClients().size(), 1);
-    ASSERT_EQ(usage.getClients().front().getID(), pckg.getPackagedElements().get("client").getID());
+    ASSERT_EQ(usage.getClients().front()->getID(), pckg.getPackagedElements().get("client")->getID());
     ASSERT_EQ(usage.getSuppliers().size(), 1);
-    ASSERT_EQ(usage.getSuppliers().front().getID(), pckg.getPackagedElements().get("supplier").getID());
+    ASSERT_EQ(usage.getSuppliers().front()->getID(), pckg.getPackagedElements().get("supplier")->getID());
 }
 
 TEST_F(DependencyTest, emitAllDependencySubClassesTest) {
@@ -231,14 +231,14 @@ TEST_F(DependencyTest, emitAllDependencySubClassesTest) {
 
 void ASSERT_RESTORE_DEPENDENCY(Dependency& dependency, NamedElement& client, NamedElement& supplier) {
     ASSERT_EQ(dependency.getClients().size(), 1);
-    ASSERT_EQ(dependency.getClients().front(), client);
+    ASSERT_EQ(*dependency.getClients().front(), client);
     ASSERT_EQ(dependency.getSources().size(), 1);
-    ASSERT_EQ(dependency.getSources().front(), client);
+    ASSERT_EQ(*dependency.getSources().front(), client);
     ASSERT_TRUE(dependency.getRelatedElements().contains(client.getID()));
     ASSERT_EQ(dependency.getSuppliers().size(), 1);
-    ASSERT_EQ(dependency.getSuppliers().front(), supplier);
+    ASSERT_EQ(*dependency.getSuppliers().front(), supplier);
     ASSERT_EQ(dependency.getTargets().size(), 1);
-    ASSERT_EQ(dependency.getTargets().front(), supplier);
+    ASSERT_EQ(*dependency.getTargets().front(), supplier);
     ASSERT_TRUE(dependency.getRelatedElements().contains(supplier.getID()));
 }
 

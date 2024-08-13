@@ -1,3 +1,4 @@
+#include "uml/set/indexableSet.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -133,11 +134,11 @@ void Classifier::setName(const std::string& name) {
     Namespace::setName(name);
 }
 
-ReadOnlySet<Feature, Classifier>& Classifier::getFeatures() {
+ReadOnlyIndexableSet<Feature, Classifier>& Classifier::getFeatures() {
     return m_features;
 }
 
-ReadOnlySet<Property, Classifier>& Classifier::getAttributes() {
+ReadOnlyIndexableSet<Property, Classifier>& Classifier::getAttributes() {
     return m_attributes;
 }
 
@@ -145,11 +146,11 @@ Set<Generalization, Classifier, Classifier::GeneralizationPolicy>& Classifier::g
     return m_generalizations;
 }
 
-Set<Classifier, Classifier, Classifier::GeneralPolicy>& Classifier::getGenerals() {
+IndexableSet<Classifier, Classifier, Classifier::GeneralPolicy>& Classifier::getGenerals() {
     return m_generals;
 }
 
-ReadOnlySet<NamedElement, Classifier>& Classifier::getInheritedMembers() {
+ReadOnlyIndexableSet<NamedElement, Classifier>& Classifier::getInheritedMembers() {
     return m_inheritedMembers;
 }
 

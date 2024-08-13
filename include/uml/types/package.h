@@ -3,6 +3,7 @@
 #include "packageableElement.h"
 #include "namespace.h"
 #include "templateableElement.h"
+#include "uml/set/indexableSet.h"
 #include <unordered_set>
 
 namespace UML {
@@ -20,25 +21,26 @@ namespace UML {
         friend void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
 
         protected:
-            struct PackageableElementPolicy {
-                friend class PackageImport;
-                std::unordered_set<UmlPtr<PackageImport>> packageImportsAdd;
-                std::unordered_set<UmlPtr<PackageImport>> packageImportsRemove;
-                void elementAdded(PackageableElement& el, Package& me);
-                void elementRemoved(PackageableElement& el, Package& me);
+            class PackageableElementPolicy : public IndexablePolicy {
+                    friend class PackageImport;
+                protected:
+                    std::unordered_set<UmlPtr<PackageImport>> packageImportsAdd;
+                    std::unordered_set<UmlPtr<PackageImport>> packageImportsRemove;
+                    void elementAdded(PackageableElement& el, Package& me);
+                    void elementRemoved(PackageableElement& el, Package& me);
             };
-            Set<PackageableElement, Package, PackageableElementPolicy> m_packagedElements = Set<PackageableElement, Package, PackageableElementPolicy>(this);
+            IndexableSet<PackageableElement, Package, PackageableElementPolicy> m_packagedElements = IndexableSet<PackageableElement, Package, PackageableElementPolicy>(this);
             Set<PackageMerge, Package> m_packageMerge = Set<PackageMerge, Package>(this);
-            ReadOnlySet<Stereotype, Package> m_ownedStereotypes = ReadOnlySet<Stereotype, Package>(this);
+            ReadOnlyIndexableSet<Stereotype, Package> m_ownedStereotypes = ReadOnlyIndexableSet<Stereotype, Package>(this);
             Set<ProfileApplication, Package> m_profileApplications = Set<ProfileApplication, Package>(this);
             void referenceErased(ID id) override;
             Package();
         public:
             virtual ~Package();
-            Set<PackageableElement, Package, PackageableElementPolicy>& getPackagedElements();
+            IndexableSet<PackageableElement, Package, PackageableElementPolicy>& getPackagedElements();
             Set<PackageMerge, Package>& getPackageMerge();
             Set<ProfileApplication, Package>& getProfileApplications();
-            ReadOnlySet<Stereotype, Package>& getOwnedStereotypes();
+            ReadOnlyIndexableSet<Stereotype, Package>& getOwnedStereotypes();
             bool is(ElementType eType) const override;
             static ElementType elementType() {
                 return ElementType::PACKAGE;

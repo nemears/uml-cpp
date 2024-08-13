@@ -83,7 +83,7 @@ BehavioredClassifier::~BehavioredClassifier() {
 
 }
 
-Set<Behavior, BehavioredClassifier>& BehavioredClassifier::getOwnedBehaviors() {
+IndexableSet<Behavior, BehavioredClassifier>& BehavioredClassifier::getOwnedBehaviors() {
     return m_ownedBehaviors;
 }
 
@@ -91,7 +91,7 @@ BehaviorPtr BehavioredClassifier::getClassifierBehavior() const {
     return m_classifierBehavior.get();
 }
 
-void BehavioredClassifier::setClassifierBehavior(Behavior* behavior) {
+void BehavioredClassifier::setClassifierBehavior(BehaviorPtr behavior) {
     m_classifierBehavior.set(behavior);
 }
 

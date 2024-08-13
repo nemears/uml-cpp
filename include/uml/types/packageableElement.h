@@ -22,7 +22,7 @@ namespace UML {
             virtual ~PackageableElement() {};
             PackagePtr getOwningPackage() const;
             void setOwningPackage(Package& package);
-            void setOwningPackage(Package* package);
+            void setOwningPackage(PackagePtr package);
             void setOwningPackage(ID id);
             bool is(ElementType eType) const override;
             PackageableElement& operator=(PackageableElement&&) {

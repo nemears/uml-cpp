@@ -18,9 +18,9 @@ TEST_F(SlotTest, addValueFunctorTest) {
     LiteralString& l = *m.create<LiteralString>();
     s.getValues().add(l);
     ASSERT_TRUE(s.getValues().size() == 1);
-    ASSERT_TRUE(&s.getValues().front() == &l);
+    ASSERT_TRUE(s.getValues().front() == &l);
     ASSERT_TRUE(s.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&s.getOwnedElements().get(l.getID()) == &l);
+    ASSERT_TRUE(s.getOwnedElements().get(l.getID()) == &l);
     // ASSERT_TRUE(l.getOwningSlot() == &s);
     ASSERT_TRUE(l.getOwner() == &s);
 }
@@ -31,9 +31,9 @@ TEST_F(SlotTest, addValueFunctorTestW_Manager) {
     LiteralString& l = *m.create<LiteralString>();
     s.getValues().add(l);
     ASSERT_TRUE(s.getValues().size() == 1);
-    ASSERT_TRUE(&s.getValues().front() == &l);
+    ASSERT_TRUE(s.getValues().front() == &l);
     ASSERT_TRUE(s.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&s.getOwnedElements().get(l.getID()) == &l);
+    ASSERT_TRUE(s.getOwnedElements().get(l.getID()) == &l);
     // ASSERT_TRUE(l.getOwningSlot() == &s);
     ASSERT_TRUE(l.getOwner() == &s);
 }
@@ -60,7 +60,7 @@ TEST_F(SlotTest, overrideOwningSlotW_OtherSlotTest) {
     ASSERT_TRUE(s.getOwnedElements().size() == 0);
 
     ASSERT_TRUE(s2.getValues().size() == 1);
-    ASSERT_TRUE(&s2.getValues().front() == &l);
+    ASSERT_TRUE(s2.getValues().front() == &l);
     ASSERT_TRUE(s2.getOwnedElements().size() == 1);
-    ASSERT_TRUE(&s2.getOwnedElements().get(l.getID()) == &l);
+    ASSERT_TRUE(s2.getOwnedElements().get(l.getID()) == &l);
 }

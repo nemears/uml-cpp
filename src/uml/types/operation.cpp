@@ -9,9 +9,9 @@ void Operation::referenceErased(ID id) {
 
 void Operation::restoreReferences() {
     BehavioralFeature::restoreReferences();
-    if (m_namespace->get() && !m_featuringClassifier.get()) {
-        if (m_namespace->get()->is(ElementType::CLASSIFIER)) {
-            Classifier& clazz = m_namespace->get()->as<Classifier>();
+    if (m_namespace.get() && !m_featuringClassifier.get()) {
+        if (m_namespace.get()->is(ElementType::CLASSIFIER)) {
+            Classifier& clazz = m_namespace.get()->as<Classifier>();
             if (clazz.getFeatures().contains(m_id)) {
                 m_featuringClassifier.innerAdd(&clazz);
             }
@@ -37,12 +37,12 @@ Singleton<Interface, Operation>& Operation::getInterfaceSingleton() {
 
 Operation::Operation() : Element(ElementType::OPERATION) {
     m_class.subsets(m_featuringClassifier);
-    m_class.subsets(*m_namespace);
+    m_class.subsets(m_namespace);
     m_class.opposite(&Class::getOwnedOperations);
     m_dataType.subsets(m_featuringClassifier);
-    m_dataType.subsets(*m_namespace);
+    m_dataType.subsets(m_namespace);
     m_dataType.opposite(&DataType::getOwnedOperations);
-    m_interface.subsets(*m_namespace);
+    m_interface.subsets(m_namespace);
     m_interface.subsets(m_featuringClassifier);
     m_interface.opposite(&Interface::getOwnedOperations);
     m_operationOwnedParameters.redefines(m_ownedParameters);

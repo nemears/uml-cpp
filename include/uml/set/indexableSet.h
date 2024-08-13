@@ -22,10 +22,17 @@ namespace UML {
                 while (*it != *this->endPtr()) {
                     auto curr = it->getCurr();
                     if (curr->is(ElementType::NAMED_ELEMENT)) {
-                        if (curr->as<NamedElement>().getQualifiedName() == qualifiedName) {
+                        NamedElementPtr namedCurr = curr;
+                        auto elQualifiedName = namedCurr->getQualifiedName();
+                        auto elName = namedCurr->getName();
+                        if (elQualifiedName == qualifiedName) {
+                            return curr;
+                        }
+                        if (elName == qualifiedName) {
                             return curr;
                         }
                     }
+                    it->next();
                 }
                 return ElementPtr();
             }

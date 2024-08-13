@@ -2,6 +2,8 @@
 
 #include <string>
 #include "element.h"
+#include "uml/set/set.h"
+#include "uml/set/singleton.h"
 
 namespace UML {
 
@@ -36,8 +38,8 @@ namespace UML {
                     void elementAdded(Namespace& el, NamedElement& me);
                     void elementRemoved(Namespace& el, NamedElement& me);
             };
-            std::unique_ptr<ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>> m_namespace;
-            std::unique_ptr<Set<Dependency, NamedElement, DoNothingPolicy>>  m_clientDependencies;
+            ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy> m_namespace = ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>(this);
+            Set<Dependency, NamedElement>  m_clientDependencies = Set<Dependency, NamedElement>(this);
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             void updateQualifiedName(std::string absoluteNamespace);
             void referenceErased(ID id) override;

@@ -48,9 +48,9 @@ void Property::RedefinedPropertyPolicy::elementRemoved(Property& el, Property& m
 
 void Property::restoreReferences() {
     StructuralFeature::restoreReferences();
-    if (m_namespace->get() && !m_featuringClassifier.get()) {
-        if (m_namespace->get()->is(ElementType::CLASSIFIER)) {
-            Classifier& clazz = m_namespace->get()->as<Classifier>();
+    if (m_namespace.get() && !m_featuringClassifier.get()) {
+        if (m_namespace.get()->is(ElementType::CLASSIFIER)) {
+            Classifier& clazz = m_namespace.get()->as<Classifier>();
             if (clazz.getAttributes().contains(m_id)) {
                 m_featuringClassifier.innerAdd(ElementPtr(&clazz));
             }
@@ -96,18 +96,18 @@ Singleton<Interface, Property>& Property::getInterfaceSingleton() {
 
 Property::Property() : Element(ElementType::PROPERTY) {
     m_defaultValue.subsets(*m_ownedElements);
-    m_class.subsets(*m_namespace);
+    m_class.subsets(m_namespace);
     m_class.subsets(m_featuringClassifier);
     m_class.opposite(&Class::getOwnedAttributes);
-    m_dataType.subsets(*m_namespace);
+    m_dataType.subsets(m_namespace);
     m_dataType.subsets(m_featuringClassifier);
     m_dataType.opposite(&DataType::getOwnedAttributes);
     m_association.opposite(&Association::getMemberEnds);
-    m_owningAssociation.subsets(*m_namespace);
+    m_owningAssociation.subsets(m_namespace);
     m_owningAssociation.subsets(m_featuringClassifier);
     m_owningAssociation.subsets(m_association);
     m_owningAssociation.opposite(&Association::getOwnedEnds);
-    m_interface.subsets(*m_namespace);
+    m_interface.subsets(m_namespace);
     m_interface.subsets(m_featuringClassifier);
     m_interface.opposite(&Interface::getOwnedAttributes);
     m_redefinedProperties.subsets(m_redefinedElement);

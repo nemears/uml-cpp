@@ -12,7 +12,7 @@ Singleton<Package, PackageableElement>& PackageableElement::getOwningPackageSing
 }
 
 PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEMENT) {
-    m_owningPackage.subsets(*m_namespace);
+    m_owningPackage.subsets(m_namespace);
     m_owningPackage.opposite(&Package::getPackagedElements);
 }
 

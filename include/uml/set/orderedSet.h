@@ -2,6 +2,7 @@
 
 #include "uml/set/abstractSet.h"
 #include "uml/set/doNothingPolicy.h"
+#include "uml/set/privateSet.h"
 #include "uml/set/set.h"
 #include "uml/types/element.h"
 #include "uml/umlPtr.h"
@@ -10,10 +11,11 @@
 namespace UML {
 
     template <class T>
-    struct OrderedUmlPtr : public UmlPtr<T> {
-        std::shared_ptr<OrderedUmlPtr> m_prev;
-        std::shared_ptr<OrderedUmlPtr> m_next;
-        OrderedUmlPtr(const OrderedUmlPtr& rhs) : UmlPtr<T>(rhs) {
+    struct OrderedSetNode  {
+        UmlPtr<T> m_ptr;
+        std::shared_ptr<OrderedSetNode> m_prev;
+        std::shared_ptr<OrderedSetNode> m_next;
+        OrderedSetNode(const OrderedSetNode& rhs) {
             m_prev = rhs.m_prev;
             m_next = rhs.m_next;
         }
@@ -28,21 +30,26 @@ namespace UML {
             m_next.reset();
         }
         template <class V>
-        OrderedUmlPtr(const UmlPtr<V>& rhs) : UmlPtr<T>(rhs) {}
+        OrderedSetNode(const UmlPtr<V>& ptr) {
+            m_ptr = ptr;
+        }
     };
 
     template <class T>
     class OrderedSetDataPolicy : virtual public SetDataPolicy<T> {
         protected:
-            std::shared_ptr<OrderedUmlPtr<T>> m_first;
-            std::shared_ptr<OrderedUmlPtr<T>> m_last;
-            // std::unordered_map<ID, OrderedUmlPtr<T>> m_allData;
+            std::shared_ptr<OrderedSetNode<T>> m_first;
+            std::shared_ptr<OrderedSetNode<T>> m_last;
+            
             void allocatePtr(ElementPtr ptr, SetStructure& set) override {
-                std::shared_ptr<OrderedUmlPtr<T>> orderedPtr;
-                if (&set == this->m_structure.get()) {
-                    orderedPtr = std::make_shared<OrderedUmlPtr<T>>(ptr);
-                } else {
+                std::shared_ptr<OrderedSetNode<T>> orderedPtr;
+                if (&set == this->m_structure->m_rootRedefinedSet.get()) {
+                    orderedPtr = std::make_shared<OrderedSetNode<T>>(ptr);
+                } else if (set.m_set.setType() == SetType::ORDERED_SET) {
+                    // TODO error here with redefines
                     orderedPtr = dynamic_cast<OrderedSetDataPolicy&>(set.m_set).m_last;
+                } else {
+                    throw SetStateException("TODO");
                 }
                 if (!m_first.get()) {
                     m_first = orderedPtr;
@@ -55,7 +62,7 @@ namespace UML {
             }
             void deAllocatePtr(ElementPtr ptr) override {
                 auto orderedPtr = m_first;
-                while (orderedPtr && orderedPtr->id() != ptr.id()) {
+                while (orderedPtr && orderedPtr->m_ptr.id() != ptr.id()) {
                     orderedPtr = orderedPtr->m_next;
                 }
                 if (orderedPtr->m_prev.get()) {
@@ -74,17 +81,17 @@ namespace UML {
             class iterator : public AbstractSet::iterator {
                 friend class OrderedSetDataPolicy;
                 const OrderedSetDataPolicy& m_set;
-                std::shared_ptr<OrderedUmlPtr<T>> m_curr;
+                std::shared_ptr<OrderedSetNode<T>> m_curr;
                 protected:
                     ElementPtr getCurr() const override {
                         if (m_curr.get()) {
-                            return *m_curr;
+                            return m_curr->m_ptr;
                         }
                         return ElementPtr();
                     }
                     void next() override {
                         if (m_curr) {
-                            if ((*m_curr).id() == (*m_set.m_last).id()) {
+                            if (m_curr->m_ptr.id() == m_set.m_last->m_ptr.id()) {
                                 m_curr = nullptr;
                             } else {
                                 m_curr = m_curr->m_next;
@@ -92,7 +99,7 @@ namespace UML {
                         }
                         if (m_curr.get()) {
                             std::hash<ID> hasher;
-                            m_hash = hasher((*m_curr).id());
+                            m_hash = hasher(m_curr->m_ptr.id());
                         } else {
                             m_hash = 0;
                         }
@@ -136,13 +143,13 @@ namespace UML {
             }
             UmlPtr<T> front() const {
                 if (m_first.get()) {
-                    return *m_first;
+                    return m_first->m_ptr;
                 }
                 return UmlPtr<T>();
             }
             UmlPtr<T> back() const {
                 if (m_last.get()) {
-                    return *m_last;
+                    return m_last->m_ptr;
                 }
                 return UmlPtr<T>();
             }
@@ -151,7 +158,7 @@ namespace UML {
                 it.m_curr = m_first;
                 if (it.m_curr.get()) {
                     std::hash<ID> hasher;
-                    it.m_hash = hasher((*it.m_curr).id());
+                    it.m_hash = hasher(it.m_curr->m_ptr.id());
                 }
                 return it;
             }
@@ -174,7 +181,7 @@ namespace UML {
                 if (currIndex != index) {
                     throw SetStateException("index larger than set size!");
                 }
-                return *currPtr;
+                return currPtr->m_ptr;
             }
     };
 
@@ -189,7 +196,7 @@ namespace UML {
                 this->innerAdd(ptr);
             }
             void add(ID& id) {
-                this->innerAdd(this->m_el.m_manager->createPtr(id));
+                this->nonOppositeAdd(this->m_el.m_manager->createPtr(id));
             }
             void add(T& el) {
                 this->innerAdd(UmlPtr<T>(&el));

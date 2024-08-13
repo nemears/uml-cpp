@@ -196,7 +196,7 @@ namespace UML {
                 this->innerAdd(ptr);
             }
             void add(ID& id) {
-                this->innerAdd(this->m_el.m_manager->createPtr(id));
+                this->nonOppositeAdd(this->m_el.m_manager->createPtr(id));
             }
             void add(T& el) {
                 this->innerAdd(UmlPtr<T>(&el));

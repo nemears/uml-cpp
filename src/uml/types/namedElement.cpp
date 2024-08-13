@@ -17,21 +17,17 @@ void NamedElement::UpdateQualifiedNamePolicy::elementRemoved(__attribute__((unus
 
 void NamedElement::referenceErased(ID id) {
     Element::referenceErased(id);
-    eraseFromSet(id, *m_clientDependencies);
+    eraseFromSet(id, m_clientDependencies);
 }
 
 ReadOnlySingleton<Namespace, NamedElement, NamedElement::UpdateQualifiedNamePolicy>& NamedElement::getNamespaceSingleton() {
-    return *m_namespace;
+    return m_namespace;
 }
 
-NamedElement::NamedElement() : 
-    Element(ElementType::NAMED_ELEMENT),
-    m_namespace(new ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>(this)),
-    m_clientDependencies(new Set<Dependency, NamedElement>(this))
-{
-    m_namespace->subsets(*m_owner);
-    m_namespace->opposite(&Namespace::getOwnedMembers);
-    m_clientDependencies->opposite(&Dependency::getClients);
+NamedElement::NamedElement() : Element(ElementType::NAMED_ELEMENT) {
+    m_namespace.subsets(*m_owner);
+    m_namespace.opposite(&Namespace::getOwnedMembers);
+    m_clientDependencies.opposite(&Dependency::getClients);
 }
 
 void NamedElement::setName(const std::string &name) {
@@ -51,11 +47,11 @@ void NamedElement::updateQualifiedName(std::string absoluteNamespace) {
 }
 
 NamespacePtr NamedElement::getNamespace() const {
-    return m_namespace->get();
+    return m_namespace.get();
 }
 
 Set<Dependency, NamedElement>& NamedElement::getClientDependencies() {
-    return *m_clientDependencies;
+    return m_clientDependencies;
 }
 
 VisibilityKind NamedElement::getVisibility() {
@@ -93,5 +89,5 @@ bool NamedElement::is(ElementType eType) const {
 }
 
 void NamedElement::setNamespace(ID id) {
-    m_namespace->innerAdd(m_manager->createPtr(id));
+    m_namespace.innerAdd(m_manager->createPtr(id));
 }

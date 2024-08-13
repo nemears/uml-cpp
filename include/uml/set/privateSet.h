@@ -129,8 +129,8 @@ namespace UML {
                         }
                         for (std::shared_ptr<SetStructure> redefinedSet : front->m_redefinedSets) {
                             if (ptr.loaded()) {
-                                if (!oppositeRan && front->m_set.oppositeEnabled()) {
-                                    front->m_set.oppositeAdd(*ptr);
+                                if (!oppositeRan && redefinedSet->m_set.oppositeEnabled()) {
+                                    redefinedSet->m_set.oppositeAdd(*ptr);
                                     oppositeRan = true;
                                 }
                             }
@@ -162,6 +162,9 @@ namespace UML {
                         }
                         visited.insert(front);
                         front->m_set.allocatePtr(ptr, *rootRedefinedSet);
+                        for (auto redefinedSet : front->m_redefinedSets) {
+                            redefinedSet->m_set.allocatePtr(ptr, *rootRedefinedSet);
+                        }
                         for (auto superSet : front->m_superSets) {
                             queue.push_back(superSet);
                         }
@@ -288,6 +291,9 @@ namespace UML {
                         }
                         visited.insert(front);
                         front->m_set.deAllocatePtr(ptr);
+                        for (auto redefinedSet : front->m_redefinedSets) {
+                            redefinedSet->m_set.deAllocatePtr(ptr);
+                        }
                         for (auto superSet : front->m_superSets) {
                             queue.push_back(superSet);
                         }
@@ -333,6 +339,10 @@ namespace UML {
                             }
                         }
                     }
+                }
+
+                if (!setwithEl) {
+                    throw SetStateException("could not find element being removed in set!");
                 }
 
                 // run removal policies adjust size

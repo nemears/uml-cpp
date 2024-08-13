@@ -7,7 +7,7 @@ Singleton<Enumeration, EnumerationLiteral>& EnumerationLiteral::getEnumerationSi
 }
 
 EnumerationLiteral::EnumerationLiteral() : Element(ElementType::ENUMERATION_LITERAL) {
-    m_enumeration.subsets(*m_namespace);
+    m_enumeration.subsets(m_namespace);
     m_enumeration.opposite(&Enumeration::getOwnedLiterals);
 }
 

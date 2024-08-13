@@ -119,11 +119,19 @@ namespace UML {
     template <class T, class U, class ApiPolicy>
     class Singleton : public ReadOnlySingleton<T,U,ApiPolicy> {
         private:
-            void setHelper(UmlPtr<T> ptr) {
-               if (this->m_data && this->m_data.id() != ptr.id()) {
-                    // we need to remove the data before adding it
-                    this->innerRemove(this->m_data);
+            void checkCurrentValueHelper(UmlPtr<T> ptr) {
+               if (this->m_data) {
+                    if (this->m_data.id() != ptr.id()) {
+                        // we need to remove the data before adding it
+                        this->innerRemove(this->m_data);
+                    } else {
+                        return;
+                    }
                 }
+                
+            }
+            void setHelper(UmlPtr<T> ptr) {
+                checkCurrentValueHelper(ptr);
                 if (ptr) { 
                     this->innerAdd(ptr);
                 }
@@ -137,7 +145,10 @@ namespace UML {
                 this->setHelper(UmlPtr<T>(&ref));
             }
             void set(ID id) {
-                this->setHelper(this->m_el.m_manager->createPtr(id));
+                UmlPtr<T> ptr = this->m_el.m_manager->createPtr(id); 
+                if (ptr) {
+                    this->nonOppositeAdd(ptr);
+                }
             }
     };
 }

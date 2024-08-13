@@ -1,7 +1,6 @@
 #pragma once
 
 #include "uml/types/element.h"
-#include "uml/types/namedElement.h"
 
 namespace UML {
 

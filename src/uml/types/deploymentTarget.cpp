@@ -3,7 +3,7 @@
 using namespace UML;
 
 DeploymentTarget::DeploymentTarget() : Element(ElementType::DEPLOYMENT_TARGET) {
-    m_deployments.subsets(*m_clientDependencies);
+    m_deployments.subsets(m_clientDependencies);
     m_deployments.subsets(*m_ownedElements);
     m_deployments.opposite(&Deployment::getLocationSingleton);
 }

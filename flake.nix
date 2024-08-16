@@ -11,7 +11,7 @@
           pkgs = nixpkgs.legacyPackages.${system};
           
           # function to create uml-cpp derivation from certain source
-          buildUmlCpp = { src , version } : pkgs.stdenv.mkDerivation {
+          mkUmlCpp = { src , version } : pkgs.stdenv.mkDerivation {
             inherit src;
             name = "uml-cpp";
             nativeBuildInputs = with pkgs; [pkg-config];
@@ -60,20 +60,22 @@
             ];
           };
 
-          packages.uml-cpp = buildUmlCpp {
-            src = ./.;
-            version = "0.4.0";
-          };
-          packages.uml-cpp_0_3_5 = buildUmlCpp {
-            src = pkgs.fetchFromGitHub {
-              owner = "nemears";
-              repo = "uml-cpp";
-              rev = "v0.3.5";
-              hash = "sha256-HzzOe+9s67LwWlHWYIa+vxbWMBVCsVY7RXfFDkElwpY=";
+          packages = {
+            uml-cpp = mkUmlCpp {
+              src = ./.;
+              version = "0.4.1";
             };
-            version = "0.3.5";
+            uml-cpp_0_3_5 = mkUmlCpp {
+              src = pkgs.fetchFromGitHub {
+                owner = "nemears";
+                repo = "uml-cpp";
+                rev = "v0.3.5";
+                hash = "sha256-HzzOe+9s67LwWlHWYIa+vxbWMBVCsVY7RXfFDkElwpY=";
+              };
+              version = "0.3.5";
+            };
+            default = self.packages.${system}.uml-cpp;
           };
-          packages.default = self.packages.${system}.uml-cpp;
           overlay = final : prev: {
             uml-cpp = self.packages.${system}.uml-cpp;
             uml-cpp_0_3_5 = self.packages.${system}.uml-cpp_0_3_5;

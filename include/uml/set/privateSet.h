@@ -43,6 +43,7 @@ namespace UML {
             void removeOpposite(__attribute__((unused)) T& el) override {}
     };
 
+    class Package;
 
     template <class T,  class U, class DataTypePolicy, class ApiPolicy>
     class PrivateSet : virtual public AbstractSet , virtual public DataTypePolicy, virtual public ApiPolicy {
@@ -62,11 +63,13 @@ namespace UML {
         friend class Manifestation;
         friend class ElementImport;
         friend class PackageImport;
+        friend class Connector;
         friend T;
         friend U;
         friend ApiPolicy;
         template <class V, class W, class OtherDataTypePolicy, class OtherApiPolicy>
         friend class PrivateSet;
+        friend void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
 
         private:
             std::mutex m_mutex;
@@ -104,7 +107,7 @@ namespace UML {
                     return rootRedefinedSet->m_set.innerAdd(ptr);
                 }
 
-                std::lock_guard<std::mutex> setLock(m_mutex);
+                // std::lock_guard<std::mutex> setLock(m_mutex);
 
                 nonOppositeAdd(ptr);
                
@@ -231,14 +234,15 @@ namespace UML {
                     return rootRedefinedSet->m_set.innerRemove(ptr);
                 }
 
-                std::lock_guard<std::mutex> setLock(m_mutex);
-                nonOppositeRemove(ptr);
+                // TODO figure out threading
+                // std::lock_guard<std::mutex> setLock(m_mutex);
+                auto setwithEl = nonOppositeRemoveHelper(ptr);
 
                 // run opposite
                 {
                     std::list<std::shared_ptr<SetStructure>> queue;
                     std::unordered_set<std::shared_ptr<SetStructure>> visited;
-                    queue.push_back(rootRedefinedSet);
+                    queue.push_back(setwithEl);
                     while (!queue.empty()) {
                         auto front = queue.front();
                         queue.pop_front();
@@ -255,7 +259,7 @@ namespace UML {
                         }
                         for (auto redefinedSet : front->m_redefinedSets) {
                             if (ptr.loaded()) {
-                                if (!oppositeRan && front->m_set.oppositeEnabled()) {
+                                if (!oppositeRan && redefinedSet->m_set.oppositeEnabled()) {
                                     redefinedSet->m_set.oppositeRemove(*ptr);
                                     oppositeRan = true;
                                 }
@@ -276,30 +280,9 @@ namespace UML {
                     innerRemove(ptr);
                 }
             }
-            void nonOppositeRemove(ElementPtr ptr) override {
+            std::shared_ptr<SetStructure> nonOppositeRemoveHelper(ElementPtr ptr) {
                 auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
-                // look at supersets to deallocate data
-                {
-                    std::list<std::shared_ptr<SetStructure>> queue;
-                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
-                    queue.push_back(rootRedefinedSet);
-                    while (!queue.empty()) {
-                        auto front = queue.front();
-                        queue.pop_front();
-                        if (visited.count(front)) {
-                            continue;
-                        }
-                        visited.insert(front);
-                        front->m_set.deAllocatePtr(ptr);
-                        for (auto redefinedSet : front->m_redefinedSets) {
-                            redefinedSet->m_set.deAllocatePtr(ptr);
-                        }
-                        for (auto superSet : front->m_superSets) {
-                            queue.push_back(superSet);
-                        }
-                    }
-                }
-                
+
                 // remove
                 std::shared_ptr<SetStructure> setwithEl;
                 {
@@ -334,7 +317,7 @@ namespace UML {
                                 }
                             }
                         } else {
-                            for (auto subSet : front->m_subSets) {
+                            for (auto subSet : front->m_subSetsWithData) {
                                 queue.push_back(subSet);
                             }
                         }
@@ -343,6 +326,28 @@ namespace UML {
 
                 if (!setwithEl) {
                     throw SetStateException("could not find element being removed in set!");
+                }
+
+                // look at supersets to deallocate data
+                {
+                    std::list<std::shared_ptr<SetStructure>> queue;
+                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
+                    queue.push_back(setwithEl);
+                    while (!queue.empty()) {
+                        auto front = queue.front();
+                        queue.pop_front();
+                        if (visited.count(front)) {
+                            continue;
+                        }
+                        visited.insert(front);
+                        front->m_set.deAllocatePtr(ptr);
+                        for (auto redefinedSet : front->m_redefinedSets) {
+                            redefinedSet->m_set.deAllocatePtr(ptr);
+                        }
+                        for (auto superSet : front->m_superSets) {
+                            queue.push_back(superSet);
+                        }
+                    }
                 }
 
                 // run removal policies adjust size
@@ -372,7 +377,10 @@ namespace UML {
                         }
                     }
                 }
-
+                return setwithEl;
+            }
+            void nonOppositeRemove(ElementPtr ptr) override {
+                nonOppositeRemoveHelper(ptr);
             }
             struct PtrPolicy {
                 UmlPtr<T> get(ElementPtr ptr) {
@@ -418,10 +426,10 @@ namespace UML {
                             return true;
                         }
                         void addOpposite(T& el) override {
-                            (el.*signature)().nonOppositeAdd(UmlPtr<U>(&me));
+                            (el.*signature)().m_structure->m_rootRedefinedSet->m_set.nonOppositeAdd(UmlPtr<U>(&me));
                         }
                         void removeOpposite(T& el) override {
-                            (el.*signature)().nonOppositeRemove(UmlPtr<U>(&me));
+                            (el.*signature)().m_structure->m_rootRedefinedSet->m_set.nonOppositeRemove(UmlPtr<U>(&me));
                         }
                 };
                 m_opposite = std::unique_ptr<OppositeInterfaceAdapter>(new OppositeInterfaceAdapter(m_el, oppositeSignature));

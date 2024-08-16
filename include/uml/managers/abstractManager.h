@@ -8,6 +8,7 @@ namespace UML {
     class AbstractSet;
     class Element;
     class NamedElement;
+    class Package;
 
     class AbstractManager {
 
@@ -21,6 +22,7 @@ namespace UML {
         friend class OrderedSet;
         friend class Element;
         friend class NamedElement;
+        friend void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
 
         public:
             virtual Element* create(ElementType type) = 0;

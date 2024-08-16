@@ -12,7 +12,7 @@ void Manifestation::restoreReferences() {
         if (m_owner->get()->is(ElementType::ARTIFACT)) {
             Artifact& possibleClient = m_owner->get()->as<Artifact>();
             if (possibleClient.getManifestations().contains(m_id) && !m_clients.contains(m_owner->get().id())) {
-                m_clients.innerAdd(&possibleClient);
+                m_clients.nonOppositeAdd(&possibleClient);
             }
         }
     }

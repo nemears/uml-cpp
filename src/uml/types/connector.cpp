@@ -56,7 +56,7 @@ void Connector::restoreReferences() {
         if (m_namespace.get()->is(ElementType::STRUCTURED_CLASSIFIER)) {
             StructuredClassifier& clazz = m_namespace.get()->as<StructuredClassifier>();
             if (clazz.getOwnedConnectors().contains(m_id) && !m_featuringClassifier.get()) {
-                m_featuringClassifier.innerAdd(&clazz);
+                m_featuringClassifier.m_structure->m_rootRedefinedSet->m_set.nonOppositeAdd(&clazz);
             }
         }
     }

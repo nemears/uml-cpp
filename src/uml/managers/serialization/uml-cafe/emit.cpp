@@ -1698,7 +1698,7 @@ void emitOpaqueBehaviorFeatures(YAML::Emitter& emitter, OpaqueBehavior& opaqueBe
 }
 
 void emitPackageFeatures(YAML::Emitter& emitter, Package& package, EmitterData& data) {
-    emitCompositeSet<PackageableElement>(emitter, package, data, "packagedElements", &Package::getPackagedElements); //, &Package::getOwnedStereotypes);
+    emitCompositeSet<PackageableElement>(emitter, package, data, "packagedElements", &Package::getPackagedElements, &Package::getOwnedStereotypes);
     emitCompositeSet<Stereotype>(emitter, package, data, "ownedStereotypes", &Package::getOwnedStereotypes);
     emitCompositeSet<PackageMerge>(emitter, package, data, "packageMerges", &Package::getPackageMerge);
     emitCompositeSet<ProfileApplication>(emitter, package, data, "profileApplications", &Package::getProfileApplications);

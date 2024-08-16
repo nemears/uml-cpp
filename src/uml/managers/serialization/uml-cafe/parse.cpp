@@ -802,12 +802,12 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
                     parseElementFeatures,
                     parseNamedElementFeatures,
                     parseNamespaceFeatures,
-                    // parseTemplateableElementFeatures,
-                    // parseParameterableElementFeatures,
+                    parseTemplateableElementFeatures,
+                    parseParameterableElementFeatures,
                     parsePackageFeatures);
         parseScope(node, ret->as<Package>(), data, 
                     parsePackageableElementScope, 
-                    // parseParameterableElementScope, 
+                    parseParameterableElementScope, 
                     parseNamedElementScope, 
                     parseElementScope);
     } else if (node["PackageImport"]) {
@@ -1426,8 +1426,8 @@ void parseElementFeatures(YAML::Node node, Element& el, ParserData& data) {
             el.setID(idString);   
         }
     }
-//     parseSet<Comment>(node, el, data, "ownedComments", &Element::getOwnedComments);
-//     parseSet<InstanceSpecification>(node, el, data, "appliedStereotypes", &Element::getAppliedStereotypes);
+    parseSet<Comment>(node, el, data, "ownedComments", &Element::getOwnedComments);
+    parseSet<InstanceSpecification>(node, el, data, "appliedStereotypes", &Element::getAppliedStereotypes);
 }
 
 template <class T>
@@ -1581,7 +1581,7 @@ void parseMultiplicityElementFeatures(YAML::Node node, MultiplicityElement& mult
 void parseNamedElementFeatures(YAML::Node node, NamedElement& el, ParserData& data) {
     parseString(node, el, "name", &NamedElement::setName);
     parseVisibilty(node, el);
-    // parseSet<Dependency>(node, el, data, "clientDependencies", &NamedElement::getClientDependencies);
+    parseSet<Dependency>(node, el, data, "clientDependencies", &NamedElement::getClientDependencies);
 }
 
 void parseNamespaceFeatures(YAML::Node node, Namespace& nmspc, ParserData& data) {
@@ -1631,19 +1631,18 @@ void parseOpaqueBehaviorFeatures(YAML::Node node, OpaqueBehavior& opaqueBehavior
 void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data) {
     parseSet<PackageableElement>(node, pckg, data, "packagedElements", &Package::getPackagedElements);
     if (node["ownedStereotypes"]) {
-        std::cout << "skipping parsing owned stereotypes" << std::endl;
-        // if (!node["ownedStereotypes"].IsSequence()) {
-        //     throw SerializationError("Could not parse set ownedStereotypes for Package, must be a sequence! " + getLineNumber(node["ownedStereotypes"]));
-        // }
-        // for (size_t i = 0; i < node["ownedStereotypes"].size(); i++) {
-        //     if (node["ownedStereotypes"][i].IsMap()) {
-        //         pckg.m_ownedStereotypes.innerAdd(parseNode(node["ownedStereotypes"][i], data)->as<Stereotype>());
-        //     } else if (node["ownedStereotypes"][i].IsScalar()) {
-        //         pckg.m_ownedStereotypes.innerAdd(ID::fromString(node["ownedStereotypes"][i].as<string>()));
-        //     } else {
-        //         throw SerializationError("could not parse ownedStereotypes entry for Package " + getLineNumber(node["ownedStereotypes"][i]));
-        //     }
-        // }
+        if (!node["ownedStereotypes"].IsSequence()) {
+            throw SerializationError("Could not parse set ownedStereotypes for Package, must be a sequence! " + getLineNumber(node["ownedStereotypes"]));
+        }
+        for (size_t i = 0; i < node["ownedStereotypes"].size(); i++) {
+            if (node["ownedStereotypes"][i].IsMap()) {
+                pckg.m_ownedStereotypes.innerAdd(parseNode(node["ownedStereotypes"][i], data));
+            } else if (node["ownedStereotypes"][i].IsScalar()) {
+                pckg.m_ownedStereotypes.m_structure->m_rootRedefinedSet->m_set.nonOppositeAdd(data.manager->createPtr(ID::fromString(node["ownedStereotypes"][i].as<string>())));
+            } else {
+                throw SerializationError("could not parse ownedStereotypes entry for Package " + getLineNumber(node["ownedStereotypes"][i]));
+            }
+        }
     }
     parseSet<PackageMerge>(node, pckg, data, "packageMerges", &Package::getPackageMerge);
     parseSet<ProfileApplication>(node, pckg, data, "profileApplications", &Package::getProfileApplications);

@@ -15,7 +15,7 @@ void Reception::referenceErased(ID id) {
 void Reception::restoreReferences() {
     BehavioralFeature::restoreReferences();
     if (m_namespace.get().id() != ID::nullID() && m_featuringClassifier.get().id() == ID::nullID()) {
-        m_featuringClassifier.innerAdd(m_namespace.get());
+        m_featuringClassifier.nonOppositeAdd(m_namespace.get());
     }
 }
 

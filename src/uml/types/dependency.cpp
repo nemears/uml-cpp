@@ -2,14 +2,6 @@
 
 using namespace UML;
 
-// void Dependency::restoreReference(Element* el) {
-//     PackageableElement::restoreReference(el);
-//     Relationship::restoreReference(el);
-//     if (m_suppliers.contains(el->getID())) {
-//         el->setReference(this); // need this logic for all setReference top level calls
-//     }
-// }
-
 void Dependency::referenceErased(ID id) {
     PackageableElement::referenceErased(id);
     DirectedRelationship::referenceErased(id);

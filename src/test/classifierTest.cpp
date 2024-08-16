@@ -64,7 +64,7 @@ TEST_F(ClassifierTest, setClassifierTest) {
   Class& c = *m.create<Class>();
   p.setClass(&c);
   ASSERT_TRUE(c.getAttributes().size() == 1);
-  ASSERT_TRUE(c.getAttributes().front() == &p);
+  ASSERT_EQ(c.getAttributes().front().id(), p.getID());
   ASSERT_TRUE(p.getClass() == &c);
   ASSERT_TRUE(c.getFeatures().size() == 1);
   ASSERT_TRUE(c.getFeatures().front() == &p);

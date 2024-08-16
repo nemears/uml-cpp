@@ -68,4 +68,5 @@ namespace UML {
     typedef UmlPtr<Parameter> ParameterPtr;
     typedef UmlPtr<PrimitiveType> PrimitiveTypePtr;
     typedef UmlPtr<Slot> SlotPtr;
+    typedef UmlPtr<StructuredClassifier> StructuredClassifierPtr;
 }

@@ -42,15 +42,64 @@ namespace UML {
             std::shared_ptr<OrderedSetNode<T>> m_last;
             
             void allocatePtr(ElementPtr ptr, SetStructure& set) override {
+                SetDataPolicy<T>::allocatePtr(ptr, set);
                 std::shared_ptr<OrderedSetNode<T>> orderedPtr;
+
                 if (&set == this->m_structure->m_rootRedefinedSet.get()) {
                     orderedPtr = std::make_shared<OrderedSetNode<T>>(ptr);
-                } else if (set.m_set.setType() == SetType::ORDERED_SET) {
-                    // TODO error here with redefines
-                    orderedPtr = dynamic_cast<OrderedSetDataPolicy&>(set.m_set).m_last;
                 } else {
-                    throw SetStateException("TODO");
+                    // check if an ordered ptr has already been made
+                    std::list<std::shared_ptr<SetStructure>> queue = { set.m_rootRedefinedSet };
+                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
+                    while (!queue.empty()) {
+                        auto front = queue.front();
+                        queue.pop_front();
+                        if (visited.count(front)) {
+                            continue;
+                        }
+                        visited.insert(front);
+
+                        if (front.get() == this->m_structure.get()) {
+                            // once we reach ourselves we know we're hopeless to find it
+                            break;
+                        }
+
+                        auto checkSetSetPtr = [orderedPtr, ptr](std::shared_ptr<SetStructure> currSet) mutable -> bool {
+                            if (currSet->m_set.setType() == SetType::ORDERED_SET) {
+                                auto last = dynamic_cast<OrderedSetDataPolicy&>(currSet->m_set).m_last;
+                                if (last && last->m_ptr.id() == ptr.id()) {
+                                    orderedPtr = last;
+                                    return true;
+                                }
+                            }
+                            return false;
+                        };
+
+                        if (checkSetSetPtr(front)) {
+                            break;
+                        }
+
+                        for (auto redefinedSet : front->m_redefinedSets) {
+                            if (checkSetSetPtr(redefinedSet)) {
+                                break;
+                            }
+                        }
+
+                        if (orderedPtr) {
+                            break;
+                        }
+
+                        for (auto superSet : front->m_superSets) {
+                            queue.push_back(superSet);
+                        }
+                    }
                 }
+
+                if (!orderedPtr) {
+                    // create it ourselves
+                    orderedPtr = std::make_shared<OrderedSetNode<T>>(ptr);
+                }
+
                 if (!m_first.get()) {
                     m_first = orderedPtr;
                 }
@@ -61,21 +110,53 @@ namespace UML {
                 m_last = orderedPtr;
             }
             void deAllocatePtr(ElementPtr ptr) override {
+
+                // TODO slow, would be quicker to not iterate over entire thing
+
                 auto orderedPtr = m_first;
                 while (orderedPtr && orderedPtr->m_ptr.id() != ptr.id()) {
                     orderedPtr = orderedPtr->m_next;
                 }
-                if (orderedPtr->m_prev.get()) {
-                    orderedPtr->m_prev->m_next = orderedPtr->m_next;
-                }
-                if (orderedPtr->m_next.get()) {
-                    orderedPtr->m_next->m_prev = orderedPtr->m_prev;
-                }
-                if (m_last == orderedPtr) {
-                    m_last = orderedPtr->m_prev;
-                }
-                if (m_first == orderedPtr) {
-                    m_first = orderedPtr->m_next;
+
+                // the ptr is still in our set
+                if (orderedPtr && orderedPtr->m_ptr.id() == ptr.id()) {
+                    if (orderedPtr->m_prev.get()) {
+                        orderedPtr->m_prev->m_next = orderedPtr->m_next;
+                    }
+                    if (orderedPtr->m_next.get()) {
+                        orderedPtr->m_next->m_prev = orderedPtr->m_prev;
+                    }
+                    if (m_last == orderedPtr) {
+                        m_last = orderedPtr->m_prev;
+                    }
+                    if (m_first == orderedPtr) {
+                        m_first = orderedPtr->m_next;
+                    }
+
+                    std::list<std::shared_ptr<SetStructure>> queue = { this->m_structure->m_rootRedefinedSet };
+                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
+                    while (!queue.empty()) {
+                        auto front = queue.front();
+                        queue.pop_front();
+                        if (visited.count(front)) {
+                            continue;
+                        }
+                        visited.insert(front);
+                        
+                        if (front->m_set.setType() == SetType::ORDERED_SET) {
+                            OrderedSetDataPolicy<T>& frontOrdered = dynamic_cast<OrderedSetDataPolicy<T>&>(front->m_set);
+                            if (frontOrdered.m_last && frontOrdered.m_last->m_ptr.id() == ptr.id()) {
+                                frontOrdered.m_last = orderedPtr->m_prev;
+                            }
+                            if (frontOrdered.m_first && frontOrdered.m_first->m_ptr.id() == ptr.id()) {
+                                frontOrdered.m_first = orderedPtr->m_next;
+                            }
+                        }
+
+                        for (auto superSet : front->m_superSets) {
+                            queue.push_back(superSet);
+                        }
+                    }
                 }
             }
             class iterator : public AbstractSet::iterator {
@@ -196,7 +277,7 @@ namespace UML {
                 this->innerAdd(ptr);
             }
             void add(ID& id) {
-                this->nonOppositeAdd(this->m_el.m_manager->createPtr(id));
+                this->m_structure->m_rootRedefinedSet->m_set.nonOppositeAdd(this->m_el.m_manager->createPtr(id));
             }
             void add(T& el) {
                 this->innerAdd(UmlPtr<T>(&el));

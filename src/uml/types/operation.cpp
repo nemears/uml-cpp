@@ -13,7 +13,7 @@ void Operation::restoreReferences() {
         if (m_namespace.get()->is(ElementType::CLASSIFIER)) {
             Classifier& clazz = m_namespace.get()->as<Classifier>();
             if (clazz.getFeatures().contains(m_id)) {
-                m_featuringClassifier.innerAdd(&clazz);
+                m_featuringClassifier.nonOppositeAdd(&clazz);
             }
         }
     }

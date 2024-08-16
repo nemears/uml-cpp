@@ -4,7 +4,7 @@ using namespace UML;
 
 void PackageableElement::referenceErased(ID id) {
     NamedElement::referenceErased(id);
-    // ParameterableElement::referenceErased(id);
+    ParameterableElement::referenceErased(id);
 }
 
 Singleton<Package, PackageableElement>& PackageableElement::getOwningPackageSingleton() {

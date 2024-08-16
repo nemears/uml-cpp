@@ -79,6 +79,9 @@ namespace UML {
             }
         public:
             UmlPtr<T> get() const {
+                if (m_structure->m_rootRedefinedSet.get() != m_structure.get()) {
+                    return m_structure->m_rootRedefinedSet->m_set.beginPtr()->getCurr();
+                }
                 if (m_data) {
                     return m_data;
                 }
@@ -120,19 +123,15 @@ namespace UML {
     class Singleton : public ReadOnlySingleton<T,U,ApiPolicy> {
         private:
             void checkCurrentValueHelper(UmlPtr<T> ptr) {
-               if (this->m_data) {
-                    if (this->m_data.id() != ptr.id()) {
-                        // we need to remove the data before adding it
-                        this->innerRemove(this->m_data);
-                    } else {
-                        return;
-                    }
-                }
-                
+                AbstractSet& redefinedSet = this->m_structure->m_rootRedefinedSet->m_set;
+                ElementPtr currVal = this->get();
+                if (currVal) {
+                    redefinedSet.innerRemove(currVal);
+                }                
             }
             void setHelper(UmlPtr<T> ptr) {
                 checkCurrentValueHelper(ptr);
-                if (ptr) { 
+                if (ptr) {
                     this->innerAdd(ptr);
                 }
             }
@@ -145,9 +144,13 @@ namespace UML {
                 this->setHelper(UmlPtr<T>(&ref));
             }
             void set(ID id) {
+                if (id == ID::nullID()) {
+                    set(0);
+                    return;
+                }
                 UmlPtr<T> ptr = this->m_el.m_manager->createPtr(id); 
                 if (ptr) {
-                    this->nonOppositeAdd(ptr);
+                    this->m_structure->m_rootRedefinedSet->m_set.nonOppositeAdd(ptr);
                 }
             }
     };

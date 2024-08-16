@@ -89,5 +89,5 @@ bool NamedElement::is(ElementType eType) const {
 }
 
 void NamedElement::setNamespace(ID id) {
-    m_namespace.innerAdd(m_manager->createPtr(id));
+    m_namespace.nonOppositeAdd(m_manager->createPtr(id));
 }

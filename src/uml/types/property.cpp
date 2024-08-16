@@ -52,13 +52,13 @@ void Property::restoreReferences() {
         if (m_namespace.get()->is(ElementType::CLASSIFIER)) {
             Classifier& clazz = m_namespace.get()->as<Classifier>();
             if (clazz.getAttributes().contains(m_id)) {
-                m_featuringClassifier.innerAdd(ElementPtr(&clazz));
+                m_featuringClassifier.nonOppositeAdd(ElementPtr(&clazz));
             }
         }
     }
     if (!m_redefinedProperties.empty()) {
         if (m_featuringClassifier.get() && !m_redefinitionContext.contains(m_featuringClassifier.get().id())) {
-            m_redefinitionContext.innerAdd(m_featuringClassifier.get());
+            m_redefinitionContext.nonOppositeAdd(m_featuringClassifier.get());
         }
     }
 }
@@ -132,8 +132,10 @@ void Property::setComposite(bool composite) {
             // TODO test that removeFromJustThisSet function is safe
             //m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.removeFromJustThisSet(m_id); // TODO test
             // remove and add again instead of removeFromJustThisSet (simpler)
-            m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.innerRemove(ElementPtr(this));
-            m_featuringClassifier.get()->as<StructuredClassifier>().m_ownedAttributes.add(this);
+            StructuredClassifierPtr featuringClassifier = m_featuringClassifier.get();
+            featuringClassifier->m_parts.innerRemove(this);
+            m_composite = composite;
+            featuringClassifier->m_ownedAttributes.add(this);
         }
     }
     m_composite = composite;

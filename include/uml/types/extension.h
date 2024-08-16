@@ -22,9 +22,10 @@ namespace UML {
              * every model, but obviously it will be more efficient to just keep track of it by enum right now.
              **/
             // ElementType m_metaClass = ElementType::NOT_SET;
-            struct MemberEndPolicy : public IndexablePolicy {
-                void elementAdded(Property& el, Extension& me);
-                void elementRemoved(Property& el, Extension& me);
+            class MemberEndPolicy : public IndexablePolicy {
+                protected:
+                    void elementAdded(Property& el, Extension& me);
+                    void elementRemoved(Property& el, Extension& me);
             };
             IndexableOrderedSet<Property, Extension, MemberEndPolicy> m_extensionMemberEnds = 
                     IndexableOrderedSet<Property, Extension, MemberEndPolicy>(this);

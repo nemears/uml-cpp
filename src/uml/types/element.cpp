@@ -16,8 +16,6 @@ void Element::referenceErased(ID id) {
     eraseFromSet(id, *m_ownedElements);
     eraseFromSet(id, *m_ownedComments);
     eraseFromSet(id, *m_appliedStereotypes);
-    // m_ownedComments->innerRemove(m_manager->createPtr(id));
-    // m_appliedStereotype->eraseElement(id);
 }
 
 ReadOnlySingleton<Element, Element>& Element::getOwnerSingleton() {
@@ -38,15 +36,9 @@ Element::Element(ElementType elementType) :
     m_manager = 0;
     m_node = 0;
     m_id = ID::randomID();
-
     m_owner->opposite(&Element::getOwnedElements);
-
     m_ownedElements->opposite(&Element::getOwnerSingleton);
-
-    // m_ownedComments = std::unique_ptr<Set<Comment, Element>>(new Set<Comment, Element>(this));
-    // m_ownedComments->subsets(*m_ownedElements);
-
-    // m_appliedStereotypes = std::unique_ptr<Set<InstanceSpecification, Element>>(new Set<InstanceSpecification, Element>(this));
+    m_ownedComments->subsets(*m_ownedElements);
 }
 
 Element::~Element() {
@@ -436,7 +428,7 @@ ElementPtr Element::getOwner() const {
 }
 
 void Element::setOwner(ElementPtr owner) {
-    m_owner->innerRemove(owner);
+    m_owner->innerAdd(owner);
 }
 
 ReadOnlySet<Element, Element>& Element::getOwnedElements() {
@@ -452,7 +444,7 @@ Set<Comment, Element>& Element::getOwnedComments() {
 }
 
 void Element::setOwner(ID id) {
-    m_owner->innerAdd(m_manager->createPtr(id));
+    m_owner->nonOppositeAdd(m_manager->createPtr(id));
 }
 
 }

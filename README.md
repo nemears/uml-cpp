@@ -3,7 +3,7 @@
 ![example branch parameter](https://github.com/nemears/uml-cpp/actions/workflows/cmake.yml/badge.svg?branch=master)
 
 Lightweight UML based MBSE api built on yaml/json syntax UML config files    
-This is a work in progress but has basic functionality working.
+This is a work in progress but has basic functionality working. Serves as part of backend for https://uml.cafe
 
 All behavior of this api is based off of the uml-2.5 specification. If you have general questions about the api the PDF on the [OMG website](https://www.omg.org/spec/UML/2.5) is a good place to start and it is written by the creators of UML.
 
@@ -23,10 +23,15 @@ There are two classes in `uml/managers/protocol` called `UmlServer` and `UmlClie
 A basic tutorial on how to use the uml-cpp api can be found here at the [TUTORIAL.md](TUTORIAL.md) Needs updating
     
 ### future development
-I plan to continue developing this library until all of uml 2.5 is included within the api. Also I am interested in developing other libraries that may be useful with this one, such as : website using simple uml functionality, clang cpp parsing (round-tripping), Eclipse Uml2 server/interface over sockets [uml-java](https://github.com/nemears/uml-java), MagicDraw plugin to function as UmlServer for client, stereotypes to extend api (SysML object) etc...
+This project serves as the main backend for the uml-cafe service hosted at https://uml.cafe. The development will move and progress with the needs of that, as well as any other related projects that may also be developed using this technology. Known features that wan´t to be implemented include:
+- Serialization abstraction based on profile
+- MetaClasses and api generation
+- Finishing the complete spec of UML 2.5.2  
+
+If you are interested in these features or have specific features that you want implemented contact Em (em@uml.cafe) for inquiries.
 
 ## Contributing
 Please feel free to contribute to uml-cpp, just take a look at the [CONTRIBUTING.md](CONTRIBUTING.md) before you make a pull request.
 
 ## Questions
-email me at nickmears2@gmail.com or leave an issue.
+email me at em@uml.cafe or make an issue on our issue board here in github!

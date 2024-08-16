@@ -18,6 +18,7 @@
             buildInputs = with pkgs; [cmake pkg-config clang gnumake coreutils yaml-cpp];
             cmakeFlags = [
               "-DUML_BUILD_TESTS=OFF"
+              "-DCMAKE_BUILD_TYPE=RELEASE"
             ];
             installPhase = 
             ''

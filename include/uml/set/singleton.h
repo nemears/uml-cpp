@@ -122,7 +122,7 @@ namespace UML {
     template <class T, class U, class ApiPolicy>
     class Singleton : public ReadOnlySingleton<T,U,ApiPolicy> {
         private:
-            void checkCurrentValueHelper(UmlPtr<T> ptr) {
+            void checkCurrentValueHelper() {
                 AbstractSet& redefinedSet = this->m_structure->m_rootRedefinedSet->m_set;
                 ElementPtr currVal = this->get();
                 if (currVal) {
@@ -130,7 +130,7 @@ namespace UML {
                 }                
             }
             void setHelper(UmlPtr<T> ptr) {
-                checkCurrentValueHelper(ptr);
+                checkCurrentValueHelper();
                 if (ptr) {
                     this->innerAdd(ptr);
                 }

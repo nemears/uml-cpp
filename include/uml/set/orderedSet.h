@@ -43,68 +43,12 @@ namespace UML {
             
             void allocatePtr(ElementPtr ptr, SetStructure& set) override {
                 SetDataPolicy<T>::allocatePtr(ptr, set);
-                std::shared_ptr<OrderedSetNode<T>> orderedPtr;
-
-                if (&set == this->m_structure->m_rootRedefinedSet.get()) {
-                    orderedPtr = std::make_shared<OrderedSetNode<T>>(ptr);
-                } else {
-                    // check if an ordered ptr has already been made
-                    std::list<std::shared_ptr<SetStructure>> queue = { set.m_rootRedefinedSet };
-                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
-                    while (!queue.empty()) {
-                        auto front = queue.front();
-                        queue.pop_front();
-                        if (visited.count(front)) {
-                            continue;
-                        }
-                        visited.insert(front);
-
-                        if (front.get() == this->m_structure.get()) {
-                            // once we reach ourselves we know we're hopeless to find it
-                            break;
-                        }
-
-                        auto checkSetSetPtr = [orderedPtr, ptr](std::shared_ptr<SetStructure> currSet) mutable -> bool {
-                            if (currSet->m_set.setType() == SetType::ORDERED_SET) {
-                                auto last = dynamic_cast<OrderedSetDataPolicy&>(currSet->m_set).m_last;
-                                if (last && last->m_ptr.id() == ptr.id()) {
-                                    orderedPtr = last;
-                                    return true;
-                                }
-                            }
-                            return false;
-                        };
-
-                        if (checkSetSetPtr(front)) {
-                            break;
-                        }
-
-                        for (auto redefinedSet : front->m_redefinedSets) {
-                            if (checkSetSetPtr(redefinedSet)) {
-                                break;
-                            }
-                        }
-
-                        if (orderedPtr) {
-                            break;
-                        }
-
-                        for (auto superSet : front->m_superSets) {
-                            queue.push_back(superSet);
-                        }
-                    }
-                }
-
-                if (!orderedPtr) {
-                    // create it ourselves
-                    orderedPtr = std::make_shared<OrderedSetNode<T>>(ptr);
-                }
-
-                if (!m_first.get()) {
+                std::shared_ptr<OrderedSetNode<T>> orderedPtr = std::make_shared<OrderedSetNode<T>>(ptr);
+                if (!m_first) {
                     m_first = orderedPtr;
                 }
                 orderedPtr->m_prev = m_last;
-                if (m_last.get()) {
+                if (m_last) {
                     m_last->m_next = orderedPtr;
                 }
                 m_last = orderedPtr;
@@ -120,42 +64,17 @@ namespace UML {
 
                 // the ptr is still in our set
                 if (orderedPtr && orderedPtr->m_ptr.id() == ptr.id()) {
-                    if (orderedPtr->m_prev.get()) {
-                        orderedPtr->m_prev->m_next = orderedPtr->m_next;
-                    }
-                    if (orderedPtr->m_next.get()) {
-                        orderedPtr->m_next->m_prev = orderedPtr->m_prev;
-                    }
                     if (m_last == orderedPtr) {
                         m_last = orderedPtr->m_prev;
                     }
                     if (m_first == orderedPtr) {
                         m_first = orderedPtr->m_next;
                     }
-
-                    std::list<std::shared_ptr<SetStructure>> queue = { this->m_structure->m_rootRedefinedSet };
-                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
-                    while (!queue.empty()) {
-                        auto front = queue.front();
-                        queue.pop_front();
-                        if (visited.count(front)) {
-                            continue;
-                        }
-                        visited.insert(front);
-                        
-                        if (front->m_set.setType() == SetType::ORDERED_SET) {
-                            OrderedSetDataPolicy<T>& frontOrdered = dynamic_cast<OrderedSetDataPolicy<T>&>(front->m_set);
-                            if (frontOrdered.m_last && frontOrdered.m_last->m_ptr.id() == ptr.id()) {
-                                frontOrdered.m_last = orderedPtr->m_prev;
-                            }
-                            if (frontOrdered.m_first && frontOrdered.m_first->m_ptr.id() == ptr.id()) {
-                                frontOrdered.m_first = orderedPtr->m_next;
-                            }
-                        }
-
-                        for (auto superSet : front->m_superSets) {
-                            queue.push_back(superSet);
-                        }
+                    if (orderedPtr->m_prev) {
+                        orderedPtr->m_prev->m_next = orderedPtr->m_next;
+                    }
+                    if (orderedPtr->m_next) {
+                        orderedPtr->m_next->m_prev = orderedPtr->m_prev;
                     }
                 }
             }
@@ -215,12 +134,15 @@ namespace UML {
             }
         public:
             ~OrderedSetDataPolicy() {
-                if (m_first.get()) {
-                    m_first->destroy();
+                auto curr = m_first;
+                while (curr) {
+                    auto oldCurr = curr;
+                    curr = oldCurr->m_next;
+                    oldCurr->m_prev = 0;
+                    oldCurr->m_next = 0;
                 }
-                if (m_last.get()) {
-                    m_last->destroy();
-                }
+                m_first = 0;
+                m_last = 0;
             }
             UmlPtr<T> front() const {
                 if (m_first.get()) {

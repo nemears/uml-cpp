@@ -54,6 +54,7 @@ namespace UML {
     typedef UmlPtr<ElementImport> ElementImportPtr;
     typedef UmlPtr<EnumerationLiteral> EnumerationLiteralPtr;
     typedef UmlPtr<Expression> ExpressionPtr;
+    typedef UmlPtr<Extension> ExtensionPtr;
     typedef UmlPtr<Generalization> GeneralizationPtr;
     typedef UmlPtr<InstanceValue> InstanceValuePtr;
     typedef UmlPtr<LiteralBool> LiteralBoolPtr;

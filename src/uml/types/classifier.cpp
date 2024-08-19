@@ -33,7 +33,7 @@ void Classifier::GeneralPolicy::elementAdded(Classifier& el, Classifier& me) {
         me.getGeneralizations().add(newGeneralization);
     }
     for (auto& mem : el.m_members) {
-        if (mem.getVisibility() != VisibilityKind::PRIVATE) {
+        if (mem.getVisibility() != VisibilityKind::PRIVATE && !me.m_inheritedMembers.contains(mem)) {
             me.m_inheritedMembers.innerAdd(ElementPtr(&mem));
         }
     }

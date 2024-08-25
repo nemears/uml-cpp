@@ -145,7 +145,6 @@ namespace UML {
                         }
                     }
                 }
-                m_el.m_node->setReference(&ptr);
                 ptr.m_node->setReference(m_el.getID(), m_el.m_node);
             }
             void nonOppositeAdd(ElementPtr ptr) override {
@@ -227,6 +226,7 @@ namespace UML {
                         }
                     }
                 }
+                m_el.m_node->setReference(&ptr);
             }
             void innerRemove(ElementPtr ptr) override {
                 auto rootRedefinedSet = m_structure->m_rootRedefinedSet;

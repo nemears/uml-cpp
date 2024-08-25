@@ -1636,9 +1636,14 @@ void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data) {
         }
         for (size_t i = 0; i < node["ownedStereotypes"].size(); i++) {
             if (node["ownedStereotypes"][i].IsMap()) {
-                pckg.m_ownedStereotypes.innerAdd(parseNode(node["ownedStereotypes"][i], data));
+                pckg.getPackagedElements().add(parseNode(node["ownedStereotypes"][i], data));
             } else if (node["ownedStereotypes"][i].IsScalar()) {
-                pckg.m_ownedStereotypes.m_structure->m_rootRedefinedSet->m_set.nonOppositeAdd(data.manager->createPtr(ID::fromString(node["ownedStereotypes"][i].as<string>())));
+                ID id = ID::fromString(node["ownedStereotypes"][i].as<std::string>());
+                if (data.update) {
+                    pckg.getPackagedElements().add(data.manager->get(id));
+                } else {
+                    pckg.m_ownedStereotypes.nonOppositeAdd(data.manager->createPtr(id));
+                }
             } else {
                 throw SerializationError("could not parse ownedStereotypes entry for Package " + getLineNumber(node["ownedStereotypes"][i]));
             }

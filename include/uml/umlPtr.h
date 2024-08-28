@@ -1,12 +1,9 @@
 #pragma once
 
-#include "types/element.h"
-#include "managers/abstractManager.h"
+#include "managers/baseElement.h"
 #include "managers/managerNode.h"
-
-namespace UML {
-    template <class T> class UmlPtr;
-}
+#include "managers/abstractManager.h"
+#include <memory>
 
 namespace std {
     template <class T>
@@ -31,27 +28,11 @@ namespace UML {
             >
     class PrivateSet;
 
-    class AbstractUmlPtr {
-
-        template <class SerializationPolicy, typename PersistencePolicy> friend class Manager;
-        friend class AbstractAccessPolicy;
-        template <class T> friend class UmlPtr;
-        friend struct ManagerNode;
-
-        protected:
-            ID m_id = ID::nullID();
-            long int m_ptrId = 0;
-            ManagerNode* m_node = 0;
-            virtual void reindex(ID newID, Element* el) = 0;
-            virtual void releasePtr() = 0;
-            virtual void erasePtr() = 0;
-    };
-
-    template <class T = Element>
-    class UmlPtr : public AbstractUmlPtr {
+    template <class T>
+    class UmlPtr {
 
         template <class U, class ApiPolicy, class V> friend class Singleton;
-        template <class SerializationPolicy, typename PersistencePolicy> friend class Manager;
+ //       template <class SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class AbstractAccessPolicy;
         template <class U> friend class UmlPtr;
         template <
@@ -63,24 +44,26 @@ namespace UML {
         friend class PrivateSet;
 
         private:
-            AbstractManager* m_manager = 0;
-            T* m_ptr = 0;
+            std::shared_ptr<T> m_ptr = 0;
+            std::shared_ptr<NodeReference> m_node = 0;
         protected:
-            void reindex(ID newID, Element* el) override {
+            ID m_id = ID::nullID();
+            long int m_ptrId = 0;
+            void reindex(ID newID, Element* el) {
                 m_id = newID;
                 m_ptr = dynamic_cast<T*>(el);
                 m_node = m_ptr->m_node;
             }
-            void releasePtr() override {
+            void releasePtr() {
                 m_ptr = 0;
             }
-            void erasePtr() override {
+            void erasePtr() {
                 m_ptr = 0;
                 m_node = 0;
             }
             template <class U = Element>
             void reassignPtr(const UmlPtr<U>& rhs) {
-                if (m_manager) {
+                if (m_ptr) {
                     m_manager->removePtr(*this);
                     m_manager->destroyPtr(*this);
                 }

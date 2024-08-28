@@ -20,7 +20,7 @@ if (UML_DEBUG)
     add_definitions( -DUML_DEBUG )
 endif()
 
-set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_AUTOMOC ON)
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -37,7 +37,7 @@ find_package(Threads REQUIRED)
 IF(UNIX)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
     add_compile_options(-Wall -Wextra -pedantic)
-    IF(UML_DEBUG AND CMAKE_BUILD_TYPE STREQUAL Debug)
+    IF(CMAKE_BUILD_TYPE STREQUAL Debug)
         message(STATUS "debug build")
         if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
             add_compile_options(-fstandalone-debug)
@@ -90,7 +90,7 @@ add_library(uml SHARED
     src/uml/id.cpp
 
     # managers
-    src/uml/managers/abstractManager.cpp src/uml/managers/managerNode.cpp
+    #src/uml/managers/abstractManager.cpp src/uml/managers/managerNode.cpp
     src/uml/managers/filePersistencePolicy.cpp
     ## serialization
     src/uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.cpp

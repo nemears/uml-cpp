@@ -1,12 +1,12 @@
 #pragma once
 
-#include <algorithm>
 #include <string>
 #include <exception>
 #include <memory>
 #include <list>
-#include <unordered_set>
-#include "uml/id.h"
+#include "uml/managers/managerNode.h"
+#include "uml/managers/typeInfo.h"
+#include "uml/managers/baseElement.h"
 #include "uml/set/doNothingPolicy.h"
 
 namespace YAML {
@@ -17,8 +17,6 @@ namespace UML {
 
     // Helper function to assess possible ids
     bool isValidID(std::string strn);
-
-    class Element;
     class AbstractSet;
     template <class T, class U, class DataTypePolicy, class ApiPolicy = DoNothingPolicy>
     class PrivateSet;
@@ -39,10 +37,172 @@ namespace UML {
     class EmitterData;
     class ParserData;
     class AbstractManager;
-    struct ManagerNode;
-    class InstanceSpecification;
+    struct NodeReference;
+                      //
+    class Abstraction;
+    class Artifact;
+    class Association;
+    class Behavior;
+    class BehavioralFeature;
+    class BehavioredClassifier;
+    class Class;
+    class Classifier;
+    class ClassifierTemplateParameter;
     class Comment;
-    class Classifier; // TODO remove this is because of weird policy in Classifier members set
+    class ConnectableElement;
+    class Connector;
+    class ConnectorEnd;
+    class Constraint;
+    class DataType;
+    class Dependency;
+    class DeployedArtifact;
+    class Deployment;
+    class DeploymentTarget;
+    class DirectedRelationship;
+    class Element;
+    class ElementImport;
+    class EncapsulatedClassifier;
+    class Enumeration;
+    class EnumerationLiteral;
+    class Expression;
+    class Extension;
+    class ExtensionEnd;
+    class Feature;
+    class Generalization;
+    class GeneralizationSet;
+    class InstanceSpecification;
+    class InstanceValue;
+    class Interface;
+    class InterfaceRealization;
+    class LiteralBool;
+    class LiteralInt;
+    class LiteralNull;
+    class LiteralReal;
+    class LiteralSpecification;
+    class LiteralString;
+    class LiteralUnlimitedNatural;
+    class Manifestation;
+    class Model;
+    class MultiplicityElement;
+    class NamedElement;
+    class Namespace;
+    class OpaqueBehavior;
+    class Operation;
+    class Package;
+    class PackageImport;
+    class PackageMerge;
+    class PackageableElement;
+    class Parameter;
+    class ParameterSet;
+    class ParameterableElement;
+    class Port;
+    class PrimitiveType;
+    class Profile;
+    class ProfileApplication;
+    class Property;
+    class Realization;
+    class Reception;
+    class RedefinableElement;
+    class RedefinableTemplateSignature;
+    class Relationship;
+    class Signal;
+    class Slot;
+    class Stereotype;
+    class StructuralFeature;
+    class StructuredClassifier;
+    class TemplateBinding;
+    class TemplateParameter;
+    class TemplateParameterSubstitution;
+    class TemplateSignature;
+    class TemplateableElement;
+    class Type;
+    class TypedElement;
+    class Usage;
+    class ValueSpecification;
+
+    typedef std::tuple<
+        Abstraction,
+        Artifact,
+        Association,
+        Behavior,
+        BehavioralFeature,
+        BehavioredClassifier,
+        Class,
+        Classifier,
+        ClassifierTemplateParameter,
+        Comment,
+        ConnectableElement,
+        Connector,
+        ConnectorEnd,
+        Constraint,
+        DataType,
+        Dependency,
+        DeployedArtifact,
+        Deployment,
+        DeploymentTarget,
+        DirectedRelationship,
+        Element,
+        ElementImport,
+        EncapsulatedClassifier,
+        Enumeration,
+        EnumerationLiteral,
+        Expression,
+        Extension,
+        ExtensionEnd,
+        Feature,
+        Generalization,
+        GeneralizationSet,
+        InstanceSpecification,
+        InstanceValue,
+        Interface,
+        InterfaceRealization,
+        LiteralBool,
+        LiteralInt,
+        LiteralNull,
+        LiteralReal,
+        LiteralSpecification,
+        LiteralString,
+        LiteralUnlimitedNatural,
+        Manifestation,
+        Model,
+        MultiplicityElement,
+        NamedElement,
+        Namespace,
+        OpaqueBehavior,
+        Operation,
+        Package,
+        PackageImport,
+        PackageMerge,
+        PackageableElement,
+        Parameter,
+        ParameterSet,
+        ParameterableElement,
+        Port,
+        PrimitiveType,
+        Profile,
+        ProfileApplication,
+        Property,
+        Realization,
+        Reception,
+        RedefinableElement,
+        RedefinableTemplateSignature,
+        Relationship,
+        Signal,
+        Slot,
+        Stereotype,
+        StructuralFeature,
+        StructuredClassifier,
+        TemplateBinding,
+        TemplateParameter,
+        TemplateParameterSubstitution,
+        TemplateSignature,
+        TemplateableElement,
+        Type,
+        TypedElement,
+        Usage,
+        ValueSpecification
+    > UmlTypes;
+
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -50,7 +210,7 @@ namespace UML {
      * ownedElements - the elements that this element owns
      * id - the elements unique id for quick comparison and indexing
      **/
-    class Element {
+    class Element : public BaseElement<UmlTypes> {
 
         friend class AbstractManager;
         friend struct ManagerNode;
@@ -73,64 +233,8 @@ namespace UML {
 
         private:
         protected:
-            // struct AbstractTypeInfo {
-            // 
-            // };
-
             
-
-            // struct TypeInfo : public AbstractTypeInfo {
-            //     // struct TypeInfoNode {
-            //     //     TypeInfo& m_typeInfo;
-            //     //     TypeInfoNode(TypeInfo* typeInfo) : m_typeInfo(*typeInfo) {};
-            //     // };
-            //     // std::shared_ptr<TypeInfoNode> m_node = std::make_shared<TypeInfoNode>(this);
-            //     // std::unordered_set<std::shared_ptr<TypeInfoNode>> m_base;
-            //     // std::unordered_set<std::shared_ptr<TypeInfoNode>> m_derived;
-            //     TypeInfo() {}
-            //     // ~TypeInfo() {
-            //     //     for (auto base : m_base) {
-            //     //         auto baseDerivedIt = base->m_typeInfo.m_derived.begin();
-            //     //         while (baseDerivedIt != base->m_typeInfo.m_derived.end() && *baseDerivedIt != m_node) {
-            //     //             baseDerivedIt++;
-            //     //         }
-            //     //         if (baseDerivedIt == base->m_typeInfo.m_derived.end()) {
-            //     //             // TODO error;
-            //     //         }
-            //     //         base->m_typeInfo.m_derived.erase(baseDerivedIt);
-            //     //     }
-            //     //     for (auto derived : m_derived) {
-            //     //         auto derivedBaseIt = derived->m_typeInfo.m_base.begin();
-            //     //         while (derivedBaseIt != derived->m_typeInfo.m_base.end() && *derivedBaseIt != m_node) {
-            //     //             derivedBaseIt++;
-            //     //         }
-            //     //         if (derivedBaseIt == derived->m_typeInfo.m_base.end()) {
-            //     //             // TODO error;
-            //     //         }
-            //     //         derived->m_typeInfo.m_base.erase(derivedBaseIt);
-            //     //     }
-            //     //     m_base.clear();
-            //     //     m_derived.clear();
-            //     // }
-            //     // void setBase(TypeInfo& base) {
-            //     //     m_base.insert(base.m_node);
-            //     //     base.m_derived.insert(m_node);
-            //     // } 
-            // };
-            // 
-            // // type info for meta details
-            // TypeInfo<"Element"> Info;
-            // Info m_elementTypeInfo;
-            // AbstractTypeInfo& m_typeInfo;
-
-            const std::size_t m_elementType;
-
-            // TODO replace these ptrs as references
-            AbstractManager* m_manager = 0;
-            ManagerNode* m_node = 0;
-
-            // ID
-            ID m_id;
+            typedef TypeInfo<std::tuple<>> Info;    
             
             std::unique_ptr<ReadOnlySingleton<Element, Element>> m_owner;
             std::unique_ptr<ReadOnlySet<Element, Element>> m_ownedElements;
@@ -140,12 +244,11 @@ namespace UML {
             void setOwner(ElementPtr el);
             virtual void restoreReferences();
             virtual void referenceErased(ID id);
-            Element(std::size_t elementType);
+            Element(std::size_t elementType, AbstractManager& manager);
             void eraseFromSet(ID id, AbstractSet& set);
         public:
             Element(const Element&) = delete;
             Element& operator=(const Element&) = delete;
-            ID getID() const;
             ElementPtr getOwner() const;
             ReadOnlySet<Element, Element>& getOwnedElements();
             Set<Comment, Element, DoNothingPolicy>& getOwnedComments();
@@ -156,12 +259,6 @@ namespace UML {
              *       stereotype tags as keyword in yaml config for disk storage (not necessarily useful though?)
              **/
             Set<InstanceSpecification, Element, DoNothingPolicy>& getAppliedStereotypes();
-            virtual void setID(std::string id);
-            void setID(ID id);
-            bool is(std::size_t type) const;
-            std::size_t elementType() const {
-                return m_elementType;
-            }
             template <class T = Element> T& as() {
                 T& ret = dynamic_cast<T&>(*this);
                 // if (!ret) {

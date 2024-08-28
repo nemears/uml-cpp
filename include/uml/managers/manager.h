@@ -1,77 +1,13 @@
 #pragma once
 
+#include <mutex>
 #include <tuple>
 #include "abstractManager.h"
+#include "typeID.h"
 #include "uml/umlPtr.h"
+#include "managerNode.h"
 
 namespace UML {
-    class NullType {};
-
-    // below is implementation of TypeIDHierarchy from Alex Andrescu's C++ Generic Programming and Design Patterns Applied
-    // with variardic templates from c++11
-
-    // type id
-    template <std::size_t ElementType, class Tlist, template<std::size_t, class> class Unit>
-    class TypeIDHierarchy;
-
-    template <std::size_t ElementType, class ... Ts, class T, template<std::size_t, class> class Unit>
-    class TypeIDHierarchy<ElementType, std::tuple<T, Ts...>, Unit> : public TypeIDHierarchy<ElementType, T, Unit>, public TypeIDHierarchy<ElementType - 1, Ts..., Unit> {
-        public:
-            typedef std::tuple<T, Ts...> Tlist;
-            typedef TypeIDHierarchy<ElementType, T, Unit> LeftBase;
-            typedef TypeIDHierarchy<ElementType - 1, Ts..., Unit> RightBase;
-    };
-
-    template <std::size_t ElementType, class AtomicType, template <std::size_t, class> class Unit>
-    class TypeIDHierarchy: public Unit<ElementType, AtomicType> {
-        typedef Unit<ElementType, AtomicType> LeftBase;
-    };
-
-    template <std::size_t ElementType, template <std::size_t, class> class Unit> 
-    class TypeIDHierarchy<ElementType, NullType, Unit> {};
-
-    template <std::size_t ElementType, class T>
-    struct TypeID {
-        static std::size_t elementType() {
-            return ElementType;
-        }
-    };
-
-    template <class ... Ts>
-    class ManagerTypes : public TypeIDHierarchy<std::tuple_size<std::tuple<Ts...>>{}, std::tuple<Ts...>, TypeID> {
-        typedef std::tuple<Ts...> Types;
-
-        // utility class to get type given size_t
-        template <std::size_t ElementType> 
-        struct GetType {
-            using type = std::tuple_element<ElementType, Types>;
-        };
-
-        // utility class to get elementType given type
-        template<class Tlist, class T>
-        struct TypeIdOfHelper;
-
-        template <class T>
-        struct TypeIdOfHelper<NullType, T> {
-            enum { value = -1 };
-        };
-
-        template <class T, class Tail> 
-        struct TypeIdOfHelper<std::tuple<T>, Tail> {
-            enum { value = 0 };
-        };
-
-        template <class ... TTs, class T>
-        struct TypeIdOfHelper<std::tuple<TTs...>, T> {
-            private:
-                enum { temp = TypeIdOfHelper<Ts...>::value };
-            public:
-                enum { value = temp == -1 ? -1 : 1 + temp }; 
-        };
-        
-        template <class T>
-        struct TypeIdOf : public TypeIdOfHelper<Types, T> {};
-    };
 
     // factory
     template <class Tlist, template<class> class Unit>
@@ -90,13 +26,13 @@ namespace UML {
     };
 
     template <template <class> class Unit>
-    struct CreatorHierarchy<NullType, Unit> {};
+    struct CreatorHierarchy<std::tuple<>, Unit> {};
 
     template <class T>
     class Creator {
         protected:
-            T* createPtr(std::size_t elementType) {
-                return new T(elementType);
+            T* createPtr(std::size_t elementType, AbstractManager& manager) {
+                return new T(elementType, manager);
             }
     };
 
@@ -104,29 +40,64 @@ namespace UML {
     class AbstractFactory : public CreatorHierarchy<std::tuple<Ts...>, Creator> {
         public:
             template <class T>
-            T* factoryCreate(std::size_t elementType) {
+            T* factoryCreate(std::size_t elementType, AbstractManager& manager) {
                 // TODO
-                return Creator<T>::createPtr(elementType);
+                return Creator<T>::createPtr(elementType, manager);
             }
     };
-    
+
+
+    // manager
     template <class SerializationPolicy, class PersistencePolicy, class ... Ts> 
     class Manager : public ManagerTypes<Ts...>, public AbstractFactory<Ts...>, public AbstractManager , protected SerializationPolicy, protected PersistencePolicy {
         protected:
+            std::mutex m_graphMutex;
             std::unordered_map<ID, ManagerNode> m_graph;
-            void registerPtr(Element* ptr) {
-                m_graph.emplace(ptr->getID(), ptr);
+            template<class T>
+            UmlPtr<T> registerPtr(T* ptr) {
+                // create Node by emplace in graph
+                std::lock_guard<std::mutex> graphLock(m_graphMutex);
+                ManagerNode& node = m_graph.emplace(ptr->getID(), ptr).first->second;
+
+                // Node Reference
+                ptr->m_node = std::make_shared<NodeReference>(node);
+
+                // initialize ptr through copy
+                return ptr;
             }
         public:
             // create by type id
             ElementPtr create(std::size_t elementType) override {
-                return AbstractFactory<Ts...>::template factoryCreate<ManagerTypes<Ts...>::template GetType<elementType>::type>(elementType);
+                return registerPtr(AbstractFactory<Ts...>::template factoryCreate<ManagerTypes<Ts...>::template GetType<elementType>::type>(elementType, *this));
             }
 
             // create by type
             template <class T>
             UmlPtr<T> create() {
-                return AbstractFactory<T>::template factoryCreate<T>(ManagerTypes<Ts...>::template TypeIdOf<T>::value);
+                return registerPtr(AbstractFactory<T>::template factoryCreate<T>(ManagerTypes<Ts...>::template TypeIdOf<T>::value, *this));
+            }
+
+            // get by id
+            ElementPtr get(ID id) override {
+
+                // local memory look up
+                {
+                    std::lock_guard<std::mutex> graphLock(m_graphMutex);
+                    auto it = m_graph.find(id);
+                    if (it != m_graph.end() && it->second.m_ptr) {
+                        return it->second.m_ptr.get();
+                    }
+                }
+
+                // check for it via policies
+                ElementPtr ret = SerializationPolicy::parseIndividul(PersistencePolicy::loadElementData(id), *this);
+
+                if (ret) {
+                    // TODO restore
+
+                }
+
+                return ret;
             }
 
             // TODO the rest

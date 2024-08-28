@@ -4,12 +4,13 @@
 
 namespace UML {
 
+
     class AbstractUmlPtr;
     class AbstractSet;
     class Element;
     class NamedElement;
     class Package;
-
+    
     class AbstractManager {
 
         template <class T, class DataTypePolicy, class ApiPolicy, class U> friend class PrivateSet;
@@ -25,11 +26,7 @@ namespace UML {
         friend void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
 
         public:
-            virtual Element* create(ElementType type) = 0;
-            template <class T>
-            UmlPtr<T> create() {
-                return UmlPtr<T>(&create(T::elementType())->template as<T>());
-            }
+            virtual ElementPtr create(std::size_t elementType) = 0;
             virtual ElementPtr get(ID id) = 0;
             virtual bool loaded(ID id) = 0;
             virtual void reindex (ID oldID, ID newID) = 0;
@@ -43,7 +40,6 @@ namespace UML {
             virtual void save(std::string location) = 0;
             virtual void save() = 0;
         protected:
-            virtual Element* get(Element* me, ID theID);
             virtual ElementPtr createPtr(ID id) = 0;
             virtual void removePtr(AbstractUmlPtr& ptr) = 0;
             virtual void destroyPtr(AbstractUmlPtr& ptr) = 0;

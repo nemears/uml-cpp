@@ -1,9 +1,11 @@
 #pragma once
 
+#include <algorithm>
 #include <string>
 #include <exception>
 #include <memory>
 #include <list>
+#include <unordered_set>
 #include "uml/id.h"
 #include "uml/set/doNothingPolicy.h"
 
@@ -13,142 +15,8 @@ namespace YAML {
 
 namespace UML {
 
-    // Element Type enum to get the type of object on runtime
-    enum class ElementType {
-        ABSTRACTION,
-        ACTION,
-        ACTION_INPUT_PIN,
-        ACTIVITY,
-        ACTIVITY_EDGE,
-        ACTIVITY_FINAL_NODE,
-        ACTIVITY_GROUP,
-        ACTIVITY_NODE,
-        ACTIVITY_PARAMETER_NODE,
-        ACTIVITY_PARTITION,
-        ARTIFACT,
-        ASSOCIATION,
-        BEHAVIOR,
-        BEHAVIORAL_FEATURE,
-        BEHAVIORED_CLASSIFIER,
-        CALL_ACTION,
-        CALL_BEHAVIOR_ACTION,
-        CENTRAL_BUFFER_NODE,
-        CLASS,
-        CLASSIFIER,
-        CLASSIFIER_TEMPLATE_PARAMETER,
-        COMMENT,
-        CONNECTABLE_ELEMENT,
-        CONNECTOR,
-        CONNECTOR_END,
-        CONSTRAINT,
-        CONTROL_FLOW,
-        CONTROL_NODE,
-        CREATE_OBJECT_ACTION,
-        DATA_STORE_NODE,
-        DATA_TYPE,
-        DECISION_NODE,
-        DEPENDENCY,
-        DEPLOYED_ARTIFACT,
-        DEPLOYMENT,
-        DEPLOYMENT_TARGET,
-        DIRECTED_RELATIONSHIP,
-        ELEMENT,
-        ELEMENT_IMPORT,
-        ENCAPSULATED_CLASSIFIER,
-        ENUMERATION,
-        ENUMERATION_LITERAL,
-        EXCEPTION_HANDLER,
-        EXECUTABLE_NODE,
-        EXPRESSION,
-        EXTENSION,
-        EXTENSION_END,
-        FEATURE,
-        FINAL_NODE,
-        FLOW_FINAL_NODE,
-        FORK_NODE,
-        GENERALIZATION,
-        GENERALIZATION_SET,
-        INITIAL_NODE,
-        INPUT_PIN,
-        INSTANCE_SPECIFICATION,
-        INSTANCE_VALUE,
-        INTERFACE_UML, // why microsoft
-        INTERFACE_REALIZATION,
-        INTERRUPTIBLE_ACTIVITY_REGION,
-        INVOCATION_ACTION,
-        JOIN_NODE,
-        LITERAL_BOOL,
-        LITERAL_INT,
-        LITERAL_NULL,
-        LITERAL_REAL,
-        LITERAL_SPECIFICATION,
-        LITERAL_STRING,
-        LITERAL_UNLIMITED_NATURAL,
-        MANIFESTATION,
-        MERGE_NODE,
-        MODEL,
-        MULTIPLICITY_ELEMENT,
-        NAMED_ELEMENT,
-        NAMESPACE,
-        OBJECT_FLOW,
-        OBJECT_NODE,
-        OPAQUE_ACTION,
-        OPAQUE_BEHAVIOR,
-        OPERATION,
-        OUTPUT_PIN,
-        PACKAGE,
-        PACKAGEABLE_ELEMENT,
-        PACKAGE_IMPORT,
-        PACKAGE_MERGE,
-        PARAMETER,
-        PARAMETERABLE_ELEMENT,
-        PARAMETER_SET,
-        PIN,
-        PORT,
-        PRIMITIVE_TYPE,
-        PROFILE,
-        PROFILE_APPLICATION,
-        PROPERTY,
-        REALIZATION,
-        RECEPTION,
-        REDEFINABLE_ELEMENT,
-        REDEFINABLE_TEMPLATE_SIGNATURE,
-        RELATIONSHIP,
-        SIGNAL,
-        SLOT,
-        STEREOTYPE,
-        STRUCTURAL_FEATURE,
-        STRUCTURED_CLASSIFIER,
-        TEMPLATEABLE_ELEMENT,
-        TEMPLATE_BINDING,
-        TEMPLATE_PARAMETER,
-        TEMPLATE_PARAMETER_SUBSTITUTION,
-        TEMPLATE_SIGNATURE,
-        TYPE,
-        TYPED_ELEMENT,
-        USAGE,
-        VALUE_PIN,
-        VALUE_SPECIFICATION,
-
-        NOT_SET
-    };
-
     // Helper function to assess possible ids
     bool isValidID(std::string strn);
-
-    class InvalidElementCastException : public std::exception {
-        
-        private:
-            char m_msg[200];
-        
-        public:
-            InvalidElementCastException(const char* first, const char* second) {
-                sprintf(m_msg, "Cannot cast %s to %s", first, second);
-            };
-            virtual const char* what() const throw() {
-                return m_msg;
-            };
-    };  
 
     class Element;
     class AbstractSet;
@@ -186,7 +54,7 @@ namespace UML {
 
         friend class AbstractManager;
         friend struct ManagerNode;
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+//        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         template <class T, class U, class DataTypePolicy, class ApiPolicy> friend class PrivateSet;
         template <class T> friend class UmlPtr;
         template <class T, class U, class ApiPolicy>
@@ -205,15 +73,66 @@ namespace UML {
 
         private:
         protected:
+            // struct AbstractTypeInfo {
+            // 
+            // };
+
+            
+
+            // struct TypeInfo : public AbstractTypeInfo {
+            //     // struct TypeInfoNode {
+            //     //     TypeInfo& m_typeInfo;
+            //     //     TypeInfoNode(TypeInfo* typeInfo) : m_typeInfo(*typeInfo) {};
+            //     // };
+            //     // std::shared_ptr<TypeInfoNode> m_node = std::make_shared<TypeInfoNode>(this);
+            //     // std::unordered_set<std::shared_ptr<TypeInfoNode>> m_base;
+            //     // std::unordered_set<std::shared_ptr<TypeInfoNode>> m_derived;
+            //     TypeInfo() {}
+            //     // ~TypeInfo() {
+            //     //     for (auto base : m_base) {
+            //     //         auto baseDerivedIt = base->m_typeInfo.m_derived.begin();
+            //     //         while (baseDerivedIt != base->m_typeInfo.m_derived.end() && *baseDerivedIt != m_node) {
+            //     //             baseDerivedIt++;
+            //     //         }
+            //     //         if (baseDerivedIt == base->m_typeInfo.m_derived.end()) {
+            //     //             // TODO error;
+            //     //         }
+            //     //         base->m_typeInfo.m_derived.erase(baseDerivedIt);
+            //     //     }
+            //     //     for (auto derived : m_derived) {
+            //     //         auto derivedBaseIt = derived->m_typeInfo.m_base.begin();
+            //     //         while (derivedBaseIt != derived->m_typeInfo.m_base.end() && *derivedBaseIt != m_node) {
+            //     //             derivedBaseIt++;
+            //     //         }
+            //     //         if (derivedBaseIt == derived->m_typeInfo.m_base.end()) {
+            //     //             // TODO error;
+            //     //         }
+            //     //         derived->m_typeInfo.m_base.erase(derivedBaseIt);
+            //     //     }
+            //     //     m_base.clear();
+            //     //     m_derived.clear();
+            //     // }
+            //     // void setBase(TypeInfo& base) {
+            //     //     m_base.insert(base.m_node);
+            //     //     base.m_derived.insert(m_node);
+            //     // } 
+            // };
+            // 
+            // // type info for meta details
+            // TypeInfo<"Element"> Info;
+            // Info m_elementTypeInfo;
+            // AbstractTypeInfo& m_typeInfo;
+
+            const std::size_t m_elementType;
+
+            // TODO replace these ptrs as references
             AbstractManager* m_manager = 0;
             ManagerNode* m_node = 0;
+
+            // ID
             ID m_id;
-
-            const ElementType m_elementType;
-
-            // owner
+            
             std::unique_ptr<ReadOnlySingleton<Element, Element>> m_owner;
-            // ownedElements
             std::unique_ptr<ReadOnlySet<Element, Element>> m_ownedElements;
             std::unique_ptr<Set<Comment, Element, DoNothingPolicy>> m_ownedComments;
             std::unique_ptr<Set<InstanceSpecification, Element, DoNothingPolicy>> m_appliedStereotypes;
@@ -221,12 +140,11 @@ namespace UML {
             void setOwner(ElementPtr el);
             virtual void restoreReferences();
             virtual void referenceErased(ID id);
-            Element(ElementType elementType);
+            Element(std::size_t elementType);
             void eraseFromSet(ID id, AbstractSet& set);
         public:
             Element(const Element&) = delete;
             Element& operator=(const Element&) = delete;
-            virtual ~Element();
             ID getID() const;
             ElementPtr getOwner() const;
             ReadOnlySet<Element, Element>& getOwnedElements();
@@ -240,19 +158,17 @@ namespace UML {
             Set<InstanceSpecification, Element, DoNothingPolicy>& getAppliedStereotypes();
             virtual void setID(std::string id);
             void setID(ID id);
-            static std::string elementTypeToString(ElementType eType);
-            static ElementType elementType() {
-                return ElementType::ELEMENT;
-            };
-            virtual bool is(ElementType eType) const;
-            template <class T = Element> T& as() {
-                if (this->is(T::elementType())) {
-                    return dynamic_cast<T&>(*this);
-                }
-                throw InvalidElementCastException(getElementTypeString().c_str() , elementTypeToString(T::elementType()).c_str());
+            bool is(std::size_t type) const;
+            std::size_t elementType() const {
+                return m_elementType;
             }
-            ElementType getElementType() const;
-            virtual std::string getElementTypeString() const;
+            template <class T = Element> T& as() {
+                T& ret = dynamic_cast<T&>(*this);
+                // if (!ret) {
+                //     throw InvalidElementCastException(getElementTypeString().c_str() , elementTypeToString(T::elementType()).c_str());
+                // }
+                return ret;
+            }
 
             inline friend bool operator==(const Element& lhs, const Element& rhs) {
                 return lhs.m_id == rhs.m_id;

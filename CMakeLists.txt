@@ -90,11 +90,11 @@ add_library(uml SHARED
     src/uml/id.cpp
 
     # managers
-    #src/uml/managers/abstractManager.cpp src/uml/managers/managerNode.cpp
+    #src/uml/managers/abstractManager.cpp 
+    src/uml/managers/managerNode.cpp
+    src/uml/managers/baseElement.cpp
     src/uml/managers/filePersistencePolicy.cpp
-    ## serialization
-    src/uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.cpp
-    src/uml/managers/serialization/uml-cafe/emit.cpp src/uml/managers/serialization/uml-cafe/parse.cpp
+    
     # set
     src/uml/set/abstractSet.cpp
 
@@ -131,6 +131,11 @@ add_library(uml SHARED
     # src/uml/types/callBehaviorAction.cpp 
     src/uml/types/elementImport.cpp src/uml/types/packageImport.cpp src/uml/types/constraint.cpp 
     src/uml/types/redefinableTemplateSignature.cpp src/uml/types/classifierTemplateParameter.cpp src/uml/types/parameterSet.cpp
+
+    ## serialization
+    src/uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.cpp
+    src/uml/managers/serialization/uml-cafe/emit.cpp src/uml/managers/serialization/uml-cafe/parse.cpp
+
 )
 target_include_directories(uml PUBLIC include)
 target_link_libraries(uml PUBLIC yaml-cpp)

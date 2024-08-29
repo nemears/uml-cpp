@@ -2,11 +2,11 @@
 
 namespace UML {
 
-    class Element;
+    class AbstractElement;
 
     class DoNothingPolicy {
         public:
-            void elementAdded(__attribute__((unused)) Element& el, __attribute__((unused)) Element& me) {}
-            void elementRemoved(__attribute__((unused)) Element& el, __attribute__((unused)) Element& me) {}
+            void elementAdded(__attribute__((unused)) AbstractElement& el, __attribute__((unused)) AbstractElement& me) {}
+            void elementRemoved(__attribute__((unused)) AbstractElement& el, __attribute__((unused)) AbstractElement& me) {}
     };
 }

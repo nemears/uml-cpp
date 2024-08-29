@@ -210,8 +210,8 @@ bool emitOwnedSingleton(YAML::Emitter& emitter, U& el, EmitterData& data, string
 }
 
 void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
-    switch (el.getElementType()) {
-        case ElementType::ABSTRACTION : {
+    auto elementType = el.getElementType();
+    if (elementType == "Abstraction") {
             Abstraction& abstraction = el.as<Abstraction>();
             emitScope(emitter, abstraction, data,
                         emitPackageableElementScope,
@@ -224,7 +224,6 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitDependencyFeatures);
                         // TODO emitAbstractionFeatures;
-            break;
         }
         // case ElementType::ACTION_INPUT_PIN : {
         //     ActionInputPin& actionInputPin = el.as<ActionInputPin>();
@@ -304,7 +303,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         //                 emitActivityPartitionFeatures);
         //     break;
         // }
-        case ElementType::ARTIFACT : {
+        else if (elementType == "Artifact") {
             Artifact& artifact = el.as<Artifact>();
             emitScope(emitter, artifact, data, 
                         emitPackageableElementScope, 
@@ -319,9 +318,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitClassifierFeatures,
                         emitArtifactFeatures);
-            break;
-        }
-        case ElementType::ASSOCIATION : {
+        } else if (elementType == "Association") {
             Association& association = el.as<Association>();
             emitScope(emitter, association, data,
                         emitPackageableElementScope,
@@ -336,7 +333,6 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitClassifierFeatures,
                         emitAssociationFeatures);
-            break;
         }
         // case ElementType::CALL_BEHAVIOR_ACTION : {
         //     CallBehaviorAction& callBehaviorAction = el.as<CallBehaviorAction>();
@@ -369,7 +365,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         //                 emitObjectNodeFeatures);
         //     break;
         // }
-        case ElementType::CLASS : {
+        else if (elementType == "Class") {
             Class& clazz = el.as<Class>();
             emitScope(emitter, clazz, data, 
                         emitPackageableElementScope, 
@@ -386,9 +382,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitStructuredClassifierFeatures,
                         emitBehavioredClassifierFeatures,
                         emitClassFeatures);
-            break;
-        }
-        case ElementType::CLASSIFIER_TEMPLATE_PARAMETER : {
+        } else if (elementType == "ClassifierTemplateParameter") {
             ClassifierTemplateParameter& classifierTemplateParameter = el.as<ClassifierTemplateParameter>();
             emitScope(emitter, classifierTemplateParameter, data,
                         emitTemplateParameterScope,
@@ -397,15 +391,11 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitElementFeatures,
                         emitTemplateParameterFeatures,
                         emitClassifierTemplateParameter);
-            break;
-        }
-        case ElementType::COMMENT : {
+        } else if (elementType == "Comment") {
             Comment& comment = el.as<Comment>();
             emitScope(emitter, comment, data, emitElementScope);
             emitElementTypeAndData(emitter, comment, data, "Comment", emitElementFeatures, emitCommentFeatures);
-            break;
-        }
-        case ElementType::CONNECTOR : {
+        } else if (elementType == "Connector") {
             Connector& connector = el.as<Connector>();
             emitScope(emitter, connector, data,
                         emitNamedElementScope,
@@ -415,9 +405,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitNamedElementFeatures,
                         emitFeatureFeatures,
                         emitConnectorFeatures);
-            break;
-        }
-        case ElementType::CONNECTOR_END : {
+        } else if (elementType == "ConnectorEnd") {
             ConnectorEnd& connectorEnd = el.as<ConnectorEnd>();
             emitScope(emitter, connectorEnd, data,
                         emitElementScope);
@@ -425,9 +413,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitElementFeatures,
                         emitMultiplicityElementFeatures,
                         emitConnectorEndFeatures);
-                        break;
-        }
-        case ElementType::CONSTRAINT : {
+        } else if (elementType == "Constraint") {
             Constraint& constraint = el.as<Constraint>();
             emitScope(emitter, constraint, data, 
                         emitConstraintScope,
@@ -437,7 +423,6 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitConstraintFeatures);
-            break;
         }
         // case ElementType::CONTROL_FLOW : {
         //     ControlFlow& controlFlow = el.as<ControlFlow>();
@@ -465,7 +450,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         //                 emitObjectNodeFeatures);
         //     break;
         // }
-        case ElementType::DATA_TYPE : {
+        else if (elementType == "DataType") {
             DataType& dataType = el.as<DataType>();
             emitScope(emitter, dataType, data, 
                         emitPackageableElementScope, 
@@ -480,7 +465,6 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitClassifierFeatures,
                         emitDataTypeFeatures);
-            break;
         }
         // case ElementType::DECISION_NODE : {
         //     DecisionNode& decisionNode = el.as<DecisionNode>();
@@ -495,7 +479,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         //                 emitDecisionNodeFeatures);
         //     break;
         // }
-        case ElementType::DEPENDENCY : {
+    else if (elementType == "Dependency") {
             Dependency& dependency = el.as<Dependency>();
             emitScope(emitter, dependency, data,
                         emitPackageableElementScope,
@@ -507,9 +491,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
                         emitDependencyFeatures);
-            break;
-        }
-        case ElementType::DEPLOYMENT : {
+        } else if (elementType == "Deployment") {
             Deployment& deployment = el.as<Deployment>();
             emitScope(emitter, deployment, data,
                         emitDeploymentScope,
@@ -522,9 +504,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
                         emitDeploymentFeatures);
-            break;
-        }
-        case ElementType::ELEMENT_IMPORT : {
+        } else if (elementType == "ElementImport") {
             ElementImport& elementImport = el.as<ElementImport>();
             emitScope(emitter, elementImport, data,
                         emitElementImportScope,
@@ -532,9 +512,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitElementTypeAndData(emitter, elementImport, data, "ElementImport",
                         emitElementFeatures,
                         emitElementImportFeatures);
-            break;
-        }
-        case ElementType::ENUMERATION : {
+        } else if (elementType == "Enumeration") {
             Enumeration& enumeration = el.as<Enumeration>();
             emitScope(emitter, enumeration, data,
                         emitPackageableElementScope,
@@ -550,9 +528,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitClassifierFeatures,
                         emitDataTypeFeatures,
                         emitEnumerationFeatures);
-            break;
-        }
-        case ElementType::ENUMERATION_LITERAL : {
+        } else if (elementType == "EnumerationLiteral") {
             EnumerationLiteral& literal = el.as<EnumerationLiteral>();
             emitScope(emitter, literal, data,
                         emitEnumerationLiteralScope, 
@@ -565,7 +541,6 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitNamedElementFeatures, 
                         emitParameterableElementFeatures,
                         emitInstanceSpecificationFeatures);
-            break;
         }
         // case ElementType::EXCEPTION_HANDLER : {
         //     ExceptionHandler& exceptionHandler = el.as<ExceptionHandler>();
@@ -577,7 +552,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         //                 emitExceptionHandlerFeatures);
         //     break;
         // }
-        case ElementType::EXPRESSION : {
+        else if (elementType == "Expression") {
             Expression& expression = el.as<Expression>();
             emitScope(emitter, expression, data,
                         emitPackageableElementScope,
@@ -590,9 +565,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTypedElementFeatures,
                         emitParameterableElementFeatures,
                         emitExpressionFeatures);
-            break;
-        }
-        case ElementType::EXTENSION : {
+        } else if (elementType == "Extension") {
             Extension& extension = el.as<Extension>();
             emitScope(emitter, extension, data,
                         emitPackageableElementScope,
@@ -607,9 +580,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTemplateableElementFeatures,
                         emitClassifierFeatures,
                         emitExtensionFeatures);
-            break;
-        }
-        case ElementType::EXTENSION_END : {
+        } else if (elementType == "ExtensionEnd") {
             ExtensionEnd& extensionEnd = el.as<ExtensionEnd>();
             emitScope(emitter, extensionEnd, data,
                         emitPropertyScope,
@@ -623,7 +594,6 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitFeatureFeatures,
                         emitStructuralFeatureFeatures,
                         emitPropertyFeatures);
-            break;
         }
         // case ElementType::FINAL_NODE : {
         //     FinalNode& finalNode = el.as<FinalNode>();
@@ -661,7 +631,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         //                 emitActivityNodeFeatures);
         //     break;
         // }
-        case ElementType::GENERALIZATION : {
+        else if (elementType == "Generalization") {
             Generalization& generalization = el.as<Generalization>();
             emitScope(emitter, generalization, data,
                         emitGeneralizationScope,
@@ -669,9 +639,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitElementTypeAndData(emitter, generalization, data, "Generalization",
                         emitElementFeatures,
                         emitGeneralizationFeatures);
-            break;
-        }
-        case ElementType::GENERALIZATION_SET : {
+        } else if (elementType == "GeneralizationSet") {
             GeneralizationSet& generalizationSet = el.as<GeneralizationSet>();
             emitScope(emitter, generalizationSet, data,
                         emitPackageableElementScope,
@@ -683,7 +651,6 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
                         emitGeneralizationSetFeatures);
-            break;
         }
         // case ElementType::INITIAL_NODE : {
         //     InitialNode& initialNode = el.as<InitialNode>();
@@ -713,7 +680,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         //                 emitPinFeatures);
         //     break;
         // }
-        case ElementType::INSTANCE_SPECIFICATION : {
+        else if (elementType == "InstanceSpecification") {
             InstanceSpecification& inst = el.as<InstanceSpecification>();
             emitScope(emitter, inst, data, 
                         emitPackageableElementScope, 
@@ -726,9 +693,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitDeploymentTargetFeatures,
                         emitInstanceSpecificationFeatures);
-            break;
-        }
-        case ElementType::INSTANCE_VALUE : {
+        } else if (elementType == "InstanceValue") {
             InstanceValue& instanceValue = el.as<InstanceValue>();
             emitScope(emitter, instanceValue, data,
                         emitPackageableElementScope,
@@ -741,9 +706,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTypedElementFeatures,
                         emitParameterableElementFeatures,
                         emitInstanceValueFeatures);
-            break;
-        }
-        case ElementType::INTERFACE_UML : {
+        } else if (elementType == "Interface") {
             Interface& interface = el.as<Interface>();
             emitScope(emitter, interface, data,
                         emitPackageableElementScope,
@@ -758,9 +721,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitClassifierFeatures,
                         emitInterfaceFeatures);
-            break;
-        }
-        case ElementType::INTERFACE_REALIZATION : {
+        } else if (elementType == "InterfaceRealization") {
             InterfaceRealization& interfaceRealization = el.as<InterfaceRealization>();
             emitScope(emitter, interfaceRealization, data,
                         emitInterfaceRealizationScope,
@@ -775,7 +736,6 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         // emitDependencyFeatures,
                         // TODO emitAbstractionFeatures;
                         emitInterfaceRealizationFeatures);
-            break;
         }
         // case ElementType::JOIN_NODE : {
         //     JoinNode& joinNode = el.as<JoinNode>();
@@ -790,7 +750,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         //                 emitJoinNodeFeatures);
         //     break;
         // }
-        case ElementType::LITERAL_BOOL : {
+        else if (elementType == "LiteralBool") {
             LiteralBool& literalBool = el.as<LiteralBool>();
             emitScope(emitter, literalBool, data,
                         emitPackageableElementScope,
@@ -803,9 +763,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitTypedElementFeatures,
                         emitLiteralBoolFeatures);
-            break;
-        }
-        case ElementType::LITERAL_INT : {
+        } else if (elementType == "LiteralInt") {
             LiteralInt& literalInt = el.as<LiteralInt>();
             emitScope(emitter, literalInt, data,
                         emitPackageableElementScope,
@@ -818,9 +776,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitTypedElementFeatures,
                         emitLiteralIntFeatures);
-            break;
-        }
-        case ElementType::LITERAL_NULL : {
+        } else if (elementType == "LiteralNull") {
             LiteralNull& literalNull = el.as<LiteralNull>();
             emitScope(emitter, literalNull, data,
                         emitPackageableElementScope,
@@ -832,9 +788,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
                         emitTypedElementFeatures);
-            break;
-        }
-        case ElementType::LITERAL_REAL : {
+        } else if (elementType == "LiteralReal") {
             LiteralReal& literalReal = el.as<LiteralReal>();
             emitScope(emitter, literalReal, data,
                         emitPackageableElementScope,
@@ -847,9 +801,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitTypedElementFeatures,
                         emitLiteralRealFeatures);
-            break;
-        }
-        case ElementType::LITERAL_STRING : {
+        } else if (elementType == "LiteralString") {
             LiteralString& literalString = el.as<LiteralString>();
             emitScope(emitter, literalString, data,
                         emitPackageableElementScope,
@@ -862,9 +814,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitTypedElementFeatures,
                         emitLiteralStringFeatures);
-            break;
-        }
-        case ElementType::LITERAL_UNLIMITED_NATURAL : {
+        } else if (elementType == "LiteralUnlimitedNatural") {
             LiteralUnlimitedNatural& literalUnlimitedNatural = el.as<LiteralUnlimitedNatural>();
             emitScope(emitter, literalUnlimitedNatural, data,
                         emitPackageableElementScope,
@@ -877,7 +827,6 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitTypedElementFeatures,
                         emitLiteralUnlimitedNaturalFeatures);
-            break;
         }
         // case ElementType::MERGE_NODE : {
         //     MergeNode& mergeNode = el.as<MergeNode>();
@@ -891,7 +840,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         //                 emitActivityNodeFeatures);
         //     break;
         // }
-        case ElementType::MANIFESTATION : {
+        else if (elementType == "Manifestation") {
             Manifestation& manifestation = el.as<Manifestation>();
             emitScope(emitter, manifestation, data,
                         emitPackageableElementScope,
@@ -903,9 +852,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
                         emitManifestationFeatures);
-            break;
-        }
-        case ElementType::MODEL : {
+        } else if (elementType == "Model") {
             Model& model = el.as<Model>();
             emitScope(emitter, model, data,
                         emitPackageableElementScope,
@@ -920,7 +867,6 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTemplateableElementFeatures,
                         emitPackageFeatures,
                         emitModelFeatures);
-            break;
         }
         // case ElementType::OBJECT_FLOW : {
         //     ObjectFlow& objectFlow = el.as<ObjectFlow>();
@@ -950,7 +896,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         //                 emitOpaqueActionFeatures);
         //     break;
         // }
-        case ElementType::OPAQUE_BEHAVIOR : {
+    else if (elementType == "OpaqueBehavior") {
             OpaqueBehavior& opaqueBehavior = el.as<OpaqueBehavior>();
             emitScope(emitter, opaqueBehavior, data,
                         emitPackageableElementScope,
@@ -969,9 +915,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitClassFeatures,
                         emitBehaviorFeatures,
                         emitOpaqueBehaviorFeatures);
-            break;
-        }
-        case ElementType::OPERATION : {
+    } else if (elementType == "Operation") {
             Operation& operation = el.as<Operation>();
             emitScope(emitter, operation, data,
                         emitOperationScope,
@@ -985,7 +929,6 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTemplateableElementFeatures,
                         emitFeatureFeatures,
                         emitBehavioralFeatureFeatures);
-            break;
         }
         // case ElementType::OUTPUT_PIN : {
         //     OutputPin& outputPin = el.as<OutputPin>();
@@ -1003,7 +946,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         //                 emitPinFeatures);
         //     break;
         // }
-        case ElementType::PACKAGE : {
+         else if (elementType == "Package") {
             Package& package = el.as<Package>();
             emitScope(emitter, package, data, 
                         emitPackageableElementScope, 
@@ -1017,9 +960,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTemplateableElementFeatures,
                         emitParameterableElementFeatures,
                         emitPackageFeatures);
-            break;
-        }
-        case ElementType::PACKAGE_IMPORT : {
+        } else if (elementType == "PackageImport") {
             PackageImport& packageImport = el.as<PackageImport>();
             emitScope(emitter, packageImport, data,
                         emitPackageImportScope,
@@ -1027,15 +968,11 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitElementTypeAndData(emitter, packageImport, data, "PackageImport",
                         emitPackageImportFeatures,
                         emitElementFeatures);
-            break;
-        }
-        case ElementType::PACKAGE_MERGE : {
+        } else if (elementType == "PackageMerge") {
             PackageMerge& packageMerge = el.as<PackageMerge>();
             emitScope(emitter, packageMerge, data, emitPackageMergeScope, emitElementScope);
             emitElementTypeAndData(emitter, packageMerge, data, "PackageMerge", emitElementFeatures, emitPackageMergeFeatures);
-            break;
-        }
-        case ElementType::PARAMETER : {
+        } else if (elementType == "Parameter") {
             Parameter& parameter = el.as<Parameter>();
             emitScope(emitter, parameter, data,
                         emitParameterScope,
@@ -1047,9 +984,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTypedElementFeatures,
                         emitMultiplicityElementFeatures,
                         emitParameterFeatures);
-            break;
-        }
-        case ElementType::PARAMETER_SET : {
+        } else if (elementType == "ParameterSet") {
             ParameterSet& parameterSet = el.as<ParameterSet>();
             emitScope(emitter, parameterSet, data, 
                         emitNamedElementScope,
@@ -1058,9 +993,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitElementFeatures,
                         emitNamedElementFeatures,
                         emitParameterSetFeatures);
-            break;
-        }
-        case ElementType::PORT : {
+        } else if (elementType == "Port") {
             Port& port = el.as<Port>();
             emitScope(emitter, port, data, 
                         emitPropertyScope, 
@@ -1077,9 +1010,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitPropertyFeatures,
                         emitPortFeatures);
-            break;
-        }
-        case ElementType::PRIMITIVE_TYPE : {
+        } else if (elementType == "PrimitiveType") {
             PrimitiveType& primitiveType = el.as<PrimitiveType>();
             emitScope(emitter, primitiveType, data,
                         emitPackageableElementScope,
@@ -1094,9 +1025,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitClassifierFeatures,
                         emitDataTypeFeatures);
-            break;
-        }
-        case ElementType::PROFILE : {
+        } else if (elementType == "Profile") {
             Profile& profile = el.as<Profile>();
             emitScope(emitter, profile, data,
                         emitPackageableElementScope,
@@ -1109,9 +1038,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitNamespaceFeatures,
                         emitParameterableElementFeatures,
                         emitPackageFeatures);
-            break;
-        }
-        case ElementType::PROFILE_APPLICATION : {
+        } else if (elementType == "ProfileApplication") {
             ProfileApplication& profileApplication = el.as<ProfileApplication>();
             emitScope(emitter, profileApplication, data,
                         emitProfileApplicationScope,
@@ -1119,9 +1046,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitElementTypeAndData(emitter, profileApplication, data, "ProfileApplication",
                         emitElementFeatures,
                         emitProfileApplicationFeatures);
-            break;
-        }
-        case ElementType::PROPERTY : {
+        } else if (elementType == "Property") {
             Property& property = el.as<Property>();
             emitScope(emitter, property, data, 
                         emitPropertyScope, 
@@ -1138,9 +1063,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitDeploymentTargetFeatures,
                         emitPropertyFeatures);
-            break;
-        }
-        case ElementType::RECEPTION : {
+        } else if (elementType == "Reception") {
             Reception& reception = el.as<Reception>();
             emitScope(emitter, reception, data,
                         emitNamedElementScope,
@@ -1151,9 +1074,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitFeatureFeatures,
                         emitBehavioralFeatureFeatures,
                         emitReceptionFeatures);
-            break;
-        }
-        case ElementType::REDEFINABLE_TEMPLATE_SIGNATURE : {
+        } else if (elementType == "RedefinableTemplateSignature") {
             RedefinableTemplateSignature& redefinableTemplateSignature = el.as<RedefinableTemplateSignature>();
             emitScope(emitter, redefinableTemplateSignature, data,
                         emitRedefinableTemplateSignatureScope,
@@ -1163,9 +1084,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitElementFeatures,
                         emitTemplateSignatureFeatures,
                         emitRedefinableTemplateSignatureFeatures);
-            break;
-        }
-        case ElementType::REALIZATION : {
+        }else if (elementType == "Realization") {
             Realization& realization = el.as<Realization>();
             emitScope(emitter, realization, data,
                         emitPackageableElementScope,
@@ -1178,9 +1097,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitParameterableElementFeatures,
                         emitDependencyFeatures);
                         // TODO emitAbstractionFeatures;
-            break;
-        }
-        case ElementType::SIGNAL : {
+        } else if (elementType == "Signal") {
             Signal& signal = el.as<Signal>();
             emitScope(emitter, signal, data,
                         emitPackageableElementScope,
@@ -1195,9 +1112,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitTemplateableElementFeatures,
                         emitClassifierFeatures,
                         emitSignalFeatures);
-            break;
-        }
-        case ElementType::SLOT : {
+        } else if (elementType == "Slot") {
             Slot& slot = el.as<Slot>();
             emitScope(emitter, slot, data,
                         emitSlotScope,
@@ -1205,9 +1120,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitElementTypeAndData(emitter, slot, data, "Slot", 
                         emitElementFeatures,
                         emitSlotFeatures);
-            break;
-        }
-        case ElementType::STEREOTYPE : {
+        } else if (elementType == "Stereotype") {
             Stereotype& stereotype = el.as<Stereotype>();
             emitScope(emitter, stereotype, data,
                         emitPackageableElementScope,
@@ -1225,9 +1138,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitBehavioredClassifierFeatures,
                         emitClassFeatures,
                         emitStereotypeFeatures);
-            break;
-        }
-        case ElementType::TEMPLATE_BINDING : {
+        } else if (elementType == "TemplateBinding") {
             TemplateBinding& templateBinding = el.as<TemplateBinding>();
             emitScope(emitter, templateBinding, data,
                         emitTemplateBindingScope,
@@ -1235,9 +1146,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitElementTypeAndData(emitter, templateBinding, data, "TemplateBinding",
                         emitElementFeatures,
                         emitTemplateBindingFeatures);
-            break;
-        }
-        case ElementType::TEMPLATE_PARAMETER : {
+        } else if (elementType == "TemplateParameter") {
             TemplateParameter& templateParameter = el.as<TemplateParameter>();
             emitScope(emitter, templateParameter, data, 
                         emitTemplateParameterScope,
@@ -1245,9 +1154,7 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitElementTypeAndData(emitter, templateParameter, data, "TemplateParameter",
                         emitElementFeatures,
                         emitTemplateParameterFeatures);
-            break;
-        }
-        case ElementType::TEMPLATE_PARAMETER_SUBSTITUTION : {
+        } else if (elementType == "TemplateParameterSubtitution") {
             TemplateParameterSubstitution& templateParameterSubstitution = el.as<TemplateParameterSubstitution>();
             emitScope(emitter, templateParameterSubstitution, data,
                         emitTemplateParameterSubstitutionScope,
@@ -1255,17 +1162,13 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
             emitElementTypeAndData(emitter, templateParameterSubstitution, data, "TemplateParameterSubstitution", 
                         emitElementFeatures,
                         emitTemplateParameterSubstitutionFeatures);
-            break;
-        }
-        case ElementType::TEMPLATE_SIGNATURE : {
+        } else if (elementType == "TemplateSignature") {
             TemplateSignature& templateSignature = el.as<TemplateSignature>();
             emitScope(emitter, templateSignature, data, emitTemplateSignatureScope, emitElementScope);
             emitElementTypeAndData(emitter, templateSignature, data, "TemplateSignature",
                         emitElementFeatures,
                         emitTemplateSignatureFeatures);
-            break;
-        }
-        case ElementType::USAGE : {
+        } else if (elementType == "Usage") {
             Usage& usage = el.as<Usage>();
             emitScope(emitter, usage, data,
                         emitPackageableElementScope,
@@ -1277,7 +1180,6 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
                         emitNamedElementFeatures,
                         emitParameterableElementFeatures,
                         emitDependencyFeatures);
-            break;
         }
         // case ElementType::VALUE_PIN : {
         //     ValuePin& valuePin = el.as<ValuePin>();
@@ -1296,10 +1198,6 @@ void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {
         //                 emitValuePinFeatures);
         //     break;
         // }
-        default : {
-            throw SerializationError("No strategy to serialize element of type " + Element::elementTypeToString(el.getElementType()));
-        }
-    }
 }
 
 // void emitActionFeatures(YAML::Emitter& emitter, Action& action, EmitterData& data) {

@@ -1,13 +1,12 @@
 #pragma once
 
+#include <list>
 #include "abstractSet.h"
 #include "wrapperSet.h"
 #include "uml/set/doNothingPolicy.h"
-#include "uml/types/element.h"
 #include "uml/umlPtr.h"
 #include <memory>
 #include <mutex>
-#include <unordered_set>
 
 namespace YAML {
     class Node;
@@ -48,28 +47,12 @@ namespace UML {
     template <class T,  class U, class DataTypePolicy, class ApiPolicy>
     class PrivateSet : virtual public AbstractSet , virtual public DataTypePolicy, virtual public ApiPolicy {
 
-        friend class Element;
-        friend class NamedElement;
-        // TODO do we need these friends? we can do it without by moving the sets around and redefinition
-        friend class Package;
-        friend class Property;
-        friend class Class;
-        friend class Operation;
-        friend class BehavioredClassifier;
-        friend class Usage;
-        friend class Connector;
-        friend class InterfaceRealization;
-        friend class Reception;
-        friend class Manifestation;
-        friend class ElementImport;
-        friend class PackageImport;
-        friend class Connector;
         friend T;
         friend U;
         friend ApiPolicy;
         template <class V, class W, class OtherDataTypePolicy, class OtherApiPolicy>
         friend class PrivateSet;
-        friend void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
+//        friend void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
 
         private:
             std::mutex m_mutex;
@@ -77,31 +60,31 @@ namespace UML {
             U& m_el;
             std::unique_ptr<OppositeInterface<T>> m_opposite = std::unique_ptr<NoOpposite<T>>(new NoOpposite<T>());
 
-            void runAddPolicy(Element& el) override {
-                ApiPolicy::elementAdded(el.as<T>(), m_el);
+            void runAddPolicy(AbstractElement& el) override {
+                ApiPolicy::elementAdded(dynamic_cast<T&>(el), m_el);
             }
-            void runRemovePolicy(Element& el) override {
-                ApiPolicy::elementRemoved(el.as<T>(), m_el);
+            void runRemovePolicy(AbstractElement& el) override {
+                ApiPolicy::elementRemoved(dynamic_cast<T&>(el), m_el);
             }
             bool oppositeEnabled() const override {
                 return m_opposite->enabled();
             }
-            void oppositeAdd(Element& el) override {
-                m_opposite->addOpposite(el.as<T>());
+            void oppositeAdd(AbstractElement& el) override {
+                m_opposite->addOpposite(dynamic_cast<T&>(el));
             }
-            void oppositeRemove(Element& el) override {
-                m_opposite->removeOpposite(el.as<T>());
+            void oppositeRemove(AbstractElement& el) override {
+                m_opposite->removeOpposite(dynamic_cast<T&>(el));
             }
             bool hasData() const override {
                 return DataTypePolicy::hasData();
             }
-            bool containsData(ElementPtr ptr) const override {
+            bool containsData(AbstractElementPtr ptr) const override {
                 return DataTypePolicy::containsData(ptr);
             }
-            bool removeData(ElementPtr ptr) override {
+            bool removeData(AbstractElementPtr ptr) override {
                 return DataTypePolicy::removeData(ptr);
             }
-            void innerAdd(ElementPtr ptr) override {
+            void innerAdd(AbstractElementPtr ptr) override {
                 auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
                 if (rootRedefinedSet.get() != m_structure.get()) {
                     return rootRedefinedSet->m_set.innerAdd(ptr);
@@ -145,9 +128,9 @@ namespace UML {
                         }
                     }
                 }
-                ptr.m_node->setReference(m_el.getID(), m_el.m_node);
+                ptr.m_node->m_node.setReference(m_el.getID(), *m_el.m_node);
             }
-            void nonOppositeAdd(ElementPtr ptr) override {
+            void nonOppositeAdd(AbstractElementPtr ptr) override {
 
                 auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
 
@@ -228,7 +211,7 @@ namespace UML {
                 }
                 m_el.m_node->setReference(&ptr);
             }
-            void innerRemove(ElementPtr ptr) override {
+            void innerRemove(AbstractElementPtr ptr) override {
                 auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
                 if (rootRedefinedSet.get() != m_structure.get()) {
                     return rootRedefinedSet->m_set.innerRemove(ptr);
@@ -275,12 +258,12 @@ namespace UML {
 
                 m_el.m_node->removeReference(&ptr);
             }
-            void weakRemove(ElementPtr ptr) override {
+            void weakRemove(AbstractElementPtr ptr) override {
                 if (contains(ptr)) {
                     innerRemove(ptr);
                 }
             }
-            std::shared_ptr<SetStructure> nonOppositeRemoveHelper(ElementPtr ptr) {
+            std::shared_ptr<SetStructure> nonOppositeRemoveHelper(AbstractElementPtr ptr) {
                 auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
 
                 // remove
@@ -379,11 +362,11 @@ namespace UML {
                 }
                 return setwithEl;
             }
-            void nonOppositeRemove(ElementPtr ptr) override {
+            void nonOppositeRemove(AbstractElementPtr ptr) override {
                 nonOppositeRemoveHelper(ptr);
             }
             struct PtrPolicy {
-                UmlPtr<T> get(ElementPtr ptr) {
+                UmlPtr<T> get(AbstractElementPtr ptr) {
                     return UmlPtr<T>(ptr);    
                 }
             };
@@ -393,7 +376,7 @@ namespace UML {
             PrivateSet& operator=(PrivateSet& rhs) = delete;
             PrivateSet(PrivateSet& rhs) = delete;
             virtual ~PrivateSet() {}
-            bool contains(ElementPtr ptr) const override {
+            bool contains(AbstractElementPtr ptr) const override {
                 if (m_structure->m_rootRedefinedSet.get() != m_structure.get()) {
                     return m_structure->m_rootRedefinedSet->m_set.contains(ptr);
                 }

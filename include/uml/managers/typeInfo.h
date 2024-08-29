@@ -7,7 +7,7 @@ namespace UML {
 
     template <class BaseList>
     class TypeInfo;
-    
+   
     template <class ... Bases, class Base>
     class TypeInfo<std::tuple<Base, Bases...>> : public Base::Info, TypeInfo<std::tuple<Bases...>> {
         typedef std::tuple<Base, Bases...> BaseList;
@@ -40,4 +40,9 @@ namespace UML {
             return false;
         }
     };
+
+    template <class T>
+    constexpr bool is(const std::size_t elementType) {
+        return T::Info::template is<T::template GetType<elementType>::type>();
+    }    
 }

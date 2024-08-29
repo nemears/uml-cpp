@@ -30,11 +30,24 @@ namespace UML {
                 return m_id;
             }
             void setID(ID id);
-    
+            template <class T>
+            bool is() {
+                return is<T>(m_elementType);
+            }
+            template <class T>
+            T& as() {
+                if (!is<T>()) {
+                    // TODO throw
+                }
+                return dynamic_cast<T&>(*this);
+            }
     };
 
     // typed for api
+    // TList is a std::tuple<> with all of the types your manager can make
     template <class Tlist>
     class BaseElement : public AbstractElement, public ManagerTypes<Tlist> {
+        protected:
+            BaseElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
     };
 }

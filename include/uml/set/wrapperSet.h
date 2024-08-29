@@ -16,7 +16,7 @@ namespace UML {
                     S operator*() {
                         return WrapperPolicy::get(m_it->getCurr());
                     }
-                    ElementPtr operator->() {
+                    AbstractElementPtr operator->() {
                         return m_it->getCurr();
                     }
                     iterator operator++() {
@@ -48,7 +48,7 @@ namespace UML {
     };
 
     struct IDPolicy {
-        ID get(ElementPtr ptr) {
+        ID get(AbstractElementPtr ptr) {
             return ptr.id();
         }
     };

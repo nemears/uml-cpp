@@ -1,6 +1,7 @@
 #pragma once
 
 #include "uml/set/abstractSet.h"
+#include "uml/set/doNothingPolicy.h"
 #include "uml/set/privateSet.h"
 #include "uml/umlPtr.h"
 #include <memory>
@@ -18,7 +19,7 @@ namespace UML {
                     std::unique_ptr<AbstractSet::iterator> clone() const override {
                         return std::make_unique<iterator>(*this);
                     }
-                    ElementPtr getCurr() const override {
+                    AbstractElementPtr getCurr() const override {
                         if (m_done) {
                             return UmlPtr<T>();
                         }
@@ -49,7 +50,7 @@ namespace UML {
                     }
             };
         protected:
-            void allocatePtr(ElementPtr ptr, __attribute__((unused)) SetStructure& set) override {
+            void allocatePtr(AbstractElementPtr ptr, __attribute__((unused)) SetStructure& set) override {
                 if (m_data && m_data.id() != ptr.id()) {
                     innerRemove(m_data);
                 }
@@ -115,16 +116,16 @@ namespace UML {
                 return SetType::SINGLETON;
             }
     };
-//     declaration in uml/types/element.h    
-//     template <class T, class U, class ApiPolicy>
-//     using ReadOnlySingleton = PrivateSet<T, U, SingletonDataPolicy<T>, ApiPolicy>;
 
-    template <class T, class U, class ApiPolicy>
+    template <class T, class U, class ApiPolicy = DoNothingPolicy>
+    using ReadOnlySingleton = PrivateSet<T, U, SingletonDataPolicy<T>, ApiPolicy>;
+
+    template <class T, class U, class ApiPolicy = DoNothingPolicy>
     class Singleton : public ReadOnlySingleton<T,U,ApiPolicy> {
         private:
             void checkCurrentValueHelper() {
                 AbstractSet& redefinedSet = this->m_structure->m_rootRedefinedSet->m_set;
-                ElementPtr currVal = this->get();
+                AbstractElementPtr currVal = this->get();
                 if (currVal) {
                     redefinedSet.innerRemove(currVal);
                 }                

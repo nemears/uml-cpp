@@ -1,6 +1,6 @@
 #pragma once
 
-#include "uml/types/element.h"
+#include "uml/managers/baseElement.h"
 #include <memory>
 #include <unordered_set>
 #include <uml/umlPtr.h>
@@ -35,24 +35,24 @@ namespace UML {
         friend class WrapperSet;
         // TODO remove or find better way than a lot of friends
         friend class Connector;
-        friend void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
+//        friend void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
         protected:
             std::shared_ptr<SetStructure> m_structure;
             virtual bool hasData() const = 0;
-            virtual bool containsData(ElementPtr ptr) const = 0;
-            virtual bool removeData(ElementPtr ptr) = 0;
-            virtual void runAddPolicy(Element& el) = 0;
-            virtual void runRemovePolicy(Element& el) = 0;
+            virtual bool containsData(AbstractElementPtr ptr) const = 0;
+            virtual bool removeData(AbstractElementPtr ptr) = 0;
+            virtual void runAddPolicy(AbstractElement& el) = 0;
+            virtual void runRemovePolicy(AbstractElement& el) = 0;
             virtual bool oppositeEnabled() const = 0;
-            virtual void oppositeAdd(Element& el) = 0;
-            virtual void oppositeRemove(Element& el) = 0;
-            virtual void nonOppositeAdd(ElementPtr ptr) = 0;
-            virtual void innerAdd(ElementPtr ptr) = 0;
-            virtual void nonOppositeRemove(ElementPtr ptr) = 0;
-            virtual void innerRemove(ElementPtr ptr) = 0;
-            virtual void weakRemove(ElementPtr ptr) = 0;
-            virtual void allocatePtr(__attribute__((unused)) ElementPtr ptr, __attribute__((unused)) SetStructure& set) {}
-            virtual void deAllocatePtr(__attribute__((unused)) ElementPtr ptr) {}
+            virtual void oppositeAdd(AbstractElement& el) = 0;
+            virtual void oppositeRemove(AbstractElement& el) = 0;
+            virtual void nonOppositeAdd(AbstractElementPtr ptr) = 0;
+            virtual void innerAdd(AbstractElementPtr ptr) = 0;
+            virtual void nonOppositeRemove(AbstractElementPtr ptr) = 0;
+            virtual void innerRemove(AbstractElementPtr ptr) = 0;
+            virtual void weakRemove(AbstractElementPtr ptr) = 0;
+            virtual void allocatePtr(__attribute__((unused)) AbstractElementPtr ptr, __attribute__((unused)) SetStructure& set) {}
+            virtual void deAllocatePtr(__attribute__((unused)) AbstractElementPtr ptr) {}
 
             class iterator {
                 template <class T>
@@ -64,7 +64,7 @@ namespace UML {
                 friend class IndexablePolicy;
 
                 protected:
-                    virtual ElementPtr getCurr() const = 0;
+                    virtual AbstractElementPtr getCurr() const = 0;
                     virtual void next() = 0;
                     virtual std::unique_ptr<iterator> clone() const = 0;
                 public:
@@ -88,7 +88,7 @@ namespace UML {
             virtual ~AbstractSet();
             virtual void subsets(AbstractSet& superSet);
             virtual void redefines(AbstractSet& redefinedSet);
-            virtual bool contains(ElementPtr ptr) const = 0;
+            virtual bool contains(AbstractElementPtr ptr) const = 0;
             size_t size() const;
             bool empty() const;
             virtual SetType setType() const = 0;

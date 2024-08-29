@@ -1,12 +1,10 @@
 #pragma once
 
-#include <string>
 #include <exception>
-#include <memory>
-#include <list>
-#include "uml/managers/managerNode.h"
 #include "uml/managers/typeInfo.h"
 #include "uml/managers/baseElement.h"
+#include "uml/set/set.h"
+#include "uml/set/singleton.h"
 #include "uml/set/doNothingPolicy.h"
 
 namespace YAML {
@@ -15,30 +13,7 @@ namespace YAML {
 
 namespace UML {
 
-    // Helper function to assess possible ids
-    bool isValidID(std::string strn);
-    class AbstractSet;
-    template <class T, class U, class DataTypePolicy, class ApiPolicy = DoNothingPolicy>
-    class PrivateSet;
-    template <class T>
-    class SetDataPolicy;
-    template <class T, class U, class ApiPolicy = DoNothingPolicy>
-    using ReadOnlySet = PrivateSet<T, U, SetDataPolicy<T>, ApiPolicy>;
-    template <class T, class U, class ApiPolicy = DoNothingPolicy>
-    class Set;
-    template<class T>
-    class SingletonDataPolicy;
-    template <class T, class U, class ApiPolicy = DoNothingPolicy>
-    class Singleton;
-    template <class T, class U, class ApiPolicy = DoNothingPolicy>
-    using ReadOnlySingleton = PrivateSet<T, U, SingletonDataPolicy<T>, ApiPolicy>;
-    template <class T> class UmlPtr;
-    typedef UmlPtr<Element> ElementPtr;
-    class EmitterData;
-    class ParserData;
-    class AbstractManager;
-    struct NodeReference;
-                      //
+    // forward declare all types from the base UML api
     class Abstraction;
     class Artifact;
     class Association;
@@ -120,6 +95,7 @@ namespace UML {
     class Usage;
     class ValueSpecification;
 
+    // put all types in a typelist (tuple)
     typedef std::tuple<
         Abstraction,
         Artifact,
@@ -203,6 +179,8 @@ namespace UML {
         ValueSpecification
     > UmlTypes;
 
+    typedef UmlPtr<Element> ElementPtr;
+
     /**
      * Element is the base class of all UML classes
      * It has three main attributes
@@ -212,40 +190,17 @@ namespace UML {
      **/
     class Element : public BaseElement<UmlTypes> {
 
-        friend class AbstractManager;
-        friend struct ManagerNode;
-//        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
-        template <class T, class U, class DataTypePolicy, class ApiPolicy> friend class PrivateSet;
-        template <class T> friend class UmlPtr;
-        template <class T, class U, class ApiPolicy>
-        friend class Singleton;
-        template <class T, class U, class ApiPolicy>
-        friend class Set;
-        template <class T, class U, class ApiPolicy>
-        friend class OrderedSet;
-        friend std::string emit(Element& el, EmitterData& data);
-        friend ElementPtr parse(std::string data, ParserData& metaData);
-        friend bool parseElementScope(YAML::Node node, Element& el, ParserData& data);
-        friend class Classifier; // TODO remove
-        friend class BehavioredClassifier;
-        friend class Usage;
-        friend class InterfaceRealization;
-
         private:
         protected:
             
             typedef TypeInfo<std::tuple<>> Info;    
             
-            std::unique_ptr<ReadOnlySingleton<Element, Element>> m_owner;
-            std::unique_ptr<ReadOnlySet<Element, Element>> m_ownedElements;
-            std::unique_ptr<Set<Comment, Element, DoNothingPolicy>> m_ownedComments;
-            std::unique_ptr<Set<InstanceSpecification, Element, DoNothingPolicy>> m_appliedStereotypes;
+            ReadOnlySingleton<Element, Element> m_owner = ReadOnlySingleton<Element, Element>(this);
+            ReadOnlySet<Element, Element> m_ownedElements = ReadOnlySet<Element, Element>(this);
+            Set<Comment, Element> m_ownedComments = Set<Comment, Element>(this);
+            Set<InstanceSpecification, Element> m_appliedStereotypes = Set<InstanceSpecification, Element>(this);
             ReadOnlySingleton<Element, Element>& getOwnerSingleton();
-            void setOwner(ElementPtr el);
-            virtual void restoreReferences();
-            virtual void referenceErased(ID id);
             Element(std::size_t elementType, AbstractManager& manager);
-            void eraseFromSet(ID id, AbstractSet& set);
         public:
             Element(const Element&) = delete;
             Element& operator=(const Element&) = delete;

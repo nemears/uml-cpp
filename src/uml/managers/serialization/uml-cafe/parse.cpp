@@ -42,9 +42,7 @@ UmlPtr<T> createAndParse(YAML::Node node, ParserData& data, Funcs... funcs) {
         parseFeatures(node, *ret, data, funcs...);
         return ret;
     } else {
-        throw SerializationError("Could not parse data for element of type " + 
-                                    Element::elementTypeToString(T::elementType()) + 
-                                    " because node specifying it was not a Map node at " + 
+        throw SerializationError("Could not parse data for element because node specifying it was not a Map node at " + 
                                     getLineNumber(node));
     }
 }
@@ -113,7 +111,7 @@ bool parseSingleton(YAML::Node node, U& el, ParserData& data, string key, void (
                 (el.*idMutator)(id);
             }
         } else {
-            throw SerializationError("Singleton " + key + " for element type " + Element::elementTypeToString(U::elementType()) + " could not be serialized because it was not a map or scalar " + getLineNumber(node[key]));
+            throw SerializationError("Singleton " + key + " could not be serialized because it was not a map or scalar " + getLineNumber(node[key]));
         }
         return true;
     } else if (data.update) {
@@ -127,7 +125,7 @@ template <class T>
 void parseBoolean(YAML::Node node, T& el, string key, void (T::*mutator)(bool)) {
     if (node[key]) {
         if (!node[key].IsScalar()) {
-            throw SerializationError("Could not parse boolean value for property " + key + " for element type " + Element::elementTypeToString(T::elementType()) + " " + getLineNumber(node[key]));
+            throw SerializationError("Could not parse boolean value for property " + key + " " + getLineNumber(node[key]));
         }
         (el.*mutator)(node[key].as<bool>());
     }
@@ -137,7 +135,7 @@ template <class T>
 void parseInt(YAML::Node node, T& el, string key, void (T::*mutator)(int)) {
     if (node[key]) {
         if (!node[key].IsScalar()) {
-            throw SerializationError("Could not parse integer value for property " + key + " for element type " + Element::elementTypeToString(T::elementType()) + " " + getLineNumber(node[key]));
+            throw SerializationError("Could not parse integer value for property " + key + " " + getLineNumber(node[key]));
         }
         (el.*mutator)(node[key].as<int>());
     }
@@ -147,7 +145,7 @@ template <class T>
 void parseDouble(YAML::Node node, T& el, string key, void (T::*mutator)(double)) {
     if (node[key]) {
         if (!node[key].IsScalar()) {
-            throw SerializationError("Could not parse double value for property " + key + " for element type " + Element::elementTypeToString(T::elementType()) + " " + getLineNumber(node[key]));
+            throw SerializationError("Could not parse double value for property " + key + " " + getLineNumber(node[key]));
         }
         (el.*mutator)(node[key].as<double>());
     }
@@ -157,7 +155,7 @@ template <class T>
 void parseString(YAML::Node node, T& el, string key, void (T::*mutator)(const string&)) {
     if (node[key]) {
         if (!node[key].IsScalar()) {
-            throw SerializationError("Could not parse string value for property " + key + " for element type " + Element::elementTypeToString(T::elementType()) + " " + getLineNumber(node[key]));
+            throw SerializationError("Could not parse string value for property " + key + " " + getLineNumber(node[key]));
         }
         (el.*mutator)(node[key].as<string>());
     }
@@ -1035,233 +1033,6 @@ ElementPtr parseNode(YAML::Node node, ParserData& data) {
     return ret;
 }
 
-ElementType elementTypeFromString(string eType) {
-    if (eType.compare("ABSTRACTION") == 0) {
-        return ElementType::ABSTRACTION;
-    } else if (eType.compare("ACTION") == 0) {
-        return ElementType::ACTION;
-    } else if (eType.compare("ACTION_INPUT_PIN") == 0) {
-        return ElementType::ACTION_INPUT_PIN;
-    } else if (eType.compare("ACTIVITY") == 0) {
-        return ElementType::ACTIVITY;
-    } else if (eType.compare("ACTIVITY_EDGE") == 0) {
-        return ElementType::ACTIVITY_EDGE;
-    } else if (eType.compare("ACTIVITY_FINAL_NODE") == 0) {
-        return ElementType::ACTIVITY_FINAL_NODE;
-    } else if (eType.compare("ACTIVITY_GROUP") == 0) {
-        return ElementType::ACTIVITY_GROUP;
-    } else if (eType.compare("ACTIVITY_NODE") == 0) {
-        return ElementType::ACTIVITY_NODE;
-    } else if (eType.compare("ACTIVITY_PARAMETER_NODE") == 0) {
-        return ElementType::ACTIVITY_PARAMETER_NODE;
-    } else if (eType.compare("ACTIVITY_PARTITION") == 0) {
-        return ElementType::ACTIVITY_PARTITION;
-    } else if (eType.compare("ARTIFACT") == 0) {
-        return ElementType::ARTIFACT;
-    } else if (eType.compare("ASSOCIATION") == 0) {
-        return ElementType::ASSOCIATION;
-    } else if (eType.compare("BEHAVIOR") == 0) {
-        return ElementType::BEHAVIOR;
-    } else if (eType.compare("BEHAVIORAL_FEATURE") == 0) {
-        return ElementType::BEHAVIORAL_FEATURE;
-    } else if (eType.compare("BEHAVIORED_CLASSIFIER") == 0 ) {
-        return ElementType::BEHAVIORED_CLASSIFIER;
-    } else if (eType.compare("CALL_ACTION") == 0) {
-        return ElementType::CALL_ACTION;
-    } else if (eType.compare("CALL_BEHAVIOR_ACTION") == 0) {
-        return ElementType::CALL_BEHAVIOR_ACTION;
-    } else if (eType.compare("CENTRAL_BUFFER_NODE") == 0) {
-        return ElementType::CENTRAL_BUFFER_NODE;
-    } else if (eType.compare("CLASS") == 0) {
-        return ElementType::CLASS;
-    } else if (eType.compare("CLASSIFIER") == 0) {
-        return ElementType::CLASSIFIER;
-    } else if (eType.compare("COMMENT") == 0) {
-        return ElementType::COMMENT;
-    } else if (eType.compare("CLASSIFIER_TEMPLATE_PARAMETER") == 0) {
-        return ElementType::CLASSIFIER_TEMPLATE_PARAMETER;
-    } else if (eType.compare("CONNECTOR") == 0) {
-        return ElementType::CONNECTOR;
-    } else if (eType.compare("CONNECTOR_END") == 0) {
-        return ElementType::CONNECTOR_END;
-    } else if (eType.compare("CONNECTABLE_ELEMENT") == 0) {
-        return ElementType::CONNECTABLE_ELEMENT;
-    } else if (eType.compare("CONSTRAINT") == 0) {
-        return ElementType::CONSTRAINT;
-    } else if (eType.compare("CONTROL_FLOW") == 0) {
-        return ElementType::CONTROL_FLOW;
-    } else if (eType.compare("CREATE_OBJECT_ACTION") == 0) {
-        return ElementType::CREATE_OBJECT_ACTION;
-    } else if (eType.compare("DATA_STORE_NODE") == 0) {
-        return ElementType::DATA_STORE_NODE;
-    } else if (eType.compare("DATA_TYPE") == 0) {
-        return ElementType::DATA_TYPE;
-    } else if (eType.compare("DECISION_NODE") == 0) {
-        return ElementType::DECISION_NODE;
-    } else if (eType.compare("DEPENDENCY") == 0) {
-        return ElementType::DEPENDENCY;
-    } else if (eType.compare("DEPLOYED_ARTIFACT") == 0) {
-        return ElementType::DEPLOYED_ARTIFACT;
-    } else if (eType.compare("DEPLOYMENT") == 0) {
-        return ElementType::DEPLOYMENT;
-    } else if (eType.compare("DEPLOYMENT_TARGET") == 0) {
-        return ElementType::DEPLOYMENT_TARGET;
-    } else if (eType.compare("DIRECTED_RELATIONSHIP") == 0) {
-        return ElementType::DIRECTED_RELATIONSHIP;
-    } else if (eType.compare("ELEMENT") == 0) {
-        return ElementType::ELEMENT;
-    } else if (eType.compare("ELEMENT_IMPORT") == 0) {
-        return ElementType::ELEMENT_IMPORT;
-    } else if (eType.compare("ENUMERATION") == 0) {
-        return ElementType::ENUMERATION;
-    } else if (eType.compare("ENUMERATION_LITERAL") == 0) {
-        return ElementType::ENUMERATION_LITERAL;
-    } else if (eType.compare("EXCEPTION_HANDLER") == 0) {
-        return ElementType::EXCEPTION_HANDLER;
-    } else if (eType.compare("EXECUTABLE_NODE") == 0) {
-        return ElementType::EXECUTABLE_NODE;
-    } else if (eType.compare("EXPRESSION") == 0) {
-        return ElementType::EXPRESSION;
-    } else if (eType.compare("EXTENSION") == 0) {
-        return ElementType::EXTENSION;
-    } else if (eType.compare("EXTENSION_END") == 0) {
-        return ElementType::EXTENSION_END;
-    } else if (eType.compare("FEATURE") == 0) {
-        return ElementType::FEATURE;
-    } else if (eType.compare("FINAL_NODE") == 0) {
-        return ElementType::FINAL_NODE;
-    } else if (eType.compare("FORK_NODE") == 0) {
-        return ElementType::FORK_NODE;
-    } else if (eType.compare("GENERALIZATION") == 0) {
-        return ElementType::GENERALIZATION;
-    } else if (eType.compare("GENERALIZATION_SET") == 0) {
-        return ElementType::GENERALIZATION_SET;
-    } else if (eType.compare("INITITAL_NODE") == 0) {
-        return ElementType::INITIAL_NODE;
-    } else if (eType.compare("INPUT_PIN") == 0) {
-        return ElementType::INPUT_PIN;
-    } else if (eType.compare("INSTANCE_SPECIFICATION") == 0) {
-        return ElementType::INSTANCE_SPECIFICATION;
-    } else if (eType.compare("INSTANCE_VALUE") == 0) {
-        return ElementType::INSTANCE_VALUE;
-    } else if (eType.compare("INTERFACE") == 0) {
-        return ElementType::INTERFACE_UML;
-    } else if (eType.compare("INTERFACE_REALIZATION") == 0) {
-        return ElementType::INTERFACE_REALIZATION;
-    } else if (eType.compare("INTERRUPTIBLE_ACTIVITY_REGION") == 0) {
-        return ElementType::INTERRUPTIBLE_ACTIVITY_REGION;
-    } else if (eType.compare("INVOCATION_ACTION") == 0) {
-        return ElementType::INVOCATION_ACTION;
-    } else if (eType.compare("JOIN_NODE") == 0) {
-        return ElementType::JOIN_NODE;
-    } else if (eType.compare("LITERAL_BOOL") == 0) {
-        return ElementType::LITERAL_BOOL;
-    } else if (eType.compare("LITERAL_INT") == 0) {
-        return ElementType::LITERAL_INT;
-    } else if (eType.compare("LITERAL_NULL") == 0) {
-        return ElementType::LITERAL_NULL;
-    } else if (eType.compare("LITERAL_REAL") == 0) {
-        return ElementType::LITERAL_REAL;
-    } else if (eType.compare("LITERAL_SPECIFICATION") == 0) {
-        return ElementType::LITERAL_SPECIFICATION;
-    } else if (eType.compare("LITERAL_STRING") == 0) {
-        return ElementType::LITERAL_STRING;
-    } else if (eType.compare("LITERAL_UNLIMITED_NATURAL") == 0) {
-        return ElementType::LITERAL_UNLIMITED_NATURAL;
-    } else if (eType.compare("MANIFESTATION") == 0) {
-        return ElementType::MANIFESTATION;
-    } else if (eType.compare("MERGE_NODE") == 0) {
-        return ElementType::MERGE_NODE;
-    } else if (eType.compare("MODEL") == 0) {
-        return ElementType::MODEL;
-    } else if (eType.compare("MULTIPLICITY_ELEMENT") == 0) {
-        return ElementType::MULTIPLICITY_ELEMENT;
-    } else if (eType.compare("NAMED_ELEMENT") == 0) {
-        return ElementType::NAMED_ELEMENT;
-    } else if (eType.compare("NAMESPACE") == 0) {
-        return ElementType::NAMESPACE;
-    } else if (eType.compare("OBJECT_FLOW") == 0) {
-        return ElementType::OBJECT_FLOW;
-    } else if (eType.compare("OBJECT_NODE") == 0) {
-        return ElementType::OBJECT_NODE;
-    } else if (eType.compare("OPAQUE_ACTION") == 0) {
-        return ElementType::OPAQUE_ACTION;
-    } else if (eType.compare("OPAQUE_BEHAVIOR") == 0) {
-        return ElementType::OPAQUE_BEHAVIOR;
-    } else if (eType.compare("OPERATION") == 0) {
-        return ElementType::OPERATION;
-    } else if (eType.compare("OUTPUT_PIN") == 0) {
-        return ElementType::OUTPUT_PIN;
-    } else if (eType.compare("PACKAGE") == 0) {
-        return ElementType::PACKAGE;
-    } else if (eType.compare("PACKAGEABLE_ELEMENT") == 0) {
-        return ElementType::PACKAGEABLE_ELEMENT;
-    } else if (eType.compare("PACKAGE_IMPORT") == 0) {
-        return ElementType::PACKAGE_IMPORT;
-    } else if (eType.compare("PACKAGE_MERGE") == 0) {
-        return ElementType::PACKAGE_MERGE;
-    } else if (eType.compare("PARAMETER") == 0) {
-        return ElementType::PARAMETER;
-    } else if (eType.compare("PARAMETERABLE_ELEMENT") == 0) {
-        return ElementType::PARAMETERABLE_ELEMENT;
-    } else if (eType.compare("PARAMETER_SET") == 0) {
-        return ElementType::PARAMETER_SET;
-    } else if (eType.compare("PIN") == 0) {
-        return ElementType::PIN;
-    } else if (eType.compare("PORT") == 0) {
-        return ElementType::PORT;
-    } else if (eType.compare("PRIMITIVE_TYPE") == 0) {
-        return ElementType::PRIMITIVE_TYPE;
-    } else if (eType.compare("PROFILE") == 0) {
-        return ElementType::PROFILE;
-    } else if (eType.compare("PROFILE_APPLICATION") == 0) {
-        return ElementType::PROFILE_APPLICATION;
-    } else if (eType.compare("PROPERTY") == 0) {
-        return ElementType::PROPERTY;
-    } else if (eType.compare("REALIZATION") == 0) {
-        return ElementType::REALIZATION;
-    } else if (eType.compare("RECEPTION") == 0) {
-        return ElementType::RECEPTION;
-    } else if (eType.compare("REDEFINABLE_ELEMENT") == 0) {
-        return ElementType::REDEFINABLE_ELEMENT;
-    } else if (eType.compare("REDEFINABLE_TEMPLATE_SIGNATURE") == 0) {
-        return ElementType::REDEFINABLE_TEMPLATE_SIGNATURE;
-    } else if (eType.compare("RELATIONSHIP") == 0) {
-        return ElementType::RELATIONSHIP;
-    } else if (eType.compare("SIGNAL") == 0) {
-        return ElementType::SIGNAL;
-    } else if (eType.compare("SLOT") == 0) {
-        return ElementType::SLOT;
-    } else if (eType.compare("STEREOTYPE") == 0) {
-        return ElementType::STEREOTYPE;
-    } else if (eType.compare("STRUCTURAL_FEATURE") == 0) {
-        return ElementType::STRUCTURAL_FEATURE;
-    } else if (eType.compare("STRUCTURED_CLASSIFIER") == 0) {
-        return ElementType::STRUCTURED_CLASSIFIER;
-    } else if (eType.compare("TEMPLATEABLE_ELEMENT") == 0) {
-        return ElementType::TEMPLATEABLE_ELEMENT;
-    } else if (eType.compare("TEMPLATE_BINDING") == 0) {
-        return ElementType::TEMPLATE_BINDING;
-    } else if (eType.compare("TEMPLATE_PARAMETER") == 0) {
-        return ElementType::TEMPLATE_PARAMETER;
-    } else if (eType.compare("TEMPLATE_PARAMETER_SUBSTITUTION") == 0) {
-        return ElementType::TEMPLATE_PARAMETER_SUBSTITUTION;
-    } else if (eType.compare("TEMPLATE_SIGNATURE") == 0) {
-        return ElementType::TEMPLATE_SIGNATURE;
-    } else if (eType.compare("TYPE") == 0) {
-        return ElementType::TYPE;
-    } else if (eType.compare("TYPED_ELEMENT") == 0) {
-        return ElementType::TYPED_ELEMENT;
-    } else if (eType.compare("USAGE") == 0) {
-        return ElementType::USAGE;
-    } else if (eType.compare("VALUE_PIN") == 0) {
-        return ElementType::VALUE_PIN;
-    } else if (eType.compare("VALUE_SPECIFICATION") == 0) {
-        return ElementType::VALUE_SPECIFICATION;
-    }
-    throw SerializationError("Could not identify element type by keyword: " + eType + '!');
-}
-
 // void parseActionFeatures(YAML::Node node, Action& action, ParserData& data) {
 //     parseSet<Constraint>(node, action, data, "localPreconditions", &Action::getLocalPreconditions);
 //     parseSet<Constraint>(node, action, data, "localPostconditions", &Action::getLocalPostconditions);
@@ -1841,8 +1612,8 @@ bool parseElementScope(YAML::Node node, Element& el, ParserData& data) {
         ID id = ID::fromString(node["owner"].as<string>());
         if (data.update){
             ElementPtr owner = data.manager->get(id);
-            if (el.is(ElementType::VALUE_SPECIFICATION)) {
-                if (owner->is(ElementType::SLOT)) {
+            if (el.is("ValueSpecification")) {
+                if (owner->is("Slot")) {
                     Slot& slot = owner->as<Slot>();
                     
                     // ordered set, assume add to end

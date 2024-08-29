@@ -25,4 +25,14 @@ namespace UML {
             
             // TODO rest of funcionality interface
     };
+
+    class ManagerStateException : public std::exception {
+        std::string m_msg;
+        public:
+            ManagerStateException(){};
+            ManagerStateException(std::string msg) : m_msg("Uml Manager bad state! " + msg) {};
+            const char* what() const throw() override {
+                return m_msg.c_str();
+            };
+    };
 }

@@ -4,7 +4,6 @@
 #include "uml/set/doNothingPolicy.h"
 #include "uml/set/privateSet.h"
 #include "uml/set/set.h"
-#include "uml/types/element.h"
 #include "uml/umlPtr.h"
 #include <memory>
 
@@ -41,7 +40,7 @@ namespace UML {
             std::shared_ptr<OrderedSetNode<T>> m_first;
             std::shared_ptr<OrderedSetNode<T>> m_last;
             
-            void allocatePtr(ElementPtr ptr, SetStructure& set) override {
+            void allocatePtr(AbstractElementPtr ptr, SetStructure& set) override {
                 SetDataPolicy<T>::allocatePtr(ptr, set);
                 std::shared_ptr<OrderedSetNode<T>> orderedPtr = std::make_shared<OrderedSetNode<T>>(ptr);
                 if (!m_first) {
@@ -53,7 +52,7 @@ namespace UML {
                 }
                 m_last = orderedPtr;
             }
-            void deAllocatePtr(ElementPtr ptr) override {
+            void deAllocatePtr(AbstractElementPtr ptr) override {
 
                 // TODO slow, would be quicker to not iterate over entire thing
 
@@ -83,11 +82,11 @@ namespace UML {
                 const OrderedSetDataPolicy& m_set;
                 std::shared_ptr<OrderedSetNode<T>> m_curr;
                 protected:
-                    ElementPtr getCurr() const override {
+                    AbstractElementPtr getCurr() const override {
                         if (m_curr.get()) {
                             return m_curr->m_ptr;
                         }
-                        return ElementPtr();
+                        return AbstractElementPtr();
                     }
                     void next() override {
                         if (m_curr) {

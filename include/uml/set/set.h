@@ -7,6 +7,7 @@
 #include "../umlPtr.h"
 #include "privateSet.h"
 #include "uml/set/abstractSet.h"
+#include "uml/set/doNothingPolicy.h"
 
 namespace UML {
 
@@ -25,7 +26,7 @@ namespace UML {
                     std::unique_ptr<AbstractSet::iterator> clone() const override {
                         return std::make_unique<iterator>(*this);
                     }
-                    ElementPtr getCurr() const override {
+                    AbstractElementPtr getCurr() const override {
                         if (m_iterateSubSets) {
                             return m_currSetIt->getCurr();
                         }
@@ -94,7 +95,7 @@ namespace UML {
                     }
             };
      protected:
-            void allocatePtr(ElementPtr ptr, SetStructure& set) override {
+            void allocatePtr(AbstractElementPtr ptr, SetStructure& set) override {
                 if (m_data.count(ptr.id())) {
                     if (m_structure.get() == &set) {
                         throw SetStateException("duplicate element added to set!");
@@ -184,11 +185,10 @@ namespace UML {
             }
     };
 
-//     declaration at uml/types/element.h
-//     template <class T, class U, class ApiPolicy>
-//     using ReadOnlySet = PrivateSet<T, U, SetDataPolicy<T>, ApiPolicy>;
+    template <class T, class U, class ApiPolicy = DoNothingPolicy>
+    using ReadOnlySet = PrivateSet<T, U, SetDataPolicy<T>, ApiPolicy>;
 
-    template <class T, class U, class ApiPolicy>
+    template <class T, class U, class ApiPolicy = DoNothingPolicy>
     class Set : public ReadOnlySet<T, U, ApiPolicy> {
         public:
             Set (U* me) : ReadOnlySet<T, U, ApiPolicy>(me) {}

@@ -43,6 +43,8 @@ namespace UML {
             >
         friend class PrivateSet;
 
+        friend struct ManagerNode;
+
         private:
         protected:
             std::shared_ptr<T> m_ptr = 0;
@@ -64,7 +66,7 @@ namespace UML {
             template <class U = AbstractElement>
             void reassignPtr(const UmlPtr<U>& rhs) {
                 if (m_ptr) {
-                    m_ptr->m_node.removePtr(*this);
+                    m_ptr->m_node.m_node.removePtr(*this);
                 }
                 m_id = rhs.m_id;
                 m_ptr = 0;
@@ -72,7 +74,7 @@ namespace UML {
                 m_node = rhs.m_node;
                 if (m_node) {
                     m_ptr = std::dynamic_pointer_cast<T>(rhs.m_ptr);
-                    m_ptr->m_node.addPtr(*this);
+                    m_ptr->m_node.m_node.addPtr(*this);
                 }
             }
         public:

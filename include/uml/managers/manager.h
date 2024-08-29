@@ -67,7 +67,7 @@ namespace UML {
             }
         public:
             // create by type id
-            ElementPtr create(std::size_t elementType) override {
+            AbstractElementPtr create(std::size_t elementType) override {
                 return registerPtr(AbstractFactory<Ts...>::template factoryCreate<ManagerTypes<Ts...>::template GetType<elementType>::type>(elementType, *this));
             }
 
@@ -78,7 +78,7 @@ namespace UML {
             }
 
             // get by id
-            ElementPtr get(ID id) override {
+            AbstractElementPtr get(ID id) override {
 
                 // local memory look up
                 {
@@ -90,7 +90,7 @@ namespace UML {
                 }
 
                 // check for it via policies
-                ElementPtr ret = SerializationPolicy::parseIndividul(PersistencePolicy::loadElementData(id), *this);
+                AbstractElementPtr ret = SerializationPolicy::parseIndividul(PersistencePolicy::loadElementData(id), *this);
 
                 if (ret) {
                     // TODO restore

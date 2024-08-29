@@ -7,10 +7,18 @@
 namespace UML {
 
     class AbstractManager;
-    class NodeReference;
+    struct NodeReference;
+    template <class T>
+    class UmlPtr;
 
     // non template class
     class AbstractElement {
+
+        template <class T>
+        friend class UmlPtr;
+
+        friend struct ManagerNode;
+
         protected:
             const std::size_t m_elementType;
             AbstractManager& m_manager;

@@ -11,11 +11,11 @@ namespace UML {
     class TypeIDHierarchy;
 
     template <std::size_t ElementType, class ... Ts, class T, template<std::size_t, class> class Unit>
-    class TypeIDHierarchy<ElementType, std::tuple<T, Ts...>, Unit> : public TypeIDHierarchy<ElementType, T, Unit>, public TypeIDHierarchy<ElementType - 1, Ts..., Unit> {
+    class TypeIDHierarchy<ElementType, std::tuple<T, Ts...>, Unit> : public TypeIDHierarchy<ElementType, T, Unit>, public TypeIDHierarchy<ElementType - 1, std::tuple<Ts...>, Unit> {
         public:
             typedef std::tuple<T, Ts...> Tlist;
             typedef TypeIDHierarchy<ElementType, T, Unit> LeftBase;
-            typedef TypeIDHierarchy<ElementType - 1, Ts..., Unit> RightBase;
+            typedef TypeIDHierarchy<ElementType - 1, std::tuple<Ts...>, Unit> RightBase;
     };
 
     template <std::size_t ElementType, class AtomicType, template <std::size_t, class> class Unit>

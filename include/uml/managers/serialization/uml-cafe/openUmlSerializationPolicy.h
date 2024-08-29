@@ -25,25 +25,25 @@ namespace UML {
     class OpenUmlSerializationPolicy {
         protected:
             std::string extensionName();
-            ElementPtr parseIndividual(std::string data, AbstractManager& manager);
-            ElementPtr parseWhole(std::string data, AbstractManager& manager);
-            std::string emitIndividual(Element& el, AbstractManager& manager);
-            std::string emitWhole(Element& el, AbstractManager& manager);
+            AbstractElementPtr parseIndividual(std::string data, AbstractManager& manager);
+            AbstractElementPtr parseWhole(std::string data, AbstractManager& manager);
+            std::string emitIndividual(AbstractElement& el, AbstractManager& manager);
+            std::string emitWhole(AbstractElement& el, AbstractManager& manager);
     };
 
     class OpenUmlJsonSerializationPolicy {
         protected:
             std::string extensionName();
-            ElementPtr parseIndividual(std::string data, AbstractManager& manager);
-            ElementPtr parseWhole(std::string data, AbstractManager& manager);
-            std::string emitIndividual(Element& el, AbstractManager& manager);
-            std::string emitWhole(Element& el, AbstractManager& manager);
+            AbstractElementPtr parseIndividual(std::string data, AbstractManager& manager);
+            AbstractElementPtr parseWhole(std::string data, AbstractManager& manager);
+            std::string emitIndividual(AbstractElement& el, AbstractManager& manager);
+            std::string emitWhole(AbstractElement& el, AbstractManager& manager);
     };
     class EmitterData;
     class ParserData;
 
-    std::string emit(Element& el, EmitterData& data);
-    ElementPtr parse(std::string data, ParserData& metaData);
+    std::string emit(AbstractElement& el, EmitterData& data);
+    AbstractElementPtr parse(std::string data, ParserData& metaData);
 
     class SerializationError : public std::exception {
         private:

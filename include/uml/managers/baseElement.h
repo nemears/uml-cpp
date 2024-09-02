@@ -59,7 +59,7 @@ namespace UML {
         public:
             template <class T>
             bool is() {
-                return is<T>(m_elementType);
+                return ManagerTypes<Tlist>::template is<T>(m_elementType);
             }
 
             template <class T>

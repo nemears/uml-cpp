@@ -1,7 +1,10 @@
 #pragma once
 
+#include <memory>
 #include <mutex>
 #include <tuple>
+#include <unordered_map>
+#include <unordered_set>
 #include "abstractManager.h"
 #include "typeID.h"
 #include "uml/managers/baseElement.h"
@@ -50,14 +53,66 @@ namespace UML {
             }
     };
 
+    typedef std::vector<std::pair<std::string, AbstractSet*>> SetList;
+    template <class T>
+    void addSetsToQueue(SetList& queue, std::unordered_set<std::size_t>& visited, AbstractElement& el) {
+        if (!visited.count(T::template idOf<T>())) {
+            auto sets = T::Info::Sets::sets(dynamic_cast<T&>(el));
+            for (auto& pair : sets) {
+                queue.emplace_back(pair.first, pair.second);
+            }
+            visited.insert(T::template idOf<T>());
+        }
+    }
+
+    template <std::size_t I = 0, class BaseList>
+    void addSetsToQueueHelper(SetList& queue, std::unordered_set<std::size_t>& visited, AbstractElement& el) {
+        if constexpr (std::tuple_size<BaseList>{} > I) {
+            using ThisElement = std::tuple_element_t<I, BaseList>;
+            addSetsToQueue<ThisElement>(queue, visited, el);
+            addSetsToQueueHelper<I + 1, BaseList>(queue, visited, el);
+            addSetsToQueueHelper<0, typename ThisElement::Info::BaseList>(queue, visited, el);
+        }
+    }
+   
+    template <class Tlist> 
+    struct AbstractStaticSetFunctor {
+        virtual SetList operator()(BaseElement<Tlist>& el) = 0;
+    };
+
+    template <class T, class Tlist>
+    struct StaticSetFunctor : public AbstractStaticSetFunctor<Tlist> {
+        SetList operator()(BaseElement<Tlist>& el) override {
+            SetList ret = T::Info::Sets::sets(el.template as<T>());
+            std::unordered_set<std::size_t> visited = { el.getElementType() };
+            addSetsToQueueHelper<0, typename T::Info::BaseList>(ret, visited, el);
+            return ret;
+        }
+    };
+
+    template <std::size_t I = 0, class Tlist>
+    void populateTypes(std::unordered_map<std::size_t, std::unique_ptr<AbstractStaticSetFunctor<Tlist>>>& types) {
+        if constexpr (std::tuple_size<Tlist>{} > I) {
+            types.emplace(I, new StaticSetFunctor<std::tuple_element_t<I, Tlist>, Tlist>());
+            populateTypes<I+1, Tlist>(types);
+        }
+    }
 
     // manager
     template <class Tlist, class SerializationPolicy = UmlCafeSerializationPolicy, class PersistencePolicy = FilePersistencePolicy> 
     class Manager : public ManagerTypes<Tlist>, public AbstractFactory<Tlist>, public AbstractManager , public SerializationPolicy, public PersistencePolicy {
         protected:
+
+            std::unordered_map<std::size_t, std::unique_ptr<AbstractStaticSetFunctor<Tlist>>> m_types;
             std::mutex m_graphMutex;
             std::unordered_map<ID, ManagerNode> m_graph;
             AbstractElementPtr m_root;
+
+            SetList getAllSets(BaseElement<Tlist>& el) {
+                return (*m_types.at(el.m_elementType))(el);
+            }
+
+
             template<class T>
             UmlPtr<T> registerPtr(T* ptr) {
                 // create Node by emplace in graph
@@ -104,6 +159,9 @@ namespace UML {
                 registerPtr(el);
             }
         public:
+            Manager() {
+                populateTypes<0,Tlist>(m_types);
+            }
             // create by type id
             // AbstractElementPtr create(std::size_t elementType) override {
             //     return registerPtr(AbstractFactory<Tlist>::template factoryCreate<ManagerTypes<Tlist>::template GetType<elementType>::type>(elementType, *this));
@@ -112,7 +170,7 @@ namespace UML {
             // create by type
             template <class T>
             UmlPtr<T> create() {
-                return registerPtr(this->template factoryCreate<T>(ManagerTypes<Tlist>::template TypeIdOf<T>::value, *this));
+                return registerPtr(this->template factoryCreate<T>(ManagerTypes<Tlist>::template idOf<T>(), *this));
             }
 
             // create Ptr

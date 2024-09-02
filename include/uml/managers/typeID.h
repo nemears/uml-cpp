@@ -3,68 +3,84 @@
 #include <tuple>
 
 namespace UML {
-    // below is implementation of TypeIDHierarchy from Alex Andrescu's C++ Generic Programming and Design Patterns Applied
-    // with variardic templates from c++11
+    // // below is implementation of TypeIDHierarchy from Alex Andrescu's C++ Generic Programming and Design Patterns Applied
+    // // with variardic templates from c++11
 
-    // type id
-    template <std::size_t ElementType, class Tlist, template<std::size_t, class> class Unit>
-    struct TypeIDHierarchy;
+    // // type id
+    // template <class Tlist, template<std::size_t, class> class Unit>
+    // struct TypeIDHierarchy;
 
-    template <std::size_t ElementType, class ... Ts, class T, template<std::size_t, class> class Unit>
-    struct TypeIDHierarchy<ElementType, std::tuple<T, Ts...>, Unit> : public TypeIDHierarchy<ElementType, std::tuple<T>, Unit>, public TypeIDHierarchy<ElementType - 1, std::tuple<Ts...>, Unit> {
-            typedef std::tuple<T, Ts...> Tlist;
-            typedef TypeIDHierarchy<ElementType, std::tuple<T>, Unit> LeftBase;
-            typedef TypeIDHierarchy<ElementType - 1, std::tuple<Ts...>, Unit> RightBase;
+    // template <class ... Ts, class T, template<std::size_t, class> class Unit>
+    // struct TypeIDHierarchy<std::tuple<T, Ts...>, Unit> : public TypeIDHierarchy<std::tuple<T>, Unit>, public TypeIDHierarchy<std::tuple<Ts...>, Unit> {
+    //         typedef std::tuple<T, Ts...> Tlist;
+    //         typedef Unit<std::tuple_size<std::tuple<T, Ts...>>{}, T> Front;
+    // };
+
+    // template <class AtomicType, template <std::size_t, class> class Unit>
+    // struct TypeIDHierarchy<std::tuple<AtomicType>, Unit> : public Unit<1 , AtomicType> {
+    //     typedef Unit<ElementType, AtomicType> FrontID;
+    // };
+
+    // template <template <std::size_t, class> class Unit> 
+    // struct TypeIDHierarchy<ElementType, std::tuple<>, Unit> {};
+
+    // template <class Tlist, class T>
+    // struct TypeID {
+    //     static std::size_t elementType() {
+    //         return ElementType;
+    //     }
+    // };
+    
+    template <class T, class Tuple>
+    struct Index;
+
+    template <class T, class... Types>
+    struct Index<T, std::tuple<T, Types...>> {
+        static const std::size_t value = 0;
     };
 
-    template <std::size_t ElementType, class AtomicType, template <std::size_t, class> class Unit>
-    struct TypeIDHierarchy<ElementType, std::tuple<AtomicType>, Unit> : public Unit<ElementType, AtomicType> {
-        typedef Unit<ElementType, AtomicType> LeftBase;
-    };
-
-    template <std::size_t ElementType, template <std::size_t, class> class Unit> 
-    struct TypeIDHierarchy<ElementType, std::tuple<>, Unit> {};
-
-    template <std::size_t ElementType, class T>
-    struct TypeID {
-        static std::size_t elementType() {
-            return ElementType;
-        }
+    template <class T, class U, class... Types>
+    struct Index<T, std::tuple<U, Types...>> {
+        static const std::size_t value = 1 + Index<T, std::tuple<Types...>>::value;
     };
 
     template <class Tlist>
-    struct ManagerTypes : public TypeIDHierarchy<std::tuple_size<Tlist>{}, Tlist, TypeID> {
+    struct ManagerTypes {
         typedef Tlist Types;
 
-        // utility class to get type given size_t
-        template <std::size_t ElementType> 
-        struct GetType {
-            using type = std::tuple_element<ElementType, Types>;
-        };
+        template <class T>
+        static std::size_t idOf() {
+            return Index<T, Tlist>::value;
+        }
+            
+        // // utility class to get elementType given type
+        // template<class TTlist, class T>
+        // struct TypeIdOfHelper;
 
-        // utility class to get elementType given type
-        template<class TTlist, class T>
-        struct TypeIdOfHelper;
+        // template <class T>
+        // struct TypeIdOfHelper<std::tuple<>, T> {
+        //     enum { value = -1 };
+        // };
+
+        // template <class T, class Tail> 
+        // struct TypeIdOfHelper<std::tuple<T>, Tail> {
+        //     enum { value = 0 };
+        // };
+
+        // template <class ... TTs, class Head, class T>
+        // struct TypeIdOfHelper<std::tuple<Head, TTs...>, T> {
+        //     private:
+        //         enum { temp = TypeIdOfHelper<std::tuple<TTs...>, T>::value };
+        //     public:
+        //         enum { value = temp == -1 ? -1 : 1 + temp }; 
+        // };
+        // 
+        // template <class T>
+        // struct TypeIdOf : public TypeIdOfHelper<Types, T> {};
 
         template <class T>
-        struct TypeIdOfHelper<std::tuple<>, T> {
-            enum { value = -1 };
-        };
-
-        template <class T, class Tail> 
-        struct TypeIdOfHelper<std::tuple<T>, Tail> {
-            enum { value = 0 };
-        };
-
-        template <class ... TTs, class Head, class T>
-        struct TypeIdOfHelper<std::tuple<Head, TTs...>, T> {
-            private:
-                enum { temp = TypeIdOfHelper<std::tuple<TTs...>, T>::value };
-            public:
-                enum { value = temp == -1 ? -1 : 1 + temp }; 
-        };
-        
-        template <class T>
-        struct TypeIdOf : public TypeIdOfHelper<Types, T> {};
+        static bool is(std::size_t elementType) {
+            return T::Info::is(elementType);
+        }
     };
 }

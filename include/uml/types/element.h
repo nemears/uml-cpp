@@ -6,6 +6,7 @@
 #include "uml/set/set.h"
 #include "uml/set/singleton.h"
 #include "uml/set/doNothingPolicy.h"
+#include <vector>
 
 namespace YAML {
     class Node;
@@ -97,86 +98,86 @@ namespace UML {
 
     // put all types in a typelist (tuple)
     typedef std::tuple<
-        Abstraction,
-        Artifact,
-        Association,
-        Behavior,
-        BehavioralFeature,
-        BehavioredClassifier,
-        Class,
-        Classifier,
-        ClassifierTemplateParameter,
-        Comment,
-        ConnectableElement,
-        Connector,
-        ConnectorEnd,
-        Constraint,
-        DataType,
-        Dependency,
-        DeployedArtifact,
-        Deployment,
-        DeploymentTarget,
-        DirectedRelationship,
+        // Abstraction,
+        // Artifact,
+        // Association,
+        // Behavior,
+        // BehavioralFeature,
+        // BehavioredClassifier,
+        // Class,
+        // Classifier,
+        // ClassifierTemplateParameter,
+        // Comment,
+        // ConnectableElement,
+        // Connector,
+        // ConnectorEnd,
+        // Constraint,
+        // DataType,
+        // Dependency,
+        // DeployedArtifact,
+        // Deployment,
+        // DeploymentTarget,
+        // DirectedRelationship,
         Element,
-        ElementImport,
-        EncapsulatedClassifier,
-        Enumeration,
-        EnumerationLiteral,
-        Expression,
-        Extension,
-        ExtensionEnd,
-        Feature,
-        Generalization,
-        GeneralizationSet,
-        InstanceSpecification,
-        InstanceValue,
-        Interface,
-        InterfaceRealization,
-        LiteralBool,
-        LiteralInt,
-        LiteralNull,
-        LiteralReal,
-        LiteralSpecification,
-        LiteralString,
-        LiteralUnlimitedNatural,
-        Manifestation,
-        Model,
-        MultiplicityElement,
+        // ElementImport,
+        // EncapsulatedClassifier,
+        // Enumeration,
+        // EnumerationLiteral,
+        // Expression,
+        // Extension,
+        // ExtensionEnd,
+        // Feature,
+        // Generalization,
+        // GeneralizationSet,
+        // InstanceSpecification,
+        // InstanceValue,
+        // Interface,
+        // InterfaceRealization,
+        // LiteralBool,
+        // LiteralInt,
+        // LiteralNull,
+        // LiteralReal,
+        // LiteralSpecification,
+        // LiteralString,
+        // LiteralUnlimitedNatural,
+        // Manifestation,
+        // Model,
+        // MultiplicityElement,
         NamedElement,
         Namespace,
-        OpaqueBehavior,
-        Operation,
+        // OpaqueBehavior,
+        // Operation,
         Package,
-        PackageImport,
-        PackageMerge,
-        PackageableElement,
-        Parameter,
-        ParameterSet,
-        ParameterableElement,
-        Port,
-        PrimitiveType,
-        Profile,
-        ProfileApplication,
-        Property,
-        Realization,
-        Reception,
-        RedefinableElement,
-        RedefinableTemplateSignature,
-        Relationship,
-        Signal,
-        Slot,
-        Stereotype,
-        StructuralFeature,
-        StructuredClassifier,
-        TemplateBinding,
-        TemplateParameter,
-        TemplateParameterSubstitution,
-        TemplateSignature,
-        TemplateableElement,
-        Type,
-        TypedElement,
-        Usage,
-        ValueSpecification
+        // PackageImport,
+        // PackageMerge,
+        PackageableElement// ,
+        // Parameter,
+        // ParameterSet,
+        // ParameterableElement,
+        // Port,
+        // PrimitiveType,
+        // Profile,
+        // ProfileApplication,
+        // Property,
+        // Realization,
+        // Reception,
+        // RedefinableElement,
+        // RedefinableTemplateSignature,
+        // Relationship,
+        // Signal,
+        // Slot,
+        // Stereotype,
+        // StructuralFeature,
+        // StructuredClassifier,
+        // TemplateBinding,
+        // TemplateParameter,
+        // TemplateParameterSubstitution,
+        // TemplateSignature,
+        // TemplateableElement,
+        // Type,
+        // TypedElement,
+        // Usage,
+        // ValueSpecification
     > UmlTypes;
 
     typedef UmlPtr<Element> ElementPtr;
@@ -190,46 +191,46 @@ namespace UML {
      **/
     class Element : public BaseElement<UmlTypes> {
 
-        private:
+        friend class SetInfo<Element>;
+
         protected:
-            
-            typedef TypeInfo<std::tuple<>> Info;    
-            
             ReadOnlySingleton<Element, Element> m_owner = ReadOnlySingleton<Element, Element>(this);
             ReadOnlySet<Element, Element> m_ownedElements = ReadOnlySet<Element, Element>(this);
-            Set<Comment, Element> m_ownedComments = Set<Comment, Element>(this);
-            Set<InstanceSpecification, Element> m_appliedStereotypes = Set<InstanceSpecification, Element>(this);
+            // Set<Comment, Element> m_ownedComments = Set<Comment, Element>(this);
+            // Set<InstanceSpecification, Element> m_appliedStereotypes = Set<InstanceSpecification, Element>(this);
             ReadOnlySingleton<Element, Element>& getOwnerSingleton();
             Element(std::size_t elementType, AbstractManager& manager);
         public:
-            Element(const Element&) = delete;
-            Element& operator=(const Element&) = delete;
             ElementPtr getOwner() const;
             ReadOnlySet<Element, Element>& getOwnedElements();
-            Set<Comment, Element, DoNothingPolicy>& getOwnedComments();
+            // Set<Comment, Element, DoNothingPolicy>& getOwnedComments();
             /**
              * TODO: I am keeping it simple for now, instance specification of stereotype to
              *       hold tags and operations, but I think it would be cool to dynamically map
              *       methods if we load the stereotype before runtime. Also would be cool to have
              *       stereotype tags as keyword in yaml config for disk storage (not necessarily useful though?)
              **/
-            Set<InstanceSpecification, Element, DoNothingPolicy>& getAppliedStereotypes();
-            template <class T = Element> T& as() {
-                T& ret = dynamic_cast<T&>(*this);
-                // if (!ret) {
-                //     throw InvalidElementCastException(getElementTypeString().c_str() , elementTypeToString(T::elementType()).c_str());
-                // }
-                return ret;
-            }
+            // Set<InstanceSpecification, Element, DoNothingPolicy>& getAppliedStereotypes();
 
-            inline friend bool operator==(const Element& lhs, const Element& rhs) {
-                return lhs.m_id == rhs.m_id;
-            };
-            inline friend bool operator!=(const Element& lhs, const Element& rhs) {
-                return lhs.m_id != rhs.m_id;
-            };
+        protected:
+            
+            typedef TypeInfo<std::tuple<>, Element> Info;
+        
         private:
             void setOwner(ID id);
+    };
+
+    // template specialization for SetInfo<Element> (required for all implementing types)
+    template <>
+    class SetInfo<Element> {
+        static SetList sets(Element& el) {
+            return std::vector {
+                std::make_pair<std::string, AbstractSet*>("owner", &el.m_owner),
+                std::make_pair<std::string, AbstractSet*>("ownedElements", &el.m_ownedElements)//,
+                // std::make_pair<std::string, AbstractSet*>("ownedComments", &el.m_ownedElements),
+                // std::make_pair<std::string, AbstractSet*>("appliedStereotypes", &el.m_ownedElements)
+            };
+        }
     };
 
     //Exceptions

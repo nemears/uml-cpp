@@ -13,15 +13,16 @@ namespace UML {
     class  AbstractManager {
 
         friend struct ManagerNode;
+        friend class AbstractElement;
         
         public:
-            virtual AbstractElementPtr create(std::size_t elementType) = 0;
+            // virtual AbstractElementPtr create(std::size_t elementType) = 0;
+            virtual AbstractElementPtr createPtr(ID id) = 0;
             virtual AbstractElementPtr get(ID id) = 0;
-            virtual void reindex(ID oldID, ID newID) = 0;
             virtual void release (AbstractElement& el) = 0;
-
         protected:
-            virtual void destroyNode(ManagerNode& node) = 0;
+            virtual void destroyNode(ID id, ManagerNode& node) = 0;
+            virtual void reindex(ID oldID, ID newID) = 0;
             
             // TODO rest of funcionality interface
     };

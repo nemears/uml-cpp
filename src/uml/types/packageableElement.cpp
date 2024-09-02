@@ -2,16 +2,11 @@
 
 using namespace UML;
 
-void PackageableElement::referenceErased(ID id) {
-    NamedElement::referenceErased(id);
-    ParameterableElement::referenceErased(id);
-}
-
 Singleton<Package, PackageableElement>& PackageableElement::getOwningPackageSingleton() {
     return m_owningPackage;
 }
 
-PackageableElement::PackageableElement() : Element(ElementType::PACKAGEABLE_ELEMENT) {
+PackageableElement::PackageableElement(std::size_t elementType, AbstractManager& manager) : Element(elementType, manager) {
     m_owningPackage.subsets(m_namespace);
     m_owningPackage.opposite(&Package::getPackagedElements);
 }
@@ -30,18 +25,4 @@ void PackageableElement::setOwningPackage(Package& package) {
 
 void PackageableElement::setOwningPackage(ID id) {
     m_owningPackage.set(id);
-}
-
-bool PackageableElement::is(ElementType eType) const {
-    bool ret = NamedElement::is(eType);
-
-    if (!ret) {
-        ret = ParameterableElement::is(eType);
-    }
-
-    if (!ret) {
-        ret = eType == ElementType::PACKAGEABLE_ELEMENT;
-    }
-
-    return ret;
 }

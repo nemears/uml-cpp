@@ -8,36 +8,29 @@
 
 namespace UML {
 
-    class AbstractElement;
     struct NodeReference;
-    template <class T>
-    class UmlPtr;
-    typedef UmlPtr<AbstractElement> AbstractElementPtr;
+    class AbstractPtr;
 
     struct ManagerNode {
         std::shared_ptr<AbstractElement> m_ptr = 0;
         AbstractManager& m_manager;
-        std::unordered_set<AbstractElementPtr*> m_ptrs; // don't know how to not use raw ptr here
+        std::unordered_set<AbstractPtr*> m_ptrs; // don't know how to not use raw ptr here
         std::unordered_map<ID, NodeReference> m_references;
         ManagerNode(AbstractElement* ptr) : m_ptr(ptr), m_manager(ptr->m_manager) {}
+        ManagerNode(AbstractManager& manager) : m_manager(manager) {}
         ManagerNode(const ManagerNode& rhs) = delete;
-        void addPtr(AbstractElementPtr& ptr) {
-            m_ptrs.insert(&ptr);
+        void addPtr(AbstractPtr* ptr) {
+            m_ptrs.insert(ptr);
         }
-        void removePtr(AbstractElementPtr& ptr) {
-            m_ptrs.erase(&ptr);
-            if (m_ptrs.empty()) {
-                m_manager.destroyNode(*this);
-            }
-        }
-        void setReference(AbstractElementPtr* ptr);
+        void removePtr(AbstractPtr* ptr); 
+        void setReference(AbstractPtr* ptr);
         void setReference(ID id, ManagerNode& managerNode);
-        void removeReference(AbstractElementPtr* ptr);
+        void removeReference(AbstractPtr* ptr);
     };
 
     struct NodeReference {
         ManagerNode& m_node;
-        std::unordered_set<AbstractElementPtr*> m_ptrs;
+        std::unordered_set<AbstractPtr*> m_ptrs;
         NodeReference(ManagerNode& node) : m_node(node) {}
     };
 }

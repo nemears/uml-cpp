@@ -2,23 +2,19 @@
 
 #include "packageableElement.h"
 #include "namespace.h"
-#include "templateableElement.h"
+// #include "templateableElement.h"
 #include "uml/set/indexableSet.h"
 #include <unordered_set>
 
 namespace UML {
 
-    class Stereotype;
-    class ProfileApplication;
-    class PackageMerge;
-    class PackageImport;
-    void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
 
-    class Package : public PackageableElement, public Namespace, public TemplateableElement {
+    class Package : public PackageableElement, public Namespace/*, public TemplateableElement*/ {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class PackageImport;
-        friend void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
+        
+        template <class T>        
+        friend class Creator;
 
         protected:
             class PackageableElementPolicy : public IndexablePolicy {
@@ -29,21 +25,16 @@ namespace UML {
                     void elementAdded(PackageableElement& el, Package& me);
                     void elementRemoved(PackageableElement& el, Package& me);
             };
+            typedef TypeInfo<std::tuple<PackageableElement, Namespace, TemplateableElement>> Info;
             IndexableSet<PackageableElement, Package, PackageableElementPolicy> m_packagedElements = IndexableSet<PackageableElement, Package, PackageableElementPolicy>(this);
-            Set<PackageMerge, Package> m_packageMerge = Set<PackageMerge, Package>(this);
-            ReadOnlyIndexableSet<Stereotype, Package> m_ownedStereotypes = ReadOnlyIndexableSet<Stereotype, Package>(this);
-            Set<ProfileApplication, Package> m_profileApplications = Set<ProfileApplication, Package>(this);
-            void referenceErased(ID id) override;
-            Package();
+            // Set<PackageMerge, Package> m_packageMerge = Set<PackageMerge, Package>(this);
+            // ReadOnlyIndexableSet<Stereotype, Package> m_ownedStereotypes = ReadOnlyIndexableSet<Stereotype, Package>(this);
+            // Set<ProfileApplication, Package> m_profileApplications = Set<ProfileApplication, Package>(this);
+            Package(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Package();
             IndexableSet<PackageableElement, Package, PackageableElementPolicy>& getPackagedElements();
-            Set<PackageMerge, Package>& getPackageMerge();
-            Set<ProfileApplication, Package>& getProfileApplications();
-            ReadOnlyIndexableSet<Stereotype, Package>& getOwnedStereotypes();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::PACKAGE;
-            };
+            // Set<PackageMerge, Package>& getPackageMerge();
+            // Set<ProfileApplication, Package>& getProfileApplications();
+            // ReadOnlyIndexableSet<Stereotype, Package>& getOwnedStereotypes();
     };
 }

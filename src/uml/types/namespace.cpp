@@ -34,12 +34,8 @@ void Namespace::PackageImportPolicy::elementRemoved(PackageImport& el, Namespace
     }
 }
 
-void Namespace::referenceErased(ID id) {
-    NamedElement::referenceErased(id);
-    eraseFromSet(id, m_members);
-}
-
-Namespace::Namespace() : Element(ElementType::NAMESPACE) {
+Namespace::Namespace(std::size_t elementType, AbstractManager& manager) : Element(elementType, manager) {
+    m_namespaceTypeInfo.setBase(m_namedElementTypeInfo);
     m_ownedMembers.subsets(*m_ownedElements);
     m_ownedMembers.subsets(m_members);
     m_ownedMembers.opposite(&NamedElement::getNamespaceSingleton);
@@ -50,10 +46,6 @@ Namespace::Namespace() : Element(ElementType::NAMESPACE) {
     m_elementImports.opposite(&ElementImport::getImportingNamespaceSingleton);
     m_packageImports.subsets(*m_ownedElements);
     m_packageImports.opposite(&PackageImport::getImportingNamespaceSingleton);
-}
-
-Namespace::~Namespace() {
-    
 }
 
 void Namespace::setName(const std::string& name) {
@@ -86,14 +78,4 @@ Set<ElementImport, Namespace, Namespace::ElementImportPolicy>& Namespace::getEle
 
 Set<PackageImport, Namespace, Namespace::PackageImportPolicy>& Namespace::getPackageImports() {
     return m_packageImports;
-}
-
-bool Namespace::is(ElementType eType) const {
-    bool ret = NamedElement::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::NAMESPACE;
-    }
-
-    return ret;
 }

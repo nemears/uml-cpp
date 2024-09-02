@@ -19,6 +19,12 @@ namespace UML {
 
         friend struct ManagerNode;
 
+        template <class T, class U, class DataTypePolicy, class ApiPolicy>
+        friend class PrivateSet;
+        
+        template <class Tlist, class P1, class P2>
+        friend class Manager;
+
         protected:
             const std::size_t m_elementType;
             AbstractManager& m_manager;
@@ -26,20 +32,21 @@ namespace UML {
             ID m_id = ID::randomID();
             AbstractElement(std::size_t elementType, AbstractManager& manager) : m_elementType(elementType), m_manager(manager) {}
         public:
+            virtual ~AbstractElement() {}
+            AbstractElement(const AbstractElement&) = delete;
+            AbstractElement& operator=(const AbstractElement&) = delete;
             ID getID() const {
                 return m_id;
             }
             void setID(ID id);
-            template <class T>
-            bool is() {
-                return is<T>(m_elementType);
-            }
-            template <class T>
-            T& as() {
-                if (!is<T>()) {
-                    // TODO throw
-                }
-                return dynamic_cast<T&>(*this);
+            inline friend bool operator==(const AbstractElement& lhs, const AbstractElement& rhs) {
+                return lhs.m_id == rhs.m_id;
+            };
+            inline friend bool operator!=(const AbstractElement& lhs, const AbstractElement& rhs) {
+                return lhs.m_id != rhs.m_id;
+            };
+            std::size_t getElementType() const {
+                return m_elementType;
             }
     };
 
@@ -49,5 +56,18 @@ namespace UML {
     class BaseElement : public AbstractElement, public ManagerTypes<Tlist> {
         protected:
             BaseElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
+        public:
+            template <class T>
+            bool is() {
+                return is<T>(m_elementType);
+            }
+
+            template <class T>
+            T& as() {
+                if (!is<T>()) {
+                    // TODO throw
+                }
+                return dynamic_cast<T&>(*this);
+            }
     };
 }

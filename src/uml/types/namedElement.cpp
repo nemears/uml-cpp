@@ -1,5 +1,3 @@
-#include "uml/types/namedElement.h"
-#include "uml/types/dependency.h"
 #include "uml/uml-stable.h"
 #include <vector>
 
@@ -15,16 +13,11 @@ void NamedElement::UpdateQualifiedNamePolicy::elementRemoved(__attribute__((unus
     me.updateQualifiedName("");
 }
 
-void NamedElement::referenceErased(ID id) {
-    Element::referenceErased(id);
-    eraseFromSet(id, m_clientDependencies);
-}
-
 ReadOnlySingleton<Namespace, NamedElement, NamedElement::UpdateQualifiedNamePolicy>& NamedElement::getNamespaceSingleton() {
     return m_namespace;
 }
 
-NamedElement::NamedElement() : Element(ElementType::NAMED_ELEMENT) {
+NamedElement::NamedElement(std::size_t elementType, AbstractManager& manager) : Element(elementType, manager) {
     m_namespace.subsets(*m_owner);
     m_namespace.opposite(&Namespace::getOwnedMembers);
     m_clientDependencies.opposite(&Dependency::getClients);
@@ -76,16 +69,6 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
         }
     }
     m_visibility = visibility;
-}
-
-bool NamedElement::is(ElementType eType) const {
-    bool ret = Element::is(eType);
-    
-    if (!ret) {
-        ret = eType == ElementType::NAMED_ELEMENT;
-    }
-
-    return ret;
 }
 
 void NamedElement::setNamespace(ID id) {

@@ -21,7 +21,7 @@ namespace UML {
                 auto it = this->beginPtr();
                 while (*it != *this->endPtr()) {
                     auto curr = it->getCurr();
-                    if (curr->is<NamedElement>()) {
+                    try {
                         NamedElementPtr namedCurr = curr;
                         auto elQualifiedName = namedCurr->getQualifiedName();
                         auto elName = namedCurr->getName();
@@ -31,7 +31,7 @@ namespace UML {
                         if (elName == qualifiedName) {
                             return curr;
                         }
-                    }
+                    } catch (std::exception& e) {}
                     it->next();
                 }
                 return AbstractElementPtr();

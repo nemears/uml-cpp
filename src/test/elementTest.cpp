@@ -10,7 +10,7 @@ using namespace UML;
 class ElementTest : public ::testing::Test {};
 
 TEST_F(ElementTest, UmlPtrTest) {
-    Manager<> m;
+    UmlManager m;
     Package& pckg = *m.create<Package>();
     Package& child = *m.create<Package>();
     pckg.getPackagedElements().add(child);
@@ -26,7 +26,7 @@ TEST_F(ElementTest, UmlPtrTest) {
 }
 
 TEST_F(ElementTest, UmlPtrComparisonTest) {
-    Manager<> m;
+    UmlManager m;
     PackagePtr pckg = m.create<Package>();
     PackagePtr child = m.create<Package>();
     pckg->getPackagedElements().add(*child);
@@ -41,7 +41,7 @@ TEST_F(ElementTest, UmlPtrComparisonTest) {
 }
 
 // TEST_F(ElementTest, UmlPtrScopeTest) {
-//     Manager<> m;
+//     UmlManager m;
 //     m.mount(".");
 //     // m.lossless(false);
 //     m.lazy(false);
@@ -63,7 +63,7 @@ TEST_F(ElementTest, UmlPtrComparisonTest) {
 // }
 
 TEST_F(ElementTest, UmlPtrReleaseTest) {
-    Manager<> m;
+    UmlManager m;
     m.mount(".");
     PackagePtr pckg = m.create<Package>();
     PackagePtr child = m.create<Package>();
@@ -79,7 +79,7 @@ TEST_F(ElementTest, UmlPtrReleaseTest) {
 }
 
 TEST_F(ElementTest, AcessReleasedPtrTest) {
-    Manager<> m;
+    UmlManager m;
     m.mount(".");
     // m.lazy(false);
     // m.lossless(false);
@@ -91,7 +91,7 @@ TEST_F(ElementTest, AcessReleasedPtrTest) {
 }
 
 TEST_F(ElementTest, reassignPtrTest) { // TODO recreate managermountstresstest error
-    Manager<> m;
+    UmlManager m;
     PackagePtr pckg = m.create<Package>();
     PackagePtr ogPckg = pckg;
     ID ogID = pckg.id();    
@@ -114,15 +114,15 @@ TEST_F(ElementTest, reassignPtrTest) { // TODO recreate managermountstresstest e
 }
 
 TEST_F(ElementTest, OverrideID_Test) {
-    Manager<> m;
+    UmlManager m;
     PackagePtr el = m.create<Package>();
-    el->setID("7d18ee4282c64f528ec4fab67a75");
+    el->setID(ID::fromString("7d18ee4282c64f528ec4fab67a75"));
     ID id = ID::fromString("7d18ee4282c64f528ec4fab67a75");
     EXPECT_EQ(el->getID(), id);
 }
 
 TEST_F(ElementTest, GetOwnedElementsTest) {
-  Manager<> m;
+  UmlManager m;
   Package& el2 = *m.create<Package>();
   Package& el3 = *m.create<Package>();
   el2.getPackagedElements().add(el3);
@@ -131,14 +131,14 @@ TEST_F(ElementTest, GetOwnedElementsTest) {
 }
 
 TEST_F(ElementTest, InvalidID_Test) {
-    Manager<> m;
+    UmlManager m;
     Package& el3 = *m.create<Package>();
-    EXPECT_THROW(el3.setID("not a uuid4"), InvalidID_Exception);
-    EXPECT_NO_THROW(el3.setID("7d18ee4282c64f528ec4fab67a75"));
+    EXPECT_THROW(el3.setID(ID::fromString("not a uuid4")), InvalidID_Exception);
+    EXPECT_NO_THROW(el3.setID(ID::fromString("7d18ee4282c64f528ec4fab67a75")));
 }
 
 TEST_F(ElementTest, getNullOwnerTest) {
-    Manager<> m;
+    UmlManager m;
     PackagePtr e = m.create<Package>();
     ASSERT_THROW(e->getOwner()->getID(), NullPtrException);
     ASSERT_FALSE(e->getOwner());
@@ -148,7 +148,7 @@ TEST_F(ElementTest, getNullOwnerTest) {
 }
 
 TEST_F(ElementTest, setAndGetOwnerTest) {
-    Manager<> m;
+    UmlManager m;
     Package& e = *m.create<Package>();
     Package& c = *m.create<Package>();
     c.setOwningPackage(e);
@@ -158,7 +158,7 @@ TEST_F(ElementTest, setAndGetOwnerTest) {
 }
 
 TEST_F(ElementTest, getOwnedElementsBasicTest) {
-    Manager<> m;
+    UmlManager m;
     Package& e = *m.create<Package>();
     Package& c = *m.create<Package>();
     ASSERT_NO_THROW(e.getPackagedElements().add(c));
@@ -166,7 +166,7 @@ TEST_F(ElementTest, getOwnedElementsBasicTest) {
 }
 
 // TEST_F(ElementTest, getOwnedElementByNameTest) {
-//     Manager<> m;
+//     UmlManager m;
 //     Package& e = *m.create<Package>();
 //     Package& n = *m.create<Package>();
 //     n.setName("name");
@@ -180,7 +180,7 @@ TEST_F(ElementTest, getOwnedElementsBasicTest) {
 
 // TODO uncomment!!
 // TEST_F(ElementTest, basicRelationshipTest) {
-//   Manager<> m;
+//   UmlManager m;
 //   Package& e = *m.create<Package>();
 //   Package& a = *m.create<Package>();
 //   PackageMerge& r = *m.create<PackageMerge>();
@@ -194,7 +194,7 @@ TEST_F(ElementTest, getOwnedElementsBasicTest) {
 // }
 
 TEST_F(ElementTest, setOwnerFunctorTest) {
-    Manager<> m;
+    UmlManager m;
     Package& e = *m.create<Package>();
     Package& c = *m.create<Package>();
     e.getPackagedElements().add(c);
@@ -203,7 +203,7 @@ TEST_F(ElementTest, setOwnerFunctorTest) {
 }
 
 TEST_F(ElementTest, setOwnerTest) {
-    Manager<> m;
+    UmlManager m;
     Package& e = *m.create<Package>();
     Package& c = *m.create<Package>();
     c.setOwningPackage(&e);
@@ -212,7 +212,7 @@ TEST_F(ElementTest, setOwnerTest) {
 }
 
 TEST_F(ElementTest, overwriteOwnerTest) {
-  Manager<> m;
+  UmlManager m;
   Package& p1 = *m.create<Package>();
   Package& p2 = *m.create<Package>();
   Package& c = *m.create<Package>();
@@ -225,7 +225,7 @@ TEST_F(ElementTest, overwriteOwnerTest) {
 }
 
 TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
-  Manager<> m;
+  UmlManager m;
   Package& p1 = *m.create<Package>();
   Package& p2 = *m.create<Package>();
   Package& c = *m.create<Package>();
@@ -239,14 +239,14 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
 
 // TODO uncomment
 // TEST_F(ElementTest, asFuncTest) {
-//   Manager<> m;
+//   UmlManager m;
 //   UmlPtr<Classifier> classifier = m.create<Class>();
 //   Class& clazz = classifier->as<Class>();
 //   ASSERT_EQ(classifier->getID(), clazz.getID());
 // }
 // 
 // TEST_F(ElementTest, emitJSON_test) {
-//     Manager<> m;
+//     UmlManager m;
 //     PackagePtr p = m.create<Package>();
 //     PackagePtr c = m.create<Package>();
 //     p->setID(ID::fromString("Wmhz0dIdjUbcWmTn7EL4Zz261oy6"));

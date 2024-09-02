@@ -20,6 +20,10 @@ namespace UML {
     class WrapperSet;
 
     class AbstractSet {
+
+        template <class Tlist, class P1, class P2>
+        friend class Manager;
+
         template <class T, class U, class DataTypePolicy, class ApiPolicy>
         friend class PrivateSet;
         template <class T>
@@ -55,6 +59,8 @@ namespace UML {
             virtual void deAllocatePtr(__attribute__((unused)) AbstractElementPtr ptr) {}
 
             class iterator {
+                template <class Tlist, class P1, class P2>
+                friend class Manager;
                 template <class T>
                 friend class SetDataPolicy;
                 template <class T>

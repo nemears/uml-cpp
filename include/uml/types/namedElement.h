@@ -2,18 +2,13 @@
 
 #include <string>
 #include "element.h"
+#include "uml/managers/baseElement.h"
 #include "uml/set/set.h"
 #include "uml/set/singleton.h"
 
 namespace UML {
 
-    class Namespace;
-    class Dependency;
     typedef UmlPtr<Namespace> NamespacePtr;
-
-    // namespace Parsers {
-    //     void setNamespace(NamedElement& el, ID id);
-    // }
 
     enum class VisibilityKind {
         PUBLIC,
@@ -28,9 +23,10 @@ namespace UML {
     class NamedElement : virtual public Element {
 
         friend class Namespace;
-        friend bool parseNamedElementScope(YAML::Node node, NamedElement& namedElement, ParserData& data);
+        friend class SetInfo<NamedElement>;
 
         protected:
+            typedef TypeInfo<std::tuple<Element>, NamedElement> Info;
             std::string m_name;
             std::string m_absoluteNamespace;
             class UpdateQualifiedNamePolicy {
@@ -39,25 +35,31 @@ namespace UML {
                     void elementRemoved(Namespace& el, NamedElement& me);
             };
             ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy> m_namespace = ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>(this);
-            Set<Dependency, NamedElement>  m_clientDependencies = Set<Dependency, NamedElement>(this);
+            // Set<Dependency, NamedElement>  m_clientDependencies = Set<Dependency, NamedElement>(this);
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             void updateQualifiedName(std::string absoluteNamespace);
-            void referenceErased(ID id) override;
             ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>& getNamespaceSingleton();
-            NamedElement();
+            NamedElement(std::size_t elementType, AbstractManager& manager);
         public:
             virtual std::string getName();
             virtual void setName(const std::string &name);
             std::string getQualifiedName();
             NamespacePtr getNamespace() const;
-            Set<Dependency, NamedElement, DoNothingPolicy>& getClientDependencies();
+            // Set<Dependency, NamedElement, DoNothingPolicy>& getClientDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::NAMED_ELEMENT;
-            };
         private:
             void setNamespace(ID id);
     };
+
+    template<>
+    class SetInfo<NamedElement> {
+        static SetList sets(NamedElement& el) {
+            return SetList {
+                std::make_pair<std::string, AbstractSet*>("namespace", &el.m_namespace)// ,
+                // std::make_pair<std::string, AbstractSet*>("clientDependencies", &el.getClientDependencies())
+            };
+        }
+    };
+
 }

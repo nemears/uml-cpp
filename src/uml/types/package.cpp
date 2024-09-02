@@ -30,19 +30,7 @@ void Package::PackageableElementPolicy::elementRemoved(PackageableElement& el, P
     }
 }
 
-void Package::referenceErased(ID id) {
-    Namespace::referenceErased(id);
-    PackageableElement::referenceErased(id);
-}
-
-// void Package::restoreReference(Element* el) {
-//     Element::restoreReference(el);
-//     if (el->isSubClassOf(ElementType::STEREOTYPE) && getPackagedElements().contains(el->getID()) && !getOwnedStereotypes().contains(el->getID())) {
-//         m_ownedStereotypes.add(el->as<Stereotype>());
-//     }
-// }
-
-Package::Package() : Element(ElementType::PACKAGE) {
+Package::Package(std::size_t elementType, AbstractManager& manager) : Element(elementType, manager) {
     m_packagedElements.subsets(m_ownedMembers);
     m_packagedElements.opposite(&PackageableElement::getOwningPackageSingleton);
     m_packageMerge.subsets(*m_ownedElements);
@@ -70,22 +58,4 @@ Set<ProfileApplication, Package>& Package::getProfileApplications() {
 
 ReadOnlyIndexableSet<Stereotype, Package>& Package::getOwnedStereotypes() {
     return m_ownedStereotypes;
-}
-
-bool Package::is(ElementType eType) const {
-    bool ret = PackageableElement::is(eType);
-
-    if (!ret) {
-        ret = Namespace::is(eType);
-    }
-
-    if (!ret) {
-        ret = TemplateableElement::is(eType);
-    }
-
-    if (!ret) {
-        ret = eType == ElementType::PACKAGE;
-    }
-
-    return ret;
 }

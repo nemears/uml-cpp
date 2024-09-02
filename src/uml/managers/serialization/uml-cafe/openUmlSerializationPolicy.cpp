@@ -6,39 +6,39 @@ using namespace std;
 
 namespace UML {
 
-std::string OpenUmlSerializationPolicy::extensionName() {
+std::string UmlCafeSerializationPolicy::extensionName() {
     return ".yml";
 }
 
-ElementPtr OpenUmlSerializationPolicy::parseIndividual(std::string data, AbstractManager& manager) {
+AbstractElementPtr UmlCafeSerializationPolicy::parseIndividual(std::string data, AbstractManager& manager) {
     ParserData metaData;
     metaData.manager = &manager;
     return parse(data, metaData);
 }
 
-ElementPtr OpenUmlSerializationPolicy::parseWhole(std::string data, AbstractManager& manager) {
+AbstractElementPtr UmlCafeSerializationPolicy::parseWhole(std::string data, AbstractManager& manager) {
     ParserData metaData;
     metaData.mode = SerializationMode::WHOLE;
     metaData.manager = &manager;
     return parse(data, metaData);
 }
 
-std::string OpenUmlSerializationPolicy::emitIndividual(Element& el, __attribute__((unused))AbstractManager& manager) {
+std::string UmlCafeSerializationPolicy::emitIndividual(AbstractElement& el, __attribute__((unused))AbstractManager& manager) {
     EmitterData data;
     return emit(el, data);
 }
 
-std::string OpenUmlSerializationPolicy::emitWhole(Element& el, __attribute__((unused))AbstractManager& manager) {
+std::string UmlCafeSerializationPolicy::emitWhole(AbstractElement& el, __attribute__((unused))AbstractManager& manager) {
     EmitterData data;
     data.mode = SerializationMode::WHOLE;
     return emit(el, data);
 }
 
-std::string OpenUmlJsonSerializationPolicy::extensionName() {
+std::string UmlCafeJsonSerializationPolicy::extensionName() {
     return ".json"; // ".uml.json"
 }
 
-ElementPtr OpenUmlJsonSerializationPolicy::parseIndividual(std::string data, AbstractManager& manager) {
+AbstractElementPtr UmlCafeJsonSerializationPolicy::parseIndividual(std::string data, AbstractManager& manager) {
     ParserData metaData;
     metaData.manager = &manager;
     ElementPtr ret = parse(data, metaData);
@@ -46,20 +46,20 @@ ElementPtr OpenUmlJsonSerializationPolicy::parseIndividual(std::string data, Abs
     return ret;
 }
 
-ElementPtr OpenUmlJsonSerializationPolicy::parseWhole(std::string data, AbstractManager& manager) {
+AbstractElementPtr UmlCafeJsonSerializationPolicy::parseWhole(std::string data, AbstractManager& manager) {
     ParserData metaData;
     metaData.mode = SerializationMode::WHOLE;
     metaData.manager = &manager;
     return parse(data, metaData);
 }
 
-std::string OpenUmlJsonSerializationPolicy::emitIndividual(Element& el, __attribute__((unused))AbstractManager& manager) {
+std::string UmlCafeJsonSerializationPolicy::emitIndividual(AbstractElement& el, __attribute__((unused))AbstractManager& manager) {
     EmitterData data;
     data.isJSON = true;
     return emit(el, data);
 }
 
-std::string OpenUmlJsonSerializationPolicy::emitWhole(Element& el, __attribute__((unused))AbstractManager& manager) {
+std::string UmlCafeJsonSerializationPolicy::emitWhole(AbstractElement& el, __attribute__((unused))AbstractManager& manager) {
     EmitterData data;
     data.mode = SerializationMode::WHOLE;
     data.isJSON = true;
@@ -77,7 +77,7 @@ std::string emit(Element& el, EmitterData& data) {
     return emitter.c_str();
 }
 
-ElementPtr parse(std::string data, ParserData& metaData) {
+AbstractElementPtr parse(std::string data, ParserData& metaData) {
     std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
     if (rootNodes.empty()) {
         throw SerializationError("could not parse data supplied to manager! Is it JSON or YAML?");

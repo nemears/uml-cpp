@@ -22,7 +22,7 @@ namespace UML {
             bool update = false; // update flag
     };
 
-    class OpenUmlSerializationPolicy {
+    class UmlCafeSerializationPolicy {
         protected:
             std::string extensionName();
             AbstractElementPtr parseIndividual(std::string data, AbstractManager& manager);
@@ -31,7 +31,7 @@ namespace UML {
             std::string emitWhole(AbstractElement& el, AbstractManager& manager);
     };
 
-    class OpenUmlJsonSerializationPolicy {
+    class UmlCafeJsonSerializationPolicy {
         protected:
             std::string extensionName();
             AbstractElementPtr parseIndividual(std::string data, AbstractManager& manager);

@@ -28,11 +28,23 @@ namespace UML {
             >
     class PrivateSet;
 
+    class AbstractPtr {
+        
+        friend struct ManagerNode;
+
+        template <class Tlist, class P1, class P2>
+        friend class Manager;
+        
+        protected:
+            std::shared_ptr<NodeReference> m_node = 0;
+            ID m_id = ID::nullID();
+            virtual void releasePtr() = 0 ;
+    };
+
     template <class T>
-    class UmlPtr {
+    class UmlPtr : public AbstractPtr {
 
         template <class U, class ApiPolicy, class V> friend class Singleton;
- //       template <class SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class AbstractAccessPolicy;
         template <class U> friend class UmlPtr;
         template <
@@ -43,20 +55,38 @@ namespace UML {
             >
         friend class PrivateSet;
 
-        friend struct ManagerNode;
-
         private:
+            std::shared_ptr<T> getPtr() const {
+                if (m_id == ID::nullID()) {
+                    throw NullPtrException();
+                } else if (m_ptr) {
+                    return m_ptr;
+                } else {
+                    AbstractElementPtr temp = m_node->m_node.m_manager.get(m_id);
+                    if (!m_ptr) {
+                        const_cast<UmlPtr<T>*>(this)->m_ptr = std::dynamic_pointer_cast<T>(temp->m_node->m_node.m_ptr);
+                    }
+                    const_cast<UmlPtr<T>*>(this)->m_node = m_ptr->m_node;
+                    return  m_ptr;
+                }            
+            }
+            void setFromRaw(const T* rawPtr) {
+                if (rawPtr) {
+                    m_id = rawPtr->getID();
+                    m_node = rawPtr->m_node;
+                    m_ptr = std::dynamic_pointer_cast<T>(m_node->m_node.m_ptr);
+                    m_node->m_node.addPtr(this);
+                } 
+            }
         protected:
             std::shared_ptr<T> m_ptr = 0;
-            std::shared_ptr<NodeReference> m_node = 0;
-            ID m_id = ID::nullID();
             long int m_ptrId = 0;
             void reindex(ID newID, AbstractElement* el) {
                 m_id = newID;
                 m_ptr = el;
                 m_node = m_ptr->m_node;
             }
-            void releasePtr() {
+            void releasePtr() override {
                 m_ptr = 0;
             }
             void erasePtr() {
@@ -66,7 +96,7 @@ namespace UML {
             template <class U = AbstractElement>
             void reassignPtr(const UmlPtr<U>& rhs) {
                 if (m_ptr) {
-                    m_ptr->m_node.m_node.removePtr(*this);
+                    m_ptr->m_node->m_node.removePtr(this);
                 }
                 m_id = rhs.m_id;
                 m_ptr = 0;
@@ -74,37 +104,15 @@ namespace UML {
                 m_node = rhs.m_node;
                 if (m_node) {
                     m_ptr = std::dynamic_pointer_cast<T>(rhs.m_ptr);
-                    m_ptr->m_node.m_node.addPtr(*this);
+                    m_ptr->m_node->m_node.addPtr(this);
                 }
             }
         public:
             T& operator*() const {
-                if (m_id == ID::nullID()) {
-                    throw NullPtrException();
-                } else if (m_ptr) {
-                    return *m_ptr;
-                } else {
-                    AbstractElementPtr temp = m_node->m_node.m_manager.get(m_id);
-                    if (!m_ptr) {
-                        const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
-                    }
-                    const_cast<UmlPtr<T>*>(this)->m_node = m_ptr->m_node;
-                    return  *dynamic_cast<T*>(temp.ptr());
-                }
+                return *getPtr();
             }
-            T* operator->() const {
-                if (m_id == ID::nullID()) {
-                    throw NullPtrException();
-                } else if (m_ptr) {
-                    return m_ptr;
-                } else {
-                    AbstractElementPtr temp = m_node->m_node.m_manager.get(m_id);
-                    if (!m_ptr) {
-                        const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
-                    }
-                    const_cast<UmlPtr<T>*>(this)->m_node = m_ptr->m_node;
-                    return  dynamic_cast<T*>(temp.ptr());
-                }
+            std::shared_ptr<T> operator->() const {
+                return getPtr(); 
             }
             operator bool() const {
                 return m_id != ID::nullID();
@@ -137,15 +145,9 @@ namespace UML {
             }
             void operator=(const T* el) {
                 if (m_node) {
-                    m_node->m_node.removePtr(*this);
+                    m_node->m_node.removePtr(this);
                 }
-                if (el) {
-                    m_id = el->getID();
-                    m_ptr = const_cast<T*>(el);
-                    m_node = m_ptr->m_node;
-                    m_ptrId = 0;
-                    m_node->m_node.addPtr(*this);
-                }
+                setFromRaw(el);
             }
             void operator=(const UmlPtr& rhs) {
                 reassignPtr(rhs);
@@ -157,19 +159,8 @@ namespace UML {
             UmlPtr(const UmlPtr<U>& rhs) {
                 reassignPtr(rhs);
             }
-            T* ptr() {
-                if (m_id == ID::nullID()) {
-                    return 0;
-                } else if (m_ptr) {
-                    return m_ptr;
-                } else {
-                    AbstractElementPtr temp = m_node->m_node.m_manager.get(m_id);
-                    if (!m_ptr) {
-                        const_cast<UmlPtr<T>*>(this)->m_ptr = dynamic_cast<T*>(temp.ptr());
-                    }
-                    const_cast<UmlPtr<T>*>(this)->m_node = m_ptr->m_node;
-                    return  dynamic_cast<T*>(temp.ptr());
-                }
+            std::shared_ptr<T> ptr() {
+                return getPtr();
             }
             ID id() const {
                 return m_id;
@@ -190,17 +181,11 @@ namespace UML {
             }
             void aquire() {
                 AbstractElementPtr temp = m_node->m_node.m_manager.get(m_id);
-                m_ptr = dynamic_cast<T*>(temp.ptr());
+                m_ptr = std::dynamic_pointer_cast<T>(temp.ptr());
                 m_node = m_ptr->m_node;
-                // m_manager->restorePtr(*this);
             }
             UmlPtr(T* el) {
-                if (el) {
-                    m_id = el->getID();
-                    m_ptr = el;
-                    m_node = m_ptr->m_node;
-                    m_node->m_node.addPtr(*this);
-                }
+                setFromRaw(el);
             }
             UmlPtr() {
                 // nothing
@@ -210,7 +195,7 @@ namespace UML {
                     return;
                 }
                 if (m_node) {
-                    m_node->m_node.removePtr(*this);
+                    m_node->m_node.removePtr(this);
                 }
             }
     };

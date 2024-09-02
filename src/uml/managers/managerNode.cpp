@@ -20,7 +20,7 @@ namespace UML {
 //     return *this;
 // }
 
-void ManagerNode::setReference(AbstractElementPtr* ptr) {
+void ManagerNode::setReference(AbstractPtr* ptr) {
     auto reference = m_references.find(ptr->m_id);
     if (reference == m_references.end()) {
         reference = m_references.emplace(ptr->m_id, *ptr->m_node).first;
@@ -39,7 +39,7 @@ void ManagerNode::setReference(ID id, ManagerNode& node) {
     }
 }
 
-void ManagerNode::removeReference(AbstractElementPtr* ptr) {
+void ManagerNode::removeReference(AbstractPtr* ptr) {
     auto ref = m_references.find(ptr->m_id);
     if (ref == m_references.end()) {
         throw ManagerStateException("tried to remove inexistent reference");
@@ -47,43 +47,12 @@ void ManagerNode::removeReference(AbstractElementPtr* ptr) {
     ref->second.m_ptrs.erase(ptr);
 }
 
-// void ManagerNode::releasePtrs() {
-//     for (auto& ptr : m_ptrs) {
-//         ptr->releasePtr();
-//     }
-// }
-// 
-// void ManagerNode::restoreReferences() {
-//     for (auto& ptr : m_ptrs) {
-//         ptr->reindex(m_element->getID(), m_element);
-//     }
-//     m_element->restoreReferences();
-// }
-// 
-// void ManagerNode::referenceErased(ID id) {
-//     m_element->referenceErased(id);
-// }
-// 
-// void ManagerNode::erase() {
-//     for (auto& ptr : m_ptrs) {
-//         ptr->erasePtr();
-//     }
-// }
-// 
-// void ManagerNode::erasePtrs() {
-//     for (auto& ptr : m_ptrs) {
-//         ptr->erasePtr();
-//     }
-// }
-// 
-// void ManagerNode::reindexPtrs(ID newID) {
-//     for (auto& ptr : m_ptrs) {
-//         ptr->reindex(newID, m_element);
-//     }
-// }
-// 
-// void ManagerNode::assingPtr(AbstractUmlPtr* ptr) {
-//     ptr->m_node = this;
-// }
+void ManagerNode::removePtr(AbstractPtr* ptr) {
+    auto id = ptr->m_id;
+    m_ptrs.erase(ptr);
+    if (m_ptrs.empty()) {
+        m_manager.destroyNode(id, *this);
+    }
+}
 
 }

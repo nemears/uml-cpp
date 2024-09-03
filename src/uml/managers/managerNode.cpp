@@ -1,58 +1,90 @@
 #include "uml/managers/managerNode.h"
 #include "uml/managers/abstractManager.h"
 #include "uml/umlPtr.h"
+#include <unordered_set>
 
 namespace UML {
 
-// ManagerNode& ManagerNode::operator=(const ManagerNode& rhs) {
-//     m_element = rhs.m_element;
-//     m_mountedFlag = rhs.m_mountedFlag;
-//     for (auto& ptr : rhs.m_ptrs) {
-//         m_ptrs.insert(ptr);
-//     }
-//     for (auto& pair : rhs.m_references) {
-//         m_references[pair.first] = {pair.second.node};
-//         NodeReference& reference = m_references[pair.first];
-//         for (auto ptr : pair.second.ptrs) {
-//             reference.ptrs.insert(ptr);
-//         }
-//     }
-//     return *this;
-// }
-
-void ManagerNode::setReference(AbstractPtr* ptr) {
-    auto reference = m_references.find(ptr->m_id);
-    if (reference == m_references.end()) {
-        reference = m_references.emplace(ptr->m_id, *ptr->m_node).first;
-        reference->second.m_ptrs.insert(ptr);
-    } else {
-        if (!reference->second.m_ptrs.count(ptr)) {
-            reference->second.m_ptrs.insert(ptr);
+ManagerNode::~ManagerNode() {
+    for (auto& reference : m_references) {
+        auto& referenceReferences = reference.m_node->m_references;
+        auto referenceReferenceIt = referenceReferences.begin();
+        auto referenceReferenceEnd = referenceReferences.end();
+        while (referenceReferenceIt != referenceReferenceEnd) {
+            if (referenceReferenceIt->m_node->m_id == m_id) {
+                break;
+            }
+            referenceReferenceIt++;
+        }
+        if (referenceReferenceIt != referenceReferenceEnd) {
+            referenceReferences.erase(referenceReferenceIt);
         }
     }
 }
+    
+void ManagerNode::setReference(AbstractPtr* ptr) {
+    std::unordered_set<NodeReference>::iterator referenceIt = m_references.begin();
+    auto referenceEnd = m_references.end();
+    while (referenceIt != referenceEnd) {
+        if (referenceIt->m_node->m_id == m_id) {
+            break;
+        }
+        referenceIt++;
+    }
+    if (referenceIt == referenceEnd) {
+        auto emplaceResult = m_references.emplace(ptr->m_node);
+        const_cast<NodeReference&>(*emplaceResult.first).m_count++;
+    } else {
+        const_cast<NodeReference&>(*referenceIt).m_count++;
+    }
+}
 
-void ManagerNode::setReference(ID id, ManagerNode& node) {
-    auto reference = m_references.find(id);
-    if (reference == m_references.end()) {
-        m_references.emplace(id, node);
+void ManagerNode::setReference(std::shared_ptr<ManagerNode> node) {
+    auto referenceIt = m_references.begin();
+    auto referenceEnd = m_references.end();
+    while (referenceIt != referenceEnd) {
+        if (referenceIt->m_node->m_id == node->m_id) {
+            break;
+        }
+        referenceIt++;
+    }
+
+    if (referenceIt == referenceEnd) {
+        m_references.emplace(node);
     }
 }
 
 void ManagerNode::removeReference(AbstractPtr* ptr) {
-    auto ref = m_references.find(ptr->m_id);
-    if (ref == m_references.end()) {
+    auto referenceIt = m_references.begin();
+    auto referenceEnd = m_references.end();
+    while (referenceIt != referenceEnd) {
+        if (referenceIt->m_node->m_id == ptr->m_id) {
+            break;
+        }
+        referenceIt++;
+    }
+
+    if (referenceIt == referenceEnd) {
         throw ManagerStateException("tried to remove inexistent reference");
     }
-    ref->second.m_ptrs.erase(ptr);
+
+    const_cast<NodeReference&>(*referenceIt).m_count--;
 }
 
 void ManagerNode::removePtr(AbstractPtr* ptr) {
     auto id = ptr->m_id;
     m_ptrs.erase(ptr);
-    if (m_ptrs.empty()) {
-        m_manager.destroyNode(id, *this);
+    if (m_ptrs.empty() && !m_ptr) {
+        m_manager.destroy(id);
     }
 }
 
+}
+
+namespace std {
+
+std::size_t hash<UML::NodeReference>::operator()(const UML::NodeReference& ref) const {
+    hash<string> hasher;
+    return hasher(ref.m_node->m_id.string());
+}
 }

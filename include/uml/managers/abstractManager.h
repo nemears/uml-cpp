@@ -21,8 +21,8 @@ namespace UML {
             virtual AbstractElementPtr get(ID id) = 0;
             virtual void release (AbstractElement& el) = 0;
         protected:
-            virtual void destroyNode(ID id, ManagerNode& node) = 0;
             virtual void reindex(ID oldID, ID newID) = 0;
+            virtual void destroy(ID id) = 0;
             
             // TODO rest of funcionality interface
     };

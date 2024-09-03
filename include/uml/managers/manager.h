@@ -105,7 +105,7 @@ namespace UML {
 
             std::unordered_map<std::size_t, std::unique_ptr<AbstractStaticSetFunctor<Tlist>>> m_types;
             std::mutex m_graphMutex;
-            std::unordered_map<ID, ManagerNode> m_graph;
+            std::unordered_map<ID, std::shared_ptr<ManagerNode>> m_graph;
             AbstractElementPtr m_root;
 
             SetList getAllSets(BaseElement<Tlist>& el) {
@@ -117,29 +117,13 @@ namespace UML {
             UmlPtr<T> registerPtr(T* ptr) {
                 // create Node by emplace in graph
                 std::lock_guard<std::mutex> graphLock(m_graphMutex);
-                ManagerNode& node = m_graph.emplace(ptr->getID(), ptr).first->second;
-
-                // Node Reference
-                ptr->m_node = std::make_shared<NodeReference>(node);
+                ptr->m_node = m_graph.emplace(ptr->getID(), std::make_shared<ManagerNode>(ptr)).first->second;
 
                 // initialize ptr through copy
                 return ptr;
             }
-            void destroyNode(ID id, ManagerNode& node) override {
-                // copied this from old api, says "remove any trailing references", not sure if we still need it
-                for (auto& referencePair : node.m_references) {
-                    if (referencePair.second.m_node.m_references.contains(id)) {
-                        referencePair.second.m_node.m_references.erase(id);
-                    }
-                }
-
-                // remove from memory
-                std::lock_guard<std::mutex> graphLock(m_graphMutex);
-                m_graph.erase(id);
- 
-            }
             void reindex(ID oldID, ID newID) override {
-                auto el = m_graph.at(oldID).m_ptr.get();
+                auto el = m_graph.at(oldID)->m_ptr.get();
                 auto sets = getAllSets(dynamic_cast<BaseElement<Tlist>&>(*el));
                 for (auto& pair : sets) {
                     if (pair.second->size() > 0) {
@@ -154,9 +138,12 @@ namespace UML {
                 }
                 if (m_graph.count(newID)) {
                     // erase node we are overwriting
-                    erase(*m_graph.at(newID).m_ptr);
+                    erase(*m_graph.at(newID)->m_ptr);
                 }
                 registerPtr(el);
+            }
+            void destroy(ID id) override {
+                m_graph.erase(id);
             }
         public:
             Manager() {
@@ -179,8 +166,8 @@ namespace UML {
                 if (ret) {
                     return ret;
                 }
-                auto pair = m_graph.emplace(id, *this);
-                ret.m_node = std::make_shared<NodeReference>(pair.first->second);
+                auto pair = m_graph.emplace(id, std::make_shared<ManagerNode>(id, *this));
+                ret.m_node = pair.first->second;
                 ret.m_id = id;
                 return ret;
             }
@@ -192,8 +179,8 @@ namespace UML {
                 {
                     std::lock_guard<std::mutex> graphLock(m_graphMutex);
                     auto it = m_graph.find(id);
-                    if (it != m_graph.end() && it->second.m_ptr) {
-                        return it->second.m_ptr.get();
+                    if (it != m_graph.end() && it->second->m_ptr) {
+                        return it->second->m_ptr.get();
                     }
                 }
 
@@ -227,32 +214,33 @@ namespace UML {
 
             void release(AbstractElement& el) override {
                 PersistencePolicy::saveElementData(SerializationPolicy::emitIndividual(el, *this), el.getID());
-                ManagerNode& node = el.m_node->m_node;
-                ID id = node.m_ptr->getID();
+                auto node = el.m_node;
+                ID id = node->m_ptr->getID();
 
                 // clear shared_ptrs
-                for (auto ptr : node.m_ptrs) {
+                for (auto ptr : node->m_ptrs) {
                     ptr->releasePtr();    
                 }
-                node.m_ptr = 0;
+                node->m_ptr = 0;
 
                 // check if there are any ptrs to this node,
                 // if there are none we can get rid of this node
-                if (node.m_ptrs.empty() && !node.m_ptr) {
-                    destroyNode(id, node);
+                if (node->m_ptrs.empty() && !node->m_ptr) {
+                    // get rid of node from graph
+                    m_graph.erase(id);
                 }
             }
 
             void erase(AbstractElement& el) {
                 auto id = el.getID();
                 PersistencePolicy::eraseEl(id);
-                for (auto referencePair : el.m_node->m_node.m_references) {
+                for (auto& referencePair : el.m_node->m_references) {
                     AbstractElementPtr referencedEl;
-                    if (!referencePair.second.m_node.m_ptr) {
+                    if (!referencePair.m_node->m_ptr) {
                         // element has been released
-                        referencedEl = get(referencePair.first);
+                        referencedEl = get(referencePair.m_node->m_id);
                     } else {
-                        referencedEl = referencePair.second.m_node.m_ptr.get();
+                        referencedEl = referencePair.m_node->m_ptr.get();
                     }
 
                     // remove all el from all of referencedEl's sets with el in it
@@ -271,7 +259,11 @@ namespace UML {
 
             bool loaded(ID id) {
                 // todo thread safety
-                return m_graph.count(id);
+                auto it = m_graph.find(id);
+                if (it == m_graph.end()) {
+                    return false;
+                }
+                return it->second->m_ptr != 0;
             }
 
             // TODO the rest

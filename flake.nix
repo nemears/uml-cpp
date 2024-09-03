@@ -40,7 +40,7 @@
         in
         {
           # dev shell for nix develop (good for commandline dev)
-          devShells.default = pkgs.mkShell {
+          devShells.default = (pkgs.mkShell.override { stdenv = pkgs.clangStdenv; }) {
             packages = with pkgs; [ 
               # build dependencies
               clang

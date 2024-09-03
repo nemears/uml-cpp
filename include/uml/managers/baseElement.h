@@ -7,7 +7,7 @@
 namespace UML {
 
     class AbstractManager;
-    struct NodeReference;
+    struct ManagerNode;
     template <class T>
     class UmlPtr;
 
@@ -31,7 +31,7 @@ namespace UML {
         protected:
             const std::size_t m_elementType;
             AbstractManager& m_manager;
-            std::shared_ptr<NodeReference> m_node = 0;
+            std::shared_ptr<ManagerNode> m_node = 0;
             ID m_id = ID::randomID();
             AbstractElement(std::size_t elementType, AbstractManager& manager) : m_elementType(elementType), m_manager(manager) {}
         public:

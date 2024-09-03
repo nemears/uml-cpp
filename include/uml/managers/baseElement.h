@@ -21,6 +21,9 @@ namespace UML {
 
         template <class T, class U, class DataTypePolicy, class ApiPolicy>
         friend class PrivateSet;
+
+        template <class T, class U, class ApiPolicy>
+        friend class Singleton;
         
         template <class Tlist, class P1, class P2>
         friend class Manager;
@@ -61,7 +64,7 @@ namespace UML {
             bool is() {
                 return ManagerTypes<Tlist>::template is<T>(m_elementType);
             }
-
+            
             template <class T>
             T& as() {
                 if (!is<T>()) {

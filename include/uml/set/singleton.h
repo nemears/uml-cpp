@@ -149,7 +149,7 @@ namespace UML {
                     set(0);
                     return;
                 }
-                UmlPtr<T> ptr = this->m_el.m_manager->createPtr(id); 
+                UmlPtr<T> ptr = this->m_el.m_manager.createPtr(id); 
                 if (ptr) {
                     this->m_structure->m_rootRedefinedSet->m_set.nonOppositeAdd(ptr);
                 }

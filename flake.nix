@@ -43,9 +43,8 @@
           devShells.default = pkgs.mkShell {
             packages = with pkgs; [ 
               # build dependencies
-              cmake 
               clang
-              gnumake
+              cmake 
               pkg-config
               gtest
               yaml-cpp
@@ -59,6 +58,7 @@
               gdb
               valgrind
             ];
+            stdenv = pkgs.clangStdenv;
           };
 
           packages = {

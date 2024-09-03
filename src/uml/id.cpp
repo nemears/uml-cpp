@@ -1,6 +1,7 @@
 #include "uml/id.h"
 #include <stdlib.h>
 #include <time.h>
+#include <regex>
 
 using namespace UML;
 
@@ -984,6 +985,9 @@ ID ID::fromString(std::string id) {
     }
 
     return ret;
+}
+bool ID::isValid(std::string strn) {
+    return std::regex_match (strn, std::regex("(?:[A-Za-z0-9_&]{28})"));
 }
 
 bool ID::operator>(const ID& rhs) {

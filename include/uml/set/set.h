@@ -81,7 +81,7 @@ namespace UML {
                         m_hash = rhs.m_hash;
                     }
                     T& operator*() {
-                        return getCurr()->template as<T>();
+                        return dynamic_cast<T&>(*getCurr());
                     }
                     UmlPtr<T> operator->() {
                         return getCurr(); 

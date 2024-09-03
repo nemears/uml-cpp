@@ -1,4 +1,5 @@
 #include "uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.h"
+#include "uml/managers/abstractManager.h"
 #include "uml/managers/serialization/uml-cafe/emit.h"
 #include "uml/managers/serialization/uml-cafe/parse.h"
 
@@ -84,5 +85,15 @@ AbstractElementPtr parse(std::string data, ParserData& metaData) {
     }
     return parseNode(rootNodes[0], metaData);
 }
+
+ElementPtr parseNode(YAML::Node node, ParserData& data) {
+    return 0;
+}
+
+std::string emit(AbstractElement& el, EmitterData& data) {
+    return "";
+}
+
+void emitElementData(YAML::Emitter& emitter, Element& el, EmitterData& data) {}
 
 }

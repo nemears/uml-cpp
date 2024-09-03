@@ -133,7 +133,7 @@ TEST_F(ElementTest, GetOwnedElementsTest) {
 TEST_F(ElementTest, InvalidID_Test) {
     UmlManager m;
     Package& el3 = *m.create<Package>();
-    EXPECT_THROW(el3.setID(ID::fromString("not a uuid4")), InvalidID_Exception);
+    EXPECT_THROW(el3.setID(ID::fromString("not a uuid4")), InvalidUmlID_Exception);
     EXPECT_NO_THROW(el3.setID(ID::fromString("7d18ee4282c64f528ec4fab67a75")));
 }
 

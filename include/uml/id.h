@@ -40,6 +40,7 @@ namespace UML {
             static ID nullID();
             static ID randomID();
             static ID fromString(std::string id);
+            static bool isValid(std::string id);
     };
 
     class InvalidUmlID_Exception : public std::exception {

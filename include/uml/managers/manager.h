@@ -38,8 +38,8 @@ namespace UML {
     template <class T>
     class Creator {
         protected:
-            T* createPtr(std::size_t elementType, AbstractManager& manager) {
-                return new T(elementType, manager);
+            std::shared_ptr<T> createPtr(std::size_t elementType, AbstractManager& manager) {
+                return std::make_shared<T>(elementType, manager);
             }
     };
 
@@ -47,8 +47,7 @@ namespace UML {
     class AbstractFactory : public CreatorHierarchy<Tlist, Creator> {
         public:
             template <class T>
-            T* factoryCreate(std::size_t elementType, AbstractManager& manager) {
-                // TODO
+            std::shared_ptr<T> factoryCreate(std::size_t elementType, AbstractManager& manager) {
                 return Creator<T>::createPtr(elementType, manager);
             }
     };
@@ -112,18 +111,20 @@ namespace UML {
                 return (*m_types.at(el.m_elementType))(el);
             }
 
-
             template<class T>
-            UmlPtr<T> registerPtr(T* ptr) {
+            UmlPtr<T> registerPtr(std::shared_ptr<T>& ptr) {
                 // create Node by emplace in graph
                 std::lock_guard<std::mutex> graphLock(m_graphMutex);
                 ptr->m_node = m_graph.emplace(ptr->getID(), std::make_shared<ManagerNode>(ptr)).first->second;
 
                 // initialize ptr through copy
-                return ptr;
+                return ptr.get();
             }
             void reindex(ID oldID, ID newID) override {
-                auto el = m_graph.at(oldID)->m_ptr.get();
+                auto oldNode = m_graph.at(oldID);
+                auto el = oldNode->m_ptr;
+
+                // check valid
                 auto sets = getAllSets(dynamic_cast<BaseElement<Tlist>&>(*el));
                 for (auto& pair : sets) {
                     if (pair.second->size() > 0) {
@@ -131,16 +132,30 @@ namespace UML {
                     }
                 }
 
-                el->m_id = newID;
+                // clear shared_ptrs
+                std::vector<AbstractPtr*> ptrs(oldNode->m_ptrs.size());
+                auto i = 0;
+                for (auto ptr : oldNode->m_ptrs) {
+                    ptrs[i] = ptr;
+                    i++;
+                }
                 {
                     std::lock_guard<std::mutex> graphLock(m_graphMutex);
                     m_graph.erase(oldID);
                 }
+
+                // create new node
+                el->m_id = newID;
                 if (m_graph.count(newID)) {
                     // erase node we are overwriting
                     erase(*m_graph.at(newID)->m_ptr);
                 }
                 registerPtr(el);
+                auto newNode = el->m_node;
+                for (auto ptr : ptrs) {
+                    ptr->m_node = newNode;
+                    newNode.lock()->m_ptrs.insert(ptr);
+                }
             }
             void destroy(ID id) override {
                 m_graph.erase(id);
@@ -149,6 +164,16 @@ namespace UML {
             Manager() {
                 populateTypes<0,Tlist>(m_types);
             }
+            // ~Manager() {
+            //     std::lock_guard<std::mutex> graphLock(m_graphMutex);
+            //     for (auto& pair : m_graph) {
+            //         for (auto ptr : pair.second->m_ptrs) {
+            //             ptr->releasePtr();
+            //         }
+            //         pair.second->m_ptr = 0;
+            //     }
+            //     m_graph.clear();
+            // }
             // create by type id
             // AbstractElementPtr create(std::size_t elementType) override {
             //     return registerPtr(AbstractFactory<Tlist>::template factoryCreate<ManagerTypes<Tlist>::template GetType<elementType>::type>(elementType, *this));
@@ -157,7 +182,8 @@ namespace UML {
             // create by type
             template <class T>
             UmlPtr<T> create() {
-                return registerPtr(this->template factoryCreate<T>(ManagerTypes<Tlist>::template idOf<T>(), *this));
+                auto ptr = this->template factoryCreate<T>(ManagerTypes<Tlist>::template idOf<T>(), *this); 
+                return registerPtr(ptr);
             }
 
             // create Ptr
@@ -214,14 +240,8 @@ namespace UML {
 
             void release(AbstractElement& el) override {
                 PersistencePolicy::saveElementData(SerializationPolicy::emitIndividual(el, *this), el.getID());
-                auto node = el.m_node;
+                auto node = el.m_node.lock();
                 ID id = node->m_ptr->getID();
-
-                // clear shared_ptrs
-                for (auto ptr : node->m_ptrs) {
-                    ptr->releasePtr();    
-                }
-                node->m_ptr = 0;
 
                 // check if there are any ptrs to this node,
                 // if there are none we can get rid of this node
@@ -234,13 +254,14 @@ namespace UML {
             void erase(AbstractElement& el) {
                 auto id = el.getID();
                 PersistencePolicy::eraseEl(id);
-                for (auto& referencePair : el.m_node->m_references) {
+                for (auto& referencePair : el.m_node.lock()->m_references) {
                     AbstractElementPtr referencedEl;
-                    if (!referencePair.m_node->m_ptr) {
+                    auto referencedNode = referencePair.m_node.lock();
+                    if (!referencedNode->m_ptr) {
                         // element has been released
-                        referencedEl = get(referencePair.m_node->m_id);
+                        referencedEl = get(referencedNode->m_id);
                     } else {
-                        referencedEl = referencePair.m_node->m_ptr.get();
+                        referencedEl = referencedNode->m_ptr.get();
                     }
 
                     // remove all el from all of referencedEl's sets with el in it

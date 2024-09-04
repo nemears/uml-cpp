@@ -128,7 +128,7 @@ namespace UML {
                         }
                     }
                 }
-                ptr.m_node->setReference(m_el.m_node);
+                ptr.m_node.lock()->setReference(m_el.m_node.lock());
             }
             void nonOppositeAdd(AbstractElementPtr ptr) override {
 
@@ -209,7 +209,7 @@ namespace UML {
                         }
                     }
                 }
-                m_el.m_node->setReference(&ptr);
+                m_el.m_node.lock()->setReference(&ptr);
             }
             void innerRemove(AbstractElementPtr ptr) override {
                 auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
@@ -256,7 +256,7 @@ namespace UML {
                     }
                 }
 
-                m_el.m_node->removeReference(&ptr);
+                m_el.m_node.lock()->removeReference(&ptr);
             }
             void weakRemove(AbstractElementPtr ptr) override {
                 if (contains(ptr)) {

@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "uml/id.h"
-#include "uml/managers/typeID.h"
+#include "uml/managers/managerTypes.h"
 
 namespace UML {
 

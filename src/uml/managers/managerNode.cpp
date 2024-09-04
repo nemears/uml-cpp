@@ -25,7 +25,6 @@ ManagerNode::~ManagerNode() {
             referenceReferences.erase(referenceReferenceIt);
         }
     }
-    m_ptr = 0;
 }
     
 void ManagerNode::setReference(AbstractPtr* ptr) {

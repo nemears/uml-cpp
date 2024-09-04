@@ -2,7 +2,7 @@
 
 #include <tuple>
 #include <vector>
-#include <uml/managers/baseElement.h>
+#include "uml/managers/baseElement.h"
 
 namespace UML {
     // typeinfo should be TypeInfo<TList<pair<set name, set function ptr>>, TList<set BaseTypeInfos>>
@@ -30,7 +30,6 @@ namespace UML {
     template <class Base>
     struct BaseInfo<std::tuple<Base>> : public Base::Info {
         typedef std::tuple<Base> BaseList;
-        typedef typename Base::Info LeftBase;
         static bool is(std::size_t elementType) {
             return elementType  == Base::template idOf<Base>();
         }
@@ -43,11 +42,6 @@ namespace UML {
             return false;
         }
     };
-
-    // template <class T>
-    // bool is(const std::size_t elementType) {
-    //     return T::Info::template is<T::template GetType<elementType>::type>();
-    // }
 
     template <class ElWithSets>
     struct SetInfo;

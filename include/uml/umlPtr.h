@@ -38,7 +38,6 @@ namespace UML {
         protected:
             std::weak_ptr<ManagerNode> m_node;
             ID m_id = ID::nullID();
-            // virtual void releasePtr() = 0 ;
     };
 
     template <class T>
@@ -87,13 +86,6 @@ namespace UML {
                 m_ptr = el;
                 m_node = m_ptr.lock()->m_node;
             }
-            // void releasePtr() override {
-            //     m_ptr = 0;
-            // }
-            // void erasePtr() {
-            //     m_ptr = 0;
-            //     m_node = 0;
-            // }
             template <class U = AbstractElement>
             void reassignPtr(const UmlPtr<U>& rhs) {
                 auto myPtr = m_ptr.lock();
@@ -175,9 +167,10 @@ namespace UML {
                 return false;
             }
             void release() {
-                if (m_ptr.lock()) {
-                    m_node.lock()->m_manager.release(*m_ptr.lock());
+                if (!m_ptr.lock()) {
+                    return;
                 }
+                m_node.lock()->m_manager.release(*m_ptr.lock());
             }
             void aquire() {
                 AbstractElementPtr temp = m_node.lock()->m_manager.get(m_id);

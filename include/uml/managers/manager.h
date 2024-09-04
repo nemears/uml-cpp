@@ -6,9 +6,9 @@
 #include <unordered_map>
 #include <unordered_set>
 #include "abstractManager.h"
-#include "typeID.h"
 #include "uml/managers/baseElement.h"
 #include "uml/managers/filePersistencePolicy.h"
+#include "uml/managers/managerTypes.h"
 #include "uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.h"
 #include "uml/managers/typeInfo.h"
 #include "uml/umlPtr.h"
@@ -52,7 +52,9 @@ namespace UML {
             }
     };
 
+    // helper types for typeInfo navigation
     typedef std::vector<std::pair<std::string, AbstractSet*>> SetList;
+
     template <class T>
     void addSetsToQueue(SetList& queue, std::unordered_set<std::size_t>& visited, AbstractElement& el) {
         if (!visited.count(T::template idOf<T>())) {
@@ -158,23 +160,23 @@ namespace UML {
                 }
             }
             void destroy(ID id) override {
+                if (m_destructionFlag) {
+                    return;
+                }
                 m_graph.erase(id);
             }
+        private:
+            bool m_destructionFlag = false;
         public:
             Manager() {
                 populateTypes<0,Tlist>(m_types);
             }
-            // ~Manager() {
-            //     std::lock_guard<std::mutex> graphLock(m_graphMutex);
-            //     for (auto& pair : m_graph) {
-            //         for (auto ptr : pair.second->m_ptrs) {
-            //             ptr->releasePtr();
-            //         }
-            //         pair.second->m_ptr = 0;
-            //     }
-            //     m_graph.clear();
-            // }
+            ~Manager() {
+                m_destructionFlag = true;
+            }
+            
             // create by type id
+            // TODO fix
             // AbstractElementPtr create(std::size_t elementType) override {
             //     return registerPtr(AbstractFactory<Tlist>::template factoryCreate<ManagerTypes<Tlist>::template GetType<elementType>::type>(elementType, *this));
             // }
@@ -242,11 +244,13 @@ namespace UML {
                 PersistencePolicy::saveElementData(SerializationPolicy::emitIndividual(el, *this), el.getID());
                 auto node = el.m_node.lock();
                 ID id = node->m_ptr->getID();
+                node->m_ptr = 0;
 
                 // check if there are any ptrs to this node,
                 // if there are none we can get rid of this node
                 if (node->m_ptrs.empty() && !node->m_ptr) {
                     // get rid of node from graph
+                    std::lock_guard<std::mutex> lockGuard(m_graphMutex);
                     m_graph.erase(id);
                 }
             }

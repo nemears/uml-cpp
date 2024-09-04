@@ -220,5 +220,8 @@ namespace UML {
                     remove(this->front());
                 }
             }
+            bool readonly() const override {
+                return false;
+            }
     };
 }

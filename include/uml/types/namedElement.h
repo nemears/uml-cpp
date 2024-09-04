@@ -2,9 +2,6 @@
 
 #include <string>
 #include "element.h"
-#include "uml/managers/baseElement.h"
-#include "uml/set/set.h"
-#include "uml/set/singleton.h"
 
 namespace UML {
 
@@ -23,10 +20,9 @@ namespace UML {
     class NamedElement : virtual public Element {
 
         friend class Namespace;
-        friend class SetInfo<NamedElement>;
+        friend struct ElementInfo<NamedElement>;
 
         protected:
-            typedef TypeInfo<std::tuple<Element>, NamedElement> Info;
             std::string m_name;
             std::string m_absoluteNamespace;
             class UpdateQualifiedNamePolicy {
@@ -48,12 +44,15 @@ namespace UML {
             // Set<Dependency, NamedElement, DoNothingPolicy>& getClientDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);
+            typedef TypeInfo<std::tuple<Element>, NamedElement> Info;
         private:
             void setNamespace(ID id);
     };
 
     template<>
-    class SetInfo<NamedElement> {
+    struct ElementInfo<NamedElement> {
+        static const bool abstract = true;
+        inline static const std::string name {"NamedElement"};
         static SetList sets(NamedElement& el) {
             return SetList {
                 std::make_pair<std::string, AbstractSet*>("namespace", &el.m_namespace)// ,

@@ -9,8 +9,8 @@
 #include "uml/managers/baseElement.h"
 #include "uml/managers/filePersistencePolicy.h"
 #include "uml/managers/managerTypes.h"
-#include "uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.h"
 #include "uml/managers/typeInfo.h"
+#include "uml/managers/serialization/uml-cafe/umlCafeSerializationPolicy.h"
 #include "uml/umlPtr.h"
 #include "managerNode.h"
 
@@ -52,13 +52,14 @@ namespace UML {
             }
     };
 
+
     // helper types for typeInfo navigation
     typedef std::vector<std::pair<std::string, AbstractSet*>> SetList;
 
     template <class T>
     void addSetsToQueue(SetList& queue, std::unordered_set<std::size_t>& visited, AbstractElement& el) {
         if (!visited.count(T::template idOf<T>())) {
-            auto sets = T::Info::Sets::sets(dynamic_cast<T&>(el));
+            auto sets = T::Info::Info::sets(dynamic_cast<T&>(el));
             for (auto& pair : sets) {
                 queue.emplace_back(pair.first, pair.second);
             }
@@ -84,7 +85,7 @@ namespace UML {
     template <class T, class Tlist>
     struct StaticSetFunctor : public AbstractStaticSetFunctor<Tlist> {
         SetList operator()(BaseElement<Tlist>& el) override {
-            SetList ret = T::Info::Sets::sets(el.template as<T>());
+            SetList ret = T::Info::Info::sets(el.template as<T>());
             std::unordered_set<std::size_t> visited = { el.getElementType() };
             addSetsToQueueHelper<0, typename T::Info::BaseList>(ret, visited, el);
             return ret;
@@ -100,7 +101,7 @@ namespace UML {
     }
 
     // manager
-    template <class Tlist, class SerializationPolicy = UmlCafeSerializationPolicy, class PersistencePolicy = FilePersistencePolicy> 
+    template <class Tlist, class SerializationPolicy = UmlCafeSerializationPolicy<Tlist>, class PersistencePolicy = FilePersistencePolicy> 
     class Manager : public ManagerTypes<Tlist>, public AbstractFactory<Tlist>, public AbstractManager , public SerializationPolicy, public PersistencePolicy {
         protected:
 
@@ -174,12 +175,6 @@ namespace UML {
             ~Manager() {
                 m_destructionFlag = true;
             }
-            
-            // create by type id
-            // TODO fix
-            // AbstractElementPtr create(std::size_t elementType) override {
-            //     return registerPtr(AbstractFactory<Tlist>::template factoryCreate<ManagerTypes<Tlist>::template GetType<elementType>::type>(elementType, *this));
-            // }
 
             // create by type
             template <class T>
@@ -187,7 +182,29 @@ namespace UML {
                 auto ptr = this->template factoryCreate<T>(ManagerTypes<Tlist>::template idOf<T>(), *this); 
                 return registerPtr(ptr);
             }
-
+        private:
+            // create by elementType helper
+            template <std::size_t I = 0>
+            AbstractElementPtr create(std::size_t elementType) {
+                if constexpr (std::tuple_size<Tlist>{} > I) {
+                    using ElementType = std::tuple_element_t<I, Tlist>;
+                    if constexpr (!ElementType::Info::Info::abstract) {
+                        if (I == elementType) {
+                            return create<std::tuple_element_t<I, Tlist>>();
+                        }
+                        return create<I + 1>(elementType);
+                    }
+                    if constexpr (ElementType::Info::Info::abstract) {
+                        throw ManagerStateException("Tried to instantiate abstract element");
+                    }
+                }
+                return 0;
+            }
+        public:
+            // create by elementType
+            AbstractElementPtr create(std::size_t elementType) override {
+                return create<0>(elementType);
+            }
             // create Ptr
             AbstractElementPtr createPtr(ID id) override {
                 auto ret = get(id);

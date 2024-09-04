@@ -15,9 +15,22 @@ namespace UML {
     };
     std::ostream& operator<<(std::ostream& stream, const SetType& setType);
 
+    // This is to convey ownership
+    //      COMPOSITE: Element owns all elements in this set
+    //      ANTICOMPOSITE: elements in this set must be the owner 
+    //                     (can only be singleton, there may only be one anticomposite full set per element)
+    //      NONE: no relation to ownership
+    enum class CompositionType {
+        COMPOSITE,
+        ANTI_COMPOSITE,
+        NONE
+    };
+
     class SetStructure;
     template <class S, class WrapperPolicy>
     class WrapperSet;
+    struct IDPolicy;
+    typedef WrapperSet<ID, IDPolicy> IDSet;
 
     class AbstractSet {
 
@@ -94,11 +107,16 @@ namespace UML {
             virtual ~AbstractSet();
             virtual void subsets(AbstractSet& superSet);
             virtual void redefines(AbstractSet& redefinedSet);
+            void setComposition(CompositionType composition);
+            CompositionType getComposition() const;
             virtual bool contains(AbstractElementPtr ptr) const = 0;
             size_t size() const;
             bool empty() const;
             virtual SetType setType() const = 0;
-
+            virtual bool readonly() const {
+                return true;
+            }
+            IDSet ids() const;
     };
 
     class SetStructure {
@@ -110,6 +128,7 @@ namespace UML {
             std::unordered_set<std::shared_ptr<SetStructure>> m_redefinedSets;
             std::shared_ptr<SetStructure> m_rootRedefinedSet;
             size_t m_size = 0;
+            CompositionType m_composition = CompositionType::NONE;
             SetStructure(AbstractSet& set) : m_set(set) {}
     };
     

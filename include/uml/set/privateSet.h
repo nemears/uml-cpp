@@ -420,8 +420,5 @@ namespace UML {
             PtrSet ptrs() const {
                 return PtrSet(this);
             }
-            IDSet ids() const {
-                return IDSet(this);
-            }
     };
 }

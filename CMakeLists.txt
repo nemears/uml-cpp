@@ -136,7 +136,7 @@ add_library(uml SHARED
     # src/uml/types/redefinableTemplateSignature.cpp src/uml/types/classifierTemplateParameter.cpp src/uml/types/parameterSet.cpp
 
     ## serialization
-    src/uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.cpp
+    # src/uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.cpp
     # src/uml/managers/serialization/uml-cafe/emit.cpp src/uml/managers/serialization/uml-cafe/parse.cpp
 
 )

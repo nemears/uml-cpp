@@ -1,7 +1,6 @@
 #pragma once
 
 #include "namedElement.h"
-#include "uml/set/set.h"
 #include "uml/set/indexableSet.h"
 
 namespace UML{
@@ -22,16 +21,15 @@ namespace UML{
         friend class PackageImport;
 
         protected:
-            typedef TypeInfo<std::tuple<NamedElement>, Namespace> Info;
 
-            struct ElementImportPolicy {
-                void elementAdded(ElementImport& el, Namespace& me);
-                void elementRemoved(ElementImport& el, Namespace& me);
-            };
-            struct PackageImportPolicy {
-                void elementAdded(PackageImport& el, Namespace& me);
-                void elementRemoved(PackageImport& el, Namespace& me);
-            };
+            // struct ElementImportPolicy {
+            //     void elementAdded(ElementImport& el, Namespace& me);
+            //     void elementRemoved(ElementImport& el, Namespace& me);
+            // };
+            // struct PackageImportPolicy {
+            //     void elementAdded(PackageImport& el, Namespace& me);
+            //     void elementRemoved(PackageImport& el, Namespace& me);
+            // };
             ReadOnlyIndexableSet<NamedElement, Namespace> m_members = ReadOnlyIndexableSet<NamedElement, Namespace>(this);
             ReadOnlyIndexableSet<NamedElement, Namespace> m_ownedMembers = ReadOnlyIndexableSet<NamedElement, Namespace>(this);
             // Set<Constraint, Namespace> m_ownedRules = Set<Constraint, Namespace>(this);
@@ -47,10 +45,13 @@ namespace UML{
             // ReadOnlyIndexableSet<PackageableElement, Namespace>& getImportedMembers();
             // Set<ElementImport, Namespace, ElementImportPolicy>& getElementImports();
             // Set<PackageImport, Namespace, PackageImportPolicy>& getPackageImports();
+            typedef TypeInfo<std::tuple<NamedElement>, Namespace> Info;
     };
 
     template <>
-    class SetInfo<Namespace> {
+    struct ElementInfo<Namespace> {
+        static const bool abstract = true;
+        inline static const std::string name {"Namespace"};
         static SetList sets(Namespace& el) {
             return SetList{
                 std::make_pair<std::string, AbstractSet*>("members", &el.getMembers()),

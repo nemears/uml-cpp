@@ -1,4 +1,5 @@
 #include "uml/managers/abstractManager.h"
+#include "uml/set/abstractSet.h"
 #include "uml/uml-stable.h"
 #include <regex>
 
@@ -10,7 +11,9 @@ ReadOnlySingleton<Element, Element>& Element::getOwnerSingleton() {
 
 Element::Element(std::size_t elementType, AbstractManager& manager) : BaseElement<UmlTypes>(elementType, manager) {
     m_owner.opposite(&Element::getOwnedElements);
+    m_owner.setComposition(CompositionType::ANTI_COMPOSITE);
     m_ownedElements.opposite(&Element::getOwnerSingleton);
+    m_ownedElements.setComposition(CompositionType::COMPOSITE);
     // m_ownedComments.subsets(m_ownedElements);
 }
 

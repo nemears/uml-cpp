@@ -2,6 +2,7 @@
 
 #include "namedElement.h"
 // #include "parameterableElement.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/singleton.h"
 
 namespace UML {
@@ -13,8 +14,9 @@ namespace UML {
 
         friend class Package;
 
+        friend struct ElementInfo<PackageableElement>;
+
         protected:
-            typedef TypeInfo<std::tuple<NamedElement, ParameterableElement>> Info;
             Singleton<Package, PackageableElement> m_owningPackage = Singleton<Package, PackageableElement>(this);
             Singleton<Package, PackageableElement>& getOwningPackageSingleton();
             PackageableElement(std::size_t elementType, AbstractManager& manager);
@@ -23,5 +25,17 @@ namespace UML {
             void setOwningPackage(Package& package);
             void setOwningPackage(PackagePtr package);
             void setOwningPackage(ID id);
+            typedef TypeInfo<std::tuple<NamedElement/*, ParameterableElement*/>, PackageableElement> Info;
+    };
+
+    template <>
+    struct ElementInfo<PackageableElement> {
+        static const bool abstract = true;
+        inline static const std::string name {"PackageableElement"};
+        static SetList sets(PackageableElement& el) {
+            return SetList {
+                std::make_pair<std::string, AbstractSet*>("owningPackage", &el.m_owningPackage)
+            };
+        }
     };
 }

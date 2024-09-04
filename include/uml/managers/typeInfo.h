@@ -44,15 +44,15 @@ namespace UML {
     };
 
     template <class ElWithSets>
-    struct SetInfo;
+    struct ElementInfo;
 
     template <>
-    struct SetInfo<AbstractElement> {};
+    struct ElementInfo<AbstractElement> {};
 
     template <class BaseList = std::tuple<>, class ElementType = AbstractElement>
     struct TypeInfo : public BaseInfo<BaseList>{
         typedef ElementType Type;
-        typedef SetInfo<ElementType> Sets;
+        typedef ElementInfo<ElementType> Info;
     };
 
     typedef std::vector<std::pair<std::string, AbstractSet*>> SetList;

@@ -154,5 +154,8 @@ namespace UML {
                     this->m_structure->m_rootRedefinedSet->m_set.nonOppositeAdd(ptr);
                 }
             }
+            bool readonly() const override {
+                return false;
+            }
     };
 }

@@ -16,7 +16,7 @@ namespace UML {
         friend class AbstractElement;
         
         public:
-            // virtual AbstractElementPtr create(std::size_t elementType) = 0;
+            virtual AbstractElementPtr create(std::size_t elementType) = 0;
             virtual AbstractElementPtr createPtr(ID id) = 0;
             virtual AbstractElementPtr get(ID id) = 0;
             virtual void release (AbstractElement& el) = 0;

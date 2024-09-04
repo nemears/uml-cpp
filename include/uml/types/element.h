@@ -191,7 +191,7 @@ namespace UML {
      **/
     class Element : public BaseElement<UmlTypes> {
 
-        friend class SetInfo<Element>;
+        friend struct ElementInfo<Element>;
 
         protected:
             ReadOnlySingleton<Element, Element> m_owner = ReadOnlySingleton<Element, Element>(this);
@@ -212,8 +212,6 @@ namespace UML {
              **/
             // Set<InstanceSpecification, Element, DoNothingPolicy>& getAppliedStereotypes();
 
-        protected:
-            
             typedef TypeInfo<std::tuple<>, Element> Info;
         
         private:
@@ -222,7 +220,9 @@ namespace UML {
 
     // template specialization for SetInfo<Element> (required for all implementing types)
     template <>
-    class SetInfo<Element> {
+    struct ElementInfo<Element> {
+        static const bool abstract = true;
+        inline static const std::string name {"Element"};
         static SetList sets(Element& el) {
             return std::vector {
                 std::make_pair<std::string, AbstractSet*>("owner", &el.m_owner),
@@ -233,11 +233,4 @@ namespace UML {
         }
     };
 
-    //Exceptions
-    class InvalidID_Exception: public std::exception {
-        public:
-        virtual const char* what() const throw() {
-            return "String of id is not a valid UUID4";
-        }
-    };
 }

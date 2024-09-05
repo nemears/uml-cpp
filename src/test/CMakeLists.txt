@@ -1,6 +1,6 @@
-set(umltestSources  idTest.cpp elementTest.cpp # namedElementTest.cpp 
+set(umltestSources  idTest.cpp elementTest.cpp namedElementTest.cpp 
     # namespaceTest.cpp packageTest.cpp classifierTest.cpp 
-    # setTest.cpp
+    setTest.cpp
     # dependencyTest.cpp generalizationTest.cpp dataTypeTest.cpp propertyTest.cpp valueSpecificationTest.cpp
     # typedElementTest.cpp instanceSpecificationTest.cpp slotTest.cpp classTest.cpp multiplicityElementTest.cpp
     # directedRelationshipTest.cpp operationTest.cpp parameterTest.cpp behaviorTest.cpp associationTest.cpp

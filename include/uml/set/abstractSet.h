@@ -131,5 +131,13 @@ namespace UML {
             CompositionType m_composition = CompositionType::NONE;
             SetStructure(AbstractSet& set) : m_set(set) {}
     };
-    
+
+
+    class AbstractReadableSet : virtual public AbstractSet {
+        public:
+            virtual void add(ID id) = 0;
+            bool readonly() const override {
+                return false;
+            }
+    };    
 }

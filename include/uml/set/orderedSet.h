@@ -191,13 +191,13 @@ namespace UML {
     using ReadOnlyOrderedSet = PrivateSet<T, U, OrderedSetDataPolicy<T>, ApiPolicy>;
     
     template <class T, class U, class ApiPolicy = DoNothingPolicy>
-    class OrderedSet : public ReadOnlyOrderedSet<T, U, ApiPolicy> {
+    class OrderedSet : public ReadOnlyOrderedSet<T, U, ApiPolicy> , public AbstractReadableSet {
         public:
             OrderedSet(U* me) : ReadOnlyOrderedSet<T, U, ApiPolicy>(me) {}
             void add(UmlPtr<T> ptr) {
                 this->innerAdd(ptr);
             }
-            void add(ID& id) {
+            void add(ID id) override {
                 this->m_structure->m_rootRedefinedSet->m_set.nonOppositeAdd(this->m_el.m_manager->createPtr(id));
             }
             void add(T& el) {
@@ -221,9 +221,6 @@ namespace UML {
                 while (this->front()) {
                     remove(this->front());
                 }
-            }
-            bool readonly() const override {
-                return false;
             }
     };
 }

@@ -67,7 +67,8 @@ namespace UML {
         auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
         auto superSetRootRedefinedSet = superSet.m_structure->m_rootRedefinedSet;
         superSetRootRedefinedSet->m_subSets.insert(rootRedefinedSet);
-        rootRedefinedSet->m_superSets.insert(superSetRootRedefinedSet); 
+        rootRedefinedSet->m_superSets.insert(superSetRootRedefinedSet);
+        rootRedefinedSet->m_composition = superSetRootRedefinedSet->m_composition;
     }
     void AbstractSet::redefines(AbstractSet& redefinedSet) {
         for (std::shared_ptr<SetStructure> superSet : m_structure->m_rootRedefinedSet->m_superSets) {
@@ -85,10 +86,19 @@ namespace UML {
         redefinedSet.m_structure->m_rootRedefinedSet->m_redefinedSets.insert(m_structure->m_rootRedefinedSet);
         m_structure->m_rootRedefinedSet = redefinedSet.m_structure->m_rootRedefinedSet;
     }
+    void AbstractSet::setComposition(CompositionType composition) {
+        m_structure->m_composition = composition;
+    }
+    CompositionType AbstractSet::getComposition() const {
+        return m_structure->m_rootRedefinedSet->m_composition;
+    }
     size_t AbstractSet::size() const {
         return m_structure->m_size;
     }
     bool AbstractSet::empty() const {
         return m_structure->m_size == 0;
+    }
+    IDSet AbstractSet::ids() const {
+        return IDSet(this);
     }
 }

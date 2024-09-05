@@ -127,10 +127,10 @@ namespace UML {
     template <class T>
     void parseIndividualHelper(T& el, const YAML::Node& node) {
         for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
-            auto set = setPair.second;
-            if (set->readonly()) {
+            if (setPair.second->readonly()) {
                 continue;
             }
+            auto set = dynamic_cast<AbstractReadableSet*>(setPair.second);
             if (node[setPair.first]) {
                 auto& setNode = node[setPair.first];
                 if (setNode.IsScalar()) {
@@ -151,11 +151,14 @@ namespace UML {
 
     template <std::size_t I, class Tlist>
     void parseIndividual(std::tuple_element_t<I, Tlist>& el, const YAML::Node& node) {
-        if constexpr (std::tuple_size<Tlist>{} > I) {
-            using ElementType = std::tuple_element_t<I, Tlist>;
-            parseIndividualHelper<ElementType>(el, node);
-            parseIndividualHelper<I + 1, Tlist>(el, node);
-            parseIndividualHelper<0, ElementType::Info::BaseList>(el, node);
+        using ElementType = std::tuple_element_t<I, Tlist>;
+        parseIndividualHelper<ElementType>(el, node);
+        if constexpr (std::tuple_size<Tlist>{} > I + 1) {
+            parseIndividual<I + 1, Tlist>(dynamic_cast<std::tuple_element_t<I + 1, Tlist>&>(el), node);
+        }
+        using ElBases = ElementType::Info::BaseList;
+        if constexpr (std::tuple_size<ElBases>{} > 0) {
+            parseIndividual<0, ElBases>(el, node);
         }
     }
 
@@ -171,6 +174,8 @@ namespace UML {
             if (node["id"]) {
                 ret->setID(ID::fromString(node["id"].as<std::string>()));
             }
+
+            parseIndividual<0, std::tuple<T>>(*ret, node);
 
             // TODO parse the rest
             //

@@ -121,7 +121,7 @@ namespace UML {
     using ReadOnlySingleton = PrivateSet<T, U, SingletonDataPolicy<T>, ApiPolicy>;
 
     template <class T, class U, class ApiPolicy = DoNothingPolicy>
-    class Singleton : public ReadOnlySingleton<T,U,ApiPolicy> {
+    class Singleton : public ReadOnlySingleton<T,U,ApiPolicy> , public AbstractReadableSet {
         private:
             void checkCurrentValueHelper() {
                 AbstractSet& redefinedSet = this->m_structure->m_rootRedefinedSet->m_set;
@@ -144,7 +144,7 @@ namespace UML {
             void set(T& ref) {
                 this->setHelper(UmlPtr<T>(&ref));
             }
-            void set(ID id) {
+            void set(ID& id) {
                 if (id == ID::nullID()) {
                     set(0);
                     return;
@@ -154,8 +154,8 @@ namespace UML {
                     this->m_structure->m_rootRedefinedSet->m_set.nonOppositeAdd(ptr);
                 }
             }
-            bool readonly() const override {
-                return false;
+            void add(ID id) override {
+                set(id);
             }
     };
 }

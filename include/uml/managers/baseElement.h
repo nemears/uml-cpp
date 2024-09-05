@@ -24,6 +24,9 @@ namespace UML {
 
         template <class T, class U, class ApiPolicy>
         friend class Singleton;
+
+        template <class T, class U, class ApiPolicy>
+        friend class Set;
         
         template <class Tlist, class P1, class P2>
         friend class Manager;

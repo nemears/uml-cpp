@@ -189,14 +189,14 @@ namespace UML {
     using ReadOnlySet = PrivateSet<T, U, SetDataPolicy<T>, ApiPolicy>;
 
     template <class T, class U, class ApiPolicy = DoNothingPolicy>
-    class Set : public ReadOnlySet<T, U, ApiPolicy> {
+    class Set : public ReadOnlySet<T, U, ApiPolicy> , public AbstractReadableSet {
         public:
             Set (U* me) : ReadOnlySet<T, U, ApiPolicy>(me) {}
             void add(UmlPtr<T> ptr) {
                 this->innerAdd(ptr);
             }
-            void add(ID& id) {
-                this->nonOppositeAdd(this->m_el.m_manager->createPtr(id));
+            void add(ID id) override {
+                this->nonOppositeAdd(this->m_el.m_manager.createPtr(id));
             }
             void add(T& el) {
                 this->innerAdd(UmlPtr<T>(&el));
@@ -219,9 +219,6 @@ namespace UML {
                 while (this->front()) {
                     remove(this->front());
                 }
-            }
-            bool readonly() const override {
-                return false;
             }
     };
 }

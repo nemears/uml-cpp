@@ -53,6 +53,7 @@ namespace UML {
     struct TypeInfo : public BaseInfo<BaseList>{
         typedef ElementType Type;
         typedef ElementInfo<ElementType> Info;
+        static const std::size_t elementType = Index<Type, typename Type::Types>::value;
     };
 
     typedef std::vector<std::pair<std::string, AbstractSet*>> SetList;

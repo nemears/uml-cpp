@@ -151,7 +151,14 @@ namespace UML {
                 el->m_id = newID;
                 if (m_graph.count(newID)) {
                     // erase node we are overwriting
-                    erase(*m_graph.at(newID)->m_ptr);
+                    auto newNode = m_graph.find(newID);
+                    ptrs.reserve(ptrs.size() + newNode->second->m_ptrs.size());
+                    for (auto ptr : newNode->second->m_ptrs) {
+                        ptrs[i] = ptr;
+                        i++;
+                    }
+                    std::lock_guard<std::mutex> graphLock(m_graphMutex);
+                    m_graph.erase(newNode);
                 }
                 registerPtr(el);
                 auto newNode = el->m_node;
@@ -190,13 +197,13 @@ namespace UML {
                     using ElementType = std::tuple_element_t<I, Tlist>;
                     if constexpr (!ElementType::Info::Info::abstract) {
                         if (I == elementType) {
+                            if constexpr (ElementType::Info::Info::abstract) {
+                                throw ManagerStateException("Tried to instantiate abstract element");
+                            }         
                             return create<std::tuple_element_t<I, Tlist>>();
                         }
-                        return create<I + 1>(elementType);
                     }
-                    if constexpr (ElementType::Info::Info::abstract) {
-                        throw ManagerStateException("Tried to instantiate abstract element");
-                    }
+                    return create<I + 1>(elementType);
                 }
                 return 0;
             }

@@ -37,6 +37,8 @@ namespace UML {
 
     template <class T>
     class Creator {
+        template <class Tlist>
+        friend class AbstractFactory;
         protected:
             std::shared_ptr<T> createPtr(std::size_t elementType, AbstractManager& manager) {
                 return std::make_shared<T>(elementType, manager);
@@ -164,6 +166,7 @@ namespace UML {
                 auto newNode = el->m_node;
                 for (auto ptr : ptrs) {
                     ptr->m_node = newNode;
+                    ptr->m_id = newID;
                     newNode.lock()->m_ptrs.insert(ptr);
                 }
             }

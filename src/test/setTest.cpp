@@ -31,13 +31,65 @@ struct TupleAppend<std::tuple<Left...>, Right> {
     using type = std::tuple<Left..., Right>;
 };
 
+
+class TestPackage;
 class TestPackageSetElement;
-using TestPackageSetElementTypes = TupleCat<UmlTypes, std::tuple<TestPackageSetElement>>::type;
-class TestPackageSetElement : public BaseElement<TestPackageSetElementTypes> {
+class TestSubsetsElement;
+class Test2SubsetsElement;
+class Test3SubsetsElement;
+class TestElement2;
+class RedefinedTestElement;
+class PolicyTestElement;
+class TestOrderedSetElement;
+class TestElementSubsetsOrderedSets;
+class TestElementOrderedSubsetsSet;
+class TestSingletonElement;
+class TestSharedSubsetEvenTreeElement;
+class TestTwoRootSubSetElement;
+class TestComplexSubsetElement;
+class TestTripleSuperSetElement;
+class TestDiamondSuperSetElement;
+
+typedef std::tuple<
+        TestPackage, 
+        TestPackageSetElement,
+        TestSubsetsElement,
+        Test2SubsetsElement,
+        Test3SubsetsElement,
+        TestElement2,
+        RedefinedTestElement,
+        PolicyTestElement,
+        TestOrderedSetElement,
+        TestElementSubsetsOrderedSets,
+        TestElementOrderedSubsetsSet,
+        TestSingletonElement,
+        TestSharedSubsetEvenTreeElement,
+        TestTwoRootSubSetElement,
+        TestComplexSubsetElement,
+        TestTripleSuperSetElement,
+        TestDiamondSuperSetElement
+    > TestTypes;
+
+class TestPackage : public BaseElement<TestTypes> {
+    public:
+        TestPackage(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {}
+        typedef TypeInfo<std::tuple<>, TestPackage> Info;
+};
+
+template <>
+struct ElementInfo<TestPackage> {
+    static const bool abstract = false;
+    inline static const std::string name {"TestPackage"};
+    static SetList sets(TestPackage& el) {
+        return SetList{};
+    }
+};
+
+class TestPackageSetElement : public BaseElement<TestTypes> {
     friend class Creator<TestPackageSetElement>;
     public:
-        Set<Package, TestPackageSetElement> set = Set<Package, TestPackageSetElement>(this);
-        TestPackageSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestPackageSetElementTypes>(elementType, manager) {}
+        Set<TestPackage, TestPackageSetElement> set = Set<TestPackage, TestPackageSetElement>(this);
+        TestPackageSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {}
         typedef TypeInfo<std::tuple<>, TestPackageSetElement> Info;
 };
 
@@ -52,16 +104,16 @@ struct ElementInfo<TestPackageSetElement> {
 
 TEST_F(SetTest, basicSetTest) {
     size_t numPackages = 20;
-    Manager<TestPackageSetElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestPackageSetElement> testEl = m.create<TestPackageSetElement>();
-    Package& pckg = *m.create<Package>();
+    TestPackage& pckg = *m.create<TestPackage>();
     testEl->set.add(pckg);
     ASSERT_FALSE(testEl->set.empty());
     ASSERT_EQ(*testEl->set.get(pckg.getID()), pckg);
     std::vector<ID> ids(numPackages);
     ids[0] = pckg.getID();
     for (size_t i = 0; i < numPackages - 1; i++) {
-        Package& p = *m.create<Package>();
+        TestPackage& p = *m.create<TestPackage>();
         ids[i+1] = p.getID();
         testEl->set.add(p);
     }
@@ -74,13 +126,13 @@ TEST_F(SetTest, basicSetTest) {
 }
 
 TEST_F(SetTest, basicRemoveTest) {
-    Manager<TestPackageSetElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestPackageSetElement> testEl = m.create<TestPackageSetElement>();
-    PackagePtr pckg1 = m.create<Package>();
-    PackagePtr pckg2 = m.create<Package>();
-    PackagePtr pckg3 = m.create<Package>();
-    PackagePtr pckg4 = m.create<Package>();
-    PackagePtr pckg5 = m.create<Package>();
+    UmlPtr<TestPackage> pckg1 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg2 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg3 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg4 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg5 = m.create<TestPackage>();
     testEl->set.add(pckg1);
     testEl->set.add(pckg2);
     testEl->set.add(pckg3);
@@ -124,17 +176,17 @@ TEST_F(SetTest, basicRemoveTest) {
 }
 
 TEST_F(SetTest, consistentIdBasicRemoveTest) {
-    Manager<TestPackageSetElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestPackageSetElement> testEl = m.create<TestPackageSetElement>();
-    PackagePtr pckg1 = m.create<Package>();
+    UmlPtr<TestPackage> pckg1 = m.create<TestPackage>();
     pckg1->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA1"));
-    PackagePtr pckg2 = m.create<Package>();
+    UmlPtr<TestPackage> pckg2 = m.create<TestPackage>();
     pckg2->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA2"));
-    PackagePtr pckg3 = m.create<Package>();
+    UmlPtr<TestPackage> pckg3 = m.create<TestPackage>();
     pckg3->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA3"));
-    PackagePtr pckg4 = m.create<Package>();
+    UmlPtr<TestPackage> pckg4 = m.create<TestPackage>();
     pckg4->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA4"));
-    PackagePtr pckg5 = m.create<Package>();
+    UmlPtr<TestPackage> pckg5 = m.create<TestPackage>();
     pckg5->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA5"));
     testEl->set.add(pckg1);
     testEl->set.add(pckg2);
@@ -179,24 +231,24 @@ TEST_F(SetTest, consistentIdBasicRemoveTest) {
 }
 
 TEST_F(SetTest, longerConsistentIdBasicRemoveTest) {
-    Manager<TestPackageSetElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestPackageSetElement> testEl = m.create<TestPackageSetElement>();
-    PackagePtr pckg1 = m.create<Package>();
+    UmlPtr<TestPackage> pckg1 = m.create<TestPackage>();
     pckg1->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA1"));
-    PackagePtr pckg2 = m.create<Package>();
+    UmlPtr<TestPackage> pckg2 = m.create<TestPackage>();
     pckg2->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA2"));
-    PackagePtr pckg3 = m.create<Package>();
+    UmlPtr<TestPackage> pckg3 = m.create<TestPackage>();
     pckg3->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA3"));
-    PackagePtr pckg4 = m.create<Package>();
+    UmlPtr<TestPackage> pckg4 = m.create<TestPackage>();
     pckg4->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA4"));
-    PackagePtr pckg5 = m.create<Package>();
+    UmlPtr<TestPackage> pckg5 = m.create<TestPackage>();
     pckg5->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA5"));
-    PackagePtr pckg6 = m.create<Package>();
+    UmlPtr<TestPackage> pckg6 = m.create<TestPackage>();
     pckg5->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA6"));
-    PackagePtr pckg7 = m.create<Package>();
+    UmlPtr<TestPackage> pckg7 = m.create<TestPackage>();
     pckg5->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA7"));
-    PackagePtr pckg8 = m.create<Package>();
-    pckg5->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA8"));
+    UmlPtr<TestPackage> pckg8 = m.create<TestPackage>();
+    pckg8->setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAA8"));
     testEl->set.add(pckg1);
     testEl->set.add(pckg2);
     testEl->set.add(pckg3);
@@ -288,16 +340,16 @@ TEST_F(SetTest, longerConsistentIdBasicRemoveTest) {
 }
 
 TEST_F(SetTest, longerBasicRemoveTest) {
-    Manager<TestPackageSetElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestPackageSetElement> testEl = m.create<TestPackageSetElement>();
-    PackagePtr pckg1 = m.create<Package>();
-    PackagePtr pckg2 = m.create<Package>();
-    PackagePtr pckg3 = m.create<Package>();
-    PackagePtr pckg4 = m.create<Package>();
-    PackagePtr pckg5 = m.create<Package>();
-    PackagePtr pckg6 = m.create<Package>();
-    PackagePtr pckg7 = m.create<Package>();
-    PackagePtr pckg8 = m.create<Package>();
+    UmlPtr<TestPackage> pckg1 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg2 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg3 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg4 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg5 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg6 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg7 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg8 = m.create<TestPackage>();
     testEl->set.add(pckg1);
     testEl->set.add(pckg2);
     testEl->set.add(pckg3);
@@ -388,75 +440,12 @@ TEST_F(SetTest, longerBasicRemoveTest) {
     ASSERT_FALSE(testEl->set.contains(pckg8));
 }
 
-class TestReindexSetElement;
-using TestReindexSetElementTypes = TupleCat<UmlTypes, std::tuple<TestReindexSetElement>>::type;
-class TestReindexSetElement : public Element {
-    friend class Creator<TestReindexSetElement>;
-    public:
-        Set<Package, TestReindexSetElement> set = Set<Package, TestReindexSetElement>(this);
-        TestReindexSetElement(std::size_t elementType, AbstractManager& manager) : Element(elementType, manager) {
-            set.subsets(this->m_ownedElements);
-        }
-        typedef TypeInfo<std::tuple<>, TestReindexSetElement> Info;
-};
-
-template <>
-struct ElementInfo<TestReindexSetElement> {
-    static const bool abstract = false;
-    inline static const std::string name{"TestReindeSetElement"};
-    static SetList sets() {
-        return SetList{};
-    }
-};
-
-// TEST_F(SetTest, reindexSetElementTest) {
-//     // Reference ids of this test: shown in order from least to greatest
-//     //      Jp2IhMjC2qNN7cIYPXiFZU4vDdun
-//     //      GqrX5Ta8KQDdFfaHrau08OS7Et3n
-//     //      kbreSzh_ys_8SepvJR6Q58tzWdFI
-//     //      TeIMyndF4nm_NOTbFZ&vZDLXxvtC
-//     UmlManager m;
-//     UmlPtr<TestReindexSetElement> testEl = m.create<TestReindexSetElement>();
-//     PackagePtr pckg1 = m.create<Package>();
-//     pckg1->setID("GqrX5Ta8KQDdFfaHrau08OS7Et3n");
-//     PackagePtr pckg2 = m.create<Package>();
-//     pckg2->setID("kbreSzh_ys_8SepvJR6Q58tzWdFI");
-//     PackagePtr pckg3 = m.create<Package>();
-//     pckg3->setID("TeIMyndF4nm_NOTbFZ&vZDLXxvtC");
-//     testEl->set.add(pckg1);
-//     testEl->set.add(pckg2);
-//     testEl->set.add(pckg3);
-//     ASSERT_EQ(testEl->set.front(), *pckg1);
-//     ASSERT_EQ(testEl->set.back(), *pckg3);
-//     SetIterator<Package> it1 = testEl->set.begin();
-//     ASSERT_EQ(*it1, *pckg1);
-//     ++it1;
-//     ASSERT_EQ(*it1, *pckg2);
-//     ++it1;
-//     ASSERT_EQ(*it1, *pckg3);
-//     ++it1;
-//     ASSERT_EQ(it1, testEl->set.end());
-//     // reindex
-//     pckg3->setID("Jp2IhMjC2qNN7cIYPXiFZU4vDdun");
-//     ASSERT_EQ(testEl->set.front(), *pckg3);
-//     ASSERT_EQ(testEl->set.back(), *pckg1);
-//     SetIterator<Package> it2 = testEl->set.begin();
-//     ASSERT_EQ(*it2, *pckg3);
-//     ++it2;
-//     ASSERT_EQ(*it2, *pckg2);
-//     ++it2;
-//     ASSERT_EQ(*it2, *pckg1);
-//     ++it2;
-//     ASSERT_EQ(it2, testEl->set.end());
-// }
-class TestSubsetsElement;
-using TestSubsetsElementTypes = TupleAppend<UmlTypes, TestSubsetsElement>::type;
-class TestSubsetsElement : public BaseElement<TestSubsetsElementTypes> {
+class TestSubsetsElement : public BaseElement<TestTypes> {
     friend class Creator<TestSubsetsElement>;
     public:
-        Set<PackageableElement, TestSubsetsElement> root = Set<PackageableElement, TestSubsetsElement>(this);
-        Set<Package, TestSubsetsElement> sub = Set<Package, TestSubsetsElement>(this);
-        TestSubsetsElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestSubsetsElementTypes>(elementType, manager) {
+        Set<TestPackage, TestSubsetsElement> root = Set<TestPackage, TestSubsetsElement>(this);
+        Set<TestPackage, TestSubsetsElement> sub = Set<TestPackage, TestSubsetsElement>(this);
+        TestSubsetsElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
             sub.subsets(root);
         }
         typedef TypeInfo<std::tuple<>, TestSubsetsElement> Info;
@@ -472,9 +461,9 @@ struct ElementInfo<TestSubsetsElement> {
 };
 
 TEST_F(SetTest, basicSubsetsTest) {
-    Manager<TestSubsetsElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestSubsetsElement> testEl = m.create<TestSubsetsElement>();
-    Package& pckg = *m.create<Package>();
+    TestPackage& pckg = *m.create<TestPackage>();
     testEl->sub.add(pckg);
     ASSERT_EQ(testEl->sub.size(), 1);
     ASSERT_TRUE(testEl->sub.contains(pckg.getID()));
@@ -482,7 +471,7 @@ TEST_F(SetTest, basicSubsetsTest) {
     ASSERT_EQ(testEl->root.size(), 1);
     ASSERT_TRUE(testEl->root.contains(pckg.getID()));
     ASSERT_EQ(*testEl->root.get(pckg.getID()), pckg);
-    Package& clazz = *m.create<Package>();
+    TestPackage& clazz = *m.create<TestPackage>();
     testEl->root.add(clazz);
     ASSERT_EQ(testEl->root.size(), 2);
     ASSERT_TRUE(testEl->root.contains(clazz.getID()));
@@ -493,11 +482,11 @@ TEST_F(SetTest, basicSubsetsTest) {
 }
 
 TEST_F(SetTest, iterateOverSubsettedElement) {
-    Manager<TestSubsetsElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestSubsetsElement> testEl = m.create<TestSubsetsElement>();
-    PackagePtr a = m.create<Package>();
-    PackagePtr b = m.create<Package>();
-    PackagePtr c = m.create<Package>();
+    UmlPtr<TestPackage> a = m.create<TestPackage>();
+    UmlPtr<TestPackage> b = m.create<TestPackage>();
+    UmlPtr<TestPackage> c = m.create<TestPackage>();
     a->setID(ID::fromString("&90IAqvc&wUnewHz0xLI4fPYNXUe"));
     b->setID(ID::fromString("04zH_c&oPfM5KXPqJXA0_7AzIzcy"));
     c->setID(ID::fromString("buttEyLdYRCk_zbuttYrQyy42yHr")); 
@@ -509,7 +498,7 @@ TEST_F(SetTest, iterateOverSubsettedElement) {
     //
     // WwowBIeuOqdXecMITJkHZWbnD94G
     testEl->root.add(a);
-    std::unordered_set<std::shared_ptr<PackageableElement>> pckgs;
+    std::unordered_set<std::shared_ptr<TestPackage>> pckgs;
     pckgs.insert(a.ptr());
     testEl->sub.add(b);
     pckgs.insert(b.ptr());
@@ -550,15 +539,13 @@ TEST_F(SetTest, iterateOverSubsettedElement) {
 //     ASSERT_EQ(testEl->sub.getRoot(), testEl->root.getRoot());
 // }
 
-class Test2SubsetsElement;
-using Test2SubsetsElementTypes = TupleAppend<UmlTypes, Test2SubsetsElement>::type;
-class Test2SubsetsElement : public BaseElement<Test2SubsetsElementTypes> {
+class Test2SubsetsElement : public BaseElement<TestTypes> {
     friend class Creator<Test2SubsetsElement>;
     public:
-        Set<NamedElement, Test2SubsetsElement> set1 = Set<NamedElement, Test2SubsetsElement>(this);
-        Set<PackageableElement, Test2SubsetsElement> set2 = Set<PackageableElement, Test2SubsetsElement>(this);
-        Set<Package, Test2SubsetsElement> sub = Set<Package, Test2SubsetsElement>(this);
-        Test2SubsetsElement(std::size_t elementType, AbstractManager& manager) : BaseElement<Test2SubsetsElementTypes>(elementType, manager) {
+        Set<TestPackage, Test2SubsetsElement> set1 = Set<TestPackage, Test2SubsetsElement>(this);
+        Set<TestPackage, Test2SubsetsElement> set2 = Set<TestPackage, Test2SubsetsElement>(this);
+        Set<TestPackage, Test2SubsetsElement> sub = Set<TestPackage, Test2SubsetsElement>(this);
+        Test2SubsetsElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
             sub.subsets(set1);
             sub.subsets(set2);
         }
@@ -577,9 +564,9 @@ struct ElementInfo<Test2SubsetsElement> {
 
 
 TEST_F(SetTest, multiSubsetsTest) {
-    Manager<Test2SubsetsElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<Test2SubsetsElement> testEl = m.create<Test2SubsetsElement>();
-    Package& clazz = *m.create<Package>();
+    TestPackage& clazz = *m.create<TestPackage>();
     testEl->set1.add(clazz);
     ASSERT_FALSE(testEl->set1.empty());
     ASSERT_EQ(testEl->set1.size(), 1);
@@ -590,7 +577,7 @@ TEST_F(SetTest, multiSubsetsTest) {
     ASSERT_TRUE(testEl->sub.empty());
     ASSERT_EQ(testEl->sub.size(), 0);
     ASSERT_FALSE(testEl->sub.contains(clazz.getID()));
-    Package& inst = *m.create<Package>();
+    TestPackage& inst = *m.create<TestPackage>();
     testEl->set2.add(inst);
     ASSERT_FALSE(testEl->set1.empty());
     ASSERT_EQ(testEl->set1.size(), 1);
@@ -601,7 +588,7 @@ TEST_F(SetTest, multiSubsetsTest) {
     ASSERT_TRUE(testEl->sub.empty());
     ASSERT_EQ(testEl->sub.size(), 0);
     ASSERT_FALSE(testEl->sub.contains(inst.getID()));
-    Package& pckg = *m.create<Package>();
+    TestPackage& pckg = *m.create<TestPackage>();
     testEl->sub.add(pckg);
     ASSERT_FALSE(testEl->set1.empty());
     ASSERT_EQ(testEl->set1.size(), 2);
@@ -614,15 +601,13 @@ TEST_F(SetTest, multiSubsetsTest) {
     ASSERT_TRUE(testEl->sub.contains(pckg.getID()));
 }
 
-class Test3SubsetsElement;
-using Test3SubsetsElementTypes = TupleAppend<UmlTypes, Test3SubsetsElement>::type;
-class Test3SubsetsElement : public BaseElement<Test3SubsetsElementTypes> {
+class Test3SubsetsElement : public BaseElement<TestTypes> {
     friend class Creator<Test3SubsetsElement>;
     public:
-        Set<NamedElement, Test3SubsetsElement> root = Set<NamedElement, Test3SubsetsElement>(this);
-        Set<PackageableElement, Test3SubsetsElement> intermediate = Set<PackageableElement, Test3SubsetsElement>(this);
-        Set<Package, Test3SubsetsElement> sub = Set<Package, Test3SubsetsElement>(this);
-        Test3SubsetsElement(std::size_t elementType, AbstractManager& manager) : BaseElement<Test3SubsetsElementTypes>(elementType, manager) {
+        Set<TestPackage, Test3SubsetsElement> root = Set<TestPackage, Test3SubsetsElement>(this);
+        Set<TestPackage, Test3SubsetsElement> intermediate = Set<TestPackage, Test3SubsetsElement>(this);
+        Set<TestPackage, Test3SubsetsElement> sub = Set<TestPackage, Test3SubsetsElement>(this);
+        Test3SubsetsElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
             intermediate.subsets(root);
             sub.subsets(intermediate);
         }
@@ -639,9 +624,9 @@ struct ElementInfo<Test3SubsetsElement> {
 };
 
 TEST_F(SetTest, removeFromSubsettedSequenceTest) {
-    Manager<TupleCat<UmlTypes, std::tuple<Test3SubsetsElement>>::type> m;
+    Manager<TestTypes> m;
     UmlPtr<Test3SubsetsElement> testEl = m.create<Test3SubsetsElement>();
-    Package& pckg = *m.create<Package>();
+    TestPackage& pckg = *m.create<TestPackage>();
     testEl->sub.add(pckg);
     std::cout << "about to remove element" << std::endl;
     testEl->sub.remove(pckg);
@@ -665,23 +650,21 @@ TEST_F(SetTest, removeFromSubsettedSequenceTest) {
 }
 
 TEST_F(SetTest, addToSetTwice) {
-    Manager<TupleCat<UmlTypes, std::tuple<TestPackageSetElement>>::type> m;
+    Manager<TestTypes> m;
     UmlPtr<TestPackageSetElement> testEl = m.create<TestPackageSetElement>();
-    Package& p = *m.create<Package>();
+    TestPackage& p = *m.create<TestPackage>();
     testEl->set.add(p);
     ASSERT_THROW(testEl->set.add(p), SetStateException);
 }
 
-class TestElement2;
-using TestElement2Types = TupleAppend<UmlTypes, TestElement2>::type;
-class TestElement2 : public BaseElement<TestElement2Types> {
+class TestElement2 : public BaseElement<TestTypes> {
     friend class Creator<TestElement2>;
     private:
         Set<TestElement2, TestElement2> m_others = Set<TestElement2, TestElement2>(this);
     protected:
     public:
         Set<TestElement2, TestElement2>& getOthers() { return m_others; };
-        TestElement2(std::size_t elementType, AbstractManager& manager) : BaseElement<TestElement2Types>(elementType, manager) {
+        TestElement2(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
             m_others.opposite(&TestElement2::getOthers);
         };
         typedef TypeInfo<std::tuple<>,TestElement2> Info;
@@ -697,7 +680,7 @@ struct ElementInfo<TestElement2> {
 };
 
 TEST_F(SetTest, oppositeTest) {
-    Manager<TestElement2Types> m;
+    Manager<TestTypes> m;
     TestElement2& t1 = *m.create<TestElement2>();
     TestElement2& t2 = *m.create<TestElement2>();
     t1.getOthers().add(t2);
@@ -706,14 +689,12 @@ TEST_F(SetTest, oppositeTest) {
     // ASSERT_EQ(*t2.getOthers().get(t1.getID()), t1);
 }
 
-class RedefinedTestElement;
-using RedefinedTestElementTypes = TupleAppend<UmlTypes, RedefinedTestElement>::type;
-class RedefinedTestElement : public BaseElement<RedefinedTestElementTypes> {
+class RedefinedTestElement : public BaseElement<TestTypes> {
     friend class Creator<RedefinedTestElement>;
     public:
-        Set<Package, RedefinedTestElement> rootSet = Set<Package, RedefinedTestElement>(this);
-        Set<Package, RedefinedTestElement> redefiningSet = Set<Package, RedefinedTestElement>(this);
-        RedefinedTestElement(std::size_t elementType, AbstractManager& manager) : BaseElement<RedefinedTestElementTypes>(elementType, manager) {
+        Set<TestPackage, RedefinedTestElement> rootSet = Set<TestPackage, RedefinedTestElement>(this);
+        Set<TestPackage, RedefinedTestElement> redefiningSet = Set<TestPackage, RedefinedTestElement>(this);
+        RedefinedTestElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
             redefiningSet.redefines(rootSet);
         }
         typedef TypeInfo<std::tuple<>, RedefinedTestElement> Info;
@@ -729,9 +710,9 @@ struct ElementInfo<RedefinedTestElement> {
 };
 
 TEST_F(SetTest, setRedefinesTest) {
-    Manager<RedefinedTestElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<RedefinedTestElement> testEl = m.create<RedefinedTestElement>();
-    Package& p = *m.create<Package>();
+    TestPackage& p = *m.create<TestPackage>();
     testEl->redefiningSet.add(p);
     ASSERT_FALSE(testEl->rootSet.empty());
     ASSERT_FALSE(testEl->redefiningSet.empty());
@@ -742,7 +723,7 @@ TEST_F(SetTest, setRedefinesTest) {
     ASSERT_TRUE(testEl->redefiningSet.empty());
     ASSERT_EQ(testEl->rootSet.size(), 0);
     ASSERT_EQ(testEl->redefiningSet.size(), 0);
-    Package& p2 = *m.create<Package>();
+    TestPackage& p2 = *m.create<TestPackage>();
     testEl->rootSet.add(p);
     ASSERT_FALSE(testEl->rootSet.empty());
     ASSERT_FALSE(testEl->redefiningSet.empty());
@@ -759,7 +740,7 @@ TEST_F(SetTest, setRedefinesTest) {
     ASSERT_FALSE(testEl->redefiningSet.empty());
     ASSERT_EQ(testEl->rootSet.size(), 2);
     ASSERT_EQ(testEl->redefiningSet.size(), 2);
-    Package& p3 = *m.create<Package>();
+    TestPackage& p3 = *m.create<TestPackage>();
     testEl->rootSet.add(p3);
     ASSERT_FALSE(testEl->rootSet.empty());
     ASSERT_FALSE(testEl->redefiningSet.empty());
@@ -767,22 +748,19 @@ TEST_F(SetTest, setRedefinesTest) {
     ASSERT_EQ(testEl->redefiningSet.size(), 3);
 }
 
-class PolicyTestElement;
 
 class TestPolicy {
     public:
-        void elementAdded(Package& el, PolicyTestElement& me);
-        void elementRemoved(Package& el, PolicyTestElement& me);
+        void elementAdded(TestPackage& el, PolicyTestElement& me);
+        void elementRemoved(TestPackage& el, PolicyTestElement& me);
 };
 
-class PolicyTestElement;
-using PolicyTestElementTypes = TupleAppend<UmlTypes, PolicyTestElement>::type;
-class PolicyTestElement : public BaseElement<PolicyTestElementTypes> {
+class PolicyTestElement : public BaseElement<TestTypes> {
     friend class Creator<PolicyTestElement>;
     public:
-        Set<Package, PolicyTestElement, TestPolicy> policySet = Set<Package, PolicyTestElement, TestPolicy>(this);
-        Set<Package, PolicyTestElement> redefinedSet = Set<Package, PolicyTestElement>(this);
-        PolicyTestElement(std::size_t elementType, AbstractManager& manager) : BaseElement<PolicyTestElementTypes> (elementType, manager) {
+        Set<TestPackage, PolicyTestElement, TestPolicy> policySet = Set<TestPackage, PolicyTestElement, TestPolicy>(this);
+        Set<TestPackage, PolicyTestElement> redefinedSet = Set<TestPackage, PolicyTestElement>(this);
+        PolicyTestElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes> (elementType, manager) {
             redefinedSet.redefines(policySet);
         }
         size_t count = 0;
@@ -798,31 +776,29 @@ struct ElementInfo<PolicyTestElement> {
     }
 };
 
-void TestPolicy::elementAdded(__attribute__((unused)) Package& el, PolicyTestElement& me) {
+void TestPolicy::elementAdded(__attribute__((unused)) TestPackage& el, PolicyTestElement& me) {
     me.count++;
 }
 
-void TestPolicy::elementRemoved(__attribute__((unused)) Package& el, PolicyTestElement& me) {
+void TestPolicy::elementRemoved(__attribute__((unused)) TestPackage& el, PolicyTestElement& me) {
     me.count--;
 }
 
 TEST_F(SetTest, setRedefinedWFunctors) {
-    Manager<PolicyTestElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<PolicyTestElement> testEl = m.create<PolicyTestElement>();
-    Package& g = *m.create<Package>();
+    TestPackage& g = *m.create<TestPackage>();
     testEl->redefinedSet.add(g);
     ASSERT_EQ(testEl->count, 1);
     testEl->redefinedSet.remove(g);
     ASSERT_EQ(testEl->count, 0);
 }
 
-class TestOrderedSetElement;
-using TestOrderedSetElementTypes = TupleAppend<UmlTypes, TestOrderedSetElement>::type;
-class TestOrderedSetElement : public BaseElement<TestOrderedSetElementTypes> {
+class TestOrderedSetElement : public BaseElement<TestTypes> {
     friend class Creator<TestOrderedSetElement>;    
     public:
-        OrderedSet<Package, TestOrderedSetElement> set = OrderedSet<Package, TestOrderedSetElement>(this);
-        TestOrderedSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestOrderedSetElementTypes> (elementType, manager) {}
+        OrderedSet<TestPackage, TestOrderedSetElement> set = OrderedSet<TestPackage, TestOrderedSetElement>(this);
+        TestOrderedSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes> (elementType, manager) {}
         typedef TypeInfo<std::tuple<>, TestOrderedSetElement> Info;
 };
 
@@ -836,20 +812,17 @@ struct ElementInfo<TestOrderedSetElement> {
 };
 
 TEST_F(SetTest, addToOrderedSetTest) {
-    Manager<TestOrderedSetElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestOrderedSetElement> testEl = m.create<TestOrderedSetElement>();
-    Package& p = *m.create<Package>();
-    p.setName("1");
+    TestPackage& p = *m.create<TestPackage>();
     testEl->set.add(p);
     ASSERT_EQ(*testEl->set.front(), p);
     ASSERT_EQ(*testEl->set.back(), p);
-    Package& p2 = *m.create<Package>();
-    p2.setName("2");
+    TestPackage& p2 = *m.create<TestPackage>();
     testEl->set.add(p2);
     ASSERT_EQ(*testEl->set.front(), p);
     ASSERT_EQ(*testEl->set.back(), p2);
-    Package& p3 = *m.create<Package>();
-    p3.setName("3");
+    TestPackage& p3 = *m.create<TestPackage>();
     testEl->set.add(p3);
     ASSERT_EQ(*testEl->set.front(), p);
     ASSERT_EQ(*testEl->set.back(), p3);
@@ -865,9 +838,9 @@ TEST_F(SetTest, addToOrderedSetTest) {
     // ASSERT_TRUE(testEl->set.contains("3"));
     ASSERT_EQ(*testEl->set.get(p3.getID()), p3);
     // ASSERT_EQ(testEl->set.get("3"), p3);
-    Package* ps[] = {&p, &p2, &p3};
+    TestPackage* ps[] = {&p, &p2, &p3};
     int i = 0;
-    for (Package& pckg : testEl->set) {
+    for (TestPackage& pckg : testEl->set) {
         ASSERT_EQ(*ps[i], pckg);
         i++;
     }
@@ -876,14 +849,12 @@ TEST_F(SetTest, addToOrderedSetTest) {
     ASSERT_EQ(*testEl->set.get(2), p3);
 }
 
-class TestElementSubsetsOrderedSets;
-using TestElementSubsetsOrderedSetsTypes = TupleAppend<UmlTypes, TestElementSubsetsOrderedSets>::type;
-class TestElementSubsetsOrderedSets : public BaseElement<TestElementSubsetsOrderedSetsTypes> {
+class TestElementSubsetsOrderedSets : public BaseElement<TestTypes> {
     friend class Creator<TestElementSubsetsOrderedSets>;
     public:
-        OrderedSet<Package, TestElementSubsetsOrderedSets> root = OrderedSet<Package, TestElementSubsetsOrderedSets>(this);
-        OrderedSet<Package, TestElementSubsetsOrderedSets> sub = OrderedSet<Package, TestElementSubsetsOrderedSets>(this);
-        TestElementSubsetsOrderedSets(std::size_t elementType, AbstractManager& manager) : BaseElement<TestElementSubsetsOrderedSetsTypes>(elementType, manager) {
+        OrderedSet<TestPackage, TestElementSubsetsOrderedSets> root = OrderedSet<TestPackage, TestElementSubsetsOrderedSets>(this);
+        OrderedSet<TestPackage, TestElementSubsetsOrderedSets> sub = OrderedSet<TestPackage, TestElementSubsetsOrderedSets>(this);
+        TestElementSubsetsOrderedSets(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
             sub.subsets(root);
         }
         typedef TypeInfo<std::tuple<>, TestElementSubsetsOrderedSets> Info;
@@ -899,39 +870,37 @@ struct ElementInfo<TestElementSubsetsOrderedSets> {
 };
 
 TEST_F(SetTest, subsetOrderedSets) {
-    Manager<TestElementSubsetsOrderedSetsTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestElementSubsetsOrderedSets> testEl = m.create<TestElementSubsetsOrderedSets>();
-    Package& p = *m.create<Package>();
+    TestPackage& p = *m.create<TestPackage>();
     testEl->sub.add(p);
     ASSERT_EQ(*testEl->sub.front(), p);
     ASSERT_FALSE(testEl->root.empty());
     ASSERT_EQ(testEl->root.size(), 1);
     ASSERT_EQ(*testEl->root.front(), p);
-    Package& c = *m.create<Package>();
+    TestPackage& c = *m.create<TestPackage>();
     testEl->root.add(c);
     ASSERT_FALSE(testEl->sub.contains(c.getID()));
     ASSERT_TRUE(testEl->root.contains(c.getID()));
     ASSERT_EQ(*testEl->root.back(), c);
     int i = 0;
-    for (Package& pckg : testEl->sub) {
+    for (TestPackage& pckg : testEl->sub) {
         i++;
     }
     ASSERT_EQ(i, 1);
     i = 0;
-    for (PackageableElement& pckg : testEl->root) {
+    for (TestPackage& pckg : testEl->root) {
         i++;
     }
     ASSERT_EQ(i, 2);
 }
 
-class TestElementOrderedSubsetsSet;
-using TestElementOrderedSubsetsSetTypes = TupleAppend<UmlTypes, TestElementOrderedSubsetsSet>::type;
-class TestElementOrderedSubsetsSet : public BaseElement<TestElementOrderedSubsetsSetTypes> {
+class TestElementOrderedSubsetsSet : public BaseElement<TestTypes> {
     friend class Creator<TestElementOrderedSubsetsSet>;
     public:
-        Set<Package, TestElementOrderedSubsetsSet> root = Set<Package, TestElementOrderedSubsetsSet>(this);
-        OrderedSet<Package, TestElementOrderedSubsetsSet> sub = OrderedSet<Package, TestElementOrderedSubsetsSet>(this);
-        TestElementOrderedSubsetsSet(std::size_t elementType, AbstractManager& manager) : BaseElement<TestElementOrderedSubsetsSetTypes>(elementType, manager) {
+        Set<TestPackage, TestElementOrderedSubsetsSet> root = Set<TestPackage, TestElementOrderedSubsetsSet>(this);
+        OrderedSet<TestPackage, TestElementOrderedSubsetsSet> sub = OrderedSet<TestPackage, TestElementOrderedSubsetsSet>(this);
+        TestElementOrderedSubsetsSet(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
             sub.subsets(root);
         }
         typedef TypeInfo<std::tuple<>, TestElementOrderedSubsetsSet> Info;
@@ -947,39 +916,37 @@ struct ElementInfo<TestElementOrderedSubsetsSet> {
 };
 
 TEST_F(SetTest, orderedSetSubSetsSet) {
-    Manager<TestElementOrderedSubsetsSetTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestElementOrderedSubsetsSet> testEl = m.create<TestElementOrderedSubsetsSet>();
-    Package& p = *m.create<Package>();
+    TestPackage& p = *m.create<TestPackage>();
     testEl->sub.add(p);
     ASSERT_EQ(*testEl->sub.front(), p);
     ASSERT_FALSE(testEl->root.empty());
     ASSERT_EQ(testEl->root.size(), 1);
     ASSERT_EQ(*testEl->root.get(p.getID()), p);
-    Package& c = *m.create<Package>();
+    TestPackage& c = *m.create<TestPackage>();
     testEl->root.add(c);
     ASSERT_FALSE(testEl->sub.contains(c.getID()));
     ASSERT_TRUE(testEl->root.contains(c.getID()));
     ASSERT_EQ(*testEl->root.get(c.getID()), c);
     int i = 0;
-    for (Package& pckg : testEl->sub) {
+    for (TestPackage& pckg : testEl->sub) {
         i++;
     }
     ASSERT_EQ(i, 1);
     i = 0;
-    for (Package& pckg : testEl->root) {
+    for (TestPackage& pckg : testEl->root) {
         i++;
     }
     ASSERT_EQ(i, 2);
 }
 
-class TestSingletonElement;
-using TestSingletonElementTypes = TupleAppend<UmlTypes, TestSingletonElement>::type;
-class TestSingletonElement : public BaseElement<TestSingletonElementTypes> {
+class TestSingletonElement : public BaseElement<TestTypes> {
     friend class Creator<TestSingletonElement>;
     public:
-        Set<Package, TestSingletonElement> root = Set<Package, TestSingletonElement>(this);
-        Singleton<Package, TestSingletonElement> singleton = Singleton<Package, TestSingletonElement>(this);
-        TestSingletonElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestSingletonElementTypes>(elementType, manager) {
+        Set<TestPackage, TestSingletonElement> root = Set<TestPackage, TestSingletonElement>(this);
+        Singleton<TestPackage, TestSingletonElement> singleton = Singleton<TestPackage, TestSingletonElement>(this);
+        TestSingletonElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
             singleton.subsets(root);
         }
         typedef TypeInfo<std::tuple<>, TestSingletonElement> Info;
@@ -995,11 +962,11 @@ struct ElementInfo<TestSingletonElement> {
 };
 
 TEST_F(SetTest, singletonTest) {
-    Manager<TestSingletonElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestSingletonElement> testEl = m.create<TestSingletonElement>();
     ASSERT_TRUE(testEl->singleton.empty());
     ASSERT_EQ(testEl->singleton.size(), 0);
-    Package& p = *m.create<Package>();
+    TestPackage& p = *m.create<TestPackage>();
     testEl->singleton.set(p);
     ASSERT_EQ(testEl->singleton.size(), 1);
     ASSERT_FALSE(testEl->singleton.empty());
@@ -1008,7 +975,7 @@ TEST_F(SetTest, singletonTest) {
     ASSERT_EQ(testEl->root.size(), 1);
     ASSERT_FALSE(testEl->root.empty());
     ASSERT_EQ(*testEl->root.get(p.getID()), p);
-    Package& c = *m.create<Package>();
+    TestPackage& c = *m.create<TestPackage>();
     testEl->root.add(c);
     ASSERT_EQ(testEl->singleton.size(), 1);
     ASSERT_FALSE(testEl->singleton.empty());
@@ -1026,15 +993,13 @@ TEST_F(SetTest, singletonTest) {
     ASSERT_FALSE(testEl->root.contains(p.getID()));
 }
 
-class TestSharedSubsetEvenTreeElement;
-using TestSharedSubsetEvenTreeElementTypes = TupleAppend<UmlTypes, TestSharedSubsetEvenTreeElement>::type;
-class TestSharedSubsetEvenTreeElement : public BaseElement<TestSharedSubsetEvenTreeElementTypes> {
+class TestSharedSubsetEvenTreeElement : public BaseElement<TestTypes> {
     friend class Creator<TestSharedSubsetEvenTreeElement>;
     public:
-        Set<PackageableElement, TestSharedSubsetEvenTreeElement> root = Set<PackageableElement, TestSharedSubsetEvenTreeElement>(this);
-        Set<Package, TestSharedSubsetEvenTreeElement> set1 = Set<Package, TestSharedSubsetEvenTreeElement>(this);
-        Set<Package, TestSharedSubsetEvenTreeElement> set2 = Set<Package, TestSharedSubsetEvenTreeElement>(this);
-        TestSharedSubsetEvenTreeElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestSharedSubsetEvenTreeElementTypes>(elementType, manager) {
+        Set<TestPackage, TestSharedSubsetEvenTreeElement> root = Set<TestPackage, TestSharedSubsetEvenTreeElement>(this);
+        Set<TestPackage, TestSharedSubsetEvenTreeElement> set1 = Set<TestPackage, TestSharedSubsetEvenTreeElement>(this);
+        Set<TestPackage, TestSharedSubsetEvenTreeElement> set2 = Set<TestPackage, TestSharedSubsetEvenTreeElement>(this);
+        TestSharedSubsetEvenTreeElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
             set1.subsets(root);
             set2.subsets(root);
         }
@@ -1051,10 +1016,10 @@ struct ElementInfo<TestSharedSubsetEvenTreeElement> {
 };
 
 TEST_F(SetTest, sharedSubsetEvenTreeTest) {
-    Manager<TestSharedSubsetEvenTreeElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestSharedSubsetEvenTreeElement> testEl = m.create<TestSharedSubsetEvenTreeElement>();
-    Package& p1 = *m.create<Package>();
-    Package& p2 = *m.create<Package>();
+    TestPackage& p1 = *m.create<TestPackage>();
+    TestPackage& p2 = *m.create<TestPackage>();
     testEl->set1.add(p1);
     testEl->set2.add(p2);
     std::cout << "test setup finished" << std::endl;
@@ -1098,15 +1063,13 @@ TEST_F(SetTest, sharedSubsetEvenTreeTest) {
     ASSERT_EQ(*testEl->set1.front(), p1);
 }
 
-class TestTwoRootSubSetElement;
-using TestTwoRootSubSetElementTypes = TupleAppend<UmlTypes, TestTwoRootSubSetElement>::type;
-class TestTwoRootSubSetElement : public BaseElement<TestTwoRootSubSetElementTypes> {
+class TestTwoRootSubSetElement : public BaseElement<TestTypes> {
     friend class Creator<TestTwoRootSubSetElement>;
     public:
-        Set<NamedElement, TestTwoRootSubSetElement> root1 = Set<NamedElement, TestTwoRootSubSetElement>(this);
-        Set<PackageableElement, TestTwoRootSubSetElement> root2 = Set<PackageableElement, TestTwoRootSubSetElement>(this);
-        Set<Package, TestTwoRootSubSetElement> sub = Set<Package, TestTwoRootSubSetElement>(this);
-        TestTwoRootSubSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTwoRootSubSetElementTypes> (elementType, manager) {
+        Set<TestPackage, TestTwoRootSubSetElement> root1 = Set<TestPackage, TestTwoRootSubSetElement>(this);
+        Set<TestPackage, TestTwoRootSubSetElement> root2 = Set<TestPackage, TestTwoRootSubSetElement>(this);
+        Set<TestPackage, TestTwoRootSubSetElement> sub = Set<TestPackage, TestTwoRootSubSetElement>(this);
+        TestTwoRootSubSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes> (elementType, manager) {
             sub.subsets(root1);
             sub.subsets(root2);
         }
@@ -1123,10 +1086,10 @@ struct ElementInfo<TestTwoRootSubSetElement> {
 };
 
 TEST_F(SetTest, multiRootWithinRootTest) {
-    Manager<TestTwoRootSubSetElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestTwoRootSubSetElement> testEl = m.create<TestTwoRootSubSetElement>();
-    Package& c = *m.create<Package>();
-    Package& p = *m.create<Package>();
+    TestPackage& c = *m.create<TestPackage>();
+    TestPackage& p = *m.create<TestPackage>();
     testEl->root1.add(c);
     testEl->sub.add(p);
     ASSERT_EQ(testEl->root1.size(), 2);
@@ -1141,9 +1104,9 @@ TEST_F(SetTest, multiRootWithinRootTest) {
 }
 
 TEST_F(SetTest, multiSubsetsOneElement) {
-    Manager<TupleCat<UmlTypes, std::tuple<TestTwoRootSubSetElement>>::type> m;
+    Manager<TestTypes> m;
     UmlPtr<TestTwoRootSubSetElement> testEl = m.create<TestTwoRootSubSetElement>();
-    Package& p = *m.create<Package>();
+    TestPackage& p = *m.create<TestPackage>();
     testEl->sub.add(p);
     ASSERT_EQ(testEl->sub.size(), 1);
     ASSERT_EQ(testEl->root1.size(), 1);
@@ -1154,9 +1117,9 @@ TEST_F(SetTest, multiSubsetsOneElement) {
 }
 
 TEST_F(SetTest, multiRootAddToSubsetTest) {
-    Manager<TupleCat<UmlTypes, std::tuple<TestTwoRootSubSetElement>>::type> m;
+    Manager<TestTypes> m;
     UmlPtr<TestTwoRootSubSetElement> testEl = m.create<TestTwoRootSubSetElement>();
-    PackagePtr pckg = m.create<Package>();
+    UmlPtr<TestPackage> pckg = m.create<TestPackage>();
     testEl->root1.add(pckg);
     ASSERT_EQ(testEl->sub.size(), 0);
     ASSERT_EQ(testEl->root1.size(), 1);
@@ -1173,19 +1136,17 @@ TEST_F(SetTest, multiRootAddToSubsetTest) {
     ASSERT_TRUE(testEl->root1.contains(pckg.id()));
 }
 
-class TestComplexSubsetElement;
-using TestComplexSubsetElementTypes = TupleAppend<UmlTypes, TestComplexSubsetElement>::type;
-class TestComplexSubsetElement : public BaseElement<TestComplexSubsetElementTypes> {
+class TestComplexSubsetElement : public BaseElement<TestTypes> {
     friend class Creator<TestComplexSubsetElement>;
     public:
-        Set<Element, TestComplexSubsetElement> rootSet = Set<Element, TestComplexSubsetElement>(this);
-        Set<NamedElement, TestComplexSubsetElement> rightSet1 = Set<NamedElement, TestComplexSubsetElement>(this);
-        Set<NamedElement, TestComplexSubsetElement> leftSet1 = Set<NamedElement, TestComplexSubsetElement>(this);
-        Set<PackageableElement, TestComplexSubsetElement> rightSet2 = Set<PackageableElement, TestComplexSubsetElement>(this);
-        Set<PackageableElement, TestComplexSubsetElement> leftSet2 = Set<PackageableElement, TestComplexSubsetElement>(this);
-        Set<PackageableElement, TestComplexSubsetElement> leftSet2a = Set<PackageableElement, TestComplexSubsetElement>(this);
-        Set<PackageableElement, TestComplexSubsetElement> rightSet2a = Set<PackageableElement, TestComplexSubsetElement>(this);
-        TestComplexSubsetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestComplexSubsetElementTypes>(elementType, manager) {
+        Set<TestPackage, TestComplexSubsetElement> rootSet = Set<TestPackage, TestComplexSubsetElement>(this);
+        Set<TestPackage, TestComplexSubsetElement> rightSet1 = Set<TestPackage, TestComplexSubsetElement>(this);
+        Set<TestPackage, TestComplexSubsetElement> leftSet1 = Set<TestPackage, TestComplexSubsetElement>(this);
+        Set<TestPackage, TestComplexSubsetElement> rightSet2 = Set<TestPackage, TestComplexSubsetElement>(this);
+        Set<TestPackage, TestComplexSubsetElement> leftSet2 = Set<TestPackage, TestComplexSubsetElement>(this);
+        Set<TestPackage, TestComplexSubsetElement> leftSet2a = Set<TestPackage, TestComplexSubsetElement>(this);
+        Set<TestPackage, TestComplexSubsetElement> rightSet2a = Set<TestPackage, TestComplexSubsetElement>(this);
+        TestComplexSubsetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
             rightSet1.subsets(rootSet);
             leftSet1.subsets(rootSet);
             rightSet2.subsets(rightSet1);
@@ -1206,10 +1167,10 @@ struct ElementInfo<TestComplexSubsetElement> {
 };
 
 TEST_F(SetTest, twoWayMultiSetSplitTest) {
-    Manager<TestComplexSubsetElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestComplexSubsetElement> testEl = m.create<TestComplexSubsetElement>();
-    Package& rightP = *m.create<Package>();
-    Package& leftP = *m.create<Package>();
+    TestPackage& rightP = *m.create<TestPackage>();
+    TestPackage& leftP = *m.create<TestPackage>();
     testEl->rightSet2.add(rightP);
     testEl->leftSet2.add(leftP);
     ASSERT_EQ(testEl->rightSet2.size(), 1);
@@ -1232,8 +1193,8 @@ TEST_F(SetTest, twoWayMultiSetSplitTest) {
     ASSERT_FALSE(testEl->leftSet2a.contains(rightP.getID()));
     ASSERT_FALSE(testEl->leftSet2a.contains(leftP.getID()));
 
-    Package& rightP2 = *m.create<Package>();
-    Package& leftP2 = *m.create<Package>();
+    TestPackage& rightP2 = *m.create<TestPackage>();
+    TestPackage& leftP2 = *m.create<TestPackage>();
     testEl->rightSet1.add(rightP2);
     ASSERT_EQ(testEl->rightSet2.size(), 1);
     ASSERT_EQ(testEl->rightSet1.size(), 2);
@@ -1281,12 +1242,12 @@ TEST_F(SetTest, twoWayMultiSetSplitTest) {
 }
 
 TEST_F(SetTest, complexDividerNodeTest) {
-    Manager<TestComplexSubsetElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestComplexSubsetElement> testEl = m.create<TestComplexSubsetElement>();
-    PackagePtr a = m.create<Package>();
-    PackagePtr b = m.create<Package>();
-    PackagePtr c = m.create<Package>();
-    PackagePtr d = m.create<Package>();
+    UmlPtr<TestPackage> a = m.create<TestPackage>();
+    UmlPtr<TestPackage> b = m.create<TestPackage>();
+    UmlPtr<TestPackage> c = m.create<TestPackage>();
+    UmlPtr<TestPackage> d = m.create<TestPackage>();
     
     testEl->rightSet2.add(a);
     ASSERT_EQ(testEl->rootSet.size(), 1);
@@ -1438,9 +1399,9 @@ TEST_F(SetTest, complexDividerNodeTest) {
 }
 
 TEST_F(SetTest, AddElementThatIsInSuperSet) {
-    Manager<TupleCat<UmlTypes, std::tuple<TestSubsetsElement>>::type> m;
+    Manager<TestTypes> m;
     UmlPtr<TestSubsetsElement> testEl = m.create<TestSubsetsElement>();
-    Package& p = *m.create<Package>();
+    TestPackage& p = *m.create<TestPackage>();
     testEl->root.add(p);
     ASSERT_FALSE(testEl->root.empty());
     ASSERT_TRUE(testEl->sub.empty());
@@ -1458,9 +1419,9 @@ TEST_F(SetTest, AddElementThatIsInSuperSet) {
 }
 
 TEST_F(SetTest, removeFirstElementFromOrderedSetTest) {
-    Manager<TestOrderedSetElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestOrderedSetElement> testEl = m.create<TestOrderedSetElement>();
-    Package& p = *m.create<Package>();
+    TestPackage& p = *m.create<TestPackage>();
     testEl->set.add(p);
     testEl->set.remove(p);
     ASSERT_TRUE(testEl->set.empty());
@@ -1469,11 +1430,11 @@ TEST_F(SetTest, removeFirstElementFromOrderedSetTest) {
 }
 
 TEST_F(SetTest, removeLastElementFromOrderedSetTest) {
-    Manager<TestOrderedSetElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestOrderedSetElement> testEl = m.create<TestOrderedSetElement>();
-    Package& p = *m.create<Package>();
+    TestPackage& p = *m.create<TestPackage>();
     testEl->set.add(p);
-    Package& p2 = *m.create<Package>();
+    TestPackage& p2 = *m.create<TestPackage>();
     testEl->set.add(p2);
     testEl->set.remove(p2);
     ASSERT_EQ(*testEl->set.back(), p);
@@ -1482,13 +1443,13 @@ TEST_F(SetTest, removeLastElementFromOrderedSetTest) {
 }
 
 TEST_F(SetTest, removeMiddleElementFromOrderedSetTest) {
-    Manager<TestOrderedSetElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestOrderedSetElement> testEl = m.create<TestOrderedSetElement>();
-    Package& p = *m.create<Package>();
+    TestPackage& p = *m.create<TestPackage>();
     testEl->set.add(p);
-    Package& p2 = *m.create<Package>();
+    TestPackage& p2 = *m.create<TestPackage>();
     testEl->set.add(p2);
-    Package& p3 = *m.create<Package>();
+    TestPackage& p3 = *m.create<TestPackage>();
     testEl->set.add(p3);
     testEl->set.remove(p2);
     auto it = testEl->set.begin();
@@ -1511,16 +1472,14 @@ TEST_F(SetTest, removeMiddleElementFromOrderedSetTest) {
 //     ASSERT_FALSE(testEl->sub.contains(pckg.getID()));
 // }
 
-class TestTripleSuperSetElement;
-using TestTripleSuperSetElementTypes = TupleAppend<UmlTypes, TestTripleSuperSetElement>::type;
-class TestTripleSuperSetElement : public BaseElement<TestTripleSuperSetElementTypes> {
+class TestTripleSuperSetElement : public BaseElement<TestTypes> {
     friend class Creator<TestTripleSuperSetElement>;
     public:
-        Set<Element, TestTripleSuperSetElement> root = Set<Element, TestTripleSuperSetElement>(this);
-        Set<NamedElement, TestTripleSuperSetElement> set1 = Set<NamedElement, TestTripleSuperSetElement>(this);
-        Set<PackageableElement, TestTripleSuperSetElement> set2 = Set<PackageableElement, TestTripleSuperSetElement>(this);
-        Set<Package, TestTripleSuperSetElement> set3 = Set<Package, TestTripleSuperSetElement>(this);
-        TestTripleSuperSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTripleSuperSetElementTypes>(elementType, manager) {
+        Set<TestPackage, TestTripleSuperSetElement> root = Set<TestPackage, TestTripleSuperSetElement>(this);
+        Set<TestPackage, TestTripleSuperSetElement> set1 = Set<TestPackage, TestTripleSuperSetElement>(this);
+        Set<TestPackage, TestTripleSuperSetElement> set2 = Set<TestPackage, TestTripleSuperSetElement>(this);
+        Set<TestPackage, TestTripleSuperSetElement> set3 = Set<TestPackage, TestTripleSuperSetElement>(this);
+        TestTripleSuperSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
             set1.subsets(root);
             set2.subsets(root);
             set3.subsets(root);
@@ -1538,11 +1497,11 @@ struct ElementInfo<TestTripleSuperSetElement> {
 };
 
 TEST_F(SetTest, tripleRemovePlacholder) {
-    Manager<TestTripleSuperSetElementTypes> m;
+    Manager<TestTypes> m;
     UmlPtr<TestTripleSuperSetElement> testEl = m.create<TestTripleSuperSetElement>();
-    Package& pckg1 = *m.create<Package>();
-    Package& pckg2 = *m.create<Package>();
-    Package& pckg3 = *m.create<Package>();
+    TestPackage& pckg1 = *m.create<TestPackage>();
+    TestPackage& pckg2 = *m.create<TestPackage>();
+    TestPackage& pckg3 = *m.create<TestPackage>();
     pckg1.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAB"));
     pckg2.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAC"));
     pckg3.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAD"));
@@ -1646,17 +1605,15 @@ TEST_F(SetTest, tripleRemovePlacholder) {
     ASSERT_FALSE(testEl->set3.contains(pckg3));
 }
 
-class TestDiamondSuperSetElement;
-using TestDiamondSuperSetElementTypes = TupleAppend<UmlTypes, TestDiamondSuperSetElement>::type;
-class TestDiamondSuperSetElement : public BaseElement<TestDiamondSuperSetElementTypes> 
+class TestDiamondSuperSetElement : public BaseElement<TestTypes> 
 {
     friend class Creator<TestDiamondSuperSetElement>;
 public:
-    Set<Element, TestDiamondSuperSetElement> root = Set<Element, TestDiamondSuperSetElement>(this);
-    Set<NamedElement, TestDiamondSuperSetElement> left = Set<NamedElement, TestDiamondSuperSetElement>(this);
-    Set<PackageableElement, TestDiamondSuperSetElement> right = Set<PackageableElement, TestDiamondSuperSetElement>(this);
-    Set<Package, TestDiamondSuperSetElement> bottom = Set<Package, TestDiamondSuperSetElement>(this);
-    TestDiamondSuperSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestDiamondSuperSetElementTypes>(elementType, manager)
+    Set<TestPackage, TestDiamondSuperSetElement> root = Set<TestPackage, TestDiamondSuperSetElement>(this);
+    Set<TestPackage, TestDiamondSuperSetElement> left = Set<TestPackage, TestDiamondSuperSetElement>(this);
+    Set<TestPackage, TestDiamondSuperSetElement> right = Set<TestPackage, TestDiamondSuperSetElement>(this);
+    Set<TestPackage, TestDiamondSuperSetElement> bottom = Set<TestPackage, TestDiamondSuperSetElement>(this);
+    TestDiamondSuperSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager)
     {
         left.subsets(root);
         right.subsets(root);
@@ -1677,8 +1634,8 @@ struct ElementInfo<TestDiamondSuperSetElement> {
 
 TEST_F(SetTest, VeryBasicDiamondSubsetTest)
 {
-    Manager<TestDiamondSuperSetElementTypes> m;
-    PackagePtr pckg1 = m.create<Package>();
+    Manager<TestTypes> m;
+    UmlPtr<TestPackage> pckg1 = m.create<TestPackage>();
     UmlPtr<TestDiamondSuperSetElement> testEl = m.create<TestDiamondSuperSetElement>();
     testEl->bottom.add(pckg1);
     ASSERT_EQ(testEl->bottom.size(), 1);
@@ -1693,9 +1650,9 @@ TEST_F(SetTest, VeryBasicDiamondSubsetTest)
 
 TEST_F(SetTest, TwoElementsDiamondSubsetTest)
 {
-    Manager<TestDiamondSuperSetElementTypes> m;
-    PackagePtr pckg1 = m.create<Package>();
-    PackagePtr pckg2 = m.create<Package>();
+    Manager<TestTypes> m;
+    UmlPtr<TestPackage> pckg1 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg2 = m.create<TestPackage>();
     UmlPtr<TestDiamondSuperSetElement> testEl = m.create<TestDiamondSuperSetElement>();
     testEl->bottom.add(pckg1);
     ASSERT_EQ(testEl->bottom.size(), 1);
@@ -1724,10 +1681,10 @@ TEST_F(SetTest, TwoElementsDiamondSubsetTest)
 
 TEST_F(SetTest, threeElementDiamondSubsetTest)
 {
-    Manager<TestDiamondSuperSetElementTypes> m;
-    PackagePtr pckg1 = m.create<Package>();
-    PackagePtr pckg2 = m.create<Package>();
-    PackagePtr pckg3 = m.create<Package>();
+    Manager<TestTypes> m;
+    UmlPtr<TestPackage> pckg1 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg2 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg3 = m.create<TestPackage>();
     UmlPtr<TestDiamondSuperSetElement> testEl = m.create<TestDiamondSuperSetElement>();
     testEl->bottom.add(pckg1);
     ASSERT_EQ(testEl->bottom.size(), 1);
@@ -1774,11 +1731,11 @@ TEST_F(SetTest, threeElementDiamondSubsetTest)
 
 TEST_F(SetTest, fourElementDiamondSubsetTest)
 {
-    Manager<TestDiamondSuperSetElementTypes> m;
-    PackagePtr pckg1 = m.create<Package>();
-    PackagePtr pckg2 = m.create<Package>();
-    PackagePtr pckg3 = m.create<Package>();
-    PackagePtr pckg4 = m.create<Package>();
+    Manager<TestTypes> m;
+    UmlPtr<TestPackage> pckg1 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg2 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg3 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg4 = m.create<TestPackage>();
     UmlPtr<TestDiamondSuperSetElement> testEl = m.create<TestDiamondSuperSetElement>();
     testEl->bottom.add(pckg1);
     ASSERT_EQ(testEl->bottom.size(), 1);
@@ -1846,8 +1803,8 @@ TEST_F(SetTest, fourElementDiamondSubsetTest)
 }
 
 TEST_F(SetTest, simpleRemoveFromDiamondSubset) {
-    Manager<TestDiamondSuperSetElementTypes> m;
-    PackagePtr pckg1 = m.create<Package>();
+    Manager<TestTypes> m;
+    UmlPtr<TestPackage> pckg1 = m.create<TestPackage>();
     UmlPtr<TestDiamondSuperSetElement> testEl = m.create<TestDiamondSuperSetElement>();
     testEl->bottom.add(pckg1);
     testEl->bottom.remove(pckg1);
@@ -1862,10 +1819,10 @@ TEST_F(SetTest, simpleRemoveFromDiamondSubset) {
 }
 
 TEST_F(SetTest, removefromDiamondSubset) {
-    Manager<TestDiamondSuperSetElementTypes> m;
-    PackagePtr pckg1 = m.create<Package>();
-    PackagePtr pckg2 = m.create<Package>();
-    PackagePtr pckg3 = m.create<Package>();
+    Manager<TestTypes> m;
+    UmlPtr<TestPackage> pckg1 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg2 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg3 = m.create<TestPackage>();
     UmlPtr<TestDiamondSuperSetElement> testEl = m.create<TestDiamondSuperSetElement>();
     testEl->bottom.add(pckg1);
     testEl->right.add(pckg2);

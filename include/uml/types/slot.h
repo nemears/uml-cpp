@@ -24,8 +24,8 @@ namespace UML {
             Singleton<InstanceSpecification, Slot> m_owningInstance = Singleton<InstanceSpecification, Slot>(this);
             Singleton<StructuralFeature, Slot>& getDefiningFeatureSingleton();
             Singleton<InstanceSpecification, Slot>& getOwningInstanceSingleton();
-            Slot(std::size_t elementType, AbstractManager& manager);
         public:
+            Slot(std::size_t elementType, AbstractManager& manager);
             IndexableOrderedSet<ValueSpecification, Slot>& getValues();
             StructuralFeaturePtr getDefiningFeature() const;
             void setDefiningFeature(StructuralFeature& definingFeature);

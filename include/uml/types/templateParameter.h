@@ -31,8 +31,8 @@ namespace UML {
             Singleton<ParameterableElement, TemplateParameter>& getOwnedParameteredElementSingleton();
             Singleton<ParameterableElement, TemplateParameter>& getDefaultSingleton();
             Singleton<ParameterableElement, TemplateParameter>& getOwnedDefaultSingleton();
-            TemplateParameter(std::size_t elementType, AbstractManager& manager);
         public:
+            TemplateParameter(std::size_t elementType, AbstractManager& manager);
             TemplateSignaturePtr getSignature() const;
             void setSignature(TemplateSignature& signature);
             void setSignature(TemplateSignaturePtr signature);

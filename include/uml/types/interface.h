@@ -14,8 +14,8 @@ namespace UML {
             OrderedSet<Property, Interface> m_ownedAttributes = OrderedSet<Property, Interface>(this);
             OrderedSet<Operation, Interface> m_ownedOperations = OrderedSet<Operation, Interface>(this);
             OrderedSet<Classifier, Interface> m_nestedClassifiers = OrderedSet<Classifier, Interface>(this);
-            Interface(std::size_t elementType, AbstractManager& manager);
         public:
+            Interface(std::size_t elementType, AbstractManager& manager);
             OrderedSet<Property, Interface>& getOwnedAttributes();
             OrderedSet<Operation, Interface>& getOwnedOperations();
             OrderedSet<Classifier, Interface>& getNestedClassifiers();

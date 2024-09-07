@@ -13,8 +13,8 @@ namespace UML {
 
         protected:
             OrderedSet<EnumerationLiteral, Enumeration> m_ownedLiterals = OrderedSet<EnumerationLiteral, Enumeration>(this);
-            Enumeration(std::size_t elementType, AbstractManager& manager);
         public:
+            Enumeration(std::size_t elementType, AbstractManager& manager);
             OrderedSet<EnumerationLiteral, Enumeration>& getOwnedLiterals();
             typedef TypeInfo<std::tuple<DataType>, Enumeration> Info;
     };

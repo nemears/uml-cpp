@@ -1,14 +1,15 @@
 #pragma once
 
 #include "literalSpecification.h"
+#include "uml/managers/abstractManager.h"
 
 namespace UML {
     class LiteralReal : public LiteralSpecification {
 
         protected:
             double m_value = 0;
-            LiteralReal();
         public:
+            LiteralReal(std::size_t elementType, AbstractManager& manager);
             double getValue();
             void setValue(double val);
             typedef TypeInfo<std::tuple<LiteralSpecification>, LiteralReal> Info;

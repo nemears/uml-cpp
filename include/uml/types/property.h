@@ -67,8 +67,8 @@ namespace UML{
             Singleton<Association, Property>& getAssociationSingleton();
             Singleton<Association, Property>& getOwningAssociationSingleton();
             Singleton<Interface, Property>& getInterfaceSingleton();
-            Property(std::size_t elementType, AbstractManager& manager);
         public:
+            Property(std::size_t elementType, AbstractManager& manager);
             AggregationKind getAggregation();
             bool isComposite();
             void setComposite(bool composite);

@@ -4,9 +4,8 @@
 
 namespace UML {
     class LiteralNull : public LiteralSpecification {
-        protected:
-            LiteralNull(std::size_t elementType, AbstractManager& manager);
         public:
+            LiteralNull(std::size_t elementType, AbstractManager& manager);
             typedef TypeInfo<std::tuple<LiteralSpecification>, LiteralNull> Info;
     };
 

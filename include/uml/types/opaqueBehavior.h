@@ -14,8 +14,8 @@ namespace UML {
 
         protected:
             OrderedSet<LiteralString, OpaqueBehavior> m_bodies = OrderedSet<LiteralString, OpaqueBehavior>(this);
-            OpaqueBehavior(std::size_t elementType, AbstractManager& manager);
         public:
+            OpaqueBehavior(std::size_t elementType, AbstractManager& manager);
             OrderedSet<LiteralString, OpaqueBehavior>& getBodies();
             typedef TypeInfo<std::tuple<Behavior>, OpaqueBehavior> Info;
     };

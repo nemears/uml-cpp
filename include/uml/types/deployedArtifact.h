@@ -12,7 +12,7 @@ namespace UML {
 
     template <>
     struct ElementInfo<DeployedArtifact> {
-        static const bool abstract = false;
+        static const bool abstract = true;
         inline static const std::string name {"DeployedArtifact"};
         static SetList sets(__attribute__((unused)) DeployedArtifact& el) {
             return SetList {};

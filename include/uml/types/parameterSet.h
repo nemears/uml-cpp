@@ -16,8 +16,8 @@ namespace UML {
         protected:
             Set<Constraint, ParameterSet> m_conditions = Set<Constraint, ParameterSet>(this);
             Set<Parameter, ParameterSet> m_parameters = Set<Parameter, ParameterSet>(this);
-            ParameterSet(std::size_t elementType, AbstractManager& manager);
         public:
+            ParameterSet(std::size_t elementType, AbstractManager& manager);
             Set<Constraint, ParameterSet>& getConditions();
             Set<Parameter, ParameterSet>& getParameters();
             typedef TypeInfo<std::tuple<NamedElement>, ParameterSet> Info;

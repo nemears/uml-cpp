@@ -24,8 +24,8 @@ namespace UML {
             Singleton<Property, ConnectorEnd> m_definingEnd = Singleton<Property, ConnectorEnd>(this);
             Singleton<ConnectableElement, ConnectorEnd>& getRoleSingleton();
             Singleton<Property, ConnectorEnd>& getDefiningEndSingleton();
-            ConnectorEnd(std::size_t elementType, AbstractManager& manager);
         public:
+            ConnectorEnd(std::size_t elementType, AbstractManager& manager);
             ConnectableElementPtr getRole() const;
             void setRole(ConnectableElementPtr role);
             void setRole(ConnectableElement& role);

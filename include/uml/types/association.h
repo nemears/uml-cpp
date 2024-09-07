@@ -23,8 +23,8 @@ namespace UML {
             IndexableOrderedSet<Property, Association> m_ownedEnds = IndexableOrderedSet<Property, Association>(this);
             IndexableSet<Property, Association> m_navigableOwnedEnds = IndexableSet<Property, Association>(this);
             IndexableSet<Type, Association> m_endTypes = IndexableSet<Type, Association>(this);
-            Association(std::size_t elementType, Association& el);
         public:
+            Association(std::size_t elementType, AbstractManager& el);
             IndexableOrderedSet<Property, Association, MemberEndPolicy>& getMemberEnds();
             IndexableOrderedSet<Property, Association>& getOwnedEnds();
             IndexableSet<Property, Association>& getNavigableOwnedEnds();

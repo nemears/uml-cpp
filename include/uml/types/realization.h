@@ -8,9 +8,8 @@ namespace UML {
      * specification (the supplier) and the other representing an implementation of that specification (the client).
      **/
     class Realization : public Abstraction {
-        protected:
-            Realization(std::size_t elementType);
         public:
+            Realization(std::size_t elementType, AbstractManager& manager);
             typedef TypeInfo<std::tuple<Abstraction>, Realization> Info;
     };
 

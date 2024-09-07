@@ -18,8 +18,8 @@ namespace UML {
         protected:
             Singleton<Enumeration, EnumerationLiteral> m_enumeration = Singleton<Enumeration, EnumerationLiteral>(this);
             Singleton<Enumeration, EnumerationLiteral>& getEnumerationSingleton();
-            EnumerationLiteral();
         public:
+            EnumerationLiteral(std::size_t elementType, AbstractManager& manager);
             EnumerationPtr getEnumeration() const;
             void setEnumeration(Enumeration& enumeration);
             void setEnumeration(EnumerationPtr enumeration);

@@ -24,8 +24,8 @@ namespace UML {
             Singleton<BehavioredClassifier, InterfaceRealization> m_implementingClassifier = Singleton<BehavioredClassifier, InterfaceRealization>(this);
             Singleton<Interface, InterfaceRealization, ContractPolicy>& getContractSingleton();
             Singleton<BehavioredClassifier, InterfaceRealization>& getImplementingClassifierSingleton();
-            InterfaceRealization(std::size_t elementType, AbstractManager& manager);
         public:
+            InterfaceRealization(std::size_t elementType, AbstractManager& manager);
             InterfacePtr getContract() const;
             void setContract(InterfacePtr contract);
             void setContract(Interface& contract);

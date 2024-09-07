@@ -27,8 +27,8 @@ namespace UML {
             Singleton<TemplateBinding, TemplateParameterSubstitution>& getTemplateBindingSingleton();
             Singleton<ParameterableElement, TemplateParameterSubstitution>& getActualSingleton();
             Singleton<ParameterableElement, TemplateParameterSubstitution>& getOwnedActualSingleton();
-            TemplateParameterSubstitution(std::size_t elementType, AbstractManager& manager);
         public:
+            TemplateParameterSubstitution(std::size_t elementType, AbstractManager& manager);
             TemplateParameterPtr getFormal() const;
             void setFormal(TemplateParameter& formal);
             void setFormal(TemplateParameterPtr formal);

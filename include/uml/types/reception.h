@@ -16,8 +16,8 @@ namespace UML {
         protected:
             Singleton<Signal, Reception> m_signal = Singleton<Signal, Reception>(this);
             Singleton<Signal, Reception>& getSignalSingleton();
-            Reception(std::size_t elementType, AbstractManager& manager);
         public:
+            Reception(std::size_t elementType, AbstractManager& manager);
             SignalPtr getSignal() const;
             void setSignal(SignalPtr signal);
             void setSignal(Signal& signal);

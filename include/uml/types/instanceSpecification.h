@@ -26,8 +26,8 @@ namespace UML{
             Set<Slot, InstanceSpecification> m_slots = Set<Slot, InstanceSpecification>(this);
             Singleton <ValueSpecification, InstanceSpecification> m_specification = Singleton<ValueSpecification, InstanceSpecification>(this);
             Singleton<ValueSpecification, InstanceSpecification>& getSpecificationSingleton();
-            InstanceSpecification(std::size_t elementType, AbstractManager& manager);
         public:
+            InstanceSpecification(std::size_t elementType, AbstractManager& manager);
             IndexableSet<Classifier, InstanceSpecification>& getClassifiers();
             Set<Slot, InstanceSpecification>& getSlots();
             ValueSpecificationPtr getSpecification() const;

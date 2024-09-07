@@ -8,9 +8,9 @@ namespace UML{
         friend struct ElementInfo<Model>;
 
         protected:
-            Model(std::size_t elementType, AbstractManager& manager);
             std::string m_viewpoint;
         public:
+            Model(std::size_t elementType, AbstractManager& manager);
             std::string getViewpoint() const;
             void setViewpoint(const std::string& viewpoint);
             typedef TypeInfo<std::tuple<Package>, Model> Info;

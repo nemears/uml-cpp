@@ -7,8 +7,8 @@ namespace UML {
         protected:
             unsigned long m_val;
             bool m_infinite;
-            LiteralUnlimitedNatural(std::size_t elementType, AbstractManager& manager); 
         public:
+            LiteralUnlimitedNatural(std::size_t elementType, AbstractManager& manager); 
             /** 
              *  NOTE: this will always be initialized to 0
              **/   

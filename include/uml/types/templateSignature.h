@@ -22,8 +22,8 @@ namespace UML {
             OrderedSet<TemplateParameter, TemplateSignature> m_parameters = OrderedSet<TemplateParameter, TemplateSignature>(this);
             OrderedSet<TemplateParameter, TemplateSignature> m_ownedParameters = OrderedSet<TemplateParameter, TemplateSignature>(this);
             Singleton<TemplateableElement, TemplateSignature>& getTemplateSingleton();
-            TemplateSignature(std::size_t elementType, AbstractManager& manager);
         public:
+            TemplateSignature(std::size_t elementType, AbstractManager& manager);
             TemplateableElementPtr getTemplate() const;
             void setTemplate(TemplateableElement& temp);
             void setTemplate(TemplateableElementPtr temp);

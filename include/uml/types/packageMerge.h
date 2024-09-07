@@ -20,8 +20,8 @@ namespace UML {
             Singleton<Package, PackageMerge> m_mergedPackage = Singleton<Package, PackageMerge>(this);
             Singleton<Package, PackageMerge>& getReceivingPackageSingleton();
             Singleton<Package, PackageMerge>& getMergedPackageSingleton();
-            PackageMerge(std::size_t elementType, AbstractManager& manager);
         public:
+            PackageMerge(std::size_t elementType, AbstractManager& manager);
             PackagePtr getReceivingPackage() const;
             void setReceivingPackage(Package& receive);
             void setReceivingPackage(PackagePtr receive);

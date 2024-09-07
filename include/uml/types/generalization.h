@@ -27,8 +27,8 @@ namespace UML {
             Set<GeneralizationSet, Generalization> m_generalizationSets = Set<GeneralizationSet, Generalization>(this);
             Singleton<Classifier, Generalization, GeneralPolicy>& getGeneralSingleton();
             Singleton<Classifier, Generalization>& getSpecificSingleton();
-            Generalization(std::size_t elementType, AbstractManager& manager);
         public:
+            Generalization(std::size_t elementType, AbstractManager& manager);
             ClassifierPtr getGeneral() const;
             void setGeneral(ClassifierPtr general);
             void setGeneral(Classifier& general);

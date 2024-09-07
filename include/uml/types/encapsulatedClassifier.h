@@ -30,7 +30,7 @@ namespace UML {
         inline static const std::string name {"EncapsulatedClassifier"};
         static SetList sets(EncapsulatedClassifier& el) {
             return SetList {
-                makeSetPair("ownedPorts", el.getOwnedPorts()),
+                makeSetPair("ownedPorts", el.m_ownedPorts),
                 makeSetPair("ownedAttributes", el.m_ownedAttributes)
             };
         }

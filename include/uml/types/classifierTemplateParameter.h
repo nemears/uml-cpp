@@ -21,8 +21,8 @@ namespace UML {
             Singleton<Classifier, ClassifierTemplateParameter> m_classifierParameteredElement = Singleton<Classifier, ClassifierTemplateParameter>(this);
             Set<Classifier, ClassifierTemplateParameter> m_constrainingClassifiers = Set<Classifier, ClassifierTemplateParameter>(this);
             Singleton<Classifier, ClassifierTemplateParameter>& getParameteredElementSingleton();
-            ClassifierTemplateParameter(std::size_t elementType, AbstractManager& manager);
         public:
+            ClassifierTemplateParameter(std::size_t elementType, AbstractManager& manager);
             ClassifierPtr getParameteredElement() const;
             void setParameteredElement(Classifier* parameteredElement);
             void setParameteredElement(Classifier& parameteredElement);

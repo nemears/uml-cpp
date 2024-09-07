@@ -8,9 +8,8 @@ namespace UML {
 
         friend class Stereotype;
 
-        protected:
-            Profile(std::size_t elementType, AbstractManager& manager);
         public:
+            Profile(std::size_t elementType, AbstractManager& manager);
             typedef TypeInfo<std::tuple<Package>, Profile> Info;
     };
 

@@ -25,8 +25,8 @@ namespace UML {
             Singleton<Profile, Stereotype> m_profile = Singleton<Profile, Stereotype>(this);
             Singleton<Package, Stereotype, OwningPackagePolicy> m_stereotypeOwningPackage = Singleton<Package, Stereotype, OwningPackagePolicy>(this);
             Singleton<Profile, Stereotype>& getProfileSingleton();
-            Stereotype(std::size_t elementType, AbstractManager& manager);
         public:
+            Stereotype(std::size_t elementType, AbstractManager& manager);
             ProfilePtr getProfile() const;
             typedef TypeInfo<std::tuple<Class>, Stereotype> Info;
     };

@@ -20,8 +20,8 @@ namespace UML {
             Set<DeployedArtifact, Deployment> m_deployedArtifacts = Set<DeployedArtifact, Deployment>(this);
             Singleton<DeploymentTarget, Deployment> m_location = Singleton<DeploymentTarget, Deployment>(this);
             Singleton<DeploymentTarget, Deployment>& getLocationSingleton();
-            Deployment(std::size_t elementType, AbstractManager& manager);
         public:
+            Deployment(std::size_t elementType, AbstractManager& manager);
             Set<DeployedArtifact, Deployment>& getDeployedArtifacts();
             DeploymentTargetPtr getLocation() const;
             void setLocation(DeploymentTarget& location);

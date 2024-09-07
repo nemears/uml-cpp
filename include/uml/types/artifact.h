@@ -20,8 +20,8 @@ namespace UML {
             OrderedSet<Property, Artifact> m_ownedAttributes = OrderedSet<Property, Artifact>(this);
             OrderedSet<Operation, Artifact> m_ownedOperations = OrderedSet<Operation, Artifact>(this);
             Set<Manifestation, Artifact> m_manifestations =  Set<Manifestation, Artifact>(this);
-            Artifact(std::size_t elementType, AbstractManager& manager);
         public:
+            Artifact(std::size_t elementType, AbstractManager& manager);
             OrderedSet<Property, Artifact>& getOwnedAttributes();
             OrderedSet<Operation, Artifact>& getOwnedOperations();
             Set<Artifact, Artifact>& getNestedArtifacts();

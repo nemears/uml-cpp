@@ -14,6 +14,7 @@ namespace UML {
     class StructuredClassifier : virtual public Classifier {
 
         friend class Property;
+        friend struct ElementInfo<StructuredClassifier>;
 
         protected:
             struct PartPolicy : IndexablePolicy {
@@ -39,10 +40,10 @@ namespace UML {
         inline static const std::string name {"StructuredClassifier"};
         static SetList sets(StructuredClassifier& el) {
             return SetList {
-                makeSetPair("roles", el.getRoles()),
-                makeSetPair("ownedAttributes", el.getOwnedAttributes()),
-                makeSetPair("parts", el.getParts()),
-                makeSetPair("ownedConnectors", el.getOwnedConnectors())
+                makeSetPair("roles", el.m_roles),
+                makeSetPair("ownedAttributes", el.m_ownedAttributes),
+                makeSetPair("parts", el.m_parts),
+                makeSetPair("ownedConnectors", el.m_ownedConnectors)
             };
         }
     };

@@ -29,8 +29,8 @@ namespace UML {
             Singleton<Namespace, ElementImport> m_importingNamespace = Singleton<Namespace, ElementImport>(this);
             Singleton<PackageableElement, ElementImport, ImportedElementPolicy>& getImportedElementSingleton();
             Singleton<Namespace, ElementImport>& getImportingNamespaceSingleton();
-            ElementImport(std::size_t elementType, AbstractManager& manager);
         public:
+            ElementImport(std::size_t elementType, AbstractManager& manager);
             PackageableElementPtr getImportedElement() const;
             void setImportedElement(PackageableElement* importedElement);
             void setImportedElement(PackageableElement& importedElement);

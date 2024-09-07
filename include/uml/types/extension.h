@@ -34,8 +34,8 @@ namespace UML {
             Singleton<Class, Extension> m_metaClass = Singleton<Class, Extension>(this);
             bool m_setFlag = false;
             Singleton<ExtensionEnd, Extension>& getOwnedEndSingleton();
-            Extension(std::size_t elementType, AbstractManager& manager);
         public:
+            Extension(std::size_t elementType, AbstractManager& manager);
             ExtensionEndPtr getOwnedEnd() const;
             void setOwnedEnd(ExtensionEnd& end);
             void setOwnedEnd(ExtensionEndPtr end);

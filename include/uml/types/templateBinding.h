@@ -24,8 +24,8 @@ namespace UML {
             Set<TemplateParameterSubstitution, TemplateBinding> m_parameterSubstitutions = Set<TemplateParameterSubstitution, TemplateBinding>(this);
             Singleton<TemplateableElement, TemplateBinding>& getBoundElementSingleton();
             Singleton<TemplateSignature, TemplateBinding>& getSignatureSingleton();
-            TemplateBinding(std::size_t elementType, AbstractManager& manager);
         public:
+            TemplateBinding(std::size_t elementType, AbstractManager& manager);
             TemplateableElementPtr getBoundElement() const;
             void setBoundElement(TemplateableElement& el);
             void setBoundElement(TemplateableElementPtr el);

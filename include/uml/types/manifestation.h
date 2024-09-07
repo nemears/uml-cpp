@@ -15,8 +15,8 @@ namespace UML {
         protected:
             Singleton<PackageableElement, Manifestation> m_utilizedElement = Singleton<PackageableElement, Manifestation>(this);
             Singleton<PackageableElement, Manifestation>& getUtilizedElementSingleton();
-            Manifestation(std::size_t elementType, AbstractManager& manager);
         public:
+            Manifestation(std::size_t elementType, AbstractManager& manager);
             PackageableElementPtr getUtilizedElement() const;
             void setUtilizedElement(PackageableElement& utilizedElement);
             void setUtilizedElement(PackageableElementPtr utilizedElement);

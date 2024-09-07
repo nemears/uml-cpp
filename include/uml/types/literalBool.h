@@ -7,8 +7,8 @@ namespace UML {
 
         protected:
             bool m_value = false;
-            LiteralBool(std::size_t elementType, AbstractManager& manager);
         public:
+            LiteralBool(std::size_t elementType, AbstractManager& manager);
             bool getValue();
             void setValue(bool val);
             typedef TypeInfo<std::tuple<LiteralSpecification>, LiteralBool> Info;

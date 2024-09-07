@@ -5,13 +5,11 @@
 
 namespace UML {
     class Dependency : public DirectedRelationship, public PackageableElement {
-
-
         protected:
             Set<NamedElement, Dependency> m_clients = Set<NamedElement, Dependency>(this);
             Set<NamedElement, Dependency> m_suppliers = Set<NamedElement, Dependency>(this);
-            Dependency(std::size_t elementType, AbstractManager& manager);
         public:
+            Dependency(std::size_t elementType, AbstractManager& manager);
             Set<NamedElement, Dependency>& getClients();
             Set<NamedElement, Dependency>& getSuppliers();
             typedef TypeInfo<std::tuple<DirectedRelationship, PackageableElement>, Dependency> Info;

@@ -12,12 +12,12 @@ namespace UML {
         protected:
             Set<Element, Comment> m_annotatedElements = Set<Element, Comment>(this);
             std::string m_body; // TODO move to literal string?
-            Comment();
         public:
+            Comment(std::size_t elementType, AbstractManager& manager);
             std::string getBody() const;
             void setBody(const std::string& body);
             Set<Element, Comment>& getAnnotatedElements();
-            typedef TypeInfo<std::tuple<Comment>, Element> Info;
+            typedef TypeInfo<std::tuple<Element>, Comment> Info;
     };
 
     template <>

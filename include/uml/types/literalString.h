@@ -7,8 +7,8 @@ namespace UML {
 
         protected:
             std::string m_value;
-            LiteralString(std::size_t elementType, AbstractManager& manager);
         public:
+            LiteralString(std::size_t elementType, AbstractManager& manager);
             std::string getValue();
             void setValue(const std::string& val);
             typedef TypeInfo<std::tuple<LiteralSpecification>, LiteralString> Info;

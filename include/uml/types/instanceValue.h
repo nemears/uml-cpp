@@ -16,8 +16,8 @@ namespace UML {
         protected:
             Singleton<InstanceSpecification, InstanceValue> m_instance = Singleton<InstanceSpecification, InstanceValue>(this);
             Singleton<InstanceSpecification, InstanceValue>& getInstanceSingleton();
-            InstanceValue(std::size_t elementType, AbstractManager& manager);
         public:
+            InstanceValue(std::size_t elementType, AbstractManager& manager);
             InstanceSpecificationPtr getInstance() const;
             void setInstance(InstanceSpecification& inst);
             void setInstance(InstanceSpecificationPtr inst);

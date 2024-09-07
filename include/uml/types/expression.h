@@ -13,8 +13,8 @@ namespace UML {
         protected:
             std::string m_symbol = "";
             IndexableOrderedSet<ValueSpecification, Expression> m_operands = IndexableOrderedSet<ValueSpecification, Expression>(this);
-            Expression(std::size_t elementType, AbstractManager& manager);
         public:
+            Expression(std::size_t elementType, AbstractManager& manager);
             IndexableOrderedSet<ValueSpecification, Expression>& getOperands();
             std::string getSymbol();
             void setSymbol(const std::string& sym);

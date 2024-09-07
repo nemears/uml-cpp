@@ -36,8 +36,8 @@ namespace UML {
             Singleton<Class, Operation>& getClassSingleton();
             Singleton<DataType, Operation>& getDataTypeSingleton();
             Singleton<Interface, Operation>& getInterfaceSingleton();
-            Operation(std::size_t elementType, AbstractManager& manager);
         public:
+            Operation(std::size_t elementType, AbstractManager& manager);
             TypePtr getType() const;
             void setType(Type& type);
             void setType(TypePtr type);

@@ -24,8 +24,8 @@ namespace UML{
             IndexableOrderedSet<Operation, Class> m_ownedOperations = IndexableOrderedSet<Operation, Class>(this);
             IndexableOrderedSet<Classifier, Class> m_nestedClassifiers = IndexableOrderedSet<Classifier, Class>(this);
             IndexableSet<Reception, Class> m_ownedReceptions = IndexableSet<Reception, Class>(this);
-            Class(std::size_t elementType, AbstractManager& manager);
         public:
+            Class(std::size_t elementType, AbstractManager& manager);
             IndexableOrderedSet<Property, Class>& getOwnedAttributes();
             IndexableOrderedSet<Operation, Class>& getOwnedOperations();
             IndexableOrderedSet<Classifier, Class>& getNestedClassifiers();

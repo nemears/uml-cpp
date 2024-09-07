@@ -30,8 +30,8 @@ namespace UML {
             bool m_isBehavior = false;
             bool m_isConjugated = false;
             bool m_isService = true;
-            Port(std::size_t elementType, AbstractManager& manager);
         public:
+            Port(std::size_t elementType, AbstractManager& manager);
             bool isBehavior() const;
             void setIsBehavior(bool isBehavior);
             bool isConjugated() const;

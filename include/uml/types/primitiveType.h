@@ -4,9 +4,8 @@
 
 namespace UML{
     class PrimitiveType : public DataType {
-        protected:
-            PrimitiveType(std::size_t elementType, AbstractManager& manager);
         public:
+            PrimitiveType(std::size_t elementType, AbstractManager& manager);
             typedef TypeInfo<std::tuple<DataType>, PrimitiveType> Info;
     };
 

@@ -9,9 +9,8 @@ namespace UML {
      * concept at different levels of abstraction or from different viewpoints.
      **/
     class Abstraction : public Dependency {
-        protected:
-            Abstraction(std::size_t elementType, AbstractManager& manager);
         public:
+            Abstraction(std::size_t elementType, AbstractManager& manager);
             typedef TypeInfo<std::tuple<Dependency>, Abstraction> Info;
     };
 

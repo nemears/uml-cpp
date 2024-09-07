@@ -25,8 +25,8 @@ namespace UML {
             Singleton<Namespace, PackageImport> m_importingNamespace = Singleton<Namespace, PackageImport>(this);
             Singleton<Package, PackageImport, ImportedPackagePolicy>& getImportedPackageSingleton();
             Singleton<Namespace, PackageImport>& getImportingNamespaceSingleton();
-            PackageImport(std::size_t elementType, AbstractManager& manager);
         public:
+            PackageImport(std::size_t elementType, AbstractManager& manager);
             VisibilityKind getVisibility() const;
             void setVisibility(VisibilityKind visibility);
             void setImportedPackage(ID id);

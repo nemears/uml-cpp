@@ -17,7 +17,6 @@ namespace UML {
         friend struct ElementInfo<ParameterableElement>;
 
         protected:
-            typedef TypeInfo<std::tuple<Element>, ParameterableElement> Info;
             Singleton<TemplateParameter, ParameterableElement> m_templateParameter = Singleton<TemplateParameter, ParameterableElement>(this);
             Singleton<TemplateParameter, ParameterableElement> m_owningTemplateParameter = Singleton<TemplateParameter, ParameterableElement>(this);
             Singleton<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
@@ -32,10 +31,13 @@ namespace UML {
             void setTemplateParameter(TemplateParameterPtr parameter);
             void setTemplateParameter(TemplateParameter& parameter);
             void setTemplateParameter(ID id);
+            typedef TypeInfo<std::tuple<Element>, ParameterableElement> Info;
     };
 
     template<>
     struct ElementInfo<ParameterableElement> {
+        static const bool abstract = true;
+        inline static const std::string name {"ParameterableElement"};
         static SetList sets(ParameterableElement& el) {
             return SetList {
                 makeSetPair("templateParameter", el.m_templateParameter),

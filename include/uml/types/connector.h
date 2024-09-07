@@ -32,8 +32,8 @@ namespace UML {
             IndexableSet<Behavior, Connector> m_contracts = IndexableSet<Behavior, Connector>(this);
             IndexableOrderedSet<ConnectorEnd, Connector, EndPolicy> m_ends = IndexableOrderedSet<ConnectorEnd, Connector, EndPolicy>(this);
             Singleton<Association, Connector, TypePolicy>& getTypeSingleton();
-            Connector(std::size_t elementType, AbstractManager& manager);
         public:
+            Connector(std::size_t elementType, AbstractManager& manager);
             AssociationPtr getType() const;
             void setType(AssociationPtr type);
             void setType(Association& type);

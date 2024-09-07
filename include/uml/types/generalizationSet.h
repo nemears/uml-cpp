@@ -22,8 +22,8 @@ namespace UML {
             Singleton<Classifier, GeneralizationSet> m_powerType = Singleton<Classifier, GeneralizationSet>(this);
             Set<Generalization, GeneralizationSet> m_generalizations = Set<Generalization, GeneralizationSet>(this);
             Singleton<Classifier, GeneralizationSet>& getPowerTypeSingleton();
-            GeneralizationSet(std::size_t elementType, AbstractManager& manager);
         public:
+            GeneralizationSet(std::size_t elementType, AbstractManager& manager);
             bool isCovering() const;
             bool isDisjoint() const;
             void setCovering(bool covering);

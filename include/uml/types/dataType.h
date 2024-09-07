@@ -14,11 +14,11 @@ namespace UML {
         protected:
             IndexableOrderedSet<Property, DataType> m_ownedAttributes = IndexableOrderedSet<Property, DataType>(this);
             IndexableOrderedSet<Operation, DataType> m_ownedOperations = IndexableOrderedSet<Operation, DataType>(this);
-            DataType(std::size_t elementType, AbstractManager& manager);
         public:
+            DataType(std::size_t elementType, AbstractManager& manager);
             IndexableOrderedSet<Property, DataType>& getOwnedAttributes();
             IndexableOrderedSet<Operation, DataType>& getOwnedOperations();
-            typedef TypeInfo<std::tuple<DataType>, Classifier> Info;
+            typedef TypeInfo<std::tuple<Classifier>, DataType> Info;
     };
 
     template <>

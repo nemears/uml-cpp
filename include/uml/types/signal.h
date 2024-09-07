@@ -2,8 +2,6 @@
 
 #include "classifier.h"
 #include "uml/managers/typeInfo.h"
-#include "uml/set/orderedSet.h"
-#include "uml/types/element.h"
 
 namespace UML {
     class Signal : public Classifier {
@@ -12,8 +10,8 @@ namespace UML {
 
         protected:
             IndexableOrderedSet<Property, Signal> m_ownedAttributes = IndexableOrderedSet<Property, Signal>(this);
-            Signal(std::size_t elementType, AbstractManager& manager);
         public:
+            Signal(std::size_t elementType, AbstractManager& manager);
             IndexableOrderedSet<Property, Signal>& getOwnedAttributes();
             typedef TypeInfo<std::tuple<Classifier>, Signal> Info;
     };

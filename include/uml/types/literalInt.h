@@ -6,11 +6,11 @@ namespace UML {
     class LiteralInt : public LiteralSpecification {
         protected:
             int m_value = 0; // TODO change to long so we can hold any number?
-            LiteralInt(std::size_t elementType, AbstractManager& manager);
         public:
+            LiteralInt(std::size_t elementType, AbstractManager& manager);
             int getValue();
             void setValue(int val);
-            typedef TypeInfo<std::tuple<LiteralInt>, LiteralSpecification> Info;
+            typedef TypeInfo<std::tuple<LiteralSpecification>, LiteralInt> Info;
     };
 
     template <>

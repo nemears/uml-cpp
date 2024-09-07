@@ -22,8 +22,8 @@ namespace UML {
             Singleton<Package, ProfileApplication> m_applyingPackage = Singleton<Package, ProfileApplication>(this);
             Singleton<Profile, ProfileApplication>& getAppliedProfileSingleton();
             Singleton<Package, ProfileApplication>& getApplyingPackageSingleton();
-            ProfileApplication(std::size_t elementType, AbstractManager& manager);
         public:
+            ProfileApplication(std::size_t elementType, AbstractManager& manager);
             ProfilePtr getAppliedProfile() const;
             void setAppliedProfile(Profile& profile);
             void setAppliedProfile(ProfilePtr profile);

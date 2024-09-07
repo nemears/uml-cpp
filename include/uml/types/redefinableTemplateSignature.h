@@ -30,8 +30,8 @@ namespace UML {
             Set<TemplateParameter, RedefinableTemplateSignature, ParameterPolicy> m_redefinableTemplateSignatureParameters = Set<TemplateParameter, RedefinableTemplateSignature, ParameterPolicy>(this);
             ReadOnlySet<TemplateParameter, RedefinableTemplateSignature> m_inheritedParameters = ReadOnlySet<TemplateParameter, RedefinableTemplateSignature>(this);
             Singleton<Classifier, RedefinableTemplateSignature>& getClassifierSingleton();
-            RedefinableTemplateSignature(std::size_t elementType, AbstractManager& manager);
         public:
+            RedefinableTemplateSignature(std::size_t elementType, AbstractManager& manager);
             ClassifierPtr getClassifier() const;
             void setClassifier(Classifier* classifier);
             void setClassifier(Classifier& classifier);

@@ -46,8 +46,8 @@ namespace UML {
             ParameterEffectKind m_effect = ParameterEffectKind::NONE;
             Singleton<Operation, Parameter>& getOperationSingleton();
             Singleton<ValueSpecification, Parameter>& getDefaultValueSingleton();
-            Parameter(std::size_t elementType, AbstractManager& manager);
         public:
+            Parameter(std::size_t elementType, AbstractManager& manager);
             OperationPtr getOperation() const;
             void setOperation(Operation& operation);
             void setOperation(OperationPtr operation);

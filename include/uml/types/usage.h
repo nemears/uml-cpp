@@ -14,8 +14,8 @@ namespace UML {
                 void elementRemoved(NamedElement& el, Usage& me);
             };
             Set<NamedElement, Usage, ClientPolicy> m_usageClients = Set<NamedElement, Usage, ClientPolicy>(this);
-            Usage(std::size_t elementType, AbstractManager& manager);
         public:
+            Usage(std::size_t elementType, AbstractManager& manager);
             typedef TypeInfo<std::tuple<Dependency>, Usage> Info;
     };
 

@@ -17,8 +17,8 @@ namespace UML {
         private:
             Singleton<Stereotype, ExtensionEnd> m_extensionType = Singleton<Stereotype, ExtensionEnd>(this);
             Singleton<Stereotype, ExtensionEnd>& getTypeSingleton();
-            ExtensionEnd(std::size_t elementType);
         public:
+            ExtensionEnd(std::size_t elementType, AbstractManager& manager);
             TypePtr getType() const override;
             void setType(Stereotype& stereotype);
             void setType(StereotypePtr stereotype);

@@ -110,7 +110,7 @@ namespace UML {
             std::unordered_map<std::size_t, std::unique_ptr<AbstractStaticSetFunctor<Tlist>>> m_types;
             std::mutex m_graphMutex;
             std::unordered_map<ID, std::shared_ptr<ManagerNode>> m_graph;
-            AbstractElementPtr m_root;
+            UmlPtr<BaseElement<Tlist>> m_root;
 
             SetList getAllSets(BaseElement<Tlist>& el) {
                 return (*m_types.at(el.m_elementType))(el);
@@ -259,11 +259,11 @@ namespace UML {
                 return ret;
             }
 
-            void setRoot(AbstractElementPtr root) {
+            void setRoot(UmlPtr<BaseElement<Tlist>> root) {
                 m_root = root;
             }
 
-            AbstractElementPtr getRoot() const {
+            UmlPtr<BaseElement<Tlist>> getRoot() const {
                 return m_root;
             }
 
@@ -282,7 +282,7 @@ namespace UML {
                 }
             }
 
-            void erase(AbstractElement& el) {
+            void erase(BaseElement<Tlist>& el) {
                 auto id = el.getID();
                 PersistencePolicy::eraseEl(id);
                 for (auto& referencePair : el.m_node.lock()->m_references) {

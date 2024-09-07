@@ -75,7 +75,7 @@ namespace UML {
         UmlPtr<V> t = m.create<V>();
         UmlPtr<V> t2 = m.create<V>();
         ASSERT_NO_THROW(((*u).*acessor)().add(*t));
-        m.setRoot(u.ptr());
+        m.setRoot(u);
         m.mount(".");
         u.release();
         ASSERT_FALSE(u.loaded());
@@ -127,12 +127,12 @@ namespace UML {
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
         UmlPtr<V> t2 = m.create<V>();
-        ASSERT_NO_THROW(((*u).*mutator)(t.ptr()));
+        ASSERT_NO_THROW(((*u).*mutator)(t));
         ASSERT_EQ(((*u).*acessor)(), t);
         ASSERT_NO_THROW(((*u).*mutator)(0));
         ASSERT_FALSE(((*u).*acessor)());
-        ((*u).*mutator)(t.ptr());
-        ASSERT_NO_THROW(((*u).*mutator)(t2.ptr()));
+        ((*u).*mutator)(t);
+        ASSERT_NO_THROW(((*u).*mutator)(t2));
         ASSERT_EQ(*((*u).*acessor)(), *t2);
     }
 
@@ -141,7 +141,7 @@ namespace UML {
         UmlManager m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
-        ((*u).*mutator)(t.ptr());
+        ((*u).*mutator)(t);
         ID newID = ID::randomID();
         t->setID(newID);
         ASSERT_EQ(((*u).*acessor)().id(), newID);
@@ -153,9 +153,9 @@ namespace UML {
         UmlManager m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
-        m.setRoot(u.ptr());
+        m.setRoot(u);
         m.mount(".");
-        ASSERT_NO_THROW(((*u).*mutator)(t.ptr()));
+        ASSERT_NO_THROW(((*u).*mutator)(t));
         ASSERT_EQ(((*u).*acessor)(), t);
         u.release();
         ASSERT_EQ(((*u).*acessor)(), t);
@@ -166,7 +166,7 @@ namespace UML {
         m.erase(*t);
         ASSERT_FALSE(((*u).*acessor)());
         UmlPtr<V> t2 = m.create<V>();
-        ASSERT_NO_THROW(((*u).*mutator)(t2.ptr()));
+        ASSERT_NO_THROW(((*u).*mutator)(t2));
         u.release();
         t2.release();
         m.erase(*u);
@@ -179,7 +179,7 @@ namespace UML {
         UmlManager m;
         UmlPtr<W> u = m.create<W>();
         UmlPtr<V> t = m.create<V>();
-        ASSERT_NO_THROW(((*u).*mutator)(t.ptr()));
+        ASSERT_NO_THROW(((*u).*mutator)(t));
         ASSERT_NO_THROW(m.erase(*t));
         ASSERT_FALSE(((*u).*acessor)());
     }

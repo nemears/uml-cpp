@@ -1,15 +1,23 @@
 #pragma once
 
+#include "uml/managers/typeInfo.h"
+#include "uml/types/element.h"
 #include "valueSpecification.h"
 
 namespace UML {
     class LiteralSpecification : public ValueSpecification {
         protected:
-            LiteralSpecification();
+            LiteralSpecification(std::size_t elementType, AbstractManager& manager);
         public:
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::LITERAL_SPECIFICATION;
-            };
+            typedef TypeInfo<std::tuple<ValueSpecification>, LiteralSpecification> Info;
+    };
+
+    template <>
+    struct ElementInfo<LiteralSpecification> {
+        static const bool abstract = true;
+        inline static std::string name {"LiteralSpecification"};
+        static SetList sets(__attribute__((unused)) LiteralSpecification& el) {
+            return SetList {};
+        }
     };
 }

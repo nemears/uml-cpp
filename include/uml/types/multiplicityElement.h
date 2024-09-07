@@ -9,6 +9,9 @@ namespace UML {
     typedef UmlPtr<ValueSpecification> ValueSpecificationPtr;
 
     class MultiplicityElement : virtual public Element {
+
+        friend struct ElementInfo<MultiplicityElement>;
+
         protected:
             bool m_isOrdered = false;
             bool m_isUnique = true;
@@ -26,13 +29,12 @@ namespace UML {
             Singleton<ValueSpecification, MultiplicityElement, UpperPolicy> m_upVal = Singleton<ValueSpecification, MultiplicityElement, UpperPolicy>(this);
             Singleton<ValueSpecification, MultiplicityElement, LowerPolicy>& getLowerValueSingleton();
             Singleton<ValueSpecification, MultiplicityElement, UpperPolicy>& getUpperValueSingleton();
-            MultiplicityElement();
+            MultiplicityElement(std::size_t elementType, AbstractManager& manager);
         private:
             bool m_multiplicityIsSpecified = false;
             bool m_lowSpecified = false;
             bool m_upSpecified = false;
         public:
-            virtual ~MultiplicityElement();
             int getLower();
             void setLower(const int low);
             ValueSpecificationPtr getLowerValue() const;
@@ -60,9 +62,18 @@ namespace UML {
             void setIsOrdered(bool isOrdered);
             bool isUnique() const;
             void setIsUnique(bool isUnique);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::MULTIPLICITY_ELEMENT;
+            typedef TypeInfo<std::tuple<Element>, MultiplicityElement> Info;
+    };
+
+    template <>
+    struct ElementInfo<MultiplicityElement> {
+        static const bool abstract = true;
+        inline static const std::string name{"MultiplicityElement"};
+        static SetList sets(MultiplicityElement& el) {
+            return SetList {
+                makeSetPair("lowerValue", el.m_lowVal),
+                makeSetPair("upperValue", el.m_upVal)
             };
+        }
     };
 }

@@ -15,22 +15,20 @@ namespace UML {
 
     class TemplateParameterSubstitution : public Element {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class TemplateBinding;
+        friend struct ElementInfo<TemplateParameterSubstitution>;
 
-        private:
+        protected:
             Singleton<TemplateParameter, TemplateParameterSubstitution> m_formal = Singleton<TemplateParameter, TemplateParameterSubstitution>(this);
             Singleton<TemplateBinding, TemplateParameterSubstitution> m_templateBinding = Singleton<TemplateBinding, TemplateParameterSubstitution>(this);
             Singleton<ParameterableElement, TemplateParameterSubstitution> m_actual = Singleton<ParameterableElement, TemplateParameterSubstitution>(this);
             Singleton<ParameterableElement, TemplateParameterSubstitution> m_ownedActual = Singleton<ParameterableElement, TemplateParameterSubstitution>(this);
-            void referenceErased(ID id) override;
             Singleton<TemplateParameter, TemplateParameterSubstitution>& getFormalSingleton();
             Singleton<TemplateBinding, TemplateParameterSubstitution>& getTemplateBindingSingleton();
             Singleton<ParameterableElement, TemplateParameterSubstitution>& getActualSingleton();
             Singleton<ParameterableElement, TemplateParameterSubstitution>& getOwnedActualSingleton();
-            TemplateParameterSubstitution();
+            TemplateParameterSubstitution(std::size_t elementType, AbstractManager& manager);
         public:
-            ~TemplateParameterSubstitution();
             TemplateParameterPtr getFormal() const;
             void setFormal(TemplateParameter& formal);
             void setFormal(TemplateParameterPtr formal);
@@ -47,9 +45,20 @@ namespace UML {
             void setOwnedActual(ParameterableElement& actual);
             void setOwnedActual(ParameterableElementPtr actual);
             void setOwnedActual(ID id);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::TEMPLATE_PARAMETER_SUBSTITUTION;
+            typedef TypeInfo<std::tuple<Element>, TemplateParameterSubstitution> Info;
+    };
+
+    template <>
+    struct ElementInfo<TemplateParameterSubstitution> {
+        static const bool abstract = false;
+        inline static const std::string name {"TemplateParameterSubstitution"};
+        static SetList sets(TemplateParameterSubstitution& el) {
+            return SetList {
+                makeSetPair("formal", el.m_formal),
+                makeSetPair("binding", el.m_templateBinding),
+                makeSetPair("actual", el.m_actual),
+                makeSetPair("ownedActual", el.m_ownedActual)
             };
+        }
     };
 }

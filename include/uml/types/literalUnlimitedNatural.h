@@ -4,13 +4,10 @@
 
 namespace UML {
     class LiteralUnlimitedNatural : public LiteralSpecification {
-
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
-
-        private:
+        protected:
             unsigned long m_val;
             bool m_infinite;
-            LiteralUnlimitedNatural(); 
+            LiteralUnlimitedNatural(std::size_t elementType, AbstractManager& manager); 
         public:
             /** 
              *  NOTE: this will always be initialized to 0
@@ -19,9 +16,15 @@ namespace UML {
             unsigned long getNumberValue();
             void setNumberValue(unsigned long val);
             void setInfinite();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::LITERAL_UNLIMITED_NATURAL;
-            };
+            typedef TypeInfo<std::tuple<LiteralSpecification>, LiteralUnlimitedNatural> Info;
+    };
+
+    template <>
+    struct ElementInfo<LiteralUnlimitedNatural> {
+        static const bool abstract = false;
+        inline static const std::string name {"LiteralUnlimitedNatural"};
+        static SetList sets(__attribute__((unused)) LiteralUnlimitedNatural& el) {
+            return SetList{};
+        }
     };
 }

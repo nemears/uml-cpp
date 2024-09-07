@@ -1,6 +1,7 @@
 #pragma once
 
 #include "element.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/singleton.h"
 
 namespace UML {
@@ -14,10 +15,10 @@ namespace UML {
 
     class TemplateParameter : virtual public Element {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class TemplateParameterSubstitution;
         friend class TemplateSignature;
         friend class ParameterableElement;
+        friend struct ElementInfo<TemplateParameter>;
         
         protected:
             Singleton<TemplateSignature, TemplateParameter> m_signature = Singleton<TemplateSignature, TemplateParameter>(this);
@@ -25,15 +26,13 @@ namespace UML {
             Singleton<ParameterableElement, TemplateParameter> m_ownedParameteredElement = Singleton<ParameterableElement, TemplateParameter>(this);
             Singleton<ParameterableElement, TemplateParameter> m_default = Singleton<ParameterableElement, TemplateParameter>(this);
             Singleton<ParameterableElement, TemplateParameter> m_ownedDefault = Singleton<ParameterableElement, TemplateParameter>(this);
-            void referenceErased(ID id) override;
             Singleton<TemplateSignature, TemplateParameter>& getSignatureSingleton();
             Singleton<ParameterableElement, TemplateParameter>& getParameteredElementSingleton();
             Singleton<ParameterableElement, TemplateParameter>& getOwnedParameteredElementSingleton();
             Singleton<ParameterableElement, TemplateParameter>& getDefaultSingleton();
             Singleton<ParameterableElement, TemplateParameter>& getOwnedDefaultSingleton();
-            TemplateParameter();
+            TemplateParameter(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~TemplateParameter();
             TemplateSignaturePtr getSignature() const;
             void setSignature(TemplateSignature& signature);
             void setSignature(TemplateSignaturePtr signature);
@@ -54,9 +53,21 @@ namespace UML {
             void setOwnedDefault(ParameterableElement& el);
             void setOwnedDefault(ParameterableElementPtr el);
             void setOwnedDefault(ID id);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::TEMPLATE_PARAMETER;
+            typedef TypeInfo<std::tuple<Element>, TemplateParameter> Info;
+    };
+
+    template <>
+    struct ElementInfo<TemplateParameter> {
+        static const bool abstract = false;
+        inline static std::string name {"TemplateParameter"};
+        static SetList sets(TemplateParameter& el) {
+            return SetList {
+                makeSetPair("signature", el.m_signature),
+                makeSetPair("ownedParameteredElement", el.m_ownedParameteredElement),
+                makeSetPair("parameteredElement", el.m_parameteredElement),
+                makeSetPair("default", el.m_default),
+                makeSetPair("ownedDefault", el.m_ownedDefault)
             };
+        }
     };
 }

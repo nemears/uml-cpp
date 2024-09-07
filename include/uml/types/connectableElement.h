@@ -2,7 +2,9 @@
 
 #include "typedElement.h"
 #include "parameterableElement.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/set.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -10,16 +12,24 @@ namespace UML {
 
     class ConnectableElement : virtual public TypedElement, virtual public ParameterableElement {
 
+        friend struct ElementInfo<ConnectableElement>;
+
         protected:
             ReadOnlySet<ConnectorEnd, ConnectableElement> m_ends = ReadOnlySet<ConnectorEnd, ConnectableElement>(this);
-            void referenceErased(ID id) override;
-            ConnectableElement();
+            ConnectableElement(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~ConnectableElement();
             ReadOnlySet<ConnectorEnd, ConnectableElement>& getEnds();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::CONNECTABLE_ELEMENT;
+            typedef TypeInfo<std::tuple<TypedElement, ParameterableElement>, ConnectableElement> Info;
+    };
+
+    template <>
+    struct ElementInfo<ConnectableElement> {
+        static bool const abstract = true;
+        inline static const std::string name {"ConnectableElement"};
+        static SetList sets(ConnectableElement& el) {
+            return SetList {
+                makeSetPair("ends", el.m_ends)
             };
+        }
     };
 }

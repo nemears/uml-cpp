@@ -5,17 +5,21 @@
 namespace UML {
     class LiteralBool : public LiteralSpecification {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
-
         protected:
             bool m_value = false;
-            LiteralBool();
+            LiteralBool(std::size_t elementType, AbstractManager& manager);
         public:
             bool getValue();
             void setValue(bool val);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::LITERAL_BOOL;
-            };
+            typedef TypeInfo<std::tuple<LiteralSpecification>, LiteralBool> Info;
+    };
+
+    template <>
+    struct ElementInfo<LiteralBool> {
+        static const bool abstract = false;
+        inline static const std::string name {"LiteralBool"};
+        static SetList sets(__attribute__((unused)) LiteralBool& el) {
+            return SetList {};
+        }
     };
 }

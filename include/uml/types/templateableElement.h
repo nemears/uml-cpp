@@ -1,5 +1,4 @@
-#ifndef _UML_TEMPLATEABLE_ELEMENT_H_
-#define _UML_TEMPLATEABLE_ELEMENT_H_
+#pragma once
 
 #include "element.h"
 #include "uml/set/singleton.h"
@@ -15,6 +14,7 @@ namespace UML {
     class TemplateableElement : virtual public Element {
 
         friend class TemplateSignature;
+        friend struct ElementInfo<TemplateableElement>;
         
         protected:
             Singleton<TemplateSignature, TemplateableElement> m_ownedTemplateSignature = Singleton<TemplateSignature, TemplateableElement>(this);
@@ -22,17 +22,25 @@ namespace UML {
             Singleton<TemplateSignature, TemplateableElement>& getOwnedTemplateSignatureSingleton();
             TemplateableElement();
         public:
-            virtual ~TemplateableElement();
+            virtual ~TemplateableElement() {}
             TemplateSignaturePtr getOwnedTemplateSignature() const;
             void setOwnedTemplateSignature(TemplateSignature& signature);
             void setOwnedTemplateSignature(TemplateSignaturePtr signature);
             void setOwnedTemplateSignature(ID id);
             Set<TemplateBinding, TemplateableElement>& getTemplateBindings();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::TEMPLATEABLE_ELEMENT;
+            typedef TypeInfo<std::tuple<Element>, TemplateableElement> Info;
+    };
+
+    template <>
+    struct ElementInfo<TemplateableElement> {
+        static const bool abstract = true;
+        inline static const std::string name {"TemplateableElement"};
+        static SetList sets(TemplateableElement& el) {
+            return SetList {
+                makeSetPair("ownedTemplate", el.m_ownedTemplateSignature),
+                makeSetPair("templateBindings", el.m_templateBindings)
             };
+        }
     };
 }
 
-#endif

@@ -2,6 +2,8 @@
 
 #include "multiplicityElement.h"
 #include "connectableElement.h"
+#include "uml/managers/abstractManager.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -31,8 +33,8 @@ namespace UML {
 
     class Parameter : public ConnectableElement , public MultiplicityElement {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Operation;
+        friend struct ElementInfo<Parameter>;
 
         protected:
             ParameterDirectionKind m_direction = ParameterDirectionKind::NONE;
@@ -44,10 +46,8 @@ namespace UML {
             ParameterEffectKind m_effect = ParameterEffectKind::NONE;
             Singleton<Operation, Parameter>& getOperationSingleton();
             Singleton<ValueSpecification, Parameter>& getDefaultValueSingleton();
-            void referenceErased(ID id) override;
-            Parameter();
+            Parameter(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Parameter();
             OperationPtr getOperation() const;
             void setOperation(Operation& operation);
             void setOperation(OperationPtr operation);
@@ -65,9 +65,19 @@ namespace UML {
             bool isStream() const;
             void setIsStream(bool isStream);
             Set<ParameterSet, Parameter>& getParameterSets();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::PARAMETER;
+            typedef TypeInfo<std::tuple<ConnectableElement, MultiplicityElement>, Parameter> Info;
+    };
+
+    template <>
+    struct ElementInfo<Parameter> {
+        static const bool abstract = false;
+        inline static const std::string name {"Parameter"};
+        static SetList sets(Parameter& el) {
+            return SetList{
+                makeSetPair("operation", el.m_operation),
+                makeSetPair("defaultValue", el.m_defaultValue),
+                makeSetPair("parameterSets", el.m_parameterSets)
             };
+        }
     };
 }

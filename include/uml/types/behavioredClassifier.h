@@ -1,6 +1,7 @@
 #pragma once
 
 #include "classifier.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -9,6 +10,8 @@ namespace UML {
     typedef UmlPtr<Behavior> BehaviorPtr;
 
     class BehavioredClassifier : virtual public Classifier {
+
+        friend struct ElementInfo<BehavioredClassifier>;
 
         protected:
             struct InterfaceRealizationPolicy {
@@ -21,16 +24,25 @@ namespace UML {
             Singleton<Behavior, BehavioredClassifier>& getClassifierBehaviorSingleton();
             BehavioredClassifier();
         public:
-            virtual ~BehavioredClassifier();
             IndexableSet<Behavior, BehavioredClassifier>& getOwnedBehaviors();
             BehaviorPtr getClassifierBehavior() const;
             void setClassifierBehavior(Behavior& behavior);
             void setClassifierBehavior(BehaviorPtr behavior);
             void setClassifierBehavior(ID id);
             Set<InterfaceRealization, BehavioredClassifier, InterfaceRealizationPolicy>& getInterfaceRealizations();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::BEHAVIORED_CLASSIFIER;
+            typedef TypeInfo<std::tuple<Classifier>, BehavioredClassifier> Info;
+    };
+
+    template <>
+    struct ElementInfo<BehavioredClassifier> {
+        static const bool abstract = true;
+        inline static const std::string name {"BehavioredClassifier"};
+        static SetList sets(BehavioredClassifier& el) {
+            return SetList {
+                makeSetPair("ownedBehaviors", el.m_ownedBehaviors),
+                makeSetPair("classifierBehavior", el.m_classifierBehavior),
+                makeSetPair("interfaceRealizations", el.m_interfaceRealizations)
             };
+        }
     };
 }

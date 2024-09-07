@@ -9,17 +9,24 @@ namespace UML {
 
     class DeploymentTarget : virtual public NamedElement {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        friend struct ElementInfo<DeploymentTarget>;
 
         protected:
             Set<Deployment, DeploymentTarget> m_deployments = Set<Deployment, DeploymentTarget>(this);
-            DeploymentTarget();
+            DeploymentTarget(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~DeploymentTarget();
             Set<Deployment, DeploymentTarget>& getDeployments();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::DEPLOYMENT_TARGET;
+            typedef TypeInfo<std::tuple<NamedElement>, DeploymentTarget> Info;
+    };
+
+    template <>
+    struct ElementInfo<DeploymentTarget> {
+        static const bool abstract = true;
+        inline static const std::string name {"DeploymentTarget"};
+        static SetList sets(DeploymentTarget& el) {
+            return SetList{
+                makeSetPair("deployments", el.m_deployments)
             };
+        }
     };
 }

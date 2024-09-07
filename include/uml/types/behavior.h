@@ -2,6 +2,7 @@
 
 #include "class.h"
 #include "uml/set/singleton.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -12,23 +13,31 @@ namespace UML {
     class Behavior : public Class {
 
         friend class BehavioralFeature;
+        friend struct ElementInfo<Behavior>;
 
         protected:
             Set<Parameter, Behavior> m_ownedParameters = Set<Parameter, Behavior>(this);
             Singleton<BehavioralFeature, Behavior> m_specification = Singleton<BehavioralFeature, Behavior>(this);
-            void referenceErased(ID id) override;
             Singleton<BehavioralFeature, Behavior>& getSpecificationSingleton();
-            Behavior();
+            Behavior(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Behavior();
             Set<Parameter, Behavior>& getOwnedParameters();
             BehavioralFeaturePtr getSpecification() const;
             void setSpecification(BehavioralFeature& specification);
             void setSpecification(BehavioralFeaturePtr specification);
             void setSpecification(ID id);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::BEHAVIOR;
+            typedef TypeInfo<std::tuple<Class>, Behavior> Info;
+    };
+
+    template <>
+    struct ElementInfo<Behavior> {
+        static const bool abstract = true;
+        inline static const std::string name {"Behavior"};
+        static SetList sets(Behavior& el) {
+            return SetList {
+                makeSetPair("ownedParameter", el.getOwnedParameters()),
+                makeSetPair("specification", el.m_specification)
             };
+        }
     };
 }

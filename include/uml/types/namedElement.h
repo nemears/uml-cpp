@@ -31,7 +31,7 @@ namespace UML {
                     void elementRemoved(Namespace& el, NamedElement& me);
             };
             ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy> m_namespace = ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>(this);
-            // Set<Dependency, NamedElement>  m_clientDependencies = Set<Dependency, NamedElement>(this);
+            Set<Dependency, NamedElement>  m_clientDependencies = Set<Dependency, NamedElement>(this);
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
             void updateQualifiedName(std::string absoluteNamespace);
             ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>& getNamespaceSingleton();
@@ -41,7 +41,7 @@ namespace UML {
             virtual void setName(const std::string &name);
             std::string getQualifiedName();
             NamespacePtr getNamespace() const;
-            // Set<Dependency, NamedElement, DoNothingPolicy>& getClientDependencies();
+            Set<Dependency, NamedElement, DoNothingPolicy>& getClientDependencies();
             VisibilityKind getVisibility();
             void setVisibility(VisibilityKind visibility);
             typedef TypeInfo<std::tuple<Element>, NamedElement> Info;
@@ -55,8 +55,8 @@ namespace UML {
         inline static const std::string name {"NamedElement"};
         static SetList sets(NamedElement& el) {
             return SetList {
-                std::make_pair<std::string, AbstractSet*>("namespace", &el.m_namespace)// ,
-                // std::make_pair<std::string, AbstractSet*>("clientDependencies", &el.getClientDependencies())
+                std::make_pair<std::string, AbstractSet*>("namespace", &el.m_namespace),
+                std::make_pair<std::string, AbstractSet*>("clientDependencies", &el.getClientDependencies())
             };
         }
     };

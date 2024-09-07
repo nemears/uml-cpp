@@ -2,6 +2,7 @@
 
 #include "directedRelationship.h"
 #include "uml/set/singleton.h"
+#include "uml/types/element.h"
 
 namespace UML {
     
@@ -12,16 +13,15 @@ namespace UML {
     class PackageMerge : public DirectedRelationship {
 
         friend class Package;
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        friend struct ElementInfo<PackageMerge>;
 
         protected:
             Singleton<Package, PackageMerge> m_receivingPackage = Singleton<Package, PackageMerge>(this);
             Singleton<Package, PackageMerge> m_mergedPackage = Singleton<Package, PackageMerge>(this);
             Singleton<Package, PackageMerge>& getReceivingPackageSingleton();
             Singleton<Package, PackageMerge>& getMergedPackageSingleton();
-            PackageMerge();
+            PackageMerge(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~PackageMerge();
             PackagePtr getReceivingPackage() const;
             void setReceivingPackage(Package& receive);
             void setReceivingPackage(PackagePtr receive);
@@ -30,9 +30,18 @@ namespace UML {
             void setMergedPackage(Package& merge);
             void setMergedPackage(PackagePtr merge);
             void setMergedPackage(ID id);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::PACKAGE_MERGE;
+            typedef TypeInfo<std::tuple<DirectedRelationship>, PackageMerge> Info;
+    };
+
+    template <>
+    struct ElementInfo<PackageMerge> {
+        static const bool abstract = false;
+        inline static std::string name {"PackageMerge"};
+        static SetList sets(PackageMerge& el) {
+            return SetList{
+                makeSetPair("receivingPackage", el.m_receivingPackage),
+                makeSetPair("mergedPackage", el.m_mergedPackage)
             };
+        }
     };
 }

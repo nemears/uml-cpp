@@ -1,24 +1,31 @@
 #pragma once
 #include "packageableElement.h"
 #include "directedRelationship.h"
+#include "uml/types/element.h"
 
 namespace UML {
     class Dependency : public DirectedRelationship, public PackageableElement {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
             Set<NamedElement, Dependency> m_clients = Set<NamedElement, Dependency>(this);
             Set<NamedElement, Dependency> m_suppliers = Set<NamedElement, Dependency>(this);
-            void referenceErased(ID id) override;
-            Dependency();
+            Dependency(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Dependency();
             Set<NamedElement, Dependency>& getClients();
             Set<NamedElement, Dependency>& getSuppliers();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::DEPENDENCY;
+            typedef TypeInfo<std::tuple<DirectedRelationship, PackageableElement>, Dependency> Info;
+    };
+
+    template <>
+    struct ElementInfo<Dependency> {
+        static const bool abstract = false;
+        inline static const std::string name {"Dependency"};
+        static SetList sets(Dependency& el) {
+            return SetList {
+                makeSetPair("clients", el.getClients()),
+                makeSetPair("suppliers", el.getSuppliers())
             };
+        }
     };
 }

@@ -2,6 +2,7 @@
 
 #include "namedElement.h"
 #include "uml/set/set.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -11,15 +12,22 @@ namespace UML {
         protected:
             ReadOnlySet<RedefinableElement, RedefinableElement> m_redefinedElement = ReadOnlySet<RedefinableElement, RedefinableElement>(this);
             ReadOnlySet<Classifier, RedefinableElement> m_redefinitionContext = ReadOnlySet<Classifier, RedefinableElement>(this);
-            void referenceErased(ID id) override;
             RedefinableElement();
         public:
-            virtual ~RedefinableElement();
             ReadOnlySet<RedefinableElement, RedefinableElement>& getRedefinedElements();
             ReadOnlySet<Classifier, RedefinableElement>& getRedefinitionContext();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::REDEFINABLE_ELEMENT;
+            typedef TypeInfo<std::tuple<NamedElement>, RedefinableElement> Info;
+    };
+
+    template <>
+    struct ElementInfo<RedefinableElement> {
+        static const bool abstract = true;
+        inline static const std::string name {"RedefinableElement"};
+        static SetList sets(RedefinableElement& el) {
+            return SetList {
+                makeSetPair("redefinedElements", el.getRedefinedElements()),
+                makeSetPair("redefinitionContext", el.getRedefinitionContext())
             };
+        }
     };
 }

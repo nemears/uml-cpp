@@ -1,7 +1,9 @@
 #pragma once
 
 #include "association.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/indexableSet.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -12,16 +14,15 @@ namespace UML {
 
     class Extension : public Association {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class ExtensionEnd;
         friend class Property;
+        friend struct ElementInfo<Extension>;
 
-        private:
+        public:
             /**
              * NOTE: keeping it simple for now, uml suggests dealing with metaclasses as actual Classes stored within
              * every model, but obviously it will be more efficient to just keep track of it by enum right now.
              **/
-            // ElementType m_metaClass = ElementType::NOT_SET;
             class MemberEndPolicy : public IndexablePolicy {
                 protected:
                     void elementAdded(Property& el, Extension& me);
@@ -33,20 +34,26 @@ namespace UML {
             Singleton<Class, Extension> m_metaClass = Singleton<Class, Extension>(this);
             bool m_setFlag = false;
             Singleton<ExtensionEnd, Extension>& getOwnedEndSingleton();
-            void restoreReferences() override;
-            Extension();
+            Extension(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Extension();
-            // void setMetaClass(ElementType metaClass);
-            // ElementType getMetaClass();
             ExtensionEndPtr getOwnedEnd() const;
             void setOwnedEnd(ExtensionEnd& end);
             void setOwnedEnd(ExtensionEndPtr end);
             void setOwnedEnd(ID id);
             ClassPtr getMetaClass() const;
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::EXTENSION;
+            typedef TypeInfo<std::tuple<Association>, Extension> Info;
+    };
+
+    template <>
+    struct ElementInfo<Extension> {
+        static const bool abstract = false;
+        inline static std::string name {"Extension"};
+        static SetList sets(Extension& el) {
+            return SetList {
+                makeSetPair("memberEnds", el.m_extensionMemberEnds),
+                makeSetPair("ownedEnd", el.m_ownedEnd),
+                makeSetPair("metaClass", el.m_metaClass)
             };
+        }
     };
 }

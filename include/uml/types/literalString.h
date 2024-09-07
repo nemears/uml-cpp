@@ -5,17 +5,21 @@
 namespace UML {
     class LiteralString : public LiteralSpecification {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
-
         protected:
             std::string m_value;
-            LiteralString();
+            LiteralString(std::size_t elementType, AbstractManager& manager);
         public:
             std::string getValue();
             void setValue(const std::string& val);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::LITERAL_STRING;
-            };
+            typedef TypeInfo<std::tuple<LiteralSpecification>, LiteralString> Info;
+    };
+
+    template <>
+    struct ElementInfo<LiteralString> {
+        static const bool abstract = false;
+        inline static std::string name {"LiteralString"};
+        static SetList sets(__attribute__((unused)) LiteralString& el) {
+            return SetList {};
+        }
     };
 }

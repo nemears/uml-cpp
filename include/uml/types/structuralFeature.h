@@ -8,8 +8,7 @@ namespace UML {
     class StructuralFeature : virtual public TypedElement, public MultiplicityElement, public Feature {
         protected:
             bool m_readOnly = false;
-            void referenceErased(ID id) override;
-            StructuralFeature();
+            StructuralFeature(std::size_t elementType, AbstractManager& manager);
         public:
             class InvalidValueException: public std::exception {
                 public:
@@ -19,12 +18,15 @@ namespace UML {
             } invalidValueException;
             bool isReadOnly() const;
             void setReadOnly(bool readOnly);
-            bool is(ElementType eType) const override;
-            StructuralFeature& operator=(StructuralFeature&&) {
-                return *this;
-            };
-            static ElementType elementType() {
-                return ElementType::STRUCTURAL_FEATURE;
-            };
+            typedef TypeInfo<std::tuple<TypedElement, MultiplicityElement, Feature>, StructuralFeature> Info;
+    };
+
+    template <>
+    struct ElementInfo<StructuralFeature> {
+        static const bool abstract = true;
+        inline static std::string name{"StructuralFeature"};
+        static SetList sets(__attribute__((unused)) StructuralFeature& el) {
+            return SetList{};
+        }
     };
 }

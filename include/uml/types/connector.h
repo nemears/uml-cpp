@@ -2,7 +2,7 @@
 
 #include "feature.h"
 #include "uml/set/indexableSet.h"
-#include "uml/set/orderedSet.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -14,8 +14,8 @@ namespace UML {
 
     class Connector : public Feature {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class StructuredClassifier;
+        friend struct ElementInfo<Connector>;
 
         protected:
             class TypePolicy {
@@ -32,21 +32,28 @@ namespace UML {
             IndexableSet<Behavior, Connector> m_contracts = IndexableSet<Behavior, Connector>(this);
             IndexableOrderedSet<ConnectorEnd, Connector, EndPolicy> m_ends = IndexableOrderedSet<ConnectorEnd, Connector, EndPolicy>(this);
             Singleton<Association, Connector, TypePolicy>& getTypeSingleton();
-            void referenceErased(ID id) override;
-            void restoreReferences() override;
-            Connector();
+            Connector(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Connector();
             AssociationPtr getType() const;
             void setType(AssociationPtr type);
             void setType(Association& type);
             void setType(ID id);
             IndexableSet<Behavior, Connector>& getContracts();
             IndexableOrderedSet<ConnectorEnd, Connector, EndPolicy>& getEnds();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::CONNECTOR;
+            typedef TypeInfo<std::tuple<Feature>, Connector> Info;
+    };
+
+    template <>
+    struct ElementInfo<Connector> {
+        static const bool abstract = false;
+        inline static const std::string name {"Connector"};
+        static SetList sets(Connector& el) {
+            return SetList {
+                makeSetPair("type", el.m_type),
+                makeSetPair("contracts", el.m_contracts),
+                makeSetPair("ends", el.m_ends)
             };
+        }
     };
 
     typedef UmlPtr<Connector> ConnectorPtr;

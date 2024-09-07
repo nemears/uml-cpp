@@ -1,5 +1,7 @@
 #pragma once
 
+#include "uml/managers/typeInfo.h"
+#include "uml/types/element.h"
 #include "valueSpecification.h"
 
 namespace UML {
@@ -9,22 +11,28 @@ namespace UML {
 
     class InstanceValue : public ValueSpecification {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        friend struct ElementInfo<InstanceValue>;
 
         protected:
             Singleton<InstanceSpecification, InstanceValue> m_instance = Singleton<InstanceSpecification, InstanceValue>(this);
-            void referenceErased(ID id) override;
             Singleton<InstanceSpecification, InstanceValue>& getInstanceSingleton();
-            InstanceValue();
+            InstanceValue(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~InstanceValue();
             InstanceSpecificationPtr getInstance() const;
             void setInstance(InstanceSpecification& inst);
             void setInstance(InstanceSpecificationPtr inst);
             void setInstance(ID id);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::INSTANCE_VALUE;
+            typedef TypeInfo<std::tuple<ValueSpecification>, InstanceValue> Info;
+    };
+
+    template <>
+    struct ElementInfo<InstanceValue> {
+        static const bool abstract = false;
+        inline static const std::string name {"InstanceValue"};
+        static SetList sets(InstanceValue& el) {
+            return SetList {
+                makeSetPair("instance", el.m_instance)
             };
+        }
     };
 }

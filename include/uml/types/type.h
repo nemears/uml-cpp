@@ -17,10 +17,15 @@ namespace UML{
         protected:
             Type();
         public:
-            virtual ~Type();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::TYPE;
-            };
+            typedef TypeInfo<std::tuple<PackageableElement>, Type> Info;
+    };
+
+    template <>
+    struct ElementInfo<Type> {
+        static const bool abstract = true;
+        inline static std::string name {"Type"};
+        static SetList sets(__attribute__((unused)) Type& el) {
+            return SetList {};
+        }
     };
 }

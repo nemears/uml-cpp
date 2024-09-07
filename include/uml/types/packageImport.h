@@ -12,8 +12,8 @@ namespace UML {
 
     class PackageImport : public DirectedRelationship {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Namespace;
+        friend struct ElementInfo<PackageImport>;
 
         protected:
             struct ImportedPackagePolicy {
@@ -25,11 +25,8 @@ namespace UML {
             Singleton<Namespace, PackageImport> m_importingNamespace = Singleton<Namespace, PackageImport>(this);
             Singleton<Package, PackageImport, ImportedPackagePolicy>& getImportedPackageSingleton();
             Singleton<Namespace, PackageImport>& getImportingNamespaceSingleton();
-            // DEFINE_SINGLETON_W_POLICIES(ImportedPackage, m_importedPackage, Package, PackageImport, AddImportedPackagePolicy, RemoveImportedPackagePolicy)
-            // DEFINE_SINGLETON(ImportingNamespace, m_importingNamespace, Namespace, PackageImport)
-            PackageImport();
+            PackageImport(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~PackageImport();
             VisibilityKind getVisibility() const;
             void setVisibility(VisibilityKind visibility);
             void setImportedPackage(ID id);
@@ -40,9 +37,18 @@ namespace UML {
             void setImportingNamespace(NamespacePtr ptr);
             void setImportingNamespace(Namespace& nmspc);
             NamespacePtr getImportingNamespace() const;
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::PACKAGE_IMPORT;
-            }
+            typedef TypeInfo<std::tuple<DirectedRelationship>, PackageImport> Info;
+    };
+
+    template <>
+    struct ElementInfo<PackageImport> {
+        static const bool abstract = false;
+        inline static const std::string name{"PackageImport"};
+        static SetList sets(PackageImport& el) {
+            return SetList{
+                std::make_pair<std::string, AbstractSet*>("importedPackage", &el.m_importedPackage),
+                std::make_pair<std::string, AbstractSet*>("importingNamespace", &el.m_importingNamespace)
+            };
+        }
     };
 }

@@ -5,18 +5,23 @@
 namespace UML{
     class Model : public Package {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        friend struct ElementInfo<Model>;
 
         protected:
-            Model();
+            Model(std::size_t elementType, AbstractManager& manager);
             std::string m_viewpoint;
         public:
-            virtual ~Model();
             std::string getViewpoint() const;
             void setViewpoint(const std::string& viewpoint);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::MODEL;
-            };
+            typedef TypeInfo<std::tuple<Package>, Model> Info;
+    };
+
+    template <>
+    struct ElementInfo<Model> {
+        static const bool abstract = false;
+        inline static const std::string name {"Model"};
+        static SetList sets(__attribute__((unused)) Model& el) {
+            return SetList{};
+        }
     };
 }

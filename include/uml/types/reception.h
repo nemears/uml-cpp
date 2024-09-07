@@ -1,6 +1,7 @@
 #pragma once
 
 #include "behavioralFeature.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -9,24 +10,29 @@ namespace UML {
 
     class Reception : public BehavioralFeature {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Class;
+        friend struct ElementInfo<Reception>;
 
         protected:
             Singleton<Signal, Reception> m_signal = Singleton<Signal, Reception>(this);
             Singleton<Signal, Reception>& getSignalSingleton();
-            void referenceErased(ID id) override;
-            void restoreReferences() override;
-            Reception();
+            Reception(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Reception();
             SignalPtr getSignal() const;
             void setSignal(SignalPtr signal);
             void setSignal(Signal& signal);
             void setSignal(ID id);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::RECEPTION;
+            typedef TypeInfo<std::tuple<BehavioralFeature>, Reception> Info;
+    };
+
+    template <>
+    struct ElementInfo<Reception> {
+        static const bool abstract = false;
+        inline static const std::string name {"Reception"};
+        static SetList sets(Reception& el) {
+            return SetList {
+                makeSetPair("signal", el.m_signal),
             };
+        }
     };
 }

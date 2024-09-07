@@ -2,6 +2,7 @@
 
 #include "feature.h"
 #include "namespace.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -24,10 +25,8 @@ namespace UML {
             Set<ParameterSet, BehavioralFeature> m_ownedParameterSets = Set<ParameterSet, BehavioralFeature>(this);
             bool m_returnSpecified = false;
             CallConcurrencyKind m_concurrency = CallConcurrencyKind::Sequential;
-            void referenceErased(ID id) override;
-            BehavioralFeature();
+            BehavioralFeature(std::size_t elementType);
         public:
-            virtual ~BehavioralFeature();
             Set<Behavior, BehavioralFeature>& getMethods();
             Set<Parameter, BehavioralFeature>& getOwnedParameters();
             Set<Type, BehavioralFeature>& getRaisedExceptions();
@@ -35,10 +34,21 @@ namespace UML {
             bool isAbstract();
             CallConcurrencyKind getConcurrency() const;
             void setConcurrency(CallConcurrencyKind concurrency);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::BEHAVIORAL_FEATURE;
+            typedef TypeInfo<std::tuple<Feature, Namespace>, BehavioralFeature> Info;
+    };
+
+    template <>
+    struct ElementInfo<BehavioralFeature> {
+        static const bool abstract = true;
+        inline static const std::string name {"BehavioralFeature"};
+        static SetList sets(BehavioralFeature& el) {
+            return SetList {
+                makeSetPair("methods", el.getMethods()),
+                makeSetPair("ownedParameters", el.getOwnedParameters()),
+                makeSetPair("raisedExceptions", el.getRaisedExceptions()),
+                makeSetPair("ownedParameterSet", el.getOwnedParameterSets())
             };
+        }
     };
 
     class ReturnParameterException : public std::exception {

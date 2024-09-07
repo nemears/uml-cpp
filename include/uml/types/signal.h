@@ -1,22 +1,31 @@
 #pragma once
 
 #include "classifier.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/orderedSet.h"
+#include "uml/types/element.h"
 
 namespace UML {
     class Signal : public Classifier {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        friend struct ElementInfo<Signal>;
 
         protected:
             IndexableOrderedSet<Property, Signal> m_ownedAttributes = IndexableOrderedSet<Property, Signal>(this);
-            Signal();
+            Signal(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Signal();
             IndexableOrderedSet<Property, Signal>& getOwnedAttributes();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::SIGNAL;
+            typedef TypeInfo<std::tuple<Classifier>, Signal> Info;
+    };
+
+    template <>
+    struct ElementInfo<Signal> {
+        static const bool abstract = false;
+        inline static const std::string name {"Signal"};
+        static SetList sets(Signal& el) {
+            return SetList {
+                makeSetPair("ownedAttributes", el.m_ownedAttributes)
             };
+        }
     };
 }

@@ -1,8 +1,11 @@
 #pragma once
 
 #include "encapsulatedClassifier.h"
+#include "uml/managers/abstractManager.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/orderedSet.h"
 #include "behavioredClassifier.h"
+#include "uml/types/element.h"
 
 namespace UML{
 
@@ -12,26 +15,35 @@ namespace UML{
 
     class Class : public EncapsulatedClassifier , public BehavioredClassifier {
 
-        template <class SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Property;
         friend class Operation;
+        friend struct ElementInfo<Class>;
 
         protected:
             IndexableOrderedSet<Property, Class> m_classOwnedAttrubutes = IndexableOrderedSet<Property, Class>(this);
             IndexableOrderedSet<Operation, Class> m_ownedOperations = IndexableOrderedSet<Operation, Class>(this);
             IndexableOrderedSet<Classifier, Class> m_nestedClassifiers = IndexableOrderedSet<Classifier, Class>(this);
             IndexableSet<Reception, Class> m_ownedReceptions = IndexableSet<Reception, Class>(this);
-            void restoreReferences() override;
-            Class();
+            Class(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Class();
             IndexableOrderedSet<Property, Class>& getOwnedAttributes();
             IndexableOrderedSet<Operation, Class>& getOwnedOperations();
             IndexableOrderedSet<Classifier, Class>& getNestedClassifiers();
             IndexableSet<Reception, Class>& getOwnedReceptions();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::CLASS;
+            typedef TypeInfo<std::tuple<EncapsulatedClassifier, BehavioredClassifier>, Class> Info;
+    };
+
+    template <>
+    struct ElementInfo<Class> {
+        static const bool abstract = false;
+        inline static std::string name {"Class"};
+        static SetList sets(Class& el) {
+            return SetList {
+                makeSetPair("ownedAttributes", el.m_ownedAttributes),
+                makeSetPair("ownedOperations", el.m_ownedOperations),
+                makeSetPair("nestedClassifiers", el.m_nestedClassifiers),
+                makeSetPair("ownedRecpetions", el.m_ownedReceptions)
             };
+        }
     };
 }

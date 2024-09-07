@@ -2,14 +2,16 @@
 
 #include "classifier.h"
 #include "relationship.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/indexableSet.h"
 #include "uml/set/orderedSet.h"
+#include "uml/types/element.h"
 
 namespace UML {
     class Association : public Classifier, public Relationship {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Property;
+        friend struct ElementInfo<Association>;
 
         protected:
             class MemberEndPolicy : public IndexablePolicy {
@@ -21,11 +23,8 @@ namespace UML {
             IndexableOrderedSet<Property, Association> m_ownedEnds = IndexableOrderedSet<Property, Association>(this);
             IndexableSet<Property, Association> m_navigableOwnedEnds = IndexableSet<Property, Association>(this);
             IndexableSet<Type, Association> m_endTypes = IndexableSet<Type, Association>(this);
-            void restoreReferences() override;
-            void referenceErased(ID id) override;
-            Association();
+            Association(std::size_t elementType, Association& el);
         public:
-            virtual ~Association();
             IndexableOrderedSet<Property, Association, MemberEndPolicy>& getMemberEnds();
             IndexableOrderedSet<Property, Association>& getOwnedEnds();
             IndexableSet<Property, Association>& getNavigableOwnedEnds();
@@ -33,9 +32,20 @@ namespace UML {
              * endType is derived from the types of the member ends.
              **/
             IndexableSet<Type, Association>& getEndTypes();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::ASSOCIATION;
+            typedef TypeInfo<std::tuple<Classifier, Relationship>, Association> Info;
+    };
+
+    template <>
+    struct ElementInfo<Association> {
+        static const bool abstract = false;
+        inline static const std::string name {"Association"};
+        static SetList sets(Association& el) {
+            return SetList {
+                makeSetPair("memberEnds", el.m_memberEnds),
+                makeSetPair("ownedEnds", el.m_ownedEnds),
+                makeSetPair("navigableOwnedEnds", el.m_navigableOwnedEnds),
+                makeSetPair("endTypes",el.m_endTypes)
             };
+        }
     };
 }

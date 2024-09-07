@@ -3,6 +3,7 @@
 #include "classifier.h"
 #include "connector.h"
 #include "uml/set/indexableSet.h"
+#include "uml/types/element.h"
 #include "uml/types/property.h"
 
 namespace UML {
@@ -23,17 +24,26 @@ namespace UML {
             IndexableSet<Property, StructuredClassifier, PartPolicy> m_ownedAttributes = IndexableSet<Property, StructuredClassifier, PartPolicy>(this);
             ReadOnlyIndexableSet<Property, StructuredClassifier> m_parts = ReadOnlyIndexableSet<Property, StructuredClassifier>(this);
             IndexableSet<Connector, StructuredClassifier> m_ownedConnectors = IndexableSet<Connector, StructuredClassifier>(this);
-            void restoreReferences() override;
-            StructuredClassifier();
+            StructuredClassifier(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~StructuredClassifier();
             IndexableSet<Property, StructuredClassifier, PartPolicy>& getOwnedAttributes();
             ReadOnlyIndexableSet<ConnectableElement, StructuredClassifier>& getRoles();
             ReadOnlyIndexableSet<Property, StructuredClassifier>& getParts();
             IndexableSet<Connector, StructuredClassifier>& getOwnedConnectors();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::STRUCTURED_CLASSIFIER;
+            typedef TypeInfo<std::tuple<Classifier>, StructuredClassifier> Info;
+    };
+
+    template <>
+    struct ElementInfo<StructuredClassifier> {
+        static const bool abstract = true;
+        inline static const std::string name {"StructuredClassifier"};
+        static SetList sets(StructuredClassifier& el) {
+            return SetList {
+                makeSetPair("roles", el.getRoles()),
+                makeSetPair("ownedAttributes", el.getOwnedAttributes()),
+                makeSetPair("parts", el.getParts()),
+                makeSetPair("ownedConnectors", el.getOwnedConnectors())
             };
+        }
     };
 }

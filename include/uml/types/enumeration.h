@@ -1,6 +1,7 @@
 #pragma once
 
 #include "dataType.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -8,18 +9,24 @@ namespace UML {
 
     class Enumeration : public DataType {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class EnumerationLiteral;
 
         protected:
             OrderedSet<EnumerationLiteral, Enumeration> m_ownedLiterals = OrderedSet<EnumerationLiteral, Enumeration>(this);
-            Enumeration();
+            Enumeration(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Enumeration();
             OrderedSet<EnumerationLiteral, Enumeration>& getOwnedLiterals();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::ENUMERATION;
+            typedef TypeInfo<std::tuple<DataType>, Enumeration> Info;
+    };
+
+    template <>
+    struct ElementInfo<Enumeration> {
+        static const bool abstract = false;
+        inline static const std::string name {"Enumeration"};
+        static SetList sets(Enumeration& el) {
+            return SetList {
+                makeSetPair("ownedLiterals", el.getOwnedLiterals())
             };
+        }
     };
 }

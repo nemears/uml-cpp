@@ -1,6 +1,7 @@
 #pragma once
 
 #include "dependency.h"
+#include "uml/managers/abstractManager.h"
 
 namespace UML {
     /**
@@ -8,17 +9,18 @@ namespace UML {
      * concept at different levels of abstraction or from different viewpoints.
      **/
     class Abstraction : public Dependency {
-
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
-
         protected:
-            Abstraction();
+            Abstraction(std::size_t elementType, AbstractManager& manager);
         public:
-            Abstraction(const Abstraction& abstraction);
-            virtual ~Abstraction();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::ABSTRACTION;
-            };
+            typedef TypeInfo<std::tuple<Dependency>, Abstraction> Info;
+    };
+
+    template <>
+    struct ElementInfo<Abstraction> {
+        static const bool abstract = false;
+        inline static std::string name {"Abstraction"};
+        static SetList sets(__attribute__((unused)) Abstraction& el) {
+            return SetList {};
+        }
     };
 }

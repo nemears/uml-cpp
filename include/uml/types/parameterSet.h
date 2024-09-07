@@ -2,6 +2,8 @@
 
 #include "namedElement.h"
 #include "constraint.h"
+#include "uml/managers/typeInfo.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -9,21 +11,27 @@ namespace UML {
 
     class ParameterSet : public NamedElement {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        friend struct ElementInfo<ParameterSet>;
 
         protected:
             Set<Constraint, ParameterSet> m_conditions = Set<Constraint, ParameterSet>(this);
             Set<Parameter, ParameterSet> m_parameters = Set<Parameter, ParameterSet>(this);
-            void referenceErased(ID id) override;
-            ParameterSet();
+            ParameterSet(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~ParameterSet();
             Set<Constraint, ParameterSet>& getConditions();
             Set<Parameter, ParameterSet>& getParameters();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::PARAMETER_SET;
-            };
+            typedef TypeInfo<std::tuple<NamedElement>, ParameterSet> Info;
     };
 
+    template <>
+    struct ElementInfo<ParameterSet> {
+        static const bool abstract = false;
+        inline static const std::string name { "ParameterSet" };
+        static SetList sets(ParameterSet& el) {
+            return SetList {
+                makeSetPair("conditions", el.m_conditions),
+                makeSetPair("parameters", el.m_parameters)
+            };
+        }
+    };
 }

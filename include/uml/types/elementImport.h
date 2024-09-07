@@ -1,19 +1,21 @@
-#ifndef _UML_ELEMENT_IMPORT_H_
-#define _UML_ELEMENT_IMPORT_H_
+#pragma once
 
+#include "namedElement.h"
 #include "directedRelationship.h"
 #include "uml/set/singleton.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
     class PackageableElement;
+    class Namespace;
     typedef UmlPtr<PackageableElement> PackageableElementPtr;
     typedef UmlPtr<Namespace> NamespacePtr;
 
     class ElementImport : public DirectedRelationship {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Namespace;
+        friend struct ElementInfo<ElementImport>;
 
         protected:
             struct ImportedElementPolicy {
@@ -27,9 +29,8 @@ namespace UML {
             Singleton<Namespace, ElementImport> m_importingNamespace = Singleton<Namespace, ElementImport>(this);
             Singleton<PackageableElement, ElementImport, ImportedElementPolicy>& getImportedElementSingleton();
             Singleton<Namespace, ElementImport>& getImportingNamespaceSingleton();
-            ElementImport();
+            ElementImport(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~ElementImport();
             PackageableElementPtr getImportedElement() const;
             void setImportedElement(PackageableElement* importedElement);
             void setImportedElement(PackageableElement& importedElement);
@@ -44,11 +45,17 @@ namespace UML {
             void setAlias(const std::string& alias);
             VisibilityKind getVisibility() const;
             void setVisibility(VisibilityKind visibility);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::ELEMENT_IMPORT;
+    };
+
+    template <>
+    struct ElementInfo<ElementImport> {
+        static const bool abstract = false;
+        inline static const std::string name {"ElementImport"};
+        static SetList sets(ElementImport& el) {
+            return SetList{
+                makeSetPair("importedElement", el.m_importedElement),
+                makeSetPair("importingNamespace", el.m_importingNamespace)
             };
+        }
     };
 }
-
-#endif

@@ -4,15 +4,18 @@
 
 namespace UML {
     class LiteralNull : public LiteralSpecification {
-
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
-
         protected:
-            LiteralNull();
+            LiteralNull(std::size_t elementType, AbstractManager& manager);
         public:
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::LITERAL_NULL;
-            };
+            typedef TypeInfo<std::tuple<LiteralSpecification>, LiteralNull> Info;
+    };
+
+    template <>
+    struct ElementInfo<LiteralNull> {
+        static const bool abstract = false;
+        inline static const std::string name {"LiteralNull"};
+        static SetList sets(__attribute__((unused)) LiteralNull& el) {
+            return SetList{};
+        }
     };
 }

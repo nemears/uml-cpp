@@ -1,7 +1,9 @@
 #pragma once
 
 #include "property.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/indexableSet.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -10,9 +12,9 @@ namespace UML {
 
     class Port : public Property {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class BehavioredClassifier;
         friend class InterfaceRealization;
+        friend struct ElementInfo<Port>;
 
         private:
             void setPortInterfaces(BehavioredClassifier& clazz);
@@ -28,11 +30,8 @@ namespace UML {
             bool m_isBehavior = false;
             bool m_isConjugated = false;
             bool m_isService = true;
-            void referenceErased(ID id) override;
-            void restoreReferences() override;
-            Port();
+            Port(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Port();
             bool isBehavior() const;
             void setIsBehavior(bool isBehavior);
             bool isConjugated() const;
@@ -41,9 +40,19 @@ namespace UML {
             void setIsService(bool isService);
             ReadOnlyIndexableSet<Interface, Port>& getRequired();
             ReadOnlyIndexableSet<Interface, Port>& getProvided();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::PORT;
-            }
+            typedef TypeInfo<std::tuple<Property>, Port> Info;
+    };
+
+    template <>
+    struct ElementInfo<Port> {
+        static const bool abstract = false;
+        inline static const std::string name {"Port"};
+        static SetList sets(Port& port) {
+            return SetList {
+                makeSetPair("required", port.m_required),
+                makeSetPair("provided", port.m_provided),
+                makeSetPair("portType", port.m_portType)
+            };
+        }
     };
 }

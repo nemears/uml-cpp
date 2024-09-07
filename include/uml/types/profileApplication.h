@@ -1,7 +1,9 @@
 #pragma once
 
 #include "directedRelationship.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/singleton.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -12,17 +14,16 @@ namespace UML {
 
     class ProfileApplication : public DirectedRelationship {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Package;
+        friend struct ElementInfo<ProfileApplication>;
 
         private:
             Singleton<Profile, ProfileApplication> m_appliedProfile = Singleton<Profile, ProfileApplication>(this);
             Singleton<Package, ProfileApplication> m_applyingPackage = Singleton<Package, ProfileApplication>(this);
             Singleton<Profile, ProfileApplication>& getAppliedProfileSingleton();
             Singleton<Package, ProfileApplication>& getApplyingPackageSingleton();
-            ProfileApplication();
+            ProfileApplication(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~ProfileApplication();
             ProfilePtr getAppliedProfile() const;
             void setAppliedProfile(Profile& profile);
             void setAppliedProfile(ProfilePtr profile);
@@ -31,9 +32,18 @@ namespace UML {
             void setApplyingPackage(PackagePtr pckg);
             void setApplyingPackage(Package& pckg);
             void setApplyingPackage(ID id);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::PROFILE_APPLICATION;
+            typedef TypeInfo<std::tuple<DirectedRelationship>, ProfileApplication> Info;
+    };
+
+    template <>
+    struct ElementInfo<ProfileApplication> {
+        static const bool abstract = false;
+        inline static const std::string name {"ProfileApplication"};
+        static SetList sets(ProfileApplication& el) {
+            return SetList{
+                makeSetPair("appliedProfile", el.m_appliedProfile),
+                makeSetPair("applyingPackage", el.m_applyingPackage)
             };
+        }
     };
 }

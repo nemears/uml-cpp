@@ -14,17 +14,16 @@ namespace UML {
 
         friend class TemplateParameter;
         friend class TemplateParameterSubstitution;
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        friend struct ElementInfo<ParameterableElement>;
 
         protected:
+            typedef TypeInfo<std::tuple<Element>, ParameterableElement> Info;
             Singleton<TemplateParameter, ParameterableElement> m_templateParameter = Singleton<TemplateParameter, ParameterableElement>(this);
             Singleton<TemplateParameter, ParameterableElement> m_owningTemplateParameter = Singleton<TemplateParameter, ParameterableElement>(this);
-            void referenceErased(ID id) override;
             Singleton<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
             Singleton<TemplateParameter, ParameterableElement>& getTemplateParameterSingleton();
             ParameterableElement();
         public:
-            ~ParameterableElement();
             TemplateParameterPtr getOwningTemplateParameter() const;
             void setOwningTemplateParameter(TemplateParameterPtr parameter);
             void setOwningTemplateParameter(TemplateParameter& parameter);
@@ -33,9 +32,15 @@ namespace UML {
             void setTemplateParameter(TemplateParameterPtr parameter);
             void setTemplateParameter(TemplateParameter& parameter);
             void setTemplateParameter(ID id);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::PARAMETERABLE_ELEMENT;
+    };
+
+    template<>
+    struct ElementInfo<ParameterableElement> {
+        static SetList sets(ParameterableElement& el) {
+            return SetList {
+                makeSetPair("templateParameter", el.m_templateParameter),
+                makeSetPair("owningTemplateParameter", el.m_owningTemplateParameter)
             };
+        }
     };
 }

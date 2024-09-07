@@ -1,20 +1,25 @@
 #pragma once 
 
 #include "package.h"
+#include "uml/managers/abstractManager.h"
 
 namespace UML {
     class Profile : public Package {
 
         friend class Stereotype;
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
 
         protected:
-            Profile();
+            Profile(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Profile();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::PROFILE;
-            };
+            typedef TypeInfo<std::tuple<Package>, Profile> Info;
+    };
+
+    template<>
+    struct ElementInfo<Profile> {
+        static const bool abstract = false;
+        inline static std::string name {"Profile"};
+        static SetList sets(__attribute__((unused)) Profile& el) {
+            return SetList{};
+        }
     };
 }

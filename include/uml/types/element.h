@@ -196,8 +196,8 @@ namespace UML {
         protected:
             ReadOnlySingleton<Element, Element> m_owner = ReadOnlySingleton<Element, Element>(this);
             ReadOnlySet<Element, Element> m_ownedElements = ReadOnlySet<Element, Element>(this);
-            // Set<Comment, Element> m_ownedComments = Set<Comment, Element>(this);
-            // Set<InstanceSpecification, Element> m_appliedStereotypes = Set<InstanceSpecification, Element>(this);
+            Set<Comment, Element> m_ownedComments = Set<Comment, Element>(this);
+            Set<InstanceSpecification, Element> m_appliedStereotypes = Set<InstanceSpecification, Element>(this);
             ReadOnlySingleton<Element, Element>& getOwnerSingleton();
             Element(std::size_t elementType, AbstractManager& manager);
         public:
@@ -218,17 +218,21 @@ namespace UML {
             void setOwner(ID id);
     };
 
-    // template specialization for SetInfo<Element> (required for all implementing types)
+    inline std::pair<std::string, AbstractSet*> makeSetPair(const char* name, AbstractSet& set) {
+        return std::make_pair<std::string, AbstractSet*>(name, &set);
+    }
+
+    // template specialization for ElementInfo<Element> (required for all implementing types)
     template <>
     struct ElementInfo<Element> {
         static const bool abstract = true;
         inline static const std::string name {"Element"};
         static SetList sets(Element& el) {
             return std::vector {
-                std::make_pair<std::string, AbstractSet*>("owner", &el.m_owner),
-                std::make_pair<std::string, AbstractSet*>("ownedElements", &el.m_ownedElements)//,
-                // std::make_pair<std::string, AbstractSet*>("ownedComments", &el.m_ownedElements),
-                // std::make_pair<std::string, AbstractSet*>("appliedStereotypes", &el.m_ownedElements)
+                makeSetPair("owner", el.m_owner),
+                makeSetPair("ownedElements", el.m_ownedElements),
+                makeSetPair("ownedComments", el.m_ownedElements),
+                makeSetPair("appliedStereotypes", el.m_ownedElements)
             };
         }
     };

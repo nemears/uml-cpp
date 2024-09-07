@@ -1,6 +1,8 @@
 #pragma once
 
 #include "dependency.h"
+#include "uml/managers/abstractManager.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -12,23 +14,31 @@ namespace UML {
     class Deployment : public Dependency {
 
         friend class DeploymentTarget;
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        friend struct ElementInfo<Deployment>;
 
-        private:
+        protected:
             Set<DeployedArtifact, Deployment> m_deployedArtifacts = Set<DeployedArtifact, Deployment>(this);
             Singleton<DeploymentTarget, Deployment> m_location = Singleton<DeploymentTarget, Deployment>(this);
             Singleton<DeploymentTarget, Deployment>& getLocationSingleton();
-            Deployment();
+            Deployment(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Deployment();
             Set<DeployedArtifact, Deployment>& getDeployedArtifacts();
             DeploymentTargetPtr getLocation() const;
             void setLocation(DeploymentTarget& location);
             void setLocation(DeploymentTargetPtr location);
             void setLocation(ID id);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::DEPLOYMENT;
+            typedef TypeInfo<std::tuple<Dependency>, Deployment> Info;
+    };
+
+    template <>
+    struct ElementInfo<Deployment> {
+        static const bool abstract = false;
+        inline static const std::string name {"Deployment"};
+        static SetList sets(Deployment& el) {
+            return SetList {
+                makeSetPair("deployedArtifacts", el.m_deployedArtifacts),
+                makeSetPair("location", el.m_location)
             };
+        }
     };
 }

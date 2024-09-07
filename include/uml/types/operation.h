@@ -4,6 +4,7 @@
 #include "templateableElement.h"
 #include "parameterableElement.h"
 #include "uml/set/orderedSet.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -19,11 +20,11 @@ namespace UML {
 
     class Operation : public BehavioralFeature , public TemplateableElement, public ParameterableElement {
         
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Class;
         friend class Parameter;
         friend class DataType;
         friend class Interface;
+        friend struct ElementInfo<Operation>;
 
         protected:
             Singleton<Type, Operation> m_type = Singleton<Type, Operation>(this);
@@ -31,15 +32,12 @@ namespace UML {
             Singleton<DataType, Operation> m_dataType = Singleton<DataType, Operation>(this);
             Singleton<Interface, Operation> m_interface = Singleton<Interface, Operation>(this);
             OrderedSet<Parameter, Operation> m_operationOwnedParameters = OrderedSet<Parameter, Operation>(this);
-            void referenceErased(ID id) override;
-            void restoreReferences() override;
             Singleton<Type, Operation>& getTypeSingleton();
             Singleton<Class, Operation>& getClassSingleton();
             Singleton<DataType, Operation>& getDataTypeSingleton();
             Singleton<Interface, Operation>& getInterfaceSingleton();
-            Operation();
+            Operation(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Operation();
             TypePtr getType() const;
             void setType(Type& type);
             void setType(TypePtr type);
@@ -57,9 +55,21 @@ namespace UML {
             void setInterface(Interface& interface_uml);
             void setInterface(ID id);
             OrderedSet<Parameter, Operation>& getOwnedParameters();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::OPERATION;
+            typedef TypeInfo<std::tuple<BehavioralFeature, TemplateableElement, ParameterableElement>, Operation> Info;
+    };
+
+    template <>
+    struct ElementInfo<Operation> {
+        static const bool abstract = false;
+        inline static const std::string name {"Operation"};
+        static SetList sets(Operation& el) {
+            return SetList {
+                makeSetPair("type", el.m_type),
+                makeSetPair("class", el.m_class),
+                makeSetPair("dataType", el.m_dataType),
+                makeSetPair("interface", el.m_interface),
+                makeSetPair("ownedParameters", el.m_ownedParameters)
             };
+        }
     };
 }

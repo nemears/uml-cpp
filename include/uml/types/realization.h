@@ -8,16 +8,18 @@ namespace UML {
      * specification (the supplier) and the other representing an implementation of that specification (the client).
      **/
     class Realization : public Abstraction {
-        
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
-
         protected:
-            Realization();
+            Realization(std::size_t elementType);
         public:
-            virtual ~Realization();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::REALIZATION;
-            };
+            typedef TypeInfo<std::tuple<Abstraction>, Realization> Info;
+    };
+
+    template <>
+    struct ElementInfo<Realization> {
+        static const bool abstract = false;
+        inline static const std::string name {"Realization"};
+        static SetList sets(__attribute__((unused)) Realization& el) {
+            return SetList{};
+        }
     };
 }

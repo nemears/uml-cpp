@@ -1,7 +1,7 @@
 #pragma once
 
 #include "namedElement.h"
-// #include "parameterableElement.h"
+#include "parameterableElement.h"
 #include "uml/managers/typeInfo.h"
 #include "uml/set/singleton.h"
 
@@ -10,7 +10,7 @@ namespace UML {
     class Package;
     typedef UmlPtr<Package> PackagePtr;
 
-    class PackageableElement : virtual public NamedElement /*, virtual public ParameterableElement*/ {
+    class PackageableElement : virtual public NamedElement , virtual public ParameterableElement {
 
         friend class Package;
 
@@ -25,7 +25,7 @@ namespace UML {
             void setOwningPackage(Package& package);
             void setOwningPackage(PackagePtr package);
             void setOwningPackage(ID id);
-            typedef TypeInfo<std::tuple<NamedElement/*, ParameterableElement*/>, PackageableElement> Info;
+            typedef TypeInfo<std::tuple<NamedElement, ParameterableElement>, PackageableElement> Info;
     };
 
     template <>

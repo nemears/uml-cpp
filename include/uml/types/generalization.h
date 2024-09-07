@@ -1,7 +1,10 @@
 #pragma once
 
 #include "directedRelationship.h"
+#include "uml/managers/abstractManager.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/singleton.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -11,8 +14,8 @@ namespace UML {
 
     class Generalization : public DirectedRelationship {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Classifier;
+        friend struct ElementInfo<Generalization>;
 
         protected:
             struct GeneralPolicy {
@@ -22,13 +25,10 @@ namespace UML {
             Singleton<Classifier, Generalization, GeneralPolicy> m_general = Singleton<Classifier, Generalization, GeneralPolicy>(this);
             Singleton<Classifier, Generalization> m_specific = Singleton<Classifier, Generalization>(this);
             Set<GeneralizationSet, Generalization> m_generalizationSets = Set<GeneralizationSet, Generalization>(this);
-            void restoreReferences() override;
-            void referenceErased(ID id) override;
             Singleton<Classifier, Generalization, GeneralPolicy>& getGeneralSingleton();
             Singleton<Classifier, Generalization>& getSpecificSingleton();
-            Generalization();
+            Generalization(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Generalization();
             ClassifierPtr getGeneral() const;
             void setGeneral(ClassifierPtr general);
             void setGeneral(Classifier& general);
@@ -38,9 +38,19 @@ namespace UML {
             void setSpecific(ClassifierPtr specific);
             void setSpecific(ID id);
             Set<GeneralizationSet, Generalization>& getGeneralizationSets();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::GENERALIZATION;
+            typedef TypeInfo<std::tuple<DirectedRelationship>, Generalization> Info;
+    };
+
+    template <>
+    struct ElementInfo<Generalization> {
+        static const bool abstract = false;
+        inline static const std::string name {"Generalization"};
+        static SetList sets(Generalization& el) {
+            return SetList {
+                makeSetPair("general", el.m_general),
+                makeSetPair("specific", el.m_specific),
+                makeSetPair("generalizationSets", el.m_generalizationSets)
             };
+        }
     };
 }

@@ -4,6 +4,8 @@
 #include "connectableElement.h"
 #include "deploymentTarget.h"
 #include "uml/set/singleton.h"
+#include "uml/types/element.h"
+#include "uml/types/templateableElement.h"
 #include "uml/umlPtr.h"
 
 namespace UML{
@@ -31,13 +33,13 @@ namespace UML{
 
     class Property: public StructuralFeature, public ConnectableElement , public DeploymentTarget {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Class;
         friend class Classifier;
         friend class StructuredClassifier;
         friend class DataType;
         friend class Association;
         friend class Interface;
+        friend struct ElementInfo<Property>;
 
         protected:
             AggregationKind m_aggregation = AggregationKind::NONE;
@@ -59,17 +61,14 @@ namespace UML{
             Set<Property, Property, RedefinedPropertyPolicy> m_redefinedProperties = Set<Property, Property, RedefinedPropertyPolicy>(this);
             Singleton<Type, Property, PropertyTypePolicy> m_propertyType = Singleton<Type, Property, PropertyTypePolicy>(this);
             Set<Property, Property> m_subsettedProperties = Set<Property, Property>(this);
-            void referenceErased(ID id) override;
-            void restoreReferences() override;
             Singleton<ValueSpecification, Property>& getDefaultValueSingleton();
             Singleton<Class, Property>& getClassSingleton();
             Singleton<DataType, Property>& getDataTypeSingleton();
             Singleton<Association, Property>& getAssociationSingleton();
             Singleton<Association, Property>& getOwningAssociationSingleton();
             Singleton<Interface, Property>& getInterfaceSingleton();
-            Property();
+            Property(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Property();
             AggregationKind getAggregation();
             bool isComposite();
             void setComposite(bool composite);
@@ -100,10 +99,25 @@ namespace UML{
             void setInterface(ID id);
             Set<Property, Property, RedefinedPropertyPolicy>& getRedefinedProperties();
             Set<Property, Property>& getSubsettedProperties();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::PROPERTY;
+            typedef TypeInfo<std::tuple<StructuralFeature, ConnectableElement, TemplateableElement, DeploymentTarget>, Property> Info;
+    };
+
+    template <>
+    struct ElementInfo<Property> {
+        static const bool abstract = false;
+        inline static std::string name{"Property"};
+        static SetList sets(Property& el) {
+            return SetList{
+                makeSetPair("defaultValue", el.m_defaultValue),
+                makeSetPair("dataType", el.m_dataType),
+                makeSetPair("class", el.m_dataType),
+                makeSetPair("association", el.m_association),
+                makeSetPair("owningAssociation", el.m_owningAssociation),
+                makeSetPair("interface", el.m_interface),
+                makeSetPair("redefinedProperties", el.m_redefinedProperties),
+                makeSetPair("subsettedProperties", el.m_subsettedProperties)
             };
+        }
     };
 
     class ImproperRedefinitionException : public std::exception {

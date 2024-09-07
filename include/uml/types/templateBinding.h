@@ -2,6 +2,7 @@
 
 #include "directedRelationship.h"
 #include "uml/set/singleton.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -14,18 +15,17 @@ namespace UML {
 
     class TemplateBinding : public DirectedRelationship {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class TemplateableElement;
+        friend struct ElementInfo<TemplateBinding>;
         
-        private:
+        protected:
             Singleton<TemplateableElement, TemplateBinding> m_boundElement = Singleton<TemplateableElement, TemplateBinding>(this);
             Singleton<TemplateSignature, TemplateBinding> m_signature = Singleton<TemplateSignature, TemplateBinding>(this);
             Set<TemplateParameterSubstitution, TemplateBinding> m_parameterSubstitutions = Set<TemplateParameterSubstitution, TemplateBinding>(this);
             Singleton<TemplateableElement, TemplateBinding>& getBoundElementSingleton();
             Singleton<TemplateSignature, TemplateBinding>& getSignatureSingleton();
-            TemplateBinding();
+            TemplateBinding(std::size_t elementType, AbstractManager& manager);
         public:
-            ~TemplateBinding();
             TemplateableElementPtr getBoundElement() const;
             void setBoundElement(TemplateableElement& el);
             void setBoundElement(TemplateableElementPtr el);
@@ -35,9 +35,19 @@ namespace UML {
             void setSignature(TemplateSignaturePtr signature);
             void setSignature(ID id);
             Set<TemplateParameterSubstitution, TemplateBinding>& getParameterSubstitutions();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::TEMPLATE_BINDING;
+            typedef TypeInfo<std::tuple<DirectedRelationship>, TemplateBinding> Info;
+    };
+
+    template <>
+    struct ElementInfo<TemplateBinding> {
+        static const bool abstract = false;
+        inline static const std::string name {"TemplateBinding"};
+        static SetList sets(TemplateBinding& el) {
+            return SetList {
+                makeSetPair("boundElement", el.m_boundElement),
+                makeSetPair("signature", el.m_signature),
+                makeSetPair("templateParameterSubstitutions", el.m_parameterSubstitutions)
             };
+        }
     };
 }

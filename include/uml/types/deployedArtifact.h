@@ -4,16 +4,18 @@
 
 namespace UML {
     class DeployedArtifact : virtual public NamedElement {
-
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
-
         protected:
-            DeployedArtifact();
+            DeployedArtifact(std::size_t elementType);
         public:
-            virtual ~DeployedArtifact();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::DEPLOYED_ARTIFACT;
-            };
+            typedef TypeInfo<std::tuple<NamedElement>, DeployedArtifact> Info;
+    };
+
+    template <>
+    struct ElementInfo<DeployedArtifact> {
+        static const bool abstract = false;
+        inline static const std::string name {"DeployedArtifact"};
+        static SetList sets(__attribute__((unused)) DeployedArtifact& el) {
+            return SetList {};
+        }
     };
 }

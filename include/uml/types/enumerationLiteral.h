@@ -1,6 +1,8 @@
 #pragma once
 
 #include "instanceSpecification.h"
+#include "uml/managers/typeInfo.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -10,22 +12,29 @@ namespace UML {
 
     class EnumerationLiteral : public InstanceSpecification {
         
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Enumeration;
-
+        friend struct ElementInfo<EnumerationLiteral>;
+        
         protected:
             Singleton<Enumeration, EnumerationLiteral> m_enumeration = Singleton<Enumeration, EnumerationLiteral>(this);
             Singleton<Enumeration, EnumerationLiteral>& getEnumerationSingleton();
             EnumerationLiteral();
         public:
-            virtual ~EnumerationLiteral();
             EnumerationPtr getEnumeration() const;
             void setEnumeration(Enumeration& enumeration);
             void setEnumeration(EnumerationPtr enumeration);
             void setEnumeration(ID id);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::ENUMERATION_LITERAL;
+            typedef TypeInfo<std::tuple<InstanceSpecification>, EnumerationLiteral> Info;
+    };
+
+    template <>
+    struct ElementInfo<EnumerationLiteral> {
+        static const bool abstract = false;
+        inline static std::string name {"EnumerationLiteral"};
+        static SetList sets(EnumerationLiteral& el) {
+            return SetList {
+                makeSetPair("enumeration", el.m_enumeration)
             };
+        }
     };
 }

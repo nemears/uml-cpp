@@ -5,6 +5,7 @@
 #include "redefinableElement.h"
 #include "templateableElement.h"
 #include "uml/set/indexableSet.h"
+#include "uml/types/element.h"
 #include "uml/types/namedElement.h"
 
 namespace UML {
@@ -57,11 +58,8 @@ namespace UML {
             Set<NamedElement, Classifier, OwnedMemberPolicy> m_classifierOwnedMembers = Set<NamedElement, Classifier, OwnedMemberPolicy>(this);
             Singleton<RedefinableTemplateSignature, Classifier>& getOwnedTemplateSignatureSingleton();
             Singleton<ClassifierTemplateParameter, Classifier>& getTemplateParameterSingleton();
-            void restoreReferences() override;
-            void referenceErased(ID id) override;
-            Classifier();
+            Classifier(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Classifier();
             std::string getName() override;
             void setName(const std::string& name) override;
             ReadOnlyIndexableSet<Feature, Classifier>& getFeatures();
@@ -73,17 +71,30 @@ namespace UML {
             RedefinableTemplateSignaturePtr getOwnedTemplateSignature() const;
             void setOwnedTemplateSignature(RedefinableTemplateSignature* signature);
             void setOwnedTemplateSignature(RedefinableTemplateSignature& signature);
-            void setOwnedTemplateSignature(RedefinableTemplateSignaturePtr signature);
+            void setOwnedTemlateSignature(RedefinableTemplateSignaturePtr signature);
             void setOwnedTemplateSignature(ID id);
             ClassifierTemplateParameterPtr getTemplateParameter() const;
             void setTemplateParameter(ClassifierTemplateParameter* templateParameter);
             void setTemplateParameter(ClassifierTemplateParameter& templateParameter);
             void setTemplateParameter(ClassifierTemplateParameterPtr templateParameter);
             void setTemplateParameter(ID id);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::CLASSIFIER;
+            typedef TypeInfo<std::tuple<Namespace, Type, RedefinableElement, TemplateableElement>, Classifier> Info;
+    };
+
+    template<>
+    struct ElementInfo<Classifier> {
+        static const bool abstract = true;
+        inline static std::string name {"Classifier"};
+        static SetList sets(Classifier& el) {
+            return SetList {
+                makeSetPair("features", el.getFeatures()),
+                makeSetPair("attributes", el.getAttributes()),
+                makeSetPair("generalization", el.getGeneralizations()),
+                makeSetPair("generals", el.getGenerals()),
+                makeSetPair("inheritedMembers", el.getInheritedMembers()),
+                makeSetPair("powerExtent", el.getPowerTypeExtent())
             };
+        }
     };
 
     //Exceptions

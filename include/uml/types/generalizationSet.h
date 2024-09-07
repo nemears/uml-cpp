@@ -1,7 +1,9 @@
 #pragma once
 
 #include "packageableElement.h"
+#include "uml/managers/abstractManager.h"
 #include "uml/set/set.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -11,19 +13,17 @@ namespace UML {
 
     class GeneralizationSet : public PackageableElement {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Classifier;
+        friend struct ElementInfo<GeneralizationSet>;
         
         protected:
             bool m_covering = false;
             bool m_disjoint = false;
             Singleton<Classifier, GeneralizationSet> m_powerType = Singleton<Classifier, GeneralizationSet>(this);
             Set<Generalization, GeneralizationSet> m_generalizations = Set<Generalization, GeneralizationSet>(this);
-            void referenceErased(ID id) override;
             Singleton<Classifier, GeneralizationSet>& getPowerTypeSingleton();
-            GeneralizationSet();
+            GeneralizationSet(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~GeneralizationSet();
             bool isCovering() const;
             bool isDisjoint() const;
             void setCovering(bool covering);
@@ -33,9 +33,18 @@ namespace UML {
             void setPowerType(Classifier& powerType);
             void setPowerType(ID id);
             Set<Generalization, GeneralizationSet>& getGeneralizations();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::GENERALIZATION_SET;
+            typedef TypeInfo<std::tuple<PackageableElement>, GeneralizationSet> Info;
+    };
+
+    template <>
+    struct ElementInfo<GeneralizationSet> {
+        static const bool abstract = false;
+        inline static const std::string name {"GeneralizationSet"};
+        static SetList sets(GeneralizationSet& el) {
+            return SetList {
+                makeSetPair("powerType", el.m_powerType),
+                makeSetPair("generalizations", el.m_generalizations),
             };
+        }
     };
 }

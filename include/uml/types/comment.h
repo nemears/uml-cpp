@@ -1,26 +1,33 @@
 #pragma once
 
 #include "element.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/set.h"
 
 namespace UML {
     class Comment : public Element {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        friend struct ElementInfo<Comment>;
 
         protected:
             Set<Element, Comment> m_annotatedElements = Set<Element, Comment>(this);
             std::string m_body; // TODO move to literal string?
-            void referenceErased(ID id) override;
             Comment();
         public:
-            virtual ~Comment();
             std::string getBody() const;
             void setBody(const std::string& body);
             Set<Element, Comment>& getAnnotatedElements();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::COMMENT;
+            typedef TypeInfo<std::tuple<Comment>, Element> Info;
+    };
+
+    template <>
+    struct ElementInfo<Comment> {
+        static const bool abstract = false;
+        inline static const std::string name {"Comment"};
+        static SetList sets(Comment& el) {
+            return SetList {
+                makeSetPair("annotatedElements", el.m_annotatedElements)
             };
+        }
     };
 }

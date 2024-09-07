@@ -2,7 +2,10 @@
 
 #include "classifier.h"
 #include "deployedArtifact.h"
+#include "uml/managers/abstractManager.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/orderedSet.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -10,24 +13,34 @@ namespace UML {
 
     class Artifact : public Classifier, public DeployedArtifact {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        friend struct ElementInfo<Artifact>;
 
         protected:
             Set<Artifact, Artifact> m_nestedArtifacts = Set<Artifact, Artifact>(this);
             OrderedSet<Property, Artifact> m_ownedAttributes = OrderedSet<Property, Artifact>(this);
             OrderedSet<Operation, Artifact> m_ownedOperations = OrderedSet<Operation, Artifact>(this);
             Set<Manifestation, Artifact> m_manifestations =  Set<Manifestation, Artifact>(this);
-            Artifact();
+            Artifact(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~Artifact();
             OrderedSet<Property, Artifact>& getOwnedAttributes();
             OrderedSet<Operation, Artifact>& getOwnedOperations();
             Set<Artifact, Artifact>& getNestedArtifacts();
             Set<Manifestation, Artifact>& getManifestations();
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::ARTIFACT;
+            typedef TypeInfo<std::tuple<Classifier, DeployedArtifact>, Artifact> Info;
+    };
+
+    template <>
+    struct ElementInfo<Artifact> {
+        static const bool abstract = false;
+        inline static const std::string name {"Artifact"};
+        static SetList sets(Artifact& el) {
+            return SetList {
+                makeSetPair("nestedArtifacts", el.m_nestedArtifacts),
+                makeSetPair("ownedAttributes", el.m_ownedAttributes),
+                makeSetPair("ownedOperations", el.m_ownedOperations),
+                makeSetPair("manifestations", el.m_manifestations)
             };
+        }
     };
 
     class NestedArtifactException : public std::exception {

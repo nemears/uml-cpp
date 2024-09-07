@@ -1,6 +1,8 @@
 #pragma once
 
 #include "property.h"
+#include "uml/managers/typeInfo.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -10,20 +12,27 @@ namespace UML {
 
     class ExtensionEnd : public Property {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
+        friend struct ElementInfo<ExtensionEnd>;
 
         private:
             Singleton<Stereotype, ExtensionEnd> m_extensionType = Singleton<Stereotype, ExtensionEnd>(this);
             Singleton<Stereotype, ExtensionEnd>& getTypeSingleton();
-            ExtensionEnd();
+            ExtensionEnd(std::size_t elementType);
         public:
-            virtual ~ExtensionEnd();
             TypePtr getType() const override;
             void setType(Stereotype& stereotype);
             void setType(StereotypePtr stereotype);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::EXTENSION_END;
+            typedef TypeInfo<std::tuple<Property>, ExtensionEnd> Info;
+    };
+
+    template <>
+    struct ElementInfo<ExtensionEnd> {
+        static const bool abstract = false;
+        inline static const std::string name {"ExtensionEnd"};
+        static SetList sets(ExtensionEnd& el) {
+            return SetList {
+                makeSetPair("type", el.m_extensionType)
             };
+        }
     };
 }

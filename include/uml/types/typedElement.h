@@ -2,6 +2,7 @@
 
 #include "namedElement.h"
 #include "uml/set/singleton.h"
+#include "uml/types/element.h"
 
 namespace UML{
 
@@ -11,21 +12,28 @@ namespace UML{
     class TypedElement : virtual public NamedElement {
 
         friend class Type;
+        friend struct ElementInfo<TypedElement>;
 
         protected:
             Singleton<Type, TypedElement> m_type = Singleton<Type, TypedElement>(this);
-            void referenceErased(ID id) override;
             Singleton<Type, TypedElement>& getTypeSingleton();
-            TypedElement();
+            TypedElement(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~TypedElement();
             virtual TypePtr getType() const;
-            virtual void setType(Type* type);
+            virtual void setType(TypePtr type);
             void setType(Type& type);
             void setType(ID id);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::TYPED_ELEMENT;
+            typedef TypeInfo<std::tuple<NamedElement>, TypedElement> Info;
+    };
+
+    template <>
+    struct ElementInfo<TypedElement> {
+        static const bool abstract = true;
+        inline static std::string name {"TypedElement"};
+        static SetList sets(TypedElement& el) {
+            return SetList {
+                makeSetPair("type", el.m_type)
             };
+        }
     };
 }

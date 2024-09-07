@@ -1,8 +1,10 @@
 #pragma once
 
 #include "templateParameter.h"
+#include "uml/managers/abstractManager.h"
 #include "uml/set/set.h"
 #include "uml/set/singleton.h"
+#include "uml/types/element.h"
 
 namespace UML {
 
@@ -11,18 +13,16 @@ namespace UML {
 
     class ClassifierTemplateParameter : public TemplateParameter {
 
-        template <typename SerializationPolicy, typename PersistencePolicy> friend class Manager;
         friend class Classifier;
+        friend struct ElementInfo<ClassifierTemplateParameter>;
 
         protected:
             bool m_allowSubstitutable = true;
             Singleton<Classifier, ClassifierTemplateParameter> m_classifierParameteredElement = Singleton<Classifier, ClassifierTemplateParameter>(this);
             Set<Classifier, ClassifierTemplateParameter> m_constrainingClassifiers = Set<Classifier, ClassifierTemplateParameter>(this);
             Singleton<Classifier, ClassifierTemplateParameter>& getParameteredElementSingleton();
-            void referenceErased(ID id) override;
-            ClassifierTemplateParameter();
+            ClassifierTemplateParameter(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~ClassifierTemplateParameter();
             ClassifierPtr getParameteredElement() const;
             void setParameteredElement(Classifier* parameteredElement);
             void setParameteredElement(Classifier& parameteredElement);
@@ -31,9 +31,18 @@ namespace UML {
             Set<Classifier, ClassifierTemplateParameter>& getConstrainingClassifiers();
             bool isAllowSubstitutable() const;
             void setAllowSubstitutable(bool allowSubstitutable);
-            bool is(ElementType eType) const override;
-            static ElementType elementType() {
-                return ElementType::CLASSIFIER_TEMPLATE_PARAMETER;
-            }
+            typedef TypeInfo<std::tuple<TemplateParameter>, ClassifierTemplateParameter> Info;
+    };
+
+    template <>
+    struct ElementInfo<ClassifierTemplateParameter> {
+        static const bool abstract = false;
+        inline static const std::string name {"ClassifierTemplateParameter"};
+        static SetList sets(ClassifierTemplateParameter& el) {
+            return SetList {
+                makeSetPair("parameteredElement", el.m_classifierParameteredElement),
+                makeSetPair("constrainingClassifiers", el.m_constrainingClassifiers)
+            };
+        }
     };
 }

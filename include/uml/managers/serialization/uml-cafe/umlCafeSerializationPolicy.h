@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <yaml-cpp/emittermanip.h>
+#include <yaml-cpp/node/parse.h>
 #include "yaml-cpp/yaml.h"
 #include "uml/set/abstractSet.h"
 
@@ -23,220 +24,371 @@ namespace UML {
             }
     };
 
-    template <class T>
-    std::unique_ptr<std::pair<std::string, AbstractSet*>> findScopeHelper(T& el) {
-        for (auto& setPair : T::Info::Info::sets(el)) {
-            if (setPair.second->getComposition() == CompositionType::ANTI_COMPOSITE) {
-                return std::make_unique<std::pair<std::string, AbstractSet*>>(setPair);
-            }
-        }
-        return 0;
-    }
 
-    template <std::size_t I, class Tlist>
-    std::unique_ptr<std::pair<std::string, AbstractSet*>> findScope(AbstractElement& el) {
-        if constexpr (std::tuple_size<Tlist>{} > I) {
-            using CurrentType = std::tuple_element_t<I, Tlist>; 
-            auto possibleScope = findScopeHelper<CurrentType>(dynamic_cast<CurrentType&>(el));
-            if (possibleScope) {
-                return possibleScope;
-            }
-            possibleScope = findScope<I + 1, Tlist>(el);
-            if (possibleScope) {
-                return possibleScope;
-            }
-            return findScope<0, typename CurrentType::Info::BaseList>(el);
-            
-        }
-        return 0;
-    }
-
-    template <class T>
-    void emitIndividualDataHelper(YAML::Emitter& emitter, AbstractElement& el) {
-
-        // TODO other features besides sets
-        
-        for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
-            auto set = setPair.second;
-            if (set->readonly() || set->empty()) {
-                continue;
-            }
-            emitter << YAML::Key << setPair.first;
-            switch (set->setType()) {
-                case SetType::SET:
-                case SetType::ORDERED_SET:
-                {
-                    emitter << YAML::BeginSeq;
-                    for (auto id : set->ids()) {
-                        emitter << id.string();
-                    }
-                    emitter << YAML::EndSeq;
-                    break;
-                }
-                case SetType::SINGLETON : {
-                    emitter << YAML::Value << set->ids().front().string();
-                    break;
-                }
-                default:
-                    throw SerializationError("Could not emit, cannot handle set type!");
-            }
-        }
-    }
-
-    template <std::size_t I = 0, class Tlist>
-    void emitIndividualData(YAML::Emitter& emitter, std::unordered_set<std::size_t> visited, AbstractElement& el) {
-        if constexpr (std::tuple_size<Tlist>{} > I) {
-            using ElementType = std::tuple_element_t<I, Tlist>;
-            // dfs
-            if (!visited.count(ElementType::template idOf<ElementType>())) {
-                visited.insert(ElementType::template idOf<ElementType>());
-                emitIndividualData<0, typename ElementType::Info::BaseList>(emitter, visited, el);
-                emitIndividualData<I + 1, Tlist>(emitter, visited, el);
-                emitIndividualDataHelper<ElementType>(emitter, el);
-            }
-        }
-    }
 
     template <class Tlist>
-    struct AbstractEmitterFunctor {
-        virtual std::string operator()(BaseElement<Tlist>& el) = 0;
-    };
-
-    template <class T, class Tlist>
-    struct EmitterFunctor : public AbstractEmitterFunctor<Tlist> {
-        std::string operator()(BaseElement<Tlist>& el) override {
-            T& typedEl = el.template as<T>();
-            YAML::Emitter emitter;
-            emitter << YAML::BeginMap;
-            std::string elementName = T::Info::Info::name;
-            auto possibleScope = findScope<0, std::tuple<T>>(el);
-            if (possibleScope && !possibleScope->second->empty()) {
-                emitter << YAML::Key << possibleScope->first << YAML::Value << possibleScope->second->ids().front().string();
-            }
-            std::unordered_set<std::size_t> visited;
-            emitter << YAML::Key << elementName << YAML::Value << YAML::BeginMap;
-            emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
-            emitIndividualData<0, std::tuple<T>>(emitter, visited, el);
-            emitter << YAML::EndMap;
-            emitter << YAML::EndMap;
-
-            return emitter.c_str();
-        }
-    };
-
-    template <class T>
-    void parseIndividualHelper(T& el, const YAML::Node& node) {
-        for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
-            if (setPair.second->readonly()) {
-                continue;
-            }
-            auto set = dynamic_cast<AbstractReadableSet*>(setPair.second);
-            if (node[setPair.first]) {
-                auto& setNode = node[setPair.first];
-                if (setNode.IsScalar()) {
-                    if (set->setType() != SetType::SINGLETON) {
-                        throw SerializationError("Error while parsing: Singleton node is not a scalar value!");
-                    }
-                    set->add(ID::fromString(setNode.template as<std::string>()));
-                } else if (setNode.IsSequence()) {
-                    for (const auto& valNode : setNode) {
-                        set->add(ID::fromString(valNode.template as<std::string>()));
-                    }
-                } else {
-                    throw SetStateException("Invalid set formatting for individual parsing!");
-                }
-            }
-        } 
-    }
-
-    template <std::size_t I, class Tlist>
-    void parseIndividual(std::tuple_element_t<I, Tlist>& el, const YAML::Node& node) {
-        using ElementType = std::tuple_element_t<I, Tlist>;
-        parseIndividualHelper<ElementType>(el, node);
-        if constexpr (std::tuple_size<Tlist>{} > I + 1) {
-            parseIndividual<I + 1, Tlist>(dynamic_cast<std::tuple_element_t<I + 1, Tlist>&>(el), node);
-        }
-        using ElBases = ElementType::Info::BaseList;
-        if constexpr (std::tuple_size<ElBases>{} > 0) {
-            parseIndividual<0, ElBases>(el, node);
-        }
-    }
-
-    template <class Tlist>
-    struct AbstractParserFunctor {
-        virtual UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node& node, AbstractManager& manager) = 0;
-    };
-
-    template <class T, class Tlist>
-    struct ParserFunctor : public AbstractParserFunctor<Tlist> {
-        UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node& node, AbstractManager& manager) {
-            UmlPtr<T> ret = manager.create(ManagerTypes<Tlist>::template idOf<T>());
-            if (node["id"]) {
-                ret->setID(ID::fromString(node["id"].as<std::string>()));
-            }
-
-            parseIndividual<0, std::tuple<T>>(*ret, node);
-
-            // TODO parse the rest
-            //
-
-            return ret;
-        }
-    };
-
-    template <std::size_t I = 0, class Tlist>
-    void populateEmitterFunctors(std::unordered_map<std::size_t, std::unique_ptr<AbstractEmitterFunctor<Tlist>>>& functors) {
-        if constexpr (std::tuple_size<Tlist>{} > I) {
-            functors.emplace(I, std::make_unique<EmitterFunctor<std::tuple_element_t<I, Tlist>, Tlist>>());
-            populateEmitterFunctors<I + 1, Tlist>(functors);
-        }
-    }
-
-    template <std::size_t I = 0, class Tlist>
-    void populateParserFunctors(std::unordered_map<std::string, std::unique_ptr<AbstractParserFunctor<Tlist>>>& functors) {
-        if constexpr (std::tuple_size<Tlist>{} > I) {
-            using ElementType = std::tuple_element_t<I, Tlist>;
-            if constexpr (!ElementType::Info::Info::abstract) {
-                functors.emplace(ElementType::Info::Info::name, std::make_unique<ParserFunctor<ElementType, Tlist>>());
-            }
-            populateParserFunctors<I + 1, Tlist>(functors);
-        }
-    }
-
-    template <class Tlist>
-    class UmlCafeSerializationPolicy {
+    class UmlCafeSerializationPolicy : virtual public AbstractManager {
         private:
-            std::unordered_map<std::size_t, std::unique_ptr<AbstractEmitterFunctor<Tlist>>> m_emitterFunctors;
-            std::unordered_map<std::string, std::unique_ptr<AbstractParserFunctor<Tlist>>> m_parserfunctors;
+            struct AbstractEmitterFunctor;
+            struct AbstractParserFunctor;
+
+            std::unordered_map<std::size_t, std::unique_ptr<AbstractEmitterFunctor>> m_emitterFunctors;
+            std::unordered_map<std::string, std::unique_ptr<AbstractParserFunctor>> m_parserfunctors;
+
+            template <class T>
+            static std::unique_ptr<std::pair<std::string, AbstractSet*>> findScopeHelper(T& el) {
+                for (auto& setPair : T::Info::Info::sets(el)) {
+                    if (setPair.second->getComposition() == CompositionType::ANTI_COMPOSITE) {
+                        return std::make_unique<std::pair<std::string, AbstractSet*>>(setPair);
+                    }
+                }
+                return 0;
+            }
+
+            template <std::size_t I, class EmitTypes>
+            static std::unique_ptr<std::pair<std::string, AbstractSet*>> findScope(AbstractElement& el) {
+                if constexpr (std::tuple_size<EmitTypes>{} > I) {
+                    using CurrentType = std::tuple_element_t<I, EmitTypes>; 
+                    auto possibleScope = findScopeHelper<CurrentType>(dynamic_cast<CurrentType&>(el));
+                    if (possibleScope) {
+                        return possibleScope;
+                    }
+                    possibleScope = findScope<I + 1, EmitTypes>(el);
+                    if (possibleScope) {
+                        return possibleScope;
+                    }
+                    return findScope<0, typename CurrentType::Info::BaseList>(el);
+                    
+                }
+                return 0;
+            }
+
+            template <class T, bool individual = true>
+            static void emitIndividualDataHelper(YAML::Emitter& emitter, AbstractElement& el) {
+
+                // TODO other features besides sets
+                
+                for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
+                    auto set = setPair.second;
+                    if (set->readonly() || set->empty()) {
+                        continue;
+                    }
+                    emitter << YAML::Key << setPair.first;
+                    switch (set->setType()) {
+                        case SetType::SET:
+                        case SetType::ORDERED_SET:
+                        {
+                            emitter << YAML::BeginSeq;
+                            for (auto id : set->ids()) {
+                                emitter << id.string();
+                            }
+                            emitter << YAML::EndSeq;
+                            break;
+                        }
+                        case SetType::SINGLETON : {
+                            emitter << YAML::Value << set->ids().front().string();
+                            break;
+                        }
+                        default:
+                            throw SerializationError("Could not emit, cannot handle set type!");
+                    }
+                }
+            }
+
+            template <class T>
+            static void emitWholeDataHelper(YAML::Emitter& emitter, AbstractElement& el, UmlCafeSerializationPolicy& self) {
+                for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
+                    auto set = setPair.second;
+                    if (set->readonly() || set->empty()) {
+                        continue;
+                    }
+                    emitter << YAML::Key << setPair.first;
+                    switch (set->setType()) {
+                        case SetType::SET:
+                        case SetType::ORDERED_SET:
+                        {
+                            emitter << YAML::BeginSeq;
+                            if (set->getComposition() == CompositionType::NONE) {
+                                for (auto id : set->ids()) {
+                                    emitter << id.string();
+                                }
+                                
+                            } else if (set->getComposition() == CompositionType::COMPOSITE) {
+                                for (auto it = set->beginPtr(); *it != *set->endPtr(); it->next()) {
+                                    auto child = UmlPtr<BaseElement<Tlist>>(it->getCurr());
+                                    self.m_emitterFunctors.at(child->getElementType())->emitWhole(emitter, *child);
+                                }
+                            }
+                            emitter << YAML::EndSeq;
+                            break;
+                        }
+                        case SetType::SINGLETON : {
+                            if (set->getComposition() == CompositionType::NONE) {
+                                emitter << YAML::Value << set->ids().front().string();
+                            } else if (set->getComposition() == CompositionType::COMPOSITE) {
+                                auto child = UmlPtr<BaseElement<Tlist>>(set->beginPtr()->getCurr());
+                                self.m_emitterFunctors.at(child->getElementType())->emitWhole(emitter, *child);
+                            }
+                            break;
+                        }
+                        default:
+                            throw SerializationError("Could not emit, cannot handle set type!");
+                    }
+                }
+            }
+
+            template <std::size_t I = 0, class EmitTypes>
+            static void emitIndividualData(YAML::Emitter& emitter, std::unordered_set<std::size_t> visited, AbstractElement& el) {
+                if constexpr (std::tuple_size<EmitTypes>{} > I) {
+                    using ElementType = std::tuple_element_t<I, EmitTypes>;
+                    // dfs
+                    if (!visited.count(ElementType::template idOf<ElementType>())) {
+                        visited.insert(ElementType::template idOf<ElementType>());
+                        emitIndividualData<0, typename ElementType::Info::BaseList>(emitter, visited, el);
+                        emitIndividualData<I + 1, EmitTypes>(emitter, visited, el);
+                        emitIndividualDataHelper<ElementType>(emitter, el);
+                    }
+                }
+            }
+
+            template <std::size_t I = 0, class EmitTypes>
+            static void emitWholeData(YAML::Emitter& emitter, std::unordered_set<std::size_t>& visited, AbstractElement& el, UmlCafeSerializationPolicy& self) {
+                if constexpr (std::tuple_size<EmitTypes>{} > I) {
+                    using ElementType = std::tuple_element_t<I, EmitTypes>;
+                    // dfs
+                    if (!visited.count(ElementType::template idOf<ElementType>())) {
+                        visited.insert(ElementType::template idOf<ElementType>());
+                        emitWholeData<0, typename ElementType::Info::BaseList>(emitter, visited, el, self);
+                        emitWholeData<I + 1, EmitTypes>(emitter, visited, el, self);
+                        emitWholeDataHelper<ElementType>(emitter, el, self);
+                    }
+                }
+            }
+
+            struct AbstractEmitterFunctor {
+                virtual std::string operator()(BaseElement<Tlist>& el) = 0;
+                virtual void emitWhole(YAML::Emitter& emitter, BaseElement<Tlist>& el) = 0;
+            };
+
+            template <class T>
+            struct EmitterFunctor : public AbstractEmitterFunctor {
+                UmlCafeSerializationPolicy& m_self;
+                EmitterFunctor(UmlCafeSerializationPolicy& self) : m_self(self) {}
+                std::string operator()(BaseElement<Tlist>& el) override {
+                    YAML::Emitter emitter;
+                    emitter << YAML::BeginMap;
+                    std::string elementName = T::Info::Info::name;
+                    auto possibleScope = findScope<0, std::tuple<T>>(el);
+                    if (possibleScope && !possibleScope->second->empty()) {
+                        emitter << YAML::Key << possibleScope->first << YAML::Value << possibleScope->second->ids().front().string();
+                    }
+                    std::unordered_set<std::size_t> visited;
+                    emitter << YAML::Key << elementName << YAML::Value << YAML::BeginMap;
+                    emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
+                    emitIndividualData<0, std::tuple<T>>(emitter, visited, el);
+                    emitter << YAML::EndMap;
+                    emitter << YAML::EndMap;
+
+                    return emitter.c_str();
+                }
+                void emitWhole(YAML::Emitter& emitter, BaseElement<Tlist>& el) override {
+                    std::unordered_set<std::size_t> visited;
+                    emitter << T::Info::Info::name << YAML::Value << YAML::BeginMap;
+                    emitWholeData<0, std::tuple<T>>(emitter, visited, el, m_self);
+                    emitter << YAML::EndMap;    
+                }
+            };
+
+            std::pair<const YAML::Node&, AbstractParserFunctor&> getFunctor(const YAML::Node& node) {
+                auto it = node.begin();
+                while (it != node.end()) {
+                    const auto& keyNode = it->first;
+                    const auto& node = it->second;
+                    if (node.IsMap()) {
+                        // look up key
+                        return std::make_pair(std::ref(node), std::ref(*m_parserfunctors.at(keyNode.as<std::string>())));
+                    }
+                } 
+                throw SerializationError("Could not identify type to parse relevant to this manager!");
+            }
+
+            template <class T>
+            void parseIndividualHelper(T& el, const YAML::Node& node) {
+                for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
+                    if (setPair.second->readonly()) {
+                        continue;
+                    }
+                    auto set = dynamic_cast<AbstractReadableSet*>(setPair.second);
+                    if (node[setPair.first]) {
+                        auto& setNode = node[setPair.first];
+                        if (setNode.IsScalar()) {
+                            if (set->setType() != SetType::SINGLETON) {
+                                throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
+                            }
+                            // TODO if parsing compositely, check to make sure the set is not composite
+                            set->add(ID::fromString(setNode.template as<std::string>()));
+                        } else if (setNode.IsSequence()) {
+                            for (const auto& valNode : setNode) {
+                                set->add(ID::fromString(valNode.template as<std::string>()));
+                            }
+                        } else {
+                            throw SetStateException("Invalid set formatting for individual parsing! line number " + std::to_string(setNode.Mark().line));
+                        }
+                    }
+                }
+            }
+
+            template <class T>
+            void parseWholeHelper(T& el, const YAML::Node& node, UmlCafeSerializationPolicy& self) {
+                for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
+                    if (setPair.second->readonly()) {
+                        continue;
+                    }
+                    auto set = dynamic_cast<AbstractReadableSet*>(setPair.second);
+                    if (node[setPair.first]) {
+                        auto& setNode = node[setPair.first];
+                        if (setNode.IsScalar()) {
+                            if (set->setType() != SetType::SINGLETON) {
+                                throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
+                            }
+                            // TODO if parsing compositely, check to make sure the set is not composite
+                            set->add(ID::fromString(setNode.template as<std::string>()));
+                        } else if (setNode.IsSequence()) {
+                            for (const auto& valNode : setNode) {
+                                // composite parsing
+                                auto match = self.getFunctor(valNode);
+                                auto parsedChild = match.second.parseWhole(match.first, self);
+                                self.addToSet(*set, *parsedChild);
+                                // set->add(parsedChild);
+                            }
+                        } else {
+                            if (set->setType() != SetType::SINGLETON) {
+                                throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
+                            }
+                            auto match = self.getFunctor(setNode);
+                            auto parsedChild = match.second.parseWhole(match.first, self);
+                            self.addToSet(*set, *parsedChild);
+                            // set->add(parsedChild);
+                        }
+                    }
+                }
+            }
+
+            template <std::size_t I, class ParseTypes>
+            void parseIndividual(std::tuple_element_t<I, ParseTypes>& el, const YAML::Node& node) {
+                using ElementType = std::tuple_element_t<I, ParseTypes>;
+                parseIndividualHelper<ElementType>(el, node);
+                if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
+                    parseIndividual<I + 1, ParseTypes>(dynamic_cast<std::tuple_element_t<I + 1, ParseTypes>&>(el), node);
+                }
+                using ElBases = ElementType::Info::BaseList;
+                if constexpr (std::tuple_size<ElBases>{} > 0) {
+                    parseIndividual<0, ElBases>(el, node);
+                }
+            }
+            
+            template <std::size_t I, class ParseTypes>
+            void parseWhole(std::tuple_element_t<I, ParseTypes>& el, const YAML::Node& node, UmlCafeSerializationPolicy& self) {
+                using ElementType = std::tuple_element_t<I, ParseTypes>;
+                parseWholeHelper<ElementType>(el, node, self);
+                if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
+                    parseWhole<I + 1, ParseTypes>(dynamic_cast<std::tuple_element_t<I + 1, ParseTypes>&>(el), node, self);
+                }
+                using ElBases = ElementType::Info::BaseList;
+                if constexpr (std::tuple_size<ElBases>{} > 0) {
+                    parseWhole<0, ElBases>(el, node, self);
+                }
+            }
+
+            struct AbstractParserFunctor {
+                UmlCafeSerializationPolicy& m_self;
+                AbstractParserFunctor(UmlCafeSerializationPolicy& self) : m_self(self) {}
+                virtual UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node& node, AbstractManager& manager) = 0;
+                virtual UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node& node, AbstractManager& manager) = 0; 
+            };
+
+            template <class T>
+            struct ParserFunctor : public AbstractParserFunctor {
+                ParserFunctor(UmlCafeSerializationPolicy& self) : AbstractParserFunctor(self) {}
+                UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node& node, AbstractManager& manager) override {
+                    UmlPtr<T> ret = manager.create(ManagerTypes<Tlist>::template idOf<T>());
+                    if (node["id"]) {
+                        ret->setID(ID::fromString(node["id"].as<std::string>()));
+                    }
+
+                    this->m_self.template parseIndividual<0, std::tuple<T>>(*ret, node);
+
+                    return ret;
+                }
+                UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node& node, AbstractManager& manager) {
+                    UmlPtr<T> ret = manager.create(T::Info::elementType);
+                    if (node["id"]) {
+                        ret->setID(ID::fromString(node["id"].as<std::string>()));
+                    }
+                    this->m_self.template parseWhole<0, std::tuple<T>>(*ret, node, this->m_self);
+                    return ret;
+                }
+            };
+
+            template <std::size_t I = 0>
+            void populateEmitterFunctors(std::unordered_map<std::size_t, std::unique_ptr<AbstractEmitterFunctor>>& functors) {
+                if constexpr (std::tuple_size<Tlist>{} > I) {
+                    functors.emplace(I, std::make_unique<EmitterFunctor<std::tuple_element_t<I, Tlist>>>(*this));
+                    populateEmitterFunctors<I + 1>(functors);
+                }
+            }
+
+            template <std::size_t I = 0>
+            void populateParserFunctors(std::unordered_map<std::string, std::unique_ptr<AbstractParserFunctor>>& functors) {
+                if constexpr (std::tuple_size<Tlist>{} > I) {
+                    using ElementType = std::tuple_element_t<I, Tlist>;
+                    if constexpr (!ElementType::Info::Info::abstract) {
+                        functors.emplace(ElementType::Info::Info::name, std::make_unique<ParserFunctor<ElementType>>(*this));
+                    }
+                    populateParserFunctors<I + 1>(functors);
+                }
+            } 
         protected:
             UmlCafeSerializationPolicy() {
-                populateEmitterFunctors<0, Tlist>(m_emitterFunctors);
-                populateParserFunctors<0, Tlist>(m_parserfunctors);
+                populateEmitterFunctors<0>(m_emitterFunctors);
+                populateParserFunctors<0>(m_parserfunctors);
             }
             AbstractElementPtr parseIndividual(std::string data, AbstractManager& manager) {
                 std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
                 if (rootNodes.empty()) {
                     throw SerializationError("could not parse data supplied to manager! Is it JSON or YAML?");
                 }
-                auto it = rootNodes[0].begin();
-                while (it != rootNodes[0].end()) {
-                    const auto& keyNode = it->first;
-                    const auto& node = it->second;
-                    if (node.IsMap()) {
-                        // look up key
-                        return (*m_parserfunctors.at(keyNode.as<std::string>()))(node, manager);
-                    }
+                auto match = getFunctor(rootNodes[0]);
+                return match.second(match.first, manager);
+            }
+            std::vector<UmlPtr<BaseElement<Tlist>>> parseWhole(std::string data, AbstractManager& manager) {
+                std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
+                if (rootNodes.empty()) {
+                    throw SerializationError("could not parse data supplied to manager! Is it JSON or YAML?");
                 }
-                throw SerializationError("Could not identify type to parse releant to this manager!");
+                std::vector<UmlPtr<BaseElement<Tlist>>> ret(rootNodes.size());
+                for (auto& node : rootNodes) {
+                    auto match = getFunctor(node);
+                    ret.push_back(match.second.parseWhole(match.first, manager));
+                }
+                return ret;
             }
-            AbstractElementPtr parseWhole(std::string data, AbstractManager& manager) {
-                throw ManagerStateException("TODO");
-            }
-            std::string emitIndividual(AbstractElement& el, __attribute__((unused)) AbstractManager& manager) {
-                return (*m_emitterFunctors.at(el.getElementType()))(dynamic_cast<BaseElement<Tlist>&>(el));
+            std::string emitIndividual(BaseElement<Tlist>& el, __attribute__((unused)) AbstractManager& manager) {
+                return (*m_emitterFunctors.at(el.getElementType()))(el);
             }
             std::string emitWhole(AbstractElement& el, AbstractManager& manager) {
-                throw ManagerStateException("TODO");
+                YAML::Emitter emitter;
+                emitter << YAML::BeginDoc;
+                m_emitterFunctors.at(el.getElementType())->emitWhole(emitter, manager.getAbstractRoot(), this);
+                emitter << YAML::EndDoc;
+                return emitter.c_str();
+            }
+        public:
+            std::string dump() {
+                return emitWhole(*getAbstractRoot(), *this);
+            }
+            std::string dump(BaseElement<Tlist>& el) {
+                return emitWhole(el, *this);
             }
     };
 

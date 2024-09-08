@@ -72,12 +72,6 @@ namespace UML {
                 m_data = UmlPtr<T>();
                 return true;
             }
-            std::unique_ptr<AbstractSet::iterator> beginPtr() const override {
-                return std::unique_ptr<AbstractSet::iterator>(new iterator(begin()));
-            }
-            std::unique_ptr<AbstractSet::iterator> endPtr() const override {
-                return std::unique_ptr<AbstractSet::iterator>(new iterator(end()));
-            }
         public:
             UmlPtr<T> get() const {
                 if (m_structure->m_rootRedefinedSet.get() != m_structure.get()) {
@@ -94,6 +88,12 @@ namespace UML {
                     }
                 }
                 return UmlPtr<T>();
+            }
+            std::unique_ptr<AbstractSet::iterator> beginPtr() const override {
+                return std::unique_ptr<AbstractSet::iterator>(new iterator(begin()));
+            }
+            std::unique_ptr<AbstractSet::iterator> endPtr() const override {
+                return std::unique_ptr<AbstractSet::iterator>(new iterator(end()));
             }
             iterator begin() const {
                 auto val = get();

@@ -126,16 +126,16 @@ namespace UML {
             bool removeData(UmlPtr<T> ptr) {
                 return m_data.erase(ptr.id()) == 1;
             }
+        public:
+            virtual ~SetDataPolicy() {}
+            SetType setType() const override {
+                return SetType::SET;
+            }
             std::unique_ptr<AbstractSet::iterator> beginPtr() const override {
                 return std::unique_ptr<iterator>(new iterator(begin()));
             }
             std::unique_ptr<AbstractSet::iterator> endPtr() const override {
                 return std::make_unique<iterator>();
-            }
-        public:
-            virtual ~SetDataPolicy() {}
-            SetType setType() const override {
-                return SetType::SET;
             }
             UmlPtr<T> front() const {
                 if (m_data.size() > 0) {

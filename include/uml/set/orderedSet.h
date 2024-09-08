@@ -125,12 +125,6 @@ namespace UML {
                         return ++(*this);
                     }        
             };
-            std::unique_ptr<AbstractSet::iterator> beginPtr() const override {
-                return std::make_unique<iterator>(begin());
-            };
-            std::unique_ptr<AbstractSet::iterator> endPtr() const override {
-                return std::unique_ptr<iterator>(new iterator(end()));
-            }
         public:
             ~OrderedSetDataPolicy() {
                 auto curr = m_first;
@@ -142,6 +136,12 @@ namespace UML {
                 }
                 m_first = 0;
                 m_last = 0;
+            }
+            std::unique_ptr<AbstractSet::iterator> beginPtr() const override {
+                return std::make_unique<iterator>(begin());
+            };
+            std::unique_ptr<AbstractSet::iterator> endPtr() const override {
+                return std::unique_ptr<iterator>(new iterator(end()));
             }
             UmlPtr<T> front() const {
                 if (m_first.get()) {

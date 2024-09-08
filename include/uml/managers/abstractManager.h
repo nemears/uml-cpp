@@ -9,6 +9,7 @@ namespace UML {
     class AbstractElement;
     typedef UmlPtr<AbstractElement> AbstractElementPtr;
     struct ManagerNode;
+    class AbstractSet;
 
     class  AbstractManager {
 
@@ -18,11 +19,13 @@ namespace UML {
         public:
             virtual AbstractElementPtr create(std::size_t elementType) = 0;
             virtual AbstractElementPtr createPtr(ID id) = 0;
-            virtual AbstractElementPtr get(ID id) = 0;
+            virtual AbstractElementPtr abstractGet(ID id) = 0;
             virtual void release (AbstractElement& el) = 0;
+            virtual AbstractElementPtr getAbstractRoot() const = 0;
         protected:
             virtual void reindex(ID oldID, ID newID) = 0;
             virtual void destroy(ID id) = 0;
+            virtual void addToSet(AbstractSet& set, AbstractElement& el) = 0;
             
             // TODO rest of funcionality interface
     };

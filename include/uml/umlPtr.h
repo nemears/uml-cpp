@@ -61,7 +61,7 @@ namespace UML {
                 } else if (m_ptr.lock()) {
                     return m_ptr;
                 } else {
-                    AbstractElementPtr temp = m_node.lock()->m_manager.get(m_id);
+                    AbstractElementPtr temp = m_node.lock()->m_manager.abstractGet(m_id);
                     if (!m_ptr.lock()) {
                         const_cast<UmlPtr<T>*>(this)->m_ptr = std::dynamic_pointer_cast<T>(temp->m_node.lock()->m_ptr);
                     }
@@ -173,7 +173,7 @@ namespace UML {
                 m_node.lock()->m_manager.release(*m_ptr.lock());
             }
             void aquire() {
-                AbstractElementPtr temp = m_node.lock()->m_manager.get(m_id);
+                AbstractElementPtr temp = m_node.lock()->m_manager.abstractGet(m_id);
                 m_ptr = std::dynamic_pointer_cast<T>(temp.ptr());
                 m_node = m_ptr.lock()->m_node.lock();
             }

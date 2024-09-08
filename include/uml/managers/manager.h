@@ -104,7 +104,7 @@ namespace UML {
 
     // manager
     template <class Tlist, class SerializationPolicy = UmlCafeSerializationPolicy<Tlist>, class PersistencePolicy = FilePersistencePolicy> 
-    class Manager : public ManagerTypes<Tlist>, public AbstractFactory<Tlist>, public AbstractManager , public SerializationPolicy, public PersistencePolicy {
+    class Manager : public ManagerTypes<Tlist>, public AbstractFactory<Tlist>, virtual public AbstractManager , virtual public SerializationPolicy, public PersistencePolicy {
         protected:
 
             std::unordered_map<std::size_t, std::unique_ptr<AbstractStaticSetFunctor<Tlist>>> m_types;
@@ -176,6 +176,9 @@ namespace UML {
                 }
                 m_graph.erase(id);
             }
+            virtual void addToSet(AbstractSet& set, AbstractElement& el) {
+                set.innerAdd(&el);
+            }
         private:
             bool m_destructionFlag = false;
         public:
@@ -228,7 +231,7 @@ namespace UML {
             }
 
             // get by id
-            AbstractElementPtr get(ID id) override {
+            AbstractElementPtr abstractGet(ID id) override {
 
                 // local memory look up
                 {
@@ -259,6 +262,10 @@ namespace UML {
                 return ret;
             }
 
+            UmlPtr<BaseElement<Tlist>> get(ID id) {
+                return abstractGet(id);
+            }
+
             void setRoot(UmlPtr<BaseElement<Tlist>> root) {
                 m_root = root;
             }
@@ -267,8 +274,12 @@ namespace UML {
                 return m_root;
             }
 
+            AbstractElementPtr getAbstractRoot() const override {
+                return m_root;
+            }
+
             void release(AbstractElement& el) override {
-                PersistencePolicy::saveElementData(SerializationPolicy::emitIndividual(el, *this), el.getID());
+                PersistencePolicy::saveElementData(SerializationPolicy::emitIndividual(dynamic_cast<BaseElement<Tlist>&>(el), *this), el.getID());
                 auto node = el.m_node.lock();
                 ID id = node->m_ptr->getID();
                 node->m_ptr = 0;
@@ -280,6 +291,12 @@ namespace UML {
                     std::lock_guard<std::mutex> lockGuard(m_graphMutex);
                     m_graph.erase(id);
                 }
+            }
+
+            template <class ... Ts>
+            void release(AbstractElement& el, Ts&... els) {
+                release(el);
+                release(els...);
             }
 
             void erase(BaseElement<Tlist>& el) {
@@ -318,6 +335,27 @@ namespace UML {
                 return it->second->m_ptr != 0;
             }
 
+            UmlPtr<BaseElement<Tlist>> open(std::string dataPath) {
+                auto roots = SerializationPolicy::parseWhole(PersistencePolicy::getProjectData(dataPath), *this);
+                if (roots.size() == 0) {
+                    throw ManagerStateException("No elements parsed!");
+                }
+
+                // first element will be root;
+                setRoot(roots[0]);
+                return roots[0];
+            }
+            void save(std::string location) {
+                PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(*getRoot(), *this), location);
+            }
+
+            std::string dump() {
+                return SerializationPolicy::emitWhole(*getRoot(), *this);
+            }
+
+            std::string dump(BaseElement<Tlist>& el) {
+                return SerializationPolicy::emitIndividual(el, *this);
+            }
             // TODO the rest
     };
 }

@@ -83,11 +83,11 @@ namespace UML {
                 friend class IndexablePolicy;
 
                 protected:
-                    virtual AbstractElementPtr getCurr() const = 0;
-                    virtual void next() = 0;
                     virtual std::unique_ptr<iterator> clone() const = 0;
                 public:
                     size_t m_hash = 0;
+                    virtual AbstractElementPtr getCurr() const = 0;
+                    virtual void next() = 0;
                     iterator() {}
                     iterator(const iterator& rhs) {
                         m_hash = rhs.m_hash;
@@ -100,14 +100,14 @@ namespace UML {
                         return rhs.m_hash != m_hash;
                     }
             };
-            virtual std::unique_ptr<iterator> beginPtr() const = 0;
-            virtual std::unique_ptr<iterator> endPtr() const = 0;
         public:
             AbstractSet();
             virtual ~AbstractSet();
             virtual void subsets(AbstractSet& superSet);
             virtual void redefines(AbstractSet& redefinedSet);
             void setComposition(CompositionType composition);
+            virtual std::unique_ptr<iterator> beginPtr() const = 0;
+            virtual std::unique_ptr<iterator> endPtr() const = 0;
             CompositionType getComposition() const;
             virtual bool contains(AbstractElementPtr ptr) const = 0;
             size_t size() const;

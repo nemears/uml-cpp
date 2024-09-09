@@ -10,15 +10,14 @@ Singleton<Package, PackageMerge>& PackageMerge::getMergedPackageSingleton() {
     return m_mergedPackage;
 }
 
-PackageMerge::PackageMerge() : Element(ElementType::PACKAGE_MERGE) {
-    m_receivingPackage.subsets(*m_owner);
+PackageMerge::PackageMerge(std::size_t elementType, AbstractManager&manager) : 
+    Element(elementType, manager),
+    DirectedRelationship(elementType, manager)
+{
+    m_receivingPackage.subsets(m_owner);
     m_receivingPackage.subsets(m_sources);
     m_receivingPackage.opposite(&Package::getPackageMerge);
     m_mergedPackage.subsets(m_targets);
-}
-
-PackageMerge::~PackageMerge() {
-    
 }
 
 PackagePtr PackageMerge::getReceivingPackage() const {
@@ -51,14 +50,4 @@ void PackageMerge::setMergedPackage(Package& merge) {
 
 void PackageMerge::setMergedPackage(ID id) {
     m_mergedPackage.set(id);
-}
-
-bool PackageMerge::is(ElementType eType) const {
-    bool ret = DirectedRelationship::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::PACKAGE_MERGE;
-    }
-
-    return ret;
 }

@@ -2,12 +2,13 @@
 
 using namespace UML;
 
-Expression::Expression() : Element(ElementType::EXPRESSION) {
-    m_operands.subsets(*m_ownedElements);
-}
-
-Expression::~Expression() {
-    
+Expression::Expression(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    ValueSpecification(elementType, manager) 
+{
+    m_operands.subsets(m_ownedElements);
 }
 
 IndexableOrderedSet<ValueSpecification, Expression>& Expression::getOperands() {
@@ -20,14 +21,4 @@ std::string Expression::getSymbol() {
 
 void Expression::setSymbol(const std::string& sym) {
     m_symbol = sym;
-}
-
-bool Expression::is(ElementType eType) const {
-    bool ret = ValueSpecification::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::EXPRESSION;
-    }
-
-    return ret;
 }

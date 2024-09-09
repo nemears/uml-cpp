@@ -20,7 +20,7 @@ ReadOnlySingleton<Namespace, NamedElement, NamedElement::UpdateQualifiedNamePoli
 NamedElement::NamedElement(std::size_t elementType, AbstractManager& manager) : Element(elementType, manager) {
     m_namespace.subsets(m_owner);
     m_namespace.opposite(&Namespace::getOwnedMembers);
-    // m_clientDependencies.opposite(&Dependency::getClients);
+    m_clientDependencies.opposite(&Dependency::getClients);
 }
 
 void NamedElement::setName(const std::string &name) {
@@ -43,9 +43,9 @@ NamespacePtr NamedElement::getNamespace() const {
     return m_namespace.get();
 }
 
-// Set<Dependency, NamedElement>& NamedElement::getClientDependencies() {
-//     return m_clientDependencies;
-// }
+Set<Dependency, NamedElement>& NamedElement::getClientDependencies() {
+    return m_clientDependencies;
+}
 
 VisibilityKind NamedElement::getVisibility() {
     return m_visibility;

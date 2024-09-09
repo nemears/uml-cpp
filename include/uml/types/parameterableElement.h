@@ -21,7 +21,7 @@ namespace UML {
             Singleton<TemplateParameter, ParameterableElement> m_owningTemplateParameter = Singleton<TemplateParameter, ParameterableElement>(this);
             Singleton<TemplateParameter, ParameterableElement>& getOwningTemplateParameterSingleton();
             Singleton<TemplateParameter, ParameterableElement>& getTemplateParameterSingleton();
-            ParameterableElement();
+            ParameterableElement(std::size_t elementType, AbstractManager& manager);
         public:
             TemplateParameterPtr getOwningTemplateParameter() const;
             void setOwningTemplateParameter(TemplateParameterPtr parameter);

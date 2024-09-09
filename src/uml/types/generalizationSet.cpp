@@ -1,25 +1,19 @@
-#include "uml/set/singleton.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
-
-void GeneralizationSet::referenceErased(ID id) {
-    PackageableElement::referenceErased(id);
-    eraseFromSet(id, m_powerType);
-    eraseFromSet(id, m_generalizations);
-}
 
 Singleton<Classifier, GeneralizationSet>& GeneralizationSet::getPowerTypeSingleton() {
     return m_powerType;
 }
 
-GeneralizationSet::GeneralizationSet() : Element(ElementType::GENERALIZATION_SET) {
+GeneralizationSet::GeneralizationSet(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    PackageableElement(elementType, manager)
+{
     m_generalizations.opposite(&Generalization::getGeneralizationSets);
     m_powerType.opposite(&Classifier::getPowerTypeExtent);
-}
-
-GeneralizationSet::~GeneralizationSet() {
-    
 }
 
 bool GeneralizationSet::isCovering() const {
@@ -56,14 +50,4 @@ void GeneralizationSet::setPowerType(ID id) {
 
 Set<Generalization, GeneralizationSet>& GeneralizationSet::getGeneralizations() {
     return m_generalizations;
-}
-
-bool GeneralizationSet::is(ElementType eType) const {
-    bool ret = PackageableElement::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::GENERALIZATION_SET;
-    }
-
-    return ret;
 }

@@ -10,6 +10,7 @@ namespace UML {
     struct ManagerNode;
     template <class T>
     class UmlPtr;
+    class AbstractSet;
 
     // non template class
     class AbstractElement {
@@ -39,6 +40,10 @@ namespace UML {
             AbstractManager& m_manager;
             std::weak_ptr<ManagerNode> m_node;
             ID m_id = ID::randomID();
+
+            void addToReadonlySet(AbstractSet& set, AbstractElement& el);
+            void removeFromReadonlySet(AbstractSet& set, AbstractElement& el);
+
             AbstractElement(std::size_t elementType, AbstractManager& manager) : m_elementType(elementType), m_manager(manager) {}
         public:
             virtual ~AbstractElement() {}

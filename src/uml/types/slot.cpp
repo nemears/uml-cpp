@@ -2,11 +2,6 @@
 
 using namespace UML;
 
-void Slot::referenceErased(ID id) {
-    Element::referenceErased(id);
-    eraseFromSet(id, m_definingFeature);
-}
-
 Singleton<StructuralFeature, Slot>& Slot::getDefiningFeatureSingleton() {
     return m_definingFeature;
 }
@@ -15,14 +10,12 @@ Singleton<InstanceSpecification, Slot>& Slot::getOwningInstanceSingleton() {
     return m_owningInstance;
 }
 
-Slot::Slot() : Element(ElementType::SLOT) {
-    m_owningInstance.subsets(*m_owner);
+Slot::Slot(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager)
+{
+    m_owningInstance.subsets(m_owner);
     m_owningInstance.opposite(&InstanceSpecification::getSlots);
-    m_values.subsets(*m_ownedElements);
-}
-
-Slot::~Slot() {
-    
+    m_values.subsets(m_ownedElements);
 }
 
 IndexableOrderedSet<ValueSpecification, Slot>& Slot::getValues() {
@@ -59,14 +52,4 @@ void Slot::setOwningInstance(InstanceSpecification& inst) {
 
 void Slot::setOwningInstance(ID id) {
     m_owningInstance.set(id);
-}
-
-bool Slot::is(ElementType eType) const {
-    bool ret = Element::is(eType);
-
-    if(!ret) {
-        ret = eType == ElementType::SLOT;
-    }
-
-    return ret;
 }

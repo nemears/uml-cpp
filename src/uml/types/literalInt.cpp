@@ -2,9 +2,12 @@
 
 using namespace UML;
 
-LiteralInt::LiteralInt() : Element(ElementType::LITERAL_INT) {
-
-}
+LiteralInt::LiteralInt(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    LiteralSpecification(elementType, manager)
+{}
 
 int LiteralInt::getValue() {
     return m_value;
@@ -12,14 +15,4 @@ int LiteralInt::getValue() {
 
 void LiteralInt::setValue(int val) {
     m_value = val;
-}
-
-bool LiteralInt::is(ElementType eType) const {
-    bool ret = LiteralSpecification::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::LITERAL_INT;
-    }
-
-    return ret;
 }

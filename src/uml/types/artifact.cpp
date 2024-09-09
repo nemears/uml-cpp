@@ -2,18 +2,21 @@
 
 using namespace UML;
 
-Artifact::Artifact() : Element(ElementType::ARTIFACT) {
+Artifact::Artifact(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    PackageableElement(elementType, manager),
+    Classifier(elementType, manager),
+    DeployedArtifact(elementType, manager)
+{
     m_nestedArtifacts.subsets(m_ownedMembers);
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedOperations.subsets(m_features);
     m_ownedOperations.subsets(m_ownedMembers);
-    m_manifestations.subsets(*m_ownedElements);
+    m_manifestations.subsets(m_ownedElements);
     m_manifestations.subsets(m_clientDependencies);
-}
-
-Artifact::~Artifact() {
-    
 }
 
 OrderedSet<Property, Artifact>& Artifact::getOwnedAttributes() {
@@ -30,19 +33,4 @@ Set<Artifact, Artifact>& Artifact::getNestedArtifacts() {
 
 Set<Manifestation, Artifact>& Artifact::getManifestations() {
     return m_manifestations;
-}
-
-
-bool Artifact::is(ElementType eType) const {
-    bool ret = Classifier::is(eType);
-
-    if (!ret) {
-        ret = DeployedArtifact::is(eType);
-    }
-
-    if (!ret) {
-        ret = eType == ElementType::ARTIFACT;
-    }
-
-    return ret;
 }

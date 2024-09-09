@@ -2,7 +2,13 @@
 
 using namespace UML;
 
-DataType::DataType() : Element(ElementType::DATA_TYPE) {
+DataType::DataType(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    PackageableElement(elementType, manager),
+    Classifier(elementType, manager)
+{
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedAttributes.opposite(&Property::getDataTypeSingleton);
@@ -11,24 +17,10 @@ DataType::DataType() : Element(ElementType::DATA_TYPE) {
     m_ownedOperations.opposite(&Operation::getDataTypeSingleton);
 }
 
-DataType::~DataType() {
-    
-}
-
 IndexableOrderedSet<Property, DataType>& DataType::getOwnedAttributes() {
     return m_ownedAttributes;
 }
 
 IndexableOrderedSet<Operation, DataType>& DataType::getOwnedOperations() {
     return m_ownedOperations;
-}
-
-bool DataType::is(ElementType eType) const {
-    bool ret = Classifier::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::DATA_TYPE;
-    }
-
-    return ret;
 }

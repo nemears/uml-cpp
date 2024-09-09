@@ -166,6 +166,7 @@ namespace UML {
             }
 
             struct AbstractEmitterFunctor {
+                virtual ~AbstractEmitterFunctor() {}
                 virtual std::string operator()(BaseElement<Tlist>& el) = 0;
                 virtual void emitWhole(YAML::Emitter& emitter, BaseElement<Tlist>& el) = 0;
             };
@@ -303,6 +304,7 @@ namespace UML {
             struct AbstractParserFunctor {
                 UmlCafeSerializationPolicy& m_self;
                 AbstractParserFunctor(UmlCafeSerializationPolicy& self) : m_self(self) {}
+                virtual ~AbstractParserFunctor() {}
                 virtual UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node& node, AbstractManager& manager) = 0;
                 virtual UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node& node, AbstractManager& manager) = 0; 
             };

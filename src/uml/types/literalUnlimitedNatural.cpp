@@ -2,7 +2,12 @@
 
 using namespace UML;
 
-LiteralUnlimitedNatural::LiteralUnlimitedNatural() : Element(ElementType::LITERAL_UNLIMITED_NATURAL) {
+LiteralUnlimitedNatural::LiteralUnlimitedNatural(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    LiteralSpecification(elementType, manager)
+{
     m_val = 0;
     m_infinite = false;
 }
@@ -22,14 +27,4 @@ void LiteralUnlimitedNatural::setNumberValue(unsigned long val) {
 void LiteralUnlimitedNatural::setInfinite() {
     m_val = 0;
     m_infinite = true;
-}
-
-bool LiteralUnlimitedNatural::is(ElementType eType) const {
-    bool ret = LiteralSpecification::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::LITERAL_UNLIMITED_NATURAL;
-    }
-
-    return ret;
 }

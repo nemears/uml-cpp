@@ -176,7 +176,7 @@ namespace UML {
                 }
                 m_graph.erase(id);
             }
-            virtual void addToSet(AbstractSet& set, AbstractElement& el) {
+            void addToSet(AbstractSet& set, AbstractElement& el) override {
                 set.innerAdd(&el);
             }
         private:

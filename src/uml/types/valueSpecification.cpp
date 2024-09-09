@@ -1,26 +1,15 @@
+#include "uml/types/namedElement.h"
+#include "uml/types/packageableElement.h"
+#include "uml/types/parameterableElement.h"
+#include "uml/types/typedElement.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
 
-void ValueSpecification::referenceErased(ID id) {
-    TypedElement::referenceErased(id);
-    PackageableElement::referenceErased(id);
-}
-
-ValueSpecification::ValueSpecification() : Element(ElementType::VALUE_SPECIFICATION) {
-
-}
-
-bool ValueSpecification::is(ElementType eType) const {
-    bool ret = TypedElement::is(eType);
-
-    if (!ret) {
-        ret = PackageableElement::is(eType);
-    }
-
-    if (!ret) {
-        ret = eType == ElementType::VALUE_SPECIFICATION;
-    }
-
-    return ret;
-}
+ValueSpecification::ValueSpecification(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    TypedElement(elementType, manager),
+    PackageableElement(elementType, manager)
+{}

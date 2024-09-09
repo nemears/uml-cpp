@@ -1,4 +1,5 @@
 #include "uml/types/namedElement.h"
+#include "uml/types/parameterableElement.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -9,7 +10,8 @@ Singleton<Package, PackageableElement>& PackageableElement::getOwningPackageSing
 
 PackageableElement::PackageableElement(std::size_t elementType, AbstractManager& manager) : 
     Element(elementType, manager),
-    NamedElement(elementType, manager)
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager)
 {
     m_owningPackage.subsets(m_namespace);
     m_owningPackage.opposite(&Package::getPackagedElements);

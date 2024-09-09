@@ -10,17 +10,16 @@ Singleton<TemplateSignature, TemplateBinding>& TemplateBinding::getSignatureSing
     return m_signature;
 }
 
-TemplateBinding::TemplateBinding() : Element(ElementType::TEMPLATE_BINDING) {
+TemplateBinding::TemplateBinding(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    DirectedRelationship(elementType, manager)
+{
     m_boundElement.subsets(m_sources);
-    m_boundElement.subsets(*m_owner);
+    m_boundElement.subsets(m_owner);
     m_boundElement.opposite(&TemplateableElement::getTemplateBindings);
     m_signature.subsets(m_targets);
-    m_parameterSubstitutions.subsets(*m_ownedElements);
+    m_parameterSubstitutions.subsets(m_ownedElements);
     m_parameterSubstitutions.opposite(&TemplateParameterSubstitution::getTemplateBindingSingleton);
-}
-
-TemplateBinding::~TemplateBinding() {
-    
 }
 
 TemplateableElementPtr TemplateBinding::getBoundElement() const {
@@ -57,14 +56,4 @@ void TemplateBinding::setSignature(ID id) {
 
 Set<TemplateParameterSubstitution, TemplateBinding>& TemplateBinding::getParameterSubstitutions() {
     return m_parameterSubstitutions;
-}
-
-bool TemplateBinding::is(ElementType eType) const {
-    bool ret = DirectedRelationship::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::TEMPLATE_BINDING;
-    }
-
-    return ret;
 }

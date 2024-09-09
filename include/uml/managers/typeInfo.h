@@ -49,11 +49,11 @@ namespace UML {
     template <>
     struct ElementInfo<AbstractElement> {};
 
-    template <class BaseList = std::tuple<>, class ElementType = AbstractElement>
+    template <class BaseList, class ElementType>
     struct TypeInfo : public BaseInfo<BaseList>{
         typedef ElementType Type;
         typedef ElementInfo<ElementType> Info;
-        static const std::size_t elementType = Index<Type, typename Type::Types>::value;
+        static const std::size_t elementType = Index<Type, typename Type::Types>::value; // TODO doesn't work
     };
 
     typedef std::vector<std::pair<std::string, AbstractSet*>> SetList;

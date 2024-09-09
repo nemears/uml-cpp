@@ -1,25 +1,22 @@
-#include "uml/set/singleton.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
-
-void InstanceSpecification::referenceErased(ID id) {
-    PackageableElement::referenceErased(id);
-    eraseFromSet(id, m_classifiers);
-}
 
 Singleton<ValueSpecification, InstanceSpecification>& InstanceSpecification::getSpecificationSingleton() {
     return m_specification;
 }
 
-InstanceSpecification::InstanceSpecification() : Element(ElementType::INSTANCE_SPECIFICATION) {
-    m_specification.subsets(*m_ownedElements);
-    m_slots.subsets(*m_ownedElements);
+InstanceSpecification::InstanceSpecification(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    PackageableElement(elementType, manager),
+    DeployedArtifact(elementType, manager),
+    DeploymentTarget(elementType, manager)
+{
+    m_specification.subsets(m_ownedElements);
+    m_slots.subsets(m_ownedElements);
     m_slots.opposite(&Slot::getOwningInstanceSingleton);
-}
-
-InstanceSpecification::~InstanceSpecification() {
-    
 }
 
 IndexableSet<Classifier, InstanceSpecification>& InstanceSpecification::getClassifiers() {
@@ -44,22 +41,4 @@ void InstanceSpecification::setSpecification(ID id) {
 
 Set<Slot, InstanceSpecification>& InstanceSpecification::getSlots() {
     return m_slots;
-}
-
-bool InstanceSpecification::is(ElementType eType) const {
-    bool ret = PackageableElement::is(eType);
-
-    if (!ret) {
-        ret = DeploymentTarget::is(eType);
-    }
-
-    if (!ret) {
-        ret = DeployedArtifact::is(eType);
-    }
-
-    if (!ret) {
-        ret = eType == ElementType::INSTANCE_SPECIFICATION;
-    }
-
-    return ret;
 }

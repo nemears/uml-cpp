@@ -2,16 +2,9 @@
 
 using namespace UML;
 
-LiteralNull::LiteralNull() : Element(ElementType::LITERAL_NULL) {
-
-}
-
-bool LiteralNull::is(ElementType eType) const {
-    bool ret = LiteralSpecification::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::LITERAL_NULL;
-    }
-
-    return ret;
-}
+LiteralNull::LiteralNull(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    LiteralSpecification(elementType, manager)
+{}

@@ -4,13 +4,13 @@ using namespace UML;
 
 void ElementImport::ImportedElementPolicy::elementAdded(PackageableElement& el, ElementImport& me) {
     if (me.getImportingNamespace()) {
-        me.getImportingNamespace()->m_importedMembers.innerAdd(&el);
+        me.addToReadonlySet(me.getImportingNamespace()->m_importedMembers, el);
     }
 }
 
 void ElementImport::ImportedElementPolicy::elementRemoved(PackageableElement& el, ElementImport& me) {
     if (me.getImportingNamespace()) {
-        me.getImportingNamespace()->m_importedMembers.innerRemove(&el);
+        me.removeFromReadonlySet(me.getImportingNamespace()->m_importedMembers, el);
     }
 }
 
@@ -22,15 +22,14 @@ Singleton<Namespace, ElementImport>& ElementImport::getImportingNamespaceSinglet
     return m_importingNamespace;
 }
 
-ElementImport::ElementImport() : Element(ElementType::ELEMENT_IMPORT) {
+ElementImport::ElementImport(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    DirectedRelationship(elementType, manager)
+{
     m_importedElement.subsets(m_targets);
-    m_importingNamespace.subsets(*m_owner);
+    m_importingNamespace.subsets(m_owner);
     m_importingNamespace.subsets(m_sources);
     m_importingNamespace.opposite(&Namespace::getElementImports);
-}
-
-ElementImport::~ElementImport() {
-
 }
 
 PackageableElementPtr ElementImport::getImportedElement() const {
@@ -86,14 +85,4 @@ VisibilityKind ElementImport::getVisibility() const {
 
 void ElementImport::setVisibility(VisibilityKind visibility) {
     m_visibility = visibility;
-}
-
-bool ElementImport::is(ElementType eType) const {
-    bool ret = DirectedRelationship::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::ELEMENT_IMPORT;
-    }
-
-    return ret;
 }

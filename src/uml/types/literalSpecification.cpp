@@ -2,16 +2,9 @@
 
 using namespace UML;
 
-LiteralSpecification::LiteralSpecification() : Element(ElementType::LITERAL_SPECIFICATION) {
-
-}
-
-bool LiteralSpecification::is(ElementType eType) const {
-    bool ret = ValueSpecification::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::LITERAL_SPECIFICATION;
-    }
-
-    return ret;
-}
+LiteralSpecification::LiteralSpecification(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    ValueSpecification(elementType, manager)
+{}

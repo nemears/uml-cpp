@@ -19,7 +19,7 @@ class NamespaceTest : public ::testing::Test {};
 
 // Really this test isn't necessary just did it for posterity and getting used to gtest
 TEST_F(NamespaceTest, SetNameTest) {
-    Manager<> m;
+    UmlManager m;
     Package& n = *m.create<Package>();
     n.setName("test");
     Package& owningPackage = *m.create<Package>();
@@ -29,7 +29,7 @@ TEST_F(NamespaceTest, SetNameTest) {
 }
 
 TEST_F(NamespaceTest, AddOwnedMemeberFunctorTest) {
-    Manager<> mm;
+    UmlManager mm;
     Package& n = *mm.create<Package>();
     Package& m = *mm.create<Package>();
     n.getPackagedElements().add(m);
@@ -42,7 +42,7 @@ TEST_F(NamespaceTest, AddOwnedMemeberFunctorTest) {
 }
 
 TEST_F(NamespaceTest, setNamespaceTest) {
-    Manager<> mm;
+    UmlManager mm;
     Package& n = *mm.create<Package>();
     Package& m = *mm.create<Package>();
     m.setOwningPackage(&n);
@@ -53,7 +53,7 @@ TEST_F(NamespaceTest, setNamespaceTest) {
 }
 
 TEST_F(NamespaceTest, removeMemeberFunctorTest) {
-    Manager<> mm;
+    UmlManager mm;
     Package& n = *mm.create<Package>();
     Package& m = *mm.create<Package>();
     n.getPackagedElements().add(m);
@@ -65,7 +65,7 @@ TEST_F(NamespaceTest, removeMemeberFunctorTest) {
 }
 
 TEST_F(NamespaceTest, addElementImportWithImportedElement) {
-    Manager<> m;
+    UmlManager m;
     PackagePtr p = m.create<Package>();
     PackagePtr e = m.create<Package>();
     ElementImportPtr i = m.create<ElementImport>();
@@ -85,7 +85,7 @@ TEST_F(NamespaceTest, addElementImportWithImportedElement) {
 }
 
 TEST_F(NamespaceTest, addAndRemovePackageImportManyWays) {
-    Manager<> m;
+    UmlManager m;
     PackagePtr importedPackage = m.create<Package>();
     DataTypePtr nmspc = m.create<DataType>();
     PackageImportPtr import = m.create<PackageImport>();

@@ -1,4 +1,3 @@
-#include "uml/types/redefinableTemplateSignature.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -59,21 +58,17 @@ Singleton<Classifier, RedefinableTemplateSignature>& RedefinableTemplateSignatur
     return m_classifier;
 }
 
-void RedefinableTemplateSignature::referenceErased(ID id) {
-    RedefinableElement::referenceErased(id);
-    TemplateSignature::referenceErased(id);
-}
-
-RedefinableTemplateSignature::RedefinableTemplateSignature() : Element(ElementType::REDEFINABLE_TEMPLATE_SIGNATURE) {
+RedefinableTemplateSignature::RedefinableTemplateSignature(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    RedefinableElement(elementType, manager),
+    TemplateSignature(elementType, manager)
+{
     m_classifier.redefines(m_template);
     m_classifier.opposite(&Classifier::getOwnedTemplateSignatureSingleton);
     m_extendedSignatures.subsets(m_redefinedElement);
     m_inheritedParameters.subsets(m_redefinableTemplateSignatureParameters);
     m_parameters.redefines(m_redefinableTemplateSignatureParameters);
-}
-
-RedefinableTemplateSignature::~RedefinableTemplateSignature() {
-
 }
 
 ClassifierPtr RedefinableTemplateSignature::getClassifier() const {
@@ -102,18 +97,4 @@ Set<RedefinableTemplateSignature, RedefinableTemplateSignature, RedefinableTempl
 
 ReadOnlySet<TemplateParameter, RedefinableTemplateSignature>& RedefinableTemplateSignature::getInheritedParameters() {
     return m_inheritedParameters;
-}
-
-bool RedefinableTemplateSignature::is(ElementType eType) const {
-    bool ret = RedefinableElement::is(eType);
-
-    if (!ret) {
-        ret = TemplateSignature::is(eType);
-    }
-
-    if (!ret) {
-        ret = eType == ElementType::REDEFINABLE_TEMPLATE_SIGNATURE;
-    }
-
-    return ret;
 }

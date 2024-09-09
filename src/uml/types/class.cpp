@@ -2,16 +2,15 @@
 
 using namespace UML;
 
-void Class::restoreReferences() {
-    EncapsulatedClassifier::restoreReferences();
-    for (auto& reception : m_ownedReceptions) {
-        if (reception.getFeaturingClassifier().id() == ID::nullID() && reception.getNamespace().id() == m_id) {
-            reception.m_featuringClassifier.innerAdd(this);
-        }
-    }
-}
-
-Class::Class() : Element(ElementType::CLASS) {
+Class::Class(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    PackageableElement(elementType, manager),
+    Classifier(elementType, manager),
+    EncapsulatedClassifier(elementType, manager),
+    BehavioredClassifier(elementType, manager)
+{
     m_classOwnedAttrubutes.redefines(m_ownedAttributes);
     m_classOwnedAttrubutes.opposite(&Property::getClassSingleton);
     m_ownedOperations.subsets(m_features);
@@ -20,10 +19,6 @@ Class::Class() : Element(ElementType::CLASS) {
     m_nestedClassifiers.subsets(m_ownedMembers);
     m_ownedReceptions.subsets(m_features);
     m_ownedReceptions.subsets(m_ownedMembers);
-}
-
-Class::~Class() {
-
 }
 
 IndexableOrderedSet<Property, Class>& Class::getOwnedAttributes() {
@@ -40,18 +35,4 @@ IndexableOrderedSet<Classifier, Class>& Class::getNestedClassifiers() {
 
 IndexableSet<Reception, Class>& Class::getOwnedReceptions() {
     return m_ownedReceptions;
-}
-
-bool Class::is(ElementType eType) const {
-    bool ret = EncapsulatedClassifier::is(eType);
-
-    if (!ret) {
-        ret = BehavioredClassifier::is(eType);
-    }
-
-    if (!ret) {
-        ret = eType == ElementType::CLASS;
-    }
-    
-    return ret;
 }

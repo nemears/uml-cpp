@@ -20,9 +20,8 @@ namespace UML {
             Singleton<TemplateSignature, TemplateableElement> m_ownedTemplateSignature = Singleton<TemplateSignature, TemplateableElement>(this);
             Set<TemplateBinding, TemplateableElement> m_templateBindings = Set<TemplateBinding, TemplateableElement>(this);
             Singleton<TemplateSignature, TemplateableElement>& getOwnedTemplateSignatureSingleton();
-            TemplateableElement();
+            TemplateableElement(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual ~TemplateableElement() {}
             TemplateSignaturePtr getOwnedTemplateSignature() const;
             void setOwnedTemplateSignature(TemplateSignature& signature);
             void setOwnedTemplateSignature(TemplateSignaturePtr signature);

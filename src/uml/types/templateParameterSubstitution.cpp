@@ -1,13 +1,6 @@
-#include "uml/set/singleton.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
-
-void TemplateParameterSubstitution::referenceErased(ID id) {
-    Element::referenceErased(id);
-    eraseFromSet(id, m_formal);
-    eraseFromSet(id, m_actual);
-}
 
 Singleton<TemplateParameter, TemplateParameterSubstitution>& TemplateParameterSubstitution::getFormalSingleton() {
     return m_formal;
@@ -25,15 +18,13 @@ Singleton<ParameterableElement, TemplateParameterSubstitution>& TemplateParamete
     return m_ownedActual;
 }
 
-TemplateParameterSubstitution::TemplateParameterSubstitution() : Element(ElementType::TEMPLATE_PARAMETER_SUBSTITUTION) {
-    m_templateBinding.subsets(*m_owner);
+TemplateParameterSubstitution::TemplateParameterSubstitution(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager)
+{
+    m_templateBinding.subsets(m_owner);
     m_templateBinding.opposite(&TemplateBinding::getParameterSubstitutions);
-    m_ownedActual.subsets(*m_ownedElements);
+    m_ownedActual.subsets(m_ownedElements);
     m_ownedActual.subsets(m_actual);
-}
-
-TemplateParameterSubstitution::~TemplateParameterSubstitution() {
-    
 }
 
 TemplateParameterPtr TemplateParameterSubstitution::getFormal() const {
@@ -98,14 +89,4 @@ void TemplateParameterSubstitution::setOwnedActual(ParameterableElement& actual)
 
 void TemplateParameterSubstitution::setOwnedActual(ID id) {
     m_ownedActual.set(id);
-}
-
-bool TemplateParameterSubstitution::is(ElementType eType) const {
-    bool ret = Element::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::TEMPLATE_PARAMETER_SUBSTITUTION;
-    }
-
-    return ret;
 }

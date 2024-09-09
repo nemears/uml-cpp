@@ -2,25 +2,18 @@
 
 using namespace UML;
 
-void TemplateSignature::referenceErased(ID id) {
-    Element::referenceErased(id);
-    eraseFromSet(id, m_parameters);
-}
-
 Singleton<TemplateableElement, TemplateSignature>& TemplateSignature::getTemplateSingleton() {
     return m_template;
 }
 
-TemplateSignature::TemplateSignature() : Element(ElementType::TEMPLATE_SIGNATURE) {
-    m_template.subsets(*m_owner);
+TemplateSignature::TemplateSignature(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager)
+{
+    m_template.subsets(m_owner);
     m_template.opposite(&TemplateableElement::getOwnedTemplateSignatureSingleton);
     m_ownedParameters.subsets(m_parameters);
-    m_ownedParameters.subsets(*m_ownedElements);
+    m_ownedParameters.subsets(m_ownedElements);
     m_ownedParameters.opposite(&TemplateParameter::getSignatureSingleton);
-}
-
-TemplateSignature::~TemplateSignature() {
-    
 }
 
 TemplateableElementPtr TemplateSignature::getTemplate() const {
@@ -45,14 +38,4 @@ OrderedSet<TemplateParameter, TemplateSignature>& TemplateSignature::getOwnedPar
 
 OrderedSet<TemplateParameter, TemplateSignature>& TemplateSignature::getParameters() {
     return m_parameters;
-}
-
-bool TemplateSignature::is(ElementType eType) const {
-    bool ret = Element::is(eType);
-
-    if (!ret) {
-        return eType == ElementType::TEMPLATE_SIGNATURE;
-    }
-
-    return ret;
 }

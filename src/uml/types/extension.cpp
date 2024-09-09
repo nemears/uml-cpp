@@ -1,4 +1,9 @@
+#include "uml/managers/abstractManager.h"
 #include "uml/set/singleton.h"
+#include "uml/types/association.h"
+#include "uml/types/namedElement.h"
+#include "uml/types/packageableElement.h"
+#include "uml/types/parameterableElement.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -20,25 +25,15 @@ Singleton<ExtensionEnd, Extension>& Extension::getOwnedEndSingleton() {
     return m_ownedEnd;
 }
 
-void Extension::restoreReferences() {
-    Association::restoreReferences();
-    for (PropertyPtr end : m_extensionMemberEnds.ptrs()) {
-        if (getOwnedEnd().id() == end.id()) {
-            continue;
-        }
-        if (end->getType() && m_metaClass.get().id() != end->getType().id()) {
-            m_metaClass.set(end->getType()->as<Class>());
-        }
-    }
-}
-
-Extension::Extension() : Element(ElementType::EXTENSION) {
+Extension::Extension(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    PackageableElement(elementType, manager),
+    Association(elementType, manager)
+{
     m_ownedEnd.redefines(m_ownedEnds);
     m_extensionMemberEnds.redefines(m_memberEnds);
-}
-
-Extension::~Extension() {
-    
 }
 
 ExtensionEndPtr Extension::getOwnedEnd() const {
@@ -59,14 +54,4 @@ void Extension::setOwnedEnd(ID id) {
 
 ClassPtr Extension::getMetaClass() const {
     return m_metaClass.get();
-}
-
-bool Extension::is(ElementType eType) const {
-    bool ret = Association::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::EXTENSION;
-    }
-
-    return ret;
 }

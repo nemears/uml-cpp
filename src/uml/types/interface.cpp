@@ -2,7 +2,13 @@
 
 using namespace UML;
 
-Interface::Interface() : Element(ElementType::INTERFACE_UML) {
+Interface::Interface(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    PackageableElement(elementType, manager),
+    Classifier(elementType, manager)
+{
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.opposite(&Property::getInterfaceSingleton);
@@ -10,10 +16,6 @@ Interface::Interface() : Element(ElementType::INTERFACE_UML) {
     m_ownedOperations.subsets(m_ownedMembers);
     m_ownedOperations.opposite(&Operation::getInterfaceSingleton);
     m_nestedClassifiers.subsets(m_ownedMembers);
-}
-
-Interface::~Interface() {
-    
 }
 
 OrderedSet<Property, Interface>& Interface::getOwnedAttributes() {
@@ -26,14 +28,4 @@ OrderedSet<Operation, Interface>& Interface::getOwnedOperations() {
 
 OrderedSet<Classifier, Interface>& Interface::getNestedClassifiers() {
     return m_nestedClassifiers;
-}
-
-bool Interface::is(ElementType eType) const {
-    bool ret = Classifier::is(eType);
-    
-    if (!ret) {
-        ret = eType == ElementType::INTERFACE_UML;
-    }
-
-    return ret;
 }

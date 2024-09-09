@@ -12,7 +12,7 @@ namespace UML {
         protected:
             ReadOnlySet<RedefinableElement, RedefinableElement> m_redefinedElement = ReadOnlySet<RedefinableElement, RedefinableElement>(this);
             ReadOnlySet<Classifier, RedefinableElement> m_redefinitionContext = ReadOnlySet<Classifier, RedefinableElement>(this);
-            RedefinableElement();
+            RedefinableElement(std::size_t elementType, AbstractManager& manager);
         public:
             ReadOnlySet<RedefinableElement, RedefinableElement>& getRedefinedElements();
             ReadOnlySet<Classifier, RedefinableElement>& getRedefinitionContext();

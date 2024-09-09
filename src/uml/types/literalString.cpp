@@ -2,9 +2,12 @@
 
 using namespace UML;
 
-LiteralString::LiteralString() : Element(ElementType::LITERAL_STRING) {
-
-}
+LiteralString::LiteralString(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    LiteralSpecification(elementType, manager)
+{}
 
 std::string LiteralString::getValue() {
     return m_value;
@@ -12,14 +15,4 @@ std::string LiteralString::getValue() {
 
 void LiteralString::setValue(const std::string& val) {
     m_value = val;
-}
-
-bool LiteralString::is(ElementType eType) const {
-    bool ret = LiteralSpecification::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::LITERAL_STRING;
-    }
-
-    return ret;
 }

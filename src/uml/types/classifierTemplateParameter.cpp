@@ -1,4 +1,6 @@
+#include "uml/managers/abstractManager.h"
 #include "uml/set/singleton.h"
+#include "uml/types/templateParameter.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -7,18 +9,13 @@ Singleton<Classifier, ClassifierTemplateParameter>& ClassifierTemplateParameter:
     return m_classifierParameteredElement;
 }
 
-void ClassifierTemplateParameter::referenceErased(ID id) {
-    TemplateParameter::referenceErased(id);
-    eraseFromSet(id, m_constrainingClassifiers);
-}
-
-ClassifierTemplateParameter::ClassifierTemplateParameter() : Element(ElementType::CLASSIFIER_TEMPLATE_PARAMETER) {
+ClassifierTemplateParameter::ClassifierTemplateParameter(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    TemplateParameter(elementType, manager)
+    
+{
     m_classifierParameteredElement.redefines(m_parameteredElement);
     m_classifierParameteredElement.opposite(&Classifier::getTemplateParameterSingleton);
-}
-
-ClassifierTemplateParameter::~ClassifierTemplateParameter() {
-
 }
 
 ClassifierPtr ClassifierTemplateParameter::getParameteredElement() const {
@@ -51,15 +48,4 @@ bool ClassifierTemplateParameter::isAllowSubstitutable() const {
 
 void ClassifierTemplateParameter::setAllowSubstitutable(bool allowSubstitutable) {
     m_allowSubstitutable = allowSubstitutable;
-}
-
-bool ClassifierTemplateParameter::is(ElementType eType) const {
-    bool ret = false;
-    if ((ret = TemplateParameter::is(eType))) {
-        return ret;
-    }
-
-    ret = eType == ElementType::CLASSIFIER_TEMPLATE_PARAMETER;
-
-    return ret;
 }

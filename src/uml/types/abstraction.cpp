@@ -2,20 +2,9 @@
 
 using namespace UML;
 
-Abstraction::Abstraction() : Element(ElementType::ABSTRACTION) {
-
-}
-
-Abstraction::~Abstraction() {
-    
-}
-
-bool Abstraction::is(ElementType eType) const {
-    bool ret = Dependency::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::ABSTRACTION;
-    }
-
-    return ret;
-}
+Abstraction::Abstraction(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    Dependency(elementType, manager) 
+{}

@@ -2,10 +2,6 @@
 
 using namespace UML;
 
-void ParameterableElement::referenceErased(ID id) {
-    eraseFromSet(id, m_templateParameter);
-}
-
 Singleton<TemplateParameter, ParameterableElement>& ParameterableElement::getOwningTemplateParameterSingleton() {
     return m_owningTemplateParameter;
 }
@@ -14,15 +10,11 @@ Singleton<TemplateParameter, ParameterableElement>& ParameterableElement::getTem
     return m_templateParameter;
 }
 
-ParameterableElement::ParameterableElement() : Element(ElementType::PARAMETERABLE_ELEMENT) {
+ParameterableElement::ParameterableElement(std::size_t elementType, AbstractManager& manager) : Element(elementType, manager) {
     m_templateParameter.opposite(&TemplateParameter::getParameteredElementSingleton);
     m_owningTemplateParameter.subsets(m_templateParameter);
-    m_owningTemplateParameter.subsets(*m_owner);
+    m_owningTemplateParameter.subsets(m_owner);
     m_owningTemplateParameter.opposite(&TemplateParameter::getOwnedParameteredElementSingleton);
-}
-
-ParameterableElement::~ParameterableElement() {
-
 }
 
 TemplateParameterPtr ParameterableElement::getOwningTemplateParameter() const {
@@ -55,14 +47,4 @@ void ParameterableElement::setTemplateParameter(TemplateParameter& parameter) {
 
 void ParameterableElement::setTemplateParameter(ID id) {
     m_templateParameter.set(id);
-}
-
-bool ParameterableElement::is(ElementType eType) const {
-    bool ret = Element::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::PARAMETERABLE_ELEMENT;
-    }
-
-    return ret;
 }

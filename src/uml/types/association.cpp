@@ -18,22 +18,14 @@ void Association::MemberEndPolicy::elementRemoved(Property& el, Association& me)
     }
 }
 
-void Association::restoreReferences() {
-    Classifier::restoreReferences();
-    Relationship::restoreReferences();
-    for (auto& prop : m_memberEnds) {
-        if (prop.getType() && !m_endTypes.contains(prop.getType().id())) {
-            m_endTypes.add(prop.getType());
-        }
-    }
-}
-
-void Association::referenceErased(ID id) {
-    Classifier::referenceErased(id);
-    Relationship::referenceErased(id);
-}
-
-Association::Association() : Element(ElementType::ASSOCIATION) {
+Association::Association(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    PackageableElement(elementType, manager),
+    Classifier(elementType, manager),
+    Relationship(elementType, manager)
+{
     m_memberEnds.subsets(m_members);
     m_memberEnds.opposite(&Property::getAssociationSingleton);
     m_ownedEnds.subsets(m_memberEnds);
@@ -42,10 +34,6 @@ Association::Association() : Element(ElementType::ASSOCIATION) {
     m_ownedEnds.opposite(&Property::getOwningAssociationSingleton);
     m_navigableOwnedEnds.subsets(m_ownedEnds);
     m_endTypes.subsets(m_relatedElements);
-}
-
-Association::~Association() {
-    
 }
 
 IndexableOrderedSet<Property, Association, Association::MemberEndPolicy>& Association::getMemberEnds() {
@@ -62,18 +50,4 @@ IndexableSet<Property, Association>& Association::getNavigableOwnedEnds() {
 
 IndexableSet<Type, Association>& Association::getEndTypes() {
     return m_endTypes;
-}
-
-bool Association::is(ElementType eType) const {
-    bool ret = Relationship::is(eType);
-
-    if (!ret) {
-        ret = Classifier::is(eType);
-    }
-
-    if (!ret) {
-        ret = eType == ElementType::ASSOCIATION;
-    }
-
-    return ret;
 }

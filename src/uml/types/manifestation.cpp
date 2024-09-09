@@ -1,4 +1,3 @@
-#include "uml/set/singleton.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -7,23 +6,13 @@ Singleton<PackageableElement, Manifestation>& Manifestation::getUtilizedElementS
     return m_utilizedElement;
 }
 
-void Manifestation::restoreReferences() {
-    if (m_owner->get()) {
-        if (m_owner->get()->is(ElementType::ARTIFACT)) {
-            Artifact& possibleClient = m_owner->get()->as<Artifact>();
-            if (possibleClient.getManifestations().contains(m_id) && !m_clients.contains(m_owner->get().id())) {
-                m_clients.nonOppositeAdd(&possibleClient);
-            }
-        }
-    }
-}
-
-Manifestation::Manifestation() : Element(ElementType::MANIFESTATION) {
+Manifestation::Manifestation(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    Abstraction(elementType, manager) 
+{
     m_utilizedElement.subsets(m_suppliers);
-}
-
-Manifestation::~Manifestation() {
-    
 }
 
 PackageableElementPtr Manifestation::getUtilizedElement() const {
@@ -40,14 +29,4 @@ void Manifestation::setUtilizedElement(PackageableElement& utilizedElement) {
 
 void Manifestation::setUtilizedElement(ID id) {
     m_utilizedElement.set(id);
-}
-
-bool Manifestation::is(ElementType eType) const {
-    bool ret = Abstraction::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::MANIFESTATION;
-    }
-
-    return ret;
 }

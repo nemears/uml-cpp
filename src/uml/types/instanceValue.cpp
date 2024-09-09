@@ -1,23 +1,20 @@
+#include "uml/types/namedElement.h"
+#include "uml/types/parameterableElement.h"
+#include "uml/types/valueSpecification.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
-
-void InstanceValue::referenceErased(ID id) {
-    ValueSpecification::referenceErased(id);
-    eraseFromSet(id, m_instance);
-}
 
 Singleton<InstanceSpecification, InstanceValue>& InstanceValue::getInstanceSingleton() {
     return m_instance;
 }
 
-InstanceValue::InstanceValue() : Element(ElementType::INSTANCE_VALUE) {
-    
-}
-
-InstanceValue::~InstanceValue() {
-    
-}
+InstanceValue::InstanceValue(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    ValueSpecification(elementType, manager)
+{}
 
 InstanceSpecificationPtr  InstanceValue::getInstance() const {
     return m_instance.get();
@@ -33,14 +30,4 @@ void InstanceValue::setInstance(InstanceSpecification& inst) {
 
 void InstanceValue::setInstance(ID id) {
     m_instance.set(id);
-}
-
-bool InstanceValue::is(ElementType eType) const {
-    bool ret = ValueSpecification::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::INSTANCE_VALUE;
-    }
-
-    return ret;
 }

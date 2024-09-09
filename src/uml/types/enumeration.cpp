@@ -2,25 +2,17 @@
 
 using namespace UML;
 
-Enumeration::Enumeration() : Element(ElementType::ENUMERATION) {
+Enumeration::Enumeration(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    PackageableElement(elementType, manager),
+    DataType(elementType, manager) 
+{
     m_ownedLiterals.subsets(m_ownedMembers);
     m_ownedLiterals.opposite(&EnumerationLiteral::getEnumerationSingleton);
 }
 
-Enumeration::~Enumeration() {
-    
-}
-
 OrderedSet<EnumerationLiteral, Enumeration>& Enumeration::getOwnedLiterals() {
     return m_ownedLiterals;
-}
-
-bool Enumeration::is(ElementType eType) const {
-    bool ret = DataType::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::ENUMERATION;
-    }
-
-    return ret;
 }

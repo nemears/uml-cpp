@@ -1,3 +1,5 @@
+#include "uml/types/namedElement.h"
+#include "uml/types/redefinableElement.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -13,9 +15,9 @@ void Port::setPortInterfaces(BehavioredClassifier& clazz) {
         }
     }
     for (auto& dependency : clazz.getClientDependencies()) {
-        if (dependency.is(ElementType::USAGE)) {
+        if (dependency.is<Usage>()) {
             for (auto& supplier : dependency.getSuppliers()) {
-                if (supplier.is(ElementType::INTERFACE_UML)) {
+                if (supplier.is<Interface>()) {
                     if (isConjugated()) {
                        m_provided.innerAdd(&supplier);
                     } else {
@@ -26,16 +28,16 @@ void Port::setPortInterfaces(BehavioredClassifier& clazz) {
         }
     }
     for (auto& general : clazz.getGenerals()) {
-        if (general.is(ElementType::BEHAVIORED_CLASSIFIER)) {
+        if (general.is<BehavioredClassifier>()) {
             setPortInterfaces(general.as<BehavioredClassifier>());
         }
     }
 }
 
 void Port::TypePolicy::elementAdded(Type& el, Port& me) {
-    if (el.is(ElementType::BEHAVIORED_CLASSIFIER)) {
+    if (el.is<BehavioredClassifier>()) {
         me.setPortInterfaces(el.as<BehavioredClassifier>());
-    } else if (el.is(ElementType::INTERFACE_UML)) {
+    } else if (el.is<Interface>()) {
         if (me.isConjugated()) {
             me.m_required.innerAdd(&el);
         } else {
@@ -55,9 +57,9 @@ void Port::removePortInterfaces(BehavioredClassifier& clazz) {
         }
     }
     for (auto& dependency : clazz.getClientDependencies()) {
-        if (dependency.is(ElementType::USAGE)) {
+        if (dependency.is<Usage>()) {
             for (auto& supplier : dependency.getSuppliers()) {
-                if (supplier.is(ElementType::INTERFACE_UML)) {
+                if (supplier.is<Interface>()) {
                     if (isConjugated()) {
                        m_provided.innerRemove(&supplier);
                     } else {
@@ -68,16 +70,16 @@ void Port::removePortInterfaces(BehavioredClassifier& clazz) {
         }
     }
     for (auto& general : clazz.getGenerals()) {
-        if (general.is(ElementType::BEHAVIORED_CLASSIFIER)) {
+        if (general.is<BehavioredClassifier>()) {
             removePortInterfaces(general.as<BehavioredClassifier>());
         }
     }
 }
 
 void Port::TypePolicy::elementRemoved(Type& el, Port& me) {
-    if (el.is(ElementType::BEHAVIORED_CLASSIFIER)) {
+    if (el.is<BehavioredClassifier>()) {
         me.removePortInterfaces(el.as<BehavioredClassifier>());
-    } else if (el.is(ElementType::INTERFACE_UML)) {
+    } else if (el.is<Interface>()) {
         if (me.isConjugated()) {
             me.m_required.innerRemove(&el);
         } else {
@@ -86,32 +88,15 @@ void Port::TypePolicy::elementRemoved(Type& el, Port& me) {
     }
 }
 
-void Port::referenceErased(ID id) {
-    Property::referenceErased(id);
-    eraseFromSet(id, m_required);
-    eraseFromSet(id, m_provided);
-}
-
-void Port::restoreReferences() {
-    if (m_type.get()) {
-        if (m_type.get()->is(ElementType::BEHAVIORED_CLASSIFIER)) {
-            setPortInterfaces(m_type.get()->as<BehavioredClassifier>());
-        } else if (m_type.get()->is(ElementType::INTERFACE_UML)) {
-            if (isConjugated() && !m_required.contains(m_type.get().id())) {
-                m_required.innerAdd(m_type.get());
-            } else if (!isConjugated() && !m_provided.contains(m_type.get().id())) {
-                m_provided.innerAdd(m_type.get());
-            }
-        }
-    }
-}
-
-Port::Port() : Element(ElementType::PORT) {
+Port::Port(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    TypedElement(elementType, manager),
+    RedefinableElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    Property(elementType, manager)
+{
     m_portType.redefines(m_type);
-}
-
-Port::~Port() {
-    
 }
 
 bool Port::isBehavior() const {
@@ -162,14 +147,4 @@ ReadOnlyIndexableSet<Interface, Port>& Port::getRequired() {
 
 ReadOnlyIndexableSet<Interface, Port>& Port::getProvided() {
     return m_provided;
-}
-
-bool Port::is(ElementType eType) const {
-    bool ret = Property::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::PORT;
-    }
-
-    return ret;
 }

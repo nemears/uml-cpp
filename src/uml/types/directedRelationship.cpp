@@ -1,14 +1,13 @@
-#include "uml/types/directedRelationship.h"
+#include "uml/uml-stable.h"
 
 using namespace UML;
 
-DirectedRelationship::DirectedRelationship() : Element(ElementType::DIRECTED_RELATIONSHIP) {
+DirectedRelationship::DirectedRelationship(std::size_t elementType, AbstractManager& manager) :     
+    Element(elementType, manager),
+    Relationship(elementType, manager)
+{
     m_sources.subsets(m_relatedElements);
     m_targets.subsets(m_relatedElements);
-}
-
-DirectedRelationship::~DirectedRelationship() {
-    
 }
 
 ReadOnlySet<Element, DirectedRelationship>& DirectedRelationship::getTargets() {
@@ -17,14 +16,4 @@ ReadOnlySet<Element, DirectedRelationship>& DirectedRelationship::getTargets() {
 
 ReadOnlySet<Element, DirectedRelationship>& DirectedRelationship::getSources() {
     return m_sources;
-}
-
-bool DirectedRelationship::is(ElementType eType) const {
-    bool ret = Relationship::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::DIRECTED_RELATIONSHIP;
-    }
-
-    return ret;
 }

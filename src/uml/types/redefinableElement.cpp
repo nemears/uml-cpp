@@ -1,19 +1,12 @@
+#include "uml/types/namedElement.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
 
-void RedefinableElement::referenceErased(ID id) {
-    eraseFromSet(id, m_redefinedElement);
-    eraseFromSet(id, m_redefinitionContext);
-}
-
-RedefinableElement::RedefinableElement() : Element(ElementType::REDEFINABLE_ELEMENT) {
-
-}
-
-RedefinableElement::~RedefinableElement() {
-
-}
+RedefinableElement::RedefinableElement(std::size_t elementType, AbstractManager& manager) :
+    Element(elementType, manager),
+    NamedElement(elementType, manager)
+{}
 
 ReadOnlySet<RedefinableElement, RedefinableElement>& RedefinableElement::getRedefinedElements() {
     return m_redefinedElement;
@@ -21,14 +14,4 @@ ReadOnlySet<RedefinableElement, RedefinableElement>& RedefinableElement::getRede
 
 ReadOnlySet<Classifier, RedefinableElement>& RedefinableElement::getRedefinitionContext() {
     return m_redefinitionContext;
-}
-
-bool RedefinableElement::is(ElementType eType) const {
-    bool ret = NamedElement::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::REDEFINABLE_ELEMENT;
-    }
-
-    return ret;
 }

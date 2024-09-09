@@ -6,15 +6,16 @@ Singleton<DeploymentTarget, Deployment>& Deployment::getLocationSingleton() {
     return m_location;
 }
 
-Deployment::Deployment() : Element(ElementType::DEPLOYMENT) {
+Deployment::Deployment(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    Dependency(elementType, manager)
+{
     m_location.subsets(m_clients);
-    m_location.subsets(*m_owner);
+    m_location.subsets(m_owner);
     m_location.opposite(&DeploymentTarget::getDeployments);
     m_deployedArtifacts.subsets(m_suppliers);
-}
-
-Deployment::~Deployment() {
-    
 }
 
 Set<DeployedArtifact, Deployment>& Deployment::getDeployedArtifacts() {
@@ -35,14 +36,4 @@ void Deployment::setLocation(DeploymentTarget& location) {
 
 void Deployment::setLocation(ID id) {
     m_location.set(id);
-}
-
-bool Deployment::is(ElementType eType) const {
-    bool ret = Dependency::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::DEPLOYMENT;
-    }
-
-    return ret;
 }

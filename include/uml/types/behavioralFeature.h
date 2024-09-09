@@ -25,7 +25,7 @@ namespace UML {
             Set<ParameterSet, BehavioralFeature> m_ownedParameterSets = Set<ParameterSet, BehavioralFeature>(this);
             bool m_returnSpecified = false;
             CallConcurrencyKind m_concurrency = CallConcurrencyKind::Sequential;
-            BehavioralFeature(std::size_t elementType);
+            BehavioralFeature(std::size_t elementType, AbstractManager& manager);
         public:
             Set<Behavior, BehavioralFeature>& getMethods();
             Set<Parameter, BehavioralFeature>& getOwnedParameters();

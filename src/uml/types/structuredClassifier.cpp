@@ -15,30 +15,13 @@ void StructuredClassifier::PartPolicy::elementRemoved(Property& el, StructuredCl
     }
 }
 
-void StructuredClassifier::restoreReferences() {
-    Classifier::restoreReferences();
-    std::list<PropertyPtr> props;
-    for (auto& prop : m_ownedAttributes) {
-        if (prop.isComposite() && !m_parts.contains(prop)) {
-            props.push_back(&prop);
-        }
-    }
-    for (auto prop : props) {
-        m_parts.innerAdd(prop);
-    }
-}
-
-// void StructuredClassifier::restoreReference(Element* el) {
-//     Classifier::restoreReference(el);
-//     if (el->isSubClassOf(ElementType::CONNECTOR)) {
-//         Connector& connector = el->as<Connector>();
-//         if (connector.getNamespace().id() == m_id && connector.getFeaturingClassifier().id() == ID::nullID() && m_ownedConnectors.contains(connector.getID())) {
-//             connector.m_featuringClassifier.innerAdd(*this);
-//         }
-//     }
-// }
-
-StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_CLASSIFIER) {
+StructuredClassifier::StructuredClassifier(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    PackageableElement(elementType, manager),
+    Classifier(elementType, manager)
+{
     m_roles.subsets(m_members);
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedAttributes.subsets(m_attributes);
@@ -46,10 +29,6 @@ StructuredClassifier::StructuredClassifier() : Element(ElementType::STRUCTURED_C
     m_parts.subsets(m_ownedAttributes);
     m_ownedConnectors.subsets(m_ownedMembers);
     m_ownedConnectors.subsets(m_features);
-}
-
-StructuredClassifier::~StructuredClassifier() {
-    
 }
 
 IndexableSet<Property, StructuredClassifier, StructuredClassifier::PartPolicy>& StructuredClassifier::getOwnedAttributes() {
@@ -66,14 +45,4 @@ ReadOnlyIndexableSet<Property, StructuredClassifier>& StructuredClassifier::getP
 
 IndexableSet<Connector, StructuredClassifier>& StructuredClassifier::getOwnedConnectors() {
     return m_ownedConnectors;
-}
-
-bool StructuredClassifier::is(ElementType eType) const {
-    bool ret = Classifier::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::STRUCTURED_CLASSIFIER;
-    }
-
-    return ret;
 }

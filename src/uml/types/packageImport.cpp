@@ -1,5 +1,5 @@
-#include "uml/types/packageImport.h"
-#include "uml/set/singleton.h"
+#include "uml/managers/abstractManager.h"
+#include "uml/types/directedRelationship.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -11,7 +11,7 @@ void PackageImport::ImportedPackagePolicy::elementAdded(Package& el, PackageImpo
     if (me.getImportingNamespace()) {
         for (auto& pckgedEl : el.getPackagedElements()) {
             if (!me.getImportingNamespace()->getImportedMembers().contains(pckgedEl)) {
-                me.getImportingNamespace()->m_importedMembers.innerAdd(&pckgedEl);
+                me.addToReadonlySet(me.getImportingNamespace()->m_importedMembers, pckgedEl);
             }
         }
     }
@@ -30,7 +30,7 @@ void PackageImport::ImportedPackagePolicy::elementRemoved(Package& el, PackageIm
     if (me.getImportingNamespace()) {
         for (auto& pckgedEl : el.getPackagedElements()) {
             if (me.getImportingNamespace()->getImportedMembers().contains(pckgedEl)) {
-                me.getImportingNamespace()->m_importedMembers.innerRemove(&pckgedEl);
+                me.removeFromReadonlySet(me.getImportingNamespace()->m_importedMembers, pckgedEl);
             }
         }
     }
@@ -40,15 +40,14 @@ Singleton<Namespace, PackageImport>& PackageImport::getImportingNamespaceSinglet
     return m_importingNamespace;
 }
 
-PackageImport::PackageImport() : Element(ElementType::PACKAGE_IMPORT) {
+PackageImport::PackageImport(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    DirectedRelationship(elementType, manager)
+{
     m_importedPackage.subsets(m_targets);
-    m_importingNamespace.subsets(*m_owner);
+    m_importingNamespace.subsets(m_owner);
     m_importingNamespace.subsets(m_sources);
     m_importingNamespace.opposite(&Namespace::getPackageImports);
-}
-
-PackageImport::~PackageImport() {
-
 }
 
 void PackageImport::setImportedPackage(ID id) {
@@ -88,14 +87,4 @@ VisibilityKind PackageImport::getVisibility() const {
 }
 void PackageImport::setVisibility(VisibilityKind visibility) {
     m_visibility = visibility;
-}
-
-bool PackageImport::is(ElementType eType) const {
-    bool ret = DirectedRelationship::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::PACKAGE_IMPORT;
-    }
-
-    return ret;
 }

@@ -2,23 +2,6 @@
 
 using namespace UML;
 
-void Operation::referenceErased(ID id) {
-    BehavioralFeature::referenceErased(id);
-    ParameterableElement::referenceErased(id);
-}
-
-void Operation::restoreReferences() {
-    BehavioralFeature::restoreReferences();
-    if (m_namespace.get() && !m_featuringClassifier.get()) {
-        if (m_namespace.get()->is(ElementType::CLASSIFIER)) {
-            Classifier& clazz = m_namespace.get()->as<Classifier>();
-            if (clazz.getFeatures().contains(m_id)) {
-                m_featuringClassifier.nonOppositeAdd(&clazz);
-            }
-        }
-    }
-}
-
 Singleton<Type, Operation>& Operation::getTypeSingleton() {
     return m_type;
 }
@@ -35,7 +18,14 @@ Singleton<Interface, Operation>& Operation::getInterfaceSingleton() {
     return m_interface;
 }
 
-Operation::Operation() : Element(ElementType::OPERATION) {
+Operation::Operation(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    RedefinableElement(elementType, manager),
+    BehavioralFeature(elementType, manager),
+    TemplateableElement(elementType, manager),
+    ParameterableElement(elementType, manager)
+{
     m_class.subsets(m_featuringClassifier);
     m_class.subsets(m_namespace);
     m_class.opposite(&Class::getOwnedOperations);
@@ -47,10 +37,6 @@ Operation::Operation() : Element(ElementType::OPERATION) {
     m_interface.opposite(&Interface::getOwnedOperations);
     m_operationOwnedParameters.redefines(m_ownedParameters);
     m_operationOwnedParameters.opposite(&Parameter::getOperationSingleton);
-}
-
-Operation::~Operation() {
-    
 }
 
 TypePtr Operation::getType() const {
@@ -119,22 +105,4 @@ void Operation::setInterface(ID id) {
 
 OrderedSet<Parameter, Operation>& Operation::getOwnedParameters() {
     return m_operationOwnedParameters;
-}
-
-bool Operation::is(ElementType eType) const {
-    bool ret = BehavioralFeature::is(eType);
-
-    if (!ret) {
-        ret = TemplateableElement::is(eType);
-    }
-
-    if (!ret) {
-        ret = ParameterableElement::is(eType);
-    }
-
-    if (!ret) {
-        ret = eType == ElementType::OPERATION;
-    }
-
-    return ret;
 }

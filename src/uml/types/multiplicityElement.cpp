@@ -4,12 +4,12 @@
 using namespace UML;
 
 void MultiplicityElement::LowerPolicy::elementAdded(ValueSpecification& el, MultiplicityElement& me) {
-    if (el.is(ElementType::LITERAL_INT)) {
+    if (el.is<LiteralInt>()) {
         if (dynamic_cast<LiteralInt&>(el).getValue() >= 0) {
             me.setLower(dynamic_cast<LiteralInt&>(el).getValue());
         }
     }
-    else if (el.is(ElementType::EXPRESSION)) {
+    else if (el.is<Expression>()) {
         // TODO evaluate expression
     }
 }
@@ -23,12 +23,12 @@ void MultiplicityElement::LowerPolicy::elementRemoved(__attribute__((unused)) Va
 }
 
 void MultiplicityElement::UpperPolicy::elementAdded(ValueSpecification& el, MultiplicityElement& me) {
-    if (el.is(ElementType::LITERAL_INT)) {
+    if (el.is<LiteralInt>()) {
         if (dynamic_cast<LiteralInt&>(el).getValue() >= 0) {
             me.setUpper(dynamic_cast<LiteralInt&>(el).getValue());
         }
     }
-    else if (el.is(ElementType::EXPRESSION)) {
+    else if (el.is<Expression>()) {
         // TODO evaluate expression
     }
 }
@@ -49,13 +49,11 @@ Singleton<ValueSpecification, MultiplicityElement, MultiplicityElement::UpperPol
     return m_upVal;
 }
 
-MultiplicityElement::MultiplicityElement() : Element(ElementType::MULTIPLICITY_ELEMENT) {
-    m_lowVal.subsets(*m_ownedElements);
-    m_upVal.subsets(*m_ownedElements);
-}
-
-MultiplicityElement::~MultiplicityElement() {
-    
+MultiplicityElement::MultiplicityElement(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager)
+{
+    m_lowVal.subsets(m_ownedElements);
+    m_upVal.subsets(m_ownedElements);
 }
 
 int MultiplicityElement::getLower() {
@@ -161,14 +159,4 @@ bool MultiplicityElement::isUnique() const {
 
 void MultiplicityElement::setIsUnique(bool isUnique) {
     m_isUnique = isUnique;
-}
-
-bool MultiplicityElement::is(ElementType eType) const {
-    bool ret = Element::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::MULTIPLICITY_ELEMENT;
-    }
-
-    return ret;
 }

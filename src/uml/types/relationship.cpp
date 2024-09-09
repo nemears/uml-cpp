@@ -1,30 +1,8 @@
-#include "uml/types/relationship.h"
-
+#include "uml/uml-stable.h"
 using namespace UML;
 
-void Relationship::referenceErased(ID id) {
-    Element::referenceErased(id);
-    eraseFromSet(id, m_relatedElements);
-}
-
-Relationship::Relationship() : Element(ElementType::RELATIONSHIP) {
-
-}
-
-Relationship::~Relationship() {
-
-}
+Relationship::Relationship(std::size_t elementType, AbstractManager& manager) : Element(elementType, manager) {}
 
 ReadOnlySet<Element, Relationship>& Relationship::getRelatedElements() {
     return m_relatedElements;
-}
-
-bool Relationship::is(ElementType eType) const {
-    bool ret = Element::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::RELATIONSHIP;
-    }
-
-    return ret;
 }

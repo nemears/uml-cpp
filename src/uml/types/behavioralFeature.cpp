@@ -1,22 +1,21 @@
+#include "uml/types/feature.h"
+#include "uml/types/namedElement.h"
+#include "uml/types/namespace.h"
+#include "uml/types/redefinableElement.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
 
-void BehavioralFeature::referenceErased(ID id) {
-    Namespace::referenceErased(id);
-    Feature::referenceErased(id);
-    eraseFromSet(id, m_methods);
-    eraseFromSet(id, m_raisedExceptions);
-}
-
-BehavioralFeature::BehavioralFeature() : Element(ElementType::BEHAVIORAL_FEATURE) {
+BehavioralFeature::BehavioralFeature(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    RedefinableElement(elementType, manager),
+    Feature(elementType, manager),
+    Namespace(elementType, manager)
+{
     m_methods.opposite(&Behavior::getSpecificationSingleton);
     m_ownedParameters.subsets(m_ownedMembers);
-    m_ownedParameterSets.subsets(*m_ownedElements);
-}
-
-BehavioralFeature::~BehavioralFeature() {
-
+    m_ownedParameterSets.subsets(m_ownedElements);
 }
 
 Set<Behavior, BehavioralFeature>& BehavioralFeature::getMethods() {
@@ -45,18 +44,4 @@ CallConcurrencyKind BehavioralFeature::getConcurrency() const {
 
 void BehavioralFeature::setConcurrency(CallConcurrencyKind concurrency) {
     m_concurrency = concurrency;
-}
-
-bool BehavioralFeature::is(ElementType eType) const {
-    bool ret = Feature::is(eType);
-
-    if (!ret) {
-        ret = Namespace::is(eType);
-    }
-
-    if (!ret) {
-        ret = eType == ElementType::BEHAVIORAL_FEATURE;
-    }
-
-    return ret;
 }

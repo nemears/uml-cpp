@@ -1,3 +1,9 @@
+#include "uml/managers/abstractManager.h"
+#include "uml/types/namedElement.h"
+#include "uml/types/parameterableElement.h"
+#include "uml/types/property.h"
+#include "uml/types/redefinableElement.h"
+#include "uml/types/typedElement.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -6,12 +12,15 @@ Singleton<Stereotype, ExtensionEnd>& ExtensionEnd::getTypeSingleton() {
     return m_extensionType;
 }
 
-ExtensionEnd::ExtensionEnd() : Element(ElementType::EXTENSION_END) {
+ExtensionEnd::ExtensionEnd(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    TypedElement(elementType, manager),
+    RedefinableElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    Property(elementType, manager)
+{
     m_extensionType.redefines(m_type);
-}
-
-ExtensionEnd::~ExtensionEnd() {
-    
 }
 
 TypePtr ExtensionEnd::getType() const {
@@ -24,14 +33,4 @@ void ExtensionEnd::setType(StereotypePtr type) {
 
 void ExtensionEnd::setType(Stereotype& type) {
     m_extensionType.set(type);
-}
-
-bool ExtensionEnd::is(ElementType eType) const {
-    bool ret = Property::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::EXTENSION_END;
-    }
-
-    return ret;
 }

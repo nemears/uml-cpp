@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "uml/types/extension.h"
 #include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
 #include "test/uml-cpp-paths.h"
@@ -18,7 +19,7 @@ UML_SINGLETON_INTEGRATION_TEST(PackageMergeMergedPackage, Package, PackageMerge,
 // commented out because it is readonly // UML_SET_INTEGRATION_TEST(PackageOwnedStereotypes, Stereotype, Package, &Package::getOwnedStereotypes);
 
 TEST_F(PackageTest, addPackagedElementTest) {
-    Manager<> m;
+    UmlManager m;
     Package& p = *m.create<Package>();
     Package& e = *m.create<Package>();
     ASSERT_NO_THROW(p.getPackagedElements().add(e));
@@ -36,7 +37,7 @@ TEST_F(PackageTest, addPackagedElementTest) {
 }
 
 TEST_F(PackageTest, setOwningPackageTest) {
-    Manager<> m;
+    UmlManager m;
     Package& p = *m.create<Package>();
     PackageableElement& e = *m.create<Package>();
     ASSERT_NO_THROW(e.setOwningPackage(&p));
@@ -52,7 +53,7 @@ TEST_F(PackageTest, setOwningPackageTest) {
 }
 
 TEST_F(PackageTest, overwriteOwningPackageTest) {
-    Manager<> m;
+    UmlManager m;
     Package& p1 = *m.create<Package>();
     Package& p2 = *m.create<Package>();
     PackageableElement& e = *m.create<Package>();
@@ -73,7 +74,7 @@ TEST_F(PackageTest, overwriteOwningPackageTest) {
 }
 
 TEST_F(PackageTest, packageMergeTest) {
-    Manager<> mm;
+    UmlManager mm;
     Package& p = *mm.create<Package>();
     PackageMerge& m = *mm.create<PackageMerge>();
     Package& mp = *mm.create<Package>();
@@ -94,7 +95,7 @@ TEST_F(PackageTest, packageMergeTest) {
 }
 
 TEST_F(PackageTest, removePackageMergeTest) {
-    Manager<> mm;
+    UmlManager mm;
     Package& p = *mm.create<Package>();
     PackageMerge& m = *mm.create<PackageMerge>();
     p.getPackageMerge().add(m);
@@ -107,11 +108,11 @@ TEST_F(PackageTest, removePackageMergeTest) {
 }
 
 TEST_F(PackageTest, simpleStereotypeTest) {
-    Manager<> m;
+    UmlManager m;
     Profile& p = *m.create<Profile>();
-    p.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAD");
+    p.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAD"));
     Stereotype& s = *m.create<Stereotype>();
-    s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
+    s.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAC"));
     p.getPackagedElements().add(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 1);
     ASSERT_EQ(p.getOwnedStereotypes().front()->getID(), s.getID());
@@ -126,12 +127,12 @@ TEST_F(PackageTest, simpleStereotypeTest) {
 }
 
 TEST_F(PackageTest, addOwnedStereotype) {
-    Manager<> m;
+    UmlManager m;
     Profile& p2 = *m.create<Profile>();
     Stereotype& s2 = *m.create<Stereotype>();
-    s2.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    s2.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAB"));
     Package& pp = *m.create<Package>();
-    pp.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAF");
+    pp.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAF"));
     p2.getPackagedElements().add(pp);
     p2.getPackagedElements().add(s2);
     ASSERT_EQ(p2.getOwnedStereotypes().size(), 1);
@@ -152,10 +153,10 @@ TEST_F(PackageTest, addOwnedStereotype) {
 }
 
 TEST_F(PackageTest, removeOwnedStereotype) {
-    Manager<> m;
+    UmlManager m;
     Profile& p = *m.create<Profile>();
     Stereotype& s = *m.create<Stereotype>();
-    s.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    s.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAB"));
     p.getPackagedElements().add(s);
     p.getPackagedElements().remove(s);
     ASSERT_EQ(p.getOwnedStereotypes().size(), 0);
@@ -179,7 +180,7 @@ TEST_F(PackageTest, removeOwnedStereotype) {
 }
 
 TEST_F(PackageTest, inTreeRemoveOwnedStereotype) {
-    Manager<> m;
+    UmlManager m;
     Package& p = *m.create<Package>();
     Stereotype& s = *m.create<Stereotype>();
     PackageMerge& pm = *m.create<PackageMerge>();
@@ -225,7 +226,7 @@ TEST_F(PackageTest, inTreeRemoveOwnedStereotype) {
 }
 
 TEST_F(PackageTest, erasePackagedElementTest) {
-    Manager<> m;
+    UmlManager m;
     Package& parent = *m.create<Package>();
     Package& child = *m.create<Package>();
     parent.getPackagedElements().add(child);
@@ -237,13 +238,13 @@ TEST_F(PackageTest, erasePackagedElementTest) {
 }
 
 TEST_F(PackageTest, parse3PackagesTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "packageParserTests/3packages.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(m.getRoot()->is<Package>());
     Package* pckg1 = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg1->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg1->getPackagedElements().front()->getElementType() == ElementType::PACKAGE);
-    ASSERT_TRUE((pckg1->getPackagedElements().begin()++)->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(pckg1->getPackagedElements().front()->is<Package>());
+    ASSERT_TRUE((pckg1->getPackagedElements().begin()++)->is<Package>());
     PackagePtr pckg2 = pckg1->getPackagedElements().front();
     PackagePtr pckg3 = &((pckg1->getPackagedElements().begin()++)->as<Package>());
     ASSERT_TRUE(pckg2->getOwningPackage() == pckg1);
@@ -261,13 +262,13 @@ TEST_F(PackageTest, parse3PackagesTest) {
     ASSERT_TRUE(pckg2->getOwner() == pckg1);
     ASSERT_TRUE(pckg3->getOwner() == pckg1);
     ASSERT_TRUE(pckg2->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg2->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ASSERT_TRUE(pckg2->getPackagedElements().front()->is<Class>());
     ClassPtr act1 = pckg2->getPackagedElements().front();
     ASSERT_TRUE(act1->getOwningPackage() == pckg2);
     ASSERT_TRUE(act1->getNamespace() == pckg2);
     ASSERT_TRUE(act1->getOwner() == pckg2);
     ASSERT_TRUE(pckg3->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg3->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ASSERT_TRUE(pckg3->getPackagedElements().front()->is<Class>());
     ClassPtr act2 = pckg3->getPackagedElements().front();
     ASSERT_TRUE(act2->getOwningPackage() == pckg3);
     ASSERT_TRUE(act2->getNamespace() == pckg3);
@@ -278,45 +279,45 @@ TEST_F(PackageTest, parse3PackagesTest) {
 //     Manager* m;
 //     ASSERT_NO_THROW(m = Parsers::parse(ymlPath + "packageParserTests/packageWithName.yml"));
 //     el = & m->get(ID::fromString("8q2Rht9aAZlY0EnMGtEKlw5Odr_u"));
-//     ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+//     ASSERT_TRUE(el->getElementType() == Package::Info::elementType);
 //     Package* pckg = dynamic_cast<Package*>(el);
 //     ASSERT_TRUE(pckg->getName().compare("test") == 0);
 //     delete m;
 // }
 
 TEST_F(PackageTest, ElementFeaturesTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "packageParserTests/packagewID.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(m.getRoot()->is<Package>());
     ASSERT_TRUE(m.getRoot()->getID() == ID::fromString("Hmq5HbrypUzqPYovV8oo3wnFE6Jl"));
 }
 
 TEST_F(PackageTest, ElementParserExceptionTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperID.yml"), SerializationError);
     ASSERT_THROW(m.open(ymlPath + "packageParserTests/otherImproperID.yml"), SerializationError);
 }
 
 TEST_F(PackageTest, NamedElementParserExceptionTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperName.yml"), SerializationError);
 }
 
 TEST_F(PackageTest, properExceptions) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperPackagedElement.yml"), SerializationError);
     ASSERT_THROW(m.open(ymlPath + "packageParserTests/invalidPackagedElements.yml"), SerializationError);
 }
 
 TEST_F(PackageTest, basicPackageMerge) {
-    Manager<> m2;
+    UmlManager m2;
     ASSERT_NO_THROW(m2.open(ymlPath + "packageParserTests/basicPackageMerge.yml"));
-    ASSERT_TRUE(m2.getRoot()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(m2.getRoot()->is<Package>());
     Package* bPckg = &m2.getRoot()->as<Package>();
     ASSERT_TRUE(bPckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(bPckg->getPackagedElements().front()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(bPckg->getPackagedElements().front()->is<Package>());
     PackagePtr pckg1 = bPckg->getPackagedElements().get(ID::fromString("CLZW&6KK6mcu4qLEXNULDidsDpkX"));
-    ASSERT_TRUE((bPckg->getPackagedElements().begin()++)->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE((bPckg->getPackagedElements().begin()++)->is<Package>());
     PackagePtr pckg2 = bPckg->getPackagedElements().get(ID::fromString("NrvESaGrSk1vI2aksOyHy8cJ8221"));
     ASSERT_TRUE(pckg2->getPackageMerge().size() == 1);
     PackageMergePtr m = pckg2->getPackageMerge().front();
@@ -325,11 +326,11 @@ TEST_F(PackageTest, basicPackageMerge) {
 }
 
 TEST_F(PackageTest, externalMergedPackageTest) {
-    Manager<> mm;
+    UmlManager mm;
     mm.open(ymlPath + "uml/primitiveTypes.yml");
     mm.open(ymlPath + "packageParserTests/3packages.yml");
     ASSERT_NO_THROW(mm.open(ymlPath + "packageParserTests/mergedPackage.yml"));
-    ASSERT_TRUE(mm.getRoot()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(mm.getRoot()->is<Package>());
     Package* pckg = &mm.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 2);
     PackageMergePtr m = *(pckg->getPackageMerge().ptrs().begin()++);
@@ -338,38 +339,36 @@ TEST_F(PackageTest, externalMergedPackageTest) {
     PackagePtr p2 = m->getMergedPackage();
     ASSERT_TRUE(p2->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ASSERT_TRUE(pckg->getPackagedElements().front()->is<Class>());
     ClassPtr c = pckg->getPackagedElements().front();
     ASSERT_TRUE(c->getOwnedAttributes().size() == 1);
     PropertyPtr p = c->getOwnedAttributes().front();
     PackagePtr primPack = m2->getMergedPackage();
-    ASSERT_TRUE(primPack->getPackagedElements().front()->getElementType() == ElementType::PRIMITIVE_TYPE);
+    ASSERT_TRUE(primPack->getPackagedElements().front()->is<PrimitiveType>());
     PrimitiveType& b = primPack->getPackagedElements().get("bool")->as<PrimitiveType>();
     ASSERT_TRUE(*p->getType() == b);
 }
 
 TEST_F(PackageTest, emitVerySimplePackageTest) {
-    Manager<> m;
+    UmlManager m;
     Package& p = *m.create<Package>();
-    p.setID("_SljVdCSVuBAkmgXqFcopy8&D9oN");
+    p.setID(ID::fromString("_SljVdCSVuBAkmgXqFcopy8&D9oN"));
     p.setName("package");
     p.setVisibility(VisibilityKind::PACKAGE);
     std::string expectedEmit = R""""(Package:
   id: "_SljVdCSVuBAkmgXqFcopy8&D9oN"
   name: package
   visibility: package)"""";
-  std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(p, data));
+    std::string generatedEmit;
+    ASSERT_NO_THROW(generatedEmit = m.dump(p));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 // TEST_F(PackageTest, parsePackagedElementInDifferentFileTest) {
-//     Manager<> m;
+//     UmlManager m;
 //     ASSERT_NO_THROW(m.open(ymlPath + "packageParserTests/subFolderTest.yml"));
-//     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+//     ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
 //     Package& pckg = m.getRoot()->as<Package>();
 //     ASSERT_EQ(pckg.getPackagedElements().size(), 1);
 //     ASSERT_EQ(pckg.getPackagedElements().front().getElementType(), ElementType::CLASS);
@@ -377,15 +376,15 @@ TEST_F(PackageTest, emitVerySimplePackageTest) {
 // }
 
 TEST_F(PackageTest, emitMergedPackageTest) {
-    Manager<> m;
+    UmlManager m;
     Package& pckg = *m.create<Package>();
     PackageMerge& merge = *m.create<PackageMerge>();
     Package& mergin = *m.create<Package>();
     Package& merged = *m.create<Package>();
-    pckg.setID("la_AO7XKQcEsH1P2LHcSk4ELzoEV");
-    mergin.setID("SXE9QBb0rYOmBFbahGIQLhMxlYNq");
-    merge.setID("I7c2Z27FF1w&WX4NHKdfIkbNuhDA");
-    merged.setID("orUaM2sY9dz&YP83TqfGaHO5SBY4");
+    pckg.setID(ID::fromString("la_AO7XKQcEsH1P2LHcSk4ELzoEV"));
+    mergin.setID(ID::fromString("SXE9QBb0rYOmBFbahGIQLhMxlYNq"));
+    merge.setID(ID::fromString("I7c2Z27FF1w&WX4NHKdfIkbNuhDA"));
+    merged.setID(ID::fromString("orUaM2sY9dz&YP83TqfGaHO5SBY4"));
     mergin.getPackageMerge().add(merge);
     merge.setMergedPackage(&merged);
     pckg.getPackagedElements().add(mergin);
@@ -402,9 +401,7 @@ TEST_F(PackageTest, emitMergedPackageTest) {
               id: "I7c2Z27FF1w&WX4NHKdfIkbNuhDA"
               mergedPackage: "orUaM2sY9dz&YP83TqfGaHO5SBY4")"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(pckg));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
@@ -421,7 +418,7 @@ void ASSERT_PROPER_DIRECTED_RELATIONSHIP_AQUIRE(DirectedRelationship& dr, Elemen
 }
 
 TEST_F(PackageTest, mountAndEditPackageTest) {
-    Manager<> m;
+    UmlManager m;
     Package& root = *m.create<Package>();
     Package& c1 = *m.create<Package>();
     Package& merged = *m.create<Package>();
@@ -512,7 +509,7 @@ TEST_F(PackageTest, mountAndEditPackageTest) {
 }
 
 // TEST_F(PackageTest, parseStringTest) {
-//     Manager<> m;
+//     UmlManager m;
 //     Package& p = *m.create<Package>();
 //     std::string ps = Parsers::emit(p);
 //     ID pid = p.getID();
@@ -524,23 +521,24 @@ TEST_F(PackageTest, mountAndEditPackageTest) {
 // }
 
 TEST_F(PackageTest, parseJsonTest) {
-    Manager<> m;
+    UmlManager m;
     ElementPtr parsed = m.open(ymlPath + "packageParserTests/jsonFileTest.json");
-    ASSERT_EQ(parsed->getElementType(), ElementType::PACKAGE);
+    ASSERT_TRUE(parsed->is<Package>());
     PackagePtr root = parsed;
     ASSERT_EQ(root->getPackagedElements().size(), 2);
     ASSERT_EQ(root->getName(), "JSON_pckg");
 }
 
 TEST_F(PackageTest, stereotypeWithExtensionTest) {
-  Manager<> m;
+  UmlManager m;
   m.open(ymlPath + "profileTests/stereotypeW_Extension.yml");
-  ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PROFILE);
+  ASSERT_TRUE(m.getRoot()->is<Profile>());
   Profile& profile = dynamic_cast<Profile&>(*m.getRoot());
   ASSERT_EQ(profile.getOwnedStereotypes().size(), 1);
   Stereotype& s = *profile.getOwnedStereotypes().front();
   ASSERT_EQ(profile.getPackagedElements().size(), 3);
-  ASSERT_EQ(profile.getPackagedElements().get("ext")->getElementType(), ElementType::EXTENSION);
+  //ASSERT_EQ(profile.getpackagedelements().get("ext")->getElementType(), Extension::Info::elementType);
+  ASSERT_TRUE(profile.getPackagedElements().get("ext")->is<Extension>());
   Extension& ext = dynamic_cast<Extension&>(*profile.getPackagedElements().get("ext"));
   ASSERT_TRUE(ext.getOwnedEnd());
   ExtensionEnd& end = *ext.getOwnedEnd();
@@ -553,25 +551,29 @@ TEST_F(PackageTest, stereotypeWithExtensionTest) {
 }
 
 TEST_F(PackageTest, internalProfileapplication) {
-  Manager<> m;
+  UmlManager m;
   ASSERT_NO_THROW(m.open(ymlPath + "profileTests/internalProfileApplication.yml"));
-  ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+  // ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
+  ASSERT_TRUE(m.getRoot()->is<Package>());
   Package& pckg = m.getRoot()->as<Package>();
   ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-  ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("3l8cYkYl_KVsMsQtR5ax2IE76CsM"))->getElementType(), ElementType::PACKAGE);
+  // ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("3l8cYkYl_KVsMsQtR5ax2IE76CsM"))->getElementType(), Package::Info::elementType);
+  ASSERT_TRUE(pckg.getPackagedElements().get(ID::fromString("3l8cYkYl_KVsMsQtR5ax2IE76CsM"))->is<Package>());
   Package& applying = pckg.getPackagedElements().get(ID::fromString("3l8cYkYl_KVsMsQtR5ax2IE76CsM"))->as<Package>();
   ASSERT_EQ(applying.getProfileApplications().size(), 1);
-  ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("ZjvD1bCxVklVQI7SsmtE_kS3oIIc"))->getElementType(), ElementType::PROFILE);
+  // ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("ZjvD1bCxVklVQI7SsmtE_kS3oIIc"))->getElementType(), Profile::Info::elementType);
+  ASSERT_TRUE(pckg.getPackagedElements().get(ID::fromString("ZjvD1bCxVklVQI7SsmtE_kS3oIIc"))->is<Profile>());
   Profile& profile = pckg.getPackagedElements().get(ID::fromString("ZjvD1bCxVklVQI7SsmtE_kS3oIIc"))->as<Profile>();
   ProfileApplication& application = *applying.getProfileApplications().front();
   ASSERT_EQ(application.getAppliedProfile()->getID(), profile.getID());
 }
 
 TEST_F(PackageTest, externalProfileApplicationTest) {
-  Manager<> m;
+  UmlManager m;
   m.open(ymlPath + "profileTests/testProfile.yml");
   ASSERT_NO_THROW(m.open(ymlPath + "profileTests/externalProfileApplication.yml"));
-  ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+  // ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
+  ASSERT_TRUE(m.getRoot()->is<Package>());
   Package& pckg = m.getRoot()->as<Package>();
   ASSERT_EQ(pckg.getProfileApplications().size(), 1);
   ProfileApplication& application = *pckg.getProfileApplications().front();
@@ -580,19 +582,19 @@ TEST_F(PackageTest, externalProfileApplicationTest) {
 }
 
 TEST_F(PackageTest, emitProfileTest) {
-    Manager<> m;
+    UmlManager m;
     Profile& profile = *m.create<Profile>();
     Stereotype& stereotype = *m.create<Stereotype>();
     Extension& extension = *m.create<Extension>();
     ExtensionEnd& end = *m.create<ExtensionEnd>();
     Class& metaClass = *m.create<Class>();
     Property& baseClass = *m.create<Property>();
-    profile.setID("83lphS&gucqvJwW&KSzVmTSMMG1z");
-    extension.setID("&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ");
-    end.setID("t&ZWitKKpMcvG9Dzwh23wSbP1hr5");
-    stereotype.setID("7PJxQhyjuuWylik9y2fgpNDXmMdv");
-    metaClass.setID("JHMJw4rDUtZrQUJ1JP1rMynWvEsK");
-    baseClass.setID("cEoEHKDqYcoIOtYwIqrMbz&WG1G_");
+    profile.setID(ID::fromString("83lphS&gucqvJwW&KSzVmTSMMG1z"));
+    extension.setID(ID::fromString("&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"));
+    end.setID(ID::fromString("t&ZWitKKpMcvG9Dzwh23wSbP1hr5"));
+    stereotype.setID(ID::fromString("7PJxQhyjuuWylik9y2fgpNDXmMdv"));
+    metaClass.setID(ID::fromString("JHMJw4rDUtZrQUJ1JP1rMynWvEsK"));
+    baseClass.setID(ID::fromString("cEoEHKDqYcoIOtYwIqrMbz&WG1G_"));
     end.setType(&stereotype);
     extension.setOwnedEnd(&end);
     baseClass.setType(metaClass);
@@ -624,23 +626,21 @@ TEST_F(PackageTest, emitProfileTest) {
               association: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"
         profile: "83lphS&gucqvJwW&KSzVmTSMMG1z")"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(profile, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(profile));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(PackageTest, emitProfileApplication) {
-    Manager<> m;
+    UmlManager m;
     Package& root = *m.create<Package>();
     Package& applying = *m.create<Package>();
     Profile& profile = *m.create<Profile>();
     ProfileApplication& application = *m.create<ProfileApplication>();
-    root.setID("BW5iaVf_WdBebuIH3yi9beXpG5Yi");
-    applying.setID("BtO&7RDq4sOe2Cb3hl_bByknWtDU");
-    application.setID("QbTzWJmjUCFjrufpPQc9qyeQdK3R");
-    profile.setID("R12X_VJHWWUKmJS_F8JotXJZzsNB");
+    root.setID(ID::fromString("BW5iaVf_WdBebuIH3yi9beXpG5Yi"));
+    applying.setID(ID::fromString("BtO&7RDq4sOe2Cb3hl_bByknWtDU"));
+    application.setID(ID::fromString("QbTzWJmjUCFjrufpPQc9qyeQdK3R"));
+    profile.setID(ID::fromString("R12X_VJHWWUKmJS_F8JotXJZzsNB"));
     application.setAppliedProfile(&profile);
     applying.getProfileApplications().add(application);
     root.getPackagedElements().add(applying);
@@ -657,20 +657,20 @@ TEST_F(PackageTest, emitProfileApplication) {
               id: QbTzWJmjUCFjrufpPQc9qyeQdK3R
               appliedProfile: R12X_VJHWWUKmJS_F8JotXJZzsNB)"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(root, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(root));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(PackageTest, parseAppliedStereotypeTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "profileTests/appliedStereotype.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+    // ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
+    ASSERT_TRUE(m.getRoot()->is<Package>());
     Package& root = m.getRoot()->as<Package>();
     ASSERT_EQ(root.getPackagedElements().size(), 2);
-    ASSERT_EQ(root.getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD"))->getElementType(), ElementType::PACKAGE);
+    // ASSERT_EQ(root.getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD"))->getElementType(), Package::Info::elementType);
+    ASSERT_TRUE(root.getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD"))->is<Package>());
     Package& applying = dynamic_cast<Package&>(*root.getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD")));
     ASSERT_EQ(applying.getProfileApplications().size(), 1);
     ProfileApplication& application = *applying.getProfileApplications().front();
@@ -678,20 +678,22 @@ TEST_F(PackageTest, parseAppliedStereotypeTest) {
     Profile& profile = dynamic_cast<Profile&>(*root.getPackagedElements().get(ID::fromString("PPkaUpbLRkxoN76k6_qR9xv6FruX")));
     ASSERT_EQ(application.getAppliedProfile()->getID(), profile.getID());
     ASSERT_EQ(applying.getPackagedElements().size(), 1);
-    ASSERT_EQ(applying.getPackagedElements().front()->getElementType(), ElementType::PACKAGE);
+    // ASSERT_EQ(applying.getPackagedElements().front()->getElementType(), Package::Info::elementType);
+    ASSERT_TRUE(applying.getPackagedElements().front()->is<Package>());
     Package& typed = dynamic_cast<Package&>(*applying.getPackagedElements().front());
     ASSERT_EQ(typed.getAppliedStereotypes().size(), 1);
     InstanceSpecification& stereotypeInst = *typed.getAppliedStereotypes().front();
     ASSERT_FALSE(stereotypeInst.getClassifiers().empty());
     ASSERT_EQ(stereotypeInst.getClassifiers().size(), 1);
-    ASSERT_EQ(stereotypeInst.getClassifiers().front()->getElementType(), ElementType::STEREOTYPE);
+    // ASSERT_EQ(stereotypeInst.getClassifiers().front()->getElementType(), Stereotype::Info::elementType);
+    ASSERT_TRUE(stereotypeInst.getClassifiers().front()->is<Stereotype>());
     ASSERT_EQ(profile.getOwnedStereotypes().size(), 1);
     Stereotype& stereotype = *profile.getOwnedStereotypes().front();
     ASSERT_EQ(stereotypeInst.getClassifiers().front()->getID(), stereotype.getID());
 }
 
 TEST_F(PackageTest, emitAppliedStereotypeTest) {
-    Manager<> m;
+    UmlManager m;
     Package& root = *m.create<Package>();
     Package& applying = *m.create<Package>();
     ProfileApplication& application = *m.create<ProfileApplication>();
@@ -703,17 +705,17 @@ TEST_F(PackageTest, emitAppliedStereotypeTest) {
     ExtensionEnd& end = *m.create<ExtensionEnd>();
     Class& metaClass = *m.create<Class>();
     Property& stereotypeBaseClassProperty = *m.create<Property>();
-    root.setID("jswJELYwKd_wleha5klF&GJFcU_0");
-    applying.setID("Lf963Dxo5MFIqi9ip7&Nj4l1f1yj");
-    application.setID("MUiSKR6gArugHOb1RqZtF5_uhflV");
-    profile.setID("I3QrZblFek6tdX&j70kCP8u4QNAh");
-    stereotypedEl.setID("wX&KNwgtwFYOQ0B4eIweaaRz&QC1");
-    stereotypeInst.setID("l3q&INpC6kqcdavsgIMSrSNNpGEt");
-    extension.setID("jjf&mHlwFSAjJXsBqng4IlxfYIJh");
-    end.setID("FK1SGxJ2lV&5RtbRhiGU9jR0zAsw");
-    stereotype.setID("x5r8XggyW2DI5c3RyAS8r_arWh79");
-    metaClass.setID("JHMJw4rDUtZrQUJ1JP1rMynWvEsK");
-    stereotypeBaseClassProperty.setID("cEoEHKDqYcoIOtYwIqrMbz&WG1G_");
+    root.setID(ID::fromString("jswJELYwKd_wleha5klF&GJFcU_0"));
+    applying.setID(ID::fromString("Lf963Dxo5MFIqi9ip7&Nj4l1f1yj"));
+    application.setID(ID::fromString("MUiSKR6gArugHOb1RqZtF5_uhflV"));
+    profile.setID(ID::fromString("I3QrZblFek6tdX&j70kCP8u4QNAh"));
+    stereotypedEl.setID(ID::fromString("wX&KNwgtwFYOQ0B4eIweaaRz&QC1"));
+    stereotypeInst.setID(ID::fromString("l3q&INpC6kqcdavsgIMSrSNNpGEt"));
+    extension.setID(ID::fromString("jjf&mHlwFSAjJXsBqng4IlxfYIJh"));
+    end.setID(ID::fromString("FK1SGxJ2lV&5RtbRhiGU9jR0zAsw"));
+    stereotype.setID(ID::fromString("x5r8XggyW2DI5c3RyAS8r_arWh79"));
+    metaClass.setID(ID::fromString("JHMJw4rDUtZrQUJ1JP1rMynWvEsK"));
+    stereotypeBaseClassProperty.setID(ID::fromString("cEoEHKDqYcoIOtYwIqrMbz&WG1G_"));
     profile.getPackagedElements().add(stereotype);
     end.setType(&stereotype);
     extension.setOwnedEnd(&end);
@@ -768,15 +770,13 @@ TEST_F(PackageTest, emitAppliedStereotypeTest) {
                     association: "jjf&mHlwFSAjJXsBqng4IlxfYIJh"
               profile: "I3QrZblFek6tdX&j70kCP8u4QNAh")"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(root, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(root));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(PackageTest, mountProfileTest) {
-  Manager<> m;
+  UmlManager m;
   Profile& profile = *m.create<Profile>();
   Stereotype& stereotype = *m.create<Stereotype>();
   Extension& extension = *m.create<Extension>();

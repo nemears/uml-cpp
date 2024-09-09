@@ -6,19 +6,15 @@ Singleton<Namespace, Constraint>& Constraint::getContextSingleton() {
     return m_context;
 }
 
-void Constraint::referenceErased(ID id) {
-    PackageableElement::referenceErased(id);
-    eraseFromSet(id, m_constrainedElements);
-}
-
-Constraint::Constraint() : Element(ElementType::CONSTRAINT) {
+Constraint::Constraint(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    PackageableElement(elementType, manager)
+{
     m_context.subsets(m_namespace);
     m_context.opposite(&Namespace::getOwnedRules);
-    m_specification.subsets(*m_ownedElements);
-}
-
-Constraint::~Constraint() {
-
+    m_specification.subsets(m_ownedElements);
 }
 
 NamespacePtr Constraint::getContext() const {
@@ -59,15 +55,4 @@ void Constraint::setSpecification(ValueSpecification& specification) {
 
 void Constraint::setSpecification(ID id) {
     m_specification.set(id);
-}
-
-
-bool Constraint::is(ElementType eType) const {
-    bool ret = PackageableElement::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::CONSTRAINT;
-    }
-
-    return ret;
 }

@@ -10,18 +10,11 @@ Singleton<Property, ConnectorEnd>& ConnectorEnd::getDefiningEndSingleton() {
     return m_definingEnd;
 }
 
-void ConnectorEnd::referenceErased(ID id) {
-    MultiplicityElement::referenceErased(id);
-    eraseFromSet(id, m_role);
-    eraseFromSet(id, m_definingEnd);
-}
-
-ConnectorEnd::ConnectorEnd() : Element(ElementType::CONNECTOR_END) {
+ConnectorEnd::ConnectorEnd(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    MultiplicityElement(elementType, manager)
+{
     m_role.opposite(&ConnectableElement::getEnds);
-}
-
-ConnectorEnd::~ConnectorEnd() {
-    
 }
 
 ConnectableElementPtr ConnectorEnd::getRole() const {
@@ -42,14 +35,4 @@ void ConnectorEnd::setRole(ID id) {
 
 PropertyPtr ConnectorEnd::getDefiningEnd() const {
     return m_definingEnd.get();
-}
-
-bool ConnectorEnd::is(ElementType eType) const {
-    bool ret = MultiplicityElement::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::CONNECTOR_END;
-    }
-
-    return ret;
 }

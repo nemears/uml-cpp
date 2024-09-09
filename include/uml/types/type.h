@@ -15,7 +15,7 @@ namespace UML{
         friend class Operation;
         
         protected:
-            Type();
+            Type(std::size_t elementType, AbstractManager& manager);
         public:
             typedef TypeInfo<std::tuple<PackageableElement>, Type> Info;
     };

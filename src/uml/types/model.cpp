@@ -2,13 +2,12 @@
 
 using namespace UML;
 
-Model::Model() : Element(ElementType::MODEL) {
-    
-}
-
-Model::~Model() {
-
-}
+Model::Model(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    Package(elementType, manager)
+{}
 
 std::string Model::getViewpoint() const {
     return m_viewpoint;
@@ -16,14 +15,4 @@ std::string Model::getViewpoint() const {
 
 void Model::setViewpoint(const std::string& viewpoint) {
     m_viewpoint = viewpoint;
-}
-
-bool Model::is(ElementType eType) const {
-    bool ret = Package::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::MODEL;
-    }
-
-    return ret;
 }

@@ -2,25 +2,17 @@
 
 using namespace UML;
 
-Signal::Signal() : Element(ElementType::SIGNAL) {
+Signal::Signal(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    PackageableElement(elementType, manager),
+    Classifier(elementType, manager)
+{
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_ownedMembers);
 }
 
-Signal::~Signal() {
-    
-}
-
 IndexableOrderedSet<Property, Signal>& Signal::getOwnedAttributes() {
     return m_ownedAttributes;
-}
-
-bool Signal::is(ElementType eType) const {
-    bool ret = Classifier::is(eType);
-    
-    if (!ret) {
-        ret = eType == ElementType::SIGNAL;
-    }
-
-    return ret;
 }

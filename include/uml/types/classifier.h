@@ -69,12 +69,11 @@ namespace UML {
             ReadOnlyIndexableSet<NamedElement, Classifier>& getInheritedMembers();
             Set<GeneralizationSet, Classifier>& getPowerTypeExtent();
             RedefinableTemplateSignaturePtr getOwnedTemplateSignature() const;
-            void setOwnedTemplateSignature(RedefinableTemplateSignature* signature);
+            void setOwnedTemplateSignature(RedefinableTemplateSignaturePtr signature);
             void setOwnedTemplateSignature(RedefinableTemplateSignature& signature);
             void setOwnedTemlateSignature(RedefinableTemplateSignaturePtr signature);
             void setOwnedTemplateSignature(ID id);
             ClassifierTemplateParameterPtr getTemplateParameter() const;
-            void setTemplateParameter(ClassifierTemplateParameter* templateParameter);
             void setTemplateParameter(ClassifierTemplateParameter& templateParameter);
             void setTemplateParameter(ClassifierTemplateParameterPtr templateParameter);
             void setTemplateParameter(ID id);

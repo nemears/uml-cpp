@@ -10,20 +10,18 @@ Singleton<ValueSpecification, Parameter>& Parameter::getDefaultValueSingleton() 
     return m_defaultValue;
 }
 
-void Parameter::referenceErased(ID id) {
-    ConnectableElement::referenceErased(id);
-    eraseFromSet(id, m_parameterSets);
-}
-
-Parameter::Parameter() : Element(ElementType::PARAMETER) {
+Parameter::Parameter(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    TypedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    ConnectableElement(elementType, manager),
+    MultiplicityElement(elementType, manager)
+{
     m_operation.subsets(m_namespace);
     m_operation.opposite(&Operation::getOwnedParameters);
-    m_defaultValue.subsets(*m_ownedElements);
+    m_defaultValue.subsets(m_ownedElements);
     m_parameterSets.opposite(&ParameterSet::getParameters);
-}
-
-Parameter::~Parameter() {
-
 }
 
 OperationPtr Parameter::getOperation() const {
@@ -50,7 +48,7 @@ void Parameter::setDirection(ParameterDirectionKind direction) {
     if (direction == ParameterDirectionKind::RETURN || direction == ParameterDirectionKind::OUT_UML || direction == ParameterDirectionKind::INOUT) {
         if (m_operation.get()) {
             if (m_operation.get()->m_returnSpecified) {
-                throw ReturnParameterException(m_operation.get()->getElementTypeString() + " " + m_operation.get().id().string());
+                throw ReturnParameterException(/**m_operation.get()->getElementTypeString() + " " + **/m_operation.get().id().string());
             }
             m_operation.get()->m_returnSpecified = true;
         }
@@ -100,18 +98,4 @@ void Parameter::setIsStream(bool isStream) {
 
 Set<ParameterSet, Parameter>& Parameter::getParameterSets() {
     return m_parameterSets;
-}
-
-bool Parameter::is(ElementType eType) const {
-    bool ret = ConnectableElement::is(eType);
-
-    if (!ret) {
-        ret = MultiplicityElement::is(eType);
-    }
-
-    if (!ret) {
-        ret = eType == ElementType::PARAMETER;
-    }
-
-    return ret;
 }

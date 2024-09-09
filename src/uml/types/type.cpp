@@ -1,21 +1,13 @@
+#include "uml/types/namedElement.h"
+#include "uml/types/packageableElement.h"
+#include "uml/types/parameterableElement.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
 
-Type::Type() : Element(ElementType::TYPE) {
-
-}
-
-Type::~Type() {
-
-}
-
-bool Type::is(ElementType eType) const {
-    bool ret = PackageableElement::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::TYPE;
-    }
-
-    return ret;
-}
+Type::Type(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    PackageableElement(elementType, manager)
+{}

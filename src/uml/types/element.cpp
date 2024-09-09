@@ -1,7 +1,4 @@
-#include "uml/managers/abstractManager.h"
-#include "uml/set/abstractSet.h"
 #include "uml/uml-stable.h"
-#include <regex>
 
 namespace UML {
 
@@ -14,7 +11,7 @@ Element::Element(std::size_t elementType, AbstractManager& manager) : BaseElemen
     m_owner.setComposition(CompositionType::ANTI_COMPOSITE);
     m_ownedElements.opposite(&Element::getOwnerSingleton);
     m_ownedElements.setComposition(CompositionType::COMPOSITE);
-    // m_ownedComments.subsets(m_ownedElements);
+    m_ownedComments.subsets(m_ownedElements);
 }
 
 ElementPtr Element::getOwner() const {
@@ -25,13 +22,13 @@ ReadOnlySet<Element, Element>& Element::getOwnedElements() {
     return m_ownedElements;
 }
 
-// Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
-//     return *m_appliedStereotypes;
-// }
-// 
-// Set<Comment, Element>& Element::getOwnedComments() {
-//     return *m_ownedComments;
-// }
+Set<InstanceSpecification, Element>& Element::getAppliedStereotypes() {
+    return m_appliedStereotypes;
+}
+
+Set<Comment, Element>& Element::getOwnedComments() {
+    return m_ownedComments;
+}
 
 void Element::setOwner(ID id) {
     m_owner.nonOppositeAdd(m_manager.createPtr(id));

@@ -1,15 +1,19 @@
+#include "uml/types/multiplicityElement.h"
+#include "uml/types/namedElement.h"
+#include "uml/types/redefinableElement.h"
+#include "uml/types/typedElement.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
 
-void StructuralFeature::referenceErased(ID id) {
-    TypedElement::referenceErased(id);
-    Feature::referenceErased(id);
-}
-
-StructuralFeature::StructuralFeature() : Element(ElementType::STRUCTURAL_FEATURE) {
-
-}
+StructuralFeature::StructuralFeature(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    TypedElement(elementType, manager),
+    RedefinableElement(elementType, manager),
+    MultiplicityElement(elementType, manager),
+    Feature(elementType, manager)
+{}
 
 bool StructuralFeature::isReadOnly() const {
     return m_readOnly;
@@ -17,22 +21,4 @@ bool StructuralFeature::isReadOnly() const {
 
 void StructuralFeature::setReadOnly(bool readOnly) {
     m_readOnly = readOnly;
-}
-
-bool StructuralFeature::is(ElementType eType) const {
-    bool ret = TypedElement::is(eType);
-    
-    if (!ret) {
-        ret = MultiplicityElement::is(eType);
-    }
-
-    if (!ret) {
-        ret = Feature::is(eType);
-    }
-
-    if (!ret) {
-        ret = eType == ElementType::STRUCTURAL_FEATURE;
-    }
-
-    return ret;
 }

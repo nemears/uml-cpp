@@ -2,9 +2,12 @@
 
 using namespace UML;
 
-LiteralReal::LiteralReal() : Element(ElementType::LITERAL_REAL) {
-
-}
+LiteralReal::LiteralReal(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager),
+    NamedElement(elementType, manager),
+    ParameterableElement(elementType, manager),
+    LiteralSpecification(elementType, manager)
+{}
 
 double LiteralReal::getValue() {
     return m_value;
@@ -12,14 +15,4 @@ double LiteralReal::getValue() {
 
 void LiteralReal::setValue(double val) {
     m_value = val;
-}
-
-bool LiteralReal::is(ElementType eType) const {
-    bool ret = LiteralSpecification::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::LITERAL_REAL;
-    }
-
-    return ret;
 }

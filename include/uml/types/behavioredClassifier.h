@@ -22,7 +22,7 @@ namespace UML {
             Singleton<Behavior, BehavioredClassifier> m_classifierBehavior = Singleton<Behavior, BehavioredClassifier>(this);
             Set<InterfaceRealization, BehavioredClassifier, InterfaceRealizationPolicy> m_interfaceRealizations = Set<InterfaceRealization, BehavioredClassifier, InterfaceRealizationPolicy>(this);
             Singleton<Behavior, BehavioredClassifier>& getClassifierBehaviorSingleton();
-            BehavioredClassifier();
+            BehavioredClassifier(std::size_t elementType, AbstractManager& manager);
         public:
             IndexableSet<Behavior, BehavioredClassifier>& getOwnedBehaviors();
             BehaviorPtr getClassifierBehavior() const;

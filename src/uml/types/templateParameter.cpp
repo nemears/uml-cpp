@@ -2,12 +2,6 @@
 
 using namespace UML;
 
-void TemplateParameter::referenceErased(ID id) {
-    Element::referenceErased(id);
-    eraseFromSet(id, m_parameteredElement);
-    eraseFromSet(id, m_default);
-}
-
 Singleton<TemplateSignature, TemplateParameter>& TemplateParameter::getSignatureSingleton() {
     return m_signature;
 }
@@ -28,19 +22,17 @@ Singleton<ParameterableElement, TemplateParameter>& TemplateParameter::getOwnedD
     return m_ownedDefault;
 }
 
-TemplateParameter::TemplateParameter() : Element(ElementType::TEMPLATE_PARAMETER) {
-    m_signature.subsets(*m_owner);
+TemplateParameter::TemplateParameter(std::size_t elementType, AbstractManager& manager) : 
+    Element(elementType, manager)
+{
+    m_signature.subsets(m_owner);
     m_signature.opposite(&TemplateSignature::getOwnedParameters);
     m_parameteredElement.opposite(&ParameterableElement::getTemplateParameterSingleton);
     m_ownedParameteredElement.subsets(m_parameteredElement);
-    m_ownedParameteredElement.subsets(*m_ownedElements);
+    m_ownedParameteredElement.subsets(m_ownedElements);
     m_ownedParameteredElement.opposite(&ParameterableElement::getOwningTemplateParameterSingleton);
     m_ownedDefault.subsets(m_default);
-    m_ownedDefault.subsets(*m_ownedElements);
-}
-
-TemplateParameter::~TemplateParameter() {
-    
+    m_ownedDefault.subsets(m_ownedElements);
 }
 
 TemplateSignaturePtr TemplateParameter::getSignature() const {
@@ -121,14 +113,4 @@ void TemplateParameter::setOwnedDefault(ParameterableElement& el) {
 
 void TemplateParameter::setOwnedDefault(ID id) {
     m_ownedDefault.set(id);
-}
-
-bool TemplateParameter::is(ElementType eType) const {
-    bool ret = Element::is(eType);
-
-    if (!ret) {
-        ret = eType == ElementType::TEMPLATE_PARAMETER;
-    }
-
-    return ret;
 }

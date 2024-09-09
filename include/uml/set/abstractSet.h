@@ -50,9 +50,8 @@ namespace UML {
         friend class Element;
         template <class S, class WrapperPolicy>
         friend class WrapperSet;
-        // TODO remove or find better way than a lot of friends
-        friend class Connector;
-//        friend void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
+        friend class AbstractElement;
+        
         protected:
             std::shared_ptr<SetStructure> m_structure;
             virtual bool hasData() const = 0;

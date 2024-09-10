@@ -68,7 +68,9 @@ namespace UML {
         auto superSetRootRedefinedSet = superSet.m_structure->m_rootRedefinedSet;
         superSetRootRedefinedSet->m_subSets.insert(rootRedefinedSet);
         rootRedefinedSet->m_superSets.insert(superSetRootRedefinedSet);
-        rootRedefinedSet->m_composition = superSetRootRedefinedSet->m_composition;
+        if (superSetRootRedefinedSet->m_composition != CompositionType::NONE) {
+            rootRedefinedSet->m_composition = superSetRootRedefinedSet->m_composition;
+        }
     }
     void AbstractSet::redefines(AbstractSet& redefinedSet) {
         for (std::shared_ptr<SetStructure> superSet : m_structure->m_rootRedefinedSet->m_superSets) {

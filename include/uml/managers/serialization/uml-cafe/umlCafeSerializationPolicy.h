@@ -200,15 +200,16 @@ namespace UML {
                 }
             };
 
-            std::pair<const YAML::Node&, AbstractParserFunctor&> getFunctor(const YAML::Node& node) {
+            std::pair<const YAML::Node, AbstractParserFunctor&> getFunctor(const YAML::Node& node) {
                 auto it = node.begin();
                 while (it != node.end()) {
                     const auto& keyNode = it->first;
-                    const auto& node = it->second;
-                    if (node.IsMap()) {
+                    const auto& valNode = it->second;
+                    if (valNode.IsMap()) {
                         // look up key
-                        return std::make_pair(std::ref(node), std::ref(*m_parserfunctors.at(keyNode.as<std::string>())));
+                        return std::make_pair(valNode, std::ref(*m_parserfunctors.at(keyNode.as<std::string>())));
                     }
+                    it++;
                 } 
                 throw SerializationError("Could not identify type to parse relevant to this manager!");
             }
@@ -260,7 +261,6 @@ namespace UML {
                                 auto match = self.getFunctor(valNode);
                                 auto parsedChild = match.second.parseWhole(match.first, self);
                                 self.addToSet(*set, *parsedChild);
-                                // set->add(parsedChild);
                             }
                         } else {
                             if (set->setType() != SetType::SINGLETON) {
@@ -269,7 +269,6 @@ namespace UML {
                             auto match = self.getFunctor(setNode);
                             auto parsedChild = match.second.parseWhole(match.first, self);
                             self.addToSet(*set, *parsedChild);
-                            // set->add(parsedChild);
                         }
                     }
                 }
@@ -305,14 +304,14 @@ namespace UML {
                 UmlCafeSerializationPolicy& m_self;
                 AbstractParserFunctor(UmlCafeSerializationPolicy& self) : m_self(self) {}
                 virtual ~AbstractParserFunctor() {}
-                virtual UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node& node, AbstractManager& manager) = 0;
-                virtual UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node& node, AbstractManager& manager) = 0; 
+                virtual UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node node, AbstractManager& manager) = 0;
+                virtual UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node node, AbstractManager& manager) = 0; 
             };
 
             template <class T>
             struct ParserFunctor : public AbstractParserFunctor {
                 ParserFunctor(UmlCafeSerializationPolicy& self) : AbstractParserFunctor(self) {}
-                UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node& node, AbstractManager& manager) override {
+                UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node node, AbstractManager& manager) override {
                     UmlPtr<T> ret = manager.create(ManagerTypes<Tlist>::template idOf<T>());
                     if (node["id"]) {
                         ret->setID(ID::fromString(node["id"].as<std::string>()));
@@ -322,7 +321,7 @@ namespace UML {
 
                     return ret;
                 }
-                UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node& node, AbstractManager& manager) {
+                UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node node, AbstractManager& manager) {
                     UmlPtr<T> ret = manager.create(T::Info::elementType);
                     if (node["id"]) {
                         ret->setID(ID::fromString(node["id"].as<std::string>()));

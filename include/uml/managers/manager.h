@@ -154,7 +154,7 @@ namespace UML {
                 if (m_graph.count(newID)) {
                     // erase node we are overwriting
                     auto newNode = m_graph.find(newID);
-                    ptrs.reserve(ptrs.size() + newNode->second->m_ptrs.size());
+                    ptrs.resize(ptrs.size() + newNode->second->m_ptrs.size());
                     for (auto ptr : newNode->second->m_ptrs) {
                         ptrs[i] = ptr;
                         i++;
@@ -167,6 +167,7 @@ namespace UML {
                 for (auto ptr : ptrs) {
                     ptr->m_node = newNode;
                     ptr->m_id = newID;
+                    ptr->setPtr(el);
                     newNode.lock()->m_ptrs.insert(ptr);
                 }
             }

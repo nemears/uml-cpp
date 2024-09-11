@@ -38,6 +38,7 @@ namespace UML {
         protected:
             std::weak_ptr<ManagerNode> m_node;
             ID m_id = ID::nullID();
+            virtual void setPtr(std::shared_ptr<AbstractElement> ptr) = 0;
     };
 
     template <class T>
@@ -67,7 +68,7 @@ namespace UML {
                     }
                     const_cast<UmlPtr<T>*>(this)->m_node = m_ptr.lock()->m_node.lock();
                     return  m_ptr;
-                }            
+                }
             }
             void setFromRaw(const T* rawPtr) {
                 if (rawPtr) {
@@ -85,6 +86,9 @@ namespace UML {
                 m_id = newID;
                 m_ptr = el;
                 m_node = m_ptr.lock()->m_node;
+            }
+            void setPtr(std::shared_ptr<AbstractElement> ptr) override {
+                m_ptr = std::dynamic_pointer_cast<T>(ptr);
             }
             template <class U = AbstractElement>
             void reassignPtr(const UmlPtr<U>& rhs) {

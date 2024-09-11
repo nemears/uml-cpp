@@ -70,7 +70,7 @@ namespace UML {
                 
                 for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
                     auto set = setPair.second;
-                    if (set->readonly() || set->empty()) {
+                    if (set->readonly() || set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE) {
                         continue;
                     }
                     emitter << YAML::Key << setPair.first;

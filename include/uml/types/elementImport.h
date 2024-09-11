@@ -45,6 +45,7 @@ namespace UML {
             void setAlias(const std::string& alias);
             VisibilityKind getVisibility() const;
             void setVisibility(VisibilityKind visibility);
+            typedef TypeInfo<std::tuple<DirectedRelationship>, ElementImport> Info;
     };
 
     template <>

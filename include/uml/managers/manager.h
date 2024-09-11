@@ -256,7 +256,7 @@ namespace UML {
                         for (auto itPtr = set->beginPtr(); *itPtr != *endPtr; itPtr->next()) {
                             auto elRestore = itPtr->getCurr();
                             set->runAddPolicy(*elRestore);
-                        } 
+                        }
                     }
                 }
 

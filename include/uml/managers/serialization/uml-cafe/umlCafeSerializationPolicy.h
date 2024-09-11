@@ -200,14 +200,24 @@ namespace UML {
                 }
             };
 
-            std::pair<const YAML::Node, AbstractParserFunctor&> getFunctor(const YAML::Node& node) {
+            struct NodeHandlers {
+                YAML::Node innerData;
+                YAML::Node outerData;
+                AbstractParserFunctor& functor;
+            };
+
+            NodeHandlers getFunctor(const YAML::Node& node) {
                 auto it = node.begin();
                 while (it != node.end()) {
                     const auto& keyNode = it->first;
                     const auto& valNode = it->second;
                     if (valNode.IsMap()) {
                         // look up key
-                        return std::make_pair(valNode, std::ref(*m_parserfunctors.at(keyNode.as<std::string>())));
+                        return NodeHandlers {
+                            node,
+                            valNode,
+                            *m_parserfunctors.at(keyNode.as<std::string>())
+                        };
                     }
                     it++;
                 } 
@@ -241,6 +251,29 @@ namespace UML {
             }
 
             template <class T>
+            bool parseScopeHelper(const YAML::Node& node, T& el) {
+                for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
+                    if (setPair.second->readonly() || setPair.second->getComposition() != CompositionType::ANTI_COMPOSITE) {
+                        continue;
+                    }
+                    
+                    auto set = dynamic_cast<AbstractReadableSet*>(setPair.second);
+                    if (node[setPair.first]) {
+                        auto& setNode = node[setPair.first];
+                        if (setNode.IsScalar()) {
+                            if (set->setType() != SetType::SINGLETON) {
+                                throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
+                            }
+                            // TODO if parsing compositely, check to make sure the set is not composite
+                            set->add(ID::fromString(setNode.template as<std::string>()));
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            template <class T>
             void parseWholeHelper(T& el, const YAML::Node& node, UmlCafeSerializationPolicy& self) {
                 for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
                     if (setPair.second->readonly()) {
@@ -259,7 +292,7 @@ namespace UML {
                             for (const auto& valNode : setNode) {
                                 // composite parsing
                                 auto match = self.getFunctor(valNode);
-                                auto parsedChild = match.second.parseWhole(match.first, self);
+                                auto parsedChild = match.functor.parseWhole(match.innerData, self);
                                 self.addToSet(*set, *parsedChild);
                             }
                         } else {
@@ -267,7 +300,7 @@ namespace UML {
                                 throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
                             }
                             auto match = self.getFunctor(setNode);
-                            auto parsedChild = match.second.parseWhole(match.first, self);
+                            auto parsedChild = match.functor.parseWhole(match.innerData, self);
                             self.addToSet(*set, *parsedChild);
                         }
                     }
@@ -284,6 +317,21 @@ namespace UML {
                 using ElBases = ElementType::Info::BaseList;
                 if constexpr (std::tuple_size<ElBases>{} > 0) {
                     parseIndividual<0, ElBases>(el, node);
+                }
+            }
+
+            template <std::size_t I, class ParseTypes>
+            void parseScope(const YAML::Node& node, std::tuple_element_t<I, ParseTypes>& el) {
+                using ElementType = std::tuple_element_t<I, ParseTypes>;
+                if (parseScopeHelper<ElementType>(node, el)) {
+                    return;
+                }
+                if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
+                    parseScope<I + 1, ParseTypes>(node, el.template as<std::tuple_element_t<I + 1, ParseTypes>>());
+                }
+                using ElBases = ElementType::Info::BaseList;
+                if constexpr (std::tuple_size<ElBases>{} > 0) {
+                    parseScope<0, ElBases>(node, el);
                 }
             }
             
@@ -304,12 +352,14 @@ namespace UML {
                 UmlCafeSerializationPolicy& m_self;
                 AbstractParserFunctor(UmlCafeSerializationPolicy& self) : m_self(self) {}
                 virtual ~AbstractParserFunctor() {}
-                virtual UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node node, AbstractManager& manager) = 0;
-                virtual UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node node, AbstractManager& manager) = 0; 
+                virtual UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node node, AbstractManager& manager) = 0; // rename?
+                virtual void parseScope(YAML::Node node, BaseElement<Tlist>& el) = 0;
+                virtual UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node node, AbstractManager& manager) = 0;
             };
 
             template <class T>
             struct ParserFunctor : public AbstractParserFunctor {
+                typedef T Type;
                 ParserFunctor(UmlCafeSerializationPolicy& self) : AbstractParserFunctor(self) {}
                 UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node node, AbstractManager& manager) override {
                     UmlPtr<T> ret = manager.create(ManagerTypes<Tlist>::template idOf<T>());
@@ -320,6 +370,9 @@ namespace UML {
                     this->m_self.template parseIndividual<0, std::tuple<T>>(*ret, node);
 
                     return ret;
+                }
+                void parseScope(YAML::Node node, BaseElement<Tlist>& el) override {
+                    this->m_self.template parseScope<0, std::tuple<T>>(node, el.template as<T>());
                 }
                 UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node node, AbstractManager& manager) {
                     UmlPtr<T> ret = manager.create(T::Info::elementType);
@@ -360,7 +413,9 @@ namespace UML {
                     throw SerializationError("could not parse data supplied to manager! Is it JSON or YAML?");
                 }
                 auto match = getFunctor(rootNodes[0]);
-                return match.second(match.first, manager);
+                auto parsedEl = match.functor(match.innerData, manager);
+                match.functor.parseScope(match.outerData, *parsedEl);
+                return parsedEl;
             }
             std::vector<UmlPtr<BaseElement<Tlist>>> parseWhole(std::string data, AbstractManager& manager) {
                 std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
@@ -370,7 +425,7 @@ namespace UML {
                 std::vector<UmlPtr<BaseElement<Tlist>>> ret(rootNodes.size());
                 for (auto& node : rootNodes) {
                     auto match = getFunctor(node);
-                    ret.push_back(match.second.parseWhole(match.first, manager));
+                    ret.push_back(match.functor.parseWhole(match.innerData, manager));
                 }
                 return ret;
             }

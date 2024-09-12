@@ -214,8 +214,8 @@ namespace UML {
                     if (valNode.IsMap()) {
                         // look up key
                         return NodeHandlers {
-                            node,
                             valNode,
+                            node,
                             *m_parserfunctors.at(keyNode.as<std::string>())
                         };
                     }

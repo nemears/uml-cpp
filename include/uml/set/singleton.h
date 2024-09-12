@@ -23,7 +23,12 @@ namespace UML {
                         if (m_done) {
                             return UmlPtr<T>();
                         }
-                        return dynamic_cast<SingletonDataPolicy&>(m_me.lock()->m_set).m_data;
+                        auto& me = dynamic_cast<SingletonDataPolicy&>(m_me.lock()->m_set);
+                        if (me.m_data) {
+                            return me.m_data;
+                        }
+
+                        return (*m_me.lock()->m_subSetsWithData.begin())->m_set.beginPtr()->getCurr();
                     }
                     void next() override {
                         m_done = true;

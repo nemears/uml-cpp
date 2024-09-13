@@ -35,6 +35,38 @@ namespace UML {
             std::unordered_map<std::size_t, std::unique_ptr<AbstractEmitterFunctor>> m_emitterFunctors;
             std::unordered_map<std::string, std::unique_ptr<AbstractParserFunctor>> m_parserfunctors;
 
+            template <class, class>
+            struct TupleCat;
+
+            template <class ... Left, class ... Right>
+            struct TupleCat<std::tuple<Left...>, std::tuple<Right...>> {
+                using type = std::tuple<Left..., Right...>;
+            };
+
+            template<std::size_t ... Is>
+            struct IntList {};
+
+            template <std::size_t I, typename Ints>
+            struct HasType;
+
+            template <std::size_t I, std::size_t J, std::size_t... Is>
+            struct HasType<I, IntList<J, Is...>> {
+                static const bool value = I == J ? true : HasType<I, IntList<Is...>>::value;
+            };
+
+            template<std::size_t I>
+            struct HasType<I, IntList<>> {
+                static const bool value = false;
+            };
+
+            template <class, std::size_t>
+            struct IntAppend;
+
+            template <std::size_t ... Is, std::size_t Right>
+            struct IntAppend<IntList<Is...>, Right> {
+                using type = IntList<Is..., Right>;
+            };
+
             template <class T>
             static std::unique_ptr<std::pair<std::string, AbstractSet*>> findScopeHelper(T& el) {
                 for (auto& setPair : T::Info::Info::sets(el)) {
@@ -45,25 +77,33 @@ namespace UML {
                 return 0;
             }
 
-            template <std::size_t I, class EmitTypes>
+            // TODO compile time visited instead of runtime like below
+
+            template <std::size_t I, class EmitTypes, class Visited = IntList<>>
             static std::unique_ptr<std::pair<std::string, AbstractSet*>> findScope(AbstractElement& el) {
                 if constexpr (std::tuple_size<EmitTypes>{} > I) {
-                    using CurrentType = std::tuple_element_t<I, EmitTypes>; 
-                    auto possibleScope = findScopeHelper<CurrentType>(dynamic_cast<CurrentType&>(el));
-                    if (possibleScope) {
+                    using CurrentType = std::tuple_element_t<I, EmitTypes>;
+                    if constexpr (!HasType<CurrentType::template idOf<CurrentType>(), Visited>::value) {
+                        auto possibleScope = findScopeHelper<CurrentType>(dynamic_cast<CurrentType&>(el));
+                        using NewVisited = IntAppend<Visited, CurrentType::template idOf<CurrentType>()>::type;
+                        auto basePossibleScope = findScope<I + 1, typename TupleCat<EmitTypes, typename CurrentType::Info::BaseList>::type, NewVisited>(el);
+                        
+                        // compare and choose best option
+                        if (!possibleScope || possibleScope->second->size() == 0) {
+                            return basePossibleScope;
+                        }
+                        if (possibleScope->second->readonly() && basePossibleScope && !basePossibleScope->second->readonly() && basePossibleScope->second->size() != 0) {
+                            return basePossibleScope;
+                        }
                         return possibleScope;
                     }
-                    possibleScope = findScope<I + 1, EmitTypes>(el);
-                    if (possibleScope) {
-                        return possibleScope;
-                    }
-                    return findScope<0, typename CurrentType::Info::BaseList>(el);
-                    
+                    // if it's already visited we move onto the next one
+                    return findScope<I + 1, EmitTypes, Visited>(el);
                 }
                 return 0;
             }
 
-            template <class T, bool individual = true>
+            template <class T>
             static void emitIndividualDataHelper(YAML::Emitter& emitter, AbstractElement& el) {
 
                 // TODO other features besides sets
@@ -178,12 +218,12 @@ namespace UML {
                 std::string operator()(BaseElement<Tlist>& el) override {
                     YAML::Emitter emitter;
                     emitter << YAML::BeginMap;
-                    std::string elementName = T::Info::Info::name;
                     auto possibleScope = findScope<0, std::tuple<T>>(el);
                     if (possibleScope && !possibleScope->second->empty()) {
                         emitter << YAML::Key << possibleScope->first << YAML::Value << possibleScope->second->ids().front().string();
                     }
                     std::unordered_set<std::size_t> visited;
+                    std::string elementName = T::Info::Info::name;
                     emitter << YAML::Key << elementName << YAML::Value << YAML::BeginMap;
                     emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
                     emitIndividualData<0, std::tuple<T>>(emitter, visited, el);

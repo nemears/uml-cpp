@@ -15,21 +15,21 @@ class SetTest : public ::testing::Test {
    
 };
 
-template <class, class>
-struct TupleCat;
+// template <class, class>
+// struct TupleCat;
 
-template <class ... Left, class ... Right>
-struct TupleCat<std::tuple<Left...>, std::tuple<Right...>> {
-    using type = std::tuple<Left..., Right...>;
-};
+// template <class ... Left, class ... Right>
+// struct TupleCat<std::tuple<Left...>, std::tuple<Right...>> {
+//     using type = std::tuple<Left..., Right...>;
+// };
 
-template <class, class>
-struct TupleAppend;
+// template <class, class>
+// struct TupleAppend;
 
-template <class ... Left, class Right>
-struct TupleAppend<std::tuple<Left...>, Right> {
-    using type = std::tuple<Left..., Right>;
-};
+// template <class ... Left, class Right>
+// struct TupleAppend<std::tuple<Left...>, Right> {
+//     using type = std::tuple<Left..., Right>;
+// };
 
 
 class TestPackage;

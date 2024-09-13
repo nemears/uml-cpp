@@ -22,7 +22,7 @@ namespace UML {
         typedef Tlist Types;
 
         template <class T>
-        static std::size_t idOf() {
+        static constexpr std::size_t idOf() {
             return Index<T, Tlist>::value;
         }
             

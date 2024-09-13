@@ -149,26 +149,29 @@ namespace UML {
                     m_graph.erase(oldID);
                 }
 
-                // create new node
+                // handle new node
                 el->m_id = newID;
+
+                std::shared_ptr<ManagerNode> newNode;
                 if (m_graph.count(newID)) {
                     // erase node we are overwriting
-                    auto newNode = m_graph.find(newID);
-                    ptrs.resize(ptrs.size() + newNode->second->m_ptrs.size());
-                    for (auto ptr : newNode->second->m_ptrs) {
+                    newNode = m_graph.at(newID);
+                    el->m_node = newNode;
+                    newNode->m_ptr = el;
+                    ptrs.resize(ptrs.size() + newNode->m_ptrs.size());
+                    for (auto ptr : newNode->m_ptrs) {
                         ptrs[i] = ptr;
                         i++;
                     }
-                    std::lock_guard<std::mutex> graphLock(m_graphMutex);
-                    m_graph.erase(newNode);
+                } else {
+                    registerPtr(el);
+                    newNode = el->m_node.lock();
                 }
-                registerPtr(el);
-                auto newNode = el->m_node;
                 for (auto ptr : ptrs) {
                     ptr->m_node = newNode;
                     ptr->m_id = newID;
                     ptr->setPtr(el);
-                    newNode.lock()->m_ptrs.insert(ptr);
+                    newNode->m_ptrs.insert(ptr);
                 }
             }
             void destroy(ID id) override {
@@ -320,6 +323,19 @@ namespace UML {
                         while (set->contains(&el)) {
                             set->innerRemove(&el);
                         } 
+                    }
+
+                    // remove reference
+                    auto referenceReferencesIt = referencedNode->m_references.begin();
+                    auto referenceReferencesEnd = referencedNode->m_references.end();
+                    while (referenceReferencesIt != referenceReferencesEnd) {
+                        if (referenceReferencesIt->m_node.lock()->m_id == id) {
+                            break;
+                        }
+                        referenceReferencesIt++;
+                    }
+                    if (referenceReferencesIt != referenceReferencesEnd) {
+                        referencedNode->m_references.erase(referenceReferencesIt);
                     }
                 } 
     

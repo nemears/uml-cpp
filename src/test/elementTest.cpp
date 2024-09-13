@@ -78,6 +78,22 @@ TEST_F(ElementTest, UmlPtrReleaseTest) {
     ASSERT_TRUE(m.loaded(pckgID));
 }
 
+TEST_F(ElementTest, ReindexTest) {
+
+    UmlManager m;
+    PackagePtr p = m.create<Package>();
+    PackagePtr alsoP = p;
+    ID newID = ID::randomID();
+    p->setID(newID);
+    ASSERT_EQ(p->getID(), newID);
+    ASSERT_TRUE(p.loaded());
+    ASSERT_TRUE(p.loaded());
+    ASSERT_EQ(p.id(), p->getID());
+    ASSERT_EQ(p.id(), newID);
+    ASSERT_EQ(alsoP.id(), alsoP->getID());
+    ASSERT_EQ(alsoP.id(), newID);
+}
+
 TEST_F(ElementTest, AcessReleasedPtrTest) {
     UmlManager m;
     m.mount(".");

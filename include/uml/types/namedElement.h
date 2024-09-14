@@ -59,7 +59,7 @@ namespace UML {
             };
         }
 
-        // Data (name)
+        // Data
         static const bool extraData = true;
         struct NamedElementNameFunctor : public AbstractDataFunctor {
             NamedElement& el;
@@ -71,9 +71,37 @@ namespace UML {
                 el.setName(data);
             }
         };
+        struct NamedElementVisibilityFunctor : public AbstractDataFunctor {
+            NamedElement& el;
+            NamedElementVisibilityFunctor(NamedElement& el) : el(el) {}
+            std::string getData() override {
+                switch (el.getVisibility()) {
+                    case VisibilityKind::PUBLIC : return ""; // public is default so just return empty string
+                    case VisibilityKind::PACKAGE : return "package";
+                    case VisibilityKind::PROTECTED : return "protected";
+                    case VisibilityKind::PRIVATE : return "private";
+                }
+                throw ManagerStateException("bad state, invalid visbility kind");
+            }
+            void setData(std::string data) override {
+                if (data == "public") {
+                    el.setVisibility(VisibilityKind::PUBLIC);
+                } else if (data == "protected") {
+                    el.setVisibility(VisibilityKind::PROTECTED);
+                } else if (data == "private") {
+                    el.setVisibility(VisibilityKind::PRIVATE);
+                } else if (data == "package") {
+                    el.setVisibility(VisibilityKind::PACKAGE);
+                } else {
+                    // TODO change exception type maybe?
+                    throw ManagerStateException("Bad visibility given to named element data!");
+                }
+            }
+        };
         static DataList data(NamedElement& el) {
             return DataList {
-                createDataPair("name", new NamedElementNameFunctor(el))
+                createDataPair("name", new NamedElementNameFunctor(el)),
+                createDataPair("visibility", new NamedElementVisibilityFunctor(el))
             };
         }
     };

@@ -31,7 +31,7 @@ namespace UML {
         static SetList sets(EncapsulatedClassifier& el) {
             return SetList {
                 makeSetPair("ownedPorts", el.m_ownedPorts),
-                makeSetPair("ownedAttributes", el.m_ownedAttributes)
+                makeSetPair("ownedAttributes", el.m_encapsulatedClassifierOwnedAttributes)
             };
         }
     };

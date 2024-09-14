@@ -39,7 +39,7 @@ namespace UML{
         inline static std::string name {"Class"};
         static SetList sets(Class& el) {
             return SetList {
-                makeSetPair("ownedAttributes", el.m_ownedAttributes),
+                makeSetPair("ownedAttributes", el.m_classOwnedAttrubutes),
                 makeSetPair("ownedOperations", el.m_ownedOperations),
                 makeSetPair("nestedClassifiers", el.m_nestedClassifiers),
                 makeSetPair("ownedRecpetions", el.m_ownedReceptions)

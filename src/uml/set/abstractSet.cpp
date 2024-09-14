@@ -100,6 +100,9 @@ namespace UML {
     bool AbstractSet::empty() const {
         return m_structure->m_size == 0;
     }
+    bool AbstractSet::rootSet() const {
+        return m_structure->m_rootRedefinedSet == m_structure;
+    }
     IDSet AbstractSet::ids() const {
         return IDSet(this);
     }

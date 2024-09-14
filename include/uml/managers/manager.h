@@ -366,13 +366,13 @@ namespace UML {
                 PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(*getRoot(), *this), location);
             }
 
-            std::string dump() {
-                return SerializationPolicy::emitWhole(*getRoot(), *this);
-            }
+            // std::string dump() {
+            //     return SerializationPolicy::emitWhole(*getRoot(), *this);
+            // }
 
-            std::string dump(BaseElement<Tlist>& el) {
-                return SerializationPolicy::emitIndividual(el, *this);
-            }
+            // std::string dump(BaseElement<Tlist>& el) {
+            //     return SerializationPolicy::emitWhole(el, *this);
+            // }
             // TODO the rest
     };
 }

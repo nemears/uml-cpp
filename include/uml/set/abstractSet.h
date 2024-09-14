@@ -115,6 +115,7 @@ namespace UML {
             virtual bool readonly() const {
                 return true;
             }
+            bool rootSet() const;
             IDSet ids() const;
     };
 

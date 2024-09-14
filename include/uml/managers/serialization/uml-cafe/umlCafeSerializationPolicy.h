@@ -121,7 +121,7 @@ namespace UML {
                 emitData<T>(emitter, el);
                 for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
                     auto set = setPair.second;
-                    if (set->readonly() || set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE) {
+                    if (set->readonly() || set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
                         continue;
                     }
                     emitter << YAML::Key << setPair.first;
@@ -151,7 +151,7 @@ namespace UML {
                 emitData<T>(emitter, el);
                 for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
                     auto set = setPair.second;
-                    if (set->readonly() || set->empty()) {
+                    if (set->readonly() || set->empty() || !set->rootSet() || set->getComposition() == CompositionType::ANTI_COMPOSITE) {
                         continue;
                     }
                     emitter << YAML::Key << setPair.first;
@@ -246,9 +246,10 @@ namespace UML {
                 }
                 void emitWhole(YAML::Emitter& emitter, BaseElement<Tlist>& el) override {
                     std::unordered_set<std::size_t> visited;
-                    emitter << T::Info::Info::name << YAML::Value << YAML::BeginMap;
+                    emitter << YAML::BeginMap << T::Info::Info::name << YAML::Value << YAML::BeginMap;
+                    emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
                     emitWholeData<0, std::tuple<T>>(emitter, visited, el, m_self);
-                    emitter << YAML::EndMap;    
+                    emitter << YAML::EndMap << YAML::EndMap;    
                 }
             };
 
@@ -295,7 +296,7 @@ namespace UML {
             void parseIndividualHelper(T& el, const YAML::Node& node) {
                 parseData<T>(el, node);
                 for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
-                    if (setPair.second->readonly()) {
+                    if (setPair.second->readonly() || !setPair.second->rootSet()) {
                         continue;
                     }
                     auto set = dynamic_cast<AbstractReadableSet*>(setPair.second);
@@ -321,11 +322,13 @@ namespace UML {
             template <class T>
             bool parseScopeHelper(const YAML::Node& node, T& el) {
                 for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
-                    if (setPair.second->readonly() || setPair.second->getComposition() != CompositionType::ANTI_COMPOSITE) {
+                    if (setPair.second->readonly()) {
                         continue;
                     }
-                    
                     auto set = dynamic_cast<AbstractReadableSet*>(setPair.second);
+                    if (set->getComposition() != CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
+                        continue;
+                    }
                     if (node[setPair.first]) {
                         auto& setNode = node[setPair.first];
                         if (setNode.IsScalar()) {
@@ -345,7 +348,7 @@ namespace UML {
             void parseWholeHelper(T& el, const YAML::Node& node) {
                 parseData<T>(el, node);
                 for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
-                    if (setPair.second->readonly()) {
+                    if (setPair.second->readonly() || !setPair.second->rootSet()) {
                         continue;
                     }
                     auto set = dynamic_cast<AbstractReadableSet*>(setPair.second);
@@ -513,19 +516,19 @@ namespace UML {
             std::string emitIndividual(BaseElement<Tlist>& el, __attribute__((unused)) AbstractManager& manager) {
                 return (*m_emitterFunctors.at(el.getElementType()))(el);
             }
-            std::string emitWhole(AbstractElement& el, AbstractManager& manager) {
+            std::string emitWhole(AbstractElement& el, __attribute__((unused)) AbstractManager& manager) {
                 YAML::Emitter emitter;
-                emitter << YAML::BeginDoc;
-                m_emitterFunctors.at(el.getElementType())->emitWhole(emitter, manager.getAbstractRoot(), this);
-                emitter << YAML::EndDoc;
+                // emitter << YAML::BeginDoc;
+                m_emitterFunctors.at(el.getElementType())->emitWhole(emitter, dynamic_cast<BaseElement<Tlist>&>(el));
+                // emitter << YAML::EndDoc;
                 return emitter.c_str();
             }
         public:
             std::string dump() {
-                return emitWhole(*getAbstractRoot(), *this);
+                return  this->emitWhole(*getAbstractRoot(), *this);
             }
             std::string dump(BaseElement<Tlist>& el) {
-                return emitWhole(el, *this);
+                return this->emitWhole(el, *this);
             }
     };
 

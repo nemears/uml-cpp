@@ -99,7 +99,7 @@ namespace UML{
             void setInterface(ID id);
             Set<Property, Property, RedefinedPropertyPolicy>& getRedefinedProperties();
             Set<Property, Property>& getSubsettedProperties();
-            typedef TypeInfo<std::tuple<StructuralFeature, ConnectableElement, TemplateableElement, DeploymentTarget>, Property> Info;
+            typedef TypeInfo<std::tuple<StructuralFeature, ConnectableElement, DeploymentTarget>, Property> Info;
     };
 
     template <>

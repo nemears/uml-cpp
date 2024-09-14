@@ -5,7 +5,6 @@
 #include "uml/managers/baseElement.h"
 
 namespace UML {
-    // typeinfo should be TypeInfo<TList<pair<set name, set function ptr>>, TList<set BaseTypeInfos>>
 
     class AbstractSet;
 
@@ -13,31 +12,22 @@ namespace UML {
     struct BaseInfo;
    
     template <class ... Bases, class Base>
-    struct BaseInfo<std::tuple<Base, Bases...>> : public Base::Info, BaseInfo<std::tuple<Bases...>> {
+    struct BaseInfo<std::tuple<Base, Bases...>> : public BaseInfo<std::tuple<Bases...>> {
         typedef std::tuple<Base, Bases...> BaseList;
-        typedef typename Base::Info LeftBase;
-        typedef BaseInfo<std::tuple<Bases...>> RightBase;
         static bool is(std::size_t elementType) {
-            auto curr = LeftBase::is(elementType);
+            // check this base
+            auto curr = Base::Info::is(elementType);
             if (curr) {
                 return true;
             }
 
-            return RightBase::is(elementType);
-        }
-    };
-
-    template <class Base>
-    struct BaseInfo<std::tuple<Base>> : public Base::Info {
-        typedef std::tuple<Base> BaseList;
-        static bool is(std::size_t elementType) {
-            return elementType  == Base::template idOf<Base>();
+            // check other bases
+            return BaseInfo<std::tuple<Bases...>>::is(elementType);
         }
     };
 
     template <>
     struct BaseInfo<std::tuple<>> {
-        typedef std::tuple<> BaseList;
         static bool is(__attribute__((unused)) std::size_t elementType) {
             return false;
         }
@@ -49,11 +39,20 @@ namespace UML {
     template <>
     struct ElementInfo<AbstractElement> {};
 
-    template <class BaseList, class ElementType>
-    struct TypeInfo : public BaseInfo<BaseList>{
+    template <class BaseTList, class ElementType>
+    struct TypeInfo : public BaseInfo<BaseTList>{
         typedef ElementType Type;
         typedef ElementInfo<ElementType> Info;
-        static const std::size_t elementType = Index<Type, typename Type::Types>::value; // TODO doesn't work
+        using BaseList = BaseTList;
+        static const std::size_t elementType = Type::template idOf<Type>(); // TODO doesn't work
+        static bool is(std::size_t typeToCheck) {
+            auto curr = typeToCheck == elementType;
+            if (curr) {
+                return true;
+            }
+            
+            return BaseInfo<BaseList>::is(typeToCheck);
+        }
     };
 
     typedef std::vector<std::pair<std::string, AbstractSet*>> SetList;

@@ -470,9 +470,11 @@ namespace UML {
                     throw SerializationError("could not parse data supplied to manager! Is it JSON or YAML?");
                 }
                 std::vector<UmlPtr<BaseElement<Tlist>>> ret(rootNodes.size());
+                auto i = 0;
                 for (auto& node : rootNodes) {
                     auto match = getFunctor(node);
-                    ret.push_back(match.functor.parseWhole(match.innerData));
+                    ret[i] =match.functor.parseWhole(match.innerData);
+                    i++;
                 }
                 return ret;
             }

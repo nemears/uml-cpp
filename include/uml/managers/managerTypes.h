@@ -1,6 +1,7 @@
 #pragma once
 
 #include <tuple>
+#include "uml/managers/abstractManager.h"
 
 namespace UML {
     
@@ -26,9 +27,15 @@ namespace UML {
             return Index<T, Tlist>::value;
         }
             
-        template <class T>
+        template <class T, std::size_t I = 0>
         static bool is(std::size_t elementType) {
-            return T::Info::is(elementType);
+            if constexpr (std::tuple_size<Types>{} > I) {
+                if (I == elementType) {
+                    return std::tuple_element_t<I, Types>::Info::is(T::Info::elementType);
+                }
+                return is<T, I +1>(elementType);
+            }
+            throw ManagerStateException("Bad Type given to is!");
         }
     };
 }

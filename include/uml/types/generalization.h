@@ -42,7 +42,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Generalization> {
+    struct ElementInfo<Generalization> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"Generalization"};
         static SetList sets(Generalization& el) {

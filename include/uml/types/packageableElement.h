@@ -29,8 +29,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<PackageableElement> {
-        static const bool abstract = true;
+    struct ElementInfo<PackageableElement> : public DefaultInfo {
         inline static const std::string name {"PackageableElement"};
         static SetList sets(PackageableElement& el) {
             return SetList {

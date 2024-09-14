@@ -14,11 +14,8 @@ namespace UML {
     };
 
     template<>
-    struct ElementInfo<Profile> {
+    struct ElementInfo<Profile> : public DefaultInfo {
         static const bool abstract = false;
         inline static std::string name {"Profile"};
-        static SetList sets(__attribute__((unused)) Profile& el) {
-            return SetList{};
-        }
     };
 }

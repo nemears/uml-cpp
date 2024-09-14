@@ -31,7 +31,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<TemplateableElement> {
+    struct ElementInfo<TemplateableElement> : public DefaultInfo {
         static const bool abstract = true;
         inline static const std::string name {"TemplateableElement"};
         static SetList sets(TemplateableElement& el) {

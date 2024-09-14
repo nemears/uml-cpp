@@ -49,8 +49,7 @@ namespace UML{
     };
 
     template <>
-    struct ElementInfo<Namespace> {
-        static const bool abstract = true;
+    struct ElementInfo<Namespace> : public DefaultInfo {
         inline static const std::string name {"Namespace"};
         static SetList sets(Namespace& el) {
             return SetList{

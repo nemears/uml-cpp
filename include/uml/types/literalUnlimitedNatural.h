@@ -20,11 +20,8 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<LiteralUnlimitedNatural> {
+    struct ElementInfo<LiteralUnlimitedNatural> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"LiteralUnlimitedNatural"};
-        static SetList sets(__attribute__((unused)) LiteralUnlimitedNatural& el) {
-            return SetList{};
-        }
     };
 }

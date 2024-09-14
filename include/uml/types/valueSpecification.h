@@ -15,11 +15,8 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<ValueSpecification> {
+    struct ElementInfo<ValueSpecification> : public DefaultInfo {
         static const bool abstract = true;
         inline static std::string name {"ValueSpecification"};
-        static SetList sets(__attribute__((unused)) ValueSpecification& el) {
-            return SetList{};
-        }
     };
 }

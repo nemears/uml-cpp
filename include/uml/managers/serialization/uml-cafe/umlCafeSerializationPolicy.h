@@ -104,10 +104,21 @@ namespace UML {
             }
 
             template <class T>
-            static void emitIndividualDataHelper(YAML::Emitter& emitter, AbstractElement& el) {
+            static void emitData(YAML::Emitter& emitter, AbstractElement& el) {
+                if constexpr (T::Info::extraData) {
+                    auto& typedEl = dynamic_cast<T&>(el);
+                    for (auto& dataPair : T::Info::Info::data(typedEl)) {
+                        auto data = dataPair.second->getData();
+                        if (!data.empty()) {
+                            emitter << YAML::Key << dataPair.first << YAML::Value << data;
+                        }
+                    }
+                }
+            }
 
-                // TODO other features besides sets
-                
+            template <class T>
+            static void emitIndividualDataHelper(YAML::Emitter& emitter, AbstractElement& el) {
+                emitData<T>(emitter, el);
                 for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
                     auto set = setPair.second;
                     if (set->readonly() || set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE) {
@@ -137,6 +148,7 @@ namespace UML {
 
             template <class T>
             static void emitWholeDataHelper(YAML::Emitter& emitter, AbstractElement& el, UmlCafeSerializationPolicy& self) {
+                emitData<T>(emitter, el);
                 for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
                     auto set = setPair.second;
                     if (set->readonly() || set->empty()) {
@@ -253,11 +265,15 @@ namespace UML {
                     const auto& valNode = it->second;
                     if (valNode.IsMap()) {
                         // look up key
-                        return NodeHandlers {
-                            valNode,
-                            node,
-                            *m_parserfunctors.at(keyNode.as<std::string>())
-                        };
+                        try {
+                            return NodeHandlers {
+                                valNode,
+                                node,
+                                *m_parserfunctors.at(keyNode.as<std::string>())
+                            };
+                        } catch (std::exception& e) {
+                            throw SerializationError("Could not find proper type to parse! line number " + std::to_string(keyNode.Mark().line));
+                        }
                     }
                     it++;
                 } 
@@ -265,8 +281,20 @@ namespace UML {
             }
 
             template <class T>
+            void parseData(T& el, const YAML::Node& node) {
+                if constexpr (T::Info::extraData) {
+                    for (auto& dataPair : T::Info::data(el)) {
+                        if (node[dataPair.first]) {
+                            dataPair.second->setData(node[dataPair.first].template as<std::string>());
+                        }
+                    }
+                }
+            }
+
+            template <class T>
             void parseIndividualHelper(T& el, const YAML::Node& node) {
-                for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
+                parseData<T>(el, node);
+                for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
                     if (setPair.second->readonly()) {
                         continue;
                     }
@@ -315,6 +343,7 @@ namespace UML {
 
             template <class T>
             void parseWholeHelper(T& el, const YAML::Node& node) {
+                parseData<T>(el, node);
                 for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
                     if (setPair.second->readonly()) {
                         continue;
@@ -423,6 +452,9 @@ namespace UML {
                 UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node node) {
                     UmlPtr<T> ret = this->m_self.create(T::Info::elementType);
                     if (node["id"]) {
+                        if (!node["id"].IsScalar()) {
+                            throw SerializationError("Improper ID formatting, should be a Scalar value! line number " + std::to_string(node["id"].Mark().line));
+                        }
                         ret->setID(ID::fromString(node["id"].as<std::string>()));
                     }
                     std::unordered_set<std::size_t> visited;

@@ -49,7 +49,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<TemplateParameterSubstitution> {
+    struct ElementInfo<TemplateParameterSubstitution> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"TemplateParameterSubstitution"};
         static SetList sets(TemplateParameterSubstitution& el) {

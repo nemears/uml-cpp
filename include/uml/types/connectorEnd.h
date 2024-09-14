@@ -35,7 +35,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<ConnectorEnd> {
+    struct ElementInfo<ConnectorEnd> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"ConnectorEnd"};
         static SetList sets(ConnectorEnd& el) {

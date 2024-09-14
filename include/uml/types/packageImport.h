@@ -41,7 +41,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<PackageImport> {
+    struct ElementInfo<PackageImport> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name{"PackageImport"};
         static SetList sets(PackageImport& el) {

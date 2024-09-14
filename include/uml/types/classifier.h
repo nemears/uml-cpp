@@ -81,7 +81,7 @@ namespace UML {
     };
 
     template<>
-    struct ElementInfo<Classifier> {
+    struct ElementInfo<Classifier> : public DefaultInfo {
         static const bool abstract = true;
         inline static std::string name {"Classifier"};
         static SetList sets(Classifier& el) {

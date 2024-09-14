@@ -10,7 +10,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<LiteralNull> {
+    struct ElementInfo<LiteralNull> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"LiteralNull"};
         static SetList sets(__attribute__((unused)) LiteralNull& el) {

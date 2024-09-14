@@ -14,11 +14,8 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Realization> {
+    struct ElementInfo<Realization> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"Realization"};
-        static SetList sets(__attribute__((unused)) Realization& el) {
-            return SetList{};
-        }
     };
 }

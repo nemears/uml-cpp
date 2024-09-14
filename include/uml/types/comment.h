@@ -21,7 +21,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Comment> {
+    struct ElementInfo<Comment> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"Comment"};
         static SetList sets(Comment& el) {

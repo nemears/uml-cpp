@@ -50,13 +50,30 @@ namespace UML {
     };
 
     template<>
-    struct ElementInfo<NamedElement> {
-        static const bool abstract = true;
+    struct ElementInfo<NamedElement> : public DefaultInfo {
         inline static const std::string name {"NamedElement"};
         static SetList sets(NamedElement& el) {
             return SetList {
                 std::make_pair<std::string, AbstractSet*>("namespace", &el.m_namespace),
                 std::make_pair<std::string, AbstractSet*>("clientDependencies", &el.getClientDependencies())
+            };
+        }
+
+        // Data (name)
+        static const bool extraData = true;
+        struct NamedElementNameFunctor : public AbstractDataFunctor {
+            NamedElement& el;
+            NamedElementNameFunctor(NamedElement& el) : el(el) {}
+            std::string getData() override {
+                return el.getName();
+            }
+            void setData(std::string data) override {
+                el.setName(data);
+            }
+        };
+        static DataList data(NamedElement& el) {
+            return DataList {
+                createDataPair("name", new NamedElementNameFunctor(el))
             };
         }
     };

@@ -295,7 +295,7 @@ TEST_F(PackageTest, ElementFeaturesTest) {
 TEST_F(PackageTest, ElementParserExceptionTest) {
     UmlManager m;
     ASSERT_THROW(m.open(ymlPath + "packageParserTests/improperID.yml"), SerializationError);
-    ASSERT_THROW(m.open(ymlPath + "packageParserTests/otherImproperID.yml"), SerializationError);
+    ASSERT_THROW(m.open(ymlPath + "packageParserTests/otherImproperID.yml"), InvalidUmlID_Exception);
 }
 
 TEST_F(PackageTest, NamedElementParserExceptionTest) {

@@ -26,7 +26,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Reception> {
+    struct ElementInfo<Reception> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"Reception"};
         static SetList sets(Reception& el) {

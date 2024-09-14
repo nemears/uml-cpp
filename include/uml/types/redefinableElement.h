@@ -20,7 +20,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<RedefinableElement> {
+    struct ElementInfo<RedefinableElement> : public DefaultInfo {
         static const bool abstract = true;
         inline static const std::string name {"RedefinableElement"};
         static SetList sets(RedefinableElement& el) {

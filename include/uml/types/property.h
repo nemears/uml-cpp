@@ -103,7 +103,7 @@ namespace UML{
     };
 
     template <>
-    struct ElementInfo<Property> {
+    struct ElementInfo<Property> : public DefaultInfo {
         static const bool abstract = false;
         inline static std::string name{"Property"};
         static SetList sets(Property& el) {

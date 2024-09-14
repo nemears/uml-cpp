@@ -32,7 +32,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Stereotype> {
+    struct ElementInfo<Stereotype> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"Stereotype"};
         static SetList sets(Stereotype& el) {

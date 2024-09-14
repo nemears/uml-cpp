@@ -34,7 +34,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<PackageMerge> {
+    struct ElementInfo<PackageMerge> : public DefaultInfo {
         static const bool abstract = false;
         inline static std::string name {"PackageMerge"};
         static SetList sets(PackageMerge& el) {

@@ -15,23 +15,6 @@ class SetTest : public ::testing::Test {
    
 };
 
-// template <class, class>
-// struct TupleCat;
-
-// template <class ... Left, class ... Right>
-// struct TupleCat<std::tuple<Left...>, std::tuple<Right...>> {
-//     using type = std::tuple<Left..., Right...>;
-// };
-
-// template <class, class>
-// struct TupleAppend;
-
-// template <class ... Left, class Right>
-// struct TupleAppend<std::tuple<Left...>, Right> {
-//     using type = std::tuple<Left..., Right>;
-// };
-
-
 class TestPackage;
 class TestPackageSetElement;
 class TestSubsetsElement;
@@ -77,12 +60,9 @@ class TestPackage : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<TestPackage> {
+struct ElementInfo<TestPackage> : public DefaultInfo {
     static const bool abstract = false;
     inline static const std::string name {"TestPackage"};
-    static SetList sets(TestPackage& el) {
-        return SetList{};
-    }
 };
 
 class TestPackageSetElement : public BaseElement<TestTypes> {
@@ -94,12 +74,9 @@ class TestPackageSetElement : public BaseElement<TestTypes> {
 };
 
 template<>
-struct ElementInfo<TestPackageSetElement> {
+struct ElementInfo<TestPackageSetElement> : public DefaultInfo {
     static const bool abstract = false;
     inline static const std::string name{"TestPackageSetElement"};
-    static SetList sets(TestPackageSetElement& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, basicSetTest) {
@@ -452,12 +429,9 @@ class TestSubsetsElement : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<TestSubsetsElement> {
+struct ElementInfo<TestSubsetsElement> : public DefaultInfo {
     static const bool abstract = false;
     inline static const std::string name{"TestSubsetsElement"};
-    static SetList sets(TestSubsetsElement& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, basicSubsetsTest) {
@@ -553,12 +527,9 @@ class Test2SubsetsElement : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<Test2SubsetsElement> {
+struct ElementInfo<Test2SubsetsElement> : public DefaultInfo {
     static const bool abstract = false;
     inline static const std::string name {"Test2SubsetsElement"};
-    static SetList sets(Test2SubsetsElement& el) {
-        return SetList{};
-    }
 };
 
 
@@ -615,12 +586,9 @@ class Test3SubsetsElement : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<Test3SubsetsElement> {
+struct ElementInfo<Test3SubsetsElement> : public DefaultInfo {
     static const bool abstract = false;
     inline static const std::string name {"Test3SubsetsElement"};
-    static SetList sets(Test3SubsetsElement& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, removeFromSubsettedSequenceTest) {
@@ -671,12 +639,9 @@ class TestElement2 : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<TestElement2> {
+struct ElementInfo<TestElement2> : public DefaultInfo {
     static const bool abstract = false;
     inline static const std::string name {"TestElement2" };
-    static SetList sets(TestElement2& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, oppositeTest) {
@@ -701,12 +666,9 @@ class RedefinedTestElement : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<RedefinedTestElement> {
+struct ElementInfo<RedefinedTestElement> : public DefaultInfo {
     static const bool abstract = false;
     inline static const std::string name{"RedefinedTestElement"};
-    static SetList sets(RedefinedTestElement& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, setRedefinesTest) {
@@ -768,12 +730,9 @@ class PolicyTestElement : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<PolicyTestElement> {
+struct ElementInfo<PolicyTestElement> : public DefaultInfo {
     static const bool abstract = false;
     inline static const std::string name{"PolicyTestElement"};
-    static SetList sets(PolicyTestElement& el) {
-        return SetList{};
-    }
 };
 
 void TestPolicy::elementAdded(__attribute__((unused)) TestPackage& el, PolicyTestElement& me) {
@@ -803,12 +762,9 @@ class TestOrderedSetElement : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<TestOrderedSetElement> {
+struct ElementInfo<TestOrderedSetElement> : public DefaultInfo {
     static const bool abstract = false;
     inline static const std::string name {"TestOrderedSetElement"};
-    static SetList sets(TestOrderedSetElement& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, addToOrderedSetTest) {
@@ -861,12 +817,9 @@ class TestElementSubsetsOrderedSets : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<TestElementSubsetsOrderedSets> {
+struct ElementInfo<TestElementSubsetsOrderedSets> : public DefaultInfo {
     static const bool abstract = false;
     inline static const std::string name{"TestElementSubsetsOrderedSets"};
-    static SetList sets(TestElementSubsetsOrderedSets& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, subsetOrderedSets) {
@@ -907,12 +860,9 @@ class TestElementOrderedSubsetsSet : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<TestElementOrderedSubsetsSet> {
+struct ElementInfo<TestElementOrderedSubsetsSet> : public DefaultInfo {
     static const bool abstract = true;
     inline static const std::string name{"TestElementOrderedSubsetsSet"};
-    static SetList sets(TestElementOrderedSubsetsSet& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, orderedSetSubSetsSet) {
@@ -953,12 +903,9 @@ class TestSingletonElement : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<TestSingletonElement> {
+struct ElementInfo<TestSingletonElement> : public DefaultInfo {
     static const bool abstract = false;
     inline static std::string name{"TestSingletonElement"};
-    static SetList sets(TestSingletonElement& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, singletonTest) {
@@ -1007,12 +954,9 @@ class TestSharedSubsetEvenTreeElement : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<TestSharedSubsetEvenTreeElement> {
+struct ElementInfo<TestSharedSubsetEvenTreeElement> : public DefaultInfo {
     static const bool abstract = false;
     inline static std::string name{"TestSharedSubsetsEvenTreeElement"};
-    static SetList sets(TestSharedSubsetEvenTreeElement& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, sharedSubsetEvenTreeTest) {
@@ -1077,12 +1021,9 @@ class TestTwoRootSubSetElement : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<TestTwoRootSubSetElement> {
+struct ElementInfo<TestTwoRootSubSetElement> : public DefaultInfo {
     static const bool abstract = false;
     inline static std::string name{"TestTwoRootSubSetElement"};
-    static SetList sets(TestTwoRootSubSetElement& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, multiRootWithinRootTest) {
@@ -1158,12 +1099,9 @@ class TestComplexSubsetElement : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<TestComplexSubsetElement> {
+struct ElementInfo<TestComplexSubsetElement> : public DefaultInfo {
     static const bool abstract = false;
     inline static std::string name{ "TestComplexSubsetElement" };
-    static SetList sets(TestComplexSubsetElement& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, twoWayMultiSetSplitTest) {
@@ -1488,12 +1426,9 @@ class TestTripleSuperSetElement : public BaseElement<TestTypes> {
 };
 
 template <>
-struct ElementInfo<TestTripleSuperSetElement> {
+struct ElementInfo<TestTripleSuperSetElement> : public DefaultInfo {
     static const bool abstract = false;
     inline static const std::string name{"TestTripleSuperSetElement"};
-    static SetList sets(TestTripleSuperSetElement& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, tripleRemovePlacholder) {
@@ -1624,12 +1559,9 @@ public:
 };
 
 template <>
-struct ElementInfo<TestDiamondSuperSetElement> {
+struct ElementInfo<TestDiamondSuperSetElement> : public DefaultInfo {
     static const bool abstract = false;
     inline static const std::string name {"TestDiamondSuperSetElement"};
-    static SetList sets(TestDiamondSuperSetElement& el) {
-        return SetList{};
-    }
 };
 
 TEST_F(SetTest, VeryBasicDiamondSubsetTest)

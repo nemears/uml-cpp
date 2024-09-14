@@ -38,7 +38,7 @@ namespace UML{
     };
 
     template <>
-    struct ElementInfo<InstanceSpecification> {
+    struct ElementInfo<InstanceSpecification> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"InstanceSpecification"};
         static SetList sets(InstanceSpecification& el) {

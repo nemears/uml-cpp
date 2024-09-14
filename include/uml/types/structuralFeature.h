@@ -22,7 +22,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<StructuralFeature> {
+    struct ElementInfo<StructuralFeature> : public DefaultInfo {
         static const bool abstract = true;
         inline static std::string name{"StructuralFeature"};
         static SetList sets(__attribute__((unused)) StructuralFeature& el) {

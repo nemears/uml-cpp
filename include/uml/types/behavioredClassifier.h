@@ -34,7 +34,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<BehavioredClassifier> {
+    struct ElementInfo<BehavioredClassifier> : public DefaultInfo {
         static const bool abstract = true;
         inline static const std::string name {"BehavioredClassifier"};
         static SetList sets(BehavioredClassifier& el) {

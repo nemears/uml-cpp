@@ -38,7 +38,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<BehavioralFeature> {
+    struct ElementInfo<BehavioralFeature> : public DefaultInfo {
         static const bool abstract = true;
         inline static const std::string name {"BehavioralFeature"};
         static SetList sets(BehavioralFeature& el) {

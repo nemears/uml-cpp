@@ -66,7 +66,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<MultiplicityElement> {
+    struct ElementInfo<MultiplicityElement> : public DefaultInfo {
         static const bool abstract = true;
         inline static const std::string name{"MultiplicityElement"};
         static SetList sets(MultiplicityElement& el) {

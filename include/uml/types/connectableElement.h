@@ -23,8 +23,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<ConnectableElement> {
-        static bool const abstract = true;
+    struct ElementInfo<ConnectableElement> : public DefaultInfo {
         inline static const std::string name {"ConnectableElement"};
         static SetList sets(ConnectableElement& el) {
             return SetList {

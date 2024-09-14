@@ -28,7 +28,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<EnumerationLiteral> {
+    struct ElementInfo<EnumerationLiteral> : public DefaultInfo {
         static const bool abstract = false;
         inline static std::string name {"EnumerationLiteral"};
         static SetList sets(EnumerationLiteral& el) {

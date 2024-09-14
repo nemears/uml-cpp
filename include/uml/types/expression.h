@@ -22,7 +22,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Expression> {
+    struct ElementInfo<Expression> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"Expression"};
         static SetList sets(Expression& el) {

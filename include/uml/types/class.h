@@ -34,7 +34,7 @@ namespace UML{
     };
 
     template <>
-    struct ElementInfo<Class> {
+    struct ElementInfo<Class> : public DefaultInfo {
         static const bool abstract = false;
         inline static std::string name {"Class"};
         static SetList sets(Class& el) {

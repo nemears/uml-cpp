@@ -34,7 +34,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<TemplateSignature> {
+    struct ElementInfo<TemplateSignature> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"TemplateSignature"};
         static SetList sets(TemplateSignature& el) {

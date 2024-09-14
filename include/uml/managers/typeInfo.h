@@ -33,18 +33,28 @@ namespace UML {
         }
     };
 
+    typedef std::vector<std::pair<std::string, AbstractSet*>> SetList;
+
+    struct DefaultInfo {
+        static const bool abstract = true;
+        static const bool extraData = false;
+        static SetList sets(__attribute__((unused)) AbstractElement& el) {
+            return SetList{};
+        }
+    };
+
     template <class ElWithSets>
     struct ElementInfo;
 
     template <>
-    struct ElementInfo<AbstractElement> {};
+    struct ElementInfo<AbstractElement> : public DefaultInfo {};
 
     template <class BaseTList, class ElementType>
-    struct TypeInfo : public BaseInfo<BaseTList>{
+    struct TypeInfo : public ElementInfo<ElementType>, public BaseInfo<BaseTList> {
         typedef ElementType Type;
         typedef ElementInfo<ElementType> Info;
         using BaseList = BaseTList;
-        static const std::size_t elementType = Type::template idOf<Type>(); // TODO doesn't work
+        static const std::size_t elementType = Type::template idOf<Type>();
         static bool is(std::size_t typeToCheck) {
             auto curr = typeToCheck == elementType;
             if (curr) {
@@ -55,5 +65,15 @@ namespace UML {
         }
     };
 
-    typedef std::vector<std::pair<std::string, AbstractSet*>> SetList;
+    struct AbstractDataFunctor {
+        virtual std::string getData() = 0;
+        virtual void setData(std::string data) = 0;
+    };
+
+    typedef std::pair<std::string, std::shared_ptr<AbstractDataFunctor>> DataPair;
+    typedef std::vector<DataPair> DataList;
+
+    inline DataPair createDataPair(const char* name, AbstractDataFunctor* functor) {
+        return std::make_pair<std::string, std::shared_ptr<AbstractDataFunctor>>(name, std::shared_ptr<AbstractDataFunctor>(functor));
+    }
 }

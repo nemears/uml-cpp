@@ -30,7 +30,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Artifact> {
+    struct ElementInfo<Artifact> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"Artifact"};
         static SetList sets(Artifact& el) {

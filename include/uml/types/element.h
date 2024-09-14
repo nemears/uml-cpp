@@ -224,8 +224,7 @@ namespace UML {
 
     // template specialization for ElementInfo<Element> (required for all implementing types)
     template <>
-    struct ElementInfo<Element> {
-        static const bool abstract = true;
+    struct ElementInfo<Element> : public DefaultInfo {
         inline static const std::string name {"Element"};
         static SetList sets(Element& el) {
             return std::vector {

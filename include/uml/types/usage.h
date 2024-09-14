@@ -20,7 +20,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Usage> {
+    struct ElementInfo<Usage> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"Usage"};
         static SetList sets(__attribute__((unused)) Usage& el) {

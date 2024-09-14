@@ -15,7 +15,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<LiteralBool> {
+    struct ElementInfo<LiteralBool> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"LiteralBool"};
         static SetList sets(__attribute__((unused)) LiteralBool& el) {

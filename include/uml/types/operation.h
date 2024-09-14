@@ -59,7 +59,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Operation> {
+    struct ElementInfo<Operation> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"Operation"};
         static SetList sets(Operation& el) {

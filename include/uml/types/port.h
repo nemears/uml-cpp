@@ -44,7 +44,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Port> {
+    struct ElementInfo<Port> : DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"Port"};
         static SetList sets(Port& port) {

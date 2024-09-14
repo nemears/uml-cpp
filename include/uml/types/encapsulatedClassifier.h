@@ -25,7 +25,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<EncapsulatedClassifier> {
+    struct ElementInfo<EncapsulatedClassifier> : public DefaultInfo {
         static const bool abstract = true;
         inline static const std::string name {"EncapsulatedClassifier"};
         static SetList sets(EncapsulatedClassifier& el) {

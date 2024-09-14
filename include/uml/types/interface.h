@@ -23,7 +23,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Interface> {
+    struct ElementInfo<Interface> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"Interface"};
         static SetList sets(Interface& el) {

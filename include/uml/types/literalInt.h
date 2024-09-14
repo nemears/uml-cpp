@@ -14,7 +14,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<LiteralInt> {
+    struct ElementInfo<LiteralInt> : public DefaultInfo {
         static const bool abstract = false;
         inline static std::string name {""};
         static SetList sets(__attribute__((unused)) LiteralInt& el) {

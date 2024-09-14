@@ -20,7 +20,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Enumeration> {
+    struct ElementInfo<Enumeration> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"Enumeration"};
         static SetList sets(Enumeration& el) {

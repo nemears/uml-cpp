@@ -17,8 +17,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<DirectedRelationship> {
-        static const bool abstract = true;
+    struct ElementInfo<DirectedRelationship> : public DefaultInfo {
         inline static const std::string name{"DirectedRelationship"};
         static SetList sets(DirectedRelationship& el) {
             return SetList{

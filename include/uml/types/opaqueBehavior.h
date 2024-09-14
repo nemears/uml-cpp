@@ -21,7 +21,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<OpaqueBehavior> {
+    struct ElementInfo<OpaqueBehavior> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"OpaqueBehavior"};
         static SetList sets(OpaqueBehavior& el) {

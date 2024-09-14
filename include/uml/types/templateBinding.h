@@ -39,7 +39,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<TemplateBinding> {
+    struct ElementInfo<TemplateBinding> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"TemplateBinding"};
         static SetList sets(TemplateBinding& el) {

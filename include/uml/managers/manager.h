@@ -255,10 +255,15 @@ namespace UML {
                     auto sets = getAllSets(dynamic_cast<BaseElement<Tlist>&>(*ret));
                     for (auto& pair : sets) {
                         auto set = pair.second;
-                        auto endPtr = set->endPtr();                        
-                        for (auto itPtr = set->beginPtr(); *itPtr != *endPtr; itPtr->next()) {
+                        std::vector<AbstractElementPtr> els(set->size());
+                        auto i = 0;
+                        for (auto itPtr = set->beginPtr(); *itPtr != *set->endPtr(); itPtr->next()) {
                             auto elRestore = itPtr->getCurr();
-                            set->runAddPolicy(*elRestore);
+                            els[i] = elRestore;
+                            i++;
+                        }
+                        for (auto el: els) {
+                            set->runAddPolicy(*el);
                         }
                     }
                 }
@@ -286,7 +291,9 @@ namespace UML {
                 PersistencePolicy::saveElementData(SerializationPolicy::emitIndividual(dynamic_cast<BaseElement<Tlist>&>(el), *this), el.getID());
                 auto node = el.m_node.lock();
                 ID id = node->m_ptr->getID();
+                m_destructionFlag = true;
                 node->m_ptr = 0;
+                m_destructionFlag = false;
 
                 // check if there are any ptrs to this node,
                 // if there are none we can get rid of this node

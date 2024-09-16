@@ -156,7 +156,7 @@ namespace UML {
                 }
                 UmlPtr<T> ptr = this->m_el.m_manager.createPtr(id); 
                 if (ptr) {
-                    this->m_structure->m_rootRedefinedSet->m_set.nonOppositeAdd(ptr);
+                    this->m_structure->m_rootRedefinedSet->m_set.nonPolicyAdd(ptr);
                 }
             }
             void add(ID id) override {

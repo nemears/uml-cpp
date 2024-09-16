@@ -359,6 +359,7 @@ namespace UML {
                                 throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
                             }
                             // TODO if parsing compositely, check to make sure the set is not composite
+                            // TODO ensure policy is always ran?
                             set->add(ID::fromString(setNode.template as<std::string>()));
                         } else if (setNode.IsSequence()) {
                             for (const auto& valNode : setNode) {

@@ -198,7 +198,7 @@ namespace UML {
                 this->innerAdd(ptr);
             }
             void add(ID id) override {
-                this->m_structure->m_rootRedefinedSet->m_set.nonOppositeAdd(this->m_el.m_manager.createPtr(id));
+                this->m_structure->m_rootRedefinedSet->m_set.nonPolicyAdd(this->m_el.m_manager.createPtr(id));
             }
             void add(T& el) {
                 this->innerAdd(UmlPtr<T>(&el));

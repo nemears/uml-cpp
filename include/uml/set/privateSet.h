@@ -94,7 +94,7 @@ namespace UML {
 
                 nonOppositeAdd(ptr);
                
-                // increase size, run policies, and opposite
+                // run opposite
                 {
                     std::list<std::shared_ptr<SetStructure>> queue;
                     std::unordered_set<std::shared_ptr<SetStructure>> visited;
@@ -128,9 +128,35 @@ namespace UML {
                         }
                     }
                 }
+
                 ptr.m_node.lock()->setReference(m_el.m_node.lock());
             }
             void nonOppositeAdd(AbstractElementPtr ptr) override {
+                nonPolicyAdd(ptr);
+
+                // run policies
+                {
+                    std::list<std::shared_ptr<SetStructure>> queue;
+                    std::unordered_set<std::shared_ptr<SetStructure>> visited;
+                    queue.push_back(m_structure->m_rootRedefinedSet);
+                    while (!queue.empty()) {
+                        auto front = queue.front();
+                        queue.pop_front();
+                        if (visited.count(front)) {
+                            continue;
+                        }
+                        visited.insert(front);
+                        front->m_set.runAddPolicy(*ptr);
+                        for (auto redefinedSet : front->m_redefinedSets) {
+                            redefinedSet->m_set.runAddPolicy(*ptr);
+                        }
+                        for (auto superSet : front->m_superSets) {
+                            queue.push_back(superSet);
+                        }
+                    }
+                }
+            }
+            void nonPolicyAdd(AbstractElementPtr ptr) override {
 
                 auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
 
@@ -182,7 +208,7 @@ namespace UML {
                     }
                 }
                 
-                // increase size, run policies 
+                // increase size
                 {
                     std::list<std::shared_ptr<SetStructure>> queue;
                     std::unordered_set<std::shared_ptr<SetStructure>> visited;
@@ -195,13 +221,7 @@ namespace UML {
                         }
                         visited.insert(front);
                         front->m_size++;
-                        if (ptr.loaded()) {
-                            front->m_set.runAddPolicy(*ptr);
-                        }
                         for (auto redefinedSet : front->m_redefinedSets) {
-                            if (ptr.loaded()) {
-                                redefinedSet->m_set.runAddPolicy(*ptr);
-                            }
                             redefinedSet->m_size++;
                         }
                         for (auto superSet : front->m_superSets) {

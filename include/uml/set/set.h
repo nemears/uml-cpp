@@ -39,8 +39,9 @@ namespace UML {
                     void next() override {
                         auto me = m_me.lock();
                         if (!m_iterateSubSets) {
+                            SetDataPolicy& dataPolicy = dynamic_cast<SetDataPolicy&>(me->m_set);
                             m_dataIt++;
-                            auto dataEnd = dynamic_cast<SetDataPolicy&>(me->m_set).m_data.end();
+                            auto dataEnd = dataPolicy.m_data.end();
                             if (m_dataIt == dataEnd) {
                                 if (m_subSetsWithDataIt != me->m_subSetsWithData.end()) {
                                     m_currSetIt = (*m_subSetsWithDataIt)->m_set.beginPtr();
@@ -196,7 +197,7 @@ namespace UML {
                 this->innerAdd(ptr);
             }
             void add(ID id) override {
-                this->nonOppositeAdd(this->m_el.m_manager.createPtr(id));
+                this->nonPolicyAdd(this->m_el.m_manager.createPtr(id));
             }
             void add(T& el) {
                 this->innerAdd(UmlPtr<T>(&el));

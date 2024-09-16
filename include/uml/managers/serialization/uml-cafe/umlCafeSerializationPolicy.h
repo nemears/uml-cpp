@@ -124,6 +124,22 @@ namespace UML {
                     if (set->readonly() || set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
                         continue;
                     }
+
+                    // check if subsets have any of our elements
+                    std::size_t numElsInSet = set->size();
+                    for (auto id : set->ids()) {
+                        auto subSetWithEl = set->subSetContains(id);
+                        if (subSetWithEl && !subSetWithEl->readonly()) {
+                            numElsInSet--;
+                        }
+                    }
+
+                    // all in subsets continue
+                    if (numElsInSet == 0) {
+                        continue;
+                    }
+
+
                     emitter << YAML::Key << setPair.first;
                     switch (set->setType()) {
                         case SetType::SET:
@@ -131,6 +147,10 @@ namespace UML {
                         {
                             emitter << YAML::BeginSeq;
                             for (auto id : set->ids()) {
+                                auto subSetWithEl = set->subSetContains(id);
+                                if (subSetWithEl && !subSetWithEl->readonly()) {
+                                    continue;
+                                }
                                 emitter << id.string();
                             }
                             emitter << YAML::EndSeq;
@@ -154,6 +174,21 @@ namespace UML {
                     if (set->readonly() || set->empty() || !set->rootSet() || set->getComposition() == CompositionType::ANTI_COMPOSITE) {
                         continue;
                     }
+
+                    // check if subsets have any of our elements
+                    std::size_t numElsInSet = set->size();
+                    for (auto id : set->ids()) {
+                        auto subSetWithEl = set->subSetContains(id);
+                        if (subSetWithEl && !subSetWithEl->readonly()) {
+                            numElsInSet--;
+                        }
+                    }
+
+                    // all in subsets continue
+                    if (numElsInSet == 0) {
+                        continue;
+                    }
+
                     emitter << YAML::Key << setPair.first;
                     switch (set->setType()) {
                         case SetType::SET:
@@ -162,12 +197,24 @@ namespace UML {
                             emitter << YAML::BeginSeq;
                             if (set->getComposition() == CompositionType::NONE) {
                                 for (auto id : set->ids()) {
+                                    auto subSetWithEl = set->subSetContains(id);
+                                    if (subSetWithEl) {
+                                        if (!subSetWithEl->readonly()) {
+                                            continue;
+                                        }
+                                    }
                                     emitter << id.string();
                                 }
                                 
                             } else if (set->getComposition() == CompositionType::COMPOSITE) {
                                 for (auto it = set->beginPtr(); *it != *set->endPtr(); it->next()) {
                                     auto child = UmlPtr<BaseElement<Tlist>>(it->getCurr());
+                                    auto subSetWithEl = set->subSetContains(child.id());
+                                    if (subSetWithEl) {
+                                        if (!subSetWithEl->readonly()) {
+                                            continue;
+                                        }
+                                    }
                                     self.m_emitterFunctors.at(child->getElementType())->emitWhole(emitter, *child);
                                 }
                             }

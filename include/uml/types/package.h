@@ -45,7 +45,7 @@ namespace UML {
             return SetList {
                 std::make_pair<std::string, AbstractSet*>("packagedElements", &el.getPackagedElements()),
                 std::make_pair<std::string, AbstractSet*>("packageMerges", &el.getPackageMerge()),
-                std::make_pair<std::string, AbstractSet*>("profileApplication", &el.getProfileApplications()),
+                std::make_pair<std::string, AbstractSet*>("profileApplications", &el.getProfileApplications()),
                 makeSetPair("ownedStereotypes", el.getOwnedStereotypes())
             };
         }

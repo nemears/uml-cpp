@@ -103,6 +103,14 @@ namespace UML {
     bool AbstractSet::rootSet() const {
         return m_structure->m_rootRedefinedSet == m_structure;
     }
+    AbstractSet* AbstractSet::subSetContains(ID id) const {
+        for (auto subSet : m_structure->m_rootRedefinedSet->m_subSets) {
+            if (subSet->m_set.contains(id)) {
+                return &subSet->m_set;
+            }
+        }
+        return 0;
+    }
     IDSet AbstractSet::ids() const {
         return IDSet(this);
     }

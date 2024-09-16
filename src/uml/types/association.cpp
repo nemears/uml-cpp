@@ -48,6 +48,6 @@ IndexableSet<Property, Association>& Association::getNavigableOwnedEnds() {
     return m_navigableOwnedEnds;
 }
 
-IndexableSet<Type, Association>& Association::getEndTypes() {
+ReadOnlyIndexableSet<Type, Association>& Association::getEndTypes() {
     return m_endTypes;
 }

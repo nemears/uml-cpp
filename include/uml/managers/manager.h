@@ -224,8 +224,16 @@ namespace UML {
             }
             // create Ptr
             AbstractElementPtr createPtr(ID id) override {
-                auto ret = get(id);
-                if (ret) {
+                AbstractElementPtr ret;
+                auto nodeIt = m_graph.find(id);
+                if (nodeIt != m_graph.end()){
+                    if (nodeIt->second->m_ptr) {
+                        ret = AbstractElementPtr(nodeIt->second->m_ptr.get());
+                    } else {
+                        ret.m_id = id;
+                        ret.m_node = nodeIt->second;
+                        nodeIt->second->addPtr(&ret);
+                    }
                     return ret;
                 }
                 auto pair = m_graph.emplace(id, std::make_shared<ManagerNode>(id, *this));

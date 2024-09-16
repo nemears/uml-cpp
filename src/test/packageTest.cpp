@@ -616,15 +616,13 @@ TEST_F(PackageTest, emitProfileTest) {
             type: 7PJxQhyjuuWylik9y2fgpNDXmMdv
     - Class:
         id: JHMJw4rDUtZrQUJ1JP1rMynWvEsK
-  ownedStereotypes:
     - Stereotype:
         id: 7PJxQhyjuuWylik9y2fgpNDXmMdv
         ownedAttributes:
           - Property:
               id: "cEoEHKDqYcoIOtYwIqrMbz&WG1G_"
               type: JHMJw4rDUtZrQUJ1JP1rMynWvEsK
-              association: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"
-        profile: "83lphS&gucqvJwW&KSzVmTSMMG1z")"""";
+              association: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ")"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = m.dump(profile));
     std::cout << generatedEmit << '\n';

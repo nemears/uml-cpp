@@ -110,6 +110,7 @@ namespace UML {
             virtual std::unique_ptr<iterator> endPtr() const = 0;
             CompositionType getComposition() const;
             virtual bool contains(AbstractElementPtr ptr) const = 0;
+            virtual bool contains(ID id) const = 0;
             size_t size() const;
             bool empty() const;
             virtual SetType setType() const = 0;
@@ -117,6 +118,7 @@ namespace UML {
                 return true;
             }
             bool rootSet() const;
+            AbstractSet* subSetContains(ID id) const;
             IDSet ids() const;
     };
 

@@ -22,7 +22,7 @@ namespace UML {
             IndexableOrderedSet<Property, Association, MemberEndPolicy> m_memberEnds = IndexableOrderedSet<Property, Association, MemberEndPolicy>(this);
             IndexableOrderedSet<Property, Association> m_ownedEnds = IndexableOrderedSet<Property, Association>(this);
             IndexableSet<Property, Association> m_navigableOwnedEnds = IndexableSet<Property, Association>(this);
-            IndexableSet<Type, Association> m_endTypes = IndexableSet<Type, Association>(this);
+            ReadOnlyIndexableSet<Type, Association> m_endTypes = ReadOnlyIndexableSet<Type, Association>(this);
         public:
             Association(std::size_t elementType, AbstractManager& el);
             IndexableOrderedSet<Property, Association, MemberEndPolicy>& getMemberEnds();
@@ -31,7 +31,7 @@ namespace UML {
             /**
              * endType is derived from the types of the member ends.
              **/
-            IndexableSet<Type, Association>& getEndTypes();
+            ReadOnlyIndexableSet<Type, Association>& getEndTypes();
             typedef TypeInfo<std::tuple<Classifier, Relationship>, Association> Info;
     };
 

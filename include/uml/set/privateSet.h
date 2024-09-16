@@ -410,7 +410,7 @@ namespace UML {
                 }
                 return false;
             }
-            bool contains(ID id) const {
+            bool contains(ID id) const override {
                 return contains(m_el.m_manager.createPtr(id));
             }
             bool contains(T& el) const {

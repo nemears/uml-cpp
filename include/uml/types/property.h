@@ -115,7 +115,8 @@ namespace UML{
                 makeSetPair("owningAssociation", el.m_owningAssociation),
                 makeSetPair("interface", el.m_interface),
                 makeSetPair("redefinedProperties", el.m_redefinedProperties),
-                makeSetPair("subsettedProperties", el.m_subsettedProperties)
+                makeSetPair("subsettedProperties", el.m_subsettedProperties),
+                makeSetPair("type", el.m_propertyType)
             };
         }
     };

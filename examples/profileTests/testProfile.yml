@@ -2,11 +2,10 @@
   Profile:
     id: XIf5yPHTzLz4NDkVLLwDamOWscKb
     name: test
-    ownedStereotypes:
+    packagedElements:
       - Stereotype:
           id: mRZ5HQ17kO28gU&4BKB115zX0KYR
           name: test
-    packagedElements:
       - Extension:
           id: zt0tPz9zpWlJq3q8T3di0wwhYH1Q
           metaClass: PACKAGE

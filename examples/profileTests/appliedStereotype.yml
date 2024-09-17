@@ -9,9 +9,11 @@
           packagedElements:
             - Package:
                 appliedStereotypes:
-                  - InstanceSpecification:
-                      classifiers: 
-                        - dKx8Rm8wx5a&paU5v&dgC0ocZ3xt
+                  - yHUd61AuDdiPgXvffRygZDHNkhQB
+      - InstanceSpecification:
+          id: yHUd61AuDdiPgXvffRygZDHNkhQB
+          classifiers:
+            - dKx8Rm8wx5a&paU5v&dgC0ocZ3xt
       - Profile:
           id: PPkaUpbLRkxoN76k6_qR9xv6FruX
           packagedElements:

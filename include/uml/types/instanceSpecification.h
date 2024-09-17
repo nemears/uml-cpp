@@ -43,9 +43,9 @@ namespace UML{
         inline static const std::string name {"InstanceSpecification"};
         static SetList sets(InstanceSpecification& el) {
             return SetList {
-                makeSetPair("", el.m_classifiers),
-                makeSetPair("", el.m_slots),
-                makeSetPair("", el.m_specification)
+                makeSetPair("classifiers", el.m_classifiers),
+                makeSetPair("slots", el.m_slots),
+                makeSetPair("specification", el.m_specification)
             };
         }
     };

@@ -183,6 +183,22 @@ namespace UML {
             void addToSet(AbstractSet& set, AbstractElement& el) override {
                 set.innerAdd(&el);
             }
+            void runAllAddPolicies(AbstractSet& set, AbstractElement& el) const override {
+                std::list<AbstractSet*> queue = {&set};
+                std::unordered_set<AbstractSet*> visited;
+                while (!queue.empty()) {
+                    auto front = queue.front();
+                    queue.pop_front();
+                    if (visited.count(front)) {
+                        continue;
+                    }
+                    visited.insert(front);
+                    front->runAddPolicy(el);
+                    for (auto subSet : front->m_structure->m_subSets) {
+                        queue.push_back(&subSet->m_set);
+                    }
+                }
+            }
         private:
             bool m_destructionFlag = false;
         public:
@@ -239,6 +255,7 @@ namespace UML {
                 auto pair = m_graph.emplace(id, std::make_shared<ManagerNode>(id, *this));
                 ret.m_node = pair.first->second;
                 ret.m_id = id;
+                pair.first->second->addPtr(&ret);
                 return ret;
             }
 

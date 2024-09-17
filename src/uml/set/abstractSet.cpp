@@ -73,20 +73,23 @@ namespace UML {
         }
     }
     void AbstractSet::redefines(AbstractSet& redefinedSet) {
-        for (std::shared_ptr<SetStructure> superSet : m_structure->m_rootRedefinedSet->m_superSets) {
-            redefinedSet.m_structure->m_rootRedefinedSet->m_superSets.insert(superSet);
+        auto redefinedStructure = redefinedSet.m_structure->m_rootRedefinedSet;
+        for (auto superSet : redefinedStructure->m_superSets) {
+            m_structure->m_superSets.insert(superSet);
         }
-        for (std::shared_ptr<SetStructure> subSet : m_structure->m_rootRedefinedSet->m_subSets) {
-            redefinedSet.m_structure->m_rootRedefinedSet->m_subSets.insert(subSet);
+        for (auto subSet : redefinedStructure->m_subSets) {
+            m_structure->m_subSets.insert(subSet);
         }
-        for (std::shared_ptr<SetStructure> alreadyRedefinedSet : m_structure->m_rootRedefinedSet->m_redefinedSets) {
-            redefinedSet.m_structure->m_rootRedefinedSet->m_redefinedSets.insert(alreadyRedefinedSet);
+        for (auto redefinedSetRedefinedSet : redefinedStructure->m_redefinedSets) {
+            m_structure->m_redefinedSets.insert(redefinedSetRedefinedSet);
+            redefinedSetRedefinedSet->m_rootRedefinedSet = m_structure;
         }
-        m_structure->m_rootRedefinedSet->m_superSets.clear();
-        m_structure->m_rootRedefinedSet->m_subSets.clear();
-        m_structure->m_rootRedefinedSet->m_redefinedSets.clear();
-        redefinedSet.m_structure->m_rootRedefinedSet->m_redefinedSets.insert(m_structure->m_rootRedefinedSet);
-        m_structure->m_rootRedefinedSet = redefinedSet.m_structure->m_rootRedefinedSet;
+        m_structure->m_redefinedSets.insert(redefinedStructure);
+        redefinedStructure->m_superSets.clear();
+        redefinedStructure->m_subSets.clear();
+        redefinedStructure->m_redefinedSets.clear();
+        redefinedStructure->m_rootRedefinedSet = m_structure;
+        m_structure->m_rootRedefinedSet = m_structure;
     }
     void AbstractSet::setComposition(CompositionType composition) {
         m_structure->m_composition = composition;

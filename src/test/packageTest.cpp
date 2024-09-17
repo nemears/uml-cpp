@@ -666,7 +666,7 @@ TEST_F(PackageTest, parseAppliedStereotypeTest) {
     // ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
     ASSERT_TRUE(m.getRoot()->is<Package>());
     Package& root = m.getRoot()->as<Package>();
-    ASSERT_EQ(root.getPackagedElements().size(), 2);
+    ASSERT_EQ(root.getPackagedElements().size(), 3);
     // ASSERT_EQ(root.getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD"))->getElementType(), Package::Info::elementType);
     ASSERT_TRUE(root.getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD"))->is<Package>());
     Package& applying = dynamic_cast<Package&>(*root.getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD")));

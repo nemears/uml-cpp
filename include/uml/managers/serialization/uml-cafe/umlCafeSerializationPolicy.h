@@ -328,6 +328,13 @@ namespace UML {
                 throw SerializationError("Could not identify type to parse relevant to this manager!");
             }
 
+            std::unordered_map<AbstractReadableSet*, ID> m_setsToRunPolicies;
+
+            void addByID(AbstractReadableSet& set, ID id) {
+                set.add(id);
+                m_setsToRunPolicies[&set] = id;
+            }
+
             template <class T>
             void parseData(T& el, const YAML::Node& node) {
                 if constexpr (T::Info::extraData) {
@@ -407,13 +414,22 @@ namespace UML {
                             }
                             // TODO if parsing compositely, check to make sure the set is not composite
                             // TODO ensure policy is always ran?
-                            set->add(ID::fromString(setNode.template as<std::string>()));
+                            this->addByID(*set, ID::fromString(setNode.template as<std::string>()));
+                            // set->add(ID::fromString(setNode.template as<std::string>()));
                         } else if (setNode.IsSequence()) {
                             for (const auto& valNode : setNode) {
-                                // composite parsing
-                                auto match = this->getFunctor(valNode);
-                                auto parsedChild = match.functor.parseWhole(match.innerData);
-                                this->addToSet(*set, *parsedChild);
+                                if (valNode.IsMap()) {
+                                    // composite parsing
+                                    auto match = this->getFunctor(valNode);
+                                    auto parsedChild = match.functor.parseWhole(match.innerData);
+                                    this->addToSet(*set, *parsedChild);
+                                } else if (valNode.IsScalar()) {
+                                    // TODO run policy
+                                    this->addByID(*set, ID::fromString(valNode.template as<std::string>()));
+                                    // set->add(ID::fromString(valNode.template as<std::string>()));
+                                } else {
+                                    throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(valNode.Mark().line));
+                                }
                             }
                         } else {
                             if (set->setType() != SetType::SINGLETON) {
@@ -556,9 +572,15 @@ namespace UML {
                 auto i = 0;
                 for (auto& node : rootNodes) {
                     auto match = getFunctor(node);
-                    ret[i] =match.functor.parseWhole(match.innerData);
+                    ret[i] = match.functor.parseWhole(match.innerData);
                     i++;
                 }
+                for (auto& pair : m_setsToRunPolicies) {
+                    auto& set = *pair.first;
+                    auto el = this->abstractGet(pair.second);
+                    this->runAllAddPolicies(set, *el);
+                }
+                m_setsToRunPolicies.clear();
                 return ret;
             }
             std::string emitIndividual(BaseElement<Tlist>& el, __attribute__((unused)) AbstractManager& manager) {

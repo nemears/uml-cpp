@@ -230,8 +230,8 @@ namespace UML {
             return std::vector {
                 makeSetPair("owner", el.m_owner),
                 makeSetPair("ownedElements", el.m_ownedElements),
-                makeSetPair("ownedComments", el.m_ownedElements),
-                makeSetPair("appliedStereotypes", el.m_ownedElements)
+                makeSetPair("ownedComments", el.m_ownedComments),
+                makeSetPair("appliedStereotypes", el.m_appliedStereotypes)
             };
         }
     };

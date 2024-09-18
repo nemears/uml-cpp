@@ -809,12 +809,12 @@ TEST_F(PackageTest, extensionMemberEndsTest) {
     ASSERT_EQ(e->getMemberEnds().size(), 2);
     ASSERT_EQ(e->Association::getMemberEnds().size(), 2);
     ASSERT_EQ(e->getOwnedEnds().size(), 1);
-    ASSERT_EQ(e->getMemberEnds().front(), end);
-    ASSERT_EQ(e->getMemberEnds().back(), memberEnd);
-    ASSERT_EQ(e->Association::getMemberEnds().front(), end);
-    ASSERT_EQ(e->Association::getMemberEnds().back(), memberEnd);
-    ASSERT_EQ(e->getOwnedEnds().front(), end);
+    ASSERT_EQ(e->getMemberEnds().back(), end);
+    ASSERT_EQ(e->getMemberEnds().front(), memberEnd);
+    ASSERT_EQ(e->Association::getMemberEnds().back(), end);
+    ASSERT_EQ(e->Association::getMemberEnds().front(), memberEnd);
     ASSERT_EQ(e->getOwnedEnds().back(), end);
+    ASSERT_EQ(e->getOwnedEnds().front(), end);
     ASSERT_EQ(e->getOwnedEnd(), end);
     ASSERT_EQ(e->getOwnedMembers().size(), 1);
     ASSERT_EQ(e->getOwnedMembers().front(), end);
@@ -848,7 +848,7 @@ TEST_F(PackageTest, mountProfileTest) {
   pckg.getProfileApplications().add(profileApplication);
   stereotypeInst.getClassifiers().add(stereotype);
   applying.getAppliedStereotypes().add(stereotypeInst);
-  pckg.getPackagedElements().add(applying);
+  pckg.getPackagedElements().add(applying, stereotypeInst);
   root.getPackagedElements().add(pckg, profile);
   m.setRoot(&root);
   m.mount(ymlPath + "profileTests");

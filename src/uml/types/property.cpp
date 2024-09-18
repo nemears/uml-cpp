@@ -41,13 +41,13 @@ void Property::PropertyTypePolicy::elementRemoved(Type& el, Property& me) {
     }
 }
 
-void Property::RedefinedPropertyPolicy::elementAdded(Property& el, Property& me) {
+void Property::RedefinedPropertyPolicy::elementAdded(__attribute__((unused)) Property& el, Property& me) {
     if (me.getFeaturingClassifier() && !me.m_redefinitionContext.contains(me.getFeaturingClassifier().id())) {
         me.addToReadonlySet(me.m_redefinitionContext, *me.getFeaturingClassifier());
     }
 }
 
-void Property::RedefinedPropertyPolicy::elementRemoved(Property& el, Property& me) {
+void Property::RedefinedPropertyPolicy::elementRemoved(__attribute__((unused)) Property& el, Property& me) {
     if (me.m_redefinedElement.empty() && me.getFeaturingClassifier() && !me.m_redefinitionContext.empty()) {
         me.removeFromReadonlySet(me.m_redefinitionContext, *me.getFeaturingClassifier());
     }

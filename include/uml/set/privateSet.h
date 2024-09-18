@@ -52,7 +52,6 @@ namespace UML {
         friend ApiPolicy;
         template <class V, class W, class OtherDataTypePolicy, class OtherApiPolicy>
         friend class PrivateSet;
-//        friend void parsePackageFeatures(YAML::Node node, Package& pckg, ParserData& data);
 
         private:
             std::mutex m_mutex;
@@ -277,11 +276,6 @@ namespace UML {
                 }
 
                 m_el.m_node.lock()->removeReference(&ptr);
-            }
-            void weakRemove(AbstractElementPtr ptr) override {
-                if (contains(ptr)) {
-                    innerRemove(ptr);
-                }
             }
             std::shared_ptr<SetStructure> nonOppositeRemoveHelper(AbstractElementPtr ptr) {
                 auto rootRedefinedSet = m_structure->m_rootRedefinedSet;

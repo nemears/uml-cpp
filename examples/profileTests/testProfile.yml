@@ -8,7 +8,6 @@
           name: test
       - Extension:
           id: zt0tPz9zpWlJq3q8T3di0wwhYH1Q
-          metaClass: PACKAGE
           ownedEnd:
             ExtensionEnd:
               id: 7PZ5NBMn36LnyR1F4q15qFos5fRJ

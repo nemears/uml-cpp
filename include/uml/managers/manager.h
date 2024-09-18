@@ -194,8 +194,8 @@ namespace UML {
                     }
                     visited.insert(front);
                     front->runAddPolicy(el);
-                    for (auto subSet : front->m_structure->m_subSets) {
-                        queue.push_back(&subSet->m_set);
+                    for (auto superSet : front->m_structure->m_superSets) {
+                        queue.push_back(&superSet->m_set);
                     }
                 }
             }
@@ -390,7 +390,7 @@ namespace UML {
                     throw ManagerStateException("No elements parsed!");
                 }
 
-                // first element will be root;
+                // first element will be root
                 setRoot(roots[0]);
                 return roots[0];
             }

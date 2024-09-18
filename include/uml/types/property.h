@@ -108,15 +108,15 @@ namespace UML{
         inline static std::string name{"Property"};
         static SetList sets(Property& el) {
             return SetList{
+                makeSetPair("type", el.m_propertyType),
                 makeSetPair("defaultValue", el.m_defaultValue),
                 makeSetPair("dataType", el.m_dataType),
+                makeSetPair("interface", el.m_interface),
+                makeSetPair("owningAssociation", el.m_owningAssociation),
                 makeSetPair("class", el.m_dataType),
                 makeSetPair("association", el.m_association),
-                makeSetPair("owningAssociation", el.m_owningAssociation),
-                makeSetPair("interface", el.m_interface),
                 makeSetPair("redefinedProperties", el.m_redefinedProperties),
-                makeSetPair("subsettedProperties", el.m_subsettedProperties),
-                makeSetPair("type", el.m_propertyType)
+                makeSetPair("subsettedProperties", el.m_subsettedProperties)
             };
         }
     };

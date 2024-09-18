@@ -16,7 +16,7 @@ UML_SINGLETON_INTEGRATION_TEST(PackageableElementOwningPackage, Package, Package
 UML_SET_INTEGRATION_TEST(PackagePackageMerges, PackageMerge, Package, &Package::getPackageMerge)
 UML_SINGLETON_INTEGRATION_TEST(PackageMergeReceivingPackage, Package, PackageMerge, &PackageMerge::getReceivingPackage, &PackageMerge::setReceivingPackage)
 UML_SINGLETON_INTEGRATION_TEST(PackageMergeMergedPackage, Package, PackageMerge, &PackageMerge::getMergedPackage, &PackageMerge::setMergedPackage)
-// commented out because it is readonly // UML_SET_INTEGRATION_TEST(PackageOwnedStereotypes, Stereotype, Package, &Package::getOwnedStereotypes);
+UML_SINGLETON_INTEGRATION_TEST(ExtensionOwnedEnd, ExtensionEnd, Extension, &Extension::getOwnedEnd, &Extension::setOwnedEnd)
 
 TEST_F(PackageTest, addPackagedElementTest) {
     UmlManager m;
@@ -606,6 +606,8 @@ TEST_F(PackageTest, emitProfileTest) {
     std::string expectedEmit = R""""(Profile:
   id: "83lphS&gucqvJwW&KSzVmTSMMG1z"
   packagedElements:
+    - Class:
+        id: JHMJw4rDUtZrQUJ1JP1rMynWvEsK
     - Extension:
         id: "&nOhZzwgZ9xoJVAtXDUVQpLf7LTZ"
         memberEnds:
@@ -614,8 +616,6 @@ TEST_F(PackageTest, emitProfileTest) {
           ExtensionEnd:
             id: "t&ZWitKKpMcvG9Dzwh23wSbP1hr5"
             type: 7PJxQhyjuuWylik9y2fgpNDXmMdv
-    - Class:
-        id: JHMJw4rDUtZrQUJ1JP1rMynWvEsK
     - Stereotype:
         id: 7PJxQhyjuuWylik9y2fgpNDXmMdv
         ownedAttributes:
@@ -726,28 +726,17 @@ TEST_F(PackageTest, emitAppliedStereotypeTest) {
     stereotypeInst.getClassifiers().add(stereotype);
     stereotypedEl.getAppliedStereotypes().add(stereotypeInst);
     applying.getPackagedElements().add(stereotypedEl);
+    applying.getPackagedElements().add(stereotypeInst);
     root.getPackagedElements().add(applying);
     root.getPackagedElements().add(profile);
     std::string expectedEmit = R""""(Package:
   id: "jswJELYwKd_wleha5klF&GJFcU_0"
   packagedElements:
-    - Package:
-        id: "Lf963Dxo5MFIqi9ip7&Nj4l1f1yj"
-        packagedElements:
-          - Package:
-              id: "wX&KNwgtwFYOQ0B4eIweaaRz&QC1"
-              appliedStereotypes:
-                - InstanceSpecification:
-                    id: "l3q&INpC6kqcdavsgIMSrSNNpGEt"
-                    classifiers:
-                      - x5r8XggyW2DI5c3RyAS8r_arWh79
-        profileApplications:
-          - ProfileApplication:
-              id: MUiSKR6gArugHOb1RqZtF5_uhflV
-              appliedProfile: "I3QrZblFek6tdX&j70kCP8u4QNAh"
     - Profile:
         id: "I3QrZblFek6tdX&j70kCP8u4QNAh"
         packagedElements:
+          - Class:
+              id: JHMJw4rDUtZrQUJ1JP1rMynWvEsK
           - Extension:
               id: "jjf&mHlwFSAjJXsBqng4IlxfYIJh"
               memberEnds:
@@ -756,9 +745,6 @@ TEST_F(PackageTest, emitAppliedStereotypeTest) {
                 ExtensionEnd:
                   id: "FK1SGxJ2lV&5RtbRhiGU9jR0zAsw"
                   type: x5r8XggyW2DI5c3RyAS8r_arWh79
-          - Class:
-              id: JHMJw4rDUtZrQUJ1JP1rMynWvEsK
-        ownedStereotypes:
           - Stereotype:
               id: x5r8XggyW2DI5c3RyAS8r_arWh79
               ownedAttributes:
@@ -766,11 +752,75 @@ TEST_F(PackageTest, emitAppliedStereotypeTest) {
                     id: "cEoEHKDqYcoIOtYwIqrMbz&WG1G_"
                     type: JHMJw4rDUtZrQUJ1JP1rMynWvEsK
                     association: "jjf&mHlwFSAjJXsBqng4IlxfYIJh"
-              profile: "I3QrZblFek6tdX&j70kCP8u4QNAh")"""";
+    - Package:
+        id: "Lf963Dxo5MFIqi9ip7&Nj4l1f1yj"
+        packagedElements:
+          - InstanceSpecification:
+              id: "l3q&INpC6kqcdavsgIMSrSNNpGEt"
+              classifiers:
+                - x5r8XggyW2DI5c3RyAS8r_arWh79
+          - Package:
+              id: "wX&KNwgtwFYOQ0B4eIweaaRz&QC1"
+              appliedStereotypes:
+                - "l3q&INpC6kqcdavsgIMSrSNNpGEt"
+        profileApplications:
+          - ProfileApplication:
+              id: MUiSKR6gArugHOb1RqZtF5_uhflV
+              appliedProfile: "I3QrZblFek6tdX&j70kCP8u4QNAh")"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = m.dump(root));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
+}
+
+TEST_F(PackageTest, extensionMemberEndsTest) {
+    UmlManager m;
+    ExtensionPtr e = m.create<Extension>();
+    ExtensionEndPtr end = m.create<ExtensionEnd>();
+    PropertyPtr memberEnd = m.create<Property>();
+    e->setOwnedEnd(end);
+    e->getMemberEnds().add(memberEnd);
+    ASSERT_EQ(e->getMemberEnds().size(), 2);
+    ASSERT_EQ(e->Association::getMemberEnds().size(), 2);
+    ASSERT_EQ(e->getOwnedEnds().size(), 1);
+    ASSERT_EQ(e->getMemberEnds().front(), end);
+    ASSERT_EQ(e->getMemberEnds().back(), memberEnd);
+    ASSERT_EQ(e->Association::getMemberEnds().front(), end);
+    ASSERT_EQ(e->Association::getMemberEnds().back(), memberEnd);
+    ASSERT_EQ(e->getOwnedEnds().front(), end);
+    ASSERT_EQ(e->getOwnedEnds().back(), end);
+    ASSERT_EQ(e->getOwnedEnd(), end);
+    ASSERT_EQ(e->getOwnedMembers().size(), 1);
+    ASSERT_EQ(e->getOwnedMembers().front(), end);
+    ASSERT_EQ(e->getMembers().size(), 2);
+    ASSERT_TRUE(e->getMembers().contains(end));
+    ASSERT_TRUE(e->getMembers().contains(memberEnd));
+    e->getMemberEnds().clear();
+    ASSERT_EQ(e->getMemberEnds().front(), 0);
+    ASSERT_EQ(e->getMemberEnds().back(), 0);
+    ASSERT_EQ(e->Association::getMemberEnds().front(), 0);
+    ASSERT_EQ(e->Association::getMemberEnds().back(), 0);
+    ASSERT_EQ(e->getOwnedEnds().front(), 0);
+    ASSERT_EQ(e->getOwnedEnds().back(), 0);
+    ASSERT_EQ(e->getOwnedEnd(), 0);
+
+    e->getMemberEnds().add(memberEnd);
+    e->setOwnedEnd(end);
+    ASSERT_EQ(e->getMemberEnds().size(), 2);
+    ASSERT_EQ(e->Association::getMemberEnds().size(), 2);
+    ASSERT_EQ(e->getOwnedEnds().size(), 1);
+    ASSERT_EQ(e->getMemberEnds().front(), end);
+    ASSERT_EQ(e->getMemberEnds().back(), memberEnd);
+    ASSERT_EQ(e->Association::getMemberEnds().front(), end);
+    ASSERT_EQ(e->Association::getMemberEnds().back(), memberEnd);
+    ASSERT_EQ(e->getOwnedEnds().front(), end);
+    ASSERT_EQ(e->getOwnedEnds().back(), end);
+    ASSERT_EQ(e->getOwnedEnd(), end);
+    ASSERT_EQ(e->getOwnedMembers().size(), 1);
+    ASSERT_EQ(e->getOwnedMembers().front(), end);
+    ASSERT_EQ(e->getMembers().size(), 2);
+    ASSERT_TRUE(e->getMembers().contains(end));
+    ASSERT_TRUE(e->getMembers().contains(memberEnd));
 }
 
 TEST_F(PackageTest, mountProfileTest) {

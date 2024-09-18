@@ -70,7 +70,7 @@ namespace UML {
             template <class T>
             static std::unique_ptr<std::pair<std::string, AbstractSet*>> findScopeHelper(T& el) {
                 for (auto& setPair : T::Info::Info::sets(el)) {
-                    if (setPair.second->getComposition() == CompositionType::ANTI_COMPOSITE) {
+                    if (setPair.second->getComposition() == CompositionType::ANTI_COMPOSITE && setPair.second->size() > 0) {
                         return std::make_unique<std::pair<std::string, AbstractSet*>>(setPair);
                     }
                 }

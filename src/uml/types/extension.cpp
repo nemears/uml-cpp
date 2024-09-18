@@ -11,13 +11,13 @@ using namespace UML;
 void Extension::MemberEndPolicy::elementAdded(Property& el, Extension& me) {
     // TODO validate that el is owned by a meta-class
     if (el.getType() && el.getType().loaded() && me.m_ownedEnd.get().id() != el.getID()) {
-        me.m_metaClass.set(el.getType()->as<Class>());
+        me.addToReadonlySet(me.m_metaClass, el.getType()->as<Class>());
     }
 }
 
 void Extension::MemberEndPolicy::elementRemoved(Property& el, Extension& me) {
     if (el.getType() && me.m_ownedEnd.get().id() != el.getID()) {
-        me.m_metaClass.set(0);
+        me.removeFromReadonlySet(me.m_metaClass, el);
     }
 }
 

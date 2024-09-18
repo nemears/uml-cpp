@@ -76,13 +76,19 @@ namespace UML {
         auto redefinedStructure = redefinedSet.m_structure->m_rootRedefinedSet;
         for (auto superSet : redefinedStructure->m_superSets) {
             m_structure->m_superSets.insert(superSet);
+            superSet->m_subSets.erase(redefinedStructure);
+            superSet->m_subSets.insert(m_structure);
         }
         for (auto subSet : redefinedStructure->m_subSets) {
             m_structure->m_subSets.insert(subSet);
+            subSet->m_superSets.erase(redefinedStructure);
+            subSet->m_superSets.insert(m_structure);
         }
         for (auto redefinedSetRedefinedSet : redefinedStructure->m_redefinedSets) {
             m_structure->m_redefinedSets.insert(redefinedSetRedefinedSet);
             redefinedSetRedefinedSet->m_rootRedefinedSet = m_structure;
+            redefinedSetRedefinedSet->m_redefinedSets.erase(redefinedStructure);
+            redefinedSetRedefinedSet->m_redefinedSets.insert(m_structure);
         }
         m_structure->m_redefinedSets.insert(redefinedStructure);
         redefinedStructure->m_superSets.clear();
@@ -90,6 +96,11 @@ namespace UML {
         redefinedStructure->m_redefinedSets.clear();
         redefinedStructure->m_rootRedefinedSet = m_structure;
         m_structure->m_rootRedefinedSet = m_structure;
+        if (m_structure->m_composition != CompositionType::NONE) {
+            redefinedSet.setComposition(m_structure->m_composition);
+        } else if (redefinedStructure->m_composition != CompositionType::NONE) {
+            this->setComposition(redefinedStructure->m_composition);
+        }
     }
     void AbstractSet::setComposition(CompositionType composition) {
         m_structure->m_composition = composition;

@@ -22,6 +22,7 @@ namespace UML {
                     typename std::unordered_map<ID, UmlPtr<T>>::const_iterator m_dataIt;
                     bool m_iterateSubSets = false;
                     std::unordered_set<std::shared_ptr<SetStructure>>::const_iterator m_subSetsWithDataIt;
+                    std::unique_ptr<AbstractSet::iterator> m_redefinedIt = 0;
                     std::unique_ptr<AbstractSet::iterator> m_currSetIt;
                     std::unique_ptr<AbstractSet::iterator> clone() const override {
                         return std::make_unique<iterator>(*this);
@@ -29,6 +30,9 @@ namespace UML {
                     AbstractElementPtr getCurr() const override {
                         if (m_iterateSubSets) {
                             return m_currSetIt->getCurr();
+                        }
+                        if (m_redefinedIt) {
+                            return m_redefinedIt->getCurr();
                         }
                         auto me = m_me.lock();
                         if (m_dataIt != dynamic_cast<SetDataPolicy&>(me->m_set).m_data.end()) {
@@ -39,16 +43,25 @@ namespace UML {
                     void next() override {
                         auto me = m_me.lock();
                         if (!m_iterateSubSets) {
-                            SetDataPolicy& dataPolicy = dynamic_cast<SetDataPolicy&>(me->m_set);
-                            m_dataIt++;
-                            auto dataEnd = dataPolicy.m_data.end();
-                            if (m_dataIt == dataEnd) {
-                                if (m_subSetsWithDataIt != me->m_subSetsWithData.end()) {
-                                    m_currSetIt = (*m_subSetsWithDataIt)->m_set.beginPtr();
-                                    m_iterateSubSets = true;
+                            if (m_redefinedIt) {
+                                m_redefinedIt->next();
+                                if (*m_redefinedIt == *(me->m_rootRedefinedSet->m_set.endPtr())) {
+                                    if (m_subSetsWithDataIt != me->m_subSetsWithData.end()) {
+                                        m_currSetIt = (*m_subSetsWithDataIt)->m_set.beginPtr();
+                                        m_iterateSubSets = true;
+                                    }
+                                }
+                            } else {
+                                SetDataPolicy& dataPolicy = dynamic_cast<SetDataPolicy&>(me->m_set);
+                                m_dataIt++;
+                                auto dataEnd = dataPolicy.m_data.end();
+                                if (m_dataIt == dataEnd) {
+                                    if (m_subSetsWithDataIt != me->m_subSetsWithData.end()) {
+                                        m_currSetIt = (*m_subSetsWithDataIt)->m_set.beginPtr();
+                                        m_iterateSubSets = true;
+                                    }
                                 }
                             }
-                            
                         } else if (m_iterateSubSets && m_subSetsWithDataIt != me->m_subSetsWithData.end()) {
                             std::shared_ptr<SetStructure> currentSet = *m_subSetsWithDataIt;
                             m_currSetIt->next();
@@ -178,6 +191,9 @@ namespace UML {
                     ret.m_currSetIt = (*ret.m_subSetsWithDataIt)->m_set.beginPtr(); 
                     ret.m_hash = hasher(ret.m_currSetIt->getCurr().id());
                     ret.m_iterateSubSets = true;
+                } else if (!this->rootSet()) {
+                    ret.m_redefinedIt = m_structure->m_rootRedefinedSet->m_set.beginPtr();
+                    ret.m_hash = ret.m_redefinedIt->m_hash;
                 }
                 return ret;
             }

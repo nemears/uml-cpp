@@ -22,9 +22,9 @@ namespace UML {
             };
 
 
-            Singleton<Profile, Stereotype> m_profile = Singleton<Profile, Stereotype>(this);
+            ReadOnlySingleton<Profile, Stereotype> m_profile = ReadOnlySingleton<Profile, Stereotype>(this);
             Singleton<Package, Stereotype, OwningPackagePolicy> m_stereotypeOwningPackage = Singleton<Package, Stereotype, OwningPackagePolicy>(this);
-            Singleton<Profile, Stereotype>& getProfileSingleton();
+            ReadOnlySingleton<Profile, Stereotype>& getProfileSingleton();
         public:
             Stereotype(std::size_t elementType, AbstractManager& manager);
             ProfilePtr getProfile() const;
@@ -38,7 +38,7 @@ namespace UML {
         static SetList sets(Stereotype& el) {
             return SetList {
                 makeSetPair("profile", el.m_profile),
-                makeSetPair("owningPackage", el.m_owningPackage)
+                makeSetPair("owningPackage", el.m_stereotypeOwningPackage)
             };
         }
     };

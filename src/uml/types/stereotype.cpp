@@ -8,12 +8,14 @@ void Stereotype::OwningPackagePolicy::elementAdded(Package& el, Stereotype& me) 
         possibleProfile = possibleProfile->getOwningPackage();
     }
     if (possibleProfile) {
-        me.m_profile.set(el.as<Profile>());
+        me.addToReadonlySet(me.m_profile, el.as<Profile>());
     }
 }
 
 void Stereotype::OwningPackagePolicy::elementRemoved(Package& el, Stereotype& me) {
-    me.m_profile.set(0);
+    if (me.m_profile.contains(&el)) {
+        me.removeFromReadonlySet(me.m_profile, el);
+    }
 }
 
 Stereotype::Stereotype(std::size_t elementType, AbstractManager& manager) :
@@ -23,9 +25,11 @@ Stereotype::Stereotype(std::size_t elementType, AbstractManager& manager) :
     PackageableElement(elementType, manager),
     Classifier(elementType, manager),
     Class(elementType, manager)
-{}
+{
+    m_stereotypeOwningPackage.redefines(m_owningPackage);
+}
 
-Singleton<Profile, Stereotype>& Stereotype::getProfileSingleton() {
+ReadOnlySingleton<Profile, Stereotype>& Stereotype::getProfileSingleton() {
     return m_profile;
 }
 

@@ -11,7 +11,10 @@ void Property::PropertyTypePolicy::elementAdded(Type& el, Property& me) {
     if (!me.getAssociation()) {
         return;
     }
-    me.addToReadonlySet(me.getAssociation()->m_endTypes, el);
+    auto& endTypes = me.getAssociation()->m_endTypes;
+    if (!endTypes.contains(el)) {
+        me.addToReadonlySet(me.getAssociation()->m_endTypes, el);
+    }
     if (!me.getAssociation()->is<Extension>()) {
         return;
     }
@@ -34,7 +37,7 @@ void Property::PropertyTypePolicy::elementRemoved(Type& el, Property& me) {
     }
     Extension& extension = me.getAssociation()->as<Extension>();
     if (extension.getMetaClass().id() == el.getID()) {
-        extension.m_metaClass.set(0);
+        me.removeFromReadonlySet(extension.m_metaClass, el);
     }
 }
 

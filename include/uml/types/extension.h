@@ -31,7 +31,7 @@ namespace UML {
             IndexableOrderedSet<Property, Extension, MemberEndPolicy> m_extensionMemberEnds = 
                     IndexableOrderedSet<Property, Extension, MemberEndPolicy>(this);
             Singleton<ExtensionEnd, Extension> m_ownedEnd = Singleton<ExtensionEnd, Extension>(this);
-            Singleton<Class, Extension> m_metaClass = Singleton<Class, Extension>(this);
+            ReadOnlySingleton<Class, Extension> m_metaClass = ReadOnlySingleton<Class, Extension>(this);
             bool m_setFlag = false;
             Singleton<ExtensionEnd, Extension>& getOwnedEndSingleton();
         public:

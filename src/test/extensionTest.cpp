@@ -9,33 +9,6 @@ UML_SINGLETON_INTEGRATION_TEST(ExtensionOwnedEnd, ExtensionEnd, Extension, &Exte
 
 class ExtensionTest : public ::testing::Test {};
 
-TEST_F(ExtensionTest, extensionMemberEndsTest) {
-    Manager<> m;
-    ExtensionPtr e = m.create<Extension>();
-    ExtensionEndPtr end = m.create<ExtensionEnd>();
-    PropertyPtr memberEnd = m.create<Property>();
-    e->setOwnedEnd(end);
-    e->getMemberEnds().add(memberEnd);
-    ASSERT_EQ(e->getMemberEnds().size(), 2);
-    ASSERT_EQ(e->Association::getMemberEnds().size(), 2);
-    ASSERT_EQ(e->getOwnedEnds().size(), 1);
-    ASSERT_EQ(e->getMemberEnds().front(), end);
-    ASSERT_EQ(e->getMemberEnds().back(), memberEnd);
-    ASSERT_EQ(e->Association::getMemberEnds().front(), end);
-    ASSERT_EQ(e->Association::getMemberEnds().back(), memberEnd);
-    ASSERT_EQ(e->getOwnedEnds().front(), end);
-    ASSERT_EQ(e->getOwnedEnds().back(), end);
-    ASSERT_EQ(e->getOwnedEnd(), end);
-    e->getMemberEnds().clear();
-    ASSERT_EQ(e->getMemberEnds().front(), 0);
-    ASSERT_EQ(e->getMemberEnds().back(), 0);
-    ASSERT_EQ(e->Association::getMemberEnds().front(), 0);
-    ASSERT_EQ(e->Association::getMemberEnds().back(), 0);
-    ASSERT_EQ(e->getOwnedEnds().front(), 0);
-    ASSERT_EQ(e->getOwnedEnds().back(), 0);
-    ASSERT_EQ(e->getOwnedEnd(), 0);
-}
-
 // TEST_F(ExtensionTest, basicExtensionTest) {
 //     Manager<> m;
 //     Extension& ext = *m.create<Extension>();

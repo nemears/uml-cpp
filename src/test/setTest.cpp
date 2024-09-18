@@ -1867,5 +1867,71 @@ TEST_F(SetTest, removefromDiamondSubset) {
     ASSERT_FALSE(testEl->right.contains(pckg3.id()));
     ASSERT_TRUE(testEl->root.contains(pckg3.id()));
 }
+
+TEST_F(SetTest, addToRightFirst) {
+    Manager<TestTypes> m;
+    UmlPtr<TestPackage> pckg1 = m.create<TestPackage>();
+    UmlPtr<TestPackage> pckg2 = m.create<TestPackage>();
+    UmlPtr<TestDiamondSuperSetElement> testEl = m.create<TestDiamondSuperSetElement>();
+    testEl->right.add(pckg1);
+    ASSERT_EQ(testEl->root.size(), 1);
+    ASSERT_TRUE(testEl->root.contains(pckg1));
+    auto i = 0;
+    for (auto& el : testEl->root) {
+        i ++;
+    }
+    ASSERT_EQ(i, 1);
+    ASSERT_EQ(testEl->right.size(), 1);
+    ASSERT_TRUE(testEl->right.contains(pckg1));
+    i = 0;
+    for (auto& el : testEl->right) {
+        i ++;
+    }
+    ASSERT_EQ(i, 1);
+    ASSERT_EQ(testEl->left.size(), 0);
+    ASSERT_FALSE(testEl->left.contains(pckg1));
+    i = 0;
+    for (auto& el : testEl->left) {
+        i ++;
+    }
+    ASSERT_EQ(i, 0);
+    ASSERT_EQ(testEl->bottom.size(), 0);
+    ASSERT_FALSE(testEl->bottom.contains(pckg1));
+    i = 0;
+    for (auto& el : testEl->bottom) {
+        i ++;
+    }
+    ASSERT_EQ(i, 0);
+
+    testEl->bottom.add(pckg2);
+    ASSERT_EQ(testEl->root.size(), 2);
+    ASSERT_TRUE(testEl->root.contains(pckg2));
+    i = 0;
+    for (auto& el : testEl->root) {
+        i ++;
+    }
+    ASSERT_EQ(i, 2);
+    ASSERT_EQ(testEl->right.size(), 2);
+    ASSERT_TRUE(testEl->right.contains(pckg2));
+    i = 0;
+    for (auto& el : testEl->right) {
+        i ++;
+    }
+    ASSERT_EQ(i, 2);
+    ASSERT_EQ(testEl->left.size(), 1);
+    ASSERT_TRUE(testEl->left.contains(pckg2));
+    i = 0;
+    for (auto& el : testEl->left) {
+        i ++;
+    }
+    ASSERT_EQ(i, 1);
+    ASSERT_EQ(testEl->bottom.size(), 1);
+    ASSERT_TRUE(testEl->bottom.contains(pckg2));
+    i = 0;
+    for (auto& el : testEl->bottom) {
+        i ++;
+    }
+    ASSERT_EQ(i, 1);
+}
 }
 // TODO more complex set

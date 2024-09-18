@@ -23,9 +23,13 @@ namespace UML {
                         if (m_done) {
                             return UmlPtr<T>();
                         }
-                        auto& me = dynamic_cast<SingletonDataPolicy&>(m_me.lock()->m_set);
-                        if (me.m_data) {
-                            return me.m_data;
+                        if (m_me.lock()->m_set.rootSet()) {
+                            auto& me = dynamic_cast<SingletonDataPolicy&>(m_me.lock()->m_set);
+                            if (me.m_data) {
+                                return me.m_data;
+                            }
+                        } else {
+                            return m_me.lock()->m_rootRedefinedSet->m_set.beginPtr()->getCurr();
                         }
 
                         return (*m_me.lock()->m_subSetsWithData.begin())->m_set.beginPtr()->getCurr();
@@ -58,6 +62,10 @@ namespace UML {
             void allocatePtr(AbstractElementPtr ptr, __attribute__((unused)) SetStructure& set) override {
                 if (m_data && m_data.id() != ptr.id()) {
                     innerRemove(m_data);
+                }
+                auto val = get();
+                if (val.id() == ptr.id()) {
+                    m_structure->m_size--;
                 }
             }
             bool hasData() const {

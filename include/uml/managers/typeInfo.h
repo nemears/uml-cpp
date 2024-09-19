@@ -54,7 +54,7 @@ namespace UML {
         typedef ElementType Type;
         typedef ElementInfo<ElementType> Info;
         using BaseList = BaseTList;
-        static const std::size_t elementType = Type::template idOf<Type>();
+        static const constexpr std::size_t elementType = Type::template idOf<Type>();
         static bool is(std::size_t typeToCheck) {
             auto curr = typeToCheck == elementType;
             if (curr) {

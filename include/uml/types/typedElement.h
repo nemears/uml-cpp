@@ -19,8 +19,8 @@ namespace UML{
             Singleton<Type, TypedElement>& getTypeSingleton();
             TypedElement(std::size_t elementType, AbstractManager& manager);
         public:
-            virtual TypePtr getType() const;
-            virtual void setType(TypePtr type);
+            TypePtr getType() const;
+            void setType(TypePtr type);
             void setType(Type& type);
             void setType(ID id);
             typedef TypeInfo<std::tuple<NamedElement>, TypedElement> Info;

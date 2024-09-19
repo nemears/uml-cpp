@@ -23,7 +23,7 @@ ExtensionEnd::ExtensionEnd(std::size_t elementType, AbstractManager& manager) :
     m_extensionType.redefines(m_type);
 }
 
-TypePtr ExtensionEnd::getType() const {
+StereotypePtr ExtensionEnd::getType() const {
     return m_extensionType.get();
 }
 

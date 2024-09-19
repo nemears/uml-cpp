@@ -5,6 +5,9 @@
 
 namespace UML {
     class Dependency : public DirectedRelationship, public PackageableElement {
+
+        friend struct ElementInfo<Dependency>;
+
         protected:
             Set<NamedElement, Dependency> m_clients = Set<NamedElement, Dependency>(this);
             Set<NamedElement, Dependency> m_suppliers = Set<NamedElement, Dependency>(this);
@@ -21,8 +24,8 @@ namespace UML {
         inline static const std::string name {"Dependency"};
         static SetList sets(Dependency& el) {
             return SetList {
-                makeSetPair("clients", el.getClients()),
-                makeSetPair("suppliers", el.getSuppliers())
+                makeSetPair("suppliers", el.m_suppliers),
+                makeSetPair("clients", el.m_clients)
             };
         }
     };

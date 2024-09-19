@@ -8,6 +8,9 @@ namespace UML {
      * its full implementation or operation.
      **/
     class Usage : public Dependency {
+
+        friend struct ElementInfo<Usage>;
+
         protected:
             struct ClientPolicy {
                 void elementAdded(NamedElement& el, Usage& me);
@@ -23,8 +26,10 @@ namespace UML {
     struct ElementInfo<Usage> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"Usage"};
-        static SetList sets(__attribute__((unused)) Usage& el) {
-            return SetList {};
+        static SetList sets(Usage& el) {
+            return SetList {
+                makeSetPair("clients", el.m_usageClients)
+            };
         }
     };
 }

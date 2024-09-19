@@ -19,7 +19,7 @@ namespace UML {
             Singleton<Stereotype, ExtensionEnd>& getTypeSingleton();
         public:
             ExtensionEnd(std::size_t elementType, AbstractManager& manager);
-            TypePtr getType() const override;
+            StereotypePtr getType() const;
             void setType(Stereotype& stereotype);
             void setType(StereotypePtr stereotype);
             typedef TypeInfo<std::tuple<Property>, ExtensionEnd> Info;

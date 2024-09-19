@@ -15,7 +15,7 @@ class PropertyTest : public ::testing::Test {
 };
 
 TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
-    Manager<> m;
+    UmlManager m;
     Property& p = *m.create<Property>();
     PrimitiveType& stringP = *m.create<PrimitiveType>();
     p.setType(&stringP);
@@ -28,7 +28,7 @@ TEST_F(PropertyTest, setDefaultValueOfProperTypeTestString) {
 }
 
 TEST_F(PropertyTest, reindexNameForClassifierTest) {
-    Manager<> m;
+    UmlManager m;
     Class& c = *m.create<Class>();
     Property& p = *m.create<Property>();
     p.setAggregation(AggregationKind::COMPOSITE);
@@ -55,7 +55,7 @@ TEST_F(PropertyTest, reindexNameForClassifierTest) {
 }
 
 TEST_F(PropertyTest, overwriteClassifierTest) {
-    Manager<> m;
+    UmlManager m;
     Class& p1 = *m.create<Class>();
     Class& p2 = *m.create<Class>();
     Property& c = *m.create<Property>();
@@ -69,7 +69,7 @@ TEST_F(PropertyTest, overwriteClassifierTest) {
 }
 
 TEST_F(PropertyTest, overwriteClassifierByAttributesAddTest) {
-    Manager<> m;
+    UmlManager m;
     Class& p1 = *m.create<Class>();
     Class& p2 = *m.create<Class>();
     Property& c = *m.create<Property>();
@@ -83,11 +83,11 @@ TEST_F(PropertyTest, overwriteClassifierByAttributesAddTest) {
 }
 
 TEST_F(PropertyTest, redefinePropertyTest) {
-    Manager<> m;
+    UmlManager m;
     Property& prop = *m.create<Property>();
-    prop.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
+    prop.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAB"));
     Property& redefined = *m.create<Property>();
-    prop.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
+    prop.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAC"));
     Class& b = *m.create<Class>();
     Class& s = *m.create<Class>();
     Generalization& gen = *m.create<Generalization>();
@@ -135,13 +135,13 @@ TEST_F(PropertyTest, redefinePropertyTest) {
 }
 
 TEST_F(PropertyTest, forwardTypeTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/forwardType.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(m.getRoot()->getElementType() == Package::Info::elementType);
     Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
-    ASSERT_TRUE((pckg->getPackagedElements().begin()++)->getElementType() == ElementType::CLASS);
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == Class::Info::elementType);
+    ASSERT_TRUE((pckg->getPackagedElements().begin()++)->getElementType() == Class::Info::elementType);
     Class& clazz1 = pckg->getPackagedElements().get(ID::fromString("5pyZRmwKoVZBKmqRI6qp93kvQYUR"))->as<Class>();
     Class& clazz2 = pckg->getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD"))->as<Class>();
     ASSERT_TRUE(clazz2.getAttributes().size() == 1);
@@ -150,13 +150,13 @@ TEST_F(PropertyTest, forwardTypeTest) {
 }
 
 TEST_F(PropertyTest, backwardsTypeTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/backwardTypeTest.yml").ptr());
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(m.getRoot()->getElementType() == Package::Info::elementType);
     PackagePtr pckg = m.getRoot();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
-    ASSERT_TRUE((pckg->getPackagedElements().begin()++)->getElementType() == ElementType::CLASS);
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == Class::Info::elementType);
+    ASSERT_TRUE((pckg->getPackagedElements().begin()++)->getElementType() == Class::Info::elementType);
     Class& clazz1 = pckg->getPackagedElements().get(ID::fromString("UKqPzBXPjVPhV89kTmNr7xRc7Z_&"))->as<Class>();
     Class& clazz2 = pckg->getPackagedElements().get(ID::fromString("J5Y0janY19dgKxqwQ1YYfFgMgXmD"))->as<Class>();
     ASSERT_TRUE(clazz2.getAttributes().size() == 1);
@@ -165,23 +165,23 @@ TEST_F(PropertyTest, backwardsTypeTest) {
 }
 
 TEST_F(PropertyTest, multiplicityTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/multiplicityTest.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PROPERTY);
+    ASSERT_TRUE(m.getRoot()->getElementType() == Property::Info::elementType);
     Property* prop = &m.getRoot()->as<Property>();
     ASSERT_TRUE(prop->multiplicitySpecified());
     ASSERT_TRUE(prop->getLowerValue());
     ASSERT_TRUE(prop->getLower() == 0);
-    ASSERT_TRUE(prop->getLowerValue()->getElementType() == ElementType::LITERAL_INT);
-    ASSERT_TRUE(prop->getLower() == dynamic_cast<LiteralInt*>(prop->getLowerValue().ptr())->getValue());
+    ASSERT_TRUE(prop->getLowerValue()->getElementType() == LiteralInt::Info::elementType);
+    ASSERT_TRUE(prop->getLower() == prop->getLowerValue()->as<LiteralInt>().getValue());
     ASSERT_TRUE(prop->getUpperValue());
     ASSERT_TRUE(prop->getUpper() == 1);
-    ASSERT_TRUE(prop->getUpperValue()->getElementType() == ElementType::LITERAL_INT);
-    ASSERT_TRUE(prop->getUpper() == dynamic_cast<LiteralInt*>(prop->getUpperValue().ptr())->getValue());
+    ASSERT_TRUE(prop->getUpperValue()->getElementType() == LiteralInt::Info::elementType);
+    ASSERT_TRUE(prop->getUpper() == prop->getUpperValue()->as<LiteralInt>().getValue());
 }
 
 TEST_F(PropertyTest, improperTypeTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType.yml"), SerializationError);
     ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType2.yml"), SerializationError);
     ASSERT_THROW(m.open(ymlPath + "propertyTests/improperType3.yml"), SerializationError);
@@ -192,30 +192,30 @@ TEST_F(PropertyTest, improperTypeTest) {
 }
 
 TEST_F(PropertyTest, literalBoolDefaultValueTest) {
-    Manager<> m;
+    UmlManager m;
     m.open(ymlPath + "uml/primitiveTypes.yml");
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/literalBool.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(m.getRoot()->getElementType() == Package::Info::elementType);
     Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
     PrimitiveTypePtr b = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get("bool");
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == Class::Info::elementType);
     ClassPtr c = pckg->getPackagedElements().front();
     ASSERT_TRUE(c->getOwnedAttributes().size() == 1);
     PropertyPtr p = c->getOwnedAttributes().front();
     ASSERT_TRUE(p->getType() == b);
     ASSERT_TRUE(p->getDefaultValue());
-    ASSERT_TRUE(p->getDefaultValue()->getElementType() == ElementType::LITERAL_BOOL);
+    ASSERT_TRUE(p->getDefaultValue()->getElementType() == LiteralBool::Info::elementType);
     LiteralBoolPtr lb = p->getDefaultValue();
     ASSERT_TRUE(lb->getValue());
 }
 
 TEST_F(PropertyTest, literalsTest) {
-    Manager<> m;
+    UmlManager m;
     m.open(ymlPath + "uml/primitiveTypes.yml");
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/defaultValue.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(m.getRoot()->getElementType() == Package::Info::elementType);
     Package* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackageMerge().size() == 1);
     PrimitiveTypePtr b = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get("bool");
@@ -224,50 +224,50 @@ TEST_F(PropertyTest, literalsTest) {
     PrimitiveTypePtr s = pckg->getPackageMerge().front()->getMergedPackage()->getPackagedElements().get("string");
     
     ASSERT_TRUE(pckg->getPackagedElements().size() == 1);
-    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == ElementType::CLASS);
+    ASSERT_TRUE(pckg->getPackagedElements().front()->getElementType() == Class::Info::elementType);
     ClassPtr c = pckg->getPackagedElements().front();
     ASSERT_TRUE(c->getOwnedAttributes().size() == 4);
     PropertyPtr stringProp = c->getOwnedAttributes().get(0);
     ASSERT_TRUE(stringProp->getType());
     ASSERT_TRUE(stringProp->getType() == s);
     ASSERT_TRUE(stringProp->getDefaultValue());
-    ASSERT_TRUE(stringProp->getDefaultValue()->getElementType() == ElementType::LITERAL_STRING);
-    LiteralString* ls = dynamic_cast<LiteralString*>(stringProp->getDefaultValue().ptr());
+    ASSERT_TRUE(stringProp->getDefaultValue()->getElementType() == LiteralString::Info::elementType);
+    LiteralStringPtr ls = stringProp->getDefaultValue();
     ASSERT_TRUE(ls->getValue().compare("testValue") == 0);
     PropertyPtr intProp = c->getOwnedAttributes().get(1);
     ASSERT_TRUE(intProp->getType());
     ASSERT_TRUE(intProp->getType() == i);
     ASSERT_TRUE(intProp->getDefaultValue());
-    ASSERT_TRUE(intProp->getDefaultValue()->getElementType() == ElementType::LITERAL_INT);
+    ASSERT_TRUE(intProp->getDefaultValue()->getElementType() == LiteralInt::Info::elementType);
     LiteralIntPtr li =  intProp->getDefaultValue();
     ASSERT_TRUE(li->getValue() == -444);
     PropertyPtr realProp = c->getOwnedAttributes().get(2);
     ASSERT_TRUE(realProp->getType());
     ASSERT_TRUE(realProp->getType() == r);
     ASSERT_TRUE(realProp->getDefaultValue());
-    ASSERT_TRUE(realProp->getDefaultValue()->getElementType() == ElementType::LITERAL_REAL);
+    ASSERT_TRUE(realProp->getDefaultValue()->getElementType() == LiteralReal::Info::elementType);
     LiteralRealPtr lr = realProp->getDefaultValue();
     ASSERT_TRUE(lr->getValue() == 555.888);
     PropertyPtr boolProp = c->getOwnedAttributes().get(3);
     ASSERT_TRUE(boolProp->getType());
     ASSERT_TRUE(boolProp->getType() == b);
     ASSERT_TRUE(boolProp->getDefaultValue());
-    ASSERT_TRUE(boolProp->getDefaultValue()->getElementType() == ElementType::LITERAL_BOOL);
+    ASSERT_TRUE(boolProp->getDefaultValue()->getElementType() == LiteralBool::Info::elementType);
     LiteralBoolPtr lb = boolProp->getDefaultValue();
     ASSERT_TRUE(lb->getValue() == false);
 }
 
 TEST_F(PropertyTest, parseRedefinedPropertyTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "propertyTests/redefinedProperty.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(m.getRoot()->getElementType() == Package::Info::elementType);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("2luT6NreEKbmUKCHLqO4tfqxx5pX"))->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("2luT6NreEKbmUKCHLqO4tfqxx5pX"))->getElementType(), Class::Info::elementType);
     Class& base = pckg.getPackagedElements().get(ID::fromString("2luT6NreEKbmUKCHLqO4tfqxx5pX"))->as<Class>();
     ASSERT_EQ(base.getOwnedAttributes().size(), 1);
     Property& redefined = *base.getOwnedAttributes().front();
-    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("VI1AWv&JVnbq8P8mvFztq1W4v&0y"))->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("VI1AWv&JVnbq8P8mvFztq1W4v&0y"))->getElementType(), Class::Info::elementType);
     Class& spec = pckg.getPackagedElements().get(ID::fromString("VI1AWv&JVnbq8P8mvFztq1W4v&0y"))->as<Class>();
     ASSERT_EQ(spec.getGenerals().size(), 1);
     ASSERT_EQ(spec.getGenerals().front()->getID(), base.getID());
@@ -278,19 +278,19 @@ TEST_F(PropertyTest, parseRedefinedPropertyTest) {
 }
 
 TEST_F(PropertyTest, emitRedefinedPropertyTest) {
-    Manager<> m;
+    UmlManager m;
     Package& pckg = *m.create<Package>();
     Property& prop = *m.create<Property>();
     Property& redefined = *m.create<Property>();
     Class& b = *m.create<Class>();
     Class& s = *m.create<Class>();
     Generalization& gen = *m.create<Generalization>();
-    pckg.setID("RC5KnOAfUJQY6BnxohDHLqrMadYI");
-    prop.setID("sVhU3UWy392YuTfewtNoyaWLhAQw");
-    redefined.setID("9m50Dir0MgpEaLu8ghn7cSlZ5Yzh");
-    b.setID("yzUVzVw8sod2KyBH5LxX_OLI7HrV");
-    s.setID("Y8UtleiQO3UuN4GEqSzai0G8&GqC");
-    gen.setID("RL5_MDmj_CskU1njfiL74QSxP7Bw");
+    pckg.setID(ID::fromString("RC5KnOAfUJQY6BnxohDHLqrMadYI"));
+    prop.setID(ID::fromString("sVhU3UWy392YuTfewtNoyaWLhAQw"));
+    redefined.setID(ID::fromString("9m50Dir0MgpEaLu8ghn7cSlZ5Yzh"));
+    b.setID(ID::fromString("yzUVzVw8sod2KyBH5LxX_OLI7HrV"));
+    s.setID(ID::fromString("Y8UtleiQO3UuN4GEqSzai0G8&GqC"));
+    gen.setID(ID::fromString("RL5_MDmj_CskU1njfiL74QSxP7Bw"));
     s.getGeneralizations().add(gen);
     gen.setGeneral(b);
     b.getOwnedAttributes().add(redefined);
@@ -318,15 +318,13 @@ TEST_F(PropertyTest, emitRedefinedPropertyTest) {
           - Property:
               id: 9m50Dir0MgpEaLu8ghn7cSlZ5Yzh)"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(pckg));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(PropertyTest, mountPropertyTest) {
-    Manager<> m;
+    UmlManager m;
     Package& pckg = *m.create<Package>();
     m.setRoot(&pckg);
     m.open(ymlPath + "uml/primitiveTypes.yml");
@@ -416,7 +414,7 @@ TEST_F(PropertyTest, mountPropertyTest) {
     m.release(prop2, defaultValue);
     Property& prop3 = m.get(propID)->as<Property>();
     ASSERT_TRUE(prop3.getDefaultValue());
-    ASSERT_TRUE(prop3.getDefaultValue()->is(ElementType::LITERAL_STRING));
+    ASSERT_TRUE(prop3.getDefaultValue()->is<LiteralString>());
     ASSERT_EQ(prop3.getOwnedElements().size(), 1);
     ASSERT_EQ(prop3.getOwnedElements().front(), prop3.getDefaultValue());
     LiteralString& defaultValue2 = prop3.getDefaultValue()->as<LiteralString>();

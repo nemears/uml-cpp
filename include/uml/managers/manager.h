@@ -183,6 +183,9 @@ namespace UML {
             void addToSet(AbstractSet& set, AbstractElement& el) override {
                 set.innerAdd(&el);
             }
+            void addToSet(AbstractSet& set, ID id) override {
+                set.nonPolicyAdd(createPtr(id));
+            }
             void runAllAddPolicies(AbstractSet& set, AbstractElement& el) const override {
                 std::list<AbstractSet*> queue = {&set};
                 std::unordered_set<AbstractSet*> visited;

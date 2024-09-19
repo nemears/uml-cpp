@@ -837,12 +837,12 @@ TEST_F(SetTest, subsetOrderedSets) {
     ASSERT_TRUE(testEl->root.contains(c.getID()));
     ASSERT_EQ(*testEl->root.back(), c);
     int i = 0;
-    for (TestPackage& pckg : testEl->sub) {
+    for (__attribute__((unused)) TestPackage& pckg : testEl->sub) {
         i++;
     }
     ASSERT_EQ(i, 1);
     i = 0;
-    for (TestPackage& pckg : testEl->root) {
+    for (__attribute__((unused)) TestPackage& pckg : testEl->root) {
         i++;
     }
     ASSERT_EQ(i, 2);
@@ -880,12 +880,12 @@ TEST_F(SetTest, orderedSetSubSetsSet) {
     ASSERT_TRUE(testEl->root.contains(c.getID()));
     ASSERT_EQ(*testEl->root.get(c.getID()), c);
     int i = 0;
-    for (TestPackage& pckg : testEl->sub) {
+    for (__attribute__((unused)) TestPackage& pckg : testEl->sub) {
         i++;
     }
     ASSERT_EQ(i, 1);
     i = 0;
-    for (TestPackage& pckg : testEl->root) {
+    for (__attribute__((unused)) TestPackage& pckg : testEl->root) {
         i++;
     }
     ASSERT_EQ(i, 2);
@@ -1877,28 +1877,28 @@ TEST_F(SetTest, addToRightFirst) {
     ASSERT_EQ(testEl->root.size(), 1);
     ASSERT_TRUE(testEl->root.contains(pckg1));
     auto i = 0;
-    for (auto& el : testEl->root) {
+    for (__attribute__((unused)) auto& el : testEl->root) {
         i ++;
     }
     ASSERT_EQ(i, 1);
     ASSERT_EQ(testEl->right.size(), 1);
     ASSERT_TRUE(testEl->right.contains(pckg1));
     i = 0;
-    for (auto& el : testEl->right) {
+    for (__attribute__((unused)) auto& el : testEl->right) {
         i ++;
     }
     ASSERT_EQ(i, 1);
     ASSERT_EQ(testEl->left.size(), 0);
     ASSERT_FALSE(testEl->left.contains(pckg1));
     i = 0;
-    for (auto& el : testEl->left) {
+    for (__attribute__((unused)) auto& el : testEl->left) {
         i ++;
     }
     ASSERT_EQ(i, 0);
     ASSERT_EQ(testEl->bottom.size(), 0);
     ASSERT_FALSE(testEl->bottom.contains(pckg1));
     i = 0;
-    for (auto& el : testEl->bottom) {
+    for (__attribute__((unused)) auto& el : testEl->bottom) {
         i ++;
     }
     ASSERT_EQ(i, 0);
@@ -1907,28 +1907,28 @@ TEST_F(SetTest, addToRightFirst) {
     ASSERT_EQ(testEl->root.size(), 2);
     ASSERT_TRUE(testEl->root.contains(pckg2));
     i = 0;
-    for (auto& el : testEl->root) {
+    for (__attribute__((unused)) auto& el : testEl->root) {
         i ++;
     }
     ASSERT_EQ(i, 2);
     ASSERT_EQ(testEl->right.size(), 2);
     ASSERT_TRUE(testEl->right.contains(pckg2));
     i = 0;
-    for (auto& el : testEl->right) {
+    for (__attribute__((unused)) auto& el : testEl->right) {
         i ++;
     }
     ASSERT_EQ(i, 2);
     ASSERT_EQ(testEl->left.size(), 1);
     ASSERT_TRUE(testEl->left.contains(pckg2));
     i = 0;
-    for (auto& el : testEl->left) {
+    for (__attribute__((unused)) auto& el : testEl->left) {
         i ++;
     }
     ASSERT_EQ(i, 1);
     ASSERT_EQ(testEl->bottom.size(), 1);
     ASSERT_TRUE(testEl->bottom.contains(pckg2));
     i = 0;
-    for (auto& el : testEl->bottom) {
+    for (__attribute__((unused)) auto& el : testEl->bottom) {
         i ++;
     }
     ASSERT_EQ(i, 1);

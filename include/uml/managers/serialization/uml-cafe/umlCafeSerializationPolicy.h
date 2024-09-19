@@ -69,7 +69,7 @@ namespace UML {
 
             template <class T>
             static std::unique_ptr<std::pair<std::string, AbstractSet*>> findScopeHelper(T& el) {
-                for (auto& setPair : T::Info::Info::sets(el)) {
+                for (auto& setPair : T::Info::sets(el)) {
                     if (setPair.second->getComposition() == CompositionType::ANTI_COMPOSITE && setPair.second->size() > 0) {
                         return std::make_unique<std::pair<std::string, AbstractSet*>>(setPair);
                     }
@@ -107,7 +107,7 @@ namespace UML {
             static void emitData(YAML::Emitter& emitter, AbstractElement& el) {
                 if constexpr (T::Info::extraData) {
                     auto& typedEl = dynamic_cast<T&>(el);
-                    for (auto& dataPair : T::Info::Info::data(typedEl)) {
+                    for (auto& dataPair : T::Info::data(typedEl)) {
                         auto data = dataPair.second->getData();
                         if (!data.empty()) {
                             emitter << YAML::Key << dataPair.first << YAML::Value << data;
@@ -119,7 +119,7 @@ namespace UML {
             template <class T>
             static void emitIndividualDataHelper(YAML::Emitter& emitter, AbstractElement& el) {
                 emitData<T>(emitter, el);
-                for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
+                for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
                     auto set = setPair.second;
                     if (set->readonly() || set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
                         continue;
@@ -169,7 +169,7 @@ namespace UML {
             template <class T>
             static void emitWholeDataHelper(YAML::Emitter& emitter, AbstractElement& el, UmlCafeSerializationPolicy& self) {
                 emitData<T>(emitter, el);
-                for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
+                for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
                     auto set = setPair.second;
                     if (set->readonly() || set->empty() || !set->rootSet() || set->getComposition() == CompositionType::ANTI_COMPOSITE) {
                         continue;
@@ -282,7 +282,7 @@ namespace UML {
                         emitter << YAML::Key << possibleScope->first << YAML::Value << possibleScope->second->ids().front().string();
                     }
                     std::unordered_set<std::size_t> visited;
-                    std::string elementName = T::Info::Info::name;
+                    std::string elementName = T::Info::name;
                     emitter << YAML::Key << elementName << YAML::Value << YAML::BeginMap;
                     emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
                     emitIndividualData<0, std::tuple<T>>(emitter, visited, el);
@@ -293,7 +293,7 @@ namespace UML {
                 }
                 void emitWhole(YAML::Emitter& emitter, BaseElement<Tlist>& el) override {
                     std::unordered_set<std::size_t> visited;
-                    emitter << YAML::BeginMap << T::Info::Info::name << YAML::Value << YAML::BeginMap;
+                    emitter << YAML::BeginMap << T::Info::name << YAML::Value << YAML::BeginMap;
                     emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
                     emitWholeData<0, std::tuple<T>>(emitter, visited, el, m_self);
                     emitter << YAML::EndMap << YAML::EndMap;    
@@ -374,8 +374,29 @@ namespace UML {
             }
 
             template <class T>
+            bool parseReadOnlyScopeHelper(const YAML::Node& node, T& el) {
+                for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
+                    auto set = setPair.second;
+                    if (set->getComposition() != CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
+                        continue;
+                    }
+                    if (node[setPair.first]) {
+                        auto& setNode = node[setPair.first];
+                        if (setNode.IsScalar()) {
+                            if (set->setType() != SetType::SINGLETON) {
+                                throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
+                            }
+                            addToSet(*set, ID::fromString(setNode.template as<std::string>()));
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            template <class T>
             bool parseScopeHelper(const YAML::Node& node, T& el) {
-                for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
+                for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
                     if (setPair.second->readonly()) {
                         continue;
                     }
@@ -389,8 +410,7 @@ namespace UML {
                             if (set->setType() != SetType::SINGLETON) {
                                 throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
                             }
-                            // TODO if parsing compositely, check to make sure the set is not composite
-                            set->add(ID::fromString(setNode.template as<std::string>()));
+                            addToSet(*set, ID::fromString(setNode.template as<std::string>()));
                             return true;
                         }
                     }
@@ -401,7 +421,7 @@ namespace UML {
             template <class T>
             void parseWholeHelper(T& el, const YAML::Node& node) {
                 parseData<T>(el, node);
-                for (auto& setPair : T::Info::Info::sets(dynamic_cast<T&>(el))) {
+                for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
                     if (setPair.second->readonly() || !setPair.second->rootSet()) {
                         continue;
                     }
@@ -460,18 +480,43 @@ namespace UML {
             }
 
             template <std::size_t I, class ParseTypes>
-            void parseScope(const YAML::Node& node, std::tuple_element_t<I, ParseTypes>& el) {
+            bool parseReadOnlyScope(const YAML::Node node, std::tuple_element_t<I, ParseTypes>& el) {
                 using ElementType = std::tuple_element_t<I, ParseTypes>;
-                if (parseScopeHelper<ElementType>(node, el)) {
-                    return;
+                if (parseReadOnlyScopeHelper<ElementType>(node, el)) {
+                    return true;
                 }
                 if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
-                    parseScope<I + 1, ParseTypes>(node, el.template as<std::tuple_element_t<I + 1, ParseTypes>>());
+                    if (parseReadOnlyScope<I + 1, ParseTypes>(node, el.template as<std::tuple_element_t<I + 1, ParseTypes>>())) {
+                        return true;
+                    }
                 }
                 using ElBases = ElementType::Info::BaseList;
                 if constexpr (std::tuple_size<ElBases>{} > 0) {
-                    parseScope<0, ElBases>(node, el);
+                    if (parseReadOnlyScope<0, ElBases>(node, el)) {
+                        return true;
+                    }
                 }
+                return false;
+            }
+
+            template <std::size_t I, class ParseTypes>
+            bool parseScope(const YAML::Node& node, std::tuple_element_t<I, ParseTypes>& el) {
+                using ElementType = std::tuple_element_t<I, ParseTypes>;
+                if (parseScopeHelper<ElementType>(node, el)) {
+                    return true;
+                }
+                if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
+                    if (parseScope<I + 1, ParseTypes>(node, el.template as<std::tuple_element_t<I + 1, ParseTypes>>())) {
+                        return true;
+                    }
+                }
+                using ElBases = ElementType::Info::BaseList;
+                if constexpr (std::tuple_size<ElBases>{} > 0) {
+                    if (parseScope<0, ElBases>(node, el)) {
+                        return true;
+                    }
+                }
+                return false;
             }
             
             template <std::size_t I, class ParseTypes>
@@ -514,7 +559,10 @@ namespace UML {
                     return ret;
                 }
                 void parseScope(YAML::Node node, BaseElement<Tlist>& el) override {
-                    this->m_self.template parseScope<0, std::tuple<T>>(node, el.template as<T>());
+                    auto found = this->m_self.template parseScope<0, std::tuple<T>>(node, el.template as<T>());
+                    if (!found) {
+                        this->m_self.template parseReadOnlyScope<0, std::tuple<T>>(node, el.template as<T>());
+                    }
                 }
                 UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node node) {
                     UmlPtr<T> ret = this->m_self.create(T::Info::elementType);
@@ -542,8 +590,8 @@ namespace UML {
             void populateParserFunctors(std::unordered_map<std::string, std::unique_ptr<AbstractParserFunctor>>& functors) {
                 if constexpr (std::tuple_size<Tlist>{} > I) {
                     using ElementType = std::tuple_element_t<I, Tlist>;
-                    if constexpr (!ElementType::Info::Info::abstract) {
-                        functors.emplace(ElementType::Info::Info::name, std::make_unique<ParserFunctor<ElementType>>(*this));
+                    if constexpr (!ElementType::Info::abstract) {
+                        functors.emplace(ElementType::Info::name, std::make_unique<ParserFunctor<ElementType>>(*this));
                     }
                     populateParserFunctors<I + 1>(functors);
                 }

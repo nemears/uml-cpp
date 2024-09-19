@@ -87,8 +87,8 @@ namespace UML {
             return SetList {
                 makeSetPair("features", el.m_features),
                 makeSetPair("attributes", el.m_attributes),
-                makeSetPair("generalization", el.m_generalizations),
-                makeSetPair("generals", el.m_generals),
+                makeSetPair("generalizations", el.m_generalizations),
+                // makeSetPair("generals", el.m_generals),
                 makeSetPair("inheritedMembers", el.m_inheritedMembers),
                 makeSetPair("powerTypeExtent", el.m_powerTypeExtent),
                 makeSetPair("ownedTemplateSignature", el.m_classifierOwnedTemplateSignature),

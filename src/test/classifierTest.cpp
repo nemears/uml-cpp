@@ -17,36 +17,36 @@ UML_SET_INTEGRATION_TEST(RedefinableTemplateSignatureExtendedSignature, Redefina
 class ClassifierTest : public ::testing::Test {};
 
 TEST_F(ClassifierTest, GetOwnedAttributesTest) {
-	Manager<> m;
-	Class& classifier1 = *m.create<Class>();
-	Property& prop = *m.create<Property>();
-	classifier1.getOwnedAttributes().add(prop);
-    ASSERT_FALSE(classifier1.getOwnedAttributes().empty());
-    ASSERT_EQ(classifier1.getOwnedAttributes().size(), 1);
-    ASSERT_TRUE(classifier1.getOwnedAttributes().contains(prop));
-	ASSERT_FALSE(classifier1.getAttributes().empty());
-	ASSERT_EQ(*classifier1.getAttributes().front(), prop);
-    ASSERT_TRUE(classifier1.getAttributes().contains(prop));
-    ASSERT_EQ(classifier1.getFeatures().size(), 1);
-    ASSERT_TRUE(classifier1.getFeatures().contains(prop));
-    ASSERT_EQ(classifier1.getOwnedMembers().size(), 1);
-    ASSERT_TRUE(classifier1.getOwnedMembers().contains(prop));
-    ASSERT_EQ(classifier1.getMembers().size(), 1);
-    ASSERT_TRUE(classifier1.getMembers().contains(prop));
-    ASSERT_EQ(classifier1.getOwnedElements().size(), 1);
-    ASSERT_TRUE(classifier1.getOwnedElements().contains(prop));
-    ASSERT_TRUE(prop.getOwner());
-    ASSERT_TRUE(prop.getNamespace());
-    ASSERT_TRUE(prop.getFeaturingClassifier());
-    ASSERT_TRUE(prop.getClass());
-    ASSERT_EQ(*prop.getOwner(), classifier1);
-    ASSERT_EQ(*prop.getNamespace(), classifier1);
-    ASSERT_EQ(*prop.getFeaturingClassifier(), classifier1);
-    ASSERT_EQ(*prop.getClass(), classifier1);
+  UmlManager m;
+  Class& classifier1 = *m.create<Class>();
+  Property& prop = *m.create<Property>();
+  classifier1.getOwnedAttributes().add(prop);
+  ASSERT_FALSE(classifier1.getOwnedAttributes().empty());
+  ASSERT_EQ(classifier1.getOwnedAttributes().size(), 1);
+  ASSERT_TRUE(classifier1.getOwnedAttributes().contains(prop));
+  ASSERT_FALSE(classifier1.getAttributes().empty());
+  ASSERT_EQ(*classifier1.getAttributes().front(), prop);
+  ASSERT_TRUE(classifier1.getAttributes().contains(prop));
+  ASSERT_EQ(classifier1.getFeatures().size(), 1);
+  ASSERT_TRUE(classifier1.getFeatures().contains(prop));
+  ASSERT_EQ(classifier1.getOwnedMembers().size(), 1);
+  ASSERT_TRUE(classifier1.getOwnedMembers().contains(prop));
+  ASSERT_EQ(classifier1.getMembers().size(), 1);
+  ASSERT_TRUE(classifier1.getMembers().contains(prop));
+  ASSERT_EQ(classifier1.getOwnedElements().size(), 1);
+  ASSERT_TRUE(classifier1.getOwnedElements().contains(prop));
+  ASSERT_TRUE(prop.getOwner());
+  ASSERT_TRUE(prop.getNamespace());
+  ASSERT_TRUE(prop.getFeaturingClassifier());
+  ASSERT_TRUE(prop.getClass());
+  ASSERT_EQ(*prop.getOwner(), classifier1);
+  ASSERT_EQ(*prop.getNamespace(), classifier1);
+  ASSERT_EQ(*prop.getFeaturingClassifier(), classifier1);
+  ASSERT_EQ(*prop.getClass(), classifier1);
 }
 
 TEST_F(ClassifierTest, addAttributeFunctorTest) {
-  Manager<> m;
+  UmlManager m;
   Class& c = *m.create<Class>();
   Property& p = *m.create<Property>();
   c.getOwnedAttributes().add(p);
@@ -59,7 +59,7 @@ TEST_F(ClassifierTest, addAttributeFunctorTest) {
 }
 
 TEST_F(ClassifierTest, setClassifierTest) {
-  Manager<> m;
+  UmlManager m;
   Property& p = *m.create<Property>();
   Class& c = *m.create<Class>();
   p.setClass(&c);
@@ -73,7 +73,7 @@ TEST_F(ClassifierTest, setClassifierTest) {
 }
 
 TEST_F(ClassifierTest, removeAttributeFunctorTest) {
-  Manager<> m;
+  UmlManager m;
   Property& p = *m.create<Property>();
   Class& c = *m.create<Class>();
   c.getOwnedAttributes().add(p);
@@ -88,7 +88,7 @@ TEST_F(ClassifierTest, removeAttributeFunctorTest) {
 }
 
 TEST_F(ClassifierTest, inheritedMembersTest) {
-  Manager<> m;
+  UmlManager m;
   Class& g1 = *m.create<Class>();
   Class& s1 = *m.create<Class>();
   Property& p1 = *m.create<Property>();
@@ -161,7 +161,7 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
 }
 
 TEST_F(ClassifierTest, redefinableTemplateSignatureAddAndRemoveParametersWhenExtendedTest) {
-  Manager<> m;
+  UmlManager m;
   RedefinableTemplateSignaturePtr extendedSig = m.create<RedefinableTemplateSignature>();
   RedefinableTemplateSignaturePtr sigExtending = m.create<RedefinableTemplateSignature>();
   TemplateParameterPtr parameter = m.create<TemplateParameter>();

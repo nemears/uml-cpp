@@ -52,22 +52,26 @@ VisibilityKind NamedElement::getVisibility() {
 }
 
 void NamedElement::setVisibility(VisibilityKind visibility) {
-    // if (m_visibility != visibility) {
-    //     if (visibility == VisibilityKind::PRIVATE) {
-    //         std::vector<ClassifierPtr> clazzs;
-    //         for (auto& pair : m_node->m_references) {
-    //             // find use as inherited member through references and remove
-    //             if (pair.second.node->m_element && pair.second.node->m_element->is(ElementType::CLASSIFIER)) {
-    //                 if (pair.second.node->m_element->as<Classifier>().m_inheritedMembers.contains(m_id)) {
-    //                     clazzs.push_back(&pair.second.node->m_element->as<Classifier>());
-    //                 }
-    //             }
-    //         }
-    //         for (auto& clazz : clazzs) {
-    //             clazz->m_inheritedMembers.innerRemove(ElementPtr(this));
-    //         }
-    //     }
-    // }
+    if (m_visibility != visibility) {
+        if (visibility == VisibilityKind::PRIVATE) {
+            std::vector<ClassifierPtr> clazzs;
+            for (auto& reference : m_node.lock()->m_references) {
+                if (
+                    reference.m_node.lock()->m_ptr &&
+                    std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->is<Classifier>()
+                ) {
+                    Classifier& el = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->as<Classifier>();
+                    if (el.getInheritedMembers().contains(m_id)) {
+                        clazzs.emplace_back(&el);
+                    }
+                }
+            }
+
+            for (auto& clazz : clazzs) {
+                clazz->m_inheritedMembers.innerRemove(this);
+            }
+        }
+    }
     m_visibility = visibility;
 }
 

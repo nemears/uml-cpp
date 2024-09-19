@@ -30,6 +30,7 @@ namespace UML {
         friend class NamedElement;
         friend class RedefinableTemplateSignature;
         friend class ClassifierTemplateParameter;
+        friend class ElementInfo<Classifier>;
 
         protected:
             class GeneralizationPolicy : public IndexablePolicy {
@@ -71,7 +72,6 @@ namespace UML {
             RedefinableTemplateSignaturePtr getOwnedTemplateSignature() const;
             void setOwnedTemplateSignature(RedefinableTemplateSignaturePtr signature);
             void setOwnedTemplateSignature(RedefinableTemplateSignature& signature);
-            void setOwnedTemlateSignature(RedefinableTemplateSignaturePtr signature);
             void setOwnedTemplateSignature(ID id);
             ClassifierTemplateParameterPtr getTemplateParameter() const;
             void setTemplateParameter(ClassifierTemplateParameter& templateParameter);
@@ -82,16 +82,18 @@ namespace UML {
 
     template<>
     struct ElementInfo<Classifier> : public DefaultInfo {
-        static const bool abstract = true;
         inline static std::string name {"Classifier"};
         static SetList sets(Classifier& el) {
             return SetList {
-                makeSetPair("features", el.getFeatures()),
-                makeSetPair("attributes", el.getAttributes()),
-                makeSetPair("generalization", el.getGeneralizations()),
-                makeSetPair("generals", el.getGenerals()),
-                makeSetPair("inheritedMembers", el.getInheritedMembers()),
-                makeSetPair("powerExtent", el.getPowerTypeExtent())
+                makeSetPair("features", el.m_features),
+                makeSetPair("attributes", el.m_attributes),
+                makeSetPair("generalization", el.m_generalizations),
+                makeSetPair("generals", el.m_generals),
+                makeSetPair("inheritedMembers", el.m_inheritedMembers),
+                makeSetPair("powerTypeExtent", el.m_powerTypeExtent),
+                makeSetPair("ownedTemplateSignature", el.m_classifierOwnedTemplateSignature),
+                makeSetPair("templateParameter", el.m_classifierTemplateParameter),
+                makeSetPair("ownedMembers", el.m_classifierOwnedMembers)
             };
         }
     };

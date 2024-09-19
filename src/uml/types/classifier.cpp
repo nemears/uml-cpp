@@ -48,34 +48,39 @@ void Classifier::GeneralPolicy::elementRemoved(Classifier& el, Classifier& me) {
 
 void Classifier::OwnedMemberPolicy::elementAdded(NamedElement& el, Classifier& me) {
     if (el.getVisibility() != VisibilityKind::PRIVATE) {
-        // for (auto& pair : me.m_node.lock()->m_references) {
-        //     if (pair.second.node && 
-        //         pair.second.node->m_element && 
-        //         pair.second.node->m_element->is(ElementType::CLASSIFIER) && 
-        //         pair.second.node->m_element->as<Classifier>().m_generals.contains(me.getID()) &&
-        //         !pair.second.node->m_element->as<Classifier>().m_inheritedMembers.contains(el.getID())) {
-        //             pair.second.node->m_element->as<Classifier>().m_inheritedMembers.innerAdd(ElementPtr(&el));
-        //     }
-        // }
+        for (auto& reference : me.m_node.lock()->m_references) {
+            if (
+                reference.m_node.lock()->m_ptr && 
+                std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->is<Classifier>()
+             ) {
+                Classifier& clazz = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->as<Classifier>();
+                if (
+                    clazz.m_generals.contains(me.getID()) &&
+                    !clazz.m_inheritedMembers.contains(el.getID())
+                ) {
+                    me.addToReadonlySet(clazz.m_inheritedMembers, el);
+                }
+             }
+        }
     }
 }
 
 void Classifier::OwnedMemberPolicy::elementRemoved(NamedElement& el, Classifier& me) {
     if (el.getVisibility() != VisibilityKind::PRIVATE) {
-        // for (auto& pair : me.m_node->m_references) {
-        //     if (!pair.second.node && me.m_manager->loaded(pair.first)) {
-        //         pair.second.node = me.m_manager->get(pair.first).ptr()->m_node;
-        //     }
-        //     if (!pair.second.node) {
-        //         continue;
-        //     }
-        //     if (pair.second.node->m_element && 
-        //         pair.second.node->m_element->is(ElementType::CLASSIFIER) && 
-        //         pair.second.node->m_element->as<Classifier>().m_generals.contains(me.getID()) &&
-        //         pair.second.node->m_element->as<Classifier>().m_inheritedMembers.contains(me.getID())) {
-        //             pair.second.node->m_element->as<Classifier>().m_inheritedMembers.innerRemove(&el);
-        //     }
-        // }
+        for (auto& reference : me.m_node.lock()->m_references) {
+            if (
+                reference.m_node.lock()->m_ptr &&
+                std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->is<Classifier>()
+            ) {
+                Classifier& clazz = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->as<Classifier>();
+                if (
+                    clazz.m_generals.contains(me.getID()) &&
+                    clazz.m_inheritedMembers.contains(me.getID())
+                ) {
+                    me.removeFromReadonlySet(clazz.m_inheritedMembers, el);
+                }
+            }
+        }
     }
 }
 

@@ -68,6 +68,7 @@ namespace UML {
     struct AbstractDataFunctor {
         virtual std::string getData() = 0;
         virtual void setData(std::string data) = 0;
+        virtual ~AbstractDataFunctor() = default;
     };
 
     typedef std::pair<std::string, std::shared_ptr<AbstractDataFunctor>> DataPair;

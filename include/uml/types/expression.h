@@ -30,5 +30,21 @@ namespace UML {
                 makeSetPair("operands", el.m_operands)
             };
         }
+        static const bool extraData = true;
+        struct ExpressionSymbolPolicy : public AbstractDataPolicy {
+            Expression& el;
+            ExpressionSymbolPolicy(Expression& el) : el(el) {}
+            std::string getData() override {
+                return el.getSymbol();
+            }
+            void setData(std::string data) override {
+                el.setSymbol(data);
+            }
+        };
+        static DataList data(Expression& el) {
+            return DataList {
+                createDataPair("symbol", new ExpressionSymbolPolicy(el))
+            };
+        }
     };
 }

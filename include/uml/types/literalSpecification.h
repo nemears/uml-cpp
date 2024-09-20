@@ -14,10 +14,6 @@ namespace UML {
 
     template <>
     struct ElementInfo<LiteralSpecification> : public DefaultInfo {
-        static const bool abstract = true;
         inline static std::string name {"LiteralSpecification"};
-        static SetList sets(__attribute__((unused)) LiteralSpecification& el) {
-            return SetList {};
-        }
     };
 }

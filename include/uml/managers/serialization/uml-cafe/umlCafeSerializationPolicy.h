@@ -246,6 +246,8 @@ namespace UML {
                         emitIndividualData<0, typename ElementType::Info::BaseList>(emitter, visited, el);
                         emitIndividualData<I + 1, EmitTypes>(emitter, visited, el);
                         emitIndividualDataHelper<ElementType>(emitter, el);
+                    } else {
+                        emitIndividualData<I + 1, EmitTypes>(emitter, visited, el);
                     }
                 }
             }
@@ -260,6 +262,8 @@ namespace UML {
                         emitWholeData<0, typename ElementType::Info::BaseList>(emitter, visited, el, self);
                         emitWholeData<I + 1, EmitTypes>(emitter, visited, el, self);
                         emitWholeDataHelper<ElementType>(emitter, el, self);
+                    } else {
+                        emitWholeData<I + 1, EmitTypes>(emitter, visited, el, self);
                     }
                 }
             }
@@ -476,6 +480,10 @@ namespace UML {
                     if constexpr (std::tuple_size<ElBases>{} > 0) {
                         parseIndividual<0, ElBases>(el, node, visited);
                     }
+                } else {
+                    if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
+                        parseIndividual<I + 1, ParseTypes>(dynamic_cast<std::tuple_element_t<I + 1, ParseTypes>&>(el), node, visited);
+                    }
                 }
             }
 
@@ -531,6 +539,10 @@ namespace UML {
                     using ElBases = ElementType::Info::BaseList;
                     if constexpr (std::tuple_size<ElBases>{} > 0) {
                         parseWhole<0, ElBases>(el, node, visited);
+                    }
+                } else {
+                    if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
+                        parseWhole<I + 1, ParseTypes>(dynamic_cast<std::tuple_element_t<I + 1, ParseTypes>&>(el), node, visited);
                     }
                 }
             }

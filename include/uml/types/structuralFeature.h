@@ -23,10 +23,28 @@ namespace UML {
 
     template <>
     struct ElementInfo<StructuralFeature> : public DefaultInfo {
-        static const bool abstract = true;
         inline static std::string name{"StructuralFeature"};
-        static SetList sets(__attribute__((unused)) StructuralFeature& el) {
-            return SetList{};
+        static const bool extraData = true;
+        struct StructuralFeautreReadOnlyPolicy : public AbstractDataPolicy {
+            StructuralFeature& el;
+            StructuralFeautreReadOnlyPolicy(StructuralFeature& el) : el(el) {}
+            std::string getData() override {
+                if (el.isReadOnly()) {
+                    return "true";
+                }
+                return "";
+            }
+            void setData(std::string data) override {
+                if (data == "true") {
+                    el.setReadOnly(true);
+                }
+                
+            }
+        };
+        static DataList data(StructuralFeature& el) {
+            return DataList {
+                createDataPair("readonly", new StructuralFeautreReadOnlyPolicy(el))
+            };
         }
     };
 }

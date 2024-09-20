@@ -65,16 +65,16 @@ namespace UML {
         }
     };
 
-    struct AbstractDataFunctor {
+    struct AbstractDataPolicy {
         virtual std::string getData() = 0;
         virtual void setData(std::string data) = 0;
-        virtual ~AbstractDataFunctor() = default;
+        virtual ~AbstractDataPolicy() = default;
     };
 
-    typedef std::pair<std::string, std::shared_ptr<AbstractDataFunctor>> DataPair;
+    typedef std::pair<std::string, std::shared_ptr<AbstractDataPolicy>> DataPair;
     typedef std::vector<DataPair> DataList;
 
-    inline DataPair createDataPair(const char* name, AbstractDataFunctor* functor) {
-        return std::make_pair<std::string, std::shared_ptr<AbstractDataFunctor>>(name, std::shared_ptr<AbstractDataFunctor>(functor));
+    inline DataPair createDataPair(const char* name, AbstractDataPolicy* policy) {
+        return std::make_pair<std::string, std::shared_ptr<AbstractDataPolicy>>(name, std::shared_ptr<AbstractDataPolicy>(policy));
     }
 }

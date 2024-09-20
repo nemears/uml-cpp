@@ -61,7 +61,7 @@ namespace UML {
 
         // Data
         static const bool extraData = true;
-        struct NamedElementNameFunctor : public AbstractDataFunctor {
+        struct NamedElementNameFunctor : public AbstractDataPolicy {
             NamedElement& el;
             NamedElementNameFunctor(NamedElement& el) : el(el) {}
             std::string getData() override {
@@ -71,7 +71,7 @@ namespace UML {
                 el.setName(data);
             }
         };
-        struct NamedElementVisibilityFunctor : public AbstractDataFunctor {
+        struct NamedElementVisibilityFunctor : public AbstractDataPolicy {
             NamedElement& el;
             NamedElementVisibilityFunctor(NamedElement& el) : el(el) {}
             std::string getData() override {

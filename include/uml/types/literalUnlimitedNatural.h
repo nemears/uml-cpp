@@ -23,5 +23,28 @@ namespace UML {
     struct ElementInfo<LiteralUnlimitedNatural> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"LiteralUnlimitedNatural"};
+        static const bool extraData = true;
+        struct LiteralUnlimitedNaturalValuePolicy : public AbstractDataPolicy {
+            LiteralUnlimitedNatural& el;
+            LiteralUnlimitedNaturalValuePolicy(LiteralUnlimitedNatural& el) : el(el) {}
+            std::string getData() override {
+                if (el.isInfinite()) {
+                    return "*";
+                }
+                return std::to_string(el.getNumberValue());
+            }
+            void setData(std::string data) override {
+                if (data == "*") {
+                    el.setInfinite();
+                } else {
+                    el.setNumberValue(std::stol(data));
+                }
+            }
+        };
+        static DataList data(LiteralUnlimitedNatural& el) {
+            return DataList {
+                createDataPair("value", new LiteralUnlimitedNaturalValuePolicy(el))
+            };
+        }
     };
 }

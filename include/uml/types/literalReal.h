@@ -19,8 +19,21 @@ namespace UML {
     struct ElementInfo<LiteralReal> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name{"LiteralReal"};
-        static SetList sets(__attribute__((unused)) LiteralReal& el) {
-            return SetList {};
+        static const bool extraData = true;
+        struct LiteralRealValuePolicy : public AbstractDataPolicy {
+            LiteralReal& el;
+            LiteralRealValuePolicy(LiteralReal& el) : el(el) {}
+            std::string getData() override {
+                return std::to_string(el.getValue());
+            }
+            void setData(std::string data) override {
+                el.setValue(std::stod(data));
+            }
+        };
+        static DataList data(LiteralReal& el) {
+            return DataList {
+                createDataPair("value", new LiteralRealValuePolicy(el))
+            };
         }
     };
 }

@@ -18,5 +18,21 @@ namespace UML {
     struct ElementInfo<LiteralString> : public DefaultInfo {
         static const bool abstract = false;
         inline static std::string name {"LiteralString"};
+        static const bool extraData = true;
+        struct LiteralStringValuePolicy : public AbstractDataPolicy {
+            LiteralString& el;
+            LiteralStringValuePolicy(LiteralString& el) : el(el) {}
+            std::string getData() override {
+                return el.getValue();
+            }
+            void setData(std::string data) override {
+                el.setValue(data);
+            }
+        };
+        static DataList data(LiteralString& el) {
+            return DataList {
+                createDataPair("value", new LiteralStringValuePolicy(el))
+            };
+        }
     };
 }

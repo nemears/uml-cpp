@@ -75,5 +75,74 @@ namespace UML {
                 makeSetPair("upperValue", el.m_upVal)
             };
         }
+        static const bool extraData = true;
+        struct MultiplicityElementUpperPolicy : public AbstractDataPolicy {
+            MultiplicityElement& el;
+            MultiplicityElementUpperPolicy(MultiplicityElement& el) : el(el) {}
+            std::string getData() override {
+                if (el.getUpper() > 0) {
+                    return std::to_string(el.getUpper());
+                }
+                return "";
+            }
+            void setData(std::string data) override {
+                el.setUpper(std::stoi(data));
+            }
+        };
+        struct MultiplicityElementLowerPolicy : public AbstractDataPolicy {
+            MultiplicityElement& el;
+            MultiplicityElementLowerPolicy(MultiplicityElement& el) : el(el) {}
+            std::string getData() override {
+                if (el.getLower() > 0) {
+                    return std::to_string(el.getLower());
+                }
+                return "";
+            }
+            void setData(std::string data) override {
+                el.setLower(std::stoi(data));
+            }
+        };
+        struct MultiplicityElementIsOrderedPolicy : public AbstractDataPolicy {
+            MultiplicityElement& el;
+            MultiplicityElementIsOrderedPolicy(MultiplicityElement& el) : el(el) {}
+            std::string getData() override {
+                if (el.isOrdered()) {
+                    return "true";
+                }
+                return "";
+            }
+            void setData(std::string data) override {
+                if (data == "true") {
+                    el.setIsOrdered(true);
+                } else if (data == "false") {
+                    el.setIsOrdered(false);
+                }
+            }
+        };
+        struct MultiplicityElementIsUniquePolicy : public AbstractDataPolicy {
+            MultiplicityElement& el;
+            MultiplicityElementIsUniquePolicy(MultiplicityElement& el) : el(el) {}
+            std::string getData() override {
+                if (!el.isUnique()) {
+                    return "false";
+                }
+                return "";
+            }
+            void setData(std::string data) override {
+                if (data == "true") {
+                    el.setIsUnique(true);
+                } else if (data == "false") {
+                    el.setIsUnique(false);
+                }
+            }
+        };
+        static DataList data(MultiplicityElement& el) {
+            return DataList {
+                createDataPair("upper", new MultiplicityElementUpperPolicy(el)),
+                createDataPair("lower", new MultiplicityElementLowerPolicy(el)),
+                createDataPair("isOrdered", new MultiplicityElementIsOrderedPolicy(el)),
+                createDataPair("isUnique", new MultiplicityElementIsUniquePolicy(el))
+            };
+        }
     };
 }

@@ -326,6 +326,17 @@ namespace UML {
                 // check if there are any ptrs to this node,
                 // if there are none we can get rid of this node
                 if (node->m_ptrs.empty() && !node->m_ptr) {
+                    // get rid of our reference in empty nodes
+                    for (auto& reference : node->m_references) {
+                        auto& referenceReferences = reference.m_node.lock()->m_references;
+                        for (auto referenceReferenceIt = referenceReferences.begin(); referenceReferenceIt != referenceReferences.end(); ++referenceReferenceIt) {
+                            if (referenceReferenceIt->m_node.lock()->m_id == id) {
+                                referenceReferences.erase(referenceReferenceIt);
+                                break;
+                            }
+                        }
+                    }
+
                     // get rid of node from graph
                     std::lock_guard<std::mutex> lockGuard(m_graphMutex);
                     m_graph.erase(id);

@@ -16,9 +16,22 @@ namespace UML {
     template <>
     struct ElementInfo<LiteralInt> : public DefaultInfo {
         static const bool abstract = false;
-        inline static std::string name {""};
-        static SetList sets(__attribute__((unused)) LiteralInt& el) {
-            return SetList{};
+        inline static std::string name {"LiteralInt"};
+        static const bool extraData = true;
+        struct LiteralIntValuePolicy : public AbstractDataPolicy {
+            LiteralInt& el;
+            LiteralIntValuePolicy(LiteralInt& el) : el(el) {}
+            std::string getData() override {
+                return std::to_string(el.getValue());
+            }
+            void setData(std::string data) override {
+                el.setValue(std::stoi(data));
+            }
+        };
+        static DataList data(LiteralInt& el) {
+            return DataList {
+                createDataPair("value", new LiteralIntValuePolicy(el))
+            };
         }
     };
 }

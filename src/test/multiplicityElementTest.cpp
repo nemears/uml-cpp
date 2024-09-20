@@ -12,7 +12,7 @@ class MultiplicityElementTest : public ::testing::Test {
 };
 
 TEST_F(MultiplicityElementTest, SetAndGetProperLowerAndUpperTest) {
-    Manager<> m;
+    UmlManager m;
     Property& p = *m.create<Property>();
     p.setLower(0);
     p.setUpper(1);
@@ -23,19 +23,19 @@ TEST_F(MultiplicityElementTest, SetAndGetProperLowerAndUpperTest) {
 }
 
 // TEST_F(MultiplicityElementTest, GetLowerBeforeSettingTest) {
-//     Manager<> m;
+//     UmlManager m;
 //     Property& p = *m.create<Property>();
 //     ASSERT_THROW(p.getLower(), MultiplicityElement::MultiplicityNotSpecifiedException);
 // }
 
 // TEST_F(MultiplicityElementTest, GetUpperBeforeSettingTest) {
-//     Manager<> m;
+//     UmlManager m;
 //     Property& p = *m.create<Property>();
 //     ASSERT_THROW(p.getUpper(), MultiplicityElement::MultiplicityNotSpecifiedException);
 // }
 
 TEST_F(MultiplicityElementTest, MultiplictySpecifiedTest) {
-    Manager<> m;
+    UmlManager m;
     Property& p = *m.create<Property>();
     ASSERT_FALSE(p.multiplicitySpecified());
     p.setLower(0);
@@ -45,7 +45,7 @@ TEST_F(MultiplicityElementTest, MultiplictySpecifiedTest) {
 }
 
 TEST_F(MultiplicityElementTest, MultiplicityValueTest) {
-    Manager<> m;
+    UmlManager m;
     Property& p = *m.create<Property>();
     LiteralInt& low = *m.create<LiteralInt>();
     low.setValue(0);

@@ -18,8 +18,26 @@ namespace UML {
     struct ElementInfo<LiteralBool> : public DefaultInfo {
         static const bool abstract = false;
         inline static const std::string name {"LiteralBool"};
-        static SetList sets(__attribute__((unused)) LiteralBool& el) {
-            return SetList {};
+        static const bool extraData = true;
+        struct LiteralBoolValuePolicy : public AbstractDataPolicy {
+            LiteralBool& el;
+            LiteralBoolValuePolicy(LiteralBool& el) : el(el) {}
+            std::string getData() override {
+                if (el.getValue()) {
+                    return "true";
+                }
+                return "";
+            }
+            void setData(std::string data) override {
+                if (data == "true") {
+                    el.setValue(true);
+                }
+            }
+        };
+        static DataList data(LiteralBool& el) {
+            return DataList {
+                createDataPair("value", new LiteralBoolValuePolicy(el))
+            };
         }
     };
 }

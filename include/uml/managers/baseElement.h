@@ -68,6 +68,13 @@ namespace UML {
     // TList is a std::tuple<> with all of the types your manager can make
     template <class Tlist>
     class BaseElement : public AbstractElement, public ManagerTypes<Tlist> {
+        private:
+            class BadUmlCast: public std::exception {
+                public:
+                    virtual const char* what() const throw() {
+                        return "tried to access multiplicity but it was not specified yet";
+                    }
+            } badCastException;
         protected:
             BaseElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
         public:
@@ -79,7 +86,7 @@ namespace UML {
             template <class T>
             T& as() {
                 if (!is<T>()) {
-                    // TODO throw
+                    throw badCastException;
                 }
                 return dynamic_cast<T&>(*this);
             }

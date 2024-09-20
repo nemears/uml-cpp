@@ -31,11 +31,10 @@ namespace UML {
 
     template <>
     struct ElementInfo<Behavior> : public DefaultInfo {
-        static const bool abstract = true;
         inline static const std::string name {"Behavior"};
         static SetList sets(Behavior& el) {
             return SetList {
-                makeSetPair("ownedParameter", el.getOwnedParameters()),
+                makeSetPair("ownedParameters", el.m_ownedParameters),
                 makeSetPair("specification", el.m_specification)
             };
         }

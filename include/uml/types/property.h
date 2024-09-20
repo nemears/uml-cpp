@@ -119,6 +119,31 @@ namespace UML{
                 makeSetPair("subsettedProperties", el.m_subsettedProperties)
             };
         }
+        static const bool extraData = true;
+        struct PropertyAggregationPolicy : public AbstractDataPolicy {
+            Property& el;
+            PropertyAggregationPolicy(Property& el) : el(el) {}
+            std::string getData() override {
+                switch (el.getAggregation()) {
+                    case AggregationKind::COMPOSITE: return "composite";
+                    case AggregationKind::SHARED: return "shared";
+                    case AggregationKind::NONE: return "";
+                }
+                return "";
+            }
+            void setData(std::string data) override {
+                if (data == "composite") {
+                    el.setAggregation(AggregationKind::COMPOSITE);
+                } else if (data == "shared") {
+                    el.setAggregation(AggregationKind::SHARED);
+                }
+            }
+        };
+        static DataList data(Property& el) {
+            return DataList {
+                createDataPair("aggregation", new PropertyAggregationPolicy(el))
+            };
+        }
     };
 
     class ImproperRedefinitionException : public std::exception {

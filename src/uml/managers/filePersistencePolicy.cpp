@@ -10,7 +10,7 @@ std::string FilePersistencePolicy::loadElementData(ID id) {
     std::string dataPath = m_mountPath + "/mount/" + id.string() + ".yml"; // TODO extension from serialization policy?
     std::ifstream file(dataPath);
     if (!file.good()) {
-        throw FilePersistenceError("No such file exists! " + m_projectPath);
+        throw FilePersistenceError("No such file exists! " + dataPath);
     }
     return std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
 }

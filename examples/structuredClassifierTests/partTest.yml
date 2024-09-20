@@ -2,5 +2,5 @@
   Class:
     ownedAttributes:
       - Property:
-          aggregation: COMPOSITE
+          aggregation: composite
 ...

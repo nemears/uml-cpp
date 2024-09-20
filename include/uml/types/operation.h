@@ -68,7 +68,7 @@ namespace UML {
                 makeSetPair("class", el.m_class),
                 makeSetPair("dataType", el.m_dataType),
                 makeSetPair("interface", el.m_interface),
-                makeSetPair("ownedParameters", el.m_ownedParameters)
+                makeSetPair("ownedParameters", el.m_operationOwnedParameters)
             };
         }
     };

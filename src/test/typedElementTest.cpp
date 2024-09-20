@@ -10,7 +10,7 @@ class TypedElementTest : public ::testing::Test {
 };
 
 TEST_F(TypedElementTest, GetTypeTest) {
-	Manager<> m;
+	UmlManager m;
 	Property& p = *m.create<Property>();
 	Class& t = *m.create<Class>();
 	p.setType(t);
@@ -18,7 +18,7 @@ TEST_F(TypedElementTest, GetTypeTest) {
 }
 
 TEST_F(TypedElementTest, GetTypeReturnsNullTest) {
-	Manager<> m;
+	UmlManager m;
 	Property& t = *m.create<Property>();
     ASSERT_FALSE(t.getType());
 }

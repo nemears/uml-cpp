@@ -117,6 +117,7 @@ namespace UML {
                 return true;
             }
             bool rootSet() const;
+            bool isSubSetOf(AbstractSet& set) const;
             AbstractSet* subSetContains(ID id) const;
             IDSet ids() const;
     };

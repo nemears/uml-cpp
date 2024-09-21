@@ -92,8 +92,13 @@ namespace UML {
                         if (!possibleScope || possibleScope->second->size() == 0) {
                             return basePossibleScope;
                         }
-                        if (possibleScope->second->readonly() && basePossibleScope && !basePossibleScope->second->readonly() && basePossibleScope->second->size() != 0) {
-                            return basePossibleScope;
+                        if (basePossibleScope && basePossibleScope->second->size() != 0) {
+                            if (possibleScope->second->readonly() && !basePossibleScope->second->readonly()) {
+                                return basePossibleScope;
+                            }
+                            if (basePossibleScope->second->isSubSetOf(*possibleScope->second)) {
+                                return basePossibleScope;
+                            }
                         }
                         return possibleScope;
                     }

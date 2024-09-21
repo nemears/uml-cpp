@@ -17,35 +17,35 @@ class ParameterTest : public ::testing::Test {
 };
 
 TEST_F(ParameterTest, TestSetDirection) {
-    Manager<> m;
+    UmlManager m;
     Parameter& p = *m.create<Parameter>();
     p.setDirection(ParameterDirectionKind::IN_UML);
     ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::IN_UML);
 }
 
 TEST_F(ParameterTest, TestGetNotSetDirection) {
-    Manager<> m;
+    UmlManager m;
     Parameter& p = *m.create<Parameter>();
     ASSERT_TRUE(p.getDirection() == ParameterDirectionKind::NONE);
 }
 
 TEST_F(ParameterTest, properExceptions) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_THROW(m.open(ymlPath + "parameterTests/invalidDirection.yml"), SerializationError);
     ASSERT_THROW(m.open(ymlPath + "parameterTests/invalidDirection2.yml"), SerializationError);
 }
 
 TEST_F(ParameterTest, emitParameterWMultiplicityTest) {
-    Manager<> m;
+    UmlManager m;
     OpaqueBehavior& b = *m.create<OpaqueBehavior>();
     Parameter& p = *m.create<Parameter>();
-    b.setID("SeJ_0hSPaIa4EYap3sXgRQm4LuSn");
-    p.setID("QzBhVkqNSRAZMlkHU6cQ3d_Wm8FT");
+    b.setID(ID::fromString("SeJ_0hSPaIa4EYap3sXgRQm4LuSn"));
+    p.setID(ID::fromString("QzBhVkqNSRAZMlkHU6cQ3d_Wm8FT"));
     LiteralInt& low = *m.create<LiteralInt>();
     LiteralInt& high = *m.create<LiteralInt>();
-    low.setID("K2_2cpL966uyziy9e2pGb60cCR5X");
+    low.setID(ID::fromString("K2_2cpL966uyziy9e2pGb60cCR5X"));
     low.setValue(0);
-    high.setID("sGGXJFNinAvKyKVSgc&JAlMWsbw5");
+    high.setID(ID::fromString("sGGXJFNinAvKyKVSgc&JAlMWsbw5"));
     high.setValue(5);
     p.setLowerValue(&low);
     p.setUpperValue(&high);
@@ -55,6 +55,8 @@ TEST_F(ParameterTest, emitParameterWMultiplicityTest) {
   ownedParameters:
     - Parameter:
         id: QzBhVkqNSRAZMlkHU6cQ3d_Wm8FT
+        upper: 5
+        lower: 0
         lowerValue:
           LiteralInt:
             id: K2_2cpL966uyziy9e2pGb60cCR5X
@@ -64,9 +66,7 @@ TEST_F(ParameterTest, emitParameterWMultiplicityTest) {
             id: "sGGXJFNinAvKyKVSgc&JAlMWsbw5"
             value: 5)"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(b, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(b));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }

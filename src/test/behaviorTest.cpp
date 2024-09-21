@@ -18,7 +18,7 @@ class BehaviorTest : public ::testing::Test {
 };
 
 TEST_F(BehaviorTest, removeParameterFunctorTest) {
-    Manager<> m;
+    UmlManager m;
     OpaqueBehavior& b = *m.create<OpaqueBehavior>();
     Parameter& p = *m.create<Parameter>();
     Operation& o = *m.create<Operation>();
@@ -32,9 +32,9 @@ TEST_F(BehaviorTest, removeParameterFunctorTest) {
 }
 
 TEST_F(BehaviorTest, parseMultipleSimpleBodies) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "opaqueBehaviorTests/multipleSimpleBodies.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::OPAQUE_BEHAVIOR);
+    ASSERT_TRUE(m.getRoot()->getElementType() == OpaqueBehavior::Info::elementType);
     OpaqueBehavior* bhv = &m.getRoot()->as<OpaqueBehavior>();
     ASSERT_TRUE(bhv->getName().compare("test") == 0);
     ASSERT_TRUE(bhv->getID() == ID::fromString("i0wopIpBjBHdekQ57DbWeHfWmQp3"));
@@ -45,9 +45,9 @@ TEST_F(BehaviorTest, parseMultipleSimpleBodies) {
 }
 
 TEST_F(BehaviorTest, parseParameter) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "opaqueBehaviorTests/param.yml").ptr());
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::OPAQUE_BEHAVIOR);
+    ASSERT_TRUE(m.getRoot()->getElementType() == OpaqueBehavior::Info::elementType);
     OpaqueBehavior* bhv = &m.getRoot()->as<OpaqueBehavior>();
     ASSERT_TRUE(bhv->getOwnedParameters().size() == 1);
     ParameterPtr param = bhv->getOwnedParameters().front();
@@ -56,7 +56,7 @@ TEST_F(BehaviorTest, parseParameter) {
 }
 
 TEST_F(BehaviorTest, properParameters) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/improperParameters.yml"), SerializationError);
     ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodyNotLiteralString.yml"), SerializationError);
     ASSERT_THROW(m.open(ymlPath + "opaqueBehaviorTests/bodiesEntryIsSequence.yml"), SerializationError);
@@ -64,16 +64,16 @@ TEST_F(BehaviorTest, properParameters) {
 }
 
 TEST_F(BehaviorTest, emitBasicOpaqueBehavior) {
-    Manager<> m;
+    UmlManager m;
     OpaqueBehavior& b = *m.create<OpaqueBehavior>();
     Property& p = *m.create<Property>();
     Operation& o = *m.create<Operation>();
-    b.setID("0FTAvf5nrXsknnc60ziElK2TDb7D");
+    b.setID(ID::fromString("0FTAvf5nrXsknnc60ziElK2TDb7D"));
     b.setName("Opaque");
-    p.setID("YVV4HY0dc4OS0zPOc1HPLfyLmx39");
+    p.setID(ID::fromString("YVV4HY0dc4OS0zPOc1HPLfyLmx39"));
     p.setName("prop");
     p.setVisibility(VisibilityKind::PRIVATE);
-    o.setID("P73WqZXNrYSV0fEtHqKAJTv3RDTD");
+    o.setID(ID::fromString("P73WqZXNrYSV0fEtHqKAJTv3RDTD"));
     o.setName("op");
     o.setVisibility(VisibilityKind::PROTECTED);
     b.getOwnedAttributes().add(p);
@@ -92,9 +92,7 @@ TEST_F(BehaviorTest, emitBasicOpaqueBehavior) {
         name: op
         visibility: protected)"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(b, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(b));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }

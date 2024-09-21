@@ -79,5 +79,36 @@ namespace UML {
                 makeSetPair("parameterSets", el.m_parameterSets)
             };
         }
+        static const bool extraData = true;
+        struct ParameterDirectionPolicy : public AbstractDataPolicy {
+            Parameter& el;
+            ParameterDirectionPolicy(Parameter& el) : el(el) {}
+            std::string getData() override {
+                switch (el.getDirection()) {
+                    case ParameterDirectionKind::IN_UML : return "in";
+                    case ParameterDirectionKind::INOUT : return "inout";
+                    case ParameterDirectionKind::OUT_UML : return "out";
+                    case ParameterDirectionKind::RETURN : return "return";
+                    case ParameterDirectionKind::NONE : return "";
+                }
+                return "";
+            }
+            void setData(std::string data) override {
+                if (data == "in") {
+                    el.setDirection(ParameterDirectionKind::IN_UML);
+                } else if (data == "inout") {
+                    el.setDirection(ParameterDirectionKind::INOUT);
+                } else if (data == "out") {
+                    el.setDirection(ParameterDirectionKind::OUT_UML);
+                } else if (data == "return") {
+                    el.setDirection(ParameterDirectionKind::RETURN);
+                }
+            }
+        };
+        static DataList data(Parameter& el) {
+            return DataList {
+                createDataPair("direction", new ParameterDirectionPolicy(el))
+            };
+        }
     };
 }

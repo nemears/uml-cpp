@@ -117,6 +117,20 @@ namespace UML {
     bool AbstractSet::rootSet() const {
         return m_structure->m_rootRedefinedSet == m_structure;
     }
+    bool AbstractSet::isSubSetOf(AbstractSet& set) const {
+        std::list<std::shared_ptr<SetStructure>> queue = {m_structure};
+        while (!queue.empty()) {
+            auto front = queue.front();
+            queue.pop_front();
+            if (front == set.m_structure) {
+                return true;
+            }
+            for (auto superSet : front->m_superSets) {
+                queue.push_back(superSet);
+            }
+        }
+        return false;
+    }
     AbstractSet* AbstractSet::subSetContains(ID id) const {
         for (auto subSet : m_structure->m_rootRedefinedSet->m_subSets) {
             if (subSet->m_set.contains(id)) {

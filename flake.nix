@@ -64,7 +64,7 @@
           packages = {
             uml-cpp = mkUmlCpp {
               src = ./.;
-              version = "0.4.1";
+              version = "0.4.2";
             };
             uml-cpp_0_3_5 = mkUmlCpp {
               src = pkgs.fetchFromGitHub {

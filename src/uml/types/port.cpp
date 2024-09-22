@@ -62,7 +62,7 @@ void Port::removePortInterfaces(BehavioredClassifier& clazz) {
     for (auto& realization : clazz.getInterfaceRealizations()) {
         if (realization.getContract()) {
             if (isConjugated()) {
-                if (!m_required.contains(realization.getContract())) {
+                if (m_required.contains(realization.getContract())) {
                     m_required.innerRemove(realization.getContract());
                 }
             } else {
@@ -77,11 +77,11 @@ void Port::removePortInterfaces(BehavioredClassifier& clazz) {
             for (auto& supplier : dependency.getSuppliers()) {
                 if (supplier.is<Interface>()) {
                     if (isConjugated()) {
-                        if (!m_provided.contains(&supplier)) {
+                        if (m_provided.contains(&supplier)) {
                             m_provided.innerRemove(&supplier);
                         }
                     } else {
-                        if (!m_required.contains(&supplier)) {
+                        if (m_required.contains(&supplier)) {
                             m_required.innerRemove(&supplier);
                         }
                     }
@@ -101,11 +101,11 @@ void Port::TypePolicy::elementRemoved(Type& el, Port& me) {
         me.removePortInterfaces(el.as<BehavioredClassifier>());
     } else if (el.is<Interface>()) {
         if (me.isConjugated()) {
-            if (!me.m_required.contains(&el)) {
+            if (me.m_required.contains(&el)) {
                 me.m_required.innerRemove(&el);
             }
         } else {
-            if (!me.m_provided.contains(&el)) {
+            if (me.m_provided.contains(&el)) {
                 me.m_provided.innerRemove(&el);
             }
         }

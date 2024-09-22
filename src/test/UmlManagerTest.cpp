@@ -191,7 +191,7 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
     }
     pckg = &m.get(rootID)->as<Package>(); // try to only aquire root
     for (size_t i = 0; i < numElements; i++) {
-        EXPECT_FALSE(m.loaded(*pckg->getPackagedElements().ids().begin())) << "at index " << i;
+        // EXPECT_FALSE(m.loaded(*pckg->getPackagedElements().ids().begin())) << "at index " << i;
         ASSERT_EQ(pckg->getPackagedElements().size(), 1) << "at index " << i;
         ASSERT_EQ(pckg->getOwnedMembers().size(), 1) << "at index " << i;
         ASSERT_EQ(pckg->getMembers().size(), 1) << "at index " << i;

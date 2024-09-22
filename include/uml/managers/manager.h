@@ -408,8 +408,21 @@ namespace UML {
                 setRoot(roots[0]);
                 return roots[0];
             }
+            UmlPtr<BaseElement<Tlist>> open() {
+                auto roots = SerializationPolicy::parseWhole(PersistencePolicy::getProjectData(), *this);
+                if (roots.size() == 0) {
+                    throw ManagerStateException("No elements parsed!");
+                }
+
+                // first element will be root
+                setRoot(roots[0]);
+                return roots[0];
+            }
             void save(std::string location) {
                 PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(*getRoot(), *this), location);
+            }
+            void save() {
+                PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(*getRoot(), *this));
             }
 
             // std::string dump() {

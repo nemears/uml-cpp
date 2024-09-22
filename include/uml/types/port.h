@@ -51,7 +51,60 @@ namespace UML {
             return SetList {
                 makeSetPair("required", port.m_required),
                 makeSetPair("provided", port.m_provided),
-                makeSetPair("portType", port.m_portType)
+                makeSetPair("type", port.m_portType)
+            };
+        }
+        static const bool extraData = true;
+        struct PortIsBehaviorPolicy : public AbstractDataPolicy {
+            Port& el;
+            PortIsBehaviorPolicy(Port& el) : el(el) {}
+            std::string getData() override {
+                if (el.isBehavior()) {
+                    return "true";
+                }
+                return "";
+            }
+            void setData(std::string data) override {
+                if (data == "true") {
+                    el.setIsBehavior(true);
+                }
+            }
+        };
+        struct PortIsConjugatedPolicy : public AbstractDataPolicy {
+            Port& el;
+            PortIsConjugatedPolicy(Port& el) : el(el) {}
+            std::string getData() override {
+                if (el.isConjugated()) {
+                    return "true";
+                }
+                return "";
+            }
+            void setData(std::string data) override {
+                if (data == "true") {
+                    el.setIsConjugated(true);
+                }
+            }
+        };
+        struct PortIsServicePolicy : public AbstractDataPolicy {
+            Port& el;
+            PortIsServicePolicy(Port& el) : el(el) {}
+            std::string getData() override {
+                if (!el.isService()) {
+                    return "false";
+                }
+                return "";
+            }
+            void setData(std::string data) override {
+                if (data == "false") {
+                    el.setIsService(false);
+                }
+            }
+        };
+        static DataList data(Port& el) {
+            return DataList {
+                createDataPair("isBehavior", new PortIsBehaviorPolicy(el)),
+                createDataPair("isConjugated", new PortIsConjugatedPolicy(el)),
+                createDataPair("isService", new PortIsServicePolicy(el))
             };
         }
     };

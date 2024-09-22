@@ -14,7 +14,7 @@ class SignalTest : public ::testing::Test {
 };
 
 TEST_F(SignalTest, basicSignalAndReceptionTest) {
-    Manager<> m;
+    UmlManager m;
     Class& clazz = *m.create<Class>();
     Signal& signal = *m.create<Signal>();
     Reception& reception = *m.create<Reception>();
@@ -63,9 +63,9 @@ TEST_F(SignalTest, basicSignalAndReceptionTest) {
 }
 
 TEST_F(SignalTest, parseSignalTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "signalTests/basicSignal.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+    ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
     Signal& signal = pckg.getPackagedElements().get("signal")->as<Signal>();
@@ -77,17 +77,17 @@ TEST_F(SignalTest, parseSignalTest) {
 }
 
 TEST_F(SignalTest, emitSignalTest) {
-    Manager<> m;
+    UmlManager m;
     Package& pckg = *m.create<Package>();
     Signal& signal = *m.create<Signal>();
     Property& attr = *m.create<Property>();
     Class& clazz = *m.create<Class>();
     Reception& reception = *m.create<Reception>();
-    pckg.setID("IJabcFrKrE9yxVT&qQUQ2&xzVxpd");
-    signal.setID("_sgqzW88lsR9bBTk8GyBRjYujfB5");
-    attr.setID("DSV8nQG_4VargpMXqb57S2dACThU");
-    clazz.setID("HdQGnHEztfzbMvcBURUAEPRWuw7M");
-    reception.setID("Y2ANJRtpZRZNCwR7jFo2v_DVm8pZ");
+    pckg.setID(ID::fromString("IJabcFrKrE9yxVT&qQUQ2&xzVxpd"));
+    signal.setID(ID::fromString("_sgqzW88lsR9bBTk8GyBRjYujfB5"));
+    attr.setID(ID::fromString("DSV8nQG_4VargpMXqb57S2dACThU"));
+    clazz.setID(ID::fromString("HdQGnHEztfzbMvcBURUAEPRWuw7M"));
+    reception.setID(ID::fromString("Y2ANJRtpZRZNCwR7jFo2v_DVm8pZ"));
     pckg.getPackagedElements().add(signal, clazz);
     signal.getOwnedAttributes().add(attr);
     clazz.getOwnedReceptions().add(reception);
@@ -107,9 +107,7 @@ TEST_F(SignalTest, emitSignalTest) {
           - Property:
               id: DSV8nQG_4VargpMXqb57S2dACThU)"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(pckg));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }

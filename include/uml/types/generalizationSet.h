@@ -46,5 +46,42 @@ namespace UML {
                 makeSetPair("generalizations", el.m_generalizations),
             };
         }
+        static const bool extraData = true;
+        struct GeneralizationSetIsCoveringPolicy : public AbstractDataPolicy {
+            GeneralizationSet& el;
+            GeneralizationSetIsCoveringPolicy(GeneralizationSet& el) : el(el) {}
+            std::string getData() override {
+                if (el.isCovering()) {
+                    return "true";
+                }
+                return "";
+            }
+            void setData(std::string data) override {
+                if (data == "true") {
+                    el.setCovering(true);
+                }
+            }
+        };
+        struct GeneralizationSetIsDisjointPolicy : public AbstractDataPolicy {
+            GeneralizationSet& el;
+            GeneralizationSetIsDisjointPolicy(GeneralizationSet& el) : el(el) {}
+            std::string getData() override {
+                if (el.isDisjoint()) {
+                    return "true";
+                }
+                return "";
+            }
+            void setData(std::string data) override {
+                if (data == "true") {
+                    el.setDisjoint(true);
+                }
+            }
+        };
+        static DataList data(GeneralizationSet& el) {
+            return DataList {
+                createDataPair("isCovering", new GeneralizationSetIsCoveringPolicy(el)),
+                createDataPair("isDisjoint", new GeneralizationSetIsDisjointPolicy(el))
+            };
+        }
     };
 }

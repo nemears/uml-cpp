@@ -18,13 +18,13 @@ class GeneralizationSetTest : public ::testing::Test {
 };
 
 TEST_F(GeneralizationSetTest, testGetElementType) {
-    Manager<> m;
+    UmlManager m;
     GeneralizationSet& set = *m.create<GeneralizationSet>();
-    ASSERT_EQ(set.getElementType(), ElementType::GENERALIZATION_SET);
+    ASSERT_EQ(set.getElementType(), GeneralizationSet::Info::elementType);
 }
 
 TEST_F(GeneralizationSetTest, AddAndRemoveTosequencesTest) {
-    Manager<> m;
+    UmlManager m;
     GeneralizationSet& set = *m.create<GeneralizationSet>();
     Generalization& generalization = *m.create<Generalization>();
     Class& general = *m.create<Class>();
@@ -48,20 +48,20 @@ TEST_F(GeneralizationSetTest, AddAndRemoveTosequencesTest) {
 }
 
 TEST_F(GeneralizationSetTest, parseBasicGeneralizationSetTest) {
-  Manager<> m;
+  UmlManager m;
   ASSERT_NO_THROW(m.open(ymlPath + "generalizationSetTests/basicGeneralizationSet.yml"));
-  ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+  ASSERT_TRUE(m.getRoot()->getElementType() == Package::Info::elementType);
   Package& pckg = m.getRoot()->as<Package>();
   ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-  ASSERT_EQ(pckg.getPackagedElements().get("general")->getElementType(), ElementType::CLASS);
+  ASSERT_EQ(pckg.getPackagedElements().get("general")->getElementType(), Class::Info::elementType);
   Class& general = pckg.getPackagedElements().get("general")->as<Class>();
   ASSERT_EQ(general.getPowerTypeExtent().size(), 1);
-  ASSERT_EQ(pckg.getPackagedElements().get("specific")->getElementType(), ElementType::CLASS);
+  ASSERT_EQ(pckg.getPackagedElements().get("specific")->getElementType(), Class::Info::elementType);
   Class& specific = pckg.getPackagedElements().get("specific")->as<Class>();
   ASSERT_EQ(specific.getGeneralizations().size(), 1);
   Generalization& generalization = *specific.getGeneralizations().front();
   ASSERT_EQ(generalization.getGeneralizationSets().size(), 1);
-  ASSERT_EQ(pckg.getPackagedElements().get("set")->getElementType(), ElementType::GENERALIZATION_SET);
+  ASSERT_EQ(pckg.getPackagedElements().get("set")->getElementType(), GeneralizationSet::Info::elementType);
   GeneralizationSet& set = pckg.getPackagedElements().get("set")->as<GeneralizationSet>();
   ASSERT_EQ(general.getPowerTypeExtent().front(), &set);
   ASSERT_EQ(generalization.getGeneralizationSets().front(), &set);
@@ -74,17 +74,17 @@ TEST_F(GeneralizationSetTest, parseBasicGeneralizationSetTest) {
 }
 
 TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
-    Manager<> m;
+    UmlManager m;
     Package& root = *m.create<Package>();
     Class& general = *m.create<Class>();
     Class& specific = *m.create<Class>();
     Generalization& generalization = *m.create<Generalization>();
     GeneralizationSet& set = *m.create<GeneralizationSet>();
-    root.setID("UpJ207YoGcD0zWHbmtYZhLAYEhRP");
-    general.setID("mmUnLGAGcUocJQlNkF2BxGUzadjY");
-    specific.setID("wJ7Y3K6BmTpN3D2pEtbbBt5aMhuo");
-    generalization.setID("vGAiKV8tZmvkxePhhEns36Z654xF");
-    set.setID("uLHn5GsNBUhrk9cgTO&qLw5LO068");
+    root.setID(ID::fromString("UpJ207YoGcD0zWHbmtYZhLAYEhRP"));
+    general.setID(ID::fromString("mmUnLGAGcUocJQlNkF2BxGUzadjY"));
+    specific.setID(ID::fromString("wJ7Y3K6BmTpN3D2pEtbbBt5aMhuo"));
+    generalization.setID(ID::fromString("vGAiKV8tZmvkxePhhEns36Z654xF"));
+    set.setID(ID::fromString("uLHn5GsNBUhrk9cgTO&qLw5LO068"));
     specific.getGeneralizations().add(generalization);
     generalization.setGeneral(general);
     generalization.getGeneralizationSets().add(set);
@@ -93,15 +93,9 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
     std::string expectedEmit = R""""(Package:
   id: UpJ207YoGcD0zWHbmtYZhLAYEhRP
   packagedElements:
-    - Class:
-        id: mmUnLGAGcUocJQlNkF2BxGUzadjY
-        powertypeExtent:
-          - "uLHn5GsNBUhrk9cgTO&qLw5LO068"
     - GeneralizationSet:
         id: "uLHn5GsNBUhrk9cgTO&qLw5LO068"
-        isCovering: false
-        isDisjoint: false
-        powertype: mmUnLGAGcUocJQlNkF2BxGUzadjY
+        powerType: mmUnLGAGcUocJQlNkF2BxGUzadjY
         generalizations:
           - vGAiKV8tZmvkxePhhEns36Z654xF
     - Class:
@@ -111,17 +105,19 @@ TEST_F(GeneralizationSetTest, emitGeneralizationSetTest) {
               id: vGAiKV8tZmvkxePhhEns36Z654xF
               general: mmUnLGAGcUocJQlNkF2BxGUzadjY
               generalizationSets:
-                - "uLHn5GsNBUhrk9cgTO&qLw5LO068")"""";
+                - "uLHn5GsNBUhrk9cgTO&qLw5LO068"
+    - Class:
+        id: mmUnLGAGcUocJQlNkF2BxGUzadjY
+        powerTypeExtent:
+          - "uLHn5GsNBUhrk9cgTO&qLw5LO068")"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(root, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(root));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(GeneralizationSetTest, mountGeneralizationSet) {
-  Manager<> m;
+  UmlManager m;
   Package& root = *m.create<Package>();
   Class& general = *m.create<Class>();
   Class& specific = *m.create<Class>();

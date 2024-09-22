@@ -29,5 +29,21 @@ namespace UML {
                 makeSetPair("annotatedElements", el.m_annotatedElements)
             };
         }
+        static const bool extraData = true;
+        struct CommentBodyPolicy : public AbstractDataPolicy {
+            Comment& el;
+            CommentBodyPolicy(Comment& el) : el(el) {}
+            std::string getData() override {
+                return el.getBody();
+            }
+            void setData(std::string data) override {
+                el.setBody(data);
+            }
+        };
+        static DataList data(Comment& el) {
+            return DataList {
+                createDataPair("body", new CommentBodyPolicy(el))
+            };
+        }
     };
 }

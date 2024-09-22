@@ -16,13 +16,13 @@ class UmlManagerTest : public ::testing::Test {
 };
 
 TEST_F(UmlManagerTest, FactoryTest) {
-    Manager<> m;
+    UmlManager m;
     Class& c = *m.create<Class>();
-    ASSERT_TRUE(c.getElementType() == ElementType::CLASS);
+    ASSERT_TRUE(c.getElementType() == Class::Info::elementType);
 }
 
 TEST_F(UmlManagerTest, openAndSaveTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "umlManagerTests/simpleModel.yml"));
     ASSERT_EQ(m.getRoot()->getID(), ID::fromString("GAfdua&ubXfsR1EgdB3HeVglkaor"));
     ASSERT_EQ(m.getRoot()->as<NamedElement>().getName(), "test");
@@ -44,7 +44,7 @@ TEST_F(UmlManagerTest, openAndSaveTest) {
 }
 
 // TEST_F(UmlManagerTest, multipleFileTest) {
-//     Manager<> m;
+//     UmlManager m;
 //     ASSERT_NO_THROW(m.open(ymlPath + "umlManagerTests/multipleFiles.yml"));
 //     ASSERT_TRUE(m.getRoot());
 //     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
@@ -92,7 +92,7 @@ TEST_F(UmlManagerTest, openAndSaveTest) {
 // }
 
 // TEST_F(UmlManagerTest, releaseTest) {
-//     UmlManager<> m;
+//     UmlUmlManager m;
 //     Package& p = *m.create<Package>();
 //     Package& c = *m.create<Package>();
 //     p.getPackagedElements().add(c);
@@ -110,7 +110,7 @@ TEST_F(UmlManagerTest, openAndSaveTest) {
 // }
 
 TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
-    Manager<> m;
+    UmlManager m;
     Package& p = *m.create<Package>();
     Class& c = *m.create<Class>();
     InstanceSpecification& i = *m.create<InstanceSpecification>();
@@ -160,7 +160,7 @@ TEST_F(UmlManagerTest, releaseTestW_MoreRefs) {
 }
 
 TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {
-    Manager<> m;
+    UmlManager m;
     Package& pckg = *m.create<Package>();
     m.setRoot(&pckg);
     m.mount(ymlPath + "umlManagerTests");
@@ -171,7 +171,7 @@ TEST_F(UmlManagerTest, addToManagerAfterMountedTest) {
 
 TEST_F(UmlManagerTest, ManagerMountStressTest) {
     const size_t numElements = 20;
-    Manager<> m;
+    UmlManager m;
     Package& root = *m.create<Package>();
     ID rootID = root.getID();
     m.setRoot(&root);
@@ -207,7 +207,7 @@ TEST_F(UmlManagerTest, ManagerMountStressTest) {
 }
 
 TEST_F(UmlManagerTest, basicEraseFunctionalityTest) {
-    Manager<> m;
+    UmlManager m;
     Package& package = *m.create<Package>();
     Package& child = *m.create<Package>();
     package.getPackagedElements().add(child);
@@ -221,7 +221,7 @@ TEST_F(UmlManagerTest, basicEraseFunctionalityTest) {
 }
 
 TEST_F(UmlManagerTest, eraseReferenceWhileReleasedTest) {
-    Manager<> m;
+    UmlManager m;
     ClassPtr c = m.create<Class>();
     InstanceSpecificationPtr i = m.create<InstanceSpecification>();
     i->getClassifiers().add(*c);
@@ -235,7 +235,7 @@ TEST_F(UmlManagerTest, eraseReferenceWhileReleasedTest) {
 }
 
 TEST_F(UmlManagerTest, policyManagerTest) {
-    Manager<> m;
+    UmlManager m;
     PackagePtr p = m.create<Package>();
     m.mount(".");
     m.release(*p);
@@ -263,19 +263,19 @@ TEST_F(UmlManagerTest, policyManagerTest) {
 // }
 
 TEST_F(UmlManagerTest, overwriteRootTest) {
-    Manager<> m;
-    m.setRoot(m.create<Package>().ptr());
+    UmlManager m;
+    m.setRoot(m.create<Package>());
     m.mount(".");
     m.getRoot().release();
     m.get(m.getRoot().id());
 }
 
 TEST_F(UmlManagerTest, loadBadFileTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_THROW(m.open(ymlPath + "notafile.yml"), FilePersistenceError);
 }
 
 TEST_F(UmlManagerTest, duplicateElementTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_THROW(m.open(ymlPath + "uml-cafe/duplicateElementGettingThrough.yml"), SerializationError);
 }

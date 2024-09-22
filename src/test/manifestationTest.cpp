@@ -9,7 +9,7 @@ UML_SINGLETON_INTEGRATION_TEST(ManifestationUtilizedElement, Package, Manifestat
 class ManifestationTest : public ::testing::Test {};
 
 TEST_F(ManifestationTest, setUtilizedElementTest) {
-    Manager<> m;
+    UmlManager m;
     Manifestation& man = *m.create<Manifestation>();
     Dependency& d = *m.create<Dependency>();
     man.setUtilizedElement(d);

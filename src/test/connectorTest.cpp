@@ -13,7 +13,7 @@ UML_SINGLETON_INTEGRATION_TEST(ConnectorEndRole, Port, ConnectorEnd, &ConnectorE
 class ConnectorTest : public ::testing::Test {};
 
 TEST_F(ConnectorTest, basicPropertyConnectorTest) {
-    Manager<> m;
+    UmlManager m;
     Class& structuredClassifier = *m.create<Class>();
     Connector& connector = *m.create<Connector>();
     Property& prop1 = *m.create<Property>();
@@ -96,7 +96,7 @@ TEST_F(ConnectorTest, basicPropertyConnectorTest) {
  * This test is based on the uml2.5 spec figure 11.4 (page 185)
  **/
 TEST_F(ConnectorTest, typedConnectorTest) {
-    Manager<> m;
+    UmlManager m;
     Class& car = *m.create<Class>();
     Class& wheel = *m.create<Class>();
     Class& engine = *m.create<Class>();

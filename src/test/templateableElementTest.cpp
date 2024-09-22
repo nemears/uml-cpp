@@ -29,9 +29,9 @@ class TemplateableElementTest : public ::testing::Test {
 };
 
 TEST_F(TemplateableElementTest, basicTemplateSignature) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/classW_emptySignature.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(m.getRoot()->getElementType(), Class::Info::elementType);
     Class* c = &m.getRoot()->as<Class>();
     ASSERT_TRUE(c->getOwnedTemplateSignature());
     TemplateSignaturePtr s = c->getOwnedTemplateSignature();
@@ -39,28 +39,28 @@ TEST_F(TemplateableElementTest, basicTemplateSignature) {
 }
 
 TEST_F(TemplateableElementTest, singleEmptyTemplateParameterTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/classW_SingleTemplateParameter.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::CLASS);
-    Class * c = &m.getRoot()->as<Class>();
+    ASSERT_EQ(m.getRoot()->getElementType(), Class::Info::elementType);
+    ClassPtr c = &m.getRoot()->as<Class>();
     ASSERT_TRUE(c->getOwnedTemplateSignature());
-    TemplateSignature* s = c->getOwnedTemplateSignature().ptr();
+    TemplateSignaturePtr s = c->getOwnedTemplateSignature();
     ASSERT_EQ(s->getOwnedParameters().size(), 1);
     TemplateParameterPtr p = s->getOwnedParameters().front();
     ASSERT_EQ(p->getID(), ID::fromString("t9FFOy3xNADeUDNvWJOc&7USIfsf"));
 }
 
 // TEST_F(TemplateableElementTest, multipleParametersTest) {
-//     Manager<> m;
+//     UmlManager m;
 //     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/clasW_multipleParameters.yml"));
-//     ASSERT_EQ(m.getRoot()->getElementType(), ElementType::CLASS);
+//     ASSERT_EQ(m.getRoot()->getElementType(), Class::Info::elementType);
 //     Class* c = &m.getRoot()->as<Class>();
 //     ASSERT_TRUE(c->getOwnedTemplateSignature());
 //     TemplateSignature* s = c->getOwnedTemplateSignature().ptr();
 //     ASSERT_EQ(s->getOwnedParameters().size(), 3);
 //     TemplateParameter* p1 = &s->getOwnedParameters().front();
 //     ASSERT_TRUE(p1->getOwnedParameteredElement());
-//     ASSERT_EQ(p1->getOwnedParameteredElement()->getElementType(), ElementType::PRIMITIVE_TYPE);
+//     ASSERT_EQ(p1->getOwnedParameteredElement()->getElementType(), PrimitiveType::Info::elementType);
 //     PrimitiveType* p = dynamic_cast<PrimitiveType*>(p1->getOwnedParameteredElement().ptr());
 //     ASSERT_EQ(p->getName(), "long");
 //     ASSERT_EQ(*p->getOwningTemplateParameter(), *p1);
@@ -78,9 +78,9 @@ TEST_F(TemplateableElementTest, singleEmptyTemplateParameterTest) {
 // }
 
 TEST_F(TemplateableElementTest, referencedParameterTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/operationW_referencedParameter.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType() , ElementType::CLASS);
+    ASSERT_EQ(m.getRoot()->getElementType() , Class::Info::elementType);
     Class& c = m.getRoot()->as<Class>();
     ASSERT_EQ(c.getOwnedOperations().size(), 2);
     Operation& o1 = *c.getOwnedOperations().front();
@@ -97,9 +97,9 @@ TEST_F(TemplateableElementTest, referencedParameterTest) {
 }
 
 TEST_F(TemplateableElementTest, referenceParameteredElementTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/operationW_referenceParameteredElement.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(m.getRoot()->getElementType(), Class::Info::elementType);
     Class& c = m.getRoot()->as<Class>();
     ASSERT_EQ(c.getOwnedAttributes().size(), 1);
     Property& prop = *c.getOwnedAttributes().front();
@@ -115,16 +115,16 @@ TEST_F(TemplateableElementTest, referenceParameteredElementTest) {
 }
 
 TEST_F(TemplateableElementTest, basicTemplateBindingTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/templateBinding.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+    ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("PK0LXXxxVodB957G_lqrskz9gXqT"))->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("PK0LXXxxVodB957G_lqrskz9gXqT"))->getElementType(), Class::Info::elementType);
     Class& c1 = pckg.getPackagedElements().get(ID::fromString("PK0LXXxxVodB957G_lqrskz9gXqT"))->as<Class>();;
     ASSERT_TRUE(c1.getOwnedTemplateSignature());
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
-    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("eakhRnuZo&zMT5BZ8OOuTszw1ylv"))->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("eakhRnuZo&zMT5BZ8OOuTszw1ylv"))->getElementType(), Class::Info::elementType);
     Class& c2 = pckg.getPackagedElements().get(ID::fromString("eakhRnuZo&zMT5BZ8OOuTszw1ylv"))->as<Class>();
     ASSERT_EQ(c2.getTemplateBindings().size(), 1);
     TemplateBinding& b = *c2.getTemplateBindings().front();
@@ -133,18 +133,18 @@ TEST_F(TemplateableElementTest, basicTemplateBindingTest) {
 }
 
 TEST_F(TemplateableElementTest, parameterSubstitutionW_formalTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/parameterSubstitutionW_Formal.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+    ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("SyNjF8Y2rJNl5pfNXIvOiIx7wxq&"))->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("SyNjF8Y2rJNl5pfNXIvOiIx7wxq&"))->getElementType(), Class::Info::elementType);
     Class& c1 = pckg.getPackagedElements().get(ID::fromString("SyNjF8Y2rJNl5pfNXIvOiIx7wxq&"))->as<Class>();
     ASSERT_TRUE(c1.getOwnedTemplateSignature());
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
     ASSERT_EQ(s.getOwnedParameters().size(), 1);
     TemplateParameter& t = *s.getOwnedParameters().front();
-    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("DVTE867SKvT8f7Z34sqaAxMR0jL2"))->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("DVTE867SKvT8f7Z34sqaAxMR0jL2"))->getElementType(), Class::Info::elementType);
     Class& c2 = pckg.getPackagedElements().get(ID::fromString("DVTE867SKvT8f7Z34sqaAxMR0jL2"))->as<Class>();
     ASSERT_EQ(c2.getTemplateBindings().size(), 1);
     TemplateBinding& b = *c2.getTemplateBindings().front();
@@ -157,49 +157,49 @@ TEST_F(TemplateableElementTest, parameterSubstitutionW_formalTest) {
 }
 
 TEST_F(TemplateableElementTest, parameterSubstitutionW_OwnedActualTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/parameterSubstitutionW_OwnedActual.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+    ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("eFTIp_&18VO2Hh9zYx8VQc75jVlx"))->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("eFTIp_&18VO2Hh9zYx8VQc75jVlx"))->getElementType(), Class::Info::elementType);
     Class& c1 = pckg.getPackagedElements().get(ID::fromString("eFTIp_&18VO2Hh9zYx8VQc75jVlx"))->as<Class>();
     ASSERT_TRUE(c1.getOwnedTemplateSignature());
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
-    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("RAPpSu&jfJx&WBoxhHqzaKa&YwBR"))->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("RAPpSu&jfJx&WBoxhHqzaKa&YwBR"))->getElementType(), Class::Info::elementType);
     Class& c2 = pckg.getPackagedElements().get(ID::fromString("RAPpSu&jfJx&WBoxhHqzaKa&YwBR"))->as<Class>();
     ASSERT_EQ(c2.getTemplateBindings().size(), 1);
     TemplateBinding& b = *c2.getTemplateBindings().front();
     ASSERT_EQ(b.getParameterSubstitutions().size(), 1);
     TemplateParameterSubstitution& p = *b.getParameterSubstitutions().front();
     ASSERT_TRUE(p.getOwnedActual());
-    ASSERT_EQ(p.getOwnedActual()->getElementType(), ElementType::PRIMITIVE_TYPE);
+    ASSERT_EQ(p.getOwnedActual()->getElementType(), PrimitiveType::Info::elementType);
 }
 
 TEST_F(TemplateableElementTest, parameterSubstitutionW_Actual) {
-    Manager<> m;
+    UmlManager m;
     m.open(ymlPath + "uml/primitiveTypes.yml");
     ASSERT_NO_THROW(m.open(ymlPath + "templateableElementTests/parameterSubstitutionW_backwardsActual.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+    ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("2aqU0YRqhzL4nhRkhmK3pmoNZbMe"))->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("2aqU0YRqhzL4nhRkhmK3pmoNZbMe"))->getElementType(), Class::Info::elementType);
     Class& c1 = pckg.getPackagedElements().get(ID::fromString("2aqU0YRqhzL4nhRkhmK3pmoNZbMe"))->as<Class>();
     ASSERT_TRUE(c1.getOwnedTemplateSignature());
     TemplateSignature& s = *c1.getOwnedTemplateSignature();
-    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("Q&emnaGslavgAUccL94d07Lp3hyD"))->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("Q&emnaGslavgAUccL94d07Lp3hyD"))->getElementType(), Class::Info::elementType);
     Class& c2 = pckg.getPackagedElements().get(ID::fromString("Q&emnaGslavgAUccL94d07Lp3hyD"))->as<Class>();
     ASSERT_EQ(c2.getTemplateBindings().size(), 1);
     TemplateBinding& b = *c2.getTemplateBindings().front();
     ASSERT_EQ(b.getParameterSubstitutions().size(), 1);
     TemplateParameterSubstitution& p = *b.getParameterSubstitutions().front();
     ASSERT_TRUE(p.getActual());
-    ASSERT_EQ(p.getActual()->getElementType(), ElementType::PRIMITIVE_TYPE);
+    ASSERT_EQ(p.getActual()->getElementType(), PrimitiveType::Info::elementType);
     ASSERT_EQ(p.getActual()->getID(), ID::fromString("bool_bzkcabSy3CiFd&HmJOtnVRK"));
 }
 
 TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
-    Manager<> m;
+    UmlManager m;
     Package& pckg = *m.create<Package>();
     Package& c1 = *m.create<Package>();
     TemplateSignature& sig = *m.create<TemplateSignature>();
@@ -213,19 +213,19 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
     TemplateParameterSubstitution& ps2 = *m.create<TemplateParameterSubstitution>();
     PrimitiveType& st1 = *m.create<PrimitiveType>();
     PrimitiveType& st2 = *m.create<PrimitiveType>();
-    pckg.setID("b4EasFCBjochdruOQfxBubQw3VlD");
-    c1.setID("NYok8HRGpv_rOfAmfrRB94uwOZrb");
-    c2.setID("fMWs7G1YTFU1VQEAgNcZqt4lp6dB");
-    sig.setID("nOh5namt9s4oOvimAXQpR8nJHfTF");
-    p1.setID("OLULeTlF1Rzf4U5IpNQVW1nYd29c");
-    p2.setID("Km4WF5rf3ohUeLTr99POiW7VMb_4");
-    d1.setID("GZaiGksTjm4GeM2GdJ5BXuajWnGU");
-    d2.setID("a2arTP9Z2LteDWsjTS0ziALCWlXU");
-    b.setID("e_ob7tgbN16Plhj_sTAOVD5ijLrL");
-    ps1.setID("7bYUY3yFUBrfPmzKKrV2NJmXuECA");
-    ps2.setID("puJaUTZsLPdGJkJSJtdX51MIA2ch");
-    st1.setID("8&K_0aLhvQDM12ZeYg9nPiSrexHo");
-    st2.setID("4gA4RgL9vKTRYd61D99y1d_Yggj6");
+    pckg.setID(ID::fromString("b4EasFCBjochdruOQfxBubQw3VlD"));
+    c1.setID(ID::fromString("NYok8HRGpv_rOfAmfrRB94uwOZrb"));
+    c2.setID(ID::fromString("fMWs7G1YTFU1VQEAgNcZqt4lp6dB"));
+    sig.setID(ID::fromString("nOh5namt9s4oOvimAXQpR8nJHfTF"));
+    p1.setID(ID::fromString("OLULeTlF1Rzf4U5IpNQVW1nYd29c"));
+    p2.setID(ID::fromString("Km4WF5rf3ohUeLTr99POiW7VMb_4"));
+    d1.setID(ID::fromString("GZaiGksTjm4GeM2GdJ5BXuajWnGU"));
+    d2.setID(ID::fromString("a2arTP9Z2LteDWsjTS0ziALCWlXU"));
+    b.setID(ID::fromString("e_ob7tgbN16Plhj_sTAOVD5ijLrL"));
+    ps1.setID(ID::fromString("7bYUY3yFUBrfPmzKKrV2NJmXuECA"));
+    ps2.setID(ID::fromString("puJaUTZsLPdGJkJSJtdX51MIA2ch"));
+    st1.setID(ID::fromString("8&K_0aLhvQDM12ZeYg9nPiSrexHo"));
+    st2.setID(ID::fromString("4gA4RgL9vKTRYd61D99y1d_Yggj6"));
     c1.setOwnedTemplateSignature(&sig);
     sig.getOwnedParameters().add(p1);
     sig.getOwnedParameters().add(p2);
@@ -252,18 +252,18 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
         templateBindings:
           - TemplateBinding:
               id: e_ob7tgbN16Plhj_sTAOVD5ijLrL
+              signature: nOh5namt9s4oOvimAXQpR8nJHfTF
               parameterSubstitutions:
+                - TemplateParameterSubstitution:
+                    id: puJaUTZsLPdGJkJSJtdX51MIA2ch
+                    formal: Km4WF5rf3ohUeLTr99POiW7VMb_4
+                    actual: 4gA4RgL9vKTRYd61D99y1d_Yggj6
                 - TemplateParameterSubstitution:
                     id: 7bYUY3yFUBrfPmzKKrV2NJmXuECA
                     formal: OLULeTlF1Rzf4U5IpNQVW1nYd29c
                     ownedActual:
                       PrimitiveType:
                         id: "8&K_0aLhvQDM12ZeYg9nPiSrexHo"
-                - TemplateParameterSubstitution:
-                    id: puJaUTZsLPdGJkJSJtdX51MIA2ch
-                    formal: Km4WF5rf3ohUeLTr99POiW7VMb_4
-                    actual: 4gA4RgL9vKTRYd61D99y1d_Yggj6
-              signature: nOh5namt9s4oOvimAXQpR8nJHfTF
     - Package:
         id: NYok8HRGpv_rOfAmfrRB94uwOZrb
         ownedTemplateSignature:
@@ -283,15 +283,13 @@ TEST_F(TemplateableElementTest, emitBigTemplateExampleTest) {
     - Package:
         id: a2arTP9Z2LteDWsjTS0ziALCWlXU)"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(pckg));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 // TEST_F(TemplateableElementTest, mountClassWithTemplateSignature) {
-//     Manager<> m;
+//     UmlManager m;
 //     Package& root = *m.create<Package>();
 //     Class& clazz = *m.create<Class>();
 //     Class& otherClazz = *m.create<Class>();

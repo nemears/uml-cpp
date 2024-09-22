@@ -17,7 +17,7 @@ class BehavioredClassifierTest : public ::testing::Test {
 };
 
 TEST_F(BehavioredClassifierTest, addAndRemoveOwnedBehaviorTest) {
-    Manager<> m;
+    UmlManager m;
     Class& clazz = *m.create<Class>();
     OpaqueBehavior& bhv = *m.create<OpaqueBehavior>();
     clazz.getOwnedBehaviors().add(bhv);
@@ -33,7 +33,7 @@ TEST_F(BehavioredClassifierTest, addAndRemoveOwnedBehaviorTest) {
 }
 
 TEST_F(BehavioredClassifierTest, setAndRemoveClassifierBehaviorTest) {
-    Manager<> m;
+    UmlManager m;
     Class& clazz = *m.create<Class>();
     OpaqueBehavior& bhv = *m.create<OpaqueBehavior>();
     clazz.setClassifierBehavior(bhv);
@@ -63,7 +63,7 @@ TEST_F(BehavioredClassifierTest, setAndRemoveClassifierBehaviorTest) {
 }
 
 TEST_F(BehavioredClassifierTest, setClassifierBehaviorTest) {
-    Manager<> m;
+    UmlManager m;
     Class& a = *m.create<Class>();
     OpaqueBehavior& ab = *m.create<OpaqueBehavior>();
     a.setClassifierBehavior(ab);
@@ -126,23 +126,23 @@ TEST_F(BehavioredClassifierTest, setClassifierBehaviorTest) {
 }
 
 TEST_F(BehavioredClassifierTest, simpleClassTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "behavioredClassifierTests/simpleClass.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(m.getRoot()->getElementType(), Class::Info::elementType);
     Class& clazz = m.getRoot()->as<Class>();
     ASSERT_EQ(clazz.getOwnedBehaviors().size(), 1);
-    ASSERT_EQ(clazz.getOwnedBehaviors().front()->getElementType(), ElementType::OPAQUE_BEHAVIOR);
+    ASSERT_EQ(clazz.getOwnedBehaviors().front()->getElementType(), OpaqueBehavior::Info::elementType);
     OpaqueBehavior& bhv = clazz.getOwnedBehaviors().front()->as<OpaqueBehavior>();
     ASSERT_TRUE(clazz.getClassifierBehavior());
     ASSERT_EQ(clazz.getClassifierBehavior()->getID(), bhv.getID());
 }
 
 TEST_F(BehavioredClassifierTest, simpleClassEmitTest) {
-    Manager<> m;
+    UmlManager m;
     Class& clazz = *m.create<Class>();
     OpaqueBehavior& bhv = *m.create<OpaqueBehavior>();
-    clazz.setID("E0q8HmS9yU_Qk9ct2XLjnuJOXxwc");
-    bhv.setID("C1cleV_7fGQEgHdOfOYZ319RoCNu");
+    clazz.setID(ID::fromString("E0q8HmS9yU_Qk9ct2XLjnuJOXxwc"));
+    bhv.setID(ID::fromString("C1cleV_7fGQEgHdOfOYZ319RoCNu"));
     clazz.setClassifierBehavior(bhv);
     std::string expectedEmit = R""""(Class:
   id: E0q8HmS9yU_Qk9ct2XLjnuJOXxwc
@@ -150,15 +150,13 @@ TEST_F(BehavioredClassifierTest, simpleClassEmitTest) {
     OpaqueBehavior:
       id: C1cleV_7fGQEgHdOfOYZ319RoCNu)"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(clazz, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(clazz));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(BehavioredClassifierTest, mountFullBehavioredClassifierTest) {
-    Manager<> m;
+    UmlManager m;
     Class& clazz = *m.create<Class>();
     OpaqueBehavior& classifierBehavior = *m.create<OpaqueBehavior>();
     OpaqueBehavior& ownedBehavior = *m.create<OpaqueBehavior>();

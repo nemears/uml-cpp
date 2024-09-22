@@ -36,7 +36,7 @@ namespace UML {
         inline static const std::string name {"TemplateableElement"};
         static SetList sets(TemplateableElement& el) {
             return SetList {
-                makeSetPair("ownedTemplate", el.m_ownedTemplateSignature),
+                makeSetPair("ownedTemplateSignature", el.m_ownedTemplateSignature),
                 makeSetPair("templateBindings", el.m_templateBindings)
             };
         }

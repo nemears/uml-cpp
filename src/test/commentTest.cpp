@@ -17,7 +17,7 @@ class CommentTest : public ::testing::Test {
 };
 
 TEST_F(CommentTest, annotatedElementTest) {
-    Manager<> m;
+    UmlManager m;
     Package& pckg = *m.create<Package>();
     Package& annotated = *m.create<Package>();
     Comment& comment = *m.create<Comment>();
@@ -34,9 +34,9 @@ TEST_F(CommentTest, annotatedElementTest) {
 }
 
 TEST_F(CommentTest, testBasicComment) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "commentTests/comment.yml").ptr());
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+    ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getOwnedComments().size(), 1);
     Comment& comment = *pckg.getOwnedComments().front();
@@ -44,11 +44,11 @@ TEST_F(CommentTest, testBasicComment) {
 }
 
 TEST_F(CommentTest, commentEmitTest) {
-    Manager<> m;
+    UmlManager m;
     Package& pckg = *m.create<Package>();
     Comment& comment = *m.create<Comment>();
-    pckg.setID("zN&UM2AHrXX07rAiNxTmmMwLYI1O");
-    comment.setID("FqaulNq6bCe_8J5M0Ff2oCCaQD05");
+    pckg.setID(ID::fromString("zN&UM2AHrXX07rAiNxTmmMwLYI1O"));
+    comment.setID(ID::fromString("FqaulNq6bCe_8J5M0Ff2oCCaQD05"));
     pckg.getOwnedComments().add(comment);
     std::string expectedEmit = R""""(Package:
   id: "zN&UM2AHrXX07rAiNxTmmMwLYI1O"
@@ -56,15 +56,13 @@ TEST_F(CommentTest, commentEmitTest) {
     - Comment:
         id: FqaulNq6bCe_8J5M0Ff2oCCaQD05)"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(pckg));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(CommentTest, mountAndEditCommentTest) {
-    Manager<> m;
+    UmlManager m;
     Package& root = *m.create<Package>();
     Comment& comment = *m.create<Comment>();
     root.getOwnedComments().add(comment);

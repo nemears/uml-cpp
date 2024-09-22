@@ -7,69 +7,78 @@
 using namespace UML;
 
 void BehavioredClassifier::InterfaceRealizationPolicy::elementRemoved(InterfaceRealization& el, BehavioredClassifier& me) {
-//     if (el.getContract()) {
-//         std::list<Classifier*> queue = {&me};
-//         while (!queue.empty()) {
-//             Classifier* front = queue.front();
-//             queue.pop_front();
-//             for (auto& pair : front->m_node->m_references) {
-//                 if (!pair.second.node || !pair.second.node->m_element) {
-//                     // TODO aquire?
-//                 }
-//                 if (pair.second.node && pair.second.node->m_element->is(ElementType::PORT)) {
-//                     Port& port = pair.second.node->m_element->as<Port>();
-//                     if (front->getID() == port.getType().id()) {
-//                         if (port.isConjugated()) {
-//                             if (port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
-//                                 port.m_required.innerRemove(el.getContract());
-//                             }
-//                         } else {
-//                             if (port.getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
-//                                 port.m_provided.innerRemove(el.getContract());
-//                             }
-//                         }
-//                     }
-//                 } else if (pair.second.node && pair.second.node->m_element->is(ElementType::CLASSIFIER)) {
-//                     if (pair.second.node->m_element->as<Classifier>().getGenerals().contains(*front)) {
-//                         queue.push_back(&pair.second.node->m_element->as<Classifier>());
-//                     }
-//                 }
-//             }   
-//         }
-//     }
+    if (el.getContract()) {
+        std::list<ClassifierPtr> queue = {&me};
+        while (!queue.empty()) {
+            ClassifierPtr front = queue.front();
+            queue.pop_front();
+            for (auto& reference  : me.getNode(*front)->m_references) {
+                // if (!pair.second.node || !pair.second.node->m_element) {
+                //     // TODO aquire?
+                // }
+                auto referenceEl = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr);
+                if (referenceEl->is<Port>()) {
+                // if (pair.second.node && pair.second.node->m_element->is<Port>()) {
+                    Port& port = referenceEl->as<Port>();
+                    // Port& port = pair.second.node->m_element->as<Port>();
+                    if (front->getID() == port.getType().id()) {
+                        if (port.isConjugated()) {
+                            if (port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
+                                me.removeFromReadonlySet(port.m_required, *el.getContract());
+                                // port.m_required.innerRemove(el.getContract());
+                            }
+                        } else {
+                            if (port.getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
+                                me.removeFromReadonlySet(port.m_provided, *el.getContract());
+                                // port.m_provided.innerRemove(el.getContract());
+                            }
+                        }
+                    }
+                } else if (referenceEl->is<Classifier>()) {
+                    if (referenceEl->as<Classifier>().getGenerals().contains(*front)) {
+                        queue.push_back(&referenceEl->as<Classifier>());
+                    }
+                }
+            }   
+        }
+    }
 }
 
 void BehavioredClassifier::InterfaceRealizationPolicy::elementAdded(InterfaceRealization& el, BehavioredClassifier& me) {
-//     if (el.getContract()) {
-//         std::list<Classifier*> queue = {&me};
-//         while (!queue.empty()) {
-//             Classifier* front = queue.front();
-//             queue.pop_front();
-//             for (auto& pair : front->m_node->m_references) {
-//                 if (!pair.second.node || !pair.second.node->m_element) {
-//                     // TODO aquire?
-//                 }
-//                 if (pair.second.node && pair.second.node->m_element->is(ElementType::PORT)) {
-//                     Port& port = pair.second.node->m_element->as<Port>();
-//                     if (port.getType().id() == front->m_id) {
-//                         if (port.isConjugated()) {
-//                             if (!port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
-//                                 port.m_required.innerAdd(el.getContract());
-//                             }
-//                         } else {
-//                             if (!port.getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
-//                                 port.m_provided.innerAdd(el.getContract());
-//                             }
-//                         }
-//                     }
-//                 } else if (pair.second.node && pair.second.node->m_element->is(ElementType::CLASSIFIER)) {
-//                     if (pair.second.node->m_element->as<Classifier>().getGenerals().contains(*front)) {
-//                         queue.push_back(&pair.second.node->m_element->as<Classifier>());
-//                     }
-//                 }
-//             }
-//         }
-//     }
+    if (el.getContract()) {
+        std::list<ClassifierPtr> queue = {&me};
+        while (!queue.empty()) {
+            ClassifierPtr front = queue.front();
+            queue.pop_front();
+            for (auto& reference : me.getNode(*front)->m_references) {
+                // if (!pair.second.node || !pair.second.node->m_element) {
+                //     // TODO aquire?
+                // }
+                auto referencedEl = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr);
+                // if (pair.second.node && pair.second.node->m_element->is(ElementType::PORT)) {
+                if (referencedEl->is<Port>()) {
+                    Port& port = referencedEl->as<Port>();
+                    if (port.getType().id() == front.id()) {
+                        if (port.isConjugated()) {
+                            if (!port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
+                                me.addToReadonlySet(port.m_required, *el.getContract());
+                                // port.m_required.innerAdd(el.getContract());
+                            }
+                        } else {
+                            if (!port.getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
+                                me.addToReadonlySet(port.m_provided, *el.getContract());
+                                // port.m_provided.innerAdd(el.getContract());
+                            }
+                        }
+                    }
+                } else if (referencedEl->is<Classifier>()) {
+                    if (referencedEl->as<Classifier>().getGenerals().contains(*front)) {
+                        queue.push_back(&referencedEl->as<Classifier>());
+                    }
+                }
+            }
+        }
+    }
 }
 
 Singleton<Behavior, BehavioredClassifier>& BehavioredClassifier::getClassifierBehaviorSingleton() {

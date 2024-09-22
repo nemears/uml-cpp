@@ -126,7 +126,7 @@ namespace UML {
                 emitData<T>(emitter, el);
                 for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
                     auto set = setPair.second;
-                    if (set->readonly() || set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
+                    if (/*set->readonly() ||*/ set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
                         continue;
                     }
 
@@ -134,7 +134,7 @@ namespace UML {
                     std::size_t numElsInSet = set->size();
                     for (auto id : set->ids()) {
                         auto subSetWithEl = set->subSetContains(id);
-                        if (subSetWithEl && !subSetWithEl->readonly()) {
+                        if (subSetWithEl /*&& !subSetWithEl->readonly()*/) {
                             numElsInSet--;
                         }
                     }
@@ -337,10 +337,10 @@ namespace UML {
                 throw SerializationError("Could not identify type to parse relevant to this manager!");
             }
 
-            std::unordered_map<AbstractReadableSet*, ID> m_setsToRunPolicies;
+            std::unordered_map<AbstractSet*, ID> m_setsToRunPolicies;
 
-            void addByID(AbstractReadableSet& set, ID id) {
-                set.add(id);
+            void addByID(AbstractSet& set, ID id) {
+                addToSet(set, id);
                 m_setsToRunPolicies[&set] = id;
             }
 
@@ -359,21 +359,20 @@ namespace UML {
             void parseIndividualHelper(T& el, const YAML::Node& node) {
                 parseData<T>(el, node);
                 for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
-                    if (setPair.second->readonly() || !setPair.second->rootSet()) {
+                    if (!setPair.second->rootSet()) {
                         continue;
                     }
-                    auto set = dynamic_cast<AbstractReadableSet*>(setPair.second);
+                    auto set = setPair.second;
                     if (node[setPair.first]) {
                         auto& setNode = node[setPair.first];
                         if (setNode.IsScalar()) {
                             if (set->setType() != SetType::SINGLETON) {
                                 throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
                             }
-                            // TODO if parsing compositely, check to make sure the set is not composite
-                            set->add(ID::fromString(setNode.template as<std::string>()));
+                            addToSet(*set, ID::fromString(setNode.template as<std::string>()));
                         } else if (setNode.IsSequence()) {
                             for (const auto& valNode : setNode) {
-                                set->add(ID::fromString(valNode.template as<std::string>()));
+                                addToSet(*set, ID::fromString(valNode.template as<std::string>()));
                             }
                         } else {
                             throw SetStateException("Invalid set formatting for individual parsing! line number " + std::to_string(setNode.Mark().line));
@@ -431,20 +430,17 @@ namespace UML {
             void parseWholeHelper(T& el, const YAML::Node& node) {
                 parseData<T>(el, node);
                 for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
-                    if (setPair.second->readonly() || !setPair.second->rootSet()) {
+                    if (!setPair.second->rootSet()) {
                         continue;
                     }
-                    auto set = dynamic_cast<AbstractReadableSet*>(setPair.second);
+                    auto set = setPair.second;
                     if (node[setPair.first]) {
                         auto& setNode = node[setPair.first];
                         if (setNode.IsScalar()) {
                             if (set->setType() != SetType::SINGLETON) {
                                 throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
                             }
-                            // TODO if parsing compositely, check to make sure the set is not composite
-                            // TODO ensure policy is always ran?
-                            this->addByID(*set, ID::fromString(setNode.template as<std::string>()));
-                            // set->add(ID::fromString(setNode.template as<std::string>()));
+                            addByID(*set, ID::fromString(setNode.template as<std::string>()));
                         } else if (setNode.IsSequence()) {
                             for (const auto& valNode : setNode) {
                                 if (valNode.IsMap()) {
@@ -453,9 +449,7 @@ namespace UML {
                                     auto parsedChild = match.functor.parseWhole(match.innerData);
                                     this->addToSet(*set, *parsedChild);
                                 } else if (valNode.IsScalar()) {
-                                    // TODO run policy
                                     this->addByID(*set, ID::fromString(valNode.template as<std::string>()));
-                                    // set->add(ID::fromString(valNode.template as<std::string>()));
                                 } else {
                                     throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(valNode.Mark().line));
                                 }

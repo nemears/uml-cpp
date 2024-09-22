@@ -14,6 +14,7 @@ namespace UML {
     class Package : public PackageableElement, public Namespace, public TemplateableElement {
 
         friend class PackageImport;
+        friend struct ElementInfo<Package>;
         
         protected:
             class PackageableElementPolicy : public IndexablePolicy {
@@ -34,7 +35,7 @@ namespace UML {
             Set<PackageMerge, Package>& getPackageMerge();
             Set<ProfileApplication, Package>& getProfileApplications();
             ReadOnlyIndexableSet<Stereotype, Package>& getOwnedStereotypes();
-            typedef TypeInfo<std::tuple<PackageableElement, Namespace/*, TemplateableElement*/>, Package> Info;
+            typedef TypeInfo<std::tuple<PackageableElement, Namespace, TemplateableElement>, Package> Info;
     };
 
     template <>
@@ -43,10 +44,10 @@ namespace UML {
         inline static const std::string name {"Package"};
         static SetList sets(Package& el) {
             return SetList {
-                std::make_pair<std::string, AbstractSet*>("packagedElements", &el.getPackagedElements()),
-                std::make_pair<std::string, AbstractSet*>("packageMerges", &el.getPackageMerge()),
-                std::make_pair<std::string, AbstractSet*>("profileApplications", &el.getProfileApplications()),
-                makeSetPair("ownedStereotypes", el.getOwnedStereotypes())
+                makeSetPair("packagedElements", el.m_packagedElements),
+                makeSetPair("packageMerges", el.m_packageMerge),
+                makeSetPair("profileApplications", el.m_profileApplications),
+                makeSetPair("ownedStereotypes", el.m_ownedStereotypes)
             };
         }
     };

@@ -42,7 +42,7 @@ namespace UML{
                 makeSetPair("ownedAttributes", el.m_classOwnedAttrubutes),
                 makeSetPair("ownedOperations", el.m_ownedOperations),
                 makeSetPair("nestedClassifiers", el.m_nestedClassifiers),
-                makeSetPair("ownedRecpetions", el.m_ownedReceptions)
+                makeSetPair("ownedReceptions", el.m_ownedReceptions)
             };
         }
     };

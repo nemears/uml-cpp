@@ -21,7 +21,7 @@ class InterfaceTest : public ::testing::Test {
 };
 
 TEST_F(InterfaceTest, basicInterfaceTest) {
-    Manager<> m;
+    UmlManager m;
     Interface& interface_uml = *m.create<Interface>();
     Property& property1 = *m.create<Property>();
     Property& property2 = *m.create<Property>();
@@ -121,20 +121,20 @@ TEST_F(InterfaceTest, basicInterfaceTest) {
 }
 
 TEST_F(InterfaceTest, parseBasicInterfaceTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "interfaceTests/basicInterface.yml"));
-    Element* el = m.getRoot().ptr();
-    ASSERT_TRUE(el->getElementType() == ElementType::PACKAGE);
+    ElementPtr el = m.getRoot();
+    ASSERT_TRUE(el->getElementType() == Package::Info::elementType);
     Package& pckg = el->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg.getPackagedElements().get("interface")->getElementType(), ElementType::INTERFACE_UML);
+    ASSERT_EQ(pckg.getPackagedElements().get("interface")->getElementType(), Interface::Info::elementType);
     Interface& interface_uml = pckg.getPackagedElements().get("interface")->as<Interface>();
     ASSERT_EQ(interface_uml.getOwnedAttributes().size(), 1);
     ASSERT_EQ(interface_uml.getOwnedOperations().size(), 1);
     ASSERT_EQ(interface_uml.getNestedClassifiers().size(), 1);
     Property& prop = *interface_uml.getOwnedAttributes().front();
     Operation& op = *interface_uml.getOwnedOperations().front();
-    ASSERT_EQ(interface_uml.getNestedClassifiers().front()->getElementType(), ElementType::DATA_TYPE);
+    ASSERT_EQ(interface_uml.getNestedClassifiers().front()->getElementType(), DataType::Info::elementType);
     DataType& nested = interface_uml.getNestedClassifiers().front()->as<DataType>();
     ASSERT_EQ(prop.getName(), "prop");
     ASSERT_EQ(op.getName(), "op");
@@ -142,7 +142,7 @@ TEST_F(InterfaceTest, parseBasicInterfaceTest) {
     ASSERT_EQ(interface_uml.getGeneralizations().size(), 1);
     Generalization& generalization = *interface_uml.getGeneralizations().front();
     ASSERT_TRUE(generalization.getGeneral());
-    ASSERT_EQ(generalization.getGeneral()->getElementType(), ElementType::INTERFACE_UML);
+    ASSERT_EQ(generalization.getGeneral()->getElementType(), Interface::Info::elementType);
     Interface& general = generalization.getGeneral()->as<Interface>();
     Class& clazz = pckg.getPackagedElements().get("implementingClazz")->as<Class>();
     ASSERT_EQ(clazz.getInterfaceRealizations().size(), 1);
@@ -152,7 +152,7 @@ TEST_F(InterfaceTest, parseBasicInterfaceTest) {
 }
 
 TEST_F(InterfaceTest, emitInterfaceTest) {
-    Manager<> m;
+    UmlManager m;
     Package& root = *m.create<Package>();
     Interface& interface_uml = *m.create<Interface>();
     Property& prop = *m.create<Property>();
@@ -162,15 +162,15 @@ TEST_F(InterfaceTest, emitInterfaceTest) {
     Generalization& generalization = *m.create<Generalization>();
     Class& implementing = *m.create<Class>();
     InterfaceRealization& realization = *m.create<InterfaceRealization>();
-    root.setID("efOYpQ48NuwY3f2xX0u9WkxcjfY6");
-    interface_uml.setID("fqag25FXykqQlo_bQWmS&cAB6338");
-    prop.setID("Jp2IhMjC2qNN7cIYPXiFZU4vDdun");
-    op.setID("kbreSzh_ys_8SepvJR6Q58tzWdFI");
-    nest.setID("TeIMyndF4nm_NOTbFZ&vZDLXxvtC");
-    general.setID("msHdxlZxjCCYwm2GLlDyaIq3KX4o");
-    generalization.setID("9mSwZjJaig2cKZA98jZku3nU74eH");
-    implementing.setID("GqrX5Ta8KQDdFfaHrau08OS7Et3n");
-    realization.setID("IFDK1OePanvL7GwUxLspBo4p2JjA");
+    root.setID(ID::fromString("efOYpQ48NuwY3f2xX0u9WkxcjfY6"));
+    interface_uml.setID(ID::fromString("fqag25FXykqQlo_bQWmS&cAB6338"));
+    prop.setID(ID::fromString("Jp2IhMjC2qNN7cIYPXiFZU4vDdun"));
+    op.setID(ID::fromString("kbreSzh_ys_8SepvJR6Q58tzWdFI"));
+    nest.setID(ID::fromString("TeIMyndF4nm_NOTbFZ&vZDLXxvtC"));
+    general.setID(ID::fromString("msHdxlZxjCCYwm2GLlDyaIq3KX4o"));
+    generalization.setID(ID::fromString("9mSwZjJaig2cKZA98jZku3nU74eH"));
+    implementing.setID(ID::fromString("GqrX5Ta8KQDdFfaHrau08OS7Et3n"));
+    realization.setID(ID::fromString("IFDK1OePanvL7GwUxLspBo4p2JjA"));
     interface_uml.getOwnedAttributes().add(prop);
     interface_uml.getOwnedOperations().add(op);
     interface_uml.getNestedClassifiers().add(nest);
@@ -182,6 +182,14 @@ TEST_F(InterfaceTest, emitInterfaceTest) {
     std::string expectedEmit = R""""(Package:
   id: efOYpQ48NuwY3f2xX0u9WkxcjfY6
   packagedElements:
+    - Class:
+        id: GqrX5Ta8KQDdFfaHrau08OS7Et3n
+        interfaceRealizations:
+          - InterfaceRealization:
+              id: IFDK1OePanvL7GwUxLspBo4p2JjA
+              contract: "fqag25FXykqQlo_bQWmS&cAB6338"
+    - Interface:
+        id: msHdxlZxjCCYwm2GLlDyaIq3KX4o
     - Interface:
         id: "fqag25FXykqQlo_bQWmS&cAB6338"
         generalizations:
@@ -196,27 +204,17 @@ TEST_F(InterfaceTest, emitInterfaceTest) {
               id: kbreSzh_ys_8SepvJR6Q58tzWdFI
         nestedClassifiers:
           - DataType:
-              id: "TeIMyndF4nm_NOTbFZ&vZDLXxvtC"
-    - Interface:
-        id: msHdxlZxjCCYwm2GLlDyaIq3KX4o
-    - Class:
-        id: GqrX5Ta8KQDdFfaHrau08OS7Et3n
-        interfaceRealizations:
-          - InterfaceRealization:
-              id: IFDK1OePanvL7GwUxLspBo4p2JjA
-              contract: "fqag25FXykqQlo_bQWmS&cAB6338")"""";
+              id: "TeIMyndF4nm_NOTbFZ&vZDLXxvtC")"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(root, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(root));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(InterfaceTest, parsePortW_InterfaceTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "interfaceTests/portW_Interface.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(m.getRoot()->getElementType() == Package::Info::elementType);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
     Class& implementing = pckg.getPackagedElements().get("implementing")->as<Class>();
@@ -234,19 +232,19 @@ TEST_F(InterfaceTest, parsePortW_InterfaceTest) {
 }
 
 TEST_F(InterfaceTest, emitPortWInterfaceTest) {
-    Manager<> m;
+    UmlManager m;
     Package& root = *m.create<Package>();
     Class& implementing = *m.create<Class>();
     Interface& interface_uml = *m.create<Interface>();
     Class& encapsulated = *m.create<Class>();
     InterfaceRealization& realization = *m.create<InterfaceRealization>();
     Port& port = *m.create<Port>();
-    root.setID("epLFcWN0KeMt8t5mAuF4TUCa75ns");
-    implementing.setID("508FPtzv15GguudyAK6odJA7Rxoa");
-    interface_uml.setID("Ehn7ZlJH&ULe75R26WWVcYlMKXeY");
-    encapsulated.setID("R3dx7zjpK3&3NGLh0DVLt9Yolka8");
-    realization.setID("65&HAREuzThGM38K2m82T1NWR28N");
-    port.setID("loA63PcT8hpUsfQkDvU1p0YT4vRj");
+    root.setID(ID::fromString("epLFcWN0KeMt8t5mAuF4TUCa75ns"));
+    implementing.setID(ID::fromString("508FPtzv15GguudyAK6odJA7Rxoa"));
+    interface_uml.setID(ID::fromString("Ehn7ZlJH&ULe75R26WWVcYlMKXeY"));
+    encapsulated.setID(ID::fromString("R3dx7zjpK3&3NGLh0DVLt9Yolka8"));
+    realization.setID(ID::fromString("65&HAREuzThGM38K2m82T1NWR28N"));
+    port.setID(ID::fromString("loA63PcT8hpUsfQkDvU1p0YT4vRj"));
     realization.setContract(interface_uml);
     implementing.getInterfaceRealizations().add(realization);
     encapsulated.getOwnedAttributes().add(port);
@@ -259,52 +257,30 @@ TEST_F(InterfaceTest, emitPortWInterfaceTest) {
   id: epLFcWN0KeMt8t5mAuF4TUCa75ns
   packagedElements:
     - Class:
-        id: 508FPtzv15GguudyAK6odJA7Rxoa
-        interfaceRealizations:
-          - InterfaceRealization:
-              id: "65&HAREuzThGM38K2m82T1NWR28N"
-              contract: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY"
-    - Interface:
-        id: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY"
-    - Class:
         id: "R3dx7zjpK3&3NGLh0DVLt9Yolka8"
         ownedAttributes:
           - Port:
               id: loA63PcT8hpUsfQkDvU1p0YT4vRj
-              type: 508FPtzv15GguudyAK6odJA7Rxoa
-              isBehavior: true
-              isConjugated: true
-              isService: false)"""";
-    std::string expectedEmit2 = R""""(Package:
-  id: epLFcWN0KeMt8t5mAuF4TUCa75ns
-  packagedElements:
-    - Class:
-        id: 508FPtzv15GguudyAK6odJA7Rxoa
-        interfaceRealizations:
-          - InterfaceRealization:
-              id: "65&HAREuzThGM38K2m82T1NWR28N"
-              contract: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY"
-    - Class:
-        id: "R3dx7zjpK3&3NGLh0DVLt9Yolka8"
-        ownedAttributes:
-          - Port:
-              id: loA63PcT8hpUsfQkDvU1p0YT4vRj
-              type: 508FPtzv15GguudyAK6odJA7Rxoa
               isBehavior: true
               isConjugated: true
               isService: false
+              type: 508FPtzv15GguudyAK6odJA7Rxoa
     - Interface:
-        id: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY")"""";
+        id: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY"
+    - Class:
+        id: 508FPtzv15GguudyAK6odJA7Rxoa
+        interfaceRealizations:
+          - InterfaceRealization:
+              id: "65&HAREuzThGM38K2m82T1NWR28N"
+              contract: "Ehn7ZlJH&ULe75R26WWVcYlMKXeY")"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(root, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(root));
     std::cout << generatedEmit << '\n';
-    ASSERT_TRUE(expectedEmit == generatedEmit || expectedEmit2 == generatedEmit);
+    ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(InterfaceTest, mountInterfaceTest) {
-    Manager<> m;
+    UmlManager m;
     Package& root = *m.create<Package>();
     Interface& interface_uml = *m.create<Interface>();
     Property& prop = *m.create<Property>();

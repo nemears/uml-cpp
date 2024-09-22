@@ -2,7 +2,7 @@
 
 using namespace UML;
 
-Singleton<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
+ReadOnlySingleton<Classifier, Feature>& Feature::getFeaturingClassifierSingleton() {
     return m_featuringClassifier;
 }
 

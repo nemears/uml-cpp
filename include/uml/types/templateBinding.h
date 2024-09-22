@@ -46,7 +46,7 @@ namespace UML {
             return SetList {
                 makeSetPair("boundElement", el.m_boundElement),
                 makeSetPair("signature", el.m_signature),
-                makeSetPair("templateParameterSubstitutions", el.m_parameterSubstitutions)
+                makeSetPair("parameterSubstitutions", el.m_parameterSubstitutions)
             };
         }
     };

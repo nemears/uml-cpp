@@ -43,6 +43,9 @@ namespace UML {
 
             void addToReadonlySet(AbstractSet& set, AbstractElement& el);
             void removeFromReadonlySet(AbstractSet& set, AbstractElement& el);
+            std::shared_ptr<ManagerNode> getNode(AbstractElement& el) {
+                return el.m_node.lock();
+            }
 
             AbstractElement(std::size_t elementType, AbstractManager& manager) : m_elementType(elementType), m_manager(manager) {}
         public:

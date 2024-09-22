@@ -40,8 +40,8 @@ namespace UML {
         static SetList sets(TemplateSignature& el) {
             return SetList {
                 makeSetPair("template", el.m_template),
-                makeSetPair("parameters", el.getParameters()),
-                makeSetPair("ownedParameters", el.getParameters())
+                makeSetPair("parameters", el.m_parameters),
+                makeSetPair("ownedParameters", el.m_ownedParameters)
             };
         }
     };

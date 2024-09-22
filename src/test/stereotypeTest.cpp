@@ -9,7 +9,7 @@ using namespace UML;
 class StereotypeTest : public ::testing::Test {};
 
 TEST_F(StereotypeTest, setProfileTest) {
-    Manager<> m;
+    UmlManager m;
     Stereotype& s = *m.create<Stereotype>();
     Profile& p = *m.create<Profile>();
     s.setOwningPackage(p);
@@ -18,7 +18,7 @@ TEST_F(StereotypeTest, setProfileTest) {
 }
 
 TEST_F(StereotypeTest, overrideProfileTest) {
-    Manager<> m;
+    UmlManager m;
     Stereotype& s = *m.create<Stereotype>();
     Profile& p = *m.create<Profile>();
     Profile& p2 = *m.create<Profile>();

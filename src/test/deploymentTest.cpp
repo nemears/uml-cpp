@@ -18,10 +18,10 @@ class DeploymentTest : public ::testing::Test {
 };
 
 TEST_F(DeploymentTest, basicDeploymentTest) {
-    Manager<> m;
+    UmlManager m;
     Deployment& deployment = *m.create<Deployment>();
-    DeploymentTarget& location = *m.create<DeploymentTarget>();
-    DeployedArtifact& artifact = *m.create<DeployedArtifact>();
+    InstanceSpecification& location = *m.create<InstanceSpecification>();
+    InstanceSpecification& artifact = *m.create<InstanceSpecification>();
     deployment.setLocation(&location);
     deployment.getDeployedArtifacts().add(artifact);
     ASSERT_TRUE(deployment.getLocation());
@@ -44,7 +44,7 @@ TEST_F(DeploymentTest, basicDeploymentTest) {
 }
 
 TEST_F(DeploymentTest, artifactOperationAndAttributeTest) {
-    Manager<> m;
+    UmlManager m;
     Artifact& artifact = *m.create<Artifact>();
     Property& prop = *m.create<Property>();
     Operation& op = *m.create<Operation>();
@@ -129,14 +129,14 @@ TEST_F(DeploymentTest, artifactOperationAndAttributeTest) {
 }
 
 TEST_F(DeploymentTest, artifactWithAttributeOperationAndNestedArtifact) {
-    Manager<> m;
+    UmlManager m;
     Artifact& artifact = *m.create<Artifact>();
     Property& property = *m.create<Property>();
     Operation& operation = *m.create<Operation>();
     Artifact& nestedArtifact = *m.create<Artifact>();
 
-    operation.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAB");
-    property.setID("AAAAAAAAAAAAAAAAAAAAAAAAAAAC");
+    operation.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAB"));
+    property.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAC"));
 
     artifact.getOwnedAttributes().add(property);
     artifact.getOwnedOperations().add(operation);
@@ -191,17 +191,17 @@ TEST_F(DeploymentTest, artifactWithAttributeOperationAndNestedArtifact) {
 }
 
 TEST_F(DeploymentTest, parseBasicDeploymentTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "deploymentTests/deployment.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(m.getRoot()->getElementType() == Package::Info::elementType);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::INSTANCE_SPECIFICATION);
-    InstanceSpecification& inst = pckg.getPackagedElements().front()->as<InstanceSpecification>();
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("Jt6XmZTswJx65TX1YvUwImGDheZT"))->getElementType(), InstanceSpecification::Info::elementType);
+    InstanceSpecification& inst = pckg.getPackagedElements().get(ID::fromString("Jt6XmZTswJx65TX1YvUwImGDheZT"))->as<InstanceSpecification>();
     ASSERT_EQ(inst.getDeployments().size(), 1);
     Deployment& deployment = *inst.getDeployments().front();
-    ASSERT_EQ((pckg.getPackagedElements().begin()++)->getElementType(), ElementType::ARTIFACT);
-    Artifact& artifact = (pckg.getPackagedElements().begin()++)->as<Artifact>();
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("8WVnUgtn8Dm&IAAet1mFpLnbwSLh"))->getElementType(), Artifact::Info::elementType);
+    Artifact& artifact = pckg.getPackagedElements().get(ID::fromString("8WVnUgtn8Dm&IAAet1mFpLnbwSLh"))->as<Artifact>();
     ASSERT_TRUE(deployment.getLocation());
     ASSERT_EQ(deployment.getLocation()->getID(), inst.getID());
     ASSERT_EQ(deployment.getDeployedArtifacts().size(), 1);
@@ -209,17 +209,17 @@ TEST_F(DeploymentTest, parseBasicDeploymentTest) {
 }
 
 TEST_F(DeploymentTest, basicArtifactTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "deploymentTests/artifact.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::PACKAGE);
+    ASSERT_TRUE(m.getRoot()->getElementType() == Package::Info::elementType);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 2);
-    ASSERT_EQ(pckg.getPackagedElements().front()->getElementType(), ElementType::INSTANCE_SPECIFICATION);
-    InstanceSpecification& inst = pckg.getPackagedElements().front()->as<InstanceSpecification>();
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("Jt6XmZTswJx65TX1YvUwImGDheZT"))->getElementType(), InstanceSpecification::Info::elementType);
+    InstanceSpecification& inst = pckg.getPackagedElements().get(ID::fromString("Jt6XmZTswJx65TX1YvUwImGDheZT"))->as<InstanceSpecification>();
     ASSERT_EQ(inst.getDeployments().size(), 1);
     Deployment& deployment = *inst.getDeployments().front();
-    ASSERT_EQ((pckg.getPackagedElements().begin()++)->getElementType(), ElementType::ARTIFACT);
-    Artifact& artifact = (pckg.getPackagedElements().begin()++)->as<Artifact>();
+    ASSERT_EQ(pckg.getPackagedElements().get(ID::fromString("8WVnUgtn8Dm&IAAet1mFpLnbwSLh"))->getElementType(), Artifact::Info::elementType);
+    Artifact& artifact = pckg.getPackagedElements().get(ID::fromString("8WVnUgtn8Dm&IAAet1mFpLnbwSLh"))->as<Artifact>();
     ASSERT_TRUE(deployment.getLocation());
     ASSERT_EQ(deployment.getLocation()->getID(), inst.getID());
     ASSERT_EQ(deployment.getDeployedArtifacts().size(), 1);
@@ -233,9 +233,9 @@ TEST_F(DeploymentTest, basicArtifactTest) {
 }
 
 TEST_F(DeploymentTest, nestedArtifactTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "deploymentTests/nestedArtifact.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == ElementType::ARTIFACT);
+    ASSERT_TRUE(m.getRoot()->getElementType() == Artifact::Info::elementType);
     Artifact& artifact = m.getRoot()->as<Artifact>();
     ASSERT_EQ(artifact.getNestedArtifacts().size(), 1);
     Artifact& nest = *artifact.getNestedArtifacts().front();
@@ -243,30 +243,28 @@ TEST_F(DeploymentTest, nestedArtifactTest) {
 }
 
 TEST_F(DeploymentTest, emitDeploymentTest) {
-    Manager<> m;
+    UmlManager m;
     Deployment& d = *m.create<Deployment>();
     Artifact& a = *m.create<Artifact>();
-    d.setID("RP9VhYnGYcgWOqXxLt4_Xb3RAAM8");
-    a.setID("bkwzmF3K0ddPG7CPwXVBZyyp8glc");
+    d.setID(ID::fromString("RP9VhYnGYcgWOqXxLt4_Xb3RAAM8"));
+    a.setID(ID::fromString("bkwzmF3K0ddPG7CPwXVBZyyp8glc"));
     d.getDeployedArtifacts().add(a);
     std::string expectedEmit = R""""(Deployment:
   id: RP9VhYnGYcgWOqXxLt4_Xb3RAAM8
   deployedArtifacts:
     - bkwzmF3K0ddPG7CPwXVBZyyp8glc)"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(d, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(d));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(DeploymentTest, emitDeploymentTargetTest) {
-    Manager<> m;
+    UmlManager m;
     Deployment& d = *m.create<Deployment>();
     Property& prop = *m.create<Property>();
-    d.setID("hZ6hYVt147nLvdm70bATtgmwlQqN");
-    prop.setID("0gLOuagM6UjFYi2401zvnoCpMn0M");
+    d.setID(ID::fromString("hZ6hYVt147nLvdm70bATtgmwlQqN"));
+    prop.setID(ID::fromString("0gLOuagM6UjFYi2401zvnoCpMn0M"));
     prop.getDeployments().add(d);
     std::string expectedEmit = R""""(Property:
   id: 0gLOuagM6UjFYi2401zvnoCpMn0M
@@ -274,75 +272,71 @@ TEST_F(DeploymentTest, emitDeploymentTargetTest) {
     - Deployment:
         id: hZ6hYVt147nLvdm70bATtgmwlQqN)"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(prop, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(prop));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(DeploymentTest, emitArtifactTest) {
-    Manager<> m;
+    UmlManager m;
     Artifact& a = *m.create<Artifact>();
     Property& p = *m.create<Property>();
     Operation& o = *m.create<Operation>();
     Artifact& n = *m.create<Artifact>();
-    a.setID("dzpr85AOkv_Z2mLs8cKLbHnR5DBq");
-    p.setID("xr6rIEO8UBfSS2vlFWWNGPcNjVJv");
-    o.setID("VdLJMfQodStjxL1RCzvyR6RLzCe5");
-    n.setID("KWkfV0HFADssmGEBNUj1AwPB4SeC");
+    a.setID(ID::fromString("dzpr85AOkv_Z2mLs8cKLbHnR5DBq"));
+    p.setID(ID::fromString("xr6rIEO8UBfSS2vlFWWNGPcNjVJv"));
+    o.setID(ID::fromString("VdLJMfQodStjxL1RCzvyR6RLzCe5"));
+    n.setID(ID::fromString("KWkfV0HFADssmGEBNUj1AwPB4SeC"));
     a.getOwnedAttributes().add(p);
     a.getOwnedOperations().add(o);
     a.getNestedArtifacts().add(n);
     std::string expectedEmit = R""""(Artifact:
   id: dzpr85AOkv_Z2mLs8cKLbHnR5DBq
+  nestedArtifacts:
+    - Artifact:
+        id: KWkfV0HFADssmGEBNUj1AwPB4SeC
   ownedAttributes:
     - Property:
         id: xr6rIEO8UBfSS2vlFWWNGPcNjVJv
   ownedOperations:
     - Operation:
-        id: VdLJMfQodStjxL1RCzvyR6RLzCe5
-  nestedArtifacts:
-    - Artifact:
-        id: KWkfV0HFADssmGEBNUj1AwPB4SeC)"""";
+        id: VdLJMfQodStjxL1RCzvyR6RLzCe5)"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(a, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(a));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(DeploymentTest, parseManifestationsTest) {
-    Manager<> m;
+    UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "deploymentTests/manifestations.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), ElementType::PACKAGE);
+    ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
     Package& pckg = m.getRoot()->as<Package>();
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg.getPackagedElements().get("utilizedEl1")->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().get("utilizedEl1")->getElementType(), Class::Info::elementType);
     Class& c1 = pckg.getPackagedElements().get("utilizedEl1")->as<Class>();
-    ASSERT_EQ(pckg.getPackagedElements().get("artifact")->getElementType(), ElementType::ARTIFACT);
+    ASSERT_EQ(pckg.getPackagedElements().get("artifact")->getElementType(), Artifact::Info::elementType);
     Artifact& artifact = pckg.getPackagedElements().get("artifact")->as<Artifact>();
     ASSERT_EQ(artifact.getManifestations().size(), 2);
     Manifestation& m2 = *artifact.getManifestations().get(ID::fromString("wO29nIB3PeOeFX0TaaHppiyUn83B"));
     Manifestation& m1 = *artifact.getManifestations().get(ID::fromString("elQJOxECf35h96KkZu2YEsie9kHJ"));
     ASSERT_TRUE(m2.getUtilizedElement());
     ASSERT_EQ(m2.getUtilizedElement()->getID(), c1.getID());
-    ASSERT_EQ(pckg.getPackagedElements().get("utilizedEl2")->getElementType(), ElementType::CLASS);
+    ASSERT_EQ(pckg.getPackagedElements().get("utilizedEl2")->getElementType(), Class::Info::elementType);
     ASSERT_TRUE(m1.getUtilizedElement());
     ASSERT_EQ(m1.getUtilizedElement()->getID(), pckg.getPackagedElements().get("utilizedEl2")->getID());
 }
 
 TEST_F(DeploymentTest, emitManifestationTest) {
-    Manager<> m;
+    UmlManager m;
     Package& pckg = *m.create<Package>();
     Manifestation& man = *m.create<Manifestation>();
     Class& c = *m.create<Class>();
     Artifact& a = *m.create<Artifact>();
-    pckg.setID("O4FknRxSbpxEJlw6HhHP&Wpq0AjD");
-    man.setID("UfyRMRUyPnad&lJcpSBOD17VSHtn");
-    c.setID("9mp2RmgjnYQrPtXIoOw9is1UUEyu");
-    a.setID("Ihue7RPPRluLEpIUbTV8Xqb68ofQ");
+    pckg.setID(ID::fromString("O4FknRxSbpxEJlw6HhHP&Wpq0AjD"));
+    man.setID(ID::fromString("UfyRMRUyPnad&lJcpSBOD17VSHtn"));
+    c.setID(ID::fromString("9mp2RmgjnYQrPtXIoOw9is1UUEyu"));
+    a.setID(ID::fromString("Ihue7RPPRluLEpIUbTV8Xqb68ofQ"));
     pckg.getPackagedElements().add(c);
     pckg.getPackagedElements().add(a);
     a.getManifestations().add(man);
@@ -352,24 +346,22 @@ TEST_F(DeploymentTest, emitManifestationTest) {
   packagedElements:
     - Artifact:
         id: Ihue7RPPRluLEpIUbTV8Xqb68ofQ
-        clientDependencies:
-          - "UfyRMRUyPnad&lJcpSBOD17VSHtn"
         manifestations:
           - Manifestation:
               id: "UfyRMRUyPnad&lJcpSBOD17VSHtn"
+              clients:
+                - Ihue7RPPRluLEpIUbTV8Xqb68ofQ
               utilizedElement: 9mp2RmgjnYQrPtXIoOw9is1UUEyu
     - Class:
         id: 9mp2RmgjnYQrPtXIoOw9is1UUEyu)"""";
     std::string generatedEmit;
-    EmitterData data;
-    data.mode = SerializationMode::WHOLE;
-    ASSERT_NO_THROW(generatedEmit = emit(pckg, data));
+    ASSERT_NO_THROW(generatedEmit = m.dump(pckg));
     std::cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
 TEST_F(DeploymentTest, mountAndEditArtifactTest) {
-    Manager<> m;
+    UmlManager m;
     Package& root = *m.create<Package>();
     Artifact& artifact = *m.create<Artifact>();
     Property& prop = *m.create<Property>();
@@ -545,7 +537,7 @@ TEST_F(DeploymentTest, mountAndEditArtifactTest) {
 }
 
 TEST_F(DeploymentTest, mountDeploymentTest) {
-    Manager<> m;
+    UmlManager m;
     InstanceSpecification& deploymentTarget = *m.create<InstanceSpecification>();
     Deployment& deployment = *m.create<Deployment>();
     Artifact& artifact = *m.create<Artifact>();

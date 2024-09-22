@@ -8,8 +8,6 @@ on:
 
 env:
   BUILD_TYPE: Release
-  CC: /usr/bin/clang
-  CXX: /usr/bin/clang++
 
 jobs:
   build:

@@ -285,6 +285,7 @@ namespace UML {
                 EmitterFunctor(UmlCafeSerializationPolicy& self) : m_self(self) {}
                 std::string operator()(BaseElement<Tlist>& el) override {
                     YAML::Emitter emitter;
+                    m_self.primeEmitter(emitter);
                     emitter << YAML::BeginMap;
                     auto possibleScope = findScope<0, std::tuple<T>>(el);
                     if (possibleScope && !possibleScope->second->empty()) {
@@ -652,6 +653,7 @@ namespace UML {
                 // emitter << YAML::EndDoc;
                 return emitter.c_str();
             }
+            virtual void primeEmitter(__attribute__((unused)) YAML::Emitter& emitter) {}
         public:
             std::string dump() {
                 return  this->emitWhole(*getAbstractRoot(), *this);
@@ -661,13 +663,11 @@ namespace UML {
             }
     };
 
-    // TODO
-    // class UmlCafeJsonSerializationPolicy {
-    //     protected:
-    //         AbstractElementPtr parseIndividual(std::string data, AbstractManager& manager);
-    //         AbstractElementPtr parseWhole(std::string data, AbstractManager& manager);
-    //         std::string emitIndividual(AbstractElement& el, AbstractManager& manager);
-    //         std::string emitWhole(AbstractElement& el, AbstractManager& manager);
-    // };
-
+    template <class Tlist>
+    class UmlCafeJsonSerializationPolicy : public UmlCafeSerializationPolicy<Tlist> {
+        protected:
+            void primeEmitter(YAML::Emitter& emitter) override {
+                emitter << YAML::DoubleQuoted << YAML::Flow;
+            }
+    };
 }

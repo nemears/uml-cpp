@@ -613,15 +613,18 @@ namespace UML {
                 populateEmitterFunctors<0>(m_emitterFunctors);
                 populateParserFunctors<0>(m_parserfunctors);
             }
+            AbstractElementPtr parseNode(YAML::Node node) {
+                auto match = getFunctor(node);
+                auto parsedEl = match.functor(match.innerData);
+                match.functor.parseScope(match.outerData, *parsedEl);
+                return parsedEl;
+            }
             AbstractElementPtr parseIndividual(std::string data, __attribute__((unused)) AbstractManager& manager) {
                 std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
                 if (rootNodes.empty()) {
                     throw SerializationError("could not parse data supplied to manager! Is it JSON or YAML?");
                 }
-                auto match = getFunctor(rootNodes[0]);
-                auto parsedEl = match.functor(match.innerData);
-                match.functor.parseScope(match.outerData, *parsedEl);
-                return parsedEl;
+                return parseNode(rootNodes[0]);
             }
             std::vector<UmlPtr<BaseElement<Tlist>>> parseWhole(std::string data, __attribute__((unused)) AbstractManager& manager) {
                 std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);

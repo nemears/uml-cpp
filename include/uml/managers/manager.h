@@ -202,6 +202,23 @@ namespace UML {
                     }
                 }
             }
+            void restoreEl(BaseElement<Tlist>& el) {
+                // run add policies we skipped over
+                auto sets = getAllSets(el);
+                for (auto& pair : sets) {
+                    auto set = pair.second;
+                    std::vector<AbstractElementPtr> els(set->size());
+                    auto i = 0;
+                    for (auto itPtr = set->beginPtr(); *itPtr != *set->endPtr(); itPtr->next()) {
+                        auto elRestore = itPtr->getCurr();
+                        els[i] = elRestore;
+                        i++;
+                    }
+                    for (auto el: els) {
+                        set->runAddPolicy(*el);
+                    }
+                }
+            }
         private:
             bool m_destructionFlag = false;
         public:
@@ -279,21 +296,7 @@ namespace UML {
 
 
                 if (ret) {
-                    // run add policies we skipped over
-                    auto sets = getAllSets(dynamic_cast<BaseElement<Tlist>&>(*ret));
-                    for (auto& pair : sets) {
-                        auto set = pair.second;
-                        std::vector<AbstractElementPtr> els(set->size());
-                        auto i = 0;
-                        for (auto itPtr = set->beginPtr(); *itPtr != *set->endPtr(); itPtr->next()) {
-                            auto elRestore = itPtr->getCurr();
-                            els[i] = elRestore;
-                            i++;
-                        }
-                        for (auto el: els) {
-                            set->runAddPolicy(*el);
-                        }
-                    }
+                    restoreEl(dynamic_cast<BaseElement<Tlist>&>(*ret));
                 }
 
                 return ret;
@@ -303,7 +306,7 @@ namespace UML {
                 return abstractGet(id);
             }
 
-            void setRoot(UmlPtr<BaseElement<Tlist>> root) {
+            void setRoot(AbstractElementPtr root) override {
                 m_root = root;
             }
 

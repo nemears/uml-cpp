@@ -37,5 +37,15 @@ namespace UML {
             }
             throw ManagerStateException("Bad Type given to is!");
         }
+        template <std::size_t I = 0>
+        static std::size_t getElementTypeByName(const std::string& name) {
+            if constexpr (std::tuple_size<Types>{} > I) {
+                if (std::tuple_element_t<I, Types>::Info::name == name) {
+                    return I;
+                }
+                return getElementTypeByName<I + 1>(name);
+            }
+            return -1;
+        }
     };
 }

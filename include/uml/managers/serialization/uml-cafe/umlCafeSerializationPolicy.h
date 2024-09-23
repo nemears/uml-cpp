@@ -85,7 +85,7 @@ namespace UML {
                     using CurrentType = std::tuple_element_t<I, EmitTypes>;
                     if constexpr (!HasType<CurrentType::template idOf<CurrentType>(), Visited>::value) {
                         auto possibleScope = findScopeHelper<CurrentType>(dynamic_cast<CurrentType&>(el));
-                        using NewVisited = IntAppend<Visited, CurrentType::template idOf<CurrentType>()>::type;
+                        using NewVisited = typename IntAppend<Visited, CurrentType::template idOf<CurrentType>()>::type;
                         auto basePossibleScope = findScope<I + 1, typename TupleCat<EmitTypes, typename CurrentType::Info::BaseList>::type, NewVisited>(el);
                         
                         // compare and choose best option
@@ -476,7 +476,7 @@ namespace UML {
                     if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
                         parseIndividual<I + 1, ParseTypes>(dynamic_cast<std::tuple_element_t<I + 1, ParseTypes>&>(el), node, visited);
                     }
-                    using ElBases = ElementType::Info::BaseList;
+                    using ElBases = typename ElementType::Info::BaseList;
                     if constexpr (std::tuple_size<ElBases>{} > 0) {
                         parseIndividual<0, ElBases>(el, node, visited);
                     }
@@ -489,7 +489,7 @@ namespace UML {
 
             template <std::size_t I, class ParseTypes>
             bool parseReadOnlyScope(const YAML::Node node, std::tuple_element_t<I, ParseTypes>& el) {
-                using ElementType = std::tuple_element_t<I, ParseTypes>;
+                using ElementType = typename std::tuple_element_t<I, ParseTypes>;
                 if (parseReadOnlyScopeHelper<ElementType>(node, el)) {
                     return true;
                 }
@@ -498,7 +498,7 @@ namespace UML {
                         return true;
                     }
                 }
-                using ElBases = ElementType::Info::BaseList;
+                using ElBases = typename ElementType::Info::BaseList;
                 if constexpr (std::tuple_size<ElBases>{} > 0) {
                     if (parseReadOnlyScope<0, ElBases>(node, el)) {
                         return true;
@@ -509,7 +509,7 @@ namespace UML {
 
             template <std::size_t I, class ParseTypes>
             bool parseScope(const YAML::Node& node, std::tuple_element_t<I, ParseTypes>& el) {
-                using ElementType = std::tuple_element_t<I, ParseTypes>;
+                using ElementType = typename std::tuple_element_t<I, ParseTypes>;
                 if (parseScopeHelper<ElementType>(node, el)) {
                     return true;
                 }
@@ -518,7 +518,7 @@ namespace UML {
                         return true;
                     }
                 }
-                using ElBases = ElementType::Info::BaseList;
+                using ElBases = typename ElementType::Info::BaseList;
                 if constexpr (std::tuple_size<ElBases>{} > 0) {
                     if (parseScope<0, ElBases>(node, el)) {
                         return true;
@@ -529,14 +529,14 @@ namespace UML {
             
             template <std::size_t I, class ParseTypes>
             void parseWhole(std::tuple_element_t<I, ParseTypes>& el, const YAML::Node& node, std::unordered_set<std::size_t>& visited) {
-                using ElementType = std::tuple_element_t<I, ParseTypes>;
+                using ElementType = typename std::tuple_element_t<I, ParseTypes>;
                 if (!visited.count(ElementType::template idOf<ElementType>())) {
                     visited.insert(ElementType::template idOf<ElementType>());
                     parseWholeHelper<ElementType>(el, node);
                     if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
                         parseWhole<I + 1, ParseTypes>(dynamic_cast<std::tuple_element_t<I + 1, ParseTypes>&>(el), node, visited);
                     }
-                    using ElBases = ElementType::Info::BaseList;
+                    using ElBases = typename ElementType::Info::BaseList;
                     if constexpr (std::tuple_size<ElBases>{} > 0) {
                         parseWhole<0, ElBases>(el, node, visited);
                     }

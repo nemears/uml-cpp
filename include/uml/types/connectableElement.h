@@ -24,7 +24,7 @@ namespace UML {
 
     template <>
     struct ElementInfo<ConnectableElement> : public DefaultInfo {
-        inline static const std::string name {"ConnectableElement"};
+        static constexpr std::string_view name {"ConnectableElement"};
         static SetList sets(ConnectableElement& el) {
             return SetList {
                 makeSetPair("ends", el.m_ends)

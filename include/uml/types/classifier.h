@@ -82,7 +82,7 @@ namespace UML {
 
     template<>
     struct ElementInfo<Classifier> : public DefaultInfo {
-        inline static std::string name {"Classifier"};
+        static constexpr std::string_view name {"Classifier"};
         static SetList sets(Classifier& el) {
             return SetList {
                 makeSetPair("features", el.m_features),

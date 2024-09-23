@@ -28,7 +28,7 @@ namespace UML {
     template <>
     struct ElementInfo<Reception> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"Reception"};
+        static constexpr std::string_view name {"Reception"};
         static SetList sets(Reception& el) {
             return SetList {
                 makeSetPair("signal", el.m_signal),

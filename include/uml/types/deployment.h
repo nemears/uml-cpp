@@ -33,7 +33,7 @@ namespace UML {
     template <>
     struct ElementInfo<Deployment> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"Deployment"};
+        static constexpr std::string_view name {"Deployment"};
         static SetList sets(Deployment& el) {
             return SetList {
                 makeSetPair("deployedArtifacts", el.m_deployedArtifacts),

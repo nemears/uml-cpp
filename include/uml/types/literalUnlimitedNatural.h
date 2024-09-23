@@ -22,7 +22,7 @@ namespace UML {
     template <>
     struct ElementInfo<LiteralUnlimitedNatural> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"LiteralUnlimitedNatural"};
+        static constexpr std::string_view name {"LiteralUnlimitedNatural"};
         static const bool extraData = true;
         struct LiteralUnlimitedNaturalValuePolicy : public AbstractDataPolicy {
             LiteralUnlimitedNatural& el;

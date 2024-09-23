@@ -16,6 +16,6 @@ namespace UML {
     template <>
     struct ElementInfo<Realization> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"Realization"};
+        static constexpr std::string_view name {"Realization"};
     };
 }

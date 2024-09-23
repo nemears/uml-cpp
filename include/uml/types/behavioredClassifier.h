@@ -36,7 +36,7 @@ namespace UML {
     template <>
     struct ElementInfo<BehavioredClassifier> : public DefaultInfo {
         static const bool abstract = true;
-        inline static const std::string name {"BehavioredClassifier"};
+        static constexpr std::string_view name {"BehavioredClassifier"};
         static SetList sets(BehavioredClassifier& el) {
             return SetList {
                 makeSetPair("ownedBehaviors", el.m_ownedBehaviors),

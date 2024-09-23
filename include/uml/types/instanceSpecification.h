@@ -40,7 +40,7 @@ namespace UML{
     template <>
     struct ElementInfo<InstanceSpecification> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"InstanceSpecification"};
+        static constexpr std::string_view name {"InstanceSpecification"};
         static SetList sets(InstanceSpecification& el) {
             return SetList {
                 makeSetPair("classifiers", el.m_classifiers),

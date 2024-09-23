@@ -37,7 +37,7 @@ namespace UML {
     template <>
     struct ElementInfo<ConnectorEnd> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"ConnectorEnd"};
+        static constexpr std::string_view name {"ConnectorEnd"};
         static SetList sets(ConnectorEnd& el) {
             return SetList {
                 makeSetPair("role", el.m_role),

@@ -37,7 +37,7 @@ namespace UML {
     template <>
     struct ElementInfo<StructuredClassifier> : public DefaultInfo {
         static const bool abstract = true;
-        inline static const std::string name {"StructuredClassifier"};
+        static constexpr std::string_view name {"StructuredClassifier"};
         static SetList sets(StructuredClassifier& el) {
             return SetList {
                 makeSetPair("roles", el.m_roles),

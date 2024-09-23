@@ -28,7 +28,7 @@ namespace UML {
     template <>
     struct ElementInfo<InstanceValue> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"InstanceValue"};
+        static constexpr std::string_view name {"InstanceValue"};
         static SetList sets(InstanceValue& el) {
             return SetList {
                 makeSetPair("instance", el.m_instance)

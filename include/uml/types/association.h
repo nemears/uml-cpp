@@ -38,7 +38,7 @@ namespace UML {
     template <>
     struct ElementInfo<Association> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"Association"};
+        static constexpr std::string_view name {"Association"};
         static SetList sets(Association& el) {
             return SetList {
                 makeSetPair("memberEnds", el.m_memberEnds),

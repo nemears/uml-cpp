@@ -22,7 +22,7 @@ namespace UML {
     template <>
     struct ElementInfo<Enumeration> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"Enumeration"};
+        static constexpr std::string_view name {"Enumeration"};
         static SetList sets(Enumeration& el) {
             return SetList {
                 makeSetPair("ownedLiterals", el.getOwnedLiterals())

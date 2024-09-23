@@ -24,7 +24,7 @@ namespace UML {
     template <>
     struct ElementInfo<Expression> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"Expression"};
+        static constexpr std::string_view name {"Expression"};
         static SetList sets(Expression& el) {
             return SetList {
                 makeSetPair("operands", el.m_operands)

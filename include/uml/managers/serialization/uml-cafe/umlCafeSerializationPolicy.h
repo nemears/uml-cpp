@@ -292,7 +292,7 @@ namespace UML {
                         emitter << YAML::Key << possibleScope->first << YAML::Value << possibleScope->second->ids().front().string();
                     }
                     std::unordered_set<std::size_t> visited;
-                    std::string elementName = T::Info::name;
+                    std::string elementName = std::string(T::Info::name);
                     emitter << YAML::Key << elementName << YAML::Value << YAML::BeginMap;
                     emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
                     emitIndividualData<0, std::tuple<T>>(emitter, visited, el);
@@ -303,7 +303,7 @@ namespace UML {
                 }
                 void emitWhole(YAML::Emitter& emitter, BaseElement<Tlist>& el) override {
                     std::unordered_set<std::size_t> visited;
-                    emitter << YAML::BeginMap << T::Info::name << YAML::Value << YAML::BeginMap;
+                    emitter << YAML::BeginMap << std::string(T::Info::name) << YAML::Value << YAML::BeginMap;
                     emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
                     emitWholeData<0, std::tuple<T>>(emitter, visited, el, m_self);
                     emitter << YAML::EndMap << YAML::EndMap;    
@@ -651,9 +651,8 @@ namespace UML {
             }
             std::string emitWhole(AbstractElement& el, __attribute__((unused)) AbstractManager& manager) {
                 YAML::Emitter emitter;
-                // emitter << YAML::BeginDoc;
+                primeEmitter(emitter);
                 m_emitterFunctors.at(el.getElementType())->emitWhole(emitter, dynamic_cast<BaseElement<Tlist>&>(el));
-                // emitter << YAML::EndDoc;
                 return emitter.c_str();
             }
             virtual void primeEmitter(__attribute__((unused)) YAML::Emitter& emitter) {}

@@ -25,7 +25,7 @@ namespace UML {
     template <>
     struct ElementInfo<Interface> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"Interface"};
+        static constexpr std::string_view name {"Interface"};
         static SetList sets(Interface& el) {
             return SetList {
                 makeSetPair("ownedAttributes", el.getOwnedAttributes()),

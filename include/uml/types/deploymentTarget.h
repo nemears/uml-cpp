@@ -22,7 +22,7 @@ namespace UML {
     template <>
     struct ElementInfo<DeploymentTarget> : public DefaultInfo {
         static const bool abstract = true;
-        inline static const std::string name {"DeploymentTarget"};
+        static constexpr std::string_view name {"DeploymentTarget"};
         static SetList sets(DeploymentTarget& el) {
             return SetList{
                 makeSetPair("deployments", el.m_deployments)

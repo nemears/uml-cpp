@@ -28,7 +28,7 @@ namespace UML {
     template <>
     struct ElementInfo<ExtensionEnd> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"ExtensionEnd"};
+        static constexpr std::string_view name {"ExtensionEnd"};
         static SetList sets(ExtensionEnd& el) {
             return SetList {
                 makeSetPair("type", el.m_extensionType)

@@ -36,7 +36,7 @@ namespace UML {
     template <>
     struct ElementInfo<PackageMerge> : public DefaultInfo {
         static const bool abstract = false;
-        inline static std::string name {"PackageMerge"};
+        static constexpr std::string_view name {"PackageMerge"};
         static SetList sets(PackageMerge& el) {
             return SetList{
                 makeSetPair("receivingPackage", el.m_receivingPackage),

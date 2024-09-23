@@ -51,7 +51,7 @@ namespace UML {
     template <>
     struct ElementInfo<ElementImport> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"ElementImport"};
+        static constexpr std::string_view name {"ElementImport"};
         static SetList sets(ElementImport& el) {
             return SetList{
                 makeSetPair("importedElement", el.m_importedElement),

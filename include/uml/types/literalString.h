@@ -17,7 +17,7 @@ namespace UML {
     template <>
     struct ElementInfo<LiteralString> : public DefaultInfo {
         static const bool abstract = false;
-        inline static std::string name {"LiteralString"};
+        static constexpr std::string_view name {"LiteralString"};
         static const bool extraData = true;
         struct LiteralStringValuePolicy : public AbstractDataPolicy {
             LiteralString& el;

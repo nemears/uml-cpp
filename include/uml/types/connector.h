@@ -46,7 +46,7 @@ namespace UML {
     template <>
     struct ElementInfo<Connector> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"Connector"};
+        static constexpr std::string_view name {"Connector"};
         static SetList sets(Connector& el) {
             return SetList {
                 makeSetPair("type", el.m_type),

@@ -16,7 +16,7 @@ namespace UML {
     template <>
     struct ElementInfo<Relationship> : public DefaultInfo {
         static const bool abstract = true;
-        inline static const std::string name{"Relationship"};
+        static constexpr std::string_view name{"Relationship"};
         static SetList sets(Relationship& el) {
             return SetList{
                 makeSetPair("relatedElement", el.getRelatedElements())

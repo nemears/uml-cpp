@@ -23,7 +23,7 @@ namespace UML {
     template <>
     struct ElementInfo<Comment> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"Comment"};
+        static constexpr std::string_view name {"Comment"};
         static SetList sets(Comment& el) {
             return SetList {
                 makeSetPair("annotatedElements", el.m_annotatedElements)

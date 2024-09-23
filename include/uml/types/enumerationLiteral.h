@@ -30,7 +30,7 @@ namespace UML {
     template <>
     struct ElementInfo<EnumerationLiteral> : public DefaultInfo {
         static const bool abstract = false;
-        inline static std::string name {"EnumerationLiteral"};
+        static constexpr std::string_view name {"EnumerationLiteral"};
         static SetList sets(EnumerationLiteral& el) {
             return SetList {
                 makeSetPair("enumeration", el.m_enumeration)

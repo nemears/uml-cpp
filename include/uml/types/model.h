@@ -19,7 +19,7 @@ namespace UML{
     template <>
     struct ElementInfo<Model> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"Model"};
+        static constexpr std::string_view name {"Model"};
         static SetList sets(__attribute__((unused)) Model& el) {
             return SetList{};
         }

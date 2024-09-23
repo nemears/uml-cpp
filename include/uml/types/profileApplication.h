@@ -38,7 +38,7 @@ namespace UML {
     template <>
     struct ElementInfo<ProfileApplication> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"ProfileApplication"};
+        static constexpr std::string_view name {"ProfileApplication"};
         static SetList sets(ProfileApplication& el) {
             return SetList{
                 makeSetPair("appliedProfile", el.m_appliedProfile),

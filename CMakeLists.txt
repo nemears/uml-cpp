@@ -90,7 +90,6 @@ add_library(uml SHARED
     src/uml/id.cpp
 
     # managers
-    #src/uml/managers/abstractManager.cpp 
     src/uml/managers/managerNode.cpp
     src/uml/managers/baseElement.cpp
     src/uml/managers/filePersistencePolicy.cpp
@@ -133,11 +132,6 @@ add_library(uml SHARED
     # src/uml/types/interruptibleActivityRegion.cpp src/uml/types/opaqueAction.cpp 
     # src/uml/types/valuePin.cpp src/uml/types/actionInputPin.cpp src/uml/types/invocationAction.cpp src/uml/types/callAction.cpp 
     # src/uml/types/callBehaviorAction.cpp 
-    
-
-    ## serialization
-    # src/uml/managers/serialization/uml-cafe/openUmlSerializationPolicy.cpp
-    # src/uml/managers/serialization/uml-cafe/emit.cpp src/uml/managers/serialization/uml-cafe/parse.cpp
 
 )
 target_include_directories(uml PUBLIC include)

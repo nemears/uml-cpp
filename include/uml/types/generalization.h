@@ -44,7 +44,7 @@ namespace UML {
     template <>
     struct ElementInfo<Generalization> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"Generalization"};
+        static constexpr std::string_view name {"Generalization"};
         static SetList sets(Generalization& el) {
             return SetList {
                 makeSetPair("general", el.m_general),

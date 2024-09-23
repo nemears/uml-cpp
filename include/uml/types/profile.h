@@ -16,6 +16,6 @@ namespace UML {
     template<>
     struct ElementInfo<Profile> : public DefaultInfo {
         static const bool abstract = false;
-        inline static std::string name {"Profile"};
+        static constexpr std::string_view name {"Profile"};
     };
 }

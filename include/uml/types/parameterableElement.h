@@ -36,7 +36,7 @@ namespace UML {
 
     template<>
     struct ElementInfo<ParameterableElement> : public DefaultInfo {
-        inline static const std::string name {"ParameterableElement"};
+        static constexpr std::string_view name {"ParameterableElement"};
         static SetList sets(ParameterableElement& el) {
             return SetList {
                 makeSetPair("templateParameter", el.m_templateParameter),

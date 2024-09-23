@@ -61,7 +61,7 @@ namespace UML {
     template <>
     struct ElementInfo<Operation> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"Operation"};
+        static constexpr std::string_view name {"Operation"};
         static SetList sets(Operation& el) {
             return SetList {
                 makeSetPair("type", el.m_type),

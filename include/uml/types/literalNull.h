@@ -12,6 +12,6 @@ namespace UML {
     template <>
     struct ElementInfo<LiteralNull> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"LiteralNull"};
+        static constexpr std::string_view name {"LiteralNull"};
     };
 }

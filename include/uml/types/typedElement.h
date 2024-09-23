@@ -29,7 +29,7 @@ namespace UML{
     template <>
     struct ElementInfo<TypedElement> : public DefaultInfo {
         static const bool abstract = true;
-        inline static std::string name {"TypedElement"};
+        static constexpr std::string_view name {"TypedElement"};
         static SetList sets(TypedElement& el) {
             return SetList {
                 makeSetPair("type", el.m_type)

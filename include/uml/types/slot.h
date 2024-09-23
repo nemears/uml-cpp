@@ -47,7 +47,7 @@ namespace UML {
     template <>
     struct ElementInfo<Slot> : public DefaultInfo {
         static const bool abstract = false;
-        inline static const std::string name {"Slot"};
+        static constexpr std::string_view name {"Slot"};
         static SetList sets(Slot& slot) {
             return SetList {
                 makeSetPair("definingFeature", slot.m_definingFeature),

@@ -4,24 +4,18 @@ using namespace UML;
 
 void InterfaceRealization::ContractPolicy::elementRemoved(Interface& el, InterfaceRealization& me) {
     if (me.getImplementingClassifier()) {
-        for (auto& reference : me.getNode(*me.m_implementingClassifier.get())->m_references) {
-            // if (!pair.second.node || !pair.second.node->m_element) {
-            //     // TODO aquire to not have loss, get rid of continue
-            //     continue;
-            // }
-            auto referencedEl = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr);
+        for (auto& referencePair : me.getNode(*me.m_implementingClassifier.get())->m_references) {
+            auto referencedEl = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(referencePair.second.m_node.lock()->m_ptr);
             if (referencedEl->is<Port>() && 
                 referencedEl->as<Port>().getType().id() == me.m_implementingClassifier.get().id()) {
                     Port& port = referencedEl->as<Port>();
                     if (port.isConjugated()) {
                         if (port.getRequired().contains(el.getID())) {
                             me.removeFromReadonlySet(port.m_required, el);
-                            // port.m_required.innerRemove(&el);
                         }
                     } else {
                         if (port.getProvided().contains(el.getID())) {
                             me.removeFromReadonlySet(port.m_provided, el);
-                            // port.m_provided.innerRemove(&el);
                         }
                     }
             }
@@ -32,11 +26,7 @@ void InterfaceRealization::ContractPolicy::elementRemoved(Interface& el, Interfa
 void InterfaceRealization::ContractPolicy::elementAdded(Interface& el, InterfaceRealization& me) {
     if (me.getImplementingClassifier()) {
         for (auto& reference : me.getNode(*me.m_implementingClassifier.get())->m_references) {
-            // if (!pair.second.node || !pair.second.node->m_element) {
-            //     // TODO aquire to not have loss, get rid of continue
-            //     continue;
-            // }
-            auto referencedEl = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr);
+            auto referencedEl = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.second.m_node.lock()->m_ptr);
             if (
                 referencedEl->is<Port>() && 
                 referencedEl->as<Port>().getType().id() == me.m_implementingClassifier.get().id()
@@ -45,12 +35,10 @@ void InterfaceRealization::ContractPolicy::elementAdded(Interface& el, Interface
                 if (port.isConjugated()) {
                     if (!port.getRequired().contains(el.getID())) {
                         me.addToReadonlySet(port.m_required, el);
-                        // port.m_required.innerAdd(&el);
                     }
                 } else {
                     if (!port.getProvided().contains(el.getID())) {
                         me.addToReadonlySet(port.m_provided, el);
-                        //  port.m_provided.innerAdd(&el);
                     }
                 }
             }

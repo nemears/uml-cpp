@@ -52,8 +52,11 @@ Namespace::Namespace(std::size_t elementType, AbstractManager& manager) :
 
 void Namespace::setName(const std::string& name) {
     NamedElement::setName(name);
-    for (auto& member : getOwnedMembers()) {
-        member.updateQualifiedName(getQualifiedName());
+    for (auto member : getOwnedMembers().ptrs()) {
+        if (!member.loaded()) {
+            continue;
+        }
+        member->updateQualifiedName(getQualifiedName());
     }
 }
 

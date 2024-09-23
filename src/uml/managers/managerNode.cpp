@@ -1,79 +1,53 @@
 #include "uml/managers/managerNode.h"
 #include "uml/managers/abstractManager.h"
 #include "uml/umlPtr.h"
+#include "uml/set/abstractSet.h"
 #include <unordered_set>
 
 namespace UML {
 
 ManagerNode::~ManagerNode() {
-    for (auto& reference : m_references) {
-        auto referenceNode = reference.m_node.lock(); 
-        if (!referenceNode) {
-            continue;
-        }
-        auto& referenceReferences = referenceNode->m_references;
-        auto referenceReferenceIt = referenceReferences.begin();
-        auto referenceReferenceEnd = referenceReferences.end();
-        while (referenceReferenceIt != referenceReferenceEnd) {
-            auto referenceReferenceNode = referenceReferenceIt->m_node.lock();
-            if (referenceReferenceNode && referenceReferenceNode->m_id == m_id) {
-                break;
-            }
-            referenceReferenceIt++;
-        }
-        if (referenceReferenceIt != referenceReferenceEnd) {
-            referenceReferences.erase(referenceReferenceIt);
+    for (auto& pair : m_references) {
+        auto& referenceReferences = pair.second.m_node.lock()->m_references;
+        auto referenceMatch = referenceReferences.find(m_id);
+        if (referenceMatch != referenceReferences.end()) {
+            referenceReferences.erase(referenceMatch);
         }
     }
 }
     
-void ManagerNode::setReference(AbstractPtr* ptr) {
-    std::unordered_set<NodeReference>::iterator referenceIt = m_references.begin();
-    auto referenceEnd = m_references.end();
-    while (referenceIt != referenceEnd) {
-        if (referenceIt->m_node.lock()->m_id == m_id) {
-            break;
-        }
-        referenceIt++;
-    }
-    if (referenceIt == referenceEnd) {
-        auto emplaceResult = m_references.emplace(ptr->m_node.lock());
-        const_cast<NodeReference&>(*emplaceResult.first).m_count++;
+void ManagerNode::setReference(std::shared_ptr<SetStructure> set, AbstractPtr& ptr) {
+    auto referenceMatch = m_references.find(ptr.m_id);
+    if (referenceMatch == m_references.end()) {
+        auto& reference = setReference(ptr.m_node.lock());
+        reference.m_sets.emplace(set);
     } else {
-        const_cast<NodeReference&>(*referenceIt).m_count++;
+        referenceMatch->second.m_sets.emplace(set);
     }
 }
 
-void ManagerNode::setReference(std::shared_ptr<ManagerNode> node) {
-    auto referenceIt = m_references.begin();
-    auto referenceEnd = m_references.end();
-    while (referenceIt != referenceEnd) {
-        if (referenceIt->m_node.lock()->m_id == node->m_id) {
-            break;
-        }
-        referenceIt++;
+NodeReference& ManagerNode::setReference(std::shared_ptr<ManagerNode> node) {
+    auto referenceMatch = m_references.find(node->m_id);
+    if (referenceMatch == m_references.end()) {
+        auto& reference = m_references.emplace(node->m_id, node).first->second;
+        node->setReference(m_myPtr.lock());
+        return reference;
     }
-
-    if (referenceIt == referenceEnd) {
-        m_references.emplace(node);
-    }
+    return referenceMatch->second;
 }
 
-void ManagerNode::removeReference(AbstractPtr* ptr) {
-    auto referenceIt = m_references.begin();
-    auto referenceEnd = m_references.end();
-    while (referenceIt != referenceEnd) {
-        if (referenceIt->m_node.lock()->m_id == ptr->m_id) {
-            break;
+void ManagerNode::removeReference(std::shared_ptr<SetStructure> set, AbstractPtr& ptr) {
+    auto referenceMatch = m_references.find(ptr.m_id);
+    referenceMatch->second.m_sets.erase(set);
+    if (referenceMatch->second.m_sets.empty()) {
+        // check to remove the other side
+        auto& ptrReferences = ptr.m_node.lock()->m_references;
+        auto ptrReferenceMatch = ptrReferences.find(m_id);
+        if (ptrReferenceMatch != ptrReferences.end() && ptrReferenceMatch->second.m_sets.empty()) {
+            ptrReferences.erase(ptrReferenceMatch);
+            m_references.erase(referenceMatch);
         }
-        referenceIt++;
     }
-
-    if (referenceIt == referenceEnd) {
-        throw ManagerStateException("tried to remove inexistent reference");
-    }
-
-    const_cast<NodeReference&>(*referenceIt).m_count--;
 }
 
 void ManagerNode::removePtr(AbstractPtr* ptr) {
@@ -87,9 +61,7 @@ void ManagerNode::removePtr(AbstractPtr* ptr) {
 }
 
 namespace std {
-
-std::size_t hash<UML::NodeReference>::operator()(const UML::NodeReference& ref) const {
-    hash<string> hasher;
-    return hasher(ref.m_node.lock()->m_id.string());
-}
+    std::size_t hash<UML::SetReference>::operator()(const UML::SetReference& ref) const {
+        return reinterpret_cast<std::size_t>(ref.m_set.lock().get());
+    }
 }

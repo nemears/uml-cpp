@@ -12,25 +12,19 @@ void BehavioredClassifier::InterfaceRealizationPolicy::elementRemoved(InterfaceR
         while (!queue.empty()) {
             ClassifierPtr front = queue.front();
             queue.pop_front();
-            for (auto& reference  : me.getNode(*front)->m_references) {
-                // if (!pair.second.node || !pair.second.node->m_element) {
-                //     // TODO aquire?
-                // }
+            for (auto& referencePair  : me.getNode(*front)->m_references) {
+                auto& reference = referencePair.second;
                 auto referenceEl = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr);
                 if (referenceEl->is<Port>()) {
-                // if (pair.second.node && pair.second.node->m_element->is<Port>()) {
                     Port& port = referenceEl->as<Port>();
-                    // Port& port = pair.second.node->m_element->as<Port>();
                     if (front->getID() == port.getType().id()) {
                         if (port.isConjugated()) {
                             if (port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
                                 me.removeFromReadonlySet(port.m_required, *el.getContract());
-                                // port.m_required.innerRemove(el.getContract());
                             }
                         } else {
                             if (port.getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
                                 me.removeFromReadonlySet(port.m_provided, *el.getContract());
-                                // port.m_provided.innerRemove(el.getContract());
                             }
                         }
                     }
@@ -50,24 +44,19 @@ void BehavioredClassifier::InterfaceRealizationPolicy::elementAdded(InterfaceRea
         while (!queue.empty()) {
             ClassifierPtr front = queue.front();
             queue.pop_front();
-            for (auto& reference : me.getNode(*front)->m_references) {
-                // if (!pair.second.node || !pair.second.node->m_element) {
-                //     // TODO aquire?
-                // }
+            for (auto& referencePair : me.getNode(*front)->m_references) {
+                auto& reference = referencePair.second;
                 auto referencedEl = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr);
-                // if (pair.second.node && pair.second.node->m_element->is(ElementType::PORT)) {
                 if (referencedEl->is<Port>()) {
                     Port& port = referencedEl->as<Port>();
                     if (port.getType().id() == front.id()) {
                         if (port.isConjugated()) {
                             if (!port.getRequired().contains(el.as<InterfaceRealization>().getContract().id())) {
                                 me.addToReadonlySet(port.m_required, *el.getContract());
-                                // port.m_required.innerAdd(el.getContract());
                             }
                         } else {
                             if (!port.getProvided().contains(el.as<InterfaceRealization>().getContract().id())) {
                                 me.addToReadonlySet(port.m_provided, *el.getContract());
-                                // port.m_provided.innerAdd(el.getContract());
                             }
                         }
                     }

@@ -127,8 +127,6 @@ namespace UML {
                         }
                     }
                 }
-
-                ptr.m_node.lock()->setReference(m_el.m_node.lock());
             }
             void nonOppositeAdd(AbstractElementPtr ptr) override {
                 nonPolicyAdd(ptr);
@@ -228,7 +226,7 @@ namespace UML {
                         }
                     }
                 }
-                m_el.m_node.lock()->setReference(&ptr);
+                m_el.m_node.lock()->setReference(m_structure, ptr);
             }
             void innerRemove(AbstractElementPtr ptr) override {
                 auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
@@ -275,7 +273,7 @@ namespace UML {
                     }
                 }
 
-                m_el.m_node.lock()->removeReference(&ptr);
+                m_el.m_node.lock()->removeReference(m_structure, ptr);
             }
             std::shared_ptr<SetStructure> nonOppositeRemoveHelper(AbstractElementPtr ptr) {
                 auto rootRedefinedSet = m_structure->m_rootRedefinedSet;

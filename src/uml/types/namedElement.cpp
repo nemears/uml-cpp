@@ -55,7 +55,8 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
     if (m_visibility != visibility) {
         if (visibility == VisibilityKind::PRIVATE) {
             std::vector<ClassifierPtr> clazzs;
-            for (auto& reference : m_node.lock()->m_references) {
+            for (auto& referencePair : m_node.lock()->m_references) {
+                auto& reference = referencePair.second;
                 if (
                     reference.m_node.lock()->m_ptr &&
                     std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->is<Classifier>()

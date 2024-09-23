@@ -48,7 +48,8 @@ void Classifier::GeneralPolicy::elementRemoved(Classifier& el, Classifier& me) {
 
 void Classifier::OwnedMemberPolicy::elementAdded(NamedElement& el, Classifier& me) {
     if (el.getVisibility() != VisibilityKind::PRIVATE) {
-        for (auto& reference : me.m_node.lock()->m_references) {
+        for (auto& referencePair : me.m_node.lock()->m_references) {
+            auto& reference = referencePair.second;
             if (
                 reference.m_node.lock()->m_ptr && 
                 std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->is<Classifier>()
@@ -67,7 +68,8 @@ void Classifier::OwnedMemberPolicy::elementAdded(NamedElement& el, Classifier& m
 
 void Classifier::OwnedMemberPolicy::elementRemoved(NamedElement& el, Classifier& me) {
     if (el.getVisibility() != VisibilityKind::PRIVATE) {
-        for (auto& reference : me.m_node.lock()->m_references) {
+        for (auto& referencePair : me.m_node.lock()->m_references) {
+            auto& reference = referencePair.second;
             if (
                 reference.m_node.lock()->m_ptr &&
                 std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->is<Classifier>()

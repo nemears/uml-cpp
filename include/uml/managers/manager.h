@@ -121,7 +121,7 @@ namespace UML {
                 // create Node by emplace in graph
                 std::lock_guard<std::mutex> graphLock(m_graphMutex);
                 ptr->m_node = m_graph.emplace(ptr->getID(), std::make_shared<ManagerNode>(ptr)).first->second;
-
+                ptr->m_node.lock()->m_myPtr = ptr->m_node;
                 // initialize ptr through copy
                 return ptr.get();
             }
@@ -215,6 +215,9 @@ namespace UML {
                         i++;
                     }
                     for (auto el: els) {
+                        if (!el.loaded()) {
+                            continue;
+                        }
                         set->runAddPolicy(*el);
                     }
                 }
@@ -274,6 +277,7 @@ namespace UML {
                 }
                 auto pair = m_graph.emplace(id, std::make_shared<ManagerNode>(id, *this));
                 ret.m_node = pair.first->second;
+                ret.m_node.lock()->m_myPtr = ret.m_node.lock();
                 ret.m_id = id;
                 pair.first->second->addPtr(&ret);
                 return ret;
@@ -330,14 +334,16 @@ namespace UML {
                 // if there are none we can get rid of this node
                 if (node->m_ptrs.empty() && !node->m_ptr) {
                     // get rid of our reference in empty nodes
-                    for (auto& reference : node->m_references) {
-                        auto& referenceReferences = reference.m_node.lock()->m_references;
-                        for (auto referenceReferenceIt = referenceReferences.begin(); referenceReferenceIt != referenceReferences.end(); ++referenceReferenceIt) {
-                            if (referenceReferenceIt->m_node.lock()->m_id == id) {
-                                referenceReferences.erase(referenceReferenceIt);
-                                break;
-                            }
+                    std::list<std::weak_ptr<ManagerNode>> nodesToErase;
+                    for (auto& referencePair : node->m_references) {
+                        auto& referenceReferences = referencePair.second.m_node.lock()->m_references;
+                        auto referenceMatch = referenceReferences.find(id);
+                        if (referenceMatch != referenceReferences.end()) {
+                            nodesToErase.push_back(referencePair.second.m_node);
                         }
+                    }
+                    for (auto& referencedNode : nodesToErase) {
+                        referencedNode.lock()->m_references.erase(id);
                     }
 
                     // get rid of node from graph
@@ -355,17 +361,19 @@ namespace UML {
             void erase(BaseElement<Tlist>& el) {
                 auto id = el.getID();
                 PersistencePolicy::eraseEl(id);
+                std::list<UmlPtr<BaseElement<Tlist>>> elsToDeleteReference;
                 for (auto& referencePair : el.m_node.lock()->m_references) {
                     AbstractElementPtr referencedEl;
-                    auto referencedNode = referencePair.m_node.lock();
+                    auto referencedNode = referencePair.second.m_node.lock();
                     if (!referencedNode->m_ptr) {
                         // element has been released
                         referencedEl = get(referencedNode->m_id);
                     } else {
                         referencedEl = referencedNode->m_ptr.get();
                     }
-
-                    // remove all el from all of referencedEl's sets with el in it
+                    elsToDeleteReference.push_back(referencedEl);
+                }
+                for (auto referencedEl : elsToDeleteReference) {
                     auto sets = getAllSets(dynamic_cast<BaseElement<Tlist>&>(*referencedEl));
                     for (auto& pair : sets) {
                         auto set = pair.second;
@@ -375,18 +383,12 @@ namespace UML {
                     }
 
                     // remove reference
-                    auto referenceReferencesIt = referencedNode->m_references.begin();
-                    auto referenceReferencesEnd = referencedNode->m_references.end();
-                    while (referenceReferencesIt != referenceReferencesEnd) {
-                        if (referenceReferencesIt->m_node.lock()->m_id == id) {
-                            break;
-                        }
-                        referenceReferencesIt++;
+                    auto& referenceReferences = referencedEl.m_node.lock()->m_references;
+                    auto referenceReferencesIt = referenceReferences.find(id);
+                    if (referenceReferencesIt != referenceReferences.end()) {
+                        referenceReferences.erase(referenceReferencesIt);
                     }
-                    if (referenceReferencesIt != referenceReferencesEnd) {
-                        referencedNode->m_references.erase(referenceReferencesIt);
-                    }
-                } 
+                }
     
                 std::lock_guard<std::mutex> graphLock(m_graphMutex);
                 m_graph.erase(id);

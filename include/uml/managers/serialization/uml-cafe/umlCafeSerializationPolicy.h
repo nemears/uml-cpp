@@ -446,10 +446,16 @@ namespace UML {
                             for (const auto& valNode : setNode) {
                                 if (valNode.IsMap()) {
                                     // composite parsing
+                                    if (set->getComposition() != CompositionType::COMPOSITE) {
+                                        throw SerializationError("bad format for non composite set " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
+                                    }
                                     auto match = this->getFunctor(valNode);
                                     auto parsedChild = match.functor.parseWhole(match.innerData);
                                     this->addToSet(*set, *parsedChild);
                                 } else if (valNode.IsScalar()) {
+                                    if (set->getComposition() != CompositionType::NONE) {
+                                        throw SerializationError("bad format for set " + setPair.first + ", it should be composite, line number " + std::to_string(setNode.Mark().line));
+                                    }
                                     this->addByID(*set, ID::fromString(valNode.template as<std::string>()));
                                 } else {
                                     throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(valNode.Mark().line));

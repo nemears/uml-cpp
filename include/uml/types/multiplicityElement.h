@@ -80,7 +80,7 @@ namespace UML {
             MultiplicityElement& el;
             MultiplicityElementUpperPolicy(MultiplicityElement& el) : el(el) {}
             std::string getData() override {
-                if (el.getUpper() >= 0) {
+                if (el.getUpper() >= 0 && !el.getUpperValue()) {
                     return std::to_string(el.getUpper());
                 }
                 return "";
@@ -93,7 +93,7 @@ namespace UML {
             MultiplicityElement& el;
             MultiplicityElementLowerPolicy(MultiplicityElement& el) : el(el) {}
             std::string getData() override {
-                if (el.getLower() >= 0) {
+                if (el.getLower() >= 0 && !el.getLowerValue()) {
                     return std::to_string(el.getLower());
                 }
                 return "";

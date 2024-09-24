@@ -55,8 +55,6 @@ TEST_F(ParameterTest, emitParameterWMultiplicityTest) {
   ownedParameters:
     - Parameter:
         id: QzBhVkqNSRAZMlkHU6cQ3d_Wm8FT
-        upper: 5
-        lower: 0
         lowerValue:
           LiteralInt:
             id: K2_2cpL966uyziy9e2pGb60cCR5X

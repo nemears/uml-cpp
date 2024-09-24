@@ -7,7 +7,7 @@ void Classifier::GeneralizationPolicy::elementAdded(Generalization& el, Classifi
         if (el.as<Generalization>().getGeneral().loaded()) {
             me.m_generals.add(el.getGeneral());
         } else {
-            me.m_generals.add(el.getGeneral());
+            me.m_generals.add(el.getGeneral().id());
         }
     }
 }

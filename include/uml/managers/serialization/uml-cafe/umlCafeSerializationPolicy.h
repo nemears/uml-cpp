@@ -667,9 +667,25 @@ namespace UML {
 
     template <class Tlist>
     class UmlCafeJsonSerializationPolicy : public UmlCafeSerializationPolicy<Tlist> {
+        private:
+            bool emitYaml = false;
         protected:
             void primeEmitter(YAML::Emitter& emitter) override {
-                emitter << YAML::DoubleQuoted << YAML::Flow;
+                if (!emitYaml) {
+                    emitter << YAML::DoubleQuoted << YAML::Flow;
+                }
+            }
+            std::string dumpYaml() {
+                emitYaml = true;
+                auto ret = this->emitWhole(*this->getAbstractRoot(), *this);
+                emitYaml = false;
+                return ret;
+            }
+            std::string dumpYaml(BaseElement<Tlist>& el) {
+                emitYaml = true;
+                auto ret = this->emitWhole(el, *this);
+                emitYaml = false;
+                return ret;
             }
     };
 }

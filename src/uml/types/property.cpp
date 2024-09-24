@@ -121,15 +121,13 @@ void Property::setComposite(bool composite) {
             //m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.removeFromJustThisSet(m_id); // TODO test
             // remove and add again instead of removeFromJustThisSet (simpler)
             StructuredClassifierPtr featuringClassifier = m_featuringClassifier.get();
-            featuringClassifier->m_parts.innerRemove(this);
-            m_composite = composite;
-            featuringClassifier->m_ownedAttributes.add(this);
+            removeFromReadonlySet(featuringClassifier->m_parts, *this);
         }
     }
     m_composite = composite;
     if (m_composite) {
         if (m_featuringClassifier.get() && m_featuringClassifier.get()->is<StructuredClassifier>()) {
-            m_featuringClassifier.get()->as<StructuredClassifier>().m_parts.innerAdd(this);
+            addToReadonlySet(m_featuringClassifier.get()->as<StructuredClassifier>().m_parts, *this);
         }
     }
 }

@@ -26,7 +26,6 @@ StructuredClassifier::StructuredClassifier(std::size_t elementType, AbstractMana
     m_ownedAttributes.subsets(m_ownedMembers);
     m_ownedAttributes.subsets(m_attributes);
     m_ownedAttributes.subsets(m_roles);
-    m_parts.subsets(m_ownedAttributes);
     m_ownedConnectors.subsets(m_ownedMembers);
     m_ownedConnectors.subsets(m_features);
 }

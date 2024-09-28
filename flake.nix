@@ -62,6 +62,17 @@
           };
 
           packages = {
+            uml-cpp_0_4_2= pkgs.stdenvNoCC.mkDerivation {
+              src = pkgs.fetchurl {
+                url = "https://github.com/nemears/uml-cpp/releases/download/v0.4.2-pre/uml-cpp-0.4.2.tar.gz";
+                hash = "sha256-82tcL2GUFo/MH3cJTch7dZINF/54GPAXoMYEzHXHWLo=";
+              };
+              name = "uml-cpp";
+              installPhase = ''
+                mkdir $out
+                cp -r . $out
+              '';
+            };
             uml-cpp = mkUmlCpp {
               src = ./.;
               version = "0.4.2";

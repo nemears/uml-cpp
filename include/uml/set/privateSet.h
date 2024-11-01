@@ -432,6 +432,9 @@ namespace UML {
                 };
                 m_opposite = std::unique_ptr<OppositeInterfaceAdapter>(new OppositeInterfaceAdapter(m_el, oppositeSignature));
             }
+            void opposite(std::unique_ptr<OppositeInterface<T>> interface) {
+                m_opposite = interface;
+            }
             PtrSet ptrs() const {
                 return PtrSet(this);
             }

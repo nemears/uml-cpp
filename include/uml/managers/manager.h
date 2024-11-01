@@ -202,6 +202,45 @@ namespace UML {
                     }
                 }
             }
+            void restoreElAndOpposites(UmlPtr<BaseElement<Tlist>> ptr) {
+                auto sets = getAllSets(*ptr);
+                for (auto& pair : sets) {
+                    auto set = pair.second;
+                    std::vector<AbstractElementPtr> els(set->size());
+                    auto i = 0;
+                    for (auto itPtr = set->beginPtr(); *itPtr != *set->endPtr(); itPtr->next()) {
+                        auto elRestore = itPtr->getCurr();
+                        els[i] = elRestore;
+                        i++;
+                    }
+                    for (auto el: els) {
+                        if (!el.loaded()) {
+                            continue;
+                        }
+                        
+                        set->runAddPolicy(*el);
+                    }
+                }
+                for (auto& pair : sets) {
+                    auto set = pair.second;
+                    std::vector<AbstractElementPtr> els(set->size());
+                    auto i = 0;
+                    for (auto itPtr = set->beginPtr(); *itPtr != *set->endPtr(); itPtr->next()) {
+                        auto elRestore = itPtr->getCurr();
+                        els[i] = elRestore;
+                        i++;
+                    }
+                    for (auto el: els) {
+                        if (!el.loaded()) {
+                            continue;
+                        }
+                        
+                        if (!set->subSetContains(el.id())) {
+                            set->addToOpposite(el);
+                        }
+                    }
+                }
+            }
             void restoreEl(BaseElement<Tlist>& el) {
                 // run add policies we skipped over
                 auto sets = getAllSets(el);
@@ -218,6 +257,7 @@ namespace UML {
                         if (!el.loaded()) {
                             continue;
                         }
+                        
                         set->runAddPolicy(*el);
                     }
                 }

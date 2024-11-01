@@ -62,6 +62,7 @@ namespace UML {
             virtual bool oppositeEnabled() const = 0;
             virtual void oppositeAdd(AbstractElement& el) = 0;
             virtual void oppositeRemove(AbstractElement& el) = 0;
+            virtual void addToOpposite(AbstractElementPtr ptr) = 0;
             virtual void nonOppositeAdd(AbstractElementPtr ptr) = 0;
             virtual void nonPolicyAdd(AbstractElementPtr ptr) = 0;
             virtual void innerAdd(AbstractElementPtr ptr) = 0;

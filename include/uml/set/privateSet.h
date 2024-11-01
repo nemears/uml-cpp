@@ -74,30 +74,11 @@ namespace UML {
             void oppositeRemove(AbstractElement& el) override {
                 m_opposite->removeOpposite(dynamic_cast<T&>(el));
             }
-            bool hasData() const override {
-                return DataTypePolicy::hasData();
-            }
-            bool containsData(AbstractElementPtr ptr) const override {
-                return DataTypePolicy::containsData(ptr);
-            }
-            bool removeData(AbstractElementPtr ptr) override {
-                return DataTypePolicy::removeData(ptr);
-            }
-            void innerAdd(AbstractElementPtr ptr) override {
-                auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
-                if (rootRedefinedSet.get() != m_structure.get()) {
-                    return rootRedefinedSet->m_set.innerAdd(ptr);
-                }
-
-                // std::lock_guard<std::mutex> setLock(m_mutex);
-
-                nonOppositeAdd(ptr);
-               
-                // run opposite
+            void addToOpposite(AbstractElementPtr ptr) override {
                 {
                     std::list<std::shared_ptr<SetStructure>> queue;
                     std::unordered_set<std::shared_ptr<SetStructure>> visited;
-                    queue.push_back(rootRedefinedSet);
+                    queue.push_back(this->m_structure->m_rootRedefinedSet);
                     while (!queue.empty()) {
                         auto front = queue.front();
                         queue.pop_front();
@@ -127,6 +108,28 @@ namespace UML {
                         }
                     }
                 }
+            }
+            bool hasData() const override {
+                return DataTypePolicy::hasData();
+            }
+            bool containsData(AbstractElementPtr ptr) const override {
+                return DataTypePolicy::containsData(ptr);
+            }
+            bool removeData(AbstractElementPtr ptr) override {
+                return DataTypePolicy::removeData(ptr);
+            }
+            void innerAdd(AbstractElementPtr ptr) override {
+                auto rootRedefinedSet = m_structure->m_rootRedefinedSet;
+                if (rootRedefinedSet.get() != m_structure.get()) {
+                    return rootRedefinedSet->m_set.innerAdd(ptr);
+                }
+
+                // std::lock_guard<std::mutex> setLock(m_mutex);
+
+                nonOppositeAdd(ptr);
+               
+                // run opposite
+                addToOpposite(ptr);
             }
             void nonOppositeAdd(AbstractElementPtr ptr) override {
                 nonPolicyAdd(ptr);

@@ -625,14 +625,14 @@ namespace UML {
                 match.functor.parseScope(match.outerData, *parsedEl);
                 return parsedEl;
             }
-            AbstractElementPtr parseIndividual(std::string data, __attribute__((unused)) AbstractManager& manager) {
+            AbstractElementPtr parseIndividual(std::string data) {
                 std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
                 if (rootNodes.empty()) {
                     throw SerializationError("could not parse data supplied to manager! Is it JSON or YAML?");
                 }
                 return parseNode(rootNodes[0]);
             }
-            std::vector<UmlPtr<BaseElement<Tlist>>> parseWhole(std::string data, __attribute__((unused)) AbstractManager& manager) {
+            std::vector<UmlPtr<BaseElement<Tlist>>> parseWhole(std::string data) {
                 std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
                 if (rootNodes.empty()) {
                     throw SerializationError("could not parse data supplied to manager! Is it JSON or YAML?");
@@ -652,10 +652,11 @@ namespace UML {
                 m_setsToRunPolicies.clear();
                 return ret;
             }
-            std::string emitIndividual(BaseElement<Tlist>& el, __attribute__((unused)) AbstractManager& manager) {
-                return (*m_emitterFunctors.at(el.getElementType()))(el);
+            std::string emitIndividual(AbstractElement& el) {
+                BaseElement<Tlist>& elAsBase = dynamic_cast<BaseElement<Tlist>&>(el);
+                return (*m_emitterFunctors.at(elAsBase.getElementType()))(elAsBase);
             }
-            std::string emitWhole(AbstractElement& el, __attribute__((unused)) AbstractManager& manager) {
+            std::string emitWhole(AbstractElement& el) {
                 YAML::Emitter emitter;
                 primeEmitter(emitter);
                 m_emitterFunctors.at(el.getElementType())->emitWhole(emitter, dynamic_cast<BaseElement<Tlist>&>(el));
@@ -664,10 +665,10 @@ namespace UML {
             virtual void primeEmitter(__attribute__((unused)) YAML::Emitter& emitter) {}
         public:
             std::string dump() {
-                return  this->emitWhole(*getAbstractRoot(), *this);
+                return  this->emitWhole(*getAbstractRoot());
             }
             std::string dump(BaseElement<Tlist>& el) {
-                return this->emitWhole(el, *this);
+                return this->emitWhole(el);
             }
     };
 
@@ -683,13 +684,13 @@ namespace UML {
             }
             std::string dumpYaml() {
                 emitYaml = true;
-                auto ret = this->emitWhole(*this->getAbstractRoot(), *this);
+                auto ret = this->emitWhole(*this->getAbstractRoot());
                 emitYaml = false;
                 return ret;
             }
             std::string dumpYaml(BaseElement<Tlist>& el) {
                 emitYaml = true;
-                auto ret = this->emitWhole(el, *this);
+                auto ret = this->emitWhole(el);
                 emitYaml = false;
                 return ret;
             }

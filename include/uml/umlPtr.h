@@ -32,7 +32,7 @@ namespace UML {
         
         friend struct ManagerNode;
 
-        template <class Tlist, class P1, class P2>
+        template <class Tlist, class P1>
         friend class Manager;
         
         protected:

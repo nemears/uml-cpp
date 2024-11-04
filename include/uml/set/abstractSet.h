@@ -34,7 +34,7 @@ namespace UML {
 
     class AbstractSet {
 
-        template <class Tlist, class P1, class P2>
+        template <class Tlist, class P1>
         friend class Manager;
 
         template <class T, class U, class DataTypePolicy, class ApiPolicy>
@@ -72,7 +72,7 @@ namespace UML {
             virtual void deAllocatePtr(__attribute__((unused)) AbstractElementPtr ptr) {}
 
             class iterator {
-                template <class Tlist, class P1, class P2>
+                template <class Tlist, class P1>
                 friend class Manager;
                 template <class T>
                 friend class SetDataPolicy;

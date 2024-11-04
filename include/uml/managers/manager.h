@@ -102,9 +102,50 @@ namespace UML {
         }
     }
 
+    // Storage Policy, how the manager accesses the element data stored
+    // usually this involves serializing data and saving to persistent storage
+    // for that reason the SerializedStoragePolicy is defined to provide the link between
+    // persistent data and serialization
+    // SerializationPolicy should have the following methods defined:
+    //      - UmlPtr parseIndividual(string data)
+    //      - string emitIndividual(AbstractElement& el)
+    //      - Collection<UmlPtr> parseWhole(string data)
+    //      - string emitWhole(AbstractElement& el)
+    // Persistence Policy should have the following methods defined:
+    //      string loadElementData(ID id)
+    //      void saveElementData(string data, ID id)
+    //      string getProjectData(string path)
+    //      string getProjectData()
+    //      void saveProjectData(string data, string path)
+    template <class SerializationPolicy, class PersistencePolicy>
+    class SerializedStoragePolicy : virtual public SerializationPolicy, public PersistencePolicy {
+        protected:
+            AbstractElementPtr loadElement(ID id) {
+                return SerializationPolicy::parseIndividual(PersistencePolicy::loadElementData(id));
+            }
+            void saveElement(AbstractElement& el) {
+                PersistencePolicy::saveElementData(SerializationPolicy::emitIndividual(el), el.getID());
+            }
+            AbstractElementPtr loadAll(std::string path) {
+                return SerializationPolicy::parseWhole(PersistencePolicy::getProjectData(path))[0];
+            }
+            AbstractElementPtr loadAll() {
+                return SerializationPolicy::parseWhole(PersistencePolicy::getProjectData())[0];
+            }
+            void saveAll(AbstractElement& root, std::string location) {
+                PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(root), location);
+            }
+            void saveAll(AbstractElement& root) {
+                PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(root));
+            }
+            void eraseEl(ID id) {
+                PersistencePolicy::eraseEl(id);
+            }
+    };
+
     // manager
-    template <class Tlist, class SerializationPolicy = UmlCafeSerializationPolicy<Tlist>, class PersistencePolicy = FilePersistencePolicy> 
-    class Manager : public ManagerTypes<Tlist>, public AbstractFactory<Tlist>, virtual public AbstractManager , virtual public SerializationPolicy, public PersistencePolicy {
+    template <class Tlist, class StoragePolicy = SerializedStoragePolicy<UmlCafeSerializationPolicy<Tlist>, FilePersistencePolicy>> 
+    class Manager : public ManagerTypes<Tlist>, public AbstractFactory<Tlist>, virtual public AbstractManager , virtual public StoragePolicy {
         protected:
 
             std::unordered_map<std::size_t, std::unique_ptr<AbstractStaticSetFunctor<Tlist>>> m_types;
@@ -336,7 +377,7 @@ namespace UML {
                 }
 
                 // check for it via policies
-                AbstractElementPtr ret = SerializationPolicy::parseIndividual(PersistencePolicy::loadElementData(id), *this);
+                AbstractElementPtr ret = StoragePolicy::loadElement(id);
 
 
                 if (ret) {
@@ -363,7 +404,8 @@ namespace UML {
             }
 
             void release(AbstractElement& el) override {
-                PersistencePolicy::saveElementData(SerializationPolicy::emitIndividual(dynamic_cast<BaseElement<Tlist>&>(el), *this), el.getID());
+                StoragePolicy::saveElement(el);
+                // PersistencePolicy::saveElementData(SerializationPolicy::emitIndividual(dynamic_cast<BaseElement<Tlist>&>(el), *this), el.getID());
                 auto node = el.m_node.lock();
                 ID id = node->m_ptr->getID();
                 m_destructionFlag = true;
@@ -400,7 +442,8 @@ namespace UML {
 
             void erase(BaseElement<Tlist>& el) {
                 auto id = el.getID();
-                PersistencePolicy::eraseEl(id);
+                StoragePolicy::eraseEl(id);
+                // PersistencePolicy::eraseEl(id);
                 std::list<UmlPtr<BaseElement<Tlist>>> elsToDeleteReference;
                 for (auto& referencePair : el.m_node.lock()->m_references) {
                     AbstractElementPtr referencedEl;
@@ -444,30 +487,38 @@ namespace UML {
             }
 
             UmlPtr<BaseElement<Tlist>> open(std::string dataPath) {
-                auto roots = SerializationPolicy::parseWhole(PersistencePolicy::getProjectData(dataPath), *this);
-                if (roots.size() == 0) {
-                    throw ManagerStateException("No elements parsed!");
-                }
+                auto root = StoragePolicy::loadAll(dataPath);
+                setRoot(root);
+                return root;
+                // auto roots = SerializationPolicy::parseWhole(PersistencePolicy::getProjectData(dataPath), *this);
+                // if (roots.size() == 0) {
+                //     throw ManagerStateException("No elements parsed!");
+                // }
 
-                // first element will be root
-                setRoot(roots[0]);
-                return roots[0];
+                // // first element will be root
+                // setRoot(roots[0]);
+                // return roots[0];
             }
             UmlPtr<BaseElement<Tlist>> open() {
-                auto roots = SerializationPolicy::parseWhole(PersistencePolicy::getProjectData(), *this);
-                if (roots.size() == 0) {
-                    throw ManagerStateException("No elements parsed!");
-                }
+                auto root = StoragePolicy::loadAll();
+                setRoot(root);
+                return root;
+                // auto roots = SerializationPolicy::parseWhole(PersistencePolicy::getProjectData(), *this);
+                // if (roots.size() == 0) {
+                //     throw ManagerStateException("No elements parsed!");
+                // }
 
-                // first element will be root
-                setRoot(roots[0]);
-                return roots[0];
+                // // first element will be root
+                // setRoot(roots[0]);
+                // return roots[0];
             }
             void save(std::string location) {
-                PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(*getRoot(), *this), location);
+                StoragePolicy::saveAll(*getRoot(), location);
+                // PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(*getRoot(), *this), location);
             }
             void save() {
-                PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(*getRoot(), *this));
+                StoragePolicy::saveAll(*getRoot());
+                // PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(*getRoot(), *this));
             }
 
             // std::string dump() {

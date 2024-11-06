@@ -105,7 +105,7 @@ namespace UML{
     template <>
     struct ElementInfo<Property> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name{"Property"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "Property"; }
         static SetList sets(Property& el) {
             return SetList{
                 makeSetPair("type", el.m_propertyType),

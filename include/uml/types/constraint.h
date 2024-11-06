@@ -37,7 +37,7 @@ namespace UML {
     template <>
     struct ElementInfo<Constraint> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name{"Constraint"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "ConnectorEnd"; }
         static SetList sets(Constraint&  el) {
             return SetList{
                 std::make_pair<std::string, AbstractSet*>("context", &el.m_context),

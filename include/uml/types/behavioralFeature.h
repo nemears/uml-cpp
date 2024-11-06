@@ -40,7 +40,7 @@ namespace UML {
     template <>
     struct ElementInfo<BehavioralFeature> : public DefaultInfo {
         static const bool abstract = true;
-        static constexpr std::string_view name {"BehavioralFeature"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "BehavioralFeature"; }
         static SetList sets(BehavioralFeature& el) {
             return SetList {
                 makeSetPair("methods", el.getMethods()),

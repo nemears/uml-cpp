@@ -40,7 +40,7 @@ namespace UML {
     template <>
     struct ElementInfo<InterfaceRealization> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"InterfaceRealization"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "InterfaceRealization"; }
         static SetList sets(InterfaceRealization& el) {
             return SetList {
                 makeSetPair("contract", el.m_contract),

@@ -292,7 +292,7 @@ namespace UML {
                         emitter << YAML::Key << possibleScope->first << YAML::Value << possibleScope->second->ids().front().string();
                     }
                     std::unordered_set<std::size_t> visited;
-                    std::string elementName = std::string(T::Info::name);
+                    std::string elementName = std::string(T::Info::name(dynamic_cast<T&>(el)));
                     emitter << YAML::Key << elementName << YAML::Value << YAML::BeginMap;
                     emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
                     emitIndividualData<0, std::tuple<T>>(emitter, visited, el);
@@ -303,7 +303,7 @@ namespace UML {
                 }
                 void emitWhole(YAML::Emitter& emitter, BaseElement<Tlist>& el) override {
                     std::unordered_set<std::size_t> visited;
-                    emitter << YAML::BeginMap << std::string(T::Info::name) << YAML::Value << YAML::BeginMap;
+                    emitter << YAML::BeginMap << T::Info::name(dynamic_cast<T&>(el)) << YAML::Value << YAML::BeginMap;
                     emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
                     emitWholeData<0, std::tuple<T>>(emitter, visited, el, m_self);
                     emitter << YAML::EndMap << YAML::EndMap;    
@@ -609,7 +609,9 @@ namespace UML {
                 if constexpr (std::tuple_size<Tlist>{} > I) {
                     using ElementType = std::tuple_element_t<I, Tlist>;
                     if constexpr (!ElementType::Info::abstract) {
-                        functors.emplace(ElementType::Info::name, std::make_unique<ParserFunctor<ElementType>>(*this));
+                        UmlPtr<ElementType> placeholderEl = this->create(I);
+                        functors.emplace(ElementType::Info::name(*placeholderEl), std::make_unique<ParserFunctor<ElementType>>(*this));
+                        this->erase(*placeholderEl);
                     }
                     populateParserFunctors<I + 1>(functors);
                 }

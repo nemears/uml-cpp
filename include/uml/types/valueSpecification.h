@@ -17,6 +17,6 @@ namespace UML {
     template <>
     struct ElementInfo<ValueSpecification> : public DefaultInfo {
         static const bool abstract = true;
-        static constexpr std::string_view name {"ValueSpecification"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "ValueSpecification"; }
     };
 }

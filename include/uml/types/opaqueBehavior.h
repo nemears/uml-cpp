@@ -23,7 +23,7 @@ namespace UML {
     template <>
     struct ElementInfo<OpaqueBehavior> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"OpaqueBehavior"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "OpaqueBehavior"; }
         static SetList sets(OpaqueBehavior& el) {
             return SetList {
                 makeSetPair("bodies", el.m_bodies)

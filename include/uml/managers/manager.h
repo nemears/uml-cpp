@@ -440,7 +440,7 @@ namespace UML {
                 release(els...);
             }
 
-            void erase(BaseElement<Tlist>& el) {
+            void erase(AbstractElement& el) override {
                 auto id = el.getID();
                 StoragePolicy::eraseEl(id);
                 // PersistencePolicy::eraseEl(id);

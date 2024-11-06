@@ -45,7 +45,7 @@ namespace UML {
     template <>
     struct ElementInfo<RedefinableTemplateSignature> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"RedefinableTemplateSignature"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "RedefinableTemplateSignature"; }
         static SetList sets(RedefinableTemplateSignature& el) {
             return SetList {
                 makeSetPair("classifier", el.m_classifier),

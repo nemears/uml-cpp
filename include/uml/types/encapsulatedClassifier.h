@@ -27,7 +27,7 @@ namespace UML {
     template <>
     struct ElementInfo<EncapsulatedClassifier> : public DefaultInfo {
         static const bool abstract = true;
-        static constexpr std::string_view name {"EncapsulatedClassifier"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "ElementImport"; }
         static SetList sets(EncapsulatedClassifier& el) {
             return SetList {
                 makeSetPair("ownedPorts", el.m_ownedPorts),

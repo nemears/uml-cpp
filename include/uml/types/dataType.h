@@ -24,7 +24,7 @@ namespace UML {
     template <>
     struct ElementInfo<DataType> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"DataType"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "DataType"; }
         static SetList sets(DataType& el) {
             return SetList {
                 makeSetPair("ownedAttributes", el.getOwnedAttributes()),

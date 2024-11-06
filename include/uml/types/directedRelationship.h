@@ -18,7 +18,7 @@ namespace UML {
 
     template <>
     struct ElementInfo<DirectedRelationship> : public DefaultInfo {
-        static constexpr std::string_view name{"DirectedRelationship"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "DirectedRelationship"; }
         static SetList sets(DirectedRelationship& el) {
             return SetList{
                 makeSetPair("targets", el.getTargets()),

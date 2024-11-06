@@ -30,7 +30,7 @@ namespace UML {
 
     template <>
     struct ElementInfo<PackageableElement> : public DefaultInfo {
-        static constexpr std::string_view name {"PackageableElement"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "PackageableElement"; }
         static SetList sets(PackageableElement& el) {
             return SetList {
                 std::make_pair<std::string, AbstractSet*>("owningPackage", &el.m_owningPackage)

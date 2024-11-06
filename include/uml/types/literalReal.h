@@ -18,7 +18,7 @@ namespace UML {
     template <>
     struct ElementInfo<LiteralReal> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name{"LiteralReal"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "LiteralReal"; }
         static const bool extraData = true;
         struct LiteralRealValuePolicy : public AbstractDataPolicy {
             LiteralReal& el;

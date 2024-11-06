@@ -71,7 +71,7 @@ namespace UML {
     template <>
     struct ElementInfo<Parameter> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"Parameter"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "Parameter"; }
         static SetList sets(Parameter& el) {
             return SetList{
                 makeSetPair("operation", el.m_operation),

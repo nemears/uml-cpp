@@ -62,7 +62,7 @@ class TestPackage : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<TestPackage> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name {"TestPackage"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestPackage"; }
 };
 
 class TestPackageSetElement : public BaseElement<TestTypes> {
@@ -76,7 +76,7 @@ class TestPackageSetElement : public BaseElement<TestTypes> {
 template<>
 struct ElementInfo<TestPackageSetElement> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name{"TestPackageSetElement"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestPackageSetElement"; }
 };
 
 TEST_F(SetTest, basicSetTest) {
@@ -431,7 +431,7 @@ class TestSubsetsElement : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<TestSubsetsElement> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name{"TestSubsetsElement"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestSubsetsElement"; }
 };
 
 TEST_F(SetTest, basicSubsetsTest) {
@@ -529,7 +529,7 @@ class Test2SubsetsElement : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<Test2SubsetsElement> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name {"Test2SubsetsElement"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "Test2SubsetsElement"; }
 };
 
 
@@ -588,7 +588,7 @@ class Test3SubsetsElement : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<Test3SubsetsElement> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name {"Test3SubsetsElement"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "Test3SubsetsElement"; }
 };
 
 TEST_F(SetTest, removeFromSubsettedSequenceTest) {
@@ -641,7 +641,7 @@ class TestElement2 : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<TestElement2> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name {"TestElement2" };
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestElement2"; }
 };
 
 TEST_F(SetTest, oppositeTest) {
@@ -668,7 +668,7 @@ class RedefinedTestElement : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<RedefinedTestElement> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name{"RedefinedTestElement"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "RedefinedTestElement"; }
 };
 
 TEST_F(SetTest, setRedefinesTest) {
@@ -732,7 +732,7 @@ class PolicyTestElement : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<PolicyTestElement> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name{"PolicyTestElement"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "PolicyTestElement"; }
 };
 
 void TestPolicy::elementAdded(__attribute__((unused)) TestPackage& el, PolicyTestElement& me) {
@@ -764,7 +764,7 @@ class TestOrderedSetElement : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<TestOrderedSetElement> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name {"TestOrderedSetElement"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestOrderedSetElement"; }
 };
 
 TEST_F(SetTest, addToOrderedSetTest) {
@@ -819,7 +819,7 @@ class TestElementSubsetsOrderedSets : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<TestElementSubsetsOrderedSets> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name{"TestElementSubsetsOrderedSets"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestElementSubsetsOrderedSets"; }
 };
 
 TEST_F(SetTest, subsetOrderedSets) {
@@ -862,7 +862,7 @@ class TestElementOrderedSubsetsSet : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<TestElementOrderedSubsetsSet> : public DefaultInfo {
     static const bool abstract = true;
-    static constexpr std::string_view name{"TestElementOrderedSubsetsSet"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestElementOrderedSubsetsSet"; }
 };
 
 TEST_F(SetTest, orderedSetSubSetsSet) {
@@ -905,7 +905,7 @@ class TestSingletonElement : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<TestSingletonElement> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name{"TestSingletonElement"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestSingletonElement"; }
 };
 
 TEST_F(SetTest, singletonTest) {
@@ -956,7 +956,7 @@ class TestSharedSubsetEvenTreeElement : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<TestSharedSubsetEvenTreeElement> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name{"TestSharedSubsetsEvenTreeElement"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestSharedSubsetsEvenTreeElement"; }
 };
 
 TEST_F(SetTest, sharedSubsetEvenTreeTest) {
@@ -1023,7 +1023,7 @@ class TestTwoRootSubSetElement : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<TestTwoRootSubSetElement> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name{"TestTwoRootSubSetElement"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestTwoRootSubSetElement"; }
 };
 
 TEST_F(SetTest, multiRootWithinRootTest) {
@@ -1101,7 +1101,7 @@ class TestComplexSubsetElement : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<TestComplexSubsetElement> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name{ "TestComplexSubsetElement" };
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestComplexSubsetElement"; }
 };
 
 TEST_F(SetTest, twoWayMultiSetSplitTest) {
@@ -1428,7 +1428,7 @@ class TestTripleSuperSetElement : public BaseElement<TestTypes> {
 template <>
 struct ElementInfo<TestTripleSuperSetElement> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name{"TestTripleSuperSetElement"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestTripleSuperSetElement"; }
 };
 
 TEST_F(SetTest, tripleRemovePlacholder) {
@@ -1561,7 +1561,7 @@ public:
 template <>
 struct ElementInfo<TestDiamondSuperSetElement> : public DefaultInfo {
     static const bool abstract = false;
-    static constexpr std::string_view name {"TestDiamondSuperSetElement"};
+    static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestDiamondSuperSetElement"; }
 };
 
 TEST_F(SetTest, VeryBasicDiamondSubsetTest)

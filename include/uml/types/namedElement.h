@@ -51,7 +51,7 @@ namespace UML {
 
     template<>
     struct ElementInfo<NamedElement> : public DefaultInfo {
-        static constexpr std::string_view name {"NamedElement"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "NamedElement"; }
         static SetList sets(NamedElement& el) {
             return SetList {
                 std::make_pair<std::string, AbstractSet*>("namespace", &el.m_namespace),

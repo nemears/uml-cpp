@@ -32,7 +32,7 @@ namespace UML {
     template <>
     struct ElementInfo<Artifact> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"Artifact"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "Artifact"; }
         static SetList sets(Artifact& el) {
             return SetList {
                 makeSetPair("nestedArtifacts", el.m_nestedArtifacts),

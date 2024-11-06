@@ -68,7 +68,7 @@ namespace UML {
     template <>
     struct ElementInfo<MultiplicityElement> : public DefaultInfo {
         static const bool abstract = true;
-        static constexpr std::string_view name{"MultiplicityElement"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "MultiplicityElement"; }
         static SetList sets(MultiplicityElement& el) {
             return SetList {
                 makeSetPair("lowerValue", el.m_lowVal),

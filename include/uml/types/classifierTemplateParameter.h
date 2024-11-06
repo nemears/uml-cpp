@@ -37,7 +37,7 @@ namespace UML {
     template <>
     struct ElementInfo<ClassifierTemplateParameter> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"ClassifierTemplateParameter"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "ClassifierTemplateParameter"; }
         static SetList sets(ClassifierTemplateParameter& el) {
             return SetList {
                 makeSetPair("parameteredElement", el.m_classifierParameteredElement),

@@ -50,7 +50,7 @@ namespace UML{
 
     template <>
     struct ElementInfo<Namespace> : public DefaultInfo {
-        static constexpr std::string_view name {"Namespace"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "Namespace"; }
         static SetList sets(Namespace& el) {
             return SetList{
                 std::make_pair<std::string, AbstractSet*>("members", &el.getMembers()),

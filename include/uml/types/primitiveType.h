@@ -12,7 +12,7 @@ namespace UML{
     template <>
     struct ElementInfo<PrimitiveType> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"PrimitiveType"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "PrimitiveType"; }
         static SetList sets(__attribute__((unused)) PrimitiveType& el) {
             return SetList{};
         }

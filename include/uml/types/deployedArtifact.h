@@ -14,7 +14,7 @@ namespace UML {
     template <>
     struct ElementInfo<DeployedArtifact> : public DefaultInfo {
         static const bool abstract = true;
-        static constexpr std::string_view name {"DeployedArtifact"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "DeployedArtifact"; }
         static SetList sets(__attribute__((unused)) DeployedArtifact& el) {
             return SetList {};
         }

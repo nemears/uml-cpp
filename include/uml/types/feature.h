@@ -28,7 +28,7 @@ namespace UML {
 
     template <>
     struct ElementInfo<Feature> : public DefaultInfo {
-        static constexpr std::string_view name {"Feature"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "Feature"; }
         static SetList sets(Feature& el) {
             return SetList {
                 makeSetPair("featuringClassifier", el.m_featuringClassifier)

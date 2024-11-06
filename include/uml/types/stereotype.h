@@ -34,7 +34,7 @@ namespace UML {
     template <>
     struct ElementInfo<Stereotype> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"Stereotype"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "Stereotype"; }
         static SetList sets(Stereotype& el) {
             return SetList {
                 makeSetPair("profile", el.m_profile),

@@ -31,7 +31,7 @@ namespace UML {
 
     template <>
     struct ElementInfo<Behavior> : public DefaultInfo {
-        static constexpr std::string_view name {"Behavior"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "Behavior"; }
         static SetList sets(Behavior& el) {
             return SetList {
                 makeSetPair("ownedParameters", el.m_ownedParameters),

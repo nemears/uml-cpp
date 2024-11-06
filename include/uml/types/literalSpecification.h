@@ -14,6 +14,6 @@ namespace UML {
 
     template <>
     struct ElementInfo<LiteralSpecification> : public DefaultInfo {
-        static constexpr std::string_view name {"LiteralSpecification"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "LiteralSpecification"; }
     };
 }

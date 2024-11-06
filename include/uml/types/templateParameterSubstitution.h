@@ -51,7 +51,7 @@ namespace UML {
     template <>
     struct ElementInfo<TemplateParameterSubstitution> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"TemplateParameterSubstitution"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "TemplateParameterSubstitution"; }
         static SetList sets(TemplateParameterSubstitution& el) {
             return SetList {
                 makeSetPair("formal", el.m_formal),

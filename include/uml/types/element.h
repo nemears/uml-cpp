@@ -225,7 +225,7 @@ namespace UML {
     // template specialization for ElementInfo<Element> (required for all implementing types)
     template <>
     struct ElementInfo<Element> : public DefaultInfo {
-        static constexpr std::string_view name {"Element"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "Element"; }
         static SetList sets(Element& el) {
             return std::vector {
                 makeSetPair("owner", el.m_owner),

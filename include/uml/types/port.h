@@ -46,7 +46,7 @@ namespace UML {
     template <>
     struct ElementInfo<Port> : DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"Port"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "Port"; }
         static SetList sets(Port& port) {
             return SetList {
                 makeSetPair("required", port.m_required),

@@ -47,7 +47,7 @@ namespace UML {
     template <>
     struct ElementInfo<Extension> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"Extension"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "Extension"; }
         static SetList sets(Extension& el) {
             return SetList {
                 makeSetPair("memberEnds", el.m_extensionMemberEnds),

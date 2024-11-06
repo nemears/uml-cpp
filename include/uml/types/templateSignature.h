@@ -36,7 +36,7 @@ namespace UML {
     template <>
     struct ElementInfo<TemplateSignature> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"TemplateSignature"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "TemplateSignature"; }
         static SetList sets(TemplateSignature& el) {
             return SetList {
                 makeSetPair("template", el.m_template),

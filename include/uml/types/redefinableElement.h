@@ -22,7 +22,7 @@ namespace UML {
     template <>
     struct ElementInfo<RedefinableElement> : public DefaultInfo {
         static const bool abstract = true;
-        static constexpr std::string_view name {"RedefinableElement"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "RedefinableElement"; }
         static SetList sets(RedefinableElement& el) {
             return SetList {
                 makeSetPair("redefinedElements", el.getRedefinedElements()),

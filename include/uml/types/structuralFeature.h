@@ -23,7 +23,7 @@ namespace UML {
 
     template <>
     struct ElementInfo<StructuralFeature> : public DefaultInfo {
-        static constexpr std::string_view name{"StructuralFeature"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "StructuralFeature"; }
         static const bool extraData = true;
         struct StructuralFeautreReadOnlyPolicy : public AbstractDataPolicy {
             StructuralFeature& el;

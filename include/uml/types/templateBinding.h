@@ -41,7 +41,7 @@ namespace UML {
     template <>
     struct ElementInfo<TemplateBinding> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"TemplateBinding"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "TemplateBinding"; }
         static SetList sets(TemplateBinding& el) {
             return SetList {
                 makeSetPair("boundElement", el.m_boundElement),

@@ -36,7 +36,7 @@ namespace UML{
     template <>
     struct ElementInfo<Class> : public DefaultInfo {
         static const bool abstract = false;
-        static constexpr std::string_view name {"Class"};
+        static std::string name(__attribute__((unused)) AbstractElement& el) { return "Class"; }
         static SetList sets(Class& el) {
             return SetList {
                 makeSetPair("ownedAttributes", el.m_classOwnedAttrubutes),

@@ -24,6 +24,13 @@ namespace UML {
     };
     template <class T>
     class OppositeInterface {
+        protected:
+            void nonOppositeAddHelper(AbstractSet& set, AbstractElementPtr ptr) {
+                set.nonOppositeAdd(ptr);
+            }
+            void nonOppositeRemoveHelper(AbstractSet& set, AbstractElementPtr ptr) {
+                set.nonOppositeRemove(ptr);
+            }
         public:
             virtual ~OppositeInterface() = default;
             virtual bool enabled() = 0;

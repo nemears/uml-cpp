@@ -31,11 +31,16 @@ namespace UML {
     class WrapperSet;
     struct IDPolicy;
     typedef WrapperSet<ID, IDPolicy> IDSet;
+    template <class T>
+    class OppositeInterface;
 
     class AbstractSet {
 
         template <class Tlist, class P1>
         friend class Manager;
+        
+        template <class T>
+        friend class OppositeInterface;
 
         template <class T, class U, class DataTypePolicy, class ApiPolicy>
         friend class PrivateSet;

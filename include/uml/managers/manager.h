@@ -8,7 +8,6 @@
 #include "abstractManager.h"
 #include "uml/managers/baseElement.h"
 #include "uml/managers/filePersistencePolicy.h"
-#include "uml/managers/managerTypes.h"
 #include "uml/managers/typeInfo.h"
 #include "uml/managers/serialization/uml-cafe/umlCafeSerializationPolicy.h"
 #include "uml/umlPtr.h"
@@ -79,14 +78,13 @@ namespace UML {
         }
     }
    
-    template <class Tlist> 
     struct AbstractStaticSetFunctor {
-        virtual SetList operator()(BaseElement<Tlist>& el) = 0;
+        virtual SetList operator()(AbstractElement& el) = 0;
     };
 
-    template <class T, class Tlist>
-    struct StaticSetFunctor : public AbstractStaticSetFunctor<Tlist> {
-        SetList operator()(BaseElement<Tlist>& el) override {
+    template <class T>
+    struct StaticSetFunctor : public AbstractStaticSetFunctor {
+        SetList operator()(AbstractElement& el) override {
             SetList ret = T::Info::Info::sets(el.template as<T>());
             std::unordered_set<std::size_t> visited = { el.getElementType() };
             addSetsToQueueHelper<0, typename T::Info::BaseList>(ret, visited, el);
@@ -95,9 +93,9 @@ namespace UML {
     };
 
     template <std::size_t I = 0, class Tlist>
-    void populateTypes(std::unordered_map<std::size_t, std::unique_ptr<AbstractStaticSetFunctor<Tlist>>>& types) {
+    void populateTypes(std::unordered_map<std::size_t, std::unique_ptr<AbstractStaticSetFunctor>>& types) {
         if constexpr (std::tuple_size<Tlist>{} > I) {
-            types.emplace(I, new StaticSetFunctor<std::tuple_element_t<I, Tlist>, Tlist>());
+            types.emplace(I, new StaticSetFunctor<std::tuple_element_t<I, Tlist>>());
             populateTypes<I+1, Tlist>(types);
         }
     }
@@ -145,15 +143,15 @@ namespace UML {
 
     // manager
     template <class Tlist, class StoragePolicy = SerializedStoragePolicy<UmlCafeSerializationPolicy<Tlist>, FilePersistencePolicy>> 
-    class Manager : public ManagerTypes<Tlist>, public AbstractFactory<Tlist>, virtual public AbstractManager , virtual public StoragePolicy {
+    class Manager : public AbstractFactory<Tlist>, virtual public AbstractManager , virtual public StoragePolicy {
         protected:
 
-            std::unordered_map<std::size_t, std::unique_ptr<AbstractStaticSetFunctor<Tlist>>> m_types;
+            std::unordered_map<std::size_t, std::unique_ptr<AbstractStaticSetFunctor>> m_types;
             std::mutex m_graphMutex;
             std::unordered_map<ID, std::shared_ptr<ManagerNode>> m_graph;
-            UmlPtr<BaseElement<Tlist>> m_root;
+            UmlPtr<AbstractElement> m_root;
 
-            SetList getAllSets(BaseElement<Tlist>& el) {
+            SetList getAllSets(AbstractElement& el) {
                 return (*m_types.at(el.m_elementType))(el);
             }
 
@@ -171,7 +169,7 @@ namespace UML {
                 auto el = oldNode->m_ptr;
 
                 // check valid
-                auto sets = getAllSets(dynamic_cast<BaseElement<Tlist>&>(*el));
+                auto sets = getAllSets(*el);
                 for (auto& pair : sets) {
                     if (pair.second->size() > 0) {
                         throw ManagerStateException("Bad reindex, element must be newly created to reindex!");
@@ -243,7 +241,7 @@ namespace UML {
                     }
                 }
             }
-            void restoreElAndOpposites(UmlPtr<BaseElement<Tlist>> ptr) {
+            void restoreElAndOpposites(AbstractElementPtr ptr) {
                 auto sets = getAllSets(*ptr);
                 for (auto& pair : sets) {
                     auto set = pair.second;
@@ -282,7 +280,7 @@ namespace UML {
                     }
                 }
             }
-            void restoreEl(BaseElement<Tlist>& el) {
+            void restoreEl(AbstractElement& el) {
                 // run add policies we skipped over
                 auto sets = getAllSets(el);
                 for (auto& pair : sets) {
@@ -303,6 +301,71 @@ namespace UML {
                     }
                 }
             }
+
+            template <class T, class Tuple>
+            struct Index;
+
+            template <class T, class... Types>
+            struct Index<T, std::tuple<T, Types...>> {
+                static const std::size_t value = 0;
+            };
+
+            template <class T, class U, class... Types>
+            struct Index<T, std::tuple<U, Types...>> {
+                static const std::size_t value = 1 + Index<T, std::tuple<Types...>>::value;
+            };
+
+            template <class Type, std::size_t I = 0>
+            static bool hasBase(std::size_t typeToCheck) {
+                using Bases = Type::Info::BaseList;
+                if constexpr (I < std::tuple_size<Bases>{}) {
+                    if (ManagerTypeInfo<std::tuple_element_t<I, Bases>>::elementType == typeToCheck) {
+                        return true;
+                    }
+                    auto ret = hasBase<std::tuple_element_t<I, Bases>>(typeToCheck);
+                    if (ret) {
+                        return true;
+                    }
+                    return hasBase<Type, I + 1>(typeToCheck);
+                }
+                return false;
+            }
+
+            template <class T>
+            struct ManagerTypeInfo {
+                static const constexpr std::size_t elementType = Index<T, Tlist>::value;
+                static bool is(std::size_t typeToCheck) {
+                    auto curr = typeToCheck == ManagerTypeInfo<T>::elementType;
+                    if (curr) {
+                        return true;
+                    }
+                    return hasBase<T>(typeToCheck);
+                }
+            };
+            
+            template <std::size_t I = 0>
+            static bool isHelper(std::size_t elType, std::size_t typeToCheck) {
+                if constexpr (I < std::tuple_size<Tlist>{}) {
+                    if (elType == I) {
+                        using ElType = std::tuple_element_t<I, Tlist>;
+                        return ManagerTypeInfo<ElType>::is(typeToCheck);
+                    }
+                } else {
+                    throw ManagerStateException("Bad Type given to is!");
+                }
+            }
+
+            bool is(AbstractElement& el, std::size_t type) override {
+                return isHelper(el.getElementType(), type);
+            }
+            bool is(std::size_t elType, std::size_t typeToCheck) override {
+                return isHelper(elType, typeToCheck);
+            }
+
+            template <class T>
+            static constexpr std::size_t idOf() {
+                return Index<T, Tlist>::value;
+            }
         private:
             bool m_destructionFlag = false;
         public:
@@ -316,7 +379,7 @@ namespace UML {
             // create by type
             template <class T>
             UmlPtr<T> create() {
-                auto ptr = this->template factoryCreate<T>(ManagerTypes<Tlist>::template idOf<T>(), *this); 
+                auto ptr = this->template factoryCreate<T>(Manager<Tlist>::template idOf<T>(), *this); 
                 return registerPtr(ptr);
             }
         private:
@@ -381,13 +444,13 @@ namespace UML {
 
 
                 if (ret) {
-                    restoreEl(dynamic_cast<BaseElement<Tlist>&>(*ret));
+                    restoreEl(*ret);
                 }
 
                 return ret;
             }
 
-            UmlPtr<BaseElement<Tlist>> get(ID id) {
+            AbstractElementPtr get(ID id) {
                 return abstractGet(id);
             }
 
@@ -395,7 +458,7 @@ namespace UML {
                 m_root = root;
             }
 
-            UmlPtr<BaseElement<Tlist>> getRoot() const {
+            AbstractElementPtr getRoot() const {
                 return m_root;
             }
 
@@ -405,7 +468,6 @@ namespace UML {
 
             void release(AbstractElement& el) override {
                 StoragePolicy::saveElement(el);
-                // PersistencePolicy::saveElementData(SerializationPolicy::emitIndividual(dynamic_cast<BaseElement<Tlist>&>(el), *this), el.getID());
                 auto node = el.m_node.lock();
                 ID id = node->m_ptr->getID();
                 m_destructionFlag = true;
@@ -444,7 +506,7 @@ namespace UML {
                 auto id = el.getID();
                 StoragePolicy::eraseEl(id);
                 // PersistencePolicy::eraseEl(id);
-                std::list<UmlPtr<BaseElement<Tlist>>> elsToDeleteReference;
+                std::list<AbstractElementPtr> elsToDeleteReference;
                 for (auto& referencePair : el.m_node.lock()->m_references) {
                     AbstractElementPtr referencedEl;
                     auto referencedNode = referencePair.second.m_node.lock();
@@ -457,7 +519,7 @@ namespace UML {
                     elsToDeleteReference.push_back(referencedEl);
                 }
                 for (auto referencedEl : elsToDeleteReference) {
-                    auto sets = getAllSets(dynamic_cast<BaseElement<Tlist>&>(*referencedEl));
+                    auto sets = getAllSets(*referencedEl);
                     for (auto& pair : sets) {
                         auto set = pair.second;
                         while (set->contains(&el)) {
@@ -478,7 +540,7 @@ namespace UML {
             }
 
             bool loaded(ID id) {
-                // todo thread safety
+                // TODO thread safety
                 auto it = m_graph.find(id);
                 if (it == m_graph.end()) {
                     return false;
@@ -486,48 +548,21 @@ namespace UML {
                 return it->second->m_ptr != 0;
             }
 
-            UmlPtr<BaseElement<Tlist>> open(std::string dataPath) {
+            AbstractElementPtr open(std::string dataPath) {
                 auto root = StoragePolicy::loadAll(dataPath);
                 setRoot(root);
                 return root;
-                // auto roots = SerializationPolicy::parseWhole(PersistencePolicy::getProjectData(dataPath), *this);
-                // if (roots.size() == 0) {
-                //     throw ManagerStateException("No elements parsed!");
-                // }
-
-                // // first element will be root
-                // setRoot(roots[0]);
-                // return roots[0];
             }
-            UmlPtr<BaseElement<Tlist>> open() {
+            AbstractElementPtr open() {
                 auto root = StoragePolicy::loadAll();
                 setRoot(root);
                 return root;
-                // auto roots = SerializationPolicy::parseWhole(PersistencePolicy::getProjectData(), *this);
-                // if (roots.size() == 0) {
-                //     throw ManagerStateException("No elements parsed!");
-                // }
-
-                // // first element will be root
-                // setRoot(roots[0]);
-                // return roots[0];
             }
             void save(std::string location) {
                 StoragePolicy::saveAll(*getRoot(), location);
-                // PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(*getRoot(), *this), location);
             }
             void save() {
                 StoragePolicy::saveAll(*getRoot());
-                // PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(*getRoot(), *this));
             }
-
-            // std::string dump() {
-            //     return SerializationPolicy::emitWhole(*getRoot(), *this);
-            // }
-
-            // std::string dump(BaseElement<Tlist>& el) {
-            //     return SerializationPolicy::emitWhole(el, *this);
-            // }
-            // TODO the rest
     };
 }

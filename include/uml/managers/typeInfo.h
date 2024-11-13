@@ -38,6 +38,7 @@ namespace UML {
     struct DefaultInfo {
         static const bool abstract = true;
         static const bool extraData = false;
+        static const ID TypeID = ID::randomID();
         static SetList sets(__attribute__((unused)) AbstractElement& el) {
             return SetList{};
         }
@@ -55,13 +56,8 @@ namespace UML {
         typedef ElementInfo<ElementType> Info;
         using BaseList = BaseTList;
         static const constexpr std::size_t elementType = Type::template idOf<Type>();
-        static bool is(std::size_t typeToCheck) {
-            auto curr = typeToCheck == elementType;
-            if (curr) {
-                return true;
-            }
-            
-            return BaseInfo<BaseList>::is(typeToCheck);
+        static bool hasBase(std::size_t base) {
+            return BaseInfo<BaseList>::is(base);
         }
     };
 

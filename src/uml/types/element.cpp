@@ -6,7 +6,7 @@ ReadOnlySingleton<Element, Element>& Element::getOwnerSingleton() {
     return m_owner;
 }
 
-Element::Element(std::size_t elementType, AbstractManager& manager) : BaseElement<UmlTypes>(elementType, manager) {
+Element::Element(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {
     m_owner.opposite(&Element::getOwnedElements);
     m_owner.setComposition(CompositionType::ANTI_COMPOSITE);
     m_ownedElements.opposite(&Element::getOwnerSingleton);

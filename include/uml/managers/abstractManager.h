@@ -30,8 +30,8 @@ namespace UML {
             virtual void addToSet(AbstractSet& set, AbstractElement& el) = 0;
             virtual void addToSet(AbstractSet& set, ID id) = 0;
             virtual void runAllAddPolicies(AbstractSet& set, AbstractElement& el) const = 0;
-            
-            // TODO rest of funcionality interface
+            virtual bool is(AbstractElement& el, std::size_t type) = 0;
+            virtual bool is(std::size_t elType, std::size_t typeToCheck) = 0;
     };
 
     class ManagerStateException : public std::exception {

@@ -189,7 +189,7 @@ namespace UML {
      * ownedElements - the elements that this element owns
      * id - the elements unique id for quick comparison and indexing
      **/
-    class Element : public BaseElement<UmlTypes> {
+    class Element : public AbstractElement {
 
         friend struct ElementInfo<Element>;
 

@@ -41,6 +41,13 @@ namespace UML {
             std::weak_ptr<ManagerNode> m_node;
             ID m_id = ID::randomID();
 
+            class BadUmlCast: public std::exception {
+                public:
+                    virtual const char* what() const throw() {
+                        return "tried to access multiplicity but it was not specified yet";
+                    }
+            } badCastException;
+
             void addToReadonlySet(AbstractSet& set, AbstractElement& el);
             void removeFromReadonlySet(AbstractSet& set, AbstractElement& el);
             std::shared_ptr<ManagerNode> getNode(AbstractElement& el) {
@@ -56,6 +63,9 @@ namespace UML {
                 return m_id;
             }
             void setID(ID id);
+            AbstractManager& getManager() {
+                return m_manager;
+            }
             inline friend bool operator==(const AbstractElement& lhs, const AbstractElement& rhs) {
                 return lhs.m_id == rhs.m_id;
             };
@@ -65,27 +75,10 @@ namespace UML {
             std::size_t getElementType() const {
                 return m_elementType;
             }
-    };
-
-    // typed for api
-    // TList is a std::tuple<> with all of the types your manager can make
-    template <class Tlist>
-    class BaseElement : public AbstractElement, public ManagerTypes<Tlist> {
-        private:
-            class BadUmlCast: public std::exception {
-                public:
-                    virtual const char* what() const throw() {
-                        return "tried to access multiplicity but it was not specified yet";
-                    }
-            } badCastException;
-        protected:
-            BaseElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
-        public:
             template <class T>
             bool is() {
-                return ManagerTypes<Tlist>::template is<T>(m_elementType);
+                return m_manager.is(*this, T::Info::TypeID);
             }
-            
             template <class T>
             T& as() {
                 if (!is<T>()) {
@@ -94,4 +87,31 @@ namespace UML {
                 return dynamic_cast<T&>(*this);
             }
     };
+
+    // typed for api
+    // TList is a std::tuple<> with all of the types your manager can make
+    // template <class Tlist>
+    // class BaseElement : public AbstractElement, public ManagerTypes<Tlist> {
+    //     private:
+            
+    //     protected:
+    //         BaseElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
+    //     public:
+    //         template <class T>
+    //         bool is() {
+    //             return ManagerTypes<Tlist>::template is<T>(m_elementType);
+    //         }
+    //         template <class T>
+    //         bool is2() {
+    //             return m_manager.is(*this, T::Info::elementType);
+    //         }
+            
+    //         template <class T>
+    //         T& as() {
+    //             if (!is<T>()) {
+    //                 throw badCastException;
+    //             }
+    //             return dynamic_cast<T&>(*this);
+    //         }
+    // };
 }

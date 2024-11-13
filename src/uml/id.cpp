@@ -497,7 +497,7 @@ bool ID::isNull() const {
     return true;
 }
 
-ID ID::randomID() {
+const ID ID::randomID() {
     ID id;
     for (size_t i = 0; i < 21; i++) {
         id.m_data[i] = rand() % 256;

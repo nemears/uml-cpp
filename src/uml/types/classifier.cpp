@@ -52,9 +52,9 @@ void Classifier::OwnedMemberPolicy::elementAdded(NamedElement& el, Classifier& m
             auto& reference = referencePair.second;
             if (
                 reference.m_node.lock()->m_ptr && 
-                std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->is<Classifier>()
+                reference.m_node.lock()->m_ptr->is<Classifier>()
              ) {
-                Classifier& clazz = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->as<Classifier>();
+                Classifier& clazz = reference.m_node.lock()->m_ptr->as<Classifier>();
                 if (
                     clazz.m_generals.contains(me.getID()) &&
                     !clazz.m_inheritedMembers.contains(el.getID())
@@ -72,9 +72,9 @@ void Classifier::OwnedMemberPolicy::elementRemoved(NamedElement& el, Classifier&
             auto& reference = referencePair.second;
             if (
                 reference.m_node.lock()->m_ptr &&
-                std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->is<Classifier>()
+                reference.m_node.lock()->m_ptr->is<Classifier>()
             ) {
-                Classifier& clazz = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->as<Classifier>();
+                Classifier& clazz = reference.m_node.lock()->m_ptr->as<Classifier>();
                 if (
                     clazz.m_generals.contains(me.getID()) &&
                     clazz.m_inheritedMembers.contains(me.getID())

@@ -59,9 +59,9 @@ void NamedElement::setVisibility(VisibilityKind visibility) {
                 auto& reference = referencePair.second;
                 if (
                     reference.m_node.lock()->m_ptr &&
-                    std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->is<Classifier>()
+                    reference.m_node.lock()->m_ptr->is<Classifier>()
                 ) {
-                    Classifier& el = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->as<Classifier>();
+                    Classifier& el = reference.m_node.lock()->m_ptr->as<Classifier>();
                     if (el.getInheritedMembers().contains(m_id)) {
                         clazzs.emplace_back(&el);
                     }

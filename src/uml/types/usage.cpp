@@ -15,7 +15,7 @@ void Usage::ClientPolicy::elementRemoved(NamedElement& el, Usage& me) {
                 queue.pop_front();
                 for (auto& referencePair : me.getNode(*front)->m_references) {
                     auto& reference = referencePair.second;
-                    auto referencedEl = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr);
+                    auto referencedEl = reference.m_node.lock()->m_ptr;
                     if (referencedEl->is<Port>()) {
                         Port& port = referencedEl->as<Port>();
                         if (port.isConjugated()) {
@@ -48,7 +48,7 @@ void Usage::ClientPolicy::elementAdded(NamedElement& el, Usage& me) {
                     queue.pop_front();
                     for (auto& referencePair : me.getNode(*front)->m_references) {
                         auto& reference = referencePair.second;
-                        auto referencedEl = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr);
+                        auto referencedEl = reference.m_node.lock()->m_ptr;
                         if (referencedEl->is<Port>()) {
                             Port& port = referencedEl->as<Port>();
                             if (port.getType().id() == front->getID()) {

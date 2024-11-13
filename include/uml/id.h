@@ -38,7 +38,7 @@ namespace UML {
             bool operator>(const ID& rhs);
             bool operator<(const ID& rhs);
             static ID nullID();
-            static ID randomID();
+            static const ID randomID();
             static ID fromString(std::string id);
             static bool isValid(std::string id);
     };

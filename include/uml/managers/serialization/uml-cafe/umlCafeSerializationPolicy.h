@@ -213,7 +213,7 @@ namespace UML {
                                 
                             } else if (set->getComposition() == CompositionType::COMPOSITE) {
                                 for (auto it = set->beginPtr(); *it != *set->endPtr(); it->next()) {
-                                    auto child = UmlPtr<BaseElement<Tlist>>(it->getCurr());
+                                    auto child = AbstractElementPtr(it->getCurr());
                                     auto subSetWithEl = set->subSetContains(child.id());
                                     if (subSetWithEl) {
                                         if (!subSetWithEl->readonly()) {
@@ -230,7 +230,7 @@ namespace UML {
                             if (set->getComposition() == CompositionType::NONE) {
                                 emitter << YAML::Value << set->ids().front().string();
                             } else if (set->getComposition() == CompositionType::COMPOSITE) {
-                                auto child = UmlPtr<BaseElement<Tlist>>(set->beginPtr()->getCurr());
+                                auto child = AbstractElementPtr(set->beginPtr()->getCurr());
                                 self.m_emitterFunctors.at(child->getElementType())->emitWhole(emitter, *child);
                             }
                             break;
@@ -275,15 +275,15 @@ namespace UML {
 
             struct AbstractEmitterFunctor {
                 virtual ~AbstractEmitterFunctor() {}
-                virtual std::string operator()(BaseElement<Tlist>& el) = 0;
-                virtual void emitWhole(YAML::Emitter& emitter, BaseElement<Tlist>& el) = 0;
+                virtual std::string operator()(AbstractElement& el) = 0;
+                virtual void emitWhole(YAML::Emitter& emitter, AbstractElement& el) = 0;
             };
 
             template <class T>
             struct EmitterFunctor : public AbstractEmitterFunctor {
                 UmlCafeSerializationPolicy& m_self;
                 EmitterFunctor(UmlCafeSerializationPolicy& self) : m_self(self) {}
-                std::string operator()(BaseElement<Tlist>& el) override {
+                std::string operator()(AbstractElement& el) override {
                     YAML::Emitter emitter;
                     m_self.primeEmitter(emitter);
                     emitter << YAML::BeginMap;
@@ -301,7 +301,7 @@ namespace UML {
 
                     return emitter.c_str();
                 }
-                void emitWhole(YAML::Emitter& emitter, BaseElement<Tlist>& el) override {
+                void emitWhole(YAML::Emitter& emitter, AbstractElement& el) override {
                     std::unordered_set<std::size_t> visited;
                     emitter << YAML::BeginMap << T::Info::name(dynamic_cast<T&>(el)) << YAML::Value << YAML::BeginMap;
                     emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
@@ -557,17 +557,17 @@ namespace UML {
                 UmlCafeSerializationPolicy& m_self;
                 AbstractParserFunctor(UmlCafeSerializationPolicy& self) : m_self(self) {}
                 virtual ~AbstractParserFunctor() {}
-                virtual UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node node) = 0; // rename?
-                virtual void parseScope(YAML::Node node, BaseElement<Tlist>& el) = 0;
-                virtual UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node node) = 0;
+                virtual AbstractElementPtr operator()(const YAML::Node node) = 0; // rename?
+                virtual void parseScope(YAML::Node node, AbstractElement& el) = 0;
+                virtual AbstractElementPtr parseWhole(const YAML::Node node) = 0;
             };
 
             template <class T>
             struct ParserFunctor : public AbstractParserFunctor {
                 typedef T Type;
                 ParserFunctor(UmlCafeSerializationPolicy& self) : AbstractParserFunctor(self) {}
-                UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node node) override {
-                    UmlPtr<T> ret = this->m_self.create(ManagerTypes<Tlist>::template idOf<T>());
+                AbstractElementPtr operator()(const YAML::Node node) override {
+                    UmlPtr<T> ret = this->m_self.create(T::Info::elementType);
                     if (node["id"]) {
                         ret->setID(ID::fromString(node["id"].as<std::string>()));
                     }
@@ -576,13 +576,13 @@ namespace UML {
 
                     return ret;
                 }
-                void parseScope(YAML::Node node, BaseElement<Tlist>& el) override {
+                void parseScope(YAML::Node node, AbstractElement& el) override {
                     auto found = this->m_self.template parseScope<0, std::tuple<T>>(node, el.template as<T>());
                     if (!found) {
                         this->m_self.template parseReadOnlyScope<0, std::tuple<T>>(node, el.template as<T>());
                     }
                 }
-                UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node node) {
+                AbstractElementPtr parseWhole(const YAML::Node node) {
                     UmlPtr<T> ret = this->m_self.create(T::Info::elementType);
                     if (node["id"]) {
                         if (!node["id"].IsScalar()) {
@@ -634,12 +634,12 @@ namespace UML {
                 }
                 return parseNode(rootNodes[0]);
             }
-            std::vector<UmlPtr<BaseElement<Tlist>>> parseWhole(std::string data) {
+            std::vector<AbstractElementPtr> parseWhole(std::string data) {
                 std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
                 if (rootNodes.empty()) {
                     throw SerializationError("could not parse data supplied to manager! Is it JSON or YAML?");
                 }
-                std::vector<UmlPtr<BaseElement<Tlist>>> ret(rootNodes.size());
+                std::vector<AbstractElementPtr> ret(rootNodes.size());
                 auto i = 0;
                 for (auto& node : rootNodes) {
                     auto match = getFunctor(node);
@@ -655,13 +655,12 @@ namespace UML {
                 return ret;
             }
             std::string emitIndividual(AbstractElement& el) {
-                BaseElement<Tlist>& elAsBase = dynamic_cast<BaseElement<Tlist>&>(el);
-                return (*m_emitterFunctors.at(elAsBase.getElementType()))(elAsBase);
+                return (*m_emitterFunctors.at(el.getElementType()))(el);
             }
             std::string emitWhole(AbstractElement& el) {
                 YAML::Emitter emitter;
                 primeEmitter(emitter);
-                m_emitterFunctors.at(el.getElementType())->emitWhole(emitter, dynamic_cast<BaseElement<Tlist>&>(el));
+                m_emitterFunctors.at(el.getElementType())->emitWhole(emitter, el);
                 return emitter.c_str();
             }
             virtual void primeEmitter(__attribute__((unused)) YAML::Emitter& emitter) {}
@@ -669,7 +668,7 @@ namespace UML {
             std::string dump() {
                 return  this->emitWhole(*getAbstractRoot());
             }
-            std::string dump(BaseElement<Tlist>& el) {
+            std::string dump(AbstractElement& el) {
                 return this->emitWhole(el);
             }
     };
@@ -690,7 +689,7 @@ namespace UML {
                 emitYaml = false;
                 return ret;
             }
-            std::string dumpYaml(BaseElement<Tlist>& el) {
+            std::string dumpYaml(AbstractElement& el) {
                 emitYaml = true;
                 auto ret = this->emitWhole(el);
                 emitYaml = false;

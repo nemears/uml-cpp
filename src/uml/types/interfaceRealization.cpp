@@ -5,7 +5,7 @@ using namespace UML;
 void InterfaceRealization::ContractPolicy::elementRemoved(Interface& el, InterfaceRealization& me) {
     if (me.getImplementingClassifier()) {
         for (auto& referencePair : me.getNode(*me.m_implementingClassifier.get())->m_references) {
-            auto referencedEl = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(referencePair.second.m_node.lock()->m_ptr);
+            auto referencedEl = referencePair.second.m_node.lock()->m_ptr;
             if (referencedEl->is<Port>() && 
                 referencedEl->as<Port>().getType().id() == me.m_implementingClassifier.get().id()) {
                     Port& port = referencedEl->as<Port>();
@@ -26,7 +26,7 @@ void InterfaceRealization::ContractPolicy::elementRemoved(Interface& el, Interfa
 void InterfaceRealization::ContractPolicy::elementAdded(Interface& el, InterfaceRealization& me) {
     if (me.getImplementingClassifier()) {
         for (auto& reference : me.getNode(*me.m_implementingClassifier.get())->m_references) {
-            auto referencedEl = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.second.m_node.lock()->m_ptr);
+            auto referencedEl = reference.second.m_node.lock()->m_ptr;
             if (
                 referencedEl->is<Port>() && 
                 referencedEl->as<Port>().getType().id() == me.m_implementingClassifier.get().id()

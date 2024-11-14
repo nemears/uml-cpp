@@ -4,7 +4,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include "uml/managers/abstractManager.h"
-#include "uml/managers/baseElement.h"
+#include "uml/managers/abstractElement.h"
 
 namespace UML {
     struct NodeReference;

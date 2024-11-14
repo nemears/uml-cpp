@@ -1,8 +1,8 @@
 #pragma once
 
-#include "managers/baseElement.h"
-#include "managers/managerNode.h"
-#include "managers/abstractManager.h"
+#include "abstractElement.h"
+#include "managerNode.h"
+#include "abstractManager.h"
 #include <memory>
 
 namespace std {

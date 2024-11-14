@@ -2,7 +2,6 @@
 
 #include <memory>
 #include "uml/id.h"
-#include "uml/managers/managerTypes.h"
 
 namespace UML {
 
@@ -64,34 +63,6 @@ namespace UML {
             };
             std::size_t getElementType() const {
                 return m_elementType;
-            }
-    };
-
-    // typed for api
-    // TList is a std::tuple<> with all of the types your manager can make
-    template <class Tlist>
-    class BaseElement : public AbstractElement, public ManagerTypes<Tlist> {
-        private:
-            class BadUmlCast: public std::exception {
-                public:
-                    virtual const char* what() const throw() {
-                        return "tried to access multiplicity but it was not specified yet";
-                    }
-            } badCastException;
-        protected:
-            BaseElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
-        public:
-            template <class T>
-            bool is() {
-                return ManagerTypes<Tlist>::template is<T>(m_elementType);
-            }
-            
-            template <class T>
-            T& as() {
-                if (!is<T>()) {
-                    throw badCastException;
-                }
-                return dynamic_cast<T&>(*this);
             }
     };
 }

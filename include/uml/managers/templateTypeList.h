@@ -50,4 +50,13 @@ namespace UML {
     struct TemplateTypeListIndex<TypeToFind, TemplateTypeList<First, RestOfTypes...>> {
         static const std::size_t result = TemplateTypeListIndex<TypeToFind, TemplateTypeList<RestOfTypes...>>::result + 1;
     };
+
+    // concatenate two typelists
+    template <class TypeList1, class TypeList2>
+    struct TemplateTypeListCat;
+
+    template <template <class> class ... LeftTypes, template <class> class ... RightTypes>
+    struct TemplateTypeListCat<TemplateTypeList<LeftTypes...>, TemplateTypeList<RightTypes...>> {
+        using result = TemplateTypeList<LeftTypes..., RightTypes...>;
+    };
 }

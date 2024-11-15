@@ -4,16 +4,57 @@
 #include <mutex>
 #include <memory>
 #include <unordered_map>
+#include "uml/managers/filePersistencePolicy.h"
+#include "uml/managers/serialization/uml-cafe/umlCafeSerializationPolicy.h"
 #include "umlPtr.h"
 #include "abstractManager.h"
-#include "abstractElement.h"
+#include "comparableElement.h"
 #include "templateTypeList.h"
 
 namespace UML {
-    
-
+    // Storage Policy, how the manager accesses the element data stored
+    // usually this involves serializing data and saving to persistent storage
+    // for that reason the SerializedStoragePolicy is defined to provide the link between
+    // persistent data and serialization
+    // SerializationPolicy should have the following methods defined:
+    //      - UmlPtr parseIndividual(string data)
+    //      - string emitIndividual(AbstractElement& el)
+    //      - Collection<UmlPtr> parseWhole(string data)
+    //      - string emitWhole(AbstractElement& el)
+    // Persistence Policy should have the following methods defined:
+    //      string loadElementData(ID id)
+    //      void saveElementData(string data, ID id)
+    //      string getProjectData(string path)
+    //      string getProjectData()
+    //      void saveProjectData(string data, string path)
+    template <class SerializationPolicy, class PersistencePolicy>
+    class SerializedStoragePolicy : virtual public SerializationPolicy, public PersistencePolicy {
+        protected:
+            AbstractElementPtr loadElement(ID id) {
+                return SerializationPolicy::parseIndividual(PersistencePolicy::loadElementData(id));
+            }
+            void saveElement(AbstractElement& el) {
+                PersistencePolicy::saveElementData(SerializationPolicy::emitIndividual(el), el.getID());
+            }
+            AbstractElementPtr loadAll(std::string path) {
+                return SerializationPolicy::parseWhole(PersistencePolicy::getProjectData(path))[0];
+            }
+            AbstractElementPtr loadAll() {
+                return SerializationPolicy::parseWhole(PersistencePolicy::getProjectData())[0];
+            }
+            void saveAll(AbstractElement& root, std::string location) {
+                PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(root), location);
+            }
+            void saveAll(AbstractElement& root) {
+                PersistencePolicy::saveProjectData(SerializationPolicy::emitWhole(root));
+            }
+            void eraseEl(ID id) {
+                PersistencePolicy::eraseEl(id);
+            }
+    };
+   
     // manager
-    template <class TypePolicyList, class StoragePolicy>
+    template <class TypePolicyList, class StoragePolicy = SerializedStoragePolicy<UmlCafeSerializationPolicy<TypePolicyList>, FilePersistencePolicy>>
     class Manager : public StoragePolicy, virtual public AbstractManager {
         private:
             // data
@@ -22,35 +63,12 @@ namespace UML {
         public:
             // Base element for all types created by manager, the policy classes provided will be filled out with
             // this BaseElement as their policy
-            class BaseElement : public AbstractElement {
+            class BaseElement : public ComparableElement<TypePolicyList> {
                 protected:
                     // constructor
-                    BaseElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
+                    BaseElement(std::size_t elementType, AbstractManager& manager) : ComparableElement<TypePolicyList>(elementType, manager) {}
                 public:
                     using Manager = Manager;
-                    // is function to compare types compile time O(1)
-                    template <template <class> class T, std::size_t I = 0>
-                    constexpr bool is() const {
-                        if constexpr (TemplateTypeListIndex<T, TypePolicyList>::result == m_elementType) {
-                            return true;
-                        }
-                        using TBases = T<BaseElement>::Info::BaseList;
-                        if constexpr (I < TemplateTypeListSize<TBases>::result) {
-                            if constexpr (TemplateTypeListType<I, TBases>::template result<BaseElement>::template is<T>()) {
-                                return true;
-                            }
-                        }
-                        return is<T, I + 1>();
-                    }
-
-                    // as to cast to other managed types
-                    template <template<class> class T>
-                    constexpr T<BaseElement>& as() const {
-                        if constexpr (is<T>()) {
-                            return dynamic_cast<T<BaseElement>&>(*this);
-                        }
-                        throw ManagerStateException("Can not convert element to that type!");
-                    }
             };
 
             template <template <class> class T, std::size_t I = 0, bool HasBases = I < TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result>

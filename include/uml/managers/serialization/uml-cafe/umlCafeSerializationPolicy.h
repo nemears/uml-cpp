@@ -1,8 +1,9 @@
 #pragma once
-#include "uml/managers/baseElement.h"
+#include "uml/managers/abstractElement.h"
+#include "uml/managers/comparableElement.h"
 #include "uml/managers/managerTypes.h"
 #include "uml/set/privateSet.h"
-#include "uml/umlPtr.h"
+#include "uml/managers/umlPtr.h"
 #include "uml/managers/abstractManager.h"
 #include <memory>
 #include <tuple>
@@ -12,6 +13,7 @@
 #include <yaml-cpp/node/parse.h>
 #include "yaml-cpp/yaml.h"
 #include "uml/set/abstractSet.h"
+#include "uml/managers/templateTypeList.h"
 
 namespace UML {
     class SerializationError : public std::exception {
@@ -34,14 +36,6 @@ namespace UML {
 
             std::unordered_map<std::size_t, std::unique_ptr<AbstractEmitterFunctor>> m_emitterFunctors;
             std::unordered_map<std::string, std::unique_ptr<AbstractParserFunctor>> m_parserfunctors;
-
-            template <class, class>
-            struct TupleCat;
-
-            template <class ... Left, class ... Right>
-            struct TupleCat<std::tuple<Left...>, std::tuple<Right...>> {
-                using type = std::tuple<Left..., Right...>;
-            };
 
             template<std::size_t ... Is>
             struct IntList {};
@@ -81,12 +75,14 @@ namespace UML {
 
             template <std::size_t I, class EmitTypes, class Visited = IntList<>>
             static std::unique_ptr<std::pair<std::string, AbstractSet*>> findScope(AbstractElement& el) {
-                if constexpr (std::tuple_size<EmitTypes>{} > I) {
-                    using CurrentType = std::tuple_element_t<I, EmitTypes>;
-                    if constexpr (!HasType<CurrentType::template idOf<CurrentType>(), Visited>::value) {
+                if constexpr (TemplateTypeListSize<EmitTypes>::result > I) {
+                    // using CurrentType = std::tuple_element_t<I, EmitTypes>;
+                    const std::size_t typeID = TemplateTypeListIndex<TemplateTypeListType<I, EmitTypes>::template reuslt, Tlist>::result;
+                    if constexpr (!HasType<typeID, Visited>::value) {
+                        using CurrentType = TemplateTypeListType<I, EmitTypes>::template result<ComparableElement<Tlist>>;
                         auto possibleScope = findScopeHelper<CurrentType>(dynamic_cast<CurrentType&>(el));
-                        using NewVisited = typename IntAppend<Visited, CurrentType::template idOf<CurrentType>()>::type;
-                        auto basePossibleScope = findScope<I + 1, typename TupleCat<EmitTypes, typename CurrentType::Info::BaseList>::type, NewVisited>(el);
+                        using NewVisited = typename IntAppend<Visited, typeID>::type;
+                        auto basePossibleScope = findScope<I + 1, typename TemplateTypeListCat<EmitTypes, typename CurrentType::Info::BaseList>::result, NewVisited>(el);
                         
                         // compare and choose best option
                         if (!possibleScope || possibleScope->second->size() == 0) {
@@ -108,11 +104,11 @@ namespace UML {
                 return 0;
             }
 
-            template <class T>
+            template <template <class> class T>
             static void emitData(YAML::Emitter& emitter, AbstractElement& el) {
-                if constexpr (T::Info::extraData) {
-                    auto& typedEl = dynamic_cast<T&>(el);
-                    for (auto& dataPair : T::Info::data(typedEl)) {
+                if constexpr (T<ComparableElement<Tlist>>::Info::extraData) {
+                    auto& typedEl = dynamic_cast<T<ComparableElement<Tlist>>&>(el);
+                    for (auto& dataPair : T<ComparableElement<Tlist>>::Info::data(typedEl)) {
                         auto data = dataPair.second->getData();
                         if (!data.empty()) {
                             emitter << YAML::Key << dataPair.first << YAML::Value << data;
@@ -121,10 +117,10 @@ namespace UML {
                 }
             }
 
-            template <class T>
+            template <template <class> class T>
             static void emitIndividualDataHelper(YAML::Emitter& emitter, AbstractElement& el) {
                 emitData<T>(emitter, el);
-                for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
+                for (auto& setPair : T<ComparableElement<Tlist>>::Info::sets(dynamic_cast<T<ComparableElement<Tlist>>&>(el))) {
                     auto set = setPair.second;
                     if (/*set->readonly() ||*/ set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
                         continue;
@@ -171,10 +167,10 @@ namespace UML {
                 }
             }
 
-            template <class T>
+            template <template <class> class T>
             static void emitWholeDataHelper(YAML::Emitter& emitter, AbstractElement& el, UmlCafeSerializationPolicy& self) {
                 emitData<T>(emitter, el);
-                for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
+                for (auto& setPair : T<ComparableElement<Tlist>>::Info::sets(dynamic_cast<T<ComparableElement<Tlist>>&>(el))) {
                     auto set = setPair.second;
                     if (set->readonly() || set->empty() || !set->rootSet() || set->getComposition() == CompositionType::ANTI_COMPOSITE) {
                         continue;
@@ -213,7 +209,7 @@ namespace UML {
                                 
                             } else if (set->getComposition() == CompositionType::COMPOSITE) {
                                 for (auto it = set->beginPtr(); *it != *set->endPtr(); it->next()) {
-                                    auto child = UmlPtr<BaseElement<Tlist>>(it->getCurr());
+                                    auto child = UmlPtr<AbstractElement>(it->getCurr());
                                     auto subSetWithEl = set->subSetContains(child.id());
                                     if (subSetWithEl) {
                                         if (!subSetWithEl->readonly()) {
@@ -230,7 +226,7 @@ namespace UML {
                             if (set->getComposition() == CompositionType::NONE) {
                                 emitter << YAML::Value << set->ids().front().string();
                             } else if (set->getComposition() == CompositionType::COMPOSITE) {
-                                auto child = UmlPtr<BaseElement<Tlist>>(set->beginPtr()->getCurr());
+                                auto child = UmlPtr<AbstractElement>(set->beginPtr()->getCurr());
                                 self.m_emitterFunctors.at(child->getElementType())->emitWhole(emitter, *child);
                             }
                             break;
@@ -243,14 +239,15 @@ namespace UML {
 
             template <std::size_t I = 0, class EmitTypes>
             static void emitIndividualData(YAML::Emitter& emitter, std::unordered_set<std::size_t>& visited, AbstractElement& el) {
-                if constexpr (std::tuple_size<EmitTypes>{} > I) {
-                    using ElementType = std::tuple_element_t<I, EmitTypes>;
+                if constexpr (TemplateTypeListSize<EmitTypes>::result > I) {
+                    const std::size_t typeID = TemplateTypeListIndex<TemplateTypeListType<I, EmitTypes>::template result, Tlist>::result;
                     // dfs
-                    if (!visited.count(ElementType::template idOf<ElementType>())) {
-                        visited.insert(ElementType::template idOf<ElementType>());
+                    if (!visited.count(typeID)) {
+                        visited.insert(typeID);
+                        using ElementType = TemplateTypeListType<I, EmitTypes>::template result<ComparableElement<Tlist>>;
                         emitIndividualData<0, typename ElementType::Info::BaseList>(emitter, visited, el);
                         emitIndividualData<I + 1, EmitTypes>(emitter, visited, el);
-                        emitIndividualDataHelper<ElementType>(emitter, el);
+                        emitIndividualDataHelper<TemplateTypeListType<I, EmitTypes>::template result>(emitter, el);
                     } else {
                         emitIndividualData<I + 1, EmitTypes>(emitter, visited, el);
                     }
@@ -259,14 +256,15 @@ namespace UML {
 
             template <std::size_t I = 0, class EmitTypes>
             static void emitWholeData(YAML::Emitter& emitter, std::unordered_set<std::size_t>& visited, AbstractElement& el, UmlCafeSerializationPolicy& self) {
-                if constexpr (std::tuple_size<EmitTypes>{} > I) {
-                    using ElementType = std::tuple_element_t<I, EmitTypes>;
+                if constexpr (TemplateTypeListSize<EmitTypes>::result > I) {
                     // dfs
-                    if (!visited.count(ElementType::template idOf<ElementType>())) {
-                        visited.insert(ElementType::template idOf<ElementType>());
+                    const std::size_t typeID = TemplateTypeListIndex<TemplateTypeListType<I, EmitTypes>::template result, Tlist>::result;
+                    if (!visited.count(typeID)) {
+                        visited.insert(typeID);
+                        using ElementType = TemplateTypeListType<I, EmitTypes>::template result<ComparableElement<Tlist>>;
                         emitWholeData<0, typename ElementType::Info::BaseList>(emitter, visited, el, self);
                         emitWholeData<I + 1, EmitTypes>(emitter, visited, el, self);
-                        emitWholeDataHelper<ElementType>(emitter, el, self);
+                        emitWholeDataHelper<TemplateTypeListType<I, EmitTypes>::template result>(emitter, el, self);
                     } else {
                         emitWholeData<I + 1, EmitTypes>(emitter, visited, el, self);
                     }
@@ -275,37 +273,37 @@ namespace UML {
 
             struct AbstractEmitterFunctor {
                 virtual ~AbstractEmitterFunctor() {}
-                virtual std::string operator()(BaseElement<Tlist>& el) = 0;
-                virtual void emitWhole(YAML::Emitter& emitter, BaseElement<Tlist>& el) = 0;
+                virtual std::string operator()(ComparableElement<Tlist>& el) = 0;
+                virtual void emitWhole(YAML::Emitter& emitter, ComparableElement<Tlist>& el) = 0;
             };
 
-            template <class T>
+            template <template <class> class T>
             struct EmitterFunctor : public AbstractEmitterFunctor {
                 UmlCafeSerializationPolicy& m_self;
                 EmitterFunctor(UmlCafeSerializationPolicy& self) : m_self(self) {}
-                std::string operator()(BaseElement<Tlist>& el) override {
+                std::string operator()(ComparableElement<Tlist>& el) override {
                     YAML::Emitter emitter;
                     m_self.primeEmitter(emitter);
                     emitter << YAML::BeginMap;
-                    auto possibleScope = findScope<0, std::tuple<T>>(el);
+                    auto possibleScope = findScope<0, TemplateTypeList<T>>(el);
                     if (possibleScope && !possibleScope->second->empty()) {
                         emitter << YAML::Key << possibleScope->first << YAML::Value << possibleScope->second->ids().front().string();
                     }
                     std::unordered_set<std::size_t> visited;
-                    std::string elementName = std::string(T::Info::name(dynamic_cast<T&>(el)));
+                    std::string elementName = std::string(T<ComparableElement<Tlist>>::Info::name(dynamic_cast<T<ComparableElement<Tlist>>&>(el)));
                     emitter << YAML::Key << elementName << YAML::Value << YAML::BeginMap;
                     emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
-                    emitIndividualData<0, std::tuple<T>>(emitter, visited, el);
+                    emitIndividualData<0, TemplateTypeList<T>>(emitter, visited, el);
                     emitter << YAML::EndMap;
                     emitter << YAML::EndMap;
 
                     return emitter.c_str();
                 }
-                void emitWhole(YAML::Emitter& emitter, BaseElement<Tlist>& el) override {
+                void emitWhole(YAML::Emitter& emitter, ComparableElement<Tlist>& el) override {
                     std::unordered_set<std::size_t> visited;
-                    emitter << YAML::BeginMap << T::Info::name(dynamic_cast<T&>(el)) << YAML::Value << YAML::BeginMap;
+                    emitter << YAML::BeginMap << T<ComparableElement<Tlist>>::Info::name(dynamic_cast<T<ComparableElement<Tlist>>&>(el)) << YAML::Value << YAML::BeginMap;
                     emitter << YAML::Key << "id" << YAML::Value << el.getID().string();
-                    emitWholeData<0, std::tuple<T>>(emitter, visited, el, m_self);
+                    emitWholeData<0, TemplateTypeList<T>>(emitter, visited, el, m_self);
                     emitter << YAML::EndMap << YAML::EndMap;    
                 }
             };
@@ -345,10 +343,10 @@ namespace UML {
                 m_setsToRunPolicies[&set] = id;
             }
 
-            template <class T>
-            void parseData(T& el, const YAML::Node& node) {
-                if constexpr (T::Info::extraData) {
-                    for (auto& dataPair : T::Info::data(el)) {
+            template <template <class> class T>
+            void parseData(T<ComparableElement<Tlist>>& el, const YAML::Node& node) {
+                if constexpr (T<ComparableElement<Tlist>>::Info::extraData) {
+                    for (auto& dataPair : T<ComparableElement<Tlist>>::Info::data(el)) {
                         if (node[dataPair.first]) {
                             dataPair.second->setData(node[dataPair.first].template as<std::string>());
                         }
@@ -356,10 +354,10 @@ namespace UML {
                 }
             }
 
-            template <class T>
-            void parseIndividualHelper(T& el, const YAML::Node& node) {
+            template <template <class> class T>
+            void parseIndividualHelper(T<ComparableElement<Tlist>>& el, const YAML::Node& node) {
                 parseData<T>(el, node);
-                for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
+                for (auto& setPair : T<ComparableElement<Tlist>>::Info::sets(el)) {
                     if (!setPair.second->rootSet()) {
                         continue;
                     }
@@ -382,9 +380,9 @@ namespace UML {
                 }
             }
 
-            template <class T>
-            bool parseReadOnlyScopeHelper(const YAML::Node& node, T& el) {
-                for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
+            template <template <class> class T>
+            bool parseReadOnlyScopeHelper(const YAML::Node& node, T<ComparableElement<Tlist>>& el) {
+                for (auto& setPair : T<ComparableElement<Tlist>>::Info::sets(el)) {
                     auto set = setPair.second;
                     if (set->getComposition() != CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
                         continue;
@@ -403,9 +401,9 @@ namespace UML {
                 return false;
             }
 
-            template <class T>
-            bool parseScopeHelper(const YAML::Node& node, T& el) {
-                for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
+            template <template <class> class T>
+            bool parseScopeHelper(const YAML::Node& node, T<ComparableElement<Tlist>>& el) {
+                for (auto& setPair : T<ComparableElement<Tlist>>::Info::sets(el)) {
                     if (setPair.second->readonly()) {
                         continue;
                     }
@@ -427,10 +425,10 @@ namespace UML {
                 return false;
             }
 
-            template <class T>
-            void parseWholeHelper(T& el, const YAML::Node& node) {
+            template <template <class> class T>
+            void parseWholeHelper(T<ComparableElement<Tlist>>& el, const YAML::Node& node) {
                 parseData<T>(el, node);
-                for (auto& setPair : T::Info::sets(dynamic_cast<T&>(el))) {
+                for (auto& setPair : T<ComparableElement<Tlist>>::Info::sets(el)) {
                     if (!setPair.second->rootSet()) {
                         continue;
                     }
@@ -474,38 +472,47 @@ namespace UML {
             }
 
             template <std::size_t I, class ParseTypes>
-            void parseIndividual(std::tuple_element_t<I, ParseTypes>& el, const YAML::Node& node, std::unordered_set<std::size_t>& visited) {
-                using ElementType = std::tuple_element_t<I, ParseTypes>;
-                if (!visited.count(ElementType::template idOf<ElementType>())) {
-                    visited.insert(ElementType::template idOf<ElementType>());
-                    parseIndividualHelper<ElementType>(el, node);
-                    if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
-                        parseIndividual<I + 1, ParseTypes>(dynamic_cast<std::tuple_element_t<I + 1, ParseTypes>&>(el), node, visited);
+            void parseIndividual(TemplateTypeListType<I, ParseTypes>::template result<ComparableElement<Tlist>>& el, const YAML::Node& node, std::unordered_set<std::size_t>& visited) {
+                const std::size_t typeID = TemplateTypeListIndex<TemplateTypeListType<I, ParseTypes>::template result, Tlist>::result;
+                if (!visited.count(typeID)) {
+                    visited.insert(typeID);
+                    parseIndividualHelper<TemplateTypeListType<I, ParseTypes>::template result>(el, node);
+                    if constexpr (TemplateTypeListSize<ParseTypes>::result > I + 1) {
+                        parseIndividual<I + 1, ParseTypes>(
+                                dynamic_cast<TemplateTypeListType<I + 1, ParseTypes>::template result<ComparableElement<Tlist>>&>(el), 
+                                node, 
+                                visited
+                        );
                     }
+                    using ElementType = std::tuple_element_t<I, ParseTypes>;
                     using ElBases = typename ElementType::Info::BaseList;
-                    if constexpr (std::tuple_size<ElBases>{} > 0) {
+                    if constexpr (TemplateTypeListSize<ElBases>::result > 0) {
                         parseIndividual<0, ElBases>(el, node, visited);
                     }
                 } else {
-                    if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
-                        parseIndividual<I + 1, ParseTypes>(dynamic_cast<std::tuple_element_t<I + 1, ParseTypes>&>(el), node, visited);
+                    if constexpr (TemplateTypeListSize<ParseTypes>::result > I + 1) {
+                        parseIndividual<I + 1, ParseTypes>(
+                                dynamic_cast<TemplateTypeListType<I + 1, ParseTypes>::template result<ComparableElement<Tlist>>&>(el), 
+                                node, 
+                                visited
+                        );
                     }
                 }
             }
 
             template <std::size_t I, class ParseTypes>
-            bool parseReadOnlyScope(const YAML::Node node, std::tuple_element_t<I, ParseTypes>& el) {
-                using ElementType = typename std::tuple_element_t<I, ParseTypes>;
-                if (parseReadOnlyScopeHelper<ElementType>(node, el)) {
+            bool parseReadOnlyScope(const YAML::Node node, TemplateTypeListType<I, ParseTypes>::template result<ComparableElement<Tlist>>& el) {
+                if (parseReadOnlyScopeHelper<TemplateTypeListType<I, ParseTypes>::template result>(node, el)) {
                     return true;
                 }
-                if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
-                    if (parseReadOnlyScope<I + 1, ParseTypes>(node, el.template as<std::tuple_element_t<I + 1, ParseTypes>>())) {
+                if constexpr (TemplateTypeListSize<ParseTypes>{} > I + 1) {
+                    if (parseReadOnlyScope<I + 1, ParseTypes>(node, el.template as<TemplateTypeListType<I + 1, ParseTypes>::template result>())) {
                         return true;
                     }
                 }
+                using ElementType = typename TemplateTypeListType<I, ParseTypes>::template result<ComparableElement<Tlist>>;
                 using ElBases = typename ElementType::Info::BaseList;
-                if constexpr (std::tuple_size<ElBases>{} > 0) {
+                if constexpr (TemplateTypeListSize<ElBases>{} > 0) {
                     if (parseReadOnlyScope<0, ElBases>(node, el)) {
                         return true;
                     }
@@ -514,16 +521,16 @@ namespace UML {
             }
 
             template <std::size_t I, class ParseTypes>
-            bool parseScope(const YAML::Node& node, std::tuple_element_t<I, ParseTypes>& el) {
-                using ElementType = typename std::tuple_element_t<I, ParseTypes>;
-                if (parseScopeHelper<ElementType>(node, el)) {
+            bool parseScope(const YAML::Node& node, TemplateTypeListType<I, ParseTypes>::template result<ComparableElement<Tlist>>& el) {
+                if (parseScopeHelper<TemplateTypeListType<I, ParseTypes>::template result>(node, el)) {
                     return true;
                 }
                 if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
-                    if (parseScope<I + 1, ParseTypes>(node, el.template as<std::tuple_element_t<I + 1, ParseTypes>>())) {
+                    if (parseScope<I + 1, ParseTypes>(node, el.template as<TemplateTypeListType<I + 1, ParseTypes>::template result>())) {
                         return true;
                     }
                 }
+                using ElementType = typename TemplateTypeListType<I, ParseTypes>::template result<ComparableElement<Tlist>>;
                 using ElBases = typename ElementType::Info::BaseList;
                 if constexpr (std::tuple_size<ElBases>{} > 0) {
                     if (parseScope<0, ElBases>(node, el)) {
@@ -534,21 +541,30 @@ namespace UML {
             }
             
             template <std::size_t I, class ParseTypes>
-            void parseWhole(std::tuple_element_t<I, ParseTypes>& el, const YAML::Node& node, std::unordered_set<std::size_t>& visited) {
-                using ElementType = typename std::tuple_element_t<I, ParseTypes>;
-                if (!visited.count(ElementType::template idOf<ElementType>())) {
-                    visited.insert(ElementType::template idOf<ElementType>());
-                    parseWholeHelper<ElementType>(el, node);
-                    if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
-                        parseWhole<I + 1, ParseTypes>(dynamic_cast<std::tuple_element_t<I + 1, ParseTypes>&>(el), node, visited);
+            void parseWhole(TemplateTypeListType<I, ParseTypes>::template result<ComparableElement<Tlist>>& el, const YAML::Node& node, std::unordered_set<std::size_t>& visited) {
+                using ElementType = TemplateTypeListType<I, ParseTypes>::template result<ComparableElement<Tlist>>;
+                const std::size_t typeID = TemplateTypeListIndex<TemplateTypeListType<I, ParseTypes>::template result, Tlist>::result;
+                if (!visited.count(typeID)) {
+                    visited.insert(typeID);
+                    parseWholeHelper<TemplateTypeListType<I, ParseTypes>::template result>(el, node);
+                    if constexpr (TemplateTypeListSize<ParseTypes>::result > I + 1) {
+                        parseWhole<I + 1, ParseTypes>(
+                                dynamic_cast<TemplateTypeListType<I + 1, ParseTypes>::template result<ComparableElement<Tlist>>&>(el), 
+                                node, 
+                                visited
+                        );
                     }
                     using ElBases = typename ElementType::Info::BaseList;
-                    if constexpr (std::tuple_size<ElBases>{} > 0) {
+                    if constexpr (TemplateTypeListSize<ElBases>::result > 0) {
                         parseWhole<0, ElBases>(el, node, visited);
                     }
                 } else {
-                    if constexpr (std::tuple_size<ParseTypes>{} > I + 1) {
-                        parseWhole<I + 1, ParseTypes>(dynamic_cast<std::tuple_element_t<I + 1, ParseTypes>&>(el), node, visited);
+                    if constexpr (TemplateTypeListSize<ParseTypes>::result > I + 1) {
+                        parseWhole<I + 1, ParseTypes>(
+                                dynamic_cast<TemplateTypeListType<I + 1, ParseTypes>::template result<ComparableElement<Tlist>>&>(el), 
+                                node, 
+                                visited
+                        );
                     }
                 }
             }
@@ -557,33 +573,33 @@ namespace UML {
                 UmlCafeSerializationPolicy& m_self;
                 AbstractParserFunctor(UmlCafeSerializationPolicy& self) : m_self(self) {}
                 virtual ~AbstractParserFunctor() {}
-                virtual UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node node) = 0; // rename?
-                virtual void parseScope(YAML::Node node, BaseElement<Tlist>& el) = 0;
-                virtual UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node node) = 0;
+                virtual UmlPtr<AbstractElement> operator()(const YAML::Node node) = 0; // rename?
+                virtual void parseScope(YAML::Node node, ComparableElement<Tlist>& el) = 0;
+                virtual UmlPtr<AbstractElement> parseWhole(const YAML::Node node) = 0;
             };
 
-            template <class T>
+            template <template <class> class T>
             struct ParserFunctor : public AbstractParserFunctor {
-                typedef T Type;
+                // typedef T Type;
                 ParserFunctor(UmlCafeSerializationPolicy& self) : AbstractParserFunctor(self) {}
-                UmlPtr<BaseElement<Tlist>> operator()(const YAML::Node node) override {
-                    UmlPtr<T> ret = this->m_self.create(ManagerTypes<Tlist>::template idOf<T>());
+                UmlPtr<AbstractElement> operator()(const YAML::Node node) override {
+                    UmlPtr<AbstractElement> ret = this->m_self.create(TemplateTypeListIndex<T, Tlist>::result);
                     if (node["id"]) {
                         ret->setID(ID::fromString(node["id"].as<std::string>()));
                     }
                     std::unordered_set<std::size_t> visited;
-                    this->m_self.template parseIndividual<0, std::tuple<T>>(*ret, node, visited);
+                    this->m_self.template parseIndividual<0, TemplateTypeList<T>>(*ret, node, visited);
 
                     return ret;
                 }
-                void parseScope(YAML::Node node, BaseElement<Tlist>& el) override {
-                    auto found = this->m_self.template parseScope<0, std::tuple<T>>(node, el.template as<T>());
+                void parseScope(YAML::Node node, ComparableElement<Tlist>& el) override {
+                    auto found = this->m_self.template parseScope<0, TemplateTypeList<T>>(node, el.template as<T>());
                     if (!found) {
-                        this->m_self.template parseReadOnlyScope<0, std::tuple<T>>(node, el.template as<T>());
+                        this->m_self.template parseReadOnlyScope<0, TemplateTypeList<T>>(node, el.template as<T>());
                     }
                 }
-                UmlPtr<BaseElement<Tlist>> parseWhole(const YAML::Node node) {
-                    UmlPtr<T> ret = this->m_self.create(T::Info::elementType);
+                UmlPtr<AbstractElement> parseWhole(const YAML::Node node) {
+                    UmlPtr<AbstractElement> ret = this->m_self.create(TemplateTypeListIndex<T, Tlist>::result);
                     if (node["id"]) {
                         if (!node["id"].IsScalar()) {
                             throw SerializationError("Improper ID formatting, should be a Scalar value! line number " + std::to_string(node["id"].Mark().line));
@@ -591,15 +607,15 @@ namespace UML {
                         ret->setID(ID::fromString(node["id"].as<std::string>()));
                     }
                     std::unordered_set<std::size_t> visited;
-                    this->m_self.template parseWhole<0, std::tuple<T>>(*ret, node, visited);
+                    this->m_self.template parseWhole<0, TemplateTypeList<T>>(*ret, node, visited);
                     return ret;
                 }
             };
 
             template <std::size_t I = 0>
             void populateEmitterFunctors(std::unordered_map<std::size_t, std::unique_ptr<AbstractEmitterFunctor>>& functors) {
-                if constexpr (std::tuple_size<Tlist>{} > I) {
-                    functors.emplace(I, std::make_unique<EmitterFunctor<std::tuple_element_t<I, Tlist>>>(*this));
+                if constexpr (TemplateTypeListSize<Tlist>::result > I) {
+                    functors.emplace(I, std::make_unique<EmitterFunctor<TemplateTypeListType<I, Tlist>::template result>>(*this));
                     populateEmitterFunctors<I + 1>(functors);
                 }
             }
@@ -607,10 +623,10 @@ namespace UML {
             template <std::size_t I = 0>
             void populateParserFunctors(std::unordered_map<std::string, std::unique_ptr<AbstractParserFunctor>>& functors) {
                 if constexpr (std::tuple_size<Tlist>{} > I) {
-                    using ElementType = std::tuple_element_t<I, Tlist>;
+                    using ElementType = TemplateTypeListType<I, Tlist>::template result<ComparableElement<Tlist>>;
                     if constexpr (!ElementType::Info::abstract) {
                         UmlPtr<ElementType> placeholderEl = this->create(I);
-                        functors.emplace(ElementType::Info::name(*placeholderEl), std::make_unique<ParserFunctor<ElementType>>(*this));
+                        functors.emplace(ElementType::Info::name(*placeholderEl), std::make_unique<ParserFunctor<TemplateTypeListType<I, Tlist>::template result>>(*this));
                         this->erase(*placeholderEl);
                     }
                     populateParserFunctors<I + 1>(functors);
@@ -634,12 +650,12 @@ namespace UML {
                 }
                 return parseNode(rootNodes[0]);
             }
-            std::vector<UmlPtr<BaseElement<Tlist>>> parseWhole(std::string data) {
+            std::vector<UmlPtr<AbstractElement>> parseWhole(std::string data) {
                 std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
                 if (rootNodes.empty()) {
                     throw SerializationError("could not parse data supplied to manager! Is it JSON or YAML?");
                 }
-                std::vector<UmlPtr<BaseElement<Tlist>>> ret(rootNodes.size());
+                std::vector<UmlPtr<AbstractElement>> ret(rootNodes.size());
                 auto i = 0;
                 for (auto& node : rootNodes) {
                     auto match = getFunctor(node);
@@ -655,13 +671,13 @@ namespace UML {
                 return ret;
             }
             std::string emitIndividual(AbstractElement& el) {
-                BaseElement<Tlist>& elAsBase = dynamic_cast<BaseElement<Tlist>&>(el);
+                AbstractElement& elAsBase = dynamic_cast<AbstractElement&>(el);
                 return (*m_emitterFunctors.at(elAsBase.getElementType()))(elAsBase);
             }
             std::string emitWhole(AbstractElement& el) {
                 YAML::Emitter emitter;
                 primeEmitter(emitter);
-                m_emitterFunctors.at(el.getElementType())->emitWhole(emitter, dynamic_cast<BaseElement<Tlist>&>(el));
+                m_emitterFunctors.at(el.getElementType())->emitWhole(emitter, dynamic_cast<AbstractElement&>(el));
                 return emitter.c_str();
             }
             virtual void primeEmitter(__attribute__((unused)) YAML::Emitter& emitter) {}
@@ -669,7 +685,7 @@ namespace UML {
             std::string dump() {
                 return  this->emitWhole(*getAbstractRoot());
             }
-            std::string dump(BaseElement<Tlist>& el) {
+            std::string dump(AbstractElement& el) {
                 return this->emitWhole(el);
             }
     };
@@ -690,7 +706,7 @@ namespace UML {
                 emitYaml = false;
                 return ret;
             }
-            std::string dumpYaml(BaseElement<Tlist>& el) {
+            std::string dumpYaml(AbstractElement& el) {
                 emitYaml = true;
                 auto ret = this->emitWhole(el);
                 emitYaml = false;

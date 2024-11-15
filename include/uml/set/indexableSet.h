@@ -2,7 +2,6 @@
 
 #include "uml/set/orderedSet.h"
 #include "uml/set/set.h"
-#include "uml/types/element.h"
 #include "uml/types/namedElement.h"
 
 
@@ -13,9 +12,11 @@
 
 namespace UML {
 
-    typedef UmlPtr<NamedElement> NamedElementPtr;
+    // typedef UmlPtr<NamedElement> NamedElementPtr;
     
+    template <class ManagerPolicy>
     class IndexablePolicy : public DoNothingPolicy , virtual public AbstractSet {
+        using NamedElementPtr = UmlPtr<NamedElement<typename ManagerPolicy::Manager::template GenBaseHierarchy<NamedElement>>>;
         public:
             NamedElementPtr get(std::string qualifiedName) const {
                 auto it = this->beginPtr();
@@ -44,60 +45,64 @@ namespace UML {
     // of subsetted and redefined set polices would be inherited, figure out how easy that is to implement?
     // something like this Set<NamedElement, Namespace, [ *m_members, *m_ownedElements ], []> m_ownedMembers ...
     // where the third template argument is subsets, second redefinition, and then an optional policy on the end
-    template <class T, class U, class ApiPolicy = IndexablePolicy>
+    template <template <class> class T, class U, class ApiPolicy = IndexablePolicy<U>>
     class ReadOnlyIndexableSet : public ReadOnlySet<T, U, ApiPolicy> {
+            using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T>>;
         public:
             ReadOnlyIndexableSet(U* me) : ReadOnlySet<T, U, ApiPolicy>(me) {}
-            UmlPtr<T> get(ID id) const {
-                return SetDataPolicy<T>::get(id);
+            UmlPtr<ManagedType> get(ID id) const {
+                return SetDataPolicy<ManagedType>::get(id);
             }
-            UmlPtr<T> get(std::string name) const {
-                return IndexablePolicy::get(name);
+            UmlPtr<ManagedType> get(std::string name) const {
+                return ApiPolicy::get(name);
             }
     };
 
-    template <class T, class U, class ApiPolicy = IndexablePolicy>
+    template <template <class> class T, class U, class ApiPolicy = IndexablePolicy<U>>
     class IndexableSet : public Set<T, U, ApiPolicy> {
-        using SetDataPolicy<T>::get;
+        using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T>>;
+        using SetDataPolicy<ManagedType>::get;
         public:
             IndexableSet(U* me) : Set<T, U, ApiPolicy>(me) {}
-            UmlPtr<T> get(ID id) const {
-                return SetDataPolicy<T>::get(id);
+            UmlPtr<ManagedType> get(ID id) const {
+                return SetDataPolicy<ManagedType>::get(id);
             }
-            UmlPtr<T> get(std::string name) const {
-                return IndexablePolicy::get(name);
+            UmlPtr<ManagedType> get(std::string name) const {
+                return ApiPolicy::get(name);
             }
     }; 
 
-    template <class T, class U, class ApiPolicy = IndexablePolicy>
+    template <template <class> class T, class U, class ApiPolicy = IndexablePolicy<U>>
     class ReadOnlyOrderedIndexableSet : public ReadOnlyOrderedSet<T, U, ApiPolicy> {
-        using OrderedSetDataPolicy<T>::get;
+        using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T>>;
+        using OrderedSetDataPolicy<ManagedType>::get;
         public:
             ReadOnlyOrderedIndexableSet(U* me) : ReadOnlyOrderedSet<T, U, ApiPolicy>(me) {}
-            UmlPtr<T> get(ID id) const {
-                return SetDataPolicy<T>::get(id);
+            UmlPtr<ManagedType> get(ID id) const {
+                return SetDataPolicy<ManagedType>::get(id);
             }
-            UmlPtr<T> get(size_t index) const {
-                return OrderedSetDataPolicy<T>::get(index);
+            UmlPtr<ManagedType> get(size_t index) const {
+                return OrderedSetDataPolicy<ManagedType>::get(index);
             }
-            UmlPtr<T> get(std::string name) const {
-                return IndexablePolicy::get(name);
+            UmlPtr<ManagedType> get(std::string name) const {
+                return ApiPolicy::get(name);
             }
     };
 
-    template <class T, class U, class ApiPolicy = IndexablePolicy>
+    template <template <class> class T, class U, class ApiPolicy = IndexablePolicy<U>>
     class IndexableOrderedSet : public OrderedSet<T, U, ApiPolicy> {
-        using OrderedSetDataPolicy<T>::get;
+        using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T>>;
+        using OrderedSetDataPolicy<ManagedType>::get;
         public:
             IndexableOrderedSet(U* me) : OrderedSet<T, U, ApiPolicy>(me) {}
-            UmlPtr<T> get(ID id) const {
-                return SetDataPolicy<T>::get(id);
+            UmlPtr<ManagedType> get(ID id) const {
+                return SetDataPolicy<ManagedType>::get(id);
             }
-            UmlPtr<T> get(size_t index) const {
-                return OrderedSetDataPolicy<T>::get(index);
+            UmlPtr<ManagedType> get(size_t index) const {
+                return OrderedSetDataPolicy<ManagedType>::get(index);
             }
-            UmlPtr<T> get(std::string name) const {
-                return IndexablePolicy::get(name);
+            UmlPtr<ManagedType> get(std::string name) const {
+                return ApiPolicy::get(name);
             }
     };
 }

@@ -1,37 +1,11 @@
 #pragma once
 
-#include <tuple>
 #include <vector>
 #include "uml/managers/abstractElement.h"
 
 namespace UML {
 
     class AbstractSet;
-
-    template <class BaseList>
-    struct BaseInfo;
-   
-    template <class ... Bases, class Base>
-    struct BaseInfo<std::tuple<Base, Bases...>> : public BaseInfo<std::tuple<Bases...>> {
-        typedef std::tuple<Base, Bases...> BaseList;
-        static bool is(std::size_t elementType) {
-            // check this base
-            auto curr = Base::Info::is(elementType);
-            if (curr) {
-                return true;
-            }
-
-            // check other bases
-            return BaseInfo<std::tuple<Bases...>>::is(elementType);
-        }
-    };
-
-    template <>
-    struct BaseInfo<std::tuple<>> {
-        static bool is(__attribute__((unused)) std::size_t elementType) {
-            return false;
-        }
-    };
 
     typedef std::vector<std::pair<std::string, AbstractSet*>> SetList;
 
@@ -50,19 +24,11 @@ namespace UML {
     struct ElementInfo<AbstractElement> : public DefaultInfo {};
 
     template <class BaseTList, class ElementType>
-    struct TypeInfo : public ElementInfo<ElementType>, public BaseInfo<BaseTList> {
+    struct TypeInfo : public ElementInfo<ElementType> {
         typedef ElementType Type;
         typedef ElementInfo<ElementType> Info;
         using BaseList = BaseTList;
         static const constexpr std::size_t elementType = Type::template idOf<Type>();
-        static bool is(std::size_t typeToCheck) {
-            auto curr = typeToCheck == elementType;
-            if (curr) {
-                return true;
-            }
-            
-            return BaseInfo<BaseList>::is(typeToCheck);
-        }
     };
 
     struct AbstractDataPolicy {

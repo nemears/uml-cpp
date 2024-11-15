@@ -130,12 +130,13 @@ namespace UML {
             }
     };
 
-    template <class T, class U, class ApiPolicy = DoNothingPolicy>
-    using ReadOnlySingleton = PrivateSet<T, U, SingletonDataPolicy<T>, ApiPolicy>;
+    template <template <class> class T, class U, class ApiPolicy = DoNothingPolicy>
+    using ReadOnlySingleton = PrivateSet<T, U, SingletonDataPolicy<T<typename U::Manager::template GenBaseHierarchy<T>>>, ApiPolicy>;
 
-    template <class T, class U, class ApiPolicy = DoNothingPolicy>
+    template <template <class> class T, class U, class ApiPolicy = DoNothingPolicy>
     class Singleton : public ReadOnlySingleton<T,U,ApiPolicy> , public AbstractReadableSet {
         private:
+            using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T>>;
             void checkCurrentValueHelper() {
                 AbstractSet& redefinedSet = this->m_structure->m_rootRedefinedSet->m_set;
                 AbstractElementPtr currVal = this->get();
@@ -143,7 +144,7 @@ namespace UML {
                     redefinedSet.innerRemove(currVal);
                 }                
             }
-            void setHelper(UmlPtr<T> ptr) {
+            void setHelper(UmlPtr<ManagedType> ptr) {
                 checkCurrentValueHelper();
                 if (ptr) {
                     this->innerAdd(ptr);
@@ -151,18 +152,18 @@ namespace UML {
             }
         public:
             Singleton(U* me) : ReadOnlySingleton<T, U, ApiPolicy>(me) {}
-            void set(UmlPtr<T> ptr) {
+            void set(UmlPtr<ManagedType> ptr) {
                 this->setHelper(ptr);
             }
-            void set(T& ref) {
-                this->setHelper(UmlPtr<T>(&ref));
+            void set(ManagedType& ref) {
+                this->setHelper(UmlPtr<ManagedType>(&ref));
             }
             void set(ID& id) {
                 if (id == ID::nullID()) {
                     set(0);
                     return;
                 }
-                UmlPtr<T> ptr = this->m_el.m_manager.createPtr(id); 
+                UmlPtr<ManagedType> ptr = this->m_el.m_manager.createPtr(id); 
                 if (ptr) {
                     this->m_structure->m_rootRedefinedSet->m_set.nonPolicyAdd(ptr);
                 }

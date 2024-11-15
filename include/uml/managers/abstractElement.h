@@ -19,16 +19,16 @@ namespace UML {
 
         friend struct ManagerNode;
 
-        template <class T, class U, class DataTypePolicy, class ApiPolicy>
+        template <template <class> class T, class U, class DataTypePolicy, class ApiPolicy>
         friend class PrivateSet;
 
-        template <class T, class U, class ApiPolicy>
+        template <template <class> class T, class U, class ApiPolicy>
         friend class Singleton;
 
-        template <class T, class U, class ApiPolicy>
+        template <template <class> class T, class U, class ApiPolicy>
         friend class Set;
         
-        template <class T, class U, class ApiPolicy>
+        template <template <class> class T, class U, class ApiPolicy>
         friend class OrderedSet;
 
         template <class Tlist, class P1>

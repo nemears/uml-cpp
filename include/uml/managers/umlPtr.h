@@ -21,7 +21,7 @@ namespace UML {
     };
 
     template <
-                class T,
+                template <class> class T,
                 class DataTypePolicy,
                 class ApiPolicy,
                 class U
@@ -44,11 +44,11 @@ namespace UML {
     template <class T>
     class UmlPtr : public AbstractPtr {
 
-        template <class U, class ApiPolicy, class V> friend class Singleton;
+        template <template <class> class U, class ApiPolicy, class V> friend class Singleton;
         friend class AbstractAccessPolicy;
         template <class U> friend class UmlPtr;
         template <
-                class V,
+                template <class> class V,
                 class DataTypePolicy,
                 class ApiPolicy,
                 class U

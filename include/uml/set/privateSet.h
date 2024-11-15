@@ -42,37 +42,36 @@ namespace UML {
             void removeOpposite(__attribute__((unused)) T& el) override {}
     };
 
-    class Package;
-
-    template <class T,  class U, class DataTypePolicy, class ApiPolicy>
+    template <template <class> class T,  class U, class DataTypePolicy, class ApiPolicy>
     class PrivateSet : virtual public AbstractSet , virtual public DataTypePolicy, virtual public ApiPolicy {
 
-        friend T;
+        using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T>>;
+        friend ManagedType;
         friend U;
         friend ApiPolicy;
-        template <class V, class W, class OtherDataTypePolicy, class OtherApiPolicy>
+        template <template <class> class V, class W, class OtherDataTypePolicy, class OtherApiPolicy>
         friend class PrivateSet;
 
         private:
             std::mutex m_mutex;
         protected:
             U& m_el;
-            std::unique_ptr<OppositeInterface<T>> m_opposite = std::unique_ptr<NoOpposite<T>>(new NoOpposite<T>());
+            std::unique_ptr<OppositeInterface<ManagedType>> m_opposite = std::unique_ptr<NoOpposite<ManagedType>>(new NoOpposite<ManagedType>());
 
             void runAddPolicy(AbstractElement& el) override {
-                ApiPolicy::elementAdded(dynamic_cast<T&>(el), m_el);
+                ApiPolicy::elementAdded(dynamic_cast<ManagedType&>(el), m_el);
             }
             void runRemovePolicy(AbstractElement& el) override {
-                ApiPolicy::elementRemoved(dynamic_cast<T&>(el), m_el);
+                ApiPolicy::elementRemoved(dynamic_cast<ManagedType&>(el), m_el);
             }
             bool oppositeEnabled() const override {
                 return m_opposite->enabled();
             }
             void oppositeAdd(AbstractElement& el) override {
-                m_opposite->addOpposite(dynamic_cast<T&>(el));
+                m_opposite->addOpposite(dynamic_cast<ManagedType&>(el));
             }
             void oppositeRemove(AbstractElement& el) override {
-                m_opposite->removeOpposite(dynamic_cast<T&>(el));
+                m_opposite->removeOpposite(dynamic_cast<ManagedType&>(el));
             }
             void addToOpposite(AbstractElementPtr ptr) override {
                 {
@@ -381,11 +380,11 @@ namespace UML {
                 nonOppositeRemoveHelper(ptr);
             }
             struct PtrPolicy {
-                UmlPtr<T> get(AbstractElementPtr ptr) {
-                    return UmlPtr<T>(ptr);    
+                UmlPtr<ManagedType> get(AbstractElementPtr ptr) {
+                    return UmlPtr<ManagedType>(ptr);    
                 }
             };
-            typedef WrapperSet<UmlPtr<T>, PtrPolicy> PtrSet;
+            typedef WrapperSet<UmlPtr<ManagedType>, PtrPolicy> PtrSet;
         public:
             PrivateSet(U* el) : m_el(*el) {}
             PrivateSet& operator=(PrivateSet& rhs) = delete;
@@ -408,31 +407,31 @@ namespace UML {
             bool contains(ID id) const override {
                 return contains(m_el.m_manager.createPtr(id));
             }
-            bool contains(T& el) const {
-                return contains(UmlPtr<T>(&el));
+            bool contains(ManagedType& el) const {
+                return contains(UmlPtr<ManagedType>(&el));
             }
             template <class S>
-            void opposite(S& (T::*oppositeSignature)()) {
-                class OppositeInterfaceAdapter : public OppositeInterface<T> {
+            void opposite(S& (ManagedType::*oppositeSignature)()) {
+                class OppositeInterfaceAdapter : public OppositeInterface<ManagedType> {
                     public:
-                        S& (T::*signature)() = 0;
+                        S& (ManagedType::*signature)() = 0;
                         U& me;
-                        OppositeInterfaceAdapter(U& u, S& (T::*sig)()) : me(u) {
+                        OppositeInterfaceAdapter(U& u, S& (ManagedType::*sig)()) : me(u) {
                             signature = sig;
                         }
                         bool enabled() override {
                             return true;
                         }
-                        void addOpposite(T& el) override {
+                        void addOpposite(ManagedType& el) override {
                             (el.*signature)().m_structure->m_rootRedefinedSet->m_set.nonOppositeAdd(UmlPtr<U>(&me));
                         }
-                        void removeOpposite(T& el) override {
+                        void removeOpposite(ManagedType& el) override {
                             (el.*signature)().m_structure->m_rootRedefinedSet->m_set.nonOppositeRemove(UmlPtr<U>(&me));
                         }
                 };
                 m_opposite = std::unique_ptr<OppositeInterfaceAdapter>(new OppositeInterfaceAdapter(m_el, oppositeSignature));
             }
-            void opposite(std::unique_ptr<OppositeInterface<T>> interface) {
+            void opposite(std::unique_ptr<OppositeInterface<ManagedType>> interface) {
                 m_opposite = std::move(interface);
             }
             PtrSet ptrs() const {

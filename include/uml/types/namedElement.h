@@ -5,8 +5,6 @@
 
 namespace UML {
 
-    typedef UmlPtr<Namespace> NamespacePtr;
-
     enum class VisibilityKind {
         PUBLIC,
         PROTECTED,
@@ -17,53 +15,104 @@ namespace UML {
     /**
      * A NamedElement is an Element in a model that may have a name
      **/
-    class NamedElement : virtual public Element {
+    template <class ManagerPolicy>
+    class NamedElement : public ManagerPolicy {
 
+        template <class>
         friend class Namespace;
         friend struct ElementInfo<NamedElement>;
+
+        using ManagedNamespace = Namespace<typename ManagerPolicy::Manager::template GenBaseHierarchy<Namespace>>;
+        using NamespacePtr = UmlPtr<ManagedNamespace>;
 
         protected:
             std::string m_name;
             std::string m_absoluteNamespace;
+            void updateQualifiedName(std::string absoluteNamespace) {
+                m_absoluteNamespace = absoluteNamespace;
+            }
             class UpdateQualifiedNamePolicy {
+                    using ManagedType = Namespace<typename ManagerPolicy::Manager::template GenBaseHierarchy<Namespace>>;
                 public:
-                    void elementAdded(Namespace& el, NamedElement& me);
-                    void elementRemoved(Namespace& el, NamedElement& me);
+                    void elementAdded(ManagedType& el, NamedElement& me) {
+                        me.updateQualifiedName(el.getQualifiedName());
+                    }
+                    void elementRemoved(ManagedType& el, NamedElement& me);
             };
             ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy> m_namespace = ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>(this);
-            Set<Dependency, NamedElement>  m_clientDependencies = Set<Dependency, NamedElement>(this);
+            // Set<Dependency, NamedElement>  m_clientDependencies = Set<Dependency, NamedElement>(this);
             VisibilityKind m_visibility = VisibilityKind::PUBLIC;
-            void updateQualifiedName(std::string absoluteNamespace);
-            ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>& getNamespaceSingleton();
-            NamedElement(std::size_t elementType, AbstractManager& manager);
+            ReadOnlySingleton<Namespace, NamedElement, UpdateQualifiedNamePolicy>& getNamespaceSingleton() {
+                return m_namespace;
+            }
+            NamedElement(std::size_t elementType, AbstractManager& manager) : ManagerPolicy(elementType, manager) {
+                m_namespace.subsets(ManagerPolicy::m_owner);
+                m_namespace.opposite(&ManagedNamespace::getOwnedMembers);
+                // m_clientDependencies.opposite(&Dependency<typename ManagerPolicy::Manager::template GenBaseHierarchy<Dependency>>::getClients);
+            } 
         public:
-            virtual std::string getName();
-            virtual void setName(const std::string &name);
-            std::string getQualifiedName();
-            NamespacePtr getNamespace() const;
-            Set<Dependency, NamedElement, DoNothingPolicy>& getClientDependencies();
-            VisibilityKind getVisibility();
-            void setVisibility(VisibilityKind visibility);
-            typedef TypeInfo<std::tuple<Element>, NamedElement> Info;
+            virtual std::string getName() {
+                return m_name;
+            }
+            virtual void setName(const std::string &name) {
+                m_name = name;
+            }
+            std::string getQualifiedName() {
+                return (getNamespace().has() ? m_absoluteNamespace + "::" : "") +  m_name;
+            }
+            NamespacePtr getNamespace() const {
+                return m_namespace.get();
+            }
+            // Set<Dependency, NamedElement, DoNothingPolicy>& getClientDependencies() {
+            //     return m_clientDependencies;
+            // }
+            VisibilityKind getVisibility() {
+                return m_visibility;
+            }
+            void setVisibility(VisibilityKind visibility) {
+                if (m_visibility != visibility) {
+                    if (visibility == VisibilityKind::PRIVATE) {
+                        // std::vector<ClassifierPtr> clazzs;
+                        // for (auto& referencePair : ManagerPolicy::m_node.lock()->m_references) {
+                        //     auto& reference = referencePair.second;
+                        //     if (
+                        //         reference.m_node.lock()->m_ptr &&
+                        //         std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->is<Classifier>()
+                        //     ) {
+                        //         Classifier& el = std::dynamic_pointer_cast<BaseElement<UmlTypes>>(reference.m_node.lock()->m_ptr)->as<Classifier>();
+                        //         if (el.getInheritedMembers().contains(ManagerPolicy::m_id)) {
+                        //             clazzs.emplace_back(&el);
+                        //         }
+                        //     }
+                        // }
+
+                        // for (auto& clazz : clazzs) {
+                        //     clazz->m_inheritedMembers.innerRemove(this);
+                        // }
+                    }
+                }
+                m_visibility = visibility; 
+            }
+            typedef TypeInfo<TemplateTypeList<Element>, NamedElement> Info;
         private:
             void setNamespace(ID id);
     };
 
-    template<>
-    struct ElementInfo<NamedElement> : public DefaultInfo {
+    template<class ManagerPolicy>
+    struct ElementInfo<NamedElement<ManagerPolicy>> : public DefaultInfo {
         static std::string name(__attribute__((unused)) AbstractElement& el) { return "NamedElement"; }
-        static SetList sets(NamedElement& el) {
+        static SetList sets(NamedElement<ManagerPolicy>& el) {
             return SetList {
-                std::make_pair<std::string, AbstractSet*>("namespace", &el.m_namespace),
-                std::make_pair<std::string, AbstractSet*>("clientDependencies", &el.getClientDependencies())
+                std::make_pair<std::string, AbstractSet*>("namespace", &el.m_namespace)
+                // std::make_pair<std::string, AbstractSet*>("clientDependencies", &el.getClientDependencies())
             };
         }
 
         // Data
         static const bool extraData = true;
         struct NamedElementNameFunctor : public AbstractDataPolicy {
-            NamedElement& el;
-            NamedElementNameFunctor(NamedElement& el) : el(el) {}
+            NamedElement<ManagerPolicy>& el;
+            NamedElementNameFunctor(NamedElement<ManagerPolicy>& el) : el(el) {}
             std::string getData() override {
                 return el.getName();
             }
@@ -72,8 +121,8 @@ namespace UML {
             }
         };
         struct NamedElementVisibilityFunctor : public AbstractDataPolicy {
-            NamedElement& el;
-            NamedElementVisibilityFunctor(NamedElement& el) : el(el) {}
+            NamedElement<ManagerPolicy>& el;
+            NamedElementVisibilityFunctor(NamedElement<ManagerPolicy>& el) : el(el) {}
             std::string getData() override {
                 switch (el.getVisibility()) {
                     case VisibilityKind::PUBLIC : return ""; // public is default so just return empty string
@@ -98,12 +147,11 @@ namespace UML {
                 }
             }
         };
-        static DataList data(NamedElement& el) {
+        static DataList data(NamedElement<ManagerPolicy>& el) {
             return DataList {
                 createDataPair("name", new NamedElementNameFunctor(el)),
                 createDataPair("visibility", new NamedElementVisibilityFunctor(el))
             };
         }
     };
-
 }

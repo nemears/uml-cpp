@@ -37,15 +37,15 @@ namespace UML {
         template <class Tlist, class P1>
         friend class Manager;
 
-        template <class T, class U, class DataTypePolicy, class ApiPolicy>
+        template <template <class> class T, class U, class DataTypePolicy, class ApiPolicy>
         friend class PrivateSet;
         template <class T>
         friend class SetDataPolicy;
         template <class T>
         friend class SingletonDataPolicy;
-        template <class T, class U, class ApiPolicy>
+        template <template <class> class T, class U, class ApiPolicy>
         friend class Singleton;
-        template <class T, class U, class ApiPolicy>
+        template <template <class> class T, class U, class ApiPolicy>
         friend class OrderedSet;
         template <class T>
         friend class Element;
@@ -81,6 +81,7 @@ namespace UML {
                 friend class SingletonDataPolicy;
                 template <class S, class WrapperPolicy>
                 friend class WrapperSet;
+                template <class>
                 friend class IndexablePolicy;
 
                 protected:

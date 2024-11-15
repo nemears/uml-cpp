@@ -4,7 +4,7 @@
 #include "uml/set/doNothingPolicy.h"
 #include "uml/set/privateSet.h"
 #include "uml/set/set.h"
-#include "uml/umlPtr.h"
+#include "uml/managers/umlPtr.h"
 #include <memory>
 
 namespace UML {
@@ -187,35 +187,38 @@ namespace UML {
             }
     };
 
-    template <class T, class U, class ApiPolicy = DoNothingPolicy>
-    using ReadOnlyOrderedSet = PrivateSet<T, U, OrderedSetDataPolicy<T>, ApiPolicy>;
+    template <template <class> class T, class U, class ApiPolicy = DoNothingPolicy>
+    using ReadOnlyOrderedSet = PrivateSet<T, U, OrderedSetDataPolicy<T<typename U::Manager::template GenBaseHierarchy<T>>>, ApiPolicy>;
     
-    template <class T, class U, class ApiPolicy = DoNothingPolicy>
+    template <template <class> class T, class U, class ApiPolicy = DoNothingPolicy>
     class OrderedSet : public ReadOnlyOrderedSet<T, U, ApiPolicy> , public AbstractReadableSet {
+
+        using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T>>;
+
         public:
             OrderedSet(U* me) : ReadOnlyOrderedSet<T, U, ApiPolicy>(me) {}
-            void add(UmlPtr<T> ptr) {
+            void add(UmlPtr<ManagedType> ptr) {
                 this->innerAdd(ptr);
             }
             void add(ID id) override {
                 this->m_structure->m_rootRedefinedSet->m_set.nonPolicyAdd(this->m_el.m_manager.createPtr(id));
             }
-            void add(T& el) {
-                this->innerAdd(UmlPtr<T>(&el));
+            void add(ManagedType& el) {
+                this->innerAdd(UmlPtr<ManagedType>(&el));
             }
             template <class ... Ts>
-            void add(T& el, Ts& ... els) { 
+            void add(ManagedType& el, Ts& ... els) { 
                 add(el);
                 add(els...);
             }
-            void remove(UmlPtr<T> ptr) {
+            void remove(UmlPtr<ManagedType> ptr) {
                 this->innerRemove(ptr);
             }
             void remove(ID& id) {
                 this->innerRemove(this->m_el.m_manager->createPtr(id));
             }
-            void remove(T& el) {
-                this->innerRemove(UmlPtr<T>(&el));
+            void remove(ManagedType& el) {
+                this->innerRemove(UmlPtr<ManagedType>(&el));
             }
             void clear() {
                 while (this->front()) {

@@ -23,20 +23,6 @@ namespace UML {
     };
     
     // type at index of typelist
-    // template <std::size_t I, class TypeList, class ManagedType>
-    // struct TemplateTypeListType;
-
-    // template <template <class> class First, template <class> class ... RestOfTypeList, class ManagedType>
-    // struct TemplateTypeListType<0, TemplateTypeList<First, RestOfTypeList...>, ManagedType> {
-    //     using result = First<ManagedType>;
-    // };
-
-    // template <std::size_t I, template <class> class First, template <class> class ... RestOfTypeList, class ManagedType>
-    // struct TemplateTypeListType<I, TemplateTypeList<First, RestOfTypeList...>, ManagedType> {
-    //     using result = typename TemplateTypeListType<I - 1, TemplateTypeList<RestOfTypeList...>, ManagedType>::result;
-    // };
-
-    // redo
     template <std::size_t I, class TypeList>
     struct TemplateTypeListType;
 

@@ -2,7 +2,7 @@
 
 #include <tuple>
 #include <vector>
-#include "uml/managers/baseElement.h"
+#include "uml/managers/abstractElement.h"
 
 namespace UML {
 

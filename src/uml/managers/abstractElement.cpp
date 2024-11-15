@@ -1,4 +1,4 @@
-#include "uml/managers/baseElement.h"
+#include "uml/managers/abstractElement.h"
 #include "uml/managers/abstractManager.h"
 #include "uml/set/abstractSet.h"
 

@@ -4,7 +4,7 @@
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
-#include "../umlPtr.h"
+#include "uml/managers/umlPtr.h"
 #include "privateSet.h"
 #include "uml/set/abstractSet.h"
 #include "uml/set/doNothingPolicy.h"

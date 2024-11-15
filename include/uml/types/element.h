@@ -1,8 +1,8 @@
 #pragma once
 
 #include <exception>
+#include "uml/managers/templateTypeList.h"
 #include "uml/managers/typeInfo.h"
-#include "uml/managers/baseElement.h"
 #include "uml/set/set.h"
 #include "uml/set/singleton.h"
 #include "uml/set/doNothingPolicy.h"
@@ -15,172 +15,177 @@ namespace YAML {
 namespace UML {
 
     // forward declare all types from the base UML api
-    class Abstraction;
-    class Artifact;
-    class Association;
-    class Behavior;
-    class BehavioralFeature;
-    class BehavioredClassifier;
-    class Class;
-    class Classifier;
-    class ClassifierTemplateParameter;
+    // class Abstraction;
+    // class Artifact;
+    // class Association;
+    // class Behavior;
+    // class BehavioralFeature;
+    // class BehavioredClassifier;
+    // class Class;
+    // class Classifier;
+    // class ClassifierTemplateParameter;
+    // class Comment;
+    // class ConnectableElement;
+    // class Connector;
+    // class ConnectorEnd;
+    // class Constraint;
+    // class DataType;
+    // class Dependency;
+    // class DeployedArtifact;
+    // class Deployment;
+    // class DeploymentTarget;
+    // class DirectedRelationship;
+    // class Element;
+    // class ElementImport;
+    // class EncapsulatedClassifier;
+    // class Enumeration;
+    // class EnumerationLiteral;
+    // class Expression;
+    // class Extension;
+    // class ExtensionEnd;
+    // class Feature;
+    // class Generalization;
+    // class GeneralizationSet;
+    // class InstanceSpecification;
+    // class InstanceValue;
+    // class Interface;
+    // class InterfaceRealization;
+    // class LiteralBool;
+    // class LiteralInt;
+    // class LiteralNull;
+    // class LiteralReal;
+    // class LiteralSpecification;
+    // class LiteralString;
+    // class LiteralUnlimitedNatural;
+    // class Manifestation;
+    // class Model;
+    // class MultiplicityElement;
+    // class NamedElement;
+    // class Namespace;
+    // class OpaqueBehavior;
+    // class Operation;
+    // class Package;
+    // class PackageImport;
+    // class PackageMerge;
+    // class PackageableElement;
+    // class Parameter;
+    // class ParameterSet;
+    // class ParameterableElement;
+    // class Port;
+    // class PrimitiveType;
+    // class Profile;
+    // class ProfileApplication;
+    // class Property;
+    // class Realization;
+    // class Reception;
+    // class RedefinableElement;
+    // class RedefinableTemplateSignature;
+    // class Relationship;
+    // class Signal;
+    // class Slot;
+    // class Stereotype;
+    // class StructuralFeature;
+    // class StructuredClassifier;
+    // class TemplateBinding;
+    // class TemplateParameter;
+    // class TemplateParameterSubstitution;
+    // class TemplateSignature;
+    // class TemplateableElement;
+    // class Type;
+    // class TypedElement;
+    // class Usage;
+    // class ValueSpecification;
+
+    // // put all types in a typelist (tuple)
+    // typedef std::tuple<
+    //     Abstraction,
+    //     Artifact,
+    //     Association,
+    //     Behavior,
+    //     BehavioralFeature,
+    //     BehavioredClassifier,
+    //     Class,
+    //     Classifier,
+    //     ClassifierTemplateParameter,
+    //     Comment,
+    //     ConnectableElement,
+    //     Connector,
+    //     ConnectorEnd,
+    //     Constraint,
+    //     DataType,
+    //     Dependency,
+    //     DeployedArtifact,
+    //     Deployment,
+    //     DeploymentTarget,
+    //     DirectedRelationship,
+    //     Element,
+    //     ElementImport,
+    //     EncapsulatedClassifier,
+    //     Enumeration,
+    //     EnumerationLiteral,
+    //     Expression,
+    //     Extension,
+    //     ExtensionEnd,
+    //     Feature,
+    //     Generalization,
+    //     GeneralizationSet,
+    //     InstanceSpecification,
+    //     InstanceValue,
+    //     Interface,
+    //     InterfaceRealization,
+    //     LiteralBool,
+    //     LiteralInt,
+    //     LiteralNull,
+    //     LiteralReal,
+    //     LiteralSpecification,
+    //     LiteralString,
+    //     LiteralUnlimitedNatural,
+    //     Manifestation,
+    //     Model,
+    //     MultiplicityElement,
+    //     NamedElement,
+    //     Namespace,
+    //     OpaqueBehavior,
+    //     Operation,
+    //     Package,
+    //     PackageImport,
+    //     PackageMerge,
+    //     PackageableElement,
+    //     Parameter,
+    //     ParameterSet,
+    //     ParameterableElement,
+    //     Port,
+    //     PrimitiveType,
+    //     Profile,
+    //     ProfileApplication,
+    //     Property,
+    //     Realization,
+    //     Reception,
+    //     RedefinableElement,
+    //     RedefinableTemplateSignature,
+    //     Relationship,
+    //     Signal,
+    //     Slot,
+    //     Stereotype,
+    //     StructuralFeature,
+    //     StructuredClassifier,
+    //     TemplateBinding,
+    //     TemplateParameter,
+    //     TemplateParameterSubstitution,
+    //     TemplateSignature,
+    //     TemplateableElement,
+    //     Type,
+    //     TypedElement,
+    //     Usage,
+    //     ValueSpecification
+    // > UmlTypes;
+    
+    template <class>
     class Comment;
-    class ConnectableElement;
-    class Connector;
-    class ConnectorEnd;
-    class Constraint;
-    class DataType;
-    class Dependency;
-    class DeployedArtifact;
-    class Deployment;
-    class DeploymentTarget;
-    class DirectedRelationship;
-    class Element;
-    class ElementImport;
-    class EncapsulatedClassifier;
-    class Enumeration;
-    class EnumerationLiteral;
-    class Expression;
-    class Extension;
-    class ExtensionEnd;
-    class Feature;
-    class Generalization;
-    class GeneralizationSet;
+    template <class>
     class InstanceSpecification;
-    class InstanceValue;
-    class Interface;
-    class InterfaceRealization;
-    class LiteralBool;
-    class LiteralInt;
-    class LiteralNull;
-    class LiteralReal;
-    class LiteralSpecification;
-    class LiteralString;
-    class LiteralUnlimitedNatural;
-    class Manifestation;
-    class Model;
-    class MultiplicityElement;
-    class NamedElement;
-    class Namespace;
-    class OpaqueBehavior;
-    class Operation;
-    class Package;
-    class PackageImport;
-    class PackageMerge;
-    class PackageableElement;
-    class Parameter;
-    class ParameterSet;
-    class ParameterableElement;
-    class Port;
-    class PrimitiveType;
-    class Profile;
-    class ProfileApplication;
-    class Property;
-    class Realization;
-    class Reception;
-    class RedefinableElement;
-    class RedefinableTemplateSignature;
-    class Relationship;
-    class Signal;
-    class Slot;
-    class Stereotype;
-    class StructuralFeature;
-    class StructuredClassifier;
-    class TemplateBinding;
-    class TemplateParameter;
-    class TemplateParameterSubstitution;
-    class TemplateSignature;
-    class TemplateableElement;
-    class Type;
-    class TypedElement;
-    class Usage;
-    class ValueSpecification;
 
-    // put all types in a typelist (tuple)
-    typedef std::tuple<
-        Abstraction,
-        Artifact,
-        Association,
-        Behavior,
-        BehavioralFeature,
-        BehavioredClassifier,
-        Class,
-        Classifier,
-        ClassifierTemplateParameter,
-        Comment,
-        ConnectableElement,
-        Connector,
-        ConnectorEnd,
-        Constraint,
-        DataType,
-        Dependency,
-        DeployedArtifact,
-        Deployment,
-        DeploymentTarget,
-        DirectedRelationship,
-        Element,
-        ElementImport,
-        EncapsulatedClassifier,
-        Enumeration,
-        EnumerationLiteral,
-        Expression,
-        Extension,
-        ExtensionEnd,
-        Feature,
-        Generalization,
-        GeneralizationSet,
-        InstanceSpecification,
-        InstanceValue,
-        Interface,
-        InterfaceRealization,
-        LiteralBool,
-        LiteralInt,
-        LiteralNull,
-        LiteralReal,
-        LiteralSpecification,
-        LiteralString,
-        LiteralUnlimitedNatural,
-        Manifestation,
-        Model,
-        MultiplicityElement,
-        NamedElement,
-        Namespace,
-        OpaqueBehavior,
-        Operation,
-        Package,
-        PackageImport,
-        PackageMerge,
-        PackageableElement,
-        Parameter,
-        ParameterSet,
-        ParameterableElement,
-        Port,
-        PrimitiveType,
-        Profile,
-        ProfileApplication,
-        Property,
-        Realization,
-        Reception,
-        RedefinableElement,
-        RedefinableTemplateSignature,
-        Relationship,
-        Signal,
-        Slot,
-        Stereotype,
-        StructuralFeature,
-        StructuredClassifier,
-        TemplateBinding,
-        TemplateParameter,
-        TemplateParameterSubstitution,
-        TemplateSignature,
-        TemplateableElement,
-        Type,
-        TypedElement,
-        Usage,
-        ValueSpecification
-    > UmlTypes;
-
-    typedef UmlPtr<Element> ElementPtr;
+    // typedef UmlPtr<Element> ElementPtr;
 
     /**
      * Element is the base class of all UML classes
@@ -189,7 +194,8 @@ namespace UML {
      * ownedElements - the elements that this element owns
      * id - the elements unique id for quick comparison and indexing
      **/
-    class Element : public BaseElement<UmlTypes> {
+    template <class ManagerPolicy>
+    class Element : public ManagerPolicy {
 
         friend struct ElementInfo<Element>;
 
@@ -201,7 +207,7 @@ namespace UML {
             ReadOnlySingleton<Element, Element>& getOwnerSingleton();
             Element(std::size_t elementType, AbstractManager& manager);
         public:
-            ElementPtr getOwner() const;
+            UmlPtr<Element<ManagerPolicy>> getOwner() const;
             ReadOnlySet<Element, Element>& getOwnedElements();
             Set<Comment, Element, DoNothingPolicy>& getOwnedComments();
             /**
@@ -212,7 +218,7 @@ namespace UML {
              **/
             Set<InstanceSpecification, Element, DoNothingPolicy>& getAppliedStereotypes();
 
-            typedef TypeInfo<std::tuple<>, Element> Info;
+            typedef TypeInfo<TemplateTypeList<>, Element> Info;
         
         private:
             void setOwner(ID id);
@@ -223,10 +229,10 @@ namespace UML {
     }
 
     // template specialization for ElementInfo<Element> (required for all implementing types)
-    template <>
-    struct ElementInfo<Element> : public DefaultInfo {
+    template <class ManagerType>
+    struct ElementInfo<Element<ManagerType>> : public DefaultInfo {
         static std::string name(__attribute__((unused)) AbstractElement& el) { return "Element"; }
-        static SetList sets(Element& el) {
+        static SetList sets(Element<ManagerType>& el) {
             return std::vector {
                 makeSetPair("owner", el.m_owner),
                 makeSetPair("ownedElements", el.m_ownedElements),

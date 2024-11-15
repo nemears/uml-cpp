@@ -4,7 +4,7 @@
 #include "abstractSet.h"
 #include "wrapperSet.h"
 #include "uml/set/doNothingPolicy.h"
-#include "uml/umlPtr.h"
+#include "uml/managers/umlPtr.h"
 #include <memory>
 #include <mutex>
 

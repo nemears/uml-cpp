@@ -1,9 +1,9 @@
 #pragma once
 
-#include "uml/managers/baseElement.h"
+#include "uml/managers/abstractElement.h"
 #include <memory>
 #include <unordered_set>
-#include <uml/umlPtr.h>
+#include <uml/managers/umlPtr.h>
 
 namespace UML {
     enum class SetType {
@@ -47,6 +47,7 @@ namespace UML {
         friend class Singleton;
         template <class T, class U, class ApiPolicy>
         friend class OrderedSet;
+        template <class T>
         friend class Element;
         template <class S, class WrapperPolicy>
         friend class WrapperSet;

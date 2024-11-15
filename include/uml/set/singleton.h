@@ -3,7 +3,7 @@
 #include "uml/set/abstractSet.h"
 #include "uml/set/doNothingPolicy.h"
 #include "uml/set/privateSet.h"
-#include "uml/umlPtr.h"
+#include "uml/managers/umlPtr.h"
 #include <memory>
 
 namespace UML {

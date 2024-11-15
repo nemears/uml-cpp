@@ -1,6 +1,6 @@
 #include "uml/managers/managerNode.h"
 #include "uml/managers/abstractManager.h"
-#include "uml/umlPtr.h"
+#include "uml/managers/umlPtr.h"
 #include "uml/set/abstractSet.h"
 #include <unordered_set>
 

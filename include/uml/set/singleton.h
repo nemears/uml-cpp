@@ -168,7 +168,7 @@ namespace UML {
                     this->m_structure->m_rootRedefinedSet->m_set.nonPolicyAdd(ptr);
                 }
             }
-            void add(ID id) override {
+            void add(ID id) {
                 set(id);
             }
     };

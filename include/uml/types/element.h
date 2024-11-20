@@ -42,20 +42,20 @@ namespace UML {
     class Stereotype;
 
     using UmlTypes = TemplateTypeList<
-        Comment,
-        Dependency,
+        // Comment,
+        // Dependency,
         Element,
-        ElementImport,
-        InstanceSpecification,
+        // ElementImport,
+        // InstanceSpecification,
         NamedElement,
         Namespace,
         Package,
-        PackageableElement,
-        PackageImport,
-        PackageMerge,
-        ParameterableElement,
-        ProfileApplication,
-        Stereotype
+        PackageableElement
+        // PackageImport,
+        // PackageMerge,
+        // ParameterableElement,
+        // ProfileApplication,
+        // Stereotype
     >;
     // typedef UmlPtr<Element> ElementPtr;
 

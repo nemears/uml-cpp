@@ -29,10 +29,10 @@ namespace UML{
         template <class>
         friend class PackageImport;
 
-        using ManagedElementImport = ElementImport<typename ManagerPolicy::Manager::template GenBaseHierarchy<ElementImport>>;
-        using ManagedPackageImport = PackageImport<typename ManagerPolicy::Manager::template GenBaseHierarchy<PackageImport>>;
+        // using ManagedElementImport = ElementImport<typename ManagerPolicy::Manager::template GenBaseHierarchy<ElementImport>>;
+        // using ManagedPackageImport = PackageImport<typename ManagerPolicy::Manager::template GenBaseHierarchy<PackageImport>>;
         using ManagedNamedElement = NamedElement<typename ManagerPolicy::Manager::template GenBaseHierarchy<NamedElement>>;
-        using ManagedConstraint = Constraint<typename ManagerPolicy::Manager::template GenBaseHierarchy<Constraint>>;
+        // using ManagedConstraint = Constraint<typename ManagerPolicy::Manager::template GenBaseHierarchy<Constraint>>;
 
         protected:
 

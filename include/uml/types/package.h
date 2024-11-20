@@ -1,6 +1,5 @@
 #pragma once
 
-#include "packageableElement.h"
 #include "uml/managers/templateTypeList.h"
 #include "uml/managers/typeInfo.h"
 #include "uml/set/indexableSet.h"
@@ -15,18 +14,18 @@ namespace UML {
         friend class PackageImport;
         friend struct ElementInfo<Package<ManagerPolicy>>;
         
-        using ManagedPackageImport = PackageImport<typename ManagerPolicy::Manager::template GenBaseHierarchy<PackageImport>>;
+        // using ManagedPackageImport = PackageImport<typename ManagerPolicy::Manager::template GenBaseHierarchy<PackageImport>>;
         using ManagedPackageableElement = PackageableElement<typename ManagerPolicy::Manager::template GenBaseHierarchy<PackageableElement>>;
-        using ManagedPackageMerge = PackageMerge<typename ManagerPolicy::Manager::template GenBaseHierarchy<PackageMerge>>;
-        using ManagedProfileApplication = ProfileApplication<typename ManagerPolicy::Manager::template GenBaseHierarchy<ProfileApplication>>;
+        // using ManagedPackageMerge = PackageMerge<typename ManagerPolicy::Manager::template GenBaseHierarchy<PackageMerge>>;
+        // using ManagedProfileApplication = ProfileApplication<typename ManagerPolicy::Manager::template GenBaseHierarchy<ProfileApplication>>;
         
         protected:
             class PackageableElementPolicy : public IndexablePolicy<ManagerPolicy> {
                     template <class>
                     friend class PackageImport;
                 protected:
-                    std::unordered_set<UmlPtr<ManagedPackageImport>> packageImportsAdd;
-                    std::unordered_set<UmlPtr<ManagedPackageImport>> packageImportsRemove;
+                    // std::unordered_set<UmlPtr<ManagedPackageImport>> packageImportsAdd;
+                    // std::unordered_set<UmlPtr<ManagedPackageImport>> packageImportsRemove;
                     void elementAdded(ManagedPackageableElement& el, Package& me) {
                         // for (const UmlPtr<ManagedPackageImport>& import : packageImportsAdd) {
                         //     if (import->getImportingNamespace()) {

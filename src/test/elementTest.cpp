@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "uml/uml-stable.h"
-#include "test/umlTestUtil.h"
+// #include "test/umlTestUtil.h"
 
 using namespace UML;
 
@@ -11,7 +11,7 @@ class ElementTest : public ::testing::Test {};
 
 TEST_F(ElementTest, UmlPtrTest) {
     UmlManager m;
-    Package& pckg = *m.create<Package>();
+    auto pckg = *m.create<Package>();
     Package& child = *m.create<Package>();
     pckg.getPackagedElements().add(child);
     ASSERT_FALSE(pckg.getOwningPackage().has());

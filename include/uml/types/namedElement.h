@@ -12,6 +12,8 @@ namespace UML {
         PACKAGE
     };
 
+    class NamedElementImpl;
+
     /**
      * A NamedElement is an Element in a model that may have a name
      **/

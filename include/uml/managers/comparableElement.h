@@ -1,6 +1,7 @@
 #pragma once
 
 #include "uml/managers/abstractElement.h"
+#include "uml/managers/abstractManager.h"
 #include "uml/managers/templateTypeList.h"
 #include <exception>
 
@@ -14,8 +15,8 @@ namespace UML {
 
     template <class TypePolicyList>
     class ComparableElement : public AbstractElement {
-        protected:
-            // constructor
+        protected:    
+            using AbstractElement::AbstractElement;
             ComparableElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
         public:
             // is function to compare types compile time O(1)

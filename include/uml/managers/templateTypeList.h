@@ -29,9 +29,7 @@ namespace UML {
     template <template <class> class First, template <class> class ... RestOfTypeList>
     struct TemplateTypeListType<0, TemplateTypeList<First, RestOfTypeList...>> {
         template <class T>
-        struct result : public First<T> {
-            using type = First<T>;
-        };
+        using result = First<T>;
     };
 
     template <std::size_t I, template <class> class First, template <class> class ... RestOfTypeList>

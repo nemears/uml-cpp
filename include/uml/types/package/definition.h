@@ -15,10 +15,15 @@ namespace UML {
     class Package;
 
     template <class ManagerPolicy>
-    struct PackageDefinition : virtual public ManagerPolicy {
-        // using PackageImpl = PackageDefinition<typename ManagerPolicy::Manager::template GenBaseHierarchy<PackageDefinition>>;
-        virtual Set<PackageableElementDefinition, PackageDefinition>& getPackagedElements() = 0;
-        using Info = TypeInfo<Package, TemplateTypeList<PackageableElement>>;
+    struct PackageDefinition : public ManagerPolicy {
+            virtual Set<PackageableElementDefinition, PackageDefinition>& getPackagedElements() = 0;
+            using Info = TypeInfo<Package, TemplateTypeList<PackageableElement>>;
+        protected:
+            //using ManagerPolicy::ManagerPolicy;
+            PackageDefinition(std::size_t elementType, AbstractManager& manager) : 
+                ManagerPolicy::Manager::BaseElement(elementType, manager),
+                ManagerPolicy(elementType, manager) 
+            {}
     };
 
     template <>

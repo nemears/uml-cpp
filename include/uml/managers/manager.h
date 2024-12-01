@@ -62,8 +62,9 @@ namespace UML {
             class BaseElement : public ComparableElement<TypePolicyList> {
                 protected:
                     // constructor
-                    BaseElement(std::size_t elementType, AbstractManager& manager) : ComparableElement<TypePolicyList>(elementType, manager) {}
+                    // using ComparableElement<TypePolicyList>::ComparableElement;
                 public:
+                    BaseElement(std::size_t elementType, AbstractManager& manager) : ComparableElement<TypePolicyList>(elementType, manager) {}
                     using Manager = Manager;
             };
         private:
@@ -78,18 +79,30 @@ namespace UML {
             struct GenBaseHierarchy;
 
             template <template <class> class T, std::size_t I>
-            struct GenBaseHierarchy<T, I, false> : virtual public BaseElement {};
+            struct GenBaseHierarchy<T, I, false> : virtual public BaseElement {
+                protected:
+                    // using BaseElement::BaseElement;
+                    GenBaseHierarchy(std::size_t elementType, AbstractManager& manager) : BaseElement(elementType, manager) {}
+            };
 
             template <template <class> class T, std::size_t I>
             struct GenBaseHierarchy<T, I, true> :
-                virtual public TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result<GenBaseHierarchy<TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result>>,
-                virtual public GenBaseHierarchy<T, I + 1, I + 1 < TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result>
-            {};
+                public TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result<GenBaseHierarchy<TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result>>,
+                public GenBaseHierarchy<T, I + 1, I + 1 < TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result>
+            {
+                protected:
+                    // constructor
+                    GenBaseHierarchy(std::size_t elementType, AbstractManager& manager) :
+                        BaseElement(elementType, manager),
+                        TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result<GenBaseHierarchy<TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result>>(elementType, manager),
+                        GenBaseHierarchy<T, I + 1, I + 1 < TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result>(elementType, manager) 
+                    {} 
+            };
         protected:
             template<template <class> class T>
             UmlPtr<T<GenBaseHierarchy<T>>> registerPtr(std::shared_ptr<T<GenBaseHierarchy<T>>>& ptr) {
                 // create Node by emplace in graph
-                std::lock_guard<std::mutex> graphLock(this->m_graphMutex);
+                std::lock_guard<std::mutex> graphLock(this->m_graphMtx);
                 ptr->m_node = m_graph.emplace(ptr->getID(), std::make_shared<ManagerNode>(ptr)).first->second;
                 ptr->m_node.lock()->m_myPtr = ptr->m_node;
                 // initialize ptr through copy

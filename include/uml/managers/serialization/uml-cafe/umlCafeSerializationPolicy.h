@@ -1,6 +1,5 @@
 #pragma once
 #include "uml/managers/abstractElement.h"
-#include "uml/managers/comparableElement.h"
 #include "uml/managers/managerTypes.h"
 #include "uml/set/privateSet.h"
 #include "uml/managers/umlPtr.h"

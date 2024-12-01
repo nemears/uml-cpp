@@ -4,11 +4,11 @@
 #include <mutex>
 #include <memory>
 #include <unordered_map>
+#include "uml/managers/abstractElement.h"
 #include "uml/managers/filePersistencePolicy.h"
 #include "uml/managers/serialization/uml-cafe/umlCafeSerializationPolicy.h"
 #include "umlPtr.h"
 #include "abstractManager.h"
-#include "comparableElement.h"
 #include "templateTypeList.h"
 
 namespace UML {
@@ -59,13 +59,36 @@ namespace UML {
         public:
             // Base element for all types created by manager, the policy classes provided will be filled out with
             // this BaseElement as part of their policy
-            class BaseElement : public ComparableElement<TypePolicyList> {
-                protected:
-                    // constructor
-                    // using ComparableElement<TypePolicyList>::ComparableElement;
+            class BaseElement : public AbstractElement {
+                protected:    
+                    using AbstractElement::AbstractElement;
+                    BaseElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
                 public:
-                    BaseElement(std::size_t elementType, AbstractManager& manager) : ComparableElement<TypePolicyList>(elementType, manager) {}
                     using Manager = Manager;
+                    // is function to compare types compile time O(1)
+                    template <template <class> class T, std::size_t I = 0>
+                    bool is() const {
+                        if (TemplateTypeListIndex<T, TypePolicyList>::result == m_elementType) {
+                            return true;
+                        }
+                        using TBases = T<BaseElement>::Info::BaseList;
+                        if constexpr (I < TemplateTypeListSize<TBases>::result) {
+                            if constexpr (TemplateTypeListType<I, TBases>::template result<ComparableElement>::template is<T>()) {
+                                return true;
+                            }
+                            return is<T, I + 1>();
+                        }
+                        return false;
+                    }
+
+                    // as to cast to other managed types
+                    template <template<class> class T>
+                    constexpr T<typename Manager::template GenBaseHierarchy<T>>& as() const {
+                        if constexpr (is<T>()) {
+                            return dynamic_cast<T<typename Manager::template GenBaseHierarchy<T>>&>(*this);
+                        }
+                        throw ManagerStateException("Can not convert element to that type!");
+                    }
             };
         private:
             // data
@@ -283,7 +306,7 @@ namespace UML {
             template <std::size_t I = 0>
             UmlPtr<AbstractElement> createHelper(std::size_t type) {
                 if (type == I) {
-                    return create<TemplateTypeListType<I, TypePolicyList>::template result<BaseElement>>();
+                    return create<TemplateTypeListType<I, TypePolicyList>::template result>();
                 }
                 return createHelper<I + 1>(type);
             }

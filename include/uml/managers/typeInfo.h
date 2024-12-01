@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "uml/managers/abstractElement.h"
+#include "uml/managers/templateTypeList.h"
 
 namespace UML {
 
@@ -17,18 +18,14 @@ namespace UML {
         }
     };
 
-    template <class ElWithSets>
+    template <template <class> class ElWithSets>
     struct ElementInfo;
 
-    template <>
-    struct ElementInfo<AbstractElement> : public DefaultInfo {};
-
-    template <class BaseTList, class ElementType>
+    template <template <class> class ElementType, class BaseTList = TemplateTypeList<>>
     struct TypeInfo : public ElementInfo<ElementType> {
-        typedef ElementType Type;
-        typedef ElementInfo<ElementType> Info;
+        template <class ManagerPolicy>
+        using Type = ElementType<ManagerPolicy>;
         using BaseList = BaseTList;
-        static const constexpr std::size_t elementType = Type::template idOf<Type>();
     };
 
     struct AbstractDataPolicy {

@@ -74,16 +74,16 @@ namespace UML {
             UmlPtr<BaseElement> m_root;
 
         public:
-            template <template <class> class T, std::size_t I = 0, bool HasBases = I < TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result>
+            template <template <class> class T, std::size_t I = 0, bool HasBases = (TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result > 0)>
             struct GenBaseHierarchy;
 
             template <template <class> class T, std::size_t I>
-            struct GenBaseHierarchy<T, I, false> : public T<BaseElement> {};
+            struct GenBaseHierarchy<T, I, false> : virtual public BaseElement {};
 
             template <template <class> class T, std::size_t I>
             struct GenBaseHierarchy<T, I, true> :
-                public GenBaseHierarchy<TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result, 0, TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result != 0>,
-                public GenBaseHierarchy<T, I + 1, I + 1 < TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result>
+                virtual public TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result<GenBaseHierarchy<TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result>>,
+                virtual public GenBaseHierarchy<T, I + 1, I + 1 < TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result>
             {};
         protected:
             template<template <class> class T>

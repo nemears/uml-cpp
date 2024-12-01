@@ -1,12 +1,13 @@
 #pragma once
 
-#include "uml/types/element.h"
-#include "uml/types/namedElement.h"
-#include "uml/types/namespace.h"
-#include "uml/types/package.h"
-#include "uml/types/packageableElement.h"
+#include "uml/managers/templateTypeList.h"
+#include "uml/types/package/impl.h"
 #include "uml/managers/manager.h"
+#include "uml/types/packageableElement/impl.h"
 
 namespace UML {
+
+    using UmlTypes = TemplateTypeList<Package, PackageableElement>;
+
     typedef Manager<UmlTypes> UmlManager;
 }

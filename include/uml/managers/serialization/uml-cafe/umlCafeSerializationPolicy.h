@@ -77,7 +77,7 @@ namespace UML {
             static std::unique_ptr<std::pair<std::string, AbstractSet*>> findScope(AbstractElement& el) {
                 if constexpr (TemplateTypeListSize<EmitTypes>::result > I) {
                     // using CurrentType = std::tuple_element_t<I, EmitTypes>;
-                    const std::size_t typeID = TemplateTypeListIndex<TemplateTypeListType<I, EmitTypes>::template reuslt, Tlist>::result;
+                    const std::size_t typeID = TemplateTypeListIndex<TemplateTypeListType<I, EmitTypes>::template result, Tlist>::result;
                     if constexpr (!HasType<typeID, Visited>::value) {
                         using CurrentType = TemplateTypeListType<I, EmitTypes>::template result<ComparableElement<Tlist>>;
                         auto possibleScope = findScopeHelper<CurrentType>(dynamic_cast<CurrentType&>(el));

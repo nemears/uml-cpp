@@ -221,13 +221,17 @@ namespace UML {
 
     template <template <class> class T, class U, class ApiPolicy = DoNothingPolicy>
     class Set : public ReadOnlySet<T, U, ApiPolicy> , public AbstractReadableSet {
-            using ManagedType = T<typename U::Manager::template GenBaseHierarhcy<T>>;
+            using Manager = typename U::Manager; 
+            template <class ManagerPolicy>
+            using ManagedTemplateType = T<typename Manager::BaseElement>::Info::template Type<ManagerPolicy>; 
+            // using ManagedType = ManagedTemplateType<typename Manager::template GenBaseHierarchy<ManagedTemplateType>>;
+            using ManagedType = T<typename Manager::BaseElement>::Info::template Type<typename Manager::template GenBaseHierarchy<T<typename Manager::BaseElement>::Info::template Type>>; 
         public:
             Set (U* me) : ReadOnlySet<T, U, ApiPolicy>(me) {}
             void add(UmlPtr<ManagedType> ptr) {
                 this->innerAdd(ptr);
             }
-            void add(ID id) override {
+            void add(ID id) {
                 this->nonPolicyAdd(this->m_el.m_manager.createPtr(id));
             }
             void add(ManagedType& el) {

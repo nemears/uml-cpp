@@ -20,8 +20,8 @@ namespace UML {
         public:
             // is function to compare types compile time O(1)
             template <template <class> class T, std::size_t I = 0>
-            constexpr bool is() const {
-                if constexpr (TemplateTypeListIndex<T, TypePolicyList>::result == m_elementType) {
+            bool is() const {
+                if (TemplateTypeListIndex<T, TypePolicyList>::result == m_elementType) {
                     return true;
                 }
                 using TBases = T<ComparableElement>::Info::BaseList;

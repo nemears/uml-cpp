@@ -29,7 +29,7 @@
 // #include "uml/types/model.h"
 // #include "uml/types/opaqueBehavior.h"
 // #include "uml/types/operation.h"
-#include "uml/types/package.h"
+#include "uml/types/package/impl.h"
 // #include "uml/types/packageImport.h"
 // #include "uml/types/packageMerge.h"
 // #include "uml/types/parameter.h"

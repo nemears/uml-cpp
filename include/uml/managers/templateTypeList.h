@@ -17,9 +17,9 @@ namespace UML {
         static const std::size_t result = 1 + TemplateTypeListSize<TemplateTypeList<RestOfTypeList...>>::result;
     };
 
-    template <template <class> class Last>
-    struct TemplateTypeListSize<TemplateTypeList<Last>> {
-        static const std::size_t result = 1;
+    template <>
+    struct TemplateTypeListSize<TemplateTypeList<>> {
+        static const std::size_t result = 0;
     };
     
     // type at index of typelist

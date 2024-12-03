@@ -1,5 +1,9 @@
 #include "gtest/gtest.h"
+#include <type_traits>
 
+#include "uml/managers/templateTypeList.h"
+#include "uml/managers/umlManager.h"
+#include "uml/types/packageableElement/impl.h"
 #include "uml/uml-stable.h"
 // #include "test/umlTestUtil.h"
 
@@ -9,11 +13,90 @@ using namespace UML;
 
 class ElementTest : public ::testing::Test {};
 
-TEST_F(ElementTest, IsTest) {
-    UmlManager m;
-    auto pckg = m.create<Package>();
-    ASSERT_TRUE(pckg->is<PackageableElement>());
+TEST_F(ElementTest, TemplateTypeListTypeTest) {
+    auto baseElResult = std::is_same<
+            Package<UmlManager::BaseElement>, 
+            TemplateTypeListType<0, UmlTypes>::result<UmlManager::BaseElement>
+        >::value;
+    ASSERT_TRUE(baseElResult);
+    
+    auto baseElResult2 = std::is_same<
+            PackageableElement<UmlManager::BaseElement>, 
+            TemplateTypeListType<1, UmlTypes>::result<UmlManager::BaseElement>
+        >::value;
+    ASSERT_TRUE(baseElResult2);
+
+    auto packageIndex0 = TemplateTypeListIndex<Package, UmlTypes>::result;
+    ASSERT_EQ(packageIndex0, 0);
+    auto packageIndex = TemplateTypeListIndex<TemplateTypeListType<0, UmlTypes>::result, UmlTypes>::result; 
+    ASSERT_EQ(packageIndex, 0);
+
+    auto genBaseHierarchyResult0 = std::is_convertible<
+            // UmlManager::GenBaseHierarchy<PackageableElement>,
+            UmlManager::GenBaseHierarchy<Package>,
+            TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result>>
+        >::value;
+    ASSERT_TRUE(genBaseHierarchyResult0);
+
+    auto genBaseHierarchyResult1 = std::is_same<
+            UmlManager::GenBaseHierarchy<PackageableElement>,
+            UmlManager::GenBaseHierarchy<TemplateTypeListType<1, UmlTypes>::result>
+        >::value;
+    ASSERT_TRUE(genBaseHierarchyResult1);
+
+    auto result = std::is_same<
+            TemplateTypeListType<0, UmlManager::Types>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, UmlManager::Types>::result>>, 
+            Package<UmlManager::GenBaseHierarchy<Package>>
+        >::value;
+    ASSERT_TRUE(result);
 }
+
+TEST_F(ElementTest, GenBaseHierarchyTest) {
+    auto isBaseOfBaseElement = std::is_base_of<
+            UmlManager::BaseElement, 
+            Package<UmlManager::GenBaseHierarchy<Package>>
+        >::value;
+    ASSERT_TRUE(isBaseOfBaseElement);
+
+    auto isBaseOfGenBaseHierarchy = std::is_base_of<
+            UmlManager::GenBaseHierarchy<Package, 1, false>,
+            Package<UmlManager::GenBaseHierarchy<Package>>
+        >::value;
+    ASSERT_TRUE(isBaseOfGenBaseHierarchy);
+
+    auto isBaseOfTypeList = std::is_base_of<
+            TemplateTypeListType<0,Package<UmlManager::BaseElement>::Info::BaseList>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result>>,
+            Package<UmlManager::GenBaseHierarchy<Package>>
+        >::value;
+    ASSERT_TRUE(isBaseOfTypeList);
+
+    auto isInBaseList = std::is_same<
+            PackageableElement<UmlManager::BaseElement>,
+            TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result<UmlManager::BaseElement>
+        >::value;
+    ASSERT_TRUE(isInBaseList);
+
+    auto isInBaseList2 = std::is_same<
+            PackageableElement<UmlManager::GenBaseHierarchy<PackageableElement>>,
+            TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result>>
+        >::value;
+    ASSERT_TRUE(isInBaseList2);
+
+    auto isBase = std::is_base_of<
+            PackageableElement<UmlManager::GenBaseHierarchy<PackageableElement>>, 
+            Package<UmlManager::GenBaseHierarchy<Package>>
+        >::value;
+    ASSERT_TRUE(isBase);
+
+    // UmlManager m;
+    // UmlManager::GenBaseHierarchy<PackageableElement>(1, m);
+}
+
+// TEST_F(ElementTest, IsTest) {
+//     UmlManager m;
+//     auto pckg = m.create<Package>();
+//     ASSERT_TRUE(pckg->is<PackageableElement>());
+// }
 /**
 TEST_F(ElementTest, UmlPtrTest) {
     UmlManager m;

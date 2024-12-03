@@ -642,6 +642,7 @@ namespace UML {
         //         match.functor.parseScope(match.outerData, *parsedEl);
         //         return parsedEl;
         //     }
+        protected:
             AbstractElementPtr parseIndividual(std::string data) {
                 // std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
                 // if (rootNodes.empty()) {

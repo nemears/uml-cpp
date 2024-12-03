@@ -33,9 +33,10 @@ namespace UML {
     };
 
     template <std::size_t I, template <class> class First, template <class> class ... RestOfTypeList>
-    struct TemplateTypeListType<I, TemplateTypeList<First, RestOfTypeList...>> : 
-        public TemplateTypeListType<I - 1, TemplateTypeList<RestOfTypeList...>> 
-    {};
+    struct TemplateTypeListType<I, TemplateTypeList<First, RestOfTypeList...>> {
+        template <class T>
+        using result = typename TemplateTypeListType<I - 1, TemplateTypeList<RestOfTypeList...>>::template result<T>;
+    };
 
     // index of type in typelist
     template <template <class> class TypeToFind, class TypeList>
@@ -43,12 +44,20 @@ namespace UML {
 
     template <template <class> class TypeToFind, template <class> class ... RestOfTypes>
     struct TemplateTypeListIndex<TypeToFind, TemplateTypeList<TypeToFind, RestOfTypes ...>> {
-        static const std::size_t result = 0;
+        static const int result = 0;
     };
 
     template <template <class> class TypeToFind, template <class> class First, template <class> class ... RestOfTypes>
     struct TemplateTypeListIndex<TypeToFind, TemplateTypeList<First, RestOfTypes...>> {
-        static const std::size_t result = TemplateTypeListIndex<TypeToFind, TemplateTypeList<RestOfTypes...>>::result + 1;
+        private:
+            using ResultOfPrior = TemplateTypeListIndex<TypeToFind, TemplateTypeList<RestOfTypes...>>;
+        public:
+            static const int result =  ResultOfPrior::result == -1 ? -1 : ResultOfPrior::result + 1;
+    };
+
+    template <template <class> class TypeToFind>
+    struct TemplateTypeListIndex<TypeToFind, TemplateTypeList<>> {
+        static const int result = -1;
     };
 
     // concatenate two typelists

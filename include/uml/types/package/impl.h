@@ -10,7 +10,6 @@ namespace UML {
         protected:
             Set<PackageableElementDefinition, PackageDefinition<ManagerPolicy>> m_packagedElements = Set<PackageableElementDefinition, PackageDefinition<ManagerPolicy>>(this);
         public:
-            // using PackageDefinition<ManagerPolicy>::PackageDefinition;
             Package(std::size_t elementType, AbstractManager& manager) : 
                 ManagerPolicy::Manager::BaseElement(elementType, manager), 
                 PackageDefinition<ManagerPolicy>(elementType, manager) 

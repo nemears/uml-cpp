@@ -57,6 +57,7 @@ namespace UML {
     template <class TypePolicyList, class StoragePolicy = SerializedStoragePolicy<UmlCafeSerializationPolicy<TypePolicyList>, FilePersistencePolicy>>
     class Manager : public StoragePolicy, virtual public AbstractManager {
         public:
+            using Types = TypePolicyList;
             // Base element for all types created by manager, the policy classes provided will be filled out with
             // this BaseElement as part of their policy
             class BaseElement : public AbstractElement {
@@ -73,7 +74,7 @@ namespace UML {
                         }
                         using TBases = T<BaseElement>::Info::BaseList;
                         if constexpr (I < TemplateTypeListSize<TBases>::result) {
-                            if constexpr (TemplateTypeListType<I, TBases>::template result<ComparableElement>::template is<T>()) {
+                            if constexpr (TemplateTypeListType<I, TBases>::template result<BaseElement>::template is<T>()) {
                                 return true;
                             }
                             return is<T, I + 1>();
@@ -84,7 +85,7 @@ namespace UML {
                     // as to cast to other managed types
                     template <template<class> class T>
                     constexpr T<typename Manager::template GenBaseHierarchy<T>>& as() const {
-                        if constexpr (is<T>()) {
+                        if (is<T>()) {
                             return dynamic_cast<T<typename Manager::template GenBaseHierarchy<T>>&>(*this);
                         }
                         throw ManagerStateException("Can not convert element to that type!");
@@ -98,13 +99,14 @@ namespace UML {
             UmlPtr<BaseElement> m_root;
 
         public:
+            // Gen Base Hierarchy is a class that will be used to create dynamic objects that inherit from and can correspond to their bases
+            // This is used mostly internally but all types created by the manager will be of this policy
             template <template <class> class T, std::size_t I = 0, bool HasBases = (TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result > 0)>
             struct GenBaseHierarchy;
 
             template <template <class> class T, std::size_t I>
             struct GenBaseHierarchy<T, I, false> : virtual public BaseElement {
-                protected:
-                    // using BaseElement::BaseElement;
+                //protected:
                     GenBaseHierarchy(std::size_t elementType, AbstractManager& manager) : BaseElement(elementType, manager) {}
             };
 
@@ -113,7 +115,7 @@ namespace UML {
                 public TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result<GenBaseHierarchy<TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result>>,
                 public GenBaseHierarchy<T, I + 1, I + 1 < TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result>
             {
-                protected:
+                //protected:
                     // constructor
                     GenBaseHierarchy(std::size_t elementType, AbstractManager& manager) :
                         BaseElement(elementType, manager),
@@ -164,7 +166,7 @@ namespace UML {
                 auto el = oldNode->m_ptr;
 
                 // check valid
-                if (!setsAreEmpty(el)) {
+                if (!setsAreEmpty(dynamic_cast<BaseElement&>(*el))) {
                     throw ManagerStateException("Bad reindex, element must be newly created to reindex!");
                 }
 
@@ -176,7 +178,7 @@ namespace UML {
                     i++;
                 }
                 {
-                    std::lock_guard<std::mutex> graphLock(this->m_graphMutex);
+                    std::lock_guard<std::mutex> graphLock(this->m_graphMtx);
                     m_graph.erase(oldID);
                 }
 
@@ -305,10 +307,15 @@ namespace UML {
         private:
             template <std::size_t I = 0>
             UmlPtr<AbstractElement> createHelper(std::size_t type) {
-                if (type == I) {
-                    return create<TemplateTypeListType<I, TypePolicyList>::template result>();
+                if constexpr (I < TemplateTypeListSize<TypePolicyList>::result) {
+                    if (type == I) {
+                        // auto ptr = std::make_shared<TemplateTypeListType<I, TypePolicyList>::template result<GenBaseHierarchy<TemplateTypeListType<I, TypePolicyList>::template result>>>(I, *this);
+                        // return registerPtr<TemplateTypeListType<I, TypePolicyList>::template result>(ptr); 
+                        return create<TemplateTypeListType<I, TypePolicyList>::template result>();
+                    }
+                    return createHelper<I + 1>(type);
                 }
-                return createHelper<I + 1>(type);
+                throw ManagerStateException("Invalid type id given to create!");
             }
         public:
             // create by type id
@@ -343,7 +350,7 @@ namespace UML {
 
                 // local memory look up
                 {
-                    std::lock_guard<std::mutex> graphLock(this->m_graphMutex);
+                    std::lock_guard<std::mutex> graphLock(this->m_graphMtx);
                     auto it = m_graph.find(id);
                     if (it != m_graph.end() && it->second->m_ptr) {
                         return it->second->m_ptr.get();
@@ -402,7 +409,7 @@ namespace UML {
                     }
 
                     // get rid of node from graph
-                    std::lock_guard<std::mutex> lockGuard(this->m_graphMutex);
+                    std::lock_guard<std::mutex> lockGuard(this->m_graphMtx);
                     m_graph.erase(id);
                 }
             }
@@ -447,7 +454,7 @@ namespace UML {
                     }
                 }
     
-                std::lock_guard<std::mutex> graphLock(this->m_graphMutex);
+                std::lock_guard<std::mutex> graphLock(this->m_graphMtx);
                 m_graph.erase(id);
             }
 

@@ -4,9 +4,13 @@
 #include <mutex>
 #include <memory>
 #include <unordered_map>
+#include <functional>
+#include <unordered_set>
 #include "uml/managers/abstractElement.h"
 #include "uml/managers/filePersistencePolicy.h"
+#include "uml/managers/integerList.h"
 #include "uml/managers/serialization/uml-cafe/umlCafeSerializationPolicy.h"
+#include "uml/set/abstractSet.h"
 #include "umlPtr.h"
 #include "abstractManager.h"
 #include "templateTypeList.h"
@@ -124,15 +128,60 @@ namespace UML {
                     {} 
             };
         protected:
-            template<template <class> class T>
-            UmlPtr<T<GenBaseHierarchy<T>>> registerPtr(std::shared_ptr<T<GenBaseHierarchy<T>>>& ptr) {
+            UmlPtr<BaseElement> registerPtr(std::shared_ptr<AbstractElement> ptr) {
                 // create Node by emplace in graph
                 std::lock_guard<std::mutex> graphLock(this->m_graphMtx);
                 ptr->m_node = m_graph.emplace(ptr->getID(), std::make_shared<ManagerNode>(ptr)).first->second;
                 ptr->m_node.lock()->m_myPtr = ptr->m_node;
                 // initialize ptr through copy
-                return ptr.get();
+                return dynamic_cast<BaseElement*>(ptr.get());
             }
+
+            struct AbstractManagerTypeInfo {
+                virtual ~AbstractManagerTypeInfo() {}
+                virtual void forEachSet(BaseElement& el, std::function<void(std::string, AbstractSet&)>)  = 0;
+            };
+
+            template <template <class> class Type>
+            using ElementType = TemplateTypeListIndex<Type, TypePolicyList>;
+
+            template <template <class> class Type>
+            struct ManagerTypeInfo : public AbstractManagerTypeInfo {
+                private:
+                    using Function = std::function<void(std::string, AbstractSet&)>;
+                    template <template <class> class CurrType = Type, std::size_t I = 0>
+                    void helper(BaseElement& el, Function f, std::unordered_set<std::size_t>& visited) {
+                        if (!visited.contains(ElementType<CurrType>::result)) {
+                            visited.insert(ElementType<CurrType>::result);
+                        }
+                        using Bases = typename CurrType<BaseElement>::Info::BaseList; 
+                        if constexpr (I < TemplateTypeListSize<Bases>::result) {
+                            helper<TemplateTypeListType<I, Bases>::template result, 0>(el, f, visited);
+                            helper<CurrType, I + 1>(el, f, visited);
+                        } else {
+                            for (auto& setPair : CurrType<BaseElement>::Info::sets(dynamic_cast<CurrType<GenBaseHierarchy<CurrType>>&>(el))) {
+                                f(setPair.first, *setPair.second);
+                            } 
+                        }
+                    }
+                public:
+                    void forEachSet(BaseElement& el, Function f) override {
+                        std::unordered_set<std::size_t> visited; 
+                        helper(el, f, visited);
+                    }
+            };
+
+            std::unordered_map<std::size_t, std::unique_ptr<AbstractManagerTypeInfo>> m_types;
+
+            template <template <class> class CurrType>
+            void populateTypes() {
+                m_types.emplace(ElementType<CurrType>::result, std::make_unique<ManagerTypeInfo<CurrType>>());
+                constexpr int next_type = TemplateTypeListIndex<CurrType, Types>::result + 1; 
+                if constexpr (next_type < TemplateTypeListSize<Types>::result) { 
+                    populateTypes<TemplateTypeListType<next_type, Types>::template result>();
+                }
+            }
+
             template <template <class> class CurrentType, std::size_t I = 0>
             bool setsAreEmptyHelper(BaseElement& el) {
                 if constexpr (I < TemplateTypeListSize<typename CurrentType<BaseElement>::Info::BaseList>::result) {
@@ -153,7 +202,7 @@ namespace UML {
             bool setsAreEmpty(BaseElement& el) {
                 if constexpr (I < TemplateTypeListSize<TypePolicyList>::result) {
                     if (el.getElementType() == I) {
-                        return setsAreEmpty(el);
+                        return setsAreEmptyHelper<TemplateTypeListType<I, Types>::template result>(el);
                     } else {
                         return setsAreEmpty<I + 1>(el);
                     }
@@ -238,6 +287,7 @@ namespace UML {
             void restoreElAndOpposites(UmlPtr<BaseElement> ptr) {
                 // TODO replace
                 auto sets = getAllSets(*ptr);
+                
                 for (auto& pair : sets) {
                     auto set = pair.second;
                     std::vector<AbstractElementPtr> els(set->size());
@@ -278,12 +328,10 @@ namespace UML {
             void restoreEl(BaseElement& el) {
                 // run add policies we skipped over
                 // TODO remake
-                auto sets = getAllSets(el);
-                for (auto& pair : sets) {
-                    auto set = pair.second;
-                    std::vector<AbstractElementPtr> els(set->size());
+                m_types.at(el.getElementType())->forEachSet(el, [](std::string, AbstractSet& set) {
+                    std::vector<AbstractElementPtr> els(set.size());
                     auto i = 0;
-                    for (auto itPtr = set->beginPtr(); *itPtr != *set->endPtr(); itPtr->next()) {
+                    for (auto itPtr = set.beginPtr(); *itPtr != *set.endPtr(); itPtr->next()) {
                         auto elRestore = itPtr->getCurr();
                         els[i] = elRestore;
                         i++;
@@ -293,16 +341,16 @@ namespace UML {
                             continue;
                         }
                         
-                        set->runAddPolicy(*el);
-                    }
-                }
+                        set.runAddPolicy(*el);
+                    }    
+                });
             }
         public:
             // create factory function
             template <template <class> class T>
             UmlPtr<T<GenBaseHierarchy<T>>> create() {
-                auto ptr = std::make_shared<T<GenBaseHierarchy<T>>>(TemplateTypeListIndex<T, TypePolicyList>::result, *this);
-                return registerPtr<T>(ptr);
+                auto ptr = std::make_shared<T<GenBaseHierarchy<T>>>(ElementType<T>::result, *this);
+                return registerPtr(ptr);
             }
         private:
             template <std::size_t I = 0>
@@ -321,6 +369,11 @@ namespace UML {
             // create by type id
             UmlPtr<AbstractElement> create(std::size_t type) override {
                 return createHelper(type);
+            }
+            
+            // constructor
+            Manager() {
+                populateTypes<TemplateTypeListType<0, Types>::template result>();
             }
 
             // create Ptr
@@ -438,13 +491,11 @@ namespace UML {
                 }
                 for (auto referencedEl : elsToDeleteReference) {
                     // TODO
-                    auto sets = getAllSets(dynamic_cast<BaseElement&>(*referencedEl));
-                    for (auto& pair : sets) {
-                        auto set = pair.second;
-                        while (set->contains(&el)) {
-                            set->innerRemove(&el);
-                        } 
-                    }
+                    m_types.at(referencedEl->getElementType())->forEachSet(dynamic_cast<BaseElement&>(*referencedEl), [&el](std::string, AbstractSet& set) {
+                        while (set.contains(&el)) {
+                            set.innerRemove(&el);
+                        }    
+                    });
 
                     // remove reference
                     auto& referenceReferences = referencedEl.m_node.lock()->m_references;

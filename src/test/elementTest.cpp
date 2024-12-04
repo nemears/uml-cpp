@@ -113,15 +113,15 @@ TEST_F(ElementTest, GenBaseHierarchyTest) {
     //     >::value;
     // ASSERT_TRUE(isBase);
 
-    UmlManager m;
-    UmlManager::GenBaseHierarchy<PackageableElement>(1, m);
+    // UmlManager m;
+    // UmlManager::GenBaseHierarchy<PackageableElement>(1, m);
 }
 
-// TEST_F(ElementTest, IsTest) {
-//     UmlManager m;
-//     auto pckg = m.create<Package>();
-//     ASSERT_TRUE(pckg->is<PackageableElement>());
-// }
+TEST_F(ElementTest, IsTest) {
+    UmlManager m;
+    auto pckg = m.create<Package>();
+    ASSERT_TRUE(pckg->is<PackageableElement>());
+}
 /**
 TEST_F(ElementTest, UmlPtrTest) {
     UmlManager m;

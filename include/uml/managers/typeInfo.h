@@ -3,6 +3,7 @@
 #include <vector>
 #include "uml/managers/abstractElement.h"
 #include "uml/managers/templateTypeList.h"
+#include "uml/managers/integerList.h"
 
 namespace UML {
 

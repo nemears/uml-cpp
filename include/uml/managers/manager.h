@@ -61,7 +61,20 @@ namespace UML {
     template <class TypePolicyList, class StoragePolicy = SerializedStoragePolicy<UmlCafeSerializationPolicy<TypePolicyList>, FilePersistencePolicy>>
     class Manager : public StoragePolicy, virtual public AbstractManager {
         public:
+            class BaseElement;
+        protected:
+            struct AbstractManagerTypeInfo {
+                virtual ~AbstractManagerTypeInfo() {}
+                virtual void forEachSet(BaseElement& el, std::function<void(std::string, AbstractSet&)>)  = 0;
+                virtual bool is(std::size_t type) = 0;
+            };
+
+            std::unordered_map<std::size_t, std::unique_ptr<AbstractManagerTypeInfo>> m_types;
+
+        public:
             using Types = TypePolicyList;
+            template <template <class> class Type>
+            using ElementType = TemplateTypeListIndex<Type, TypePolicyList>;
             // Base element for all types created by manager, the policy classes provided will be filled out with
             // this BaseElement as part of their policy
             class BaseElement : public AbstractElement {
@@ -71,19 +84,9 @@ namespace UML {
                 public:
                     using Manager = Manager;
                     // is function to compare types compile time O(1)
-                    template <template <class> class T, std::size_t I = 0>
+                    template <template <class> class T>
                     bool is() const {
-                        if (TemplateTypeListIndex<T, TypePolicyList>::result == m_elementType) {
-                            return true;
-                        }
-                        using TBases = T<BaseElement>::Info::BaseList;
-                        if constexpr (I < TemplateTypeListSize<TBases>::result) {
-                            if constexpr (TemplateTypeListType<I, TBases>::template result<BaseElement>::template is<T>()) {
-                                return true;
-                            }
-                            return is<T, I + 1>();
-                        }
-                        return false;
+                        return dynamic_cast<Manager&>(m_manager).m_types.at(m_elementType)->is(ElementType<T>::result); 
                     }
 
                     // as to cast to other managed types
@@ -93,6 +96,46 @@ namespace UML {
                             return dynamic_cast<T<typename Manager::template GenBaseHierarchy<T>>&>(*this);
                         }
                         throw ManagerStateException("Can not convert element to that type!");
+                    }
+            };
+
+            template <template <class> class Type>
+            struct ManagerTypeInfo : public AbstractManagerTypeInfo {
+                private:
+                    using Function = std::function<void(std::string, AbstractSet&)>;
+                    template <template <class> class CurrType = Type, std::size_t I = 0>
+                    void helper(BaseElement& el, Function f, std::unordered_set<std::size_t>& visited) {
+                        if (!visited.contains(ElementType<CurrType>::result)) {
+                            visited.insert(ElementType<CurrType>::result);
+                        }
+                        using Bases = typename CurrType<BaseElement>::Info::BaseList; 
+                        if constexpr (I < TemplateTypeListSize<Bases>::result) {
+                            helper<TemplateTypeListType<I, Bases>::template result, 0>(el, f, visited);
+                            helper<CurrType, I + 1>(el, f, visited);
+                        } else {
+                            for (auto& setPair : CurrType<BaseElement>::Info::sets(dynamic_cast<CurrType<GenBaseHierarchy<CurrType>>&>(el))) {
+                                f(setPair.first, *setPair.second);
+                            } 
+                        }
+                    }
+                    template <template <class> class CurrType = Type, std::size_t I = 0>
+                    bool isHelper(std::size_t type) {
+                        using BaseList = typename CurrType<BaseElement>::Info::BaseList;
+                        if constexpr (I < TemplateTypeListSize<BaseList>::result) {
+                            return isHelper<TemplateTypeListType<I, BaseList>::template result>(type);
+                        }
+                        if (ElementType<CurrType>::result == type) {
+                            return true;
+                        }
+                        return false;
+                    }
+                public:
+                    void forEachSet(BaseElement& el, Function f) override {
+                        std::unordered_set<std::size_t> visited; 
+                        helper(el, f, visited);
+                    }
+                    bool is(std::size_t type) override {
+                        return isHelper(type);                        
                     }
             };
         private:
@@ -137,41 +180,6 @@ namespace UML {
                 return dynamic_cast<BaseElement*>(ptr.get());
             }
 
-            struct AbstractManagerTypeInfo {
-                virtual ~AbstractManagerTypeInfo() {}
-                virtual void forEachSet(BaseElement& el, std::function<void(std::string, AbstractSet&)>)  = 0;
-            };
-
-            template <template <class> class Type>
-            using ElementType = TemplateTypeListIndex<Type, TypePolicyList>;
-
-            template <template <class> class Type>
-            struct ManagerTypeInfo : public AbstractManagerTypeInfo {
-                private:
-                    using Function = std::function<void(std::string, AbstractSet&)>;
-                    template <template <class> class CurrType = Type, std::size_t I = 0>
-                    void helper(BaseElement& el, Function f, std::unordered_set<std::size_t>& visited) {
-                        if (!visited.contains(ElementType<CurrType>::result)) {
-                            visited.insert(ElementType<CurrType>::result);
-                        }
-                        using Bases = typename CurrType<BaseElement>::Info::BaseList; 
-                        if constexpr (I < TemplateTypeListSize<Bases>::result) {
-                            helper<TemplateTypeListType<I, Bases>::template result, 0>(el, f, visited);
-                            helper<CurrType, I + 1>(el, f, visited);
-                        } else {
-                            for (auto& setPair : CurrType<BaseElement>::Info::sets(dynamic_cast<CurrType<GenBaseHierarchy<CurrType>>&>(el))) {
-                                f(setPair.first, *setPair.second);
-                            } 
-                        }
-                    }
-                public:
-                    void forEachSet(BaseElement& el, Function f) override {
-                        std::unordered_set<std::size_t> visited; 
-                        helper(el, f, visited);
-                    }
-            };
-
-            std::unordered_map<std::size_t, std::unique_ptr<AbstractManagerTypeInfo>> m_types;
 
             template <template <class> class CurrType>
             void populateTypes() {
@@ -357,8 +365,6 @@ namespace UML {
             UmlPtr<AbstractElement> createHelper(std::size_t type) {
                 if constexpr (I < TemplateTypeListSize<TypePolicyList>::result) {
                     if (type == I) {
-                        // auto ptr = std::make_shared<TemplateTypeListType<I, TypePolicyList>::template result<GenBaseHierarchy<TemplateTypeListType<I, TypePolicyList>::template result>>>(I, *this);
-                        // return registerPtr<TemplateTypeListType<I, TypePolicyList>::template result>(ptr); 
                         return create<TemplateTypeListType<I, TypePolicyList>::template result>();
                     }
                     return createHelper<I + 1>(type);

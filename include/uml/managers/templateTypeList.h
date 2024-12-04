@@ -52,12 +52,12 @@ namespace UML {
             struct Dummy {};
             static constexpr int IsMatch = std::is_same<TypeToFind<Dummy>, First<Dummy>>::value;
         public:
-            static const int result =  IsMatch ? 0 : ResultOfPrior::result == -1 ? -1 : ResultOfPrior::result + 1;
+            inline static const int result =  IsMatch ? 0 : ResultOfPrior::result == -1 ? -1 : ResultOfPrior::result + 1;
     };
 
     template <template <class> class TypeToFind>
     struct TemplateTypeListIndex<TypeToFind, TemplateTypeList<>> {
-        static const int result = -1;
+        inline static const int result = -1;
     };
 
     // concatenate two typelists

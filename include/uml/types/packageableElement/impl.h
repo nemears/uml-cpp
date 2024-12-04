@@ -8,7 +8,7 @@ namespace UML {
     template <class ManagerPolicy>
     class PackageableElement: public PackageableElementDefinition<ManagerPolicy> {
         protected:
-            Singleton<Package, PackageableElement> m_owningPackage = Singleton<Package, PackageableElement>(this);
+            Singleton<PackageDefinition, PackageableElement> m_owningPackage = Singleton<PackageDefinition, PackageableElement>(this);
         public:
             // using PackageableElementDefinition<ManagerPolicy>::PackageableElementDefinition;
             PackageableElement(std::size_t elementType, AbstractManager& manager) : 

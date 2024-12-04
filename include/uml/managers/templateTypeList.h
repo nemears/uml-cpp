@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <type_traits>
 
 namespace UML {
     // template class typelist
@@ -42,17 +43,22 @@ namespace UML {
     template <template <class> class TypeToFind, class TypeList>
     struct TemplateTypeListIndex;
 
-    template <template <class> class TypeToFind, template <class> class ... RestOfTypes>
-    struct TemplateTypeListIndex<TypeToFind, TemplateTypeList<TypeToFind, RestOfTypes ...>> {
-        static const int result = 0;
-    };
+    // template <template <class> class TypeToFind, template <class> class ... RestOfTypes>
+    // struct TemplateTypeListIndex<TypeToFind, TemplateTypeList<TypeToFind, RestOfTypes ...>> {
+    //     static const int result = 0;
+    // };
 
     template <template <class> class TypeToFind, template <class> class First, template <class> class ... RestOfTypes>
     struct TemplateTypeListIndex<TypeToFind, TemplateTypeList<First, RestOfTypes...>> {
         private:
             using ResultOfPrior = TemplateTypeListIndex<TypeToFind, TemplateTypeList<RestOfTypes...>>;
+            // necessary sometimes because of type.alias see
+            // https://open-std.org/JTC1/SC22/WG21/docs/cwg_active.html#1286
+            template <class T>
+            using IsMatch = std::is_same<TypeToFind<T>, First<T>>;
+            struct Dummy {};
         public:
-            static const int result =  ResultOfPrior::result == -1 ? -1 : ResultOfPrior::result + 1;
+            static const int result =  IsMatch<Dummy>::value ? 0 : ResultOfPrior::result == -1 ? -1 : ResultOfPrior::result + 1;
     };
 
     template <template <class> class TypeToFind>

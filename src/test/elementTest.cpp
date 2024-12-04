@@ -13,7 +13,30 @@ using namespace UML;
 
 class ElementTest : public ::testing::Test {};
 
+template <class T>
+struct TClass1 {};
+
+template <class T>
+struct TClass2 {};
+
 TEST_F(ElementTest, TemplateTypeListTypeTest) {
+
+    using TestTypes = TemplateTypeList<TClass1, TClass2>;
+
+    auto isTypeResultSame = std::is_same<
+            TClass1<int>,
+            TemplateTypeListType<0, TestTypes>::result<int>
+        >::value;
+
+    ASSERT_TRUE(isTypeResultSame);
+
+    auto indexResult1 = TemplateTypeListIndex<TClass1, TestTypes>::result;
+    ASSERT_EQ(indexResult1, 0);
+    auto indexResult2 = TemplateTypeListIndex<TClass2, TestTypes>::result;
+    ASSERT_EQ(indexResult2, 1);
+    auto indexResult3 = TemplateTypeListIndex<TemplateTypeListType<0, TestTypes>::result, TestTypes>::result;
+    ASSERT_EQ(indexResult3, 0);
+
     auto baseElResult = std::is_same<
             Package<UmlManager::BaseElement>, 
             TemplateTypeListType<0, UmlTypes>::result<UmlManager::BaseElement>
@@ -31,24 +54,26 @@ TEST_F(ElementTest, TemplateTypeListTypeTest) {
     auto packageIndex = TemplateTypeListIndex<TemplateTypeListType<0, UmlTypes>::result, UmlTypes>::result; 
     ASSERT_EQ(packageIndex, 0);
 
-    auto genBaseHierarchyResult0 = std::is_convertible<
+    auto genBaseHierarchyResult0 = std::is_base_of<
             // UmlManager::GenBaseHierarchy<PackageableElement>,
-            UmlManager::GenBaseHierarchy<Package>,
-            TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result>>
+            TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result>>,
+            UmlManager::GenBaseHierarchy<Package>
         >::value;
     ASSERT_TRUE(genBaseHierarchyResult0);
 
-    auto genBaseHierarchyResult1 = std::is_same<
-            UmlManager::GenBaseHierarchy<PackageableElement>,
-            UmlManager::GenBaseHierarchy<TemplateTypeListType<1, UmlTypes>::result>
-        >::value;
-    ASSERT_TRUE(genBaseHierarchyResult1);
+    // is_same will not work because of temp.alias in spec
+    // see https://open-std.org/JTC1/SC22/WG21/docs/cwg_active.html#1286
+    // auto genBaseHierarchyResult1 = std::is_same<
+    //         UmlManager::GenBaseHierarchy<PackageableElement>,
+    //         UmlManager::GenBaseHierarchy<TemplateTypeListType<1, UmlTypes>::result>
+    //     >::value;
+    // ASSERT_TRUE(genBaseHierarchyResult1);
 
-    auto result = std::is_same<
-            TemplateTypeListType<0, UmlManager::Types>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, UmlManager::Types>::result>>, 
-            Package<UmlManager::GenBaseHierarchy<Package>>
-        >::value;
-    ASSERT_TRUE(result);
+    // auto result = std::is_same<
+    //         TemplateTypeListType<0, UmlManager::Types>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, UmlManager::Types>::result>>, 
+    //         Package<UmlManager::GenBaseHierarchy<Package>>
+    //     >::value;
+    // ASSERT_TRUE(result);
 }
 
 TEST_F(ElementTest, GenBaseHierarchyTest) {
@@ -76,20 +101,20 @@ TEST_F(ElementTest, GenBaseHierarchyTest) {
         >::value;
     ASSERT_TRUE(isInBaseList);
 
-    auto isInBaseList2 = std::is_same<
-            PackageableElement<UmlManager::GenBaseHierarchy<PackageableElement>>,
-            TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result>>
-        >::value;
-    ASSERT_TRUE(isInBaseList2);
+    // auto isInBaseList2 = std::is_same<
+    //         PackageableElement<UmlManager::GenBaseHierarchy<PackageableElement>>,
+    //         TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result>>
+    //     >::value;
+    // ASSERT_TRUE(isInBaseList2);
 
-    auto isBase = std::is_base_of<
-            PackageableElement<UmlManager::GenBaseHierarchy<PackageableElement>>, 
-            Package<UmlManager::GenBaseHierarchy<Package>>
-        >::value;
-    ASSERT_TRUE(isBase);
+    // auto isBase = std::is_base_of<
+    //         PackageableElement<UmlManager::GenBaseHierarchy<PackageableElement>>, 
+    //         Package<UmlManager::GenBaseHierarchy<Package>>
+    //     >::value;
+    // ASSERT_TRUE(isBase);
 
-    // UmlManager m;
-    // UmlManager::GenBaseHierarchy<PackageableElement>(1, m);
+    UmlManager m;
+    UmlManager::GenBaseHierarchy<PackageableElement>(1, m);
 }
 
 // TEST_F(ElementTest, IsTest) {

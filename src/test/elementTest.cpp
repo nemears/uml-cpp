@@ -56,21 +56,21 @@ TEST_F(ElementTest, TemplateTypeListTypeTest) {
 
     auto genBaseHierarchyResult0 = std::is_base_of<
             // UmlManager::GenBaseHierarchy<PackageableElement>,
-            TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result>>,
+            TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::template result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::template result>>,
             UmlManager::GenBaseHierarchy<Package>
         >::value;
     ASSERT_TRUE(genBaseHierarchyResult0);
 
     // is_same will not work because of temp.alias in spec
     // see https://open-std.org/JTC1/SC22/WG21/docs/cwg_active.html#1286
-    // auto genBaseHierarchyResult1 = std::is_same<
-    //         UmlManager::GenBaseHierarchy<PackageableElement>,
-    //         UmlManager::GenBaseHierarchy<TemplateTypeListType<1, UmlTypes>::result>
-    //     >::value;
-    // ASSERT_TRUE(genBaseHierarchyResult1);
+    auto genBaseHierarchyResult1 = std::is_convertible<
+            UmlManager::GenBaseHierarchy<PackageableElement>,
+            UmlManager::GenBaseHierarchy<TemplateTypeListType<1, UmlTypes>::template result>
+        >::value;
+    ASSERT_TRUE(genBaseHierarchyResult1);
 
-    // auto result = std::is_same<
-    //         TemplateTypeListType<0, UmlManager::Types>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, UmlManager::Types>::result>>, 
+    // auto result = std::is_convertible<
+    //         TemplateTypeListType<0, UmlManager::Types>::template result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, UmlManager::Types>::template result>>, 
     //         Package<UmlManager::GenBaseHierarchy<Package>>
     //     >::value;
     // ASSERT_TRUE(result);
@@ -121,13 +121,16 @@ TEST_F(ElementTest, IsTest) {
     UmlManager m;
     auto pckg = m.create<Package>();
     ASSERT_TRUE(pckg->is<PackageableElement>());
+    auto& pckgableEl = pckg->as<PackageableElement>();
+    ASSERT_TRUE(pckgableEl.is<Package>());
 }
-/**
+
 TEST_F(ElementTest, UmlPtrTest) {
     UmlManager m;
     auto& pckg = *m.create<Package>();
     auto& child = *m.create<Package>();
-    pckg.getPackagedElements().add(child);
+    child.setOwningPackage(pckg);
+    // pckg.getPackagedElements().add(child);
     ASSERT_FALSE(pckg.getOwningPackage().has());
     ASSERT_FALSE(pckg.getOwningPackage());
     ASSERT_TRUE(!pckg.getOwningPackage());
@@ -138,7 +141,7 @@ TEST_F(ElementTest, UmlPtrTest) {
     ASSERT_EQ(*(child.getOwningPackage()), pckg);
     ASSERT_EQ(child.getOwningPackage()->getID(), pckg.getID());
 }
-**/
+
 // Commenting out for now until compilable
 /**
 

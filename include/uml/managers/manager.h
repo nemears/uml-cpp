@@ -91,7 +91,7 @@ namespace UML {
 
                     // as to cast to other managed types
                     template <template<class> class T>
-                    constexpr T<typename Manager::template GenBaseHierarchy<T>>& as() const {
+                    T<typename Manager::template GenBaseHierarchy<T>>& as() {
                         if (is<T>()) {
                             return dynamic_cast<T<typename Manager::template GenBaseHierarchy<T>>&>(*this);
                         }
@@ -122,12 +122,16 @@ namespace UML {
                     bool isHelper(std::size_t type) {
                         using BaseList = typename CurrType<BaseElement>::Info::BaseList;
                         if constexpr (I < TemplateTypeListSize<BaseList>::result) {
-                            return isHelper<TemplateTypeListType<I, BaseList>::template result>(type);
+                            if (isHelper<TemplateTypeListType<I, BaseList>::template result>(type)) {
+                                return true;
+                            }
+                            return isHelper<CurrType, I + 1>(type);
+                        } else {
+                            if (ElementType<CurrType>::result == type) {
+                                return true;
+                            }
+                            return false;
                         }
-                        if (ElementType<CurrType>::result == type) {
-                            return true;
-                        }
-                        return false;
                     }
                 public:
                     void forEachSet(BaseElement& el, Function f) override {

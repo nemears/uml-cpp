@@ -1,10 +1,12 @@
 #pragma once
 
+#include "uml/managers/abstractManager.h"
 #include "uml/set/abstractSet.h"
 #include "uml/set/doNothingPolicy.h"
 #include "uml/set/privateSet.h"
 #include "uml/managers/umlPtr.h"
 #include <memory>
+#include <type_traits>
 
 namespace UML {
     template <class T>
@@ -136,7 +138,7 @@ namespace UML {
     template <template <class> class T, class U, class ApiPolicy = DoNothingPolicy>
     class Singleton : public ReadOnlySingleton<T,U,ApiPolicy> , public AbstractReadableSet {
         private:
-            using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T>>;
+            using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T<typename U::Manager::BaseElement>::Info::template Type>>;
             void checkCurrentValueHelper() {
                 AbstractSet& redefinedSet = this->m_structure->m_rootRedefinedSet->m_set;
                 AbstractElementPtr currVal = this->get();
@@ -144,7 +146,7 @@ namespace UML {
                     redefinedSet.innerRemove(currVal);
                 }                
             }
-            void setHelper(UmlPtr<ManagedType> ptr) {
+            void setHelper(AbstractElementPtr ptr) {
                 checkCurrentValueHelper();
                 if (ptr) {
                     this->innerAdd(ptr);
@@ -155,8 +157,10 @@ namespace UML {
             void set(UmlPtr<ManagedType> ptr) {
                 this->setHelper(ptr);
             }
-            void set(ManagedType& ref) {
-                this->setHelper(UmlPtr<ManagedType>(&ref));
+            template <class Type>
+            void set(Type& ref) {
+                AbstractElementPtr ptr(&ref);
+                this->setHelper(ptr);
             }
             void set(ID& id) {
                 if (id == ID::nullID()) {

@@ -155,6 +155,10 @@ namespace UML {
             UmlPtr(const UmlPtr<U>& rhs) {
                 reassignPtr(rhs);
             }
+            template <class U>
+            UmlPtr(const UmlPtr<U>* rhs) {
+                reassignPtr(*rhs);
+            }
             std::shared_ptr<T> ptr() {
                 return getPtr().lock();
             }

@@ -19,7 +19,7 @@ namespace UML {
                 ManagerPolicy(elementType, manager) 
             {} 
         public:
-            using PackageImpl = PackageDefinition<typename ManagerPolicy::Manager::template GenBaseHierarchy<PackageDefinition>>;
+            using PackageImpl = Package<typename ManagerPolicy::Manager::template GenBaseHierarchy<Package>>;
             using PackagePtr = UmlPtr<PackageImpl>;
             virtual PackagePtr getOwningPackage() = 0; 
             virtual void setOwningPackage(PackageImpl& package) = 0;

@@ -217,15 +217,16 @@ namespace UML {
     };
 
     template <template <class> class T, class U, class ApiPolicy = DoNothingPolicy>
-    using ReadOnlySet = PrivateSet<T, U, SetDataPolicy<T<typename U::Manager::template GenBaseHierarchy<T>>>, ApiPolicy>;
+    using ReadOnlySet = PrivateSet<
+        T, 
+        U, 
+        // below is SetDataPolicy<PrivateSet<T,U>::ManagedType>, have to match it because ManagedType alias is not available
+        SetDataPolicy<T<typename U::Manager::template GenBaseHierarchy<T<typename U::Manager::BaseElement>::Info::template Type>>>,
+        ApiPolicy
+    >;
 
     template <template <class> class T, class U, class ApiPolicy = DoNothingPolicy>
     class Set : public ReadOnlySet<T, U, ApiPolicy> , public AbstractReadableSet {
-            using Manager = typename U::Manager; 
-            // template <class ManagerPolicy>
-            // using ManagedTemplateType = T<typename Manager::BaseElement>::Info::template Type<ManagerPolicy>; 
-            // // using ManagedType = ManagedTemplateType<typename Manager::template GenBaseHierarchy<ManagedTemplateType>>;
-            // using ManagedType = T<typename Manager::BaseElement>::Info::template Type<typename Manager::template GenBaseHierarchy<T<typename Manager::BaseElement>::Info::template Type>>; 
             using ManagedType = ReadOnlySet<T, U, ApiPolicy>::ManagedType;
         public:
             Set (U* me) : ReadOnlySet<T, U, ApiPolicy>(me) {}

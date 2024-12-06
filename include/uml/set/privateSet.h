@@ -45,12 +45,13 @@ namespace UML {
     template <template <class> class T,  class U, class DataTypePolicy, class ApiPolicy>
     class PrivateSet : virtual public AbstractSet , virtual public DataTypePolicy, virtual public ApiPolicy {
 
-        using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T<typename U::Manager::BaseElement>::Info::template Type>>;
-        friend ManagedType;
-        friend U;
-        friend ApiPolicy;
-        template <template <class> class V, class W, class OtherDataTypePolicy, class OtherApiPolicy>
-        friend class PrivateSet;
+        protected:
+            using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T<typename U::Manager::BaseElement>::Info::template Type>>;
+            friend ManagedType;
+            friend U;
+            friend ApiPolicy;
+            template <template <class> class V, class W, class OtherDataTypePolicy, class OtherApiPolicy>
+            friend class PrivateSet;
 
         private:
             std::mutex m_mutex;

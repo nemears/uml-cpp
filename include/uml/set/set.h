@@ -227,8 +227,8 @@ namespace UML {
 
     template <template <class> class T, class U, class ApiPolicy = DoNothingPolicy>
     class Set : public ReadOnlySet<T, U, ApiPolicy> , public AbstractReadableSet {
-            using ManagedType = ReadOnlySet<T, U, ApiPolicy>::ManagedType;
         public:
+            using ManagedType = ReadOnlySet<T, U, ApiPolicy>::ManagedType;
             Set (U* me) : ReadOnlySet<T, U, ApiPolicy>(me) {}
             void add(UmlPtr<ManagedType> ptr) {
                 this->innerAdd(ptr);

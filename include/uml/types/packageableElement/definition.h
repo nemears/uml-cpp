@@ -17,10 +17,11 @@ namespace UML {
             PackageableElementDefinition(std::size_t elementType, AbstractManager& manager) : 
                 ManagerPolicy::Manager::BaseElement(elementType, manager),
                 ManagerPolicy(elementType, manager) 
-            {} 
+            {}
         public:
             using PackageImpl = Package<typename ManagerPolicy::Manager::template GenBaseHierarchy<Package>>;
             using PackagePtr = UmlPtr<PackageImpl>;
+            virtual Singleton<PackageDefinition, PackageableElement<ManagerPolicy>>& getOwningPackageSingleton() = 0;
             virtual PackagePtr getOwningPackage() = 0; 
             virtual void setOwningPackage(PackageImpl& package) = 0;
             virtual void setOwningPackage(PackagePtr package) = 0;

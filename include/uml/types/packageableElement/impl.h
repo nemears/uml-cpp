@@ -10,13 +10,17 @@ namespace UML {
         protected:
             Singleton<PackageDefinition, PackageableElement> m_owningPackage = Singleton<PackageDefinition, PackageableElement>(this);
         public:
-            // using PackageableElementDefinition<ManagerPolicy>::PackageableElementDefinition;
+            using PackageImpl = PackageableElementDefinition<ManagerPolicy>::PackageImpl;
+            using PackagePtr = PackageableElementDefinition<ManagerPolicy>::PackagePtr;
             PackageableElement(std::size_t elementType, AbstractManager& manager) : 
                 ManagerPolicy::Manager::BaseElement(elementType, manager),
                 PackageableElementDefinition<ManagerPolicy>(elementType, manager) 
-            {}
-            using PackageImpl = PackageableElementDefinition<ManagerPolicy>::PackageImpl;
-            using PackagePtr = PackageableElementDefinition<ManagerPolicy>::PackagePtr;
+            {
+                m_owningPackage.opposite(&decltype(m_owningPackage)::ManagedType::getPackagedElements);
+            }
+            Singleton<PackageDefinition, PackageableElement>& getOwningPackageSingleton() override {
+                return m_owningPackage;
+            }
             PackagePtr getOwningPackage() override {
                 return m_owningPackage.get();
             }

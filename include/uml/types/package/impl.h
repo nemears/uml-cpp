@@ -13,7 +13,9 @@ namespace UML {
             Package(std::size_t elementType, AbstractManager& manager) : 
                 ManagerPolicy::Manager::BaseElement(elementType, manager), 
                 PackageDefinition<ManagerPolicy>(elementType, manager) 
-            {}
+            {
+                m_packagedElements.opposite(&decltype(m_packagedElements)::ManagedType::getOwningPackageSingleton);
+            }
             Set<PackageableElementDefinition, PackageDefinition<ManagerPolicy>>& getPackagedElements() override {
                 return m_packagedElements;
             }

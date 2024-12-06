@@ -19,7 +19,6 @@ namespace UML {
             virtual Set<PackageableElementDefinition, PackageDefinition>& getPackagedElements() = 0;
             using Info = TypeInfo<Package, TemplateTypeList<PackageableElement>>;
         protected:
-            //using ManagerPolicy::ManagerPolicy;
             PackageDefinition(std::size_t elementType, AbstractManager& manager) : 
                 ManagerPolicy::Manager::BaseElement(elementType, manager),
                 ManagerPolicy(elementType, manager) 

@@ -137,8 +137,9 @@ namespace UML {
 
     template <template <class> class T, class U, class ApiPolicy = DoNothingPolicy>
     class Singleton : public ReadOnlySingleton<T,U,ApiPolicy> , public AbstractReadableSet {
-        private:
+        public: 
             using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T<typename U::Manager::BaseElement>::Info::template Type>>;
+        private:
             void checkCurrentValueHelper() {
                 AbstractSet& redefinedSet = this->m_structure->m_rootRedefinedSet->m_set;
                 AbstractElementPtr currVal = this->get();

@@ -29,6 +29,15 @@ namespace UML {
         using BaseList = BaseTList;
     };
 
+    template <template<class> class Base, class ManagerPolicy>
+    struct VirtualBase : public virtual Base<typename ManagerPolicy::Manager::template GenBaseHierarchy<Base>> {
+        using Type = Base<typename ManagerPolicy::Manager::template GenBaseHierarchy<Base>>;
+        VirtualBase(std::size_t elementType, AbstractManager& manager) : 
+            ManagerPolicy::Manager::BaseElement(elementType, manager),
+            Base<ManagerPolicy>(elementType, manager)
+        {}
+    };
+
     struct AbstractDataPolicy {
         virtual std::string getData() = 0;
         virtual void setData(std::string data) = 0;

@@ -81,6 +81,7 @@ namespace UML {
                 protected:    
                     using AbstractElement::AbstractElement;
                     BaseElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
+                    // BaseElement(AbstractManager* aNullPtr) : AbstractElement(-1, *aNullPtr) {} // just for compiler, will never be called
                 public:
                     using Manager = Manager;
                     // is function to compare types compile time O(1)
@@ -157,16 +158,16 @@ namespace UML {
 
             template <template <class> class T, std::size_t I>
             struct GenBaseHierarchy<T, I, false> : virtual public BaseElement {
-                //protected:
+                protected:
                     GenBaseHierarchy(std::size_t elementType, AbstractManager& manager) : BaseElement(elementType, manager) {}
             };
 
             template <template <class> class T, std::size_t I>
             struct GenBaseHierarchy<T, I, true> :
-                public TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result<GenBaseHierarchy<TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result>>,
+                virtual public TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result<GenBaseHierarchy<TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result>>,
                 public GenBaseHierarchy<T, I + 1, I + 1 < TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result>
             {
-                //protected:
+                protected:
                     // constructor
                     GenBaseHierarchy(std::size_t elementType, AbstractManager& manager) :
                         BaseElement(elementType, manager),
@@ -361,6 +362,9 @@ namespace UML {
             // create factory function
             template <template <class> class T>
             UmlPtr<T<GenBaseHierarchy<T>>> create() {
+                if constexpr (T<BaseElement>::Info::abstract) {
+                    throw ManagerStateException("Trying to instantiate and abstract type!");
+                }
                 auto ptr = std::make_shared<T<GenBaseHierarchy<T>>>(ElementType<T>::result, *this);
                 return registerPtr(ptr);
             }

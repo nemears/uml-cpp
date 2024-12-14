@@ -3,20 +3,21 @@
 #include "definition.h"
 #include "uml/managers/dummyManager.h"
 #include "uml/set/set.h"
+// #include "uml/types/namedElement/definition.h"
 
 namespace UML {
     template <class ManagerPolicy>
     class Namespace : public NamespaceDefinition<ManagerPolicy> {
         protected:
-            // ReadOnlySet<NamespaceDefinition, Namespace> m_members = ReadOnlySet<NamespaceDefinition, Namespace>(this);
-            // ReadOnlySet<NamespaceDefinition, Namespace> m_ownedMembers = ReadOnlySet<NamespaceDefinition, Namespace>(this);
+            // ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>> m_members = ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>>(this);
+            // ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>> m_ownedMembers = ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>>(this);
             void init() {
-                // m_members.opposite(&decltype(m_members)::ManagedElement::getNamespaceSingleton);
+                // m_members.opposite(&decltype(m_members)::ManagedType::getNamespaceSingleton);
                 // m_ownedMembers.subsets(ManagerPolicy::getOwnedElements()); 
             }
-            static constexpr std::size_t namespaceElementType = ManagerPolicy::Manager::template ElementType<Namespace>::result;
+            static constexpr std::size_t namespaceElementType = ManagerPolicy::manager::template ElementType<Namespace>::result;
             Namespace() :
-                ManagerPolicy::Manager::BaseElement(namespaceElementType, dummyManager),
+                ManagerPolicy::manager::BaseElement(namespaceElementType, dummyManager),
                 NamespaceDefinition<ManagerPolicy>(namespaceElementType, dummyManager)
             {
                 init();
@@ -24,16 +25,16 @@ namespace UML {
         public:
             // TODO delete when enforcing abstract
             Namespace(std::size_t elementType, AbstractManager& manager) :
-                ManagerPolicy::Manager::BaseElement(elementType, manager),
+                ManagerPolicy::manager::BaseElement(elementType, manager),
                 // NamedElement<typename ManagerPolicy::Manager::template GenBaseHierarchy<NamedElement>>(elementType, manager) // virtual base
                 NamespaceDefinition<ManagerPolicy>(elementType, manager)
             {
                 init();
             }
-            // ReadOnlySet<NamespaceDefinition, Namespace>& getMembers() override {
+            // ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>>& getMembers() override {
             //     return m_members;
             // }
-            // ReadOnlySet<NamespaceDefinition, Namespace>& getOwnedMembers() override {
+            // ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>>& getOwnedMembers() override {
             //     return m_ownedMembers;
             // }
     };

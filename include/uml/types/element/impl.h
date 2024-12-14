@@ -1,48 +1,52 @@
 #pragma once
 
-#include "definition.h"
+// #include "definition.h"
 #include "uml/managers/abstractManager.h"
 #include "uml/managers/dummyManager.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/set.h"
 #include "uml/set/singleton.h"
 #include <cstddef>
 
 namespace UML {
     template <class ManagerPolicy>
-    class Element : public ElementDefinition<ManagerPolicy> {
+    class Element : public ManagerPolicy {
+        public:
+            using Info = TypeInfo<Element>;
         protected:
-            // ReadOnlySet<ElementDefinition, Element> m_ownedElemnts = ReadOnlySet<ElementDefinition, Element>(this);
-            // ReadOnlySingleton<ElementDefinition, Element> m_owner = ReadOnlySingleton<ElementDefinition, Element>(this);
+            ReadOnlySet<Element, Element> m_ownedElemnts = ReadOnlySet<Element, Element>(this);
+            ReadOnlySingleton<Element, Element> m_owner = ReadOnlySingleton<Element, Element>(this);
             void init() {
-                // m_ownedElemnts.opposite(&decltype(m_owner)::ManagedElement::getOwnerSingleton);
-                // m_owner.opposite(&decltype(m_ownedElemnts)::ManagedElement::getOwnedElements);
+                m_ownedElemnts.opposite(&decltype(m_owner)::ManagedType::getOwnerSingleton);
+                m_owner.opposite(&decltype(m_ownedElemnts)::ManagedType::getOwnedElements);
             }
-            static constexpr std::size_t elementElementType = ManagerPolicy::Manager::template ElementType<Element>::result;
+            static constexpr std::size_t elementElementType = ManagerPolicy::manager::template ElementType<Element>::result;
             Element() :
-                ManagerPolicy::Manager::BaseElement(elementElementType, dummyManager),
-                ElementDefinition<ManagerPolicy>(elementElementType, dummyManager)
-            
+                ManagerPolicy::manager::BaseElement(elementElementType, dummyManager),
+                ManagerPolicy(elementElementType, dummyManager)
             {
                 init();
             }
         public:
-            // using ElementImpl = ElementDefinition<ManagerPolicy>::ElementImpl;
-            // using ElementPtr = ElementDefinition<ManagerPolicy>::ElementPtr;
             // TODO delete when enforce abstract
             Element(std::size_t elementType, AbstractManager& manager) :
-                ManagerPolicy::Manager::BaseElement(elementType, manager),
-                ElementDefinition<ManagerPolicy>(elementType, manager)
+                ManagerPolicy::manager::BaseElement(elementType, manager),
+                ManagerPolicy(elementType, manager)
             {
                 init();
             }
-            // ReadOnlySet<ElementDefinition, ElementImpl>& getOwnedElements() override {
-            //     return m_ownedElemnts;
-            // }
-            // ReadOnlySingleton<ElementDefinition, ElementImpl>& getOwnerSingleton() override {
-            //     return m_owner;
-            // }
-            // ElementPtr getOwner() override {
-            //     return m_owner.get();
-            // }
+            ReadOnlySet<Element, Element>& getOwnedElements() {
+                return m_ownedElemnts;
+            }
+            ReadOnlySingleton<Element, Element>& getOwnerSingleton() {
+                return m_owner;
+            }
+            using ElementPtr = UmlPtr<Element>;
+            ElementPtr getOwner() {
+                return m_owner.get();
+            }
     };
+
+    template <>
+    struct ElementInfo<Element> : public DefaultInfo {};
 }

@@ -221,7 +221,7 @@ namespace UML {
         T, 
         U, 
         // below is SetDataPolicy<PrivateSet<T,U>::ManagedType>, have to match it because ManagedType alias is not available
-        SetDataPolicy<T<typename U::Manager::template GenBaseHierarchy<T<typename U::Manager::BaseElement>::Info::template Type>>>,
+        SetDataPolicy<T<typename U::manager::template GenBaseHierarchy<T<typename U::manager::BaseElement>::Info::template Type>>>,
         ApiPolicy
     >;
 

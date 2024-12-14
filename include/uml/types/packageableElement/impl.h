@@ -14,10 +14,10 @@ namespace UML {
                 m_owningPackage.opposite(&decltype(m_owningPackage)::ManagedType::getPackagedElements);
                 // m_owningPackage.subsets(ManagerPolicy::getNamespaceSingleton()); 
             }
-            static constexpr std::size_t packageableElementElementType = ManagerPolicy::Manager::template ElementType<PackageableElement>::result;
+            static constexpr std::size_t packageableElementElementType = ManagerPolicy::manager::template ElementType<PackageableElement>::result;
             // default constructor
             PackageableElement() :
-                ManagerPolicy::Manager::BaseElement(packageableElementElementType, dummyManager),
+                ManagerPolicy::manager::BaseElement(packageableElementElementType, dummyManager),
                 PackageableElementDefinition<ManagerPolicy>(packageableElementElementType, dummyManager)
             {
                 init();
@@ -27,7 +27,7 @@ namespace UML {
             using PackagePtr = PackageableElementDefinition<ManagerPolicy>::PackagePtr;
             // most derived constructor TODO delete when this is an abstractType
             PackageableElement(std::size_t elementType, AbstractManager& manager) : 
-                ManagerPolicy::Manager::BaseElement(elementType, manager), // virtual base
+                ManagerPolicy::manager::BaseElement(elementType, manager), // virtual base
                 // NamedElement<typename ManagerPolicy::Manager::template GenBaseHierarchy<NamedElement>>(elementType, manager) // virtual base
                 PackageableElementDefinition<ManagerPolicy>(elementType, manager) 
             {

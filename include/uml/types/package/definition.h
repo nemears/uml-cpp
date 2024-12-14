@@ -3,6 +3,7 @@
 #include "uml/managers/templateTypeList.h"
 #include "uml/managers/typeInfo.h"
 #include "uml/set/set.h"
+#include "uml/types/packageableElement/definition.h"
 
 namespace UML {
     template <class>

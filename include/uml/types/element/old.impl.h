@@ -13,15 +13,16 @@ namespace UML {
     template <class ManagerPolicy>
     class ElementDefinition : public ManagerPolicy {
         public:
-            // using ElementImpl = ElementDefinition<ManagerPolicy>::Info::template Type<ManagerPolicy>; 
-            // using ElementPtr = UmlPtr<ElementImpl>;
+            // using ElementImpl = Element<typename ManagerPolicy::Manager::template GenBaseHierarchy<Element>>; 
+            using ElementImpl = Element<ManagerPolicy>;
+            using ElementPtr = UmlPtr<ElementImpl>;
             ElementDefinition(std::size_t elementType, AbstractManager& manager) :
-                ManagerPolicy::Manager::BaseElement(elementType, manager),
+                ManagerPolicy::manager::BaseElement(elementType, manager),
                 ManagerPolicy(elementType, manager)
             {}
-            // virtual ReadOnlySet<ElementDefinition, ElementImpl>& getOwnedElements() = 0;
-            // virtual ReadOnlySingleton<ElementDefinition, ElementImpl>& getOwnerSingleton() = 0;
-            // virtual ElementPtr getOwner() = 0;
+            virtual ReadOnlySet<ElementDefinition, ElementDefinition>& getOwnedElements() = 0;
+            virtual ReadOnlySingleton<ElementDefinition, Element<ManagerPolicy>>& getOwnerSingleton() = 0;
+            virtual ElementPtr getOwner() = 0;
             using Info = TypeInfo<Element>;
     };
 

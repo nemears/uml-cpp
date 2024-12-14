@@ -83,7 +83,7 @@ namespace UML {
                     BaseElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
                     // BaseElement(AbstractManager* aNullPtr) : AbstractElement(-1, *aNullPtr) {} // just for compiler, will never be called
                 public:
-                    using Manager = Manager;
+                    using manager = Manager;
                     // is function to compare types compile time O(1)
                     template <template <class> class T>
                     bool is() const {

@@ -5,6 +5,7 @@
 #include "uml/managers/typeInfo.h"
 #include "uml/set/set.h"
 #include <cstddef>
+
 namespace UML {
 
     template <class>
@@ -19,15 +20,13 @@ namespace UML {
     template <class ManagerPolicy>
     class NamespaceDefinition : public ManagerPolicy {
         public:
+            // virtual ReadOnlySet<NamedElementDefinition, NamespaceDefinition>& getMembers() = 0;
+            using Info = TypeInfo<Namespace, TemplateTypeList<NamedElement>>;
             NamespaceDefinition(std::size_t elementType, AbstractManager& manager) :
-                ManagerPolicy::Manager::BaseElement(elementType, manager),
+                ManagerPolicy::manager::BaseElement(elementType, manager),
                 ManagerPolicy(elementType, manager)
             {};
-            // virtual ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>>& getMembers() = 0;
-            // virtual ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>>& getOwnedMembers() = 0;
-            // template <class OtherManagerPolicy>
-            // using VirtualNamedElement = VirtualBase<NamedElement, OtherManagerPolicy>;
-            using Info = TypeInfo<Namespace, TemplateTypeList<NamedElement>>;
+            // virtual ReadOnlySet<NamedElementDefinition, NamespaceDefinition>& getOwnedMembers() = 0;
     };
 
     template <>

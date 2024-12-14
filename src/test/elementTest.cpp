@@ -1,8 +1,10 @@
 #include "gtest/gtest.h"
 #include <type_traits>
 
+#include "uml/managers/abstractManager.h"
 #include "uml/managers/templateTypeList.h"
 #include "uml/managers/umlManager.h"
+#include "uml/types/namedElement/definition.h"
 #include "uml/types/packageableElement/impl.h"
 #include "uml/uml-stable.h"
 // #include "test/umlTestUtil.h"
@@ -76,46 +78,73 @@ TEST_F(ElementTest, TemplateTypeListTypeTest) {
     // ASSERT_TRUE(result);
 }
 
-TEST_F(ElementTest, GenBaseHierarchyTest) {
-    auto isBaseOfBaseElement = std::is_base_of<
-            UmlManager::BaseElement, 
-            Package<UmlManager::GenBaseHierarchy<Package>>
-        >::value;
-    ASSERT_TRUE(isBaseOfBaseElement);
+namespace UML {
 
-    // auto isBaseOfGenBaseHierarchy = std::is_base_of<
-    //         UmlManager::GenBaseHierarchy<Package, 1, false>,
-    //         Package<UmlManager::GenBaseHierarchy<Package>>
-    //     >::value;
-    // ASSERT_TRUE(isBaseOfGenBaseHierarchy);
+    template <class>
+    class ProxyNamespace;
 
-    // auto isBaseOfTypeList = std::is_base_of<
-    //         TemplateTypeListType<0,Package<UmlManager::BaseElement>::Info::BaseList>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result>>,
-    //         Package<UmlManager::GenBaseHierarchy<Package>>
-    //     >::value;
-    // ASSERT_TRUE(isBaseOfTypeList);
+    template <class>
+    class ProxyNamedElement;
 
-    // auto isInBaseList = std::is_same<
-    //         PackageableElement<UmlManager::BaseElement>,
-    //         TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result<UmlManager::BaseElement>
-    //     >::value;
-    // ASSERT_TRUE(isInBaseList);
+    template <class ManagerPolicy>
+    class ProxyNamedElementDefinition : public ManagerPolicy {
+        public:
+           virtual Set<ProxyNamespace, ProxyNamedElementDefinition>& getNmspc() = 0;
+           using Info = TypeInfo<ProxyNamedElement, TemplateTypeList<Element>>;
+           using ManagerPolicy::ManagerPolicy;
+    };
 
-    // auto isInBaseList2 = std::is_same<
-    //         PackageableElement<UmlManager::GenBaseHierarchy<PackageableElement>>,
-    //         TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::result>>
-    //     >::value;
-    // ASSERT_TRUE(isInBaseList2);
+    template <>
+    struct ElementInfo<ProxyNamedElement> : public DefaultInfo {};
 
-    // auto isBase = std::is_base_of<
-    //         PackageableElement<UmlManager::GenBaseHierarchy<PackageableElement>>, 
-    //         Package<UmlManager::GenBaseHierarchy<Package>>
-    //     >::value;
-    // ASSERT_TRUE(isBase);
+    template <class ManagerPolicy>
+    class ProxyNamespaceDefinition : public ManagerPolicy {
+        public:
+            virtual Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition>& getEl() = 0; 
+            using Info = TypeInfo<ProxyNamespace, TemplateTypeList<ProxyNamedElement>>;
+            using ManagerPolicy::ManagerPolicy;
+    };
 
-    // UmlManager m;
-    // UmlManager::GenBaseHierarchy<PackageableElement>(1, m);
+    template <>
+    struct ElementInfo<ProxyNamespace> : public DefaultInfo {
+        static const bool abstract = false;
+    };
+
+
+    template <class ManagerPolicy>
+    class ProxyNamedElement : public ProxyNamedElementDefinition<ManagerPolicy> {
+        public:
+           Set<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>> set = Set<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>>(this); 
+           Set<ProxyNamespace, ProxyNamedElementDefinition<ManagerPolicy>>& getNmspc() override {
+                return set;
+           }
+    };
+
+    template <class ManagerPolicy>
+    class ProxyNamespace : public ManagerPolicy {
+        public:
+            Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>> set = Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>(this);
+            Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>& getEl() override {
+                return set;
+            }
+            ProxyNamespace(std::size_t elementType, AbstractManager& manager) :
+                ManagerPolicy::manager::BaseElement(elementType, manager),
+                ManagerPolicy(elementType, manager)
+            {}
+    };
+
+    
+    using ProxyNamespaceTypes = TemplateTypeList<Element, ProxyNamedElement, ProxyNamespace>;
+    using ProxyNamespaceManager = Manager<ProxyNamespaceTypes>;
 }
+
+TEST_F(ElementTest, proxyNamespaceTest) {
+    ProxyNamespaceManager m;
+    auto nmspc1 = m.create<ProxyNamespace>();
+    auto nmspc2 = m.create<ProxyNamespace>();
+    nmspc1->set.add(nmspc2);
+}
+
 
 TEST_F(ElementTest, IsTest) {
     UmlManager m;

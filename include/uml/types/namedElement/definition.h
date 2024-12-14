@@ -22,16 +22,15 @@ namespace UML {
     template <class ManagerPolicy>
     class NamedElementDefinition : public ManagerPolicy {
         public:
+            using Info = TypeInfo<NamedElement, TemplateTypeList<Element>>;
             NamedElementDefinition(std::size_t elementType, AbstractManager& manager) :
-                ManagerPolicy::Manager::BaseElement(elementType, manager),
+                ManagerPolicy::manager::BaseElement(elementType, manager),
                 ManagerPolicy(elementType, manager)
             {}
-            // using NamedElementImpl = NamedElement<typename ManagerPolicy::Manager::template GenBaseHierarchy<NamedElement>>;
-            // using NamespaceImpl = Namespace<typename ManagerPolicy::Manager::template GenBaseHierarchy<Namespace>>;
-            // using NamespacePtr = UmlPtr<NamespaceImpl>;
-            // virtual ReadOnlySingleton<NamespaceDefinition, NamedElementImpl>& getNamespaceSingleton() = 0;
-            // virtual NamespacePtr getNamespace() = 0;
-            using Info = TypeInfo<NamedElement, TemplateTypeList<Element>>;
+            using NamespaceImpl = Namespace<typename ManagerPolicy::manager::template GenBaseHierarchy<Namespace>>;
+            using NamespacePtr = UmlPtr<NamespaceImpl>;
+            virtual ReadOnlySingleton<NamespaceDefinition, NamedElementDefinition>& getNamespaceSingleton() = 0;
+            virtual NamespacePtr getNamespace() = 0;
     };
 
     template <>

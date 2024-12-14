@@ -3,8 +3,7 @@
 #include "uml/managers/templateTypeList.h"
 #include "uml/managers/typeInfo.h"
 #include "uml/managers/umlPtr.h"
-#include "uml/set/singleton.h"
-#include "uml/types/package/definition.h"
+#include "uml/types/namedElement/definition.h"
 
 namespace UML {
 
@@ -24,11 +23,11 @@ namespace UML {
     class PackageableElementDefinition : public ManagerPolicy {
         protected:
             PackageableElementDefinition(std::size_t elementType, AbstractManager& manager) : 
-                NamedElement<typename ManagerPolicy::Manager::template GenBaseHierarchy<NamedElement>>(elementType, manager), // virtual base
+                NamedElement<typename ManagerPolicy::manager::template GenBaseHierarchy<NamedElement>>(elementType, manager), // virtual base
                 ManagerPolicy(elementType, manager) 
             {}
         public:
-            using PackageImpl = Package<typename ManagerPolicy::Manager::template GenBaseHierarchy<Package>>;
+            using PackageImpl = Package<typename ManagerPolicy::manager::template GenBaseHierarchy<Package>>;
             using PackagePtr = UmlPtr<PackageImpl>;
             virtual Singleton<PackageDefinition, PackageableElement<ManagerPolicy>>& getOwningPackageSingleton() = 0;
             virtual PackagePtr getOwningPackage() = 0; 

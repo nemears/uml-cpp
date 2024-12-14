@@ -133,12 +133,12 @@ namespace UML {
     };
 
     template <template <class> class T, class U, class ApiPolicy = DoNothingPolicy>
-    using ReadOnlySingleton = PrivateSet<T, U, SingletonDataPolicy<T<typename U::Manager::template GenBaseHierarchy<T>>>, ApiPolicy>;
+    using ReadOnlySingleton = PrivateSet<T, U, SingletonDataPolicy<T<typename U::manager::template GenBaseHierarchy<T<typename U::manager::BaseElement>::Info::template Type>>>, ApiPolicy>;
 
     template <template <class> class T, class U, class ApiPolicy = DoNothingPolicy>
     class Singleton : public ReadOnlySingleton<T,U,ApiPolicy> , public AbstractReadableSet {
         public: 
-            using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T<typename U::Manager::BaseElement>::Info::template Type>>;
+            using ManagedType = T<typename U::manager::template GenBaseHierarchy<T<typename U::manager::BaseElement>::Info::template Type>>;
         private:
             void checkCurrentValueHelper() {
                 AbstractSet& redefinedSet = this->m_structure->m_rootRedefinedSet->m_set;

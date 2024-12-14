@@ -17,7 +17,7 @@ namespace UML {
             // default constructor
             static constexpr std::size_t packageElementType = ManagerPolicy::Manager::template ElementType<Package>::result;
             Package() :
-                ManagerPolicy::Manager::BaseElement(packageElementType, dummyManager),
+                ManagerPolicy::manager::BaseElement(packageElementType, dummyManager),
                 PackageDefinition<ManagerPolicy>(packageElementType, dummyManager)
             {
                 init();
@@ -25,8 +25,8 @@ namespace UML {
         public:
             // most derived constructor
             Package(std::size_t elementType, AbstractManager& manager) : 
-                ManagerPolicy::Manager::BaseElement(elementType, manager), // virtual base
-                NamedElement<typename ManagerPolicy::Manager::template GenBaseHierarchy<NamedElement>>(elementType, manager), // virtual base
+                ManagerPolicy::manager::BaseElement(elementType, manager), // virtual base
+                NamedElement<typename ManagerPolicy::manager::template GenBaseHierarchy<NamedElement>>(elementType, manager), // virtual base
                 PackageDefinition<ManagerPolicy>(elementType, manager) 
             {
                 init();

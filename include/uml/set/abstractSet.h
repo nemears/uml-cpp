@@ -39,7 +39,7 @@ namespace UML {
 
         template <template <class> class T, class U, class DataTypePolicy, class ApiPolicy>
         friend class PrivateSet;
-        template <class T>
+        template <template <class> class T, class U>
         friend class SetDataPolicy;
         template <class T>
         friend class SingletonDataPolicy;
@@ -75,7 +75,7 @@ namespace UML {
             class iterator {
                 template <class Tlist, class P1>
                 friend class Manager;
-                template <class T>
+                template <template <class> class T, class U>
                 friend class SetDataPolicy;
                 template <class T>
                 friend class SingletonDataPolicy;

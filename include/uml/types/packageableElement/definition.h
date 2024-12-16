@@ -23,7 +23,7 @@ namespace UML {
     class PackageableElementDefinition : public ManagerPolicy {
         protected:
             PackageableElementDefinition(std::size_t elementType, AbstractManager& manager) : 
-                NamedElement<typename ManagerPolicy::manager::template GenBaseHierarchy<NamedElement>>(elementType, manager), // virtual base
+                // NamedElement<typename ManagerPolicy::manager::template GenBaseHierarchy<NamedElement>>(elementType, manager), // virtual base
                 ManagerPolicy(elementType, manager) 
             {}
         public:
@@ -33,8 +33,6 @@ namespace UML {
             virtual PackagePtr getOwningPackage() = 0; 
             virtual void setOwningPackage(PackageImpl& package) = 0;
             virtual void setOwningPackage(PackagePtr package) = 0;
-            // template <class OtherManagerPolicy>
-            // using VirtualNamedElement = VirtualBase<NamedElement, OtherManagerPolicy>; 
             using Info = TypeInfo<PackageableElement, TemplateTypeList<NamedElement>>;
     };
     template <>

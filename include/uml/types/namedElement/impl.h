@@ -3,7 +3,7 @@
 #include "definition.h"
 #include "uml/set/singleton.h"
 #include "uml/managers/dummyManager.h"
-// #include "uml/types/namespace/definition.h"
+#include "uml/types/namespace/definition.h"
 
 namespace UML {
     template <class ManagerPolicy>

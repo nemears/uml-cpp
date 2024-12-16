@@ -26,7 +26,6 @@ namespace UML {
             // most derived constructor
             Package(std::size_t elementType, AbstractManager& manager) : 
                 ManagerPolicy::manager::BaseElement(elementType, manager), // virtual base
-                NamedElement<typename ManagerPolicy::manager::template GenBaseHierarchy<NamedElement>>(elementType, manager), // virtual base
                 PackageDefinition<ManagerPolicy>(elementType, manager) 
             {
                 init();

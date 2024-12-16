@@ -28,11 +28,9 @@ namespace UML {
             // most derived constructor TODO delete when this is an abstractType
             PackageableElement(std::size_t elementType, AbstractManager& manager) : 
                 ManagerPolicy::manager::BaseElement(elementType, manager), // virtual base
-                // NamedElement<typename ManagerPolicy::Manager::template GenBaseHierarchy<NamedElement>>(elementType, manager) // virtual base
                 PackageableElementDefinition<ManagerPolicy>(elementType, manager) 
             {
-                m_owningPackage.opposite(&decltype(m_owningPackage)::ManagedType::getPackagedElements);
-                // m_owningPackage.subsets(ManagerPolicy::getNamespaceSingleton());
+                init();
             }
             Singleton<PackageDefinition, PackageableElement>& getOwningPackageSingleton() override {
                 return m_owningPackage;

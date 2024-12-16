@@ -153,7 +153,7 @@ namespace UML {
         public:
             // Gen Base Hierarchy is a class that will be used to create dynamic objects that inherit from and can correspond to their bases
             // This is used mostly internally but all types created by the manager will be of this policy
-            template <template <class> class T, std::size_t I = 0, bool HasBases = (TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result > 0)>
+            template <template <class> class T, std::size_t I = 0, bool HasBases = (TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result > I)>
             struct GenBaseHierarchy;
 
             template <template <class> class T, std::size_t I>
@@ -165,14 +165,14 @@ namespace UML {
             template <template <class> class T, std::size_t I>
             struct GenBaseHierarchy<T, I, true> :
                 virtual public TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result<GenBaseHierarchy<TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result>>,
-                public GenBaseHierarchy<T, I + 1, I + 1 < TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result>
+                public GenBaseHierarchy<T, I + 1>
             {
                 protected:
                     // constructor
                     GenBaseHierarchy(std::size_t elementType, AbstractManager& manager) :
                         BaseElement(elementType, manager),
                         TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result<GenBaseHierarchy<TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result>>(elementType, manager),
-                        GenBaseHierarchy<T, I + 1, I + 1 < TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result>(elementType, manager) 
+                        GenBaseHierarchy<T, I + 1>(elementType, manager) 
                     {} 
             };
         protected:

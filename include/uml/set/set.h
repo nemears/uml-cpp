@@ -11,15 +11,17 @@
 
 namespace UML {
 
-    template <class T>
+    template <template <class> class T, class U>
     class SetDataPolicy : virtual public AbstractSet {
-        protected:        
-            std::unordered_map<ID, UmlPtr<T>> m_data;
+        protected:
+            using ManagedType = T<typename U::manager::template GenBaseHierarchy<T<typename U::manager::BaseElement>::Info::template Type>>;
+            // using ManagedType = T<typename U::manager::template GenBaseHierarchy<T>>;
+            std::unordered_map<ID, UmlPtr<ManagedType>> m_data;
             class iterator : public AbstractSet::iterator {
                 friend class SetDataPolicy;
                 private:
                     std::weak_ptr<SetStructure> m_me;
-                    typename std::unordered_map<ID, UmlPtr<T>>::const_iterator m_dataIt;
+                    typename std::unordered_map<ID, UmlPtr<ManagedType>>::const_iterator m_dataIt;
                     bool m_iterateSubSets = false;
                     std::unordered_set<std::shared_ptr<SetStructure>>::const_iterator m_subSetsWithDataIt;
                     std::unique_ptr<AbstractSet::iterator> m_redefinedIt = 0;
@@ -39,7 +41,7 @@ namespace UML {
                         if (m_dataIt != dynamic_cast<SetDataPolicy&>(me->m_set).m_data.end()) {
                             return m_dataIt->second;
                         }
-                        return UmlPtr<T>();
+                        return UmlPtr<ManagedType>();
                     }
                     void next() override {
                         do {
@@ -102,10 +104,10 @@ namespace UML {
                         }
                         m_hash = rhs.m_hash;
                     }
-                    T& operator*() {
-                        return dynamic_cast<T&>(*getCurr());
+                    ManagedType& operator*() {
+                        return dynamic_cast<ManagedType&>(*getCurr());
                     }
-                    UmlPtr<T> operator->() {
+                    UmlPtr<ManagedType> operator->() {
                         return getCurr(); 
                     }
                     iterator operator++() {
@@ -128,10 +130,10 @@ namespace UML {
             bool hasData() const {
                 return !m_data.empty();
             }
-            bool containsData(UmlPtr<T> ptr) const {
+            bool containsData(UmlPtr<ManagedType> ptr) const {
                 return m_data.count(ptr.id()) > 0;
             }
-            void addData(UmlPtr<T> ptr) {
+            void addData(UmlPtr<ManagedType> ptr) {
                 if (!ptr) {
                     throw SetStateException("cannot add null ptr to set!");
                 }
@@ -145,7 +147,7 @@ namespace UML {
                 }
                 m_data[ptr.id()] = ptr;
             }
-            bool removeData(UmlPtr<T> ptr) {
+            bool removeData(UmlPtr<ManagedType> ptr) {
                 return m_data.erase(ptr.id()) == 1;
             }
         public:
@@ -159,7 +161,7 @@ namespace UML {
             std::unique_ptr<AbstractSet::iterator> endPtr() const override {
                 return std::make_unique<iterator>();
             }
-            UmlPtr<T> front() const {
+            UmlPtr<ManagedType> front() const {
                 if (!rootSet()) {
                     return m_structure->m_rootRedefinedSet->m_set.beginPtr()->getCurr();
                 }
@@ -167,11 +169,11 @@ namespace UML {
                     return m_data.begin()->second;
                 }
                 if (!m_structure->m_subSetsWithData.empty()) {
-                    return UmlPtr<T>((*m_structure->m_subSetsWithData.begin())->m_set.beginPtr()->getCurr());
+                    return UmlPtr<ManagedType>((*m_structure->m_subSetsWithData.begin())->m_set.beginPtr()->getCurr());
                 }
-                return UmlPtr<T>();
+                return UmlPtr<ManagedType>();
             }
-            UmlPtr<T> get(ID id) const {
+            UmlPtr<ManagedType> get(ID id) const {
                 try {
                     return m_data.at(id);
                 } catch(std::exception& exception) {
@@ -184,11 +186,11 @@ namespace UML {
                             subSetDataIt->next();
                         }
                         if (*subSetDataIt != *subSetWithData->m_set.endPtr()) {
-                            return UmlPtr<T>(subSetDataIt->getCurr());
+                            return UmlPtr<ManagedType>(subSetDataIt->getCurr());
                         }
                     }
                 }
-                return UmlPtr<T>();
+                return UmlPtr<ManagedType>();
             }
             iterator begin() const {
                 iterator ret;
@@ -221,7 +223,7 @@ namespace UML {
         T, 
         U, 
         // below is SetDataPolicy<PrivateSet<T,U>::ManagedType>, have to match it because ManagedType alias is not available
-        SetDataPolicy<T<typename U::manager::template GenBaseHierarchy<T<typename U::manager::BaseElement>::Info::template Type>>>,
+        SetDataPolicy<T, U>,
         ApiPolicy
     >;
 

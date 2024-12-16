@@ -3,13 +3,14 @@
 #include "definition.h"
 #include "uml/managers/dummyManager.h"
 #include "uml/set/set.h"
-// #include "uml/types/namedElement/definition.h"
+#include "uml/types/namedElement/definition.h"
 
 namespace UML {
     template <class ManagerPolicy>
     class Namespace : public NamespaceDefinition<ManagerPolicy> {
         protected:
             // ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>> m_members = ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>>(this);
+            // Set<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>> m_members = Set<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>>(this);
             // ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>> m_ownedMembers = ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>>(this);
             void init() {
                 // m_members.opposite(&decltype(m_members)::ManagedType::getNamespaceSingleton);

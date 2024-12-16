@@ -2,9 +2,12 @@
 #include <type_traits>
 
 #include "uml/managers/abstractManager.h"
+#include "uml/managers/dummyManager.h"
 #include "uml/managers/templateTypeList.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/managers/umlManager.h"
 #include "uml/types/namedElement/definition.h"
+#include "uml/types/namespace/impl.h"
 #include "uml/types/packageableElement/impl.h"
 #include "uml/uml-stable.h"
 // #include "test/umlTestUtil.h"
@@ -38,50 +41,12 @@ TEST_F(ElementTest, TemplateTypeListTypeTest) {
     ASSERT_EQ(indexResult2, 1);
     auto indexResult3 = TemplateTypeListIndex<TemplateTypeListType<0, TestTypes>::result, TestTypes>::result;
     ASSERT_EQ(indexResult3, 0);
-
-    // auto baseElResult = std::is_same<
-    //         Package<UmlManager::BaseElement>, 
-    //         TemplateTypeListType<0, UmlTypes>::result<UmlManager::BaseElement>
-    //     >::value;
-    // ASSERT_TRUE(baseElResult);
-    // 
-    // auto baseElResult2 = std::is_same<
-    //         PackageableElement<UmlManager::BaseElement>, 
-    //         TemplateTypeListType<1, UmlTypes>::result<UmlManager::BaseElement>
-    //     >::value;
-    // ASSERT_TRUE(baseElResult2);
-
-    // auto packageIndex0 = TemplateTypeListIndex<Package, UmlTypes>::result;
-    // ASSERT_EQ(packageIndex0, 0);
-    // auto packageIndex = TemplateTypeListIndex<TemplateTypeListType<0, UmlTypes>::result, UmlTypes>::result; 
-    // ASSERT_EQ(packageIndex, 0);
-
-    // auto genBaseHierarchyResult0 = std::is_base_of<
-    //         // UmlManager::GenBaseHierarchy<PackageableElement>,
-    //         TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::template result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, Package<UmlManager::BaseElement>::Info::BaseList>::template result>>,
-    //         UmlManager::GenBaseHierarchy<Package>
-    //     >::value;
-    // ASSERT_TRUE(genBaseHierarchyResult0);
-
-    // is_same will not work because of temp.alias in spec
-    // see https://open-std.org/JTC1/SC22/WG21/docs/cwg_active.html#1286
-    // auto genBaseHierarchyResult1 = std::is_convertible<
-    //         UmlManager::GenBaseHierarchy<PackageableElement>,
-    //         UmlManager::GenBaseHierarchy<TemplateTypeListType<1, UmlTypes>::template result>
-    //     >::value;
-    // ASSERT_TRUE(genBaseHierarchyResult1);
-
-    // auto result = std::is_convertible<
-    //         TemplateTypeListType<0, UmlManager::Types>::template result<UmlManager::GenBaseHierarchy<TemplateTypeListType<0, UmlManager::Types>::template result>>, 
-    //         Package<UmlManager::GenBaseHierarchy<Package>>
-    //     >::value;
-    // ASSERT_TRUE(result);
 }
 
 namespace UML {
 
     template <class>
-    class ProxyNamespace;
+    class ProxyNamespaceDefinition;
 
     template <class>
     class ProxyNamedElement;
@@ -89,19 +54,22 @@ namespace UML {
     template <class ManagerPolicy>
     class ProxyNamedElementDefinition : public ManagerPolicy {
         public:
-           virtual Set<ProxyNamespace, ProxyNamedElementDefinition>& getNmspc() = 0;
            using Info = TypeInfo<ProxyNamedElement, TemplateTypeList<Element>>;
+           virtual ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition>& getNmspc() = 0;
            using ManagerPolicy::ManagerPolicy;
     };
 
     template <>
     struct ElementInfo<ProxyNamedElement> : public DefaultInfo {};
 
+    template <class>
+    class ProxyNamespace;
+
     template <class ManagerPolicy>
     class ProxyNamespaceDefinition : public ManagerPolicy {
         public:
-            virtual Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition>& getEl() = 0; 
             using Info = TypeInfo<ProxyNamespace, TemplateTypeList<ProxyNamedElement>>;
+            virtual Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>& getEl() = 0; 
             using ManagerPolicy::ManagerPolicy;
     };
 
@@ -110,18 +78,8 @@ namespace UML {
         static const bool abstract = false;
     };
 
-
     template <class ManagerPolicy>
-    class ProxyNamedElement : public ProxyNamedElementDefinition<ManagerPolicy> {
-        public:
-           Set<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>> set = Set<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>>(this); 
-           Set<ProxyNamespace, ProxyNamedElementDefinition<ManagerPolicy>>& getNmspc() override {
-                return set;
-           }
-    };
-
-    template <class ManagerPolicy>
-    class ProxyNamespace : public ManagerPolicy {
+    class ProxyNamespace : public ProxyNamespaceDefinition<ManagerPolicy> {
         public:
             Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>> set = Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>(this);
             Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>& getEl() override {
@@ -129,10 +87,27 @@ namespace UML {
             }
             ProxyNamespace(std::size_t elementType, AbstractManager& manager) :
                 ManagerPolicy::manager::BaseElement(elementType, manager),
-                ManagerPolicy(elementType, manager)
+                ProxyNamespaceDefinition<ManagerPolicy>(elementType, manager)
             {}
     };
 
+    template <class ManagerPolicy>
+    class ProxyNamedElement : public ProxyNamedElementDefinition<ManagerPolicy> {
+        public:
+           ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>> set = ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>>(this); 
+           ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>>& getNmspc() override {
+                return set;
+           }
+           static constexpr auto proxyNamedElementElementType = ManagerPolicy::manager::template ElementType<ProxyNamedElement>::result;
+           ProxyNamedElement() :
+               ManagerPolicy::manager::BaseElement(proxyNamedElementElementType, dummyManager),
+               ProxyNamedElementDefinition<ManagerPolicy>(proxyNamedElementElementType, dummyManager)
+           {}
+           ProxyNamedElement(std::size_t elementType, AbstractManager& manager) :
+               ManagerPolicy::manager::BaseElement(elementType, manager),
+               ProxyNamedElementDefinition<ManagerPolicy>(elementType, manager)
+           {}
+    };
     
     using ProxyNamespaceTypes = TemplateTypeList<Element, ProxyNamedElement, ProxyNamespace>;
     using ProxyNamespaceManager = Manager<ProxyNamespaceTypes>;
@@ -143,6 +118,99 @@ TEST_F(ElementTest, proxyNamespaceTest) {
     auto nmspc1 = m.create<ProxyNamespace>();
     auto nmspc2 = m.create<ProxyNamespace>();
     nmspc1->set.add(nmspc2);
+    ASSERT_TRUE(nmspc1->set.contains(nmspc2));
+    ASSERT_TRUE(nmspc1->is<ProxyNamedElement>());
+    ASSERT_TRUE(nmspc1->is<Element>());
+    auto& namedElement = nmspc1->as<ProxyNamedElement>();
+    ASSERT_EQ(namedElement, dynamic_cast<ProxyNamedElement<ProxyNamespaceManager::GenBaseHierarchy<ProxyNamedElement>>&>(*nmspc1));
+    auto& element = nmspc1->as<Element>();
+    ASSERT_EQ(element, dynamic_cast<Element<ProxyNamespaceManager::GenBaseHierarchy<Element>>&>(*nmspc1));
+}
+
+namespace UML {
+    template <class ManagerPolicy>
+    struct Base : public ManagerPolicy {
+        using Info = TypeInfo<Base>;
+        Base() :
+            ManagerPolicy::manager::BaseElement(0, dummyManager),
+            ManagerPolicy(0, dummyManager) 
+        {}
+        Base(std::size_t elementType, AbstractManager& manager) :
+            ManagerPolicy::manager::BaseElement(elementType, manager),
+            ManagerPolicy(elementType, manager) 
+        {}
+        virtual ~Base() {}
+    };
+
+    template <>
+    struct ElementInfo<Base> : DefaultInfo {};
+
+    template <class ManagerPolicy>
+    struct Right : public ManagerPolicy {
+        using Info = TypeInfo<Right, TemplateTypeList<Base>>;
+        Right() :
+            ManagerPolicy::manager::BaseElement(0, dummyManager),
+            ManagerPolicy(0, dummyManager) 
+        {}
+        Right(std::size_t elementType, AbstractManager& manager) :
+            ManagerPolicy::manager::BaseElement(elementType, manager),
+            ManagerPolicy(elementType, manager) 
+        {}
+        virtual ~Right() {}
+    };
+    
+    template <>
+    struct ElementInfo<Right> : DefaultInfo {};
+
+    template <class ManagerPolicy>
+    struct Left : public ManagerPolicy {
+        using Info = TypeInfo<Left, TemplateTypeList<Base>>;
+        Left () :
+            ManagerPolicy::manager::BaseElement(0, dummyManager),
+            ManagerPolicy(0, dummyManager) 
+        {}
+        Left (std::size_t elementType, AbstractManager& manager) :
+            ManagerPolicy::manager::BaseElement(elementType, manager),
+            ManagerPolicy(elementType, manager) 
+        {}
+        virtual ~Left() {}
+    };
+    
+    template <>
+    struct ElementInfo<Left> : DefaultInfo {};
+
+    template <class ManagerPolicy>
+    struct Diamond : public ManagerPolicy {
+        using Info = TypeInfo<Diamond, TemplateTypeList<Right, Left>>;
+        Diamond() :
+            ManagerPolicy::manager::BaseElement(0, dummyManager),
+            ManagerPolicy(0, dummyManager) 
+        {}
+        Diamond(std::size_t elementType, AbstractManager& manager) :
+            ManagerPolicy::manager::BaseElement(elementType, manager),
+            ManagerPolicy(elementType, manager) 
+        {}
+        virtual ~Diamond() {}
+    };
+    
+    template <>
+    struct ElementInfo<Diamond> : DefaultInfo {
+        static constexpr bool abstract = false;
+    };
+
+    using DiamondTypes = TemplateTypeList<Base, Right, Left, Diamond>;
+    using DiamondManager = Manager<DiamondTypes>;
+}
+
+TEST_F(ElementTest, diamondElementTest) {
+    DiamondManager m;
+    auto diamond = m.create<Diamond>();
+    auto& right = diamond->as<Right>();
+    ASSERT_EQ(right, dynamic_cast<Right<DiamondManager::GenBaseHierarchy<Right>>&>(*diamond));
+    auto& left = diamond->as<Left>();
+    ASSERT_EQ(left, dynamic_cast<Left<DiamondManager::GenBaseHierarchy<Left>>&>(*diamond));
+    auto& base = diamond->as<Base>();
+    ASSERT_EQ(base, dynamic_cast<Base<DiamondManager::GenBaseHierarchy<Base>>&>(*diamond));
 }
 
 
@@ -155,6 +223,11 @@ TEST_F(ElementTest, IsTest) {
     ASSERT_TRUE(pckgableEl.is<Namespace>());
     ASSERT_TRUE(pckgableEl.is<NamedElement>());
     ASSERT_TRUE(pckgableEl.is<Element>());
+    ASSERT_EQ(pckgableEl.as<Package>(), dynamic_cast<Package<UmlManager::GenBaseHierarchy<Package>>&>(pckgableEl));
+    auto& nmspc = pckg->as<Namespace>(); 
+    ASSERT_EQ(nmspc, dynamic_cast<Namespace<UmlManager::GenBaseHierarchy<Namespace>>&>(pckgableEl));
+    ASSERT_EQ(pckgableEl.as<NamedElement>(), dynamic_cast<NamedElement<UmlManager::GenBaseHierarchy<NamedElement>>&>(pckgableEl));
+    ASSERT_EQ(pckgableEl.as<Element>(), dynamic_cast<Element<UmlManager::GenBaseHierarchy<Element>>&>(pckgableEl));
 }
 
 TEST_F(ElementTest, UmlPtrTest) {

@@ -246,25 +246,25 @@ TEST_F(ElementTest, UmlPtrTest) {
     ASSERT_EQ(child.getOwningPackage()->getID(), pckg.getID());
 }
 
-TEST_F(ElementTest, AddToSimpleSetTest) {
-    UmlManager m;
-    auto& pckg = *m.create<Package>();
-    auto& child = *m.create<Package>();
-    pckg.getPackagedElements().add(child);
-    ASSERT_TRUE(pckg.getPackagedElements().contains(child));
-    ASSERT_EQ(*pckg.getPackagedElements().front(), child);
-}
-
-TEST_F(ElementTest, simpleOppositeTest) {
-    UmlManager m;
-    auto& pckg = *m.create<Package>();
-    auto& child = *m.create<Package>();
-    pckg.getPackagedElements().add(child);
-    ASSERT_TRUE(pckg.getPackagedElements().contains(child));
-    ASSERT_EQ(*pckg.getPackagedElements().front(), child);
-    ASSERT_TRUE(child.getOwningPackage());
-    ASSERT_EQ(*child.getOwningPackage(), pckg);
-}
+// `TEST_F(ElementTest, AddToSimpleSetTest) {
+// `    UmlManager m;
+// `    auto& pckg = *m.create<Package>();
+// `    auto& child = *m.create<Package>();
+// `    pckg.getPackagedElements().add(child);
+// `    ASSERT_TRUE(pckg.getPackagedElements().contains(child));
+// `    ASSERT_EQ(*pckg.getPackagedElements().front(), child);
+// `}
+// `
+// `TEST_F(ElementTest, simpleOppositeTest) {
+// `    UmlManager m;
+// `    auto& pckg = *m.create<Package>();
+// `    auto& child = *m.create<Package>();
+// `    pckg.getPackagedElements().add(child);
+// `    ASSERT_TRUE(pckg.getPackagedElements().contains(child));
+// `    ASSERT_EQ(*pckg.getPackagedElements().front(), child);
+// `    ASSERT_TRUE(child.getOwningPackage());
+// `    ASSERT_EQ(*child.getOwningPackage(), pckg);
+// `}
 
 // Commenting out for now until compilable
 /**

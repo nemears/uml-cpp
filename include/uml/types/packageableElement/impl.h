@@ -11,7 +11,7 @@ namespace UML {
         protected:
             Singleton<PackageDefinition, PackageableElement> m_owningPackage = Singleton<PackageDefinition, PackageableElement>(this);
             void init() {
-                m_owningPackage.opposite(&decltype(m_owningPackage)::ManagedType::getPackagedElements);
+                // m_owningPackage.opposite(&decltype(m_owningPackage)::ManagedType::getPackagedElements);
                 // m_owningPackage.subsets(ManagerPolicy::getNamespaceSingleton()); 
             }
             static constexpr std::size_t packageableElementElementType = ManagerPolicy::manager::template ElementType<PackageableElement>::result;

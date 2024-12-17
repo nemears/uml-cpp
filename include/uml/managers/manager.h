@@ -153,28 +153,27 @@ namespace UML {
         public:
             // Gen Base Hierarchy is a class that will be used to create dynamic objects that inherit from and can correspond to their bases
             // This is used mostly internally but all types created by the manager will be of this policy
-            template <template <class> class T, std::size_t I = 0, bool HasBases = (TemplateTypeListSize<typename T<BaseElement>::Info::BaseList>::result > I)>
+            template <template <class> class T, class TypeList = T<BaseElement>::Info::BaseList>
             struct GenBaseHierarchy;
 
-            template <template <class> class T, std::size_t I>
-            struct GenBaseHierarchy<T, I, false> : virtual public BaseElement {
+            template <template <class> class T>
+            struct GenBaseHierarchy<T, TemplateTypeList<>> : virtual public BaseElement {
                 protected:
                     GenBaseHierarchy(std::size_t elementType, AbstractManager& manager) : BaseElement(elementType, manager) {}
             };
 
-            template <template <class> class T, std::size_t I>
-            struct GenBaseHierarchy<T, I, true> :
-                virtual public TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result<GenBaseHierarchy<TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result>>,
-                public GenBaseHierarchy<T, I + 1>
+            template <template <class> class T, template <class> class First, template <class> class ... Types>
+            struct GenBaseHierarchy<T, TemplateTypeList<First, Types...>> :
+                virtual public First<GenBaseHierarchy<First>>,
+                public GenBaseHierarchy<T, TemplateTypeList<Types...>>
             {
                 protected:
-                    // constructor
-                    GenBaseHierarchy(std::size_t elementType, AbstractManager& manager) :
+                    GenBaseHierarchy(std::size_t elementType, AbstractManager& manager) : 
                         BaseElement(elementType, manager),
-                        TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result<GenBaseHierarchy<TemplateTypeListType<I, typename T<BaseElement>::Info::BaseList>::template result>>(elementType, manager),
-                        GenBaseHierarchy<T, I + 1>(elementType, manager) 
-                    {} 
-            };
+                        First<GenBaseHierarchy<First>>(elementType, manager),
+                        GenBaseHierarchy<T, TemplateTypeList<Types...>>(elementType, manager)
+                    {}
+            }; 
         protected:
             UmlPtr<BaseElement> registerPtr(std::shared_ptr<AbstractElement> ptr) {
                 // create Node by emplace in graph

@@ -11,7 +11,7 @@ namespace UML {
         protected:
             Set<PackageableElementDefinition, PackageDefinition<ManagerPolicy>> m_packagedElements = Set<PackageableElementDefinition, PackageDefinition<ManagerPolicy>>(this);
             void init() {
-                m_packagedElements.opposite(&decltype(m_packagedElements)::ManagedType::getOwningPackageSingleton);
+                // m_packagedElements.opposite(&decltype(m_packagedElements)::ManagedType::getOwningPackageSingleton);
                 // m_packagedElements.subsets(ManagerPolicy::getOwnedMembers()); 
             }
             // default constructor

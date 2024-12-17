@@ -27,13 +27,13 @@ namespace UML {
                 ManagerPolicy(elementType, manager) 
             {}
         public:
+            using Info = TypeInfo<PackageableElement, TemplateTypeList<NamedElement>>;
             using PackageImpl = Package<typename ManagerPolicy::manager::template GenBaseHierarchy<Package>>;
             using PackagePtr = UmlPtr<PackageImpl>;
             virtual Singleton<PackageDefinition, PackageableElement<ManagerPolicy>>& getOwningPackageSingleton() = 0;
             virtual PackagePtr getOwningPackage() = 0; 
             virtual void setOwningPackage(PackageImpl& package) = 0;
             virtual void setOwningPackage(PackagePtr package) = 0;
-            using Info = TypeInfo<PackageableElement, TemplateTypeList<NamedElement>>;
     };
     template <>
     struct ElementInfo<PackageableElement> : public DefaultInfo {};

@@ -21,7 +21,7 @@ namespace UML {
     class NamespaceDefinition : public ManagerPolicy {
         public:
             using Info = TypeInfo<Namespace, TemplateTypeList<NamedElement>>;
-            // virtual ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>>& getMembers() = 0;
+            virtual ReadOnlySet<NamedElementDefinition, NamespaceDefinition<ManagerPolicy>>& getMembers() = 0;
             NamespaceDefinition(std::size_t elementType, AbstractManager& manager) :
                 ManagerPolicy::manager::BaseElement(elementType, manager),
                 ManagerPolicy(elementType, manager)

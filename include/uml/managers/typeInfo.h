@@ -3,7 +3,6 @@
 #include <vector>
 #include "uml/managers/abstractElement.h"
 #include "uml/managers/templateTypeList.h"
-#include "uml/managers/integerList.h"
 
 namespace UML {
 
@@ -27,15 +26,6 @@ namespace UML {
         template <class ManagerPolicy>
         using Type = ElementType<ManagerPolicy>;
         using BaseList = BaseTList;
-    };
-
-    template <template<class> class Base, class ManagerPolicy>
-    struct VirtualBase : public virtual Base<typename ManagerPolicy::Manager::template GenBaseHierarchy<Base>> {
-        using Type = Base<typename ManagerPolicy::Manager::template GenBaseHierarchy<Base>>;
-        VirtualBase(std::size_t elementType, AbstractManager& manager) : 
-            ManagerPolicy::Manager::BaseElement(elementType, manager),
-            Base<ManagerPolicy>(elementType, manager)
-        {}
     };
 
     struct AbstractDataPolicy {

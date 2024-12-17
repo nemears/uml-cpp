@@ -14,8 +14,8 @@ namespace UML {
     template <template <class> class T, class U>
     class SetDataPolicy : virtual public AbstractSet {
         protected:
-            using ManagedType = T<typename U::manager::template GenBaseHierarchy<T<typename U::manager::BaseElement>::Info::template Type>>;
-            // using ManagedType = T<typename U::manager::template GenBaseHierarchy<T>>;
+            // using ManagedType = T<typename U::manager::template GenBaseHierarchy<T<typename U::manager::BaseElement>::Info::template Type>>;
+            using ManagedType = T<typename U::manager::template GenBaseHierarchy<T>>;
             std::unordered_map<ID, UmlPtr<ManagedType>> m_data;
             class iterator : public AbstractSet::iterator {
                 friend class SetDataPolicy;

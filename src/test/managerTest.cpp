@@ -1,7 +1,11 @@
 #include "gtest/gtest.h"
 #include "uml/managers/manager.h"
+#include "uml/managers/abstractManager.h"
+#include "uml/managers/templateTypeList.h"
 #include "uml/managers/typeInfo.h"
 #include "uml/managers/dummyManager.h"
+#include "uml/set/set.h"
+#include "uml/set/singleton.h"
 
 using namespace UML;
 
@@ -116,4 +120,299 @@ TEST_F(ManagerTest, diamondElementTest) {
     ASSERT_EQ(left, dynamic_cast<Left<DiamondManager::GenBaseHierarchy<Left>>&>(*diamond));
     auto& base = diamond->as<Base>();
     ASSERT_EQ(base, dynamic_cast<Base<DiamondManager::GenBaseHierarchy<Base>>&>(*diamond));
+}
+
+namespace UML {
+
+    template <class>
+    struct DerivedReferencingBase;
+
+    template <class ManagerPolicy>
+    struct BaseReferencingDerived : public ManagerPolicy {
+        using Info = TypeInfo<BaseReferencingDerived>;
+        using DerivedSet = Set<DerivedReferencingBase, BaseReferencingDerived>;
+        DerivedSet derived = DerivedSet(this);
+        DerivedSet& getDerived() {
+            return derived;
+        }
+        void init() {
+            derived.opposite(&DerivedSet::ManagedType::getBase);
+        }
+        BaseReferencingDerived() :
+            ManagerPolicy::manager::BaseElement(0, dummyManager),
+            ManagerPolicy(0, dummyManager)
+        {
+            init();
+        }
+        BaseReferencingDerived(std::size_t elementType, AbstractManager& manager) :
+            ManagerPolicy::manager::BaseElement(elementType, manager),
+            ManagerPolicy(elementType, manager)
+        {
+            init();
+        }
+    };
+
+    template <>
+    struct ElementInfo<BaseReferencingDerived> : DefaultInfo {
+        static const bool abstract = false;
+    };
+    
+    template <class ManagerPolicy>
+    struct DerivedReferencingBase : public ManagerPolicy {
+        using Info = TypeInfo<DerivedReferencingBase, TemplateTypeList<BaseReferencingDerived>>;
+        using BaseSet = Set<BaseReferencingDerived, DerivedReferencingBase>;
+        BaseSet base = BaseSet(this);
+        BaseSet& getBase() {
+            return base;
+        }
+        void init() {
+            base.opposite(&BaseSet::ManagedType::getDerived);
+        }
+        DerivedReferencingBase () :
+            ManagerPolicy::manager::BaseElement(0, dummyManager),
+            ManagerPolicy(0, dummyManager)
+        {
+            init();
+        }
+        DerivedReferencingBase (std::size_t elementType, AbstractManager& manager) :
+            ManagerPolicy::manager::BaseElement(elementType, manager),
+            ManagerPolicy(elementType, manager)
+        {
+            init();
+        }
+    };
+
+    template <>
+    struct ElementInfo<DerivedReferencingBase> : DefaultInfo {
+        static const bool abstract = false;
+    };
+
+    using CircularDependencyManager = Manager<TemplateTypeList<BaseReferencingDerived, DerivedReferencingBase>>;
+}
+
+TEST_F(ManagerTest, circularReferenceTest) {
+    CircularDependencyManager m;
+    auto base = m.create<BaseReferencingDerived>();
+    auto derived = m.create<DerivedReferencingBase>();
+    base->derived.add(derived);
+    ASSERT_TRUE(base->derived.contains(derived));
+    ASSERT_TRUE(derived->base.contains(base));
+}
+
+namespace UML {
+    template <class ManagerPolicy>
+    struct TestElement : public ManagerPolicy {
+        using Info = TypeInfo<TestElement>;
+        using OwnedElementsSet = Set<TestElement, TestElement>;
+        using OwnerSingleton = Singleton<TestElement, TestElement>;
+        OwnedElementsSet ownedElements = OwnedElementsSet(this);
+        OwnerSingleton owner = OwnerSingleton(this);
+        OwnedElementsSet& getOwnedElements() {
+            return ownedElements;
+        }
+        OwnerSingleton& getOwnerSingleton() {
+            return owner;
+        } 
+        void init() {
+            ownedElements.opposite(&OwnerSingleton::ManagedType::getOwnerSingleton);
+            owner.opposite(&OwnedElementsSet::ManagedType::getOwnedElements);
+        }
+        TestElement() :
+            ManagerPolicy::manager::BaseElement(0, dummyManager),
+            ManagerPolicy(0, dummyManager)
+        {
+            init();
+        }
+        TestElement(std::size_t elementType, AbstractManager& manager) :
+            ManagerPolicy::manager::BaseElement(elementType, manager),
+            ManagerPolicy(elementType, manager)
+        {
+            init();
+        }
+    };
+
+    template <>
+    struct ElementInfo<TestElement> : public DefaultInfo {
+        static const bool abstract = false; // for testing
+    };
+
+    using TestElementManager = Manager<TemplateTypeList<TestElement>>;
+}
+
+TEST_F(ManagerTest, testElementTest) {
+    TestElementManager m;
+    auto owner = m.create<TestElement>();
+    auto ownee = m.create<TestElement>();
+    owner->ownedElements.add(ownee);
+    ASSERT_TRUE(owner->ownedElements.contains(ownee));
+    ASSERT_EQ(*ownee->owner.get(), *owner);
+}
+
+namespace UML {
+    template <class>
+    struct TestNamespace;
+
+    template <class ManagerPolicy>
+    struct TestNamedElement : public ManagerPolicy {
+        using Info = TypeInfo<TestNamedElement, TemplateTypeList<TestElement>>;
+        using NamespaceSingleton = Singleton<TestNamespace, TestNamedElement>;
+        NamespaceSingleton _namespace = NamespaceSingleton(this);
+        NamespaceSingleton& getNamespaceSingleton() {
+            return _namespace;
+        }
+        void init() {
+            _namespace.subsets(ManagerPolicy::owner);
+            _namespace.opposite(&NamespaceSingleton::ManagedType::getOwnedMembers);
+        }
+        TestNamedElement() :
+            ManagerPolicy::manager::BaseElement(0, dummyManager),
+            ManagerPolicy(0, dummyManager)
+        {
+            init();
+        }
+        TestNamedElement(std::size_t elementType, AbstractManager& manager) :
+            ManagerPolicy::manager::BaseElement(elementType, manager),
+            ManagerPolicy(elementType, manager)
+        {
+            init();
+        }
+    };
+
+    template <>
+    struct ElementInfo<TestNamedElement> : public DefaultInfo {
+        static const bool abstract = false;
+    };
+
+    template <class ManagerPolicy>
+    struct TestNamespace : public ManagerPolicy {
+        using Info = TypeInfo<TestNamespace, TemplateTypeList<TestNamedElement>>;
+        using NamedElementSet = Set<TestNamedElement, TestNamespace>;
+        NamedElementSet members = NamedElementSet(this);
+        NamedElementSet ownedMembers = NamedElementSet(this);
+        NamedElementSet& getMembers() {
+            return members;
+        }
+        NamedElementSet& getOwnedMembers() {
+            return ownedMembers;
+        }
+        void init() {
+            ownedMembers.subsets(ManagerPolicy::ownedElements);
+            ownedMembers.subsets(members);
+            ownedMembers.opposite(&NamedElementSet::ManagedType::getNamespaceSingleton);
+        }
+        TestNamespace() :
+            ManagerPolicy::manager::BaseElement(0, dummyManager),
+            ManagerPolicy(0, dummyManager)
+        {
+            init();
+        }
+        TestNamespace(std::size_t elementType, AbstractManager& manager) :
+            ManagerPolicy::manager::BaseElement(elementType, manager),
+            ManagerPolicy(elementType, manager)
+        {
+            init();
+        }
+    };
+
+    template <>
+    struct ElementInfo<TestNamespace> : public DefaultInfo {
+        static const bool abstract = false;
+    };
+
+    using TestNamespaceManager = Manager<TemplateTypeList<TestElement, TestNamedElement, TestNamespace>>;
+}
+
+TEST_F(ManagerTest, testNamespaceTest) {
+    TestNamespaceManager m;
+    auto nmspc = m.create<TestNamespace>();
+    auto member = m.create<TestNamedElement>();
+    nmspc->ownedMembers.add(member);
+    ASSERT_TRUE(nmspc->ownedMembers.contains(member));
+    ASSERT_TRUE(nmspc->members.contains(member));
+    ASSERT_TRUE(nmspc->ownedElements.contains(member));
+    ASSERT_EQ(*member->_namespace.get(), *nmspc);
+    ASSERT_EQ(*member->owner.get(), *nmspc);
+}
+
+namespace UML {
+    template <class>
+    struct TestPackage;
+
+    template <class ManagerPolicy>
+    struct TestPackageablElement : public ManagerPolicy {
+        using Info = TypeInfo<TestPackageablElement, TemplateTypeList<TestNamedElement>>;
+        using PackageSingleton = Singleton<TestPackage, TestPackageablElement>;
+        PackageSingleton owningPackage = PackageSingleton(this);
+        PackageSingleton& getOwningPackageSingleton() {
+            return owningPackage;
+        }
+        void init() {
+            owningPackage.subsets(ManagerPolicy::_namespace);
+            owningPackage.opposite(&PackageSingleton::ManagedType::getPackagedElements);
+        }
+        TestPackageablElement() :
+            ManagerPolicy::manager::BaseElement(0, dummyManager),
+            ManagerPolicy(0, dummyManager)
+        {
+            init();
+        }
+        TestPackageablElement(std::size_t elementType, AbstractManager& manager) :
+            ManagerPolicy::manager::BaseElement(elementType, manager),
+            ManagerPolicy(elementType, manager)
+        {
+            init();
+        }
+    };
+
+    template <>
+    struct ElementInfo<TestPackageablElement> : public DefaultInfo {
+        static const bool abstract = false;
+    };
+
+    template <class ManagerPolicy>
+    struct TestPackage : public ManagerPolicy {
+        using Info = TypeInfo<TestPackage, TemplateTypeList<TestPackageablElement, TestNamespace>>;
+        using PackageableElementSet = Set<TestPackageablElement, TestPackage>;
+        PackageableElementSet packagedElements = PackageableElementSet(this);
+        PackageableElementSet& getPackagedElements() {
+            return packagedElements;
+        }
+        void init() {
+            packagedElements.subsets(ManagerPolicy::ownedMembers);
+            packagedElements.opposite(&PackageableElementSet::ManagedType::getOwningPackageSingleton);
+        }
+        TestPackage() :
+            ManagerPolicy::manager::BaseElement(0, dummyManager),
+            ManagerPolicy(0, dummyManager)
+        {
+            init();
+        }
+        TestPackage(std::size_t elementType, AbstractManager& manager) :
+            ManagerPolicy::manager::BaseElement(elementType, manager),
+            ManagerPolicy(elementType, manager) 
+        {
+            init();    
+        }
+    };
+
+    template <>
+    struct ElementInfo<TestPackage> : public DefaultInfo {
+        static const bool abstract = false;
+    };
+
+    using TestPackageManager = Manager<TemplateTypeList<TestElement, TestNamedElement, TestNamespace, TestPackageablElement, TestPackage>>;
+}
+
+TEST_F(ManagerTest, testPackageTest) {
+    TestPackageManager m;
+    auto pckg = m.create<TestPackage>();
+    auto pckgdEl = m.create<TestPackage>();
+    pckg->packagedElements.add(pckgdEl);
+    ASSERT_TRUE(pckg->packagedElements.contains(pckgdEl));
+    ASSERT_TRUE(pckg->ownedMembers.contains(pckgdEl));
+    ASSERT_TRUE(pckg->members.contains(pckgdEl));
+    ASSERT_TRUE(pckg->ownedElements.contains(pckgdEl));
+    ASSERT_EQ(*pckgdEl->owningPackage.get(), *pckg);
+    ASSERT_EQ(*pckgdEl->_namespace.get(), *pckg);
+    ASSERT_EQ(*pckgdEl->owner.get(), *pckg);
 }

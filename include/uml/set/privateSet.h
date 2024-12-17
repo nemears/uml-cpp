@@ -46,8 +46,8 @@ namespace UML {
     class PrivateSet : virtual public AbstractSet , virtual public DataTypePolicy, virtual public ApiPolicy {
 
         public:
-            using ManagedType = T<typename U::manager::template GenBaseHierarchy<T<typename U::manager::BaseElement>::Info::template Type>>;
-            // using ManagedType = T<typename U::manager::template GenBaseHierarchy<T>>;
+            // using ManagedType = T<typename U::manager::template GenBaseHierarchy<T<typename U::manager::BaseElement>::Info::template Type>>;
+            using ManagedType = T<typename U::manager::template GenBaseHierarchy<T>>;
         protected:
             friend ManagedType;
             friend U;

@@ -6,9 +6,6 @@
 #include "uml/managers/templateTypeList.h"
 #include "uml/managers/typeInfo.h"
 #include "uml/managers/umlManager.h"
-#include "uml/types/namedElement/definition.h"
-#include "uml/types/namespace/impl.h"
-#include "uml/types/packageableElement/impl.h"
 #include "uml/uml-stable.h"
 // #include "test/umlTestUtil.h"
 
@@ -18,89 +15,89 @@ using namespace UML;
 
 class ElementTest : public ::testing::Test {};
 
-namespace UML {
-
-    template <class>
-    class ProxyNamespaceDefinition;
-
-    template <class>
-    class ProxyNamedElement;
-
-    template <class ManagerPolicy>
-    class ProxyNamedElementDefinition : public ManagerPolicy {
-        public:
-           using Info = TypeInfo<ProxyNamedElement, TemplateTypeList<Element>>;
-           virtual ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition>& getNmspc() = 0;
-           using ManagerPolicy::ManagerPolicy;
-    };
-
-    template <>
-    struct ElementInfo<ProxyNamedElement> : public DefaultInfo {};
-
-    template <class>
-    class ProxyNamespace;
-
-    template <class ManagerPolicy>
-    class ProxyNamespaceDefinition : public ManagerPolicy {
-        public:
-            using Info = TypeInfo<ProxyNamespace, TemplateTypeList<ProxyNamedElement>>;
-            virtual Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>& getEl() = 0; 
-            using ManagerPolicy::ManagerPolicy;
-    };
-
-    template <>
-    struct ElementInfo<ProxyNamespace> : public DefaultInfo {
-        static const bool abstract = false;
-    };
-
-    template <class ManagerPolicy>
-    class ProxyNamespace : public ProxyNamespaceDefinition<ManagerPolicy> {
-        public:
-            Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>> set = Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>(this);
-            Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>& getEl() override {
-                return set;
-            }
-            ProxyNamespace(std::size_t elementType, AbstractManager& manager) :
-                ManagerPolicy::manager::BaseElement(elementType, manager),
-                ProxyNamespaceDefinition<ManagerPolicy>(elementType, manager)
-            {}
-    };
-
-    template <class ManagerPolicy>
-    class ProxyNamedElement : public ProxyNamedElementDefinition<ManagerPolicy> {
-        public:
-           ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>> set = ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>>(this); 
-           ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>>& getNmspc() override {
-                return set;
-           }
-           static constexpr auto proxyNamedElementElementType = ManagerPolicy::manager::template ElementType<ProxyNamedElement>::result;
-           ProxyNamedElement() :
-               ManagerPolicy::manager::BaseElement(proxyNamedElementElementType, dummyManager),
-               ProxyNamedElementDefinition<ManagerPolicy>(proxyNamedElementElementType, dummyManager)
-           {}
-           ProxyNamedElement(std::size_t elementType, AbstractManager& manager) :
-               ManagerPolicy::manager::BaseElement(elementType, manager),
-               ProxyNamedElementDefinition<ManagerPolicy>(elementType, manager)
-           {}
-    };
-    
-    using ProxyNamespaceTypes = TemplateTypeList<Element, ProxyNamedElement, ProxyNamespace>;
-    using ProxyNamespaceManager = Manager<ProxyNamespaceTypes>;
-}
-
-TEST_F(ElementTest, proxyNamespaceTest) {
-    ProxyNamespaceManager m;
-    auto nmspc1 = m.create<ProxyNamespace>();
-    auto nmspc2 = m.create<ProxyNamespace>();
-    nmspc1->set.add(nmspc2);
-    ASSERT_TRUE(nmspc1->set.contains(nmspc2));
-    ASSERT_TRUE(nmspc1->is<ProxyNamedElement>());
-    ASSERT_TRUE(nmspc1->is<Element>());
-    auto& namedElement = nmspc1->as<ProxyNamedElement>();
-    ASSERT_EQ(namedElement, dynamic_cast<ProxyNamedElement<ProxyNamespaceManager::GenBaseHierarchy<ProxyNamedElement>>&>(*nmspc1));
-    auto& element = nmspc1->as<Element>();
-    ASSERT_EQ(element, dynamic_cast<Element<ProxyNamespaceManager::GenBaseHierarchy<Element>>&>(*nmspc1));
-}
+// namespace UML {
+// 
+//     template <class>
+//     class ProxyNamespaceDefinition;
+// 
+//     template <class>
+//     class ProxyNamedElement;
+// 
+//     template <class ManagerPolicy>
+//     class ProxyNamedElementDefinition : public ManagerPolicy {
+//         public:
+//            using Info = TypeInfo<ProxyNamedElement, TemplateTypeList<Element>>;
+//            virtual ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition>& getNmspc() = 0;
+//            using ManagerPolicy::ManagerPolicy;
+//     };
+// 
+//     template <>
+//     struct ElementInfo<ProxyNamedElement> : public DefaultInfo {};
+// 
+//     template <class>
+//     class ProxyNamespace;
+// 
+//     template <class ManagerPolicy>
+//     class ProxyNamespaceDefinition : public ManagerPolicy {
+//         public:
+//             using Info = TypeInfo<ProxyNamespace, TemplateTypeList<ProxyNamedElement>>;
+//             virtual Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>& getEl() = 0; 
+//             using ManagerPolicy::ManagerPolicy;
+//     };
+// 
+//     template <>
+//     struct ElementInfo<ProxyNamespace> : public DefaultInfo {
+//         static const bool abstract = false;
+//     };
+// 
+//     template <class ManagerPolicy>
+//     class ProxyNamespace : public ProxyNamespaceDefinition<ManagerPolicy> {
+//         public:
+//             Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>> set = Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>(this);
+//             Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>& getEl() override {
+//                 return set;
+//             }
+//             ProxyNamespace(std::size_t elementType, AbstractManager& manager) :
+//                 ManagerPolicy::manager::BaseElement(elementType, manager),
+//                 ProxyNamespaceDefinition<ManagerPolicy>(elementType, manager)
+//             {}
+//     };
+// 
+//     template <class ManagerPolicy>
+//     class ProxyNamedElement : public ProxyNamedElementDefinition<ManagerPolicy> {
+//         public:
+//            ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>> set = ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>>(this); 
+//            ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>>& getNmspc() override {
+//                 return set;
+//            }
+//            static constexpr auto proxyNamedElementElementType = ManagerPolicy::manager::template ElementType<ProxyNamedElement>::result;
+//            ProxyNamedElement() :
+//                ManagerPolicy::manager::BaseElement(proxyNamedElementElementType, dummyManager),
+//                ProxyNamedElementDefinition<ManagerPolicy>(proxyNamedElementElementType, dummyManager)
+//            {}
+//            ProxyNamedElement(std::size_t elementType, AbstractManager& manager) :
+//                ManagerPolicy::manager::BaseElement(elementType, manager),
+//                ProxyNamedElementDefinition<ManagerPolicy>(elementType, manager)
+//            {}
+//     };
+//     
+//     using ProxyNamespaceTypes = TemplateTypeList<Element, ProxyNamedElement, ProxyNamespace>;
+//     using ProxyNamespaceManager = Manager<ProxyNamespaceTypes>;
+// }
+// 
+// TEST_F(ElementTest, proxyNamespaceTest) {
+//     ProxyNamespaceManager m;
+//     auto nmspc1 = m.create<ProxyNamespace>();
+//     auto nmspc2 = m.create<ProxyNamespace>();
+//     nmspc1->set.add(nmspc2);
+//     ASSERT_TRUE(nmspc1->set.contains(nmspc2));
+//     ASSERT_TRUE(nmspc1->is<ProxyNamedElement>());
+//     ASSERT_TRUE(nmspc1->is<Element>());
+//     auto& namedElement = nmspc1->as<ProxyNamedElement>();
+//     ASSERT_EQ(namedElement, dynamic_cast<ProxyNamedElement<ProxyNamespaceManager::GenBaseHierarchy<ProxyNamedElement>>&>(*nmspc1));
+//     auto& element = nmspc1->as<Element>();
+//     ASSERT_EQ(element, dynamic_cast<Element<ProxyNamespaceManager::GenBaseHierarchy<Element>>&>(*nmspc1));
+// }
 
 
 

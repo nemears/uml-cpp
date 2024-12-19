@@ -3,6 +3,7 @@
 #include <vector>
 #include "uml/managers/abstractElement.h"
 #include "uml/managers/templateTypeList.h"
+#include "uml/managers/dummyManager.h"
 
 namespace UML {
 
@@ -41,3 +42,20 @@ namespace UML {
         return std::make_pair<std::string, std::shared_ptr<AbstractDataPolicy>>(name, std::shared_ptr<AbstractDataPolicy>(policy));
     }
 }
+
+// macro for setting up monotonous constructor needed for definint compatible policy classes
+#define xstr(x) #x
+#define MANAGED_ELEMENT_CONSTRUCTOR(ElementTypeName) \
+    ElementTypeName () : \
+        ManagerPolicy::manager::BaseElement(0, dummyManager), \
+        ManagerPolicy(0, dummyManager) \
+    { \
+        init(); \
+    }; \
+    ElementTypeName (std::size_t elementType, AbstractManager& manager) : \
+        ManagerPolicy::manager::BaseElement(elementType, manager), \
+        ManagerPolicy(elementType, manager) \
+    { \
+        init(); \
+    } 
+

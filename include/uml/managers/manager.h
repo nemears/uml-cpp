@@ -67,6 +67,7 @@ namespace UML {
                 virtual ~AbstractManagerTypeInfo() {}
                 virtual void forEachSet(BaseElement& el, std::function<void(std::string, AbstractSet&)>)  = 0;
                 virtual bool is(std::size_t type) = 0;
+                virtual AbstractElementPtr create(Manager&) = 0;
             };
 
             std::unordered_map<std::size_t, std::unique_ptr<AbstractManagerTypeInfo>> m_types;
@@ -141,6 +142,9 @@ namespace UML {
                     }
                     bool is(std::size_t type) override {
                         return isHelper(type);                        
+                    }
+                    AbstractElementPtr create(Manager& manager) override {
+                        return manager.create<Type>();
                     }
             };
         private:
@@ -368,20 +372,20 @@ namespace UML {
                 return registerPtr(ptr);
             }
         private:
-            template <std::size_t I = 0>
-            UmlPtr<AbstractElement> createHelper(std::size_t type) {
-                if constexpr (I < TemplateTypeListSize<TypePolicyList>::result) {
-                    if (type == I) {
-                        return create<TemplateTypeListType<I, TypePolicyList>::template result>();
-                    }
-                    return createHelper<I + 1>(type);
-                }
-                throw ManagerStateException("Invalid type id given to create!");
-            }
+            // template <std::size_t I = 0>
+            // UmlPtr<AbstractElement> createHelper(std::size_t type) {
+            //     if constexpr (I < TemplateTypeListSize<TypePolicyList>::result) {
+            //         if (type == I) {
+            //             return create<TemplateTypeListType<I, TypePolicyList>::template result>();
+            //         }
+            //         return createHelper<I + 1>(type);
+            //     }
+            //     throw ManagerStateException("Invalid type id given to create!");
+            // }
         public:
             // create by type id
             UmlPtr<AbstractElement> create(std::size_t type) override {
-                return createHelper(type);
+                return m_types.at(type)->create(*this);
             }
             
             // constructor
@@ -549,3 +553,4 @@ namespace UML {
             }
     };
 }
+

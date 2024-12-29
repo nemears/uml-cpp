@@ -82,7 +82,6 @@ namespace UML {
                 protected:    
                     using AbstractElement::AbstractElement;
                     BaseElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
-                    // BaseElement(AbstractManager* aNullPtr) : AbstractElement(-1, *aNullPtr) {} // just for compiler, will never be called
                 public:
                     using manager = Manager;
                     // is function to compare types compile time O(1)
@@ -371,18 +370,6 @@ namespace UML {
                 auto ptr = std::make_shared<T<GenBaseHierarchy<T>>>(ElementType<T>::result, *this);
                 return registerPtr(ptr);
             }
-        private:
-            // template <std::size_t I = 0>
-            // UmlPtr<AbstractElement> createHelper(std::size_t type) {
-            //     if constexpr (I < TemplateTypeListSize<TypePolicyList>::result) {
-            //         if (type == I) {
-            //             return create<TemplateTypeListType<I, TypePolicyList>::template result>();
-            //         }
-            //         return createHelper<I + 1>(type);
-            //     }
-            //     throw ManagerStateException("Invalid type id given to create!");
-            // }
-        public:
             // create by type id
             UmlPtr<AbstractElement> create(std::size_t type) override {
                 return m_types.at(type)->create(*this);

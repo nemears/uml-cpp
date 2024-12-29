@@ -182,6 +182,9 @@ namespace UML {
             }
             void aquire() {
                 AbstractElementPtr temp = m_node.lock()->m_manager.abstractGet(m_id);
+                if (!temp) {
+                    throw ManagerStateException("Could not find element within manager memory or persistence");
+                }
                 m_ptr = std::dynamic_pointer_cast<T>(temp.ptr());
                 m_node = m_ptr.lock()->m_node.lock();
             }

@@ -15,93 +15,6 @@ using namespace UML;
 
 class ElementTest : public ::testing::Test {};
 
-// namespace UML {
-// 
-//     template <class>
-//     class ProxyNamespaceDefinition;
-// 
-//     template <class>
-//     class ProxyNamedElement;
-// 
-//     template <class ManagerPolicy>
-//     class ProxyNamedElementDefinition : public ManagerPolicy {
-//         public:
-//            using Info = TypeInfo<ProxyNamedElement, TemplateTypeList<Element>>;
-//            virtual ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition>& getNmspc() = 0;
-//            using ManagerPolicy::ManagerPolicy;
-//     };
-// 
-//     template <>
-//     struct ElementInfo<ProxyNamedElement> : public DefaultInfo {};
-// 
-//     template <class>
-//     class ProxyNamespace;
-// 
-//     template <class ManagerPolicy>
-//     class ProxyNamespaceDefinition : public ManagerPolicy {
-//         public:
-//             using Info = TypeInfo<ProxyNamespace, TemplateTypeList<ProxyNamedElement>>;
-//             virtual Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>& getEl() = 0; 
-//             using ManagerPolicy::ManagerPolicy;
-//     };
-// 
-//     template <>
-//     struct ElementInfo<ProxyNamespace> : public DefaultInfo {
-//         static const bool abstract = false;
-//     };
-// 
-//     template <class ManagerPolicy>
-//     class ProxyNamespace : public ProxyNamespaceDefinition<ManagerPolicy> {
-//         public:
-//             Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>> set = Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>(this);
-//             Set<ProxyNamedElementDefinition, ProxyNamespaceDefinition<ManagerPolicy>>& getEl() override {
-//                 return set;
-//             }
-//             ProxyNamespace(std::size_t elementType, AbstractManager& manager) :
-//                 ManagerPolicy::manager::BaseElement(elementType, manager),
-//                 ProxyNamespaceDefinition<ManagerPolicy>(elementType, manager)
-//             {}
-//     };
-// 
-//     template <class ManagerPolicy>
-//     class ProxyNamedElement : public ProxyNamedElementDefinition<ManagerPolicy> {
-//         public:
-//            ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>> set = ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>>(this); 
-//            ReadOnlySet<ProxyNamespaceDefinition, ProxyNamedElementDefinition<ManagerPolicy>>& getNmspc() override {
-//                 return set;
-//            }
-//            static constexpr auto proxyNamedElementElementType = ManagerPolicy::manager::template ElementType<ProxyNamedElement>::result;
-//            ProxyNamedElement() :
-//                ManagerPolicy::manager::BaseElement(proxyNamedElementElementType, dummyManager),
-//                ProxyNamedElementDefinition<ManagerPolicy>(proxyNamedElementElementType, dummyManager)
-//            {}
-//            ProxyNamedElement(std::size_t elementType, AbstractManager& manager) :
-//                ManagerPolicy::manager::BaseElement(elementType, manager),
-//                ProxyNamedElementDefinition<ManagerPolicy>(elementType, manager)
-//            {}
-//     };
-//     
-//     using ProxyNamespaceTypes = TemplateTypeList<Element, ProxyNamedElement, ProxyNamespace>;
-//     using ProxyNamespaceManager = Manager<ProxyNamespaceTypes>;
-// }
-// 
-// TEST_F(ElementTest, proxyNamespaceTest) {
-//     ProxyNamespaceManager m;
-//     auto nmspc1 = m.create<ProxyNamespace>();
-//     auto nmspc2 = m.create<ProxyNamespace>();
-//     nmspc1->set.add(nmspc2);
-//     ASSERT_TRUE(nmspc1->set.contains(nmspc2));
-//     ASSERT_TRUE(nmspc1->is<ProxyNamedElement>());
-//     ASSERT_TRUE(nmspc1->is<Element>());
-//     auto& namedElement = nmspc1->as<ProxyNamedElement>();
-//     ASSERT_EQ(namedElement, dynamic_cast<ProxyNamedElement<ProxyNamespaceManager::GenBaseHierarchy<ProxyNamedElement>>&>(*nmspc1));
-//     auto& element = nmspc1->as<Element>();
-//     ASSERT_EQ(element, dynamic_cast<Element<ProxyNamespaceManager::GenBaseHierarchy<Element>>&>(*nmspc1));
-// }
-
-
-
-
 TEST_F(ElementTest, IsTest) {
     UmlManager m;
     auto pckg = m.create<Package>();
@@ -154,9 +67,6 @@ TEST_F(ElementTest, simpleOppositeTest) {
     ASSERT_EQ(*child.getOwningPackage(), pckg);
 }
 
-// Commenting out for now until compilable
-/**
-
 TEST_F(ElementTest, UmlPtrComparisonTest) {
     UmlManager m;
     auto pckg = m.create<Package>();
@@ -171,6 +81,8 @@ TEST_F(ElementTest, UmlPtrComparisonTest) {
     ASSERT_EQ(child->getOwner(), pckg);
     ASSERT_EQ(*(child->getOwner()), *pckg);
 }
+
+// Commenting out for now until compilable
 
 // TEST_F(ElementTest, UmlPtrScopeTest) {
 //     UmlManager m;
@@ -195,6 +107,20 @@ TEST_F(ElementTest, UmlPtrComparisonTest) {
 // }
 
 TEST_F(ElementTest, UmlPtrReleaseTest) {
+    UmlManager m;
+    m.mount(".");
+    auto pckg = m.create<Package>();
+    auto child = m.create<Package>();
+    ID pckgID = pckg->getID();
+    pckg->getPackagedElements().add(*child);
+    ASSERT_TRUE(m.loaded(pckgID));
+    pckg.release();
+    ASSERT_FALSE(m.loaded(pckgID));
+    ASSERT_EQ(child->getOwningPackage().id(), pckgID);
+    ASSERT_FALSE(m.loaded(pckgID)); 
+}
+
+TEST_F(ElementTest, UmlPtrReleaseAquireTest) {
     UmlManager m;
     m.mount(".");
     auto pckg = m.create<Package>();
@@ -287,7 +213,7 @@ TEST_F(ElementTest, InvalidID_Test) {
 
 TEST_F(ElementTest, getNullOwnerTest) {
     UmlManager m;
-    PackagePtr e = m.create<Package>();
+    auto e = m.create<Package>();
     ASSERT_THROW(e->getOwner()->getID(), NullPtrException);
     ASSERT_FALSE(e->getOwner());
     ASSERT_EQ(e->getOwner().id(), ID::nullID());
@@ -297,8 +223,8 @@ TEST_F(ElementTest, getNullOwnerTest) {
 
 TEST_F(ElementTest, setAndGetOwnerTest) {
     UmlManager m;
-    Package& e = *m.create<Package>();
-    Package& c = *m.create<Package>();
+    auto& e = *m.create<Package>();
+    auto& c = *m.create<Package>();
     c.setOwningPackage(e);
     ASSERT_TRUE(c.getOwner());
     ASSERT_EQ(*c.getOwner(), e);
@@ -307,8 +233,8 @@ TEST_F(ElementTest, setAndGetOwnerTest) {
 
 TEST_F(ElementTest, getOwnedElementsBasicTest) {
     UmlManager m;
-    Package& e = *m.create<Package>();
-    Package& c = *m.create<Package>();
+    auto& e = *m.create<Package>();
+    auto& c = *m.create<Package>();
     ASSERT_NO_THROW(e.getPackagedElements().add(c));
     ASSERT_NO_THROW(e.getOwnedElements().get(c.getID()));
 }
@@ -343,8 +269,8 @@ TEST_F(ElementTest, getOwnedElementsBasicTest) {
 
 TEST_F(ElementTest, setOwnerFunctorTest) {
     UmlManager m;
-    Package& e = *m.create<Package>();
-    Package& c = *m.create<Package>();
+    auto& e = *m.create<Package>();
+    auto& c = *m.create<Package>();
     e.getPackagedElements().add(c);
     ASSERT_EQ(*c.getOwner(), e);
     ASSERT_EQ(e.getOwnedElements().size(), 1);
@@ -352,8 +278,8 @@ TEST_F(ElementTest, setOwnerFunctorTest) {
 
 TEST_F(ElementTest, setOwnerTest) {
     UmlManager m;
-    Package& e = *m.create<Package>();
-    Package& c = *m.create<Package>();
+    auto& e = *m.create<Package>();
+    auto& c = *m.create<Package>();
     c.setOwningPackage(&e);
     ASSERT_TRUE(e.getOwnedElements().contains(c.getID()));
     ASSERT_TRUE(e.getOwnedElements().size() == 1);
@@ -361,9 +287,9 @@ TEST_F(ElementTest, setOwnerTest) {
 
 TEST_F(ElementTest, overwriteOwnerTest) {
   UmlManager m;
-  Package& p1 = *m.create<Package>();
-  Package& p2 = *m.create<Package>();
-  Package& c = *m.create<Package>();
+  auto& p1 = *m.create<Package>();
+  auto& p2 = *m.create<Package>();
+  auto& c = *m.create<Package>();
   p1.getPackagedElements().add(c);
   c.setOwningPackage(p2);
   ASSERT_EQ(p2.getOwnedElements().size(), 1);
@@ -374,9 +300,9 @@ TEST_F(ElementTest, overwriteOwnerTest) {
 
 TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
   UmlManager m;
-  Package& p1 = *m.create<Package>();
-  Package& p2 = *m.create<Package>();
-  Package& c = *m.create<Package>();
+  auto& p1 = *m.create<Package>();
+  auto& p2 = *m.create<Package>();
+  auto& c = *m.create<Package>();
   p1.getPackagedElements().add(c);
   p2.getPackagedElements().add(c);
   ASSERT_EQ(p2.getOwnedElements().size(), 1);
@@ -408,4 +334,3 @@ TEST_F(ElementTest, overwriteOwnerByOwnedElementsAddTest) {
 //     ASSERT_EQ(generatedEmit, expectedEmit);
 // }
 //
-**/

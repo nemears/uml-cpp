@@ -380,6 +380,10 @@ namespace UML {
                 populateTypes<TemplateTypeListType<0, Types>::template result>();
             }
 
+            virtual ~Manager() {
+                m_destructionFlag = true;
+            }
+
             // create Ptr
             AbstractElementPtr createPtr(ID id) override {
                 AbstractElementPtr ret;
@@ -442,7 +446,6 @@ namespace UML {
 
             void release(AbstractElement& el) override {
                 StoragePolicy::saveElement(el);
-                // PersistencePolicy::saveElementData(SerializationPolicy::emitIndividual(dynamic_cast<BaseElement<Tlist>&>(el), *this), el.getID());
                 auto node = el.m_node.lock();
                 ID id = node->m_ptr->getID();
                 m_destructionFlag = true;

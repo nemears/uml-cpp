@@ -13,6 +13,7 @@
 #include "yaml-cpp/yaml.h"
 #include "uml/set/abstractSet.h"
 #include "uml/managers/templateTypeList.h"
+#include "uml/managers/typeInfo.h"
 
 namespace UML {
     class SerializationError : public std::exception {
@@ -642,14 +643,127 @@ namespace UML {
         //         match.functor.parseScope(match.outerData, *parsedEl);
         //         return parsedEl;
         //     }
+        private:
+            struct AbstractSerializationPolicy {
+                AbstractManager& m_manager;
+                AbstractSerializationPolicy(AbstractManager* manager) : m_manager(*manager) {}
+                virtual ~AbstractSerializationPolicy() {}
+                virtual AbstractElementPtr create() const  = 0;
+                virtual void parseBody(YAML::Node, AbstractElementPtr) const = 0;
+                virtual void parseScope(YAML::Node, AbstractElementPtr) const = 0;
+                virtual std::string emit(AbstractElementPtr) const = 0;
+                // TODO
+            };
+            template <template <class> class Type>
+            struct SerializationPolicy : public AbstractSerializationPolicy {
+                AbstractElementPtr create() const override {
+                    return this->m_manager.create(TemplateTypeListIndex<Type, Tlist>::result);
+                }
+                private:
+                    template <class List, template <class> class Curr, class Bases = Curr<AbstractElement>::Info::BaseList>
+                    struct AddChildrenTypes;
+
+                    template <class List, template <class> class Curr, template <class> class Front, template <class> class ... Bases>
+                    struct AddChildrenTypes<List, Curr, TemplateTypeList<Front, Bases...>> {
+                        static const std::size_t front_type = TemplateTypeListIndex<Front, Tlist>::result;
+                        template <bool IsFirst, class First, class Second>
+                        struct Choose;
+                        template <class First, class Second>
+                        struct Choose<true, First, Second> {
+                            using result = First;
+                        };
+                        template <class First, class Second>
+                        struct Choose<false, First, Second> {
+                            using result = Second;
+                        };
+                        using ListAndFront = Choose<HasInt<front_type, List>::value, List ,typename IntAppend<List, front_type>::type>::result;
+                        using result = typename AddChildrenTypes<
+                                typename AddChildrenTypes<
+                                    ListAndFront, 
+                                    Front
+                                >::result, 
+                                Curr, 
+                                TemplateTypeList<Bases...>
+                            >::result;
+                    };
+
+                    template <class List, template <class> class Curr>
+                    struct AddChildrenTypes<List, Curr, TemplateTypeList<>> {
+                        using result = List;
+                    };
+
+                    template <template <class> class Curr, class Visited = IntList<>, std::size_t BaseIndex = 0>
+                    void parseBodyHelper(YAML::Node node, AbstractElementPtr el) {
+                        if constexpr (BaseIndex == 0) {
+                            // parse all data and sets TODO
+                            for (auto& setPair : ElementInfo<Curr>::sets(*el)) {
+                                // TODO
+                            }
+                        }
+                        using Bases = Curr<AbstractElement>::Info::BaseList;
+                        if constexpr (BaseIndex < TemplateTypeListSize<Bases>::result) {
+                            constexpr std::size_t BaseType = TemplateTypeListIndex<TemplateTypeListType<BaseIndex, Bases>::template result, Tlist>::result;
+                            if constexpr (!HasInt<BaseType, Visited>::value) {
+                                using NewVisited = AddChildrenTypes<typename IntAppend<Visited, BaseType>::type, TemplateTypeListType<BaseIndex, Bases>::template result>::result;
+                                parseBodyHelper<TemplateTypeListType<BaseIndex, Bases>::result, NewVisited>(node, el);
+                                parseBodyHelper<Curr, NewVisited, BaseIndex + 1>(node, el);
+                            } else {
+                                parseBodyHelper<Curr, Visited, BaseIndex + 1>(node, el);
+                            }
+                        }
+                    }
+                public:
+                void parseBody(YAML::Node bodyNode, AbstractElementPtr el) const override {
+                    // TODO
+                }
+                void parseScope(YAML::Node elNode, AbstractElementPtr el) const override {
+                    // TODO
+                }
+                std::string emit(AbstractElementPtr el) const override {
+                    // TODO
+                }
+            };
+            std::unordered_map<std::string, std::shared_ptr<AbstractSerializationPolicy>> m_serializationByName;
+            std::unordered_map<std::size_t, std::shared_ptr<AbstractSerializationPolicy>> m_serializationByType;
+            template <std::size_t I = 0>
+            void populatePolicies() {
+                if constexpr (I < TemplateTypeListSize<Tlist>::result) {
+                    auto serialization_policy = std::make_shared<SerializationPolicy<TemplateTypeListType<I, Tlist>::template result>>(this);
+                    m_serializationByName.emplace(ElementInfo<TemplateTypeListType<I, Tlist>::template result>::name(), serialization_policy);
+                    m_serializationByType.emplace(I, serialization_policy);
+                    populatePolicies<I + 1>();
+                }
+            }
+        public:
+            UmlCafeSerializationPolicy() {
+                populatePolicies();
+            }
         protected:
             AbstractElementPtr parseIndividual(std::string data) {
-                // std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
-                // if (rootNodes.empty()) {
-                //     throw SerializationError("could not parse data supplied to manager! Is it JSON or YAML?");
-                // }
-                // return parseNode(rootNodes[0]);
-                return AbstractElementPtr();
+                std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
+                if (rootNodes.empty()) {
+                    throw SerializationError("could not parse data supplied to manager! Is it JSON or YAML?");
+                }
+                auto node = rootNodes[0];
+                auto it = node.begin();
+                while (it != node.end()) {
+                    const auto& keyNode = it->first;
+                    const auto& valNode = it->second;
+                    if (valNode.IsMap()) {
+                        // look up key
+                        try {
+                            auto serialization_policy = m_serializationByName.at(keyNode.as<std::string>());
+                            AbstractElementPtr el = serialization_policy->create();
+                            serialization_policy->parseBody(valNode, el);
+                            serialization_policy->parseScope(node, el);
+                            return el;
+                        } catch (std::exception& e) {
+                            throw SerializationError("Could not find proper type to parse! line number " + std::to_string(keyNode.Mark().line));
+                        }
+                    }
+                    it++;
+                } 
+                throw SerializationError("Could not identify type to parse relevant to this manager!");
             }
             std::vector<UmlPtr<AbstractElement>> parseWhole(std::string data) {
                 // std::vector<YAML::Node> rootNodes = YAML::LoadAll(data);
@@ -673,9 +787,7 @@ namespace UML {
                 return std::vector<UmlPtr<AbstractElement>>{};
             }
             std::string emitIndividual(AbstractElement& el) {
-                // AbstractElement& elAsBase = dynamic_cast<AbstractElement&>(el);
-                // return (*m_emitterFunctors.at(elAsBase.getElementType()))(elAsBase);
-                return "";
+                return m_serializationByType.at(el.getElementType()).emit(el);
             }
             std::string emitWhole(AbstractElement& el) {
                 // YAML::Emitter emitter;

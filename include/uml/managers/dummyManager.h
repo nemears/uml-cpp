@@ -6,6 +6,11 @@
 namespace UML {
     class DummyManager : public AbstractManager {
         public:
+            struct BaseElement {
+                using manager = DummyManager;
+            };
+            template <template <class> class Type>
+            struct GenBaseHierarchy {};
             AbstractElementPtr create(std::size_t) override {
                 throw ManagerStateException("ERROR DUMMY MANAGER!");
             }

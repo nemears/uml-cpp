@@ -52,7 +52,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Base> : DefaultInfo {};
+    struct ElementInfo<Base> : public DefaultInfo {};
 
     template <class ManagerPolicy>
     struct Right : public ManagerPolicy {
@@ -69,7 +69,7 @@ namespace UML {
     };
     
     template <>
-    struct ElementInfo<Right> : DefaultInfo {};
+    struct ElementInfo<Right> : public DefaultInfo {};
 
     template <class ManagerPolicy>
     struct Left : public ManagerPolicy {
@@ -86,7 +86,7 @@ namespace UML {
     };
     
     template <>
-    struct ElementInfo<Left> : DefaultInfo {};
+    struct ElementInfo<Left> : public DefaultInfo {};
 
     template <class ManagerPolicy>
     struct Diamond : public ManagerPolicy {
@@ -103,8 +103,11 @@ namespace UML {
     };
     
     template <>
-    struct ElementInfo<Diamond> : DefaultInfo {
+    struct ElementInfo<Diamond> : public DefaultInfo {
         static constexpr bool abstract = false;
+        static const std::string name() {
+            return "Diamond";
+        }
     };
 
     using DiamondTypes = TemplateTypeList<Base, Right, Left, Diamond>;
@@ -155,6 +158,9 @@ namespace UML {
     template <>
     struct ElementInfo<BaseReferencingDerived> : DefaultInfo {
         static const bool abstract = false;
+        static const std::string name() {
+            return "BaseReferencingDerived";
+        }
     };
     
     template <class ManagerPolicy>
@@ -185,6 +191,9 @@ namespace UML {
     template <>
     struct ElementInfo<DerivedReferencingBase> : DefaultInfo {
         static const bool abstract = false;
+        static const std::string name() {
+            return "DerivedReferencingBase";
+        }
     };
 
     using CircularDependencyManager = Manager<TemplateTypeList<BaseReferencingDerived, DerivedReferencingBase>>;
@@ -234,6 +243,9 @@ namespace UML {
     template <>
     struct ElementInfo<TestElement> : public DefaultInfo {
         static const bool abstract = false; // for testing
+        static const std::string name() {
+            return "TestElement";
+        }
     };
 
     using TestElementManager = Manager<TemplateTypeList<TestElement>>;
@@ -281,6 +293,9 @@ namespace UML {
     template <>
     struct ElementInfo<TestNamedElement> : public DefaultInfo {
         static const bool abstract = false;
+        static const std::string name() {
+            return "TestNamedElement";
+        }
     };
 
     template <class ManagerPolicy>
@@ -317,6 +332,9 @@ namespace UML {
     template <>
     struct ElementInfo<TestNamespace> : public DefaultInfo {
         static const bool abstract = false;
+        static const std::string name() {
+            return "TestNamespace";
+        }
     };
 
     using TestNamespaceManager = Manager<TemplateTypeList<TestElement, TestNamedElement, TestNamespace>>;
@@ -367,6 +385,9 @@ namespace UML {
     template <>
     struct ElementInfo<TestPackageablElement> : public DefaultInfo {
         static const bool abstract = false;
+        static const std::string name() {
+            return "TestPackageableElement";
+        }
     };
 
     template <class ManagerPolicy>
@@ -398,6 +419,9 @@ namespace UML {
     template <>
     struct ElementInfo<TestPackage> : public DefaultInfo {
         static const bool abstract = false;
+        static const std::string name() {
+            return "TestPackage";
+        }
     };
 
     using TestPackageManager = Manager<TemplateTypeList<TestElement, TestNamedElement, TestNamespace, TestPackageablElement, TestPackage>>;

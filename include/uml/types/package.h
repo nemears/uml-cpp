@@ -32,5 +32,8 @@ namespace UML {
     template <>
     struct ElementInfo<Package> : public DefaultInfo {
         static const bool abstract = false;
+        static const std::string name() {
+            return "Package";
+        }
     };
 }

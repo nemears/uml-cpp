@@ -41,7 +41,7 @@ namespace UML {
             void destroy(ID) override {
                 throw ManagerStateException("ERROR DUMMY MANAGER!");
             }
-            void addToSet(AbstractSet&, AbstractElement&) override {
+            void addToSet(AbstractSet&, AbstractElement&) const override {
                 throw ManagerStateException("ERROR DUMMY MANAGER!");
             }
             void addToSet(AbstractSet&, ID) override {

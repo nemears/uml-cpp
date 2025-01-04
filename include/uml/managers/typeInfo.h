@@ -44,7 +44,6 @@ namespace UML {
 }
 
 // macro for setting up monotonous constructor needed for definint compatible policy classes
-#define xstr(x) #x
 #define MANAGED_ELEMENT_CONSTRUCTOR(ElementTypeName) \
     ElementTypeName () : \
         ManagerPolicy::manager::BaseElement(0, dummyManager), \
@@ -58,4 +57,4 @@ namespace UML {
     { \
         init(); \
     } 
-
+    

@@ -277,7 +277,7 @@ namespace UML {
                 }
                 m_graph.erase(id);
             }
-            void addToSet(AbstractSet& set, AbstractElement& el) override {
+            void addToSet(AbstractSet& set, AbstractElement& el) const override {
                 set.innerAdd(&el);
             }
             void addToSet(AbstractSet& set, ID id) override {

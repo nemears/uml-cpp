@@ -27,7 +27,7 @@ namespace UML {
         protected:
             virtual void reindex(ID oldID, ID newID) = 0;
             virtual void destroy(ID id) = 0;
-            virtual void addToSet(AbstractSet& set, AbstractElement& el) = 0;
+            virtual void addToSet(AbstractSet& set, AbstractElement& el) const = 0;
             virtual void addToSet(AbstractSet& set, ID id) = 0;
             virtual void runAllAddPolicies(AbstractSet& set, AbstractElement& el) const = 0;
             

@@ -644,84 +644,141 @@ namespace UML {
         //     }
         private:
             struct AbstractSerializationPolicy {
-                AbstractManager& m_manager;
-                AbstractSerializationPolicy(AbstractManager* manager) : m_manager(*manager) {}
+                UmlCafeSerializationPolicy& m_manager;
+                AbstractSerializationPolicy(UmlCafeSerializationPolicy* manager) : m_manager(*manager) {}
                 virtual ~AbstractSerializationPolicy() {}
-                virtual AbstractElementPtr create() const  = 0;
+                virtual AbstractElementPtr create() = 0;
                 virtual void parseBody(YAML::Node, AbstractElementPtr) const = 0;
                 virtual void parseScope(YAML::Node, AbstractElementPtr) const = 0;
                 virtual std::string emit(AbstractElementPtr) const = 0;
                 // TODO
             };
+
+            // helper functions for serialization policies
+            template <class List, template <class> class Curr, class Bases = Curr<DummyManager::BaseElement>::Info::BaseList>
+            struct AddChildrenTypes;
+
+            template <class List, template <class> class Curr, template <class> class Front, template <class> class ... Bases>
+            struct AddChildrenTypes<List, Curr, TemplateTypeList<Front, Bases...>> {
+                static const std::size_t front_type = TemplateTypeListIndex<Front, Tlist>::result;
+                template <bool IsFirst, class First, class Second>
+                struct Choose;
+                template <class First, class Second>
+                struct Choose<true, First, Second> {
+                    using result = First;
+                };
+                template <class First, class Second>
+                struct Choose<false, First, Second> {
+                    using result = Second;
+                };
+                using ListAndFront = Choose<HasInt<front_type, List>::value, List ,typename IntAppend<List, front_type>::type>::result;
+                using result = typename AddChildrenTypes<
+                        typename AddChildrenTypes<
+                            ListAndFront, 
+                            Front
+                        >::result, 
+                        Curr, 
+                        TemplateTypeList<Bases...>
+                    >::result;
+            };
+
+            template <class List, template <class> class Curr>
+            struct AddChildrenTypes<List, Curr, TemplateTypeList<>> {
+                using result = List;
+            };
+
+            template <template <class> class Curr, class Visited = IntList<>, std::size_t BaseIndex = 0>
+            void parseBodyHelper(YAML::Node node, AbstractElementPtr el) {
+                if constexpr (BaseIndex == 0) {
+                    // parse all data and sets TODO
+                    for (auto& setPair : Curr<DummyManager::BaseElement>::Info::sets(*el)) {
+                        if (!setPair.second->rootSet()) {
+                            continue;
+                        }
+                        auto set = setPair.second;
+                        if (node[setPair.first]) {
+                            auto setNode = node[setPair.first];
+                            if (setNode.IsScalar()) {
+                                if (set->setType() != SetType::SINGLETON) {
+                                    throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
+                                }
+                                this->addToSet(*set, ID::fromString(setNode.template as<std::string>()));
+                            } else if (setNode.IsSequence()) {
+                                for (const auto& valNode : setNode) {
+                                    this->addToSet(*set, ID::fromString(valNode.template as<std::string>()));
+                                }
+                            } else {
+                                throw SetStateException("Invalid set formatting for individual parsing! line number " + std::to_string(setNode.Mark().line));
+                            }
+                        }
+                    }
+                }
+                using Bases = Curr<DummyManager::BaseElement>::Info::BaseList;
+                if constexpr (BaseIndex < TemplateTypeListSize<Bases>::result) {
+                    constexpr std::size_t BaseType = TemplateTypeListIndex<TemplateTypeListType<BaseIndex, Bases>::template result, Tlist>::result;
+                    if constexpr (!HasInt<BaseType, Visited>::value) {
+                        using NewVisited = AddChildrenTypes<typename IntAppend<Visited, BaseType>::type, TemplateTypeListType<BaseIndex, Bases>::template result>::result;
+                        parseBodyHelper<TemplateTypeListType<BaseIndex, Bases>::template result, NewVisited>(node, el);
+                        parseBodyHelper<Curr, NewVisited, BaseIndex + 1>(node, el);
+                    } else {
+                        parseBodyHelper<Curr, Visited, BaseIndex + 1>(node, el);
+                    }
+                }
+            }
+            template <template <class> class Curr, class Visited = IntList<>, std::size_t BaseIndex = 0>
+            void emitHelper(YAML::Emitter& emitter, AbstractElementPtr el) const {
+                if constexpr (BaseIndex == 0) {
+                    // emit all data and sets TODO
+                    for (auto& setPair : Curr<DummyManager::BaseElement>::Info::sets(*el)) {
+                        // TODO
+                    }
+                }
+                using Bases = Curr<DummyManager::BaseElement>::Info::BaseList;
+                if constexpr (BaseIndex < TemplateTypeListSize<Bases>::result) {
+                    constexpr std::size_t BaseType = TemplateTypeListIndex<TemplateTypeListType<BaseIndex, Bases>::template result, Tlist>::result;
+                    if constexpr (!HasInt<BaseType, Visited>::value) {
+                        using NewVisited = AddChildrenTypes<typename IntAppend<Visited, BaseType>::type, TemplateTypeListType<BaseIndex, Bases>::template result>::result;
+                        emitHelper<TemplateTypeListType<BaseIndex, Bases>::template result, NewVisited>(emitter, el);
+                        emitHelper<Curr, NewVisited, BaseIndex + 1>(emitter, el);
+                    } else {
+                        emitHelper<Curr, Visited, BaseIndex + 1>(emitter, el);
+                    }
+                }
+            }
+
             template <template <class> class Type>
             struct SerializationPolicy : public AbstractSerializationPolicy {
-                AbstractElementPtr create() const override {
+                AbstractElementPtr create() override {
                     return this->m_manager.create(TemplateTypeListIndex<Type, Tlist>::result);
                 }
-                private:
-                    template <class List, template <class> class Curr, class Bases = Curr<AbstractElement>::Info::BaseList>
-                    struct AddChildrenTypes;
+                SerializationPolicy(UmlCafeSerializationPolicy* manager) : AbstractSerializationPolicy(manager) {}
+                void parseBody(YAML::Node bodyNode, AbstractElementPtr el) const override {
+                    this->m_manager.template parseBodyHelper<Type>(bodyNode, el);
+                }
+                void parseScope(YAML::Node elNode, AbstractElementPtr el) const override {
+                    // TODO
+                }
+                std::string emit(AbstractElementPtr el) const override {
+                    if constexpr (Type<DummyManager::BaseElement>::Info::abstract) {
+                        throw ManagerStateException("Error Tried to emit abstract type!");
+                    } else {
+                        YAML::Emitter emitter;
+                        emitter << YAML::BeginMap;
+                        // TODO emit scope
+                        // auto possibleScope = findScope<0, TemplateTypeList<T>>(el);
+                        // if (possibleScope && !possibleScope->second->empty()) {
+                        //     emitter << YAML::Key << possibleScope->first << YAML::Value << possibleScope->second->ids().front().string();
+                        // }
+                        std::string elementName = Type<DummyManager::BaseElement>::Info::name();
+                        emitter << YAML::Key << elementName << YAML::Value << YAML::BeginMap;
+                        emitter << YAML::Key << "id" << YAML::Value << el.id().string();
+                        this->m_manager.template emitHelper<Type>(emitter, el);
+                        emitter << YAML::EndMap;
+                        emitter << YAML::EndMap;
 
-                    template <class List, template <class> class Curr, template <class> class Front, template <class> class ... Bases>
-                    struct AddChildrenTypes<List, Curr, TemplateTypeList<Front, Bases...>> {
-                        static const std::size_t front_type = TemplateTypeListIndex<Front, Tlist>::result;
-                        template <bool IsFirst, class First, class Second>
-                        struct Choose;
-                        template <class First, class Second>
-                        struct Choose<true, First, Second> {
-                            using result = First;
-                        };
-                        template <class First, class Second>
-                        struct Choose<false, First, Second> {
-                            using result = Second;
-                        };
-                        using ListAndFront = Choose<HasInt<front_type, List>::value, List ,typename IntAppend<List, front_type>::type>::result;
-                        using result = typename AddChildrenTypes<
-                                typename AddChildrenTypes<
-                                    ListAndFront, 
-                                    Front
-                                >::result, 
-                                Curr, 
-                                TemplateTypeList<Bases...>
-                            >::result;
-                    };
-
-                    template <class List, template <class> class Curr>
-                    struct AddChildrenTypes<List, Curr, TemplateTypeList<>> {
-                        using result = List;
-                    };
-
-                    template <template <class> class Curr, class Visited = IntList<>, std::size_t BaseIndex = 0>
-                    void parseBodyHelper(YAML::Node node, AbstractElementPtr el) {
-                        if constexpr (BaseIndex == 0) {
-                            // parse all data and sets TODO
-                            for (auto& setPair : ElementInfo<Curr>::sets(*el)) {
-                                // TODO
-                            }
-                        }
-                        using Bases = Curr<AbstractElement>::Info::BaseList;
-                        if constexpr (BaseIndex < TemplateTypeListSize<Bases>::result) {
-                            constexpr std::size_t BaseType = TemplateTypeListIndex<TemplateTypeListType<BaseIndex, Bases>::template result, Tlist>::result;
-                            if constexpr (!HasInt<BaseType, Visited>::value) {
-                                using NewVisited = AddChildrenTypes<typename IntAppend<Visited, BaseType>::type, TemplateTypeListType<BaseIndex, Bases>::template result>::result;
-                                parseBodyHelper<TemplateTypeListType<BaseIndex, Bases>::result, NewVisited>(node, el);
-                                parseBodyHelper<Curr, NewVisited, BaseIndex + 1>(node, el);
-                            } else {
-                                parseBodyHelper<Curr, Visited, BaseIndex + 1>(node, el);
-                            }
-                        }
+                        return emitter.c_str();
                     }
-                public:
-                    SerializationPolicy(AbstractManager* manager) : AbstractSerializationPolicy(manager) {}
-                    void parseBody(YAML::Node bodyNode, AbstractElementPtr el) const override {
-                        // TODO
-                    }
-                    void parseScope(YAML::Node elNode, AbstractElementPtr el) const override {
-                        // TODO
-                    }
-                    std::string emit(AbstractElementPtr el) const override {
-                        // TODO
-                    }
+                }
             };
             std::unordered_map<std::string, std::shared_ptr<AbstractSerializationPolicy>> m_serializationByName;
             std::unordered_map<std::size_t, std::shared_ptr<AbstractSerializationPolicy>> m_serializationByType;

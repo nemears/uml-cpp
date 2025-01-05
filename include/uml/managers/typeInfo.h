@@ -57,4 +57,3 @@ namespace UML {
     { \
         init(); \
     } 
-    

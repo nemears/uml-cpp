@@ -104,21 +104,21 @@ namespace UML {
             struct ManagerTypeInfo : public AbstractManagerTypeInfo {
                 private:
                     using Function = std::function<void(std::string, AbstractSet&)>;
-                    template <template <class> class CurrType = Type, std::size_t I = 0>
-                    void helper(BaseElement& el, Function f, std::unordered_set<std::size_t>& visited) {
-                        if (!visited.contains(ElementType<CurrType>::result)) {
-                            visited.insert(ElementType<CurrType>::result);
-                        }
-                        using Bases = typename CurrType<BaseElement>::Info::BaseList; 
-                        if constexpr (I < TemplateTypeListSize<Bases>::result) {
-                            helper<TemplateTypeListType<I, Bases>::template result, 0>(el, f, visited);
-                            helper<CurrType, I + 1>(el, f, visited);
-                        } else {
-                            for (auto& setPair : CurrType<BaseElement>::Info::sets(dynamic_cast<CurrType<GenBaseHierarchy<CurrType>>&>(el))) {
-                                f(setPair.first, *setPair.second);
-                            } 
-                        }
-                    }
+                    // template <template <class> class CurrType = Type, std::size_t I = 0>
+                    // void helper(BaseElement& el, Function f, std::unordered_set<std::size_t>& visited) {
+                    //     if (!visited.contains(ElementType<CurrType>::result)) {
+                    //         visited.insert(ElementType<CurrType>::result);
+                    //     }
+                    //     using Bases = typename CurrType<BaseElement>::Info::BaseList; 
+                    //     if constexpr (I < TemplateTypeListSize<Bases>::result) {
+                    //         helper<TemplateTypeListType<I, Bases>::template result, 0>(el, f, visited);
+                    //         helper<CurrType, I + 1>(el, f, visited);
+                    //     } else {
+                    //         for (auto& setPair : CurrType<BaseElement>::Info::sets(dynamic_cast<CurrType<GenBaseHierarchy<CurrType>>&>(el))) {
+                    //             f(setPair.first, *setPair.second);
+                    //         } 
+                    //     }
+                    // }
                     template <template <class> class CurrType = Type, std::size_t I = 0>
                     bool isHelper(std::size_t type) {
                         using BaseList = typename CurrType<BaseElement>::Info::BaseList;
@@ -134,10 +134,20 @@ namespace UML {
                             return false;
                         }
                     }
+                    struct ForEachSetVisitor {
+                        BaseElement& el;
+                        Function f;
+                        template <template <class> class Curr>
+                        void visit() {
+                            for (auto& setPair : Curr<BaseElement>::Info::sets(dynamic_cast<Curr<GenBaseHierarchy<Curr>>&>(el))) {
+                                f(setPair.first, *setPair.second);
+                            }
+                        }
+                    };
                 public:
                     void forEachSet(BaseElement& el, Function f) override {
-                        std::unordered_set<std::size_t> visited; 
-                        helper(el, f, visited);
+                        ForEachSetVisitor visitor { el, f };
+                        visitAllTypesDFS<ForEachSetVisitor, Type, Types>(visitor);
                     }
                     bool is(std::size_t type) override {
                         return isHelper(type);                        

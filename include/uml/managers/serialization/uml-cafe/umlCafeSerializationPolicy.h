@@ -4,7 +4,6 @@
 #include "uml/managers/umlPtr.h"
 #include "uml/managers/abstractManager.h"
 #include <memory>
-#include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <yaml-cpp/emittermanip.h>
@@ -13,6 +12,7 @@
 #include "uml/set/abstractSet.h"
 #include "uml/managers/templateTypeList.h"
 #include "uml/managers/typeInfo.h"
+#include "uml/managers/visitor.h"
 
 namespace UML {
     class SerializationError : public std::exception {
@@ -654,62 +654,6 @@ namespace UML {
                 // TODO
             };
 
-            // helper functions for serialization policies
-
-            template <bool IsFirst, class First, class Second>
-            struct Choose;
-            template <class First, class Second>
-            struct Choose<true, First, Second> {
-                using result = First;
-            };
-            template <class First, class Second>
-            struct Choose<false, First, Second> {
-                using result = Second;
-            };
-
-            template <class List, template <class> class Curr, class Bases = Curr<DummyManager::BaseElement>::Info::BaseList>
-            struct AddChildrenTypes;
-
-            template <class List, template <class> class Curr, template <class> class Front, template <class> class ... Bases>
-            struct AddChildrenTypes<List, Curr, TemplateTypeList<Front, Bases...>> {
-                static const std::size_t front_type = TemplateTypeListIndex<Front, Tlist>::result;
-                using ListAndFront = Choose<HasInt<front_type, List>::value, List ,typename IntAppend<List, front_type>::type>::result;
-                using result = typename AddChildrenTypes<
-                        typename AddChildrenTypes<
-                            ListAndFront, 
-                            Front
-                        >::result, 
-                        Curr, 
-                        TemplateTypeList<Bases...>
-                    >::result;
-            };
-
-            template <class List, template <class> class Curr>
-            struct AddChildrenTypes<List, Curr, TemplateTypeList<>> {
-                using result = List;
-            };
-
-            template <class Visitor, template <class> class Curr, class Visited = IntList<>, std::size_t BaseIndex = 0>
-            void visitAllTypesDFS(Visitor& visitor) {
-                constexpr std::size_t CurrID = TemplateTypeListIndex<Curr, Tlist>::result;
-                if constexpr (BaseIndex == 0 && !HasInt<CurrID, Visited>::value) {
-                    // run type specific info
-                    visitor.template visit<Curr>();
-                }
-                using Bases = Curr<DummyManager::BaseElement>::Info::BaseList;
-                if constexpr (BaseIndex < TemplateTypeListSize<Bases>::result) {
-                    constexpr std::size_t BaseType = TemplateTypeListIndex<TemplateTypeListType<BaseIndex, Bases>::template result, Tlist>::result;
-                    using VisitedAndCurr = Choose<HasInt<CurrID, Visited>::value, Visited, typename IntAppend<Visited, CurrID>::type>::result;
-                    if constexpr (!HasInt<BaseType, VisitedAndCurr>::value) {
-                        using NewVisited = AddChildrenTypes<typename IntAppend<VisitedAndCurr, BaseType>::type, TemplateTypeListType<BaseIndex, Bases>::template result>::result;
-                        visitAllTypesDFS<Visitor, TemplateTypeListType<BaseIndex, Bases>::template result, VisitedAndCurr>(visitor);
-                        visitAllTypesDFS<Visitor, Curr, NewVisited, BaseIndex + 1>(visitor);
-                    } else {
-                        visitAllTypesDFS<Visitor, Curr, VisitedAndCurr, BaseIndex + 1>(visitor);
-                    }
-                }
-            }
-
             struct EmitVisitor {
                 AbstractElementPtr el;
                 YAML::Emitter& emitter;
@@ -802,7 +746,7 @@ namespace UML {
                 SerializationPolicy(UmlCafeSerializationPolicy* manager) : AbstractSerializationPolicy(manager) {}
                 void parseBody(YAML::Node bodyNode, AbstractElementPtr el) const override {
                     ParseBodyVisitor visitor {el, bodyNode, this->m_manager};
-                    this->m_manager.template visitAllTypesDFS<ParseBodyVisitor, Type>(visitor);
+                    visitAllTypesDFS<ParseBodyVisitor, Type, Tlist>(visitor);
                 }
                 void parseScope(YAML::Node elNode, AbstractElementPtr el) const override {
                     // TODO
@@ -822,7 +766,7 @@ namespace UML {
                         emitter << YAML::Key << elementName << YAML::Value << YAML::BeginMap;
                         emitter << YAML::Key << "id" << YAML::Value << el.id().string();
                         EmitVisitor visitor {el, emitter};
-                        this->m_manager.template visitAllTypesDFS<EmitVisitor, Type>(visitor);
+                        visitAllTypesDFS<EmitVisitor, Type, Tlist>(visitor);
                         emitter << YAML::EndMap;
                         emitter << YAML::EndMap;
 

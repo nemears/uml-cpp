@@ -808,6 +808,9 @@ namespace UML {
                         try {
                             auto serialization_policy = m_serializationByName.at(keyNode.as<std::string>());
                             AbstractElementPtr el = serialization_policy->create();
+                            if (valNode["id"] && valNode["id"].IsScalar()) {
+                                el->setID(ID::fromString(valNode["id"].template as<std::string>()));
+                            }
                             serialization_policy->parseBody(valNode, el);
                             serialization_policy->parseScope(node, el);
                             return el;

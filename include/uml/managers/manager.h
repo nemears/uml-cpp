@@ -197,15 +197,21 @@ namespace UML {
                 return dynamic_cast<BaseElement*>(ptr.get());
             }
 
+            template <class TypesToPopulate, class Dummy = void>
+            struct PopulateTypes;
 
-            template <template <class> class CurrType>
-            void populateTypes() {
-                m_types.emplace(ElementType<CurrType>::result, std::make_unique<ManagerTypeInfo<CurrType>>());
-                constexpr int next_type = TemplateTypeListIndex<CurrType, Types>::result + 1; 
-                if constexpr (next_type < TemplateTypeListSize<Types>::result) { 
-                    populateTypes<TemplateTypeListType<next_type, Types>::template result>();
+            template <template <class> class First, template <class> class ... Rest, class Dummy>
+            struct PopulateTypes<TemplateTypeList<First, Rest ...>, Dummy> {
+                static void populate(Manager& manager) {
+                    manager.m_types.emplace(ElementType<First>::result, std::make_unique<ManagerTypeInfo<First>>());
+                    PopulateTypes<TemplateTypeList<Rest ...>>::populate(manager);
                 }
-            }
+            };
+
+            template <class Dummy>
+            struct PopulateTypes<TemplateTypeList<>, Dummy> {
+                static void populate(__attribute__((unused)) Manager& manager) {}
+            };
 
             template <template <class> class CurrentType, std::size_t I = 0>
             bool setsAreEmptyHelper(BaseElement& el) {
@@ -387,7 +393,7 @@ namespace UML {
             
             // constructor
             Manager() {
-                populateTypes<TemplateTypeListType<0, Types>::template result>();
+                PopulateTypes<Types>::populate(*this);
             }
 
             virtual ~Manager() {

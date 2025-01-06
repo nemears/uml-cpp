@@ -65,7 +65,11 @@ namespace UML {
 
     template <class Visitor, template <class> class Curr, class AllTypesList, class Visited>
     struct VisitAllTypesDFS<Visitor, Curr, AllTypesList, Visited, TemplateTypeList<>> {
-        static void visit(Visitor&) {}
+        static void visit(Visitor& visitor) {
+            if constexpr (TemplateTypeListSize<typename Curr<DummyManager::BaseElement>::Info::BaseList>::result == 0) {
+                visitor.template visit<Curr>();
+            }
+        }
     };
 
     template <class Visitor, template <class> class Start, class AllTypesList>

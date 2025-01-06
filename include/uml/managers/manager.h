@@ -213,42 +213,16 @@ namespace UML {
                 static void populate(__attribute__((unused)) Manager& manager) {}
             };
 
-            template <template <class> class CurrentType, std::size_t I = 0>
-            bool setsAreEmptyHelper(BaseElement& el) {
-                if constexpr (I < TemplateTypeListSize<typename CurrentType<BaseElement>::Info::BaseList>::result) {
-                    if (!setsAreEmptyHelper<TemplateTypeListType<I, typename CurrentType<BaseElement>::Info::BaseList>::template result>(el)) {
-                        return false;
-                    }
-                    return setsAreEmptyHelper<CurrentType, I + 1>(el);
-                } else {
-                    for (auto setPair : CurrentType<BaseElement>::Info::sets(el)) {
-                        if (!setPair.second->empty()) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-            }
-            template <std::size_t I = 0>
-            bool setsAreEmpty(BaseElement& el) {
-                if constexpr (I < TemplateTypeListSize<TypePolicyList>::result) {
-                    if (el.getElementType() == I) {
-                        return setsAreEmptyHelper<TemplateTypeListType<I, Types>::template result>(el);
-                    } else {
-                        return setsAreEmpty<I + 1>(el);
-                    }
-                } else {
-                    throw ManagerStateException("Cannot find type!");
-                }
-            }
             void reindex(ID oldID, ID newID) override {
                 auto oldNode = m_graph.at(oldID);
                 auto el = oldNode->m_ptr;
 
                 // check valid
-                if (!setsAreEmpty(dynamic_cast<BaseElement&>(*el))) {
-                    throw ManagerStateException("Bad reindex, element must be newly created to reindex!");
-                }
+                m_types.at(el->getElementType())->forEachSet(dynamic_cast<BaseElement&>(*el), [](std::string, AbstractSet& set){
+                    if (set.empty() > 0) {
+                        throw ManagerStateException("Bad reindex, element must be newly created to reindex!");
+                    }
+                });
 
                 // clear shared_ptrs
                 std::vector<AbstractPtr*> ptrs(oldNode->m_ptrs.size());

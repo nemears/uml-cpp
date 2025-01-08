@@ -4,16 +4,14 @@
 #include <mutex>
 #include <memory>
 #include <unordered_map>
-#include <functional>
 #include <unordered_set>
 #include "uml/managers/abstractElement.h"
 #include "uml/managers/filePersistencePolicy.h"
-#include "uml/managers/integerList.h"
+#include "uml/managers/managerTypes.h"
 #include "uml/managers/serialization/uml-cafe/umlCafeSerializationPolicy.h"
 #include "uml/set/abstractSet.h"
 #include "umlPtr.h"
 #include "abstractManager.h"
-#include "templateTypeList.h"
 
 namespace UML {
     // Storage Policy, how the manager accesses the element data stored
@@ -59,136 +57,23 @@ namespace UML {
    
     // manager
     template <class TypePolicyList, class StoragePolicy = SerializedStoragePolicy<UmlCafeSerializationPolicy<TypePolicyList>, FilePersistencePolicy>>
-    class Manager : public StoragePolicy, virtual public AbstractManager {
-        public:
-            class BaseElement;
-        protected:
-            struct AbstractManagerTypeInfo {
-                virtual ~AbstractManagerTypeInfo() {}
-                virtual void forEachSet(BaseElement& el, std::function<void(std::string, AbstractSet&)>)  = 0;
-                virtual bool is(std::size_t type) = 0;
-                virtual AbstractElementPtr create(Manager&) = 0;
-            };
-
-            std::unordered_map<std::size_t, std::unique_ptr<AbstractManagerTypeInfo>> m_types;
-
+    class Manager : public ManagerTypes<TypePolicyList>, public StoragePolicy {
         public:
             using Types = TypePolicyList;
+            using TypedManager = ManagerTypes<TypePolicyList>;
+            using BaseElement = TypedManager::BaseElement;
             template <template <class> class Type>
-            using ElementType = TemplateTypeListIndex<Type, TypePolicyList>;
-            // Base element for all types created by manager, the policy classes provided will be filled out with
-            // this BaseElement as part of their policy
-            class BaseElement : public AbstractElement {
-                protected:    
-                    using AbstractElement::AbstractElement;
-                    BaseElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
-                public:
-                    using manager = Manager;
-                    // is function to compare types compile time O(1)
-                    template <template <class> class T>
-                    bool is() const {
-                        return dynamic_cast<Manager&>(m_manager).m_types.at(m_elementType)->is(ElementType<T>::result); 
-                    }
-
-                    // as to cast to other managed types
-                    template <template<class> class T>
-                    T<typename Manager::template GenBaseHierarchy<T>>& as() {
-                        if (is<T>()) {
-                            return dynamic_cast<T<typename Manager::template GenBaseHierarchy<T>>&>(*this);
-                        }
-                        throw ManagerStateException("Can not convert element to that type!");
-                    }
-            };
-
-            template <template <class> class Type>
-            struct ManagerTypeInfo : public AbstractManagerTypeInfo {
-                private:
-                    using Function = std::function<void(std::string, AbstractSet&)>;
-                    // template <template <class> class CurrType = Type, std::size_t I = 0>
-                    // void helper(BaseElement& el, Function f, std::unordered_set<std::size_t>& visited) {
-                    //     if (!visited.contains(ElementType<CurrType>::result)) {
-                    //         visited.insert(ElementType<CurrType>::result);
-                    //     }
-                    //     using Bases = typename CurrType<BaseElement>::Info::BaseList; 
-                    //     if constexpr (I < TemplateTypeListSize<Bases>::result) {
-                    //         helper<TemplateTypeListType<I, Bases>::template result, 0>(el, f, visited);
-                    //         helper<CurrType, I + 1>(el, f, visited);
-                    //     } else {
-                    //         for (auto& setPair : CurrType<BaseElement>::Info::sets(dynamic_cast<CurrType<GenBaseHierarchy<CurrType>>&>(el))) {
-                    //             f(setPair.first, *setPair.second);
-                    //         } 
-                    //     }
-                    // }
-                    template <template <class> class CurrType = Type, std::size_t I = 0>
-                    bool isHelper(std::size_t type) {
-                        using BaseList = typename CurrType<BaseElement>::Info::BaseList;
-                        if constexpr (I < TemplateTypeListSize<BaseList>::result) {
-                            if (isHelper<TemplateTypeListType<I, BaseList>::template result>(type)) {
-                                return true;
-                            }
-                            return isHelper<CurrType, I + 1>(type);
-                        } else {
-                            if (ElementType<CurrType>::result == type) {
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                    struct ForEachSetVisitor {
-                        BaseElement& el;
-                        Function f;
-                        template <template <class> class Curr>
-                        void visit() {
-                            for (auto& setPair : Curr<BaseElement>::Info::sets(dynamic_cast<Curr<GenBaseHierarchy<Curr>>&>(el))) {
-                                f(setPair.first, *setPair.second);
-                            }
-                        }
-                    };
-                public:
-                    void forEachSet(BaseElement& el, Function f) override {
-                        ForEachSetVisitor visitor { el, f };
-                        visitAllTypesDFS<ForEachSetVisitor, Type, Types>(visitor);
-                    }
-                    bool is(std::size_t type) override {
-                        return isHelper(type);                        
-                    }
-                    AbstractElementPtr create(Manager& manager) override {
-                        return manager.create<Type>();
-                    }
-            };
+            using ElementType = TypedManager::template ElementType<Type>;
+            // template <template <class> class Type>
+            // using GenBaseHierarchy = TypedManager::template GenBaseHierarchy<Type>;
         private:
             // data
             std::unordered_map<ID, std::shared_ptr<ManagerNode>> m_graph;
             std::mutex m_graphMtx;
             bool m_destructionFlag = false;
             UmlPtr<BaseElement> m_root;
-
-        public:
-            // Gen Base Hierarchy is a class that will be used to create dynamic objects that inherit from and can correspond to their bases
-            // This is used mostly internally but all types created by the manager will be of this policy
-            template <template <class> class T, class TypeList = T<BaseElement>::Info::BaseList>
-            struct GenBaseHierarchy;
-
-            template <template <class> class T>
-            struct GenBaseHierarchy<T, TemplateTypeList<>> : virtual public BaseElement {
-                protected:
-                    GenBaseHierarchy(std::size_t elementType, AbstractManager& manager) : BaseElement(elementType, manager) {}
-            };
-
-            template <template <class> class T, template <class> class First, template <class> class ... Types>
-            struct GenBaseHierarchy<T, TemplateTypeList<First, Types...>> :
-                virtual public First<GenBaseHierarchy<First>>,
-                public GenBaseHierarchy<T, TemplateTypeList<Types...>>
-            {
-                protected:
-                    GenBaseHierarchy(std::size_t elementType, AbstractManager& manager) : 
-                        BaseElement(elementType, manager),
-                        First<GenBaseHierarchy<First>>(elementType, manager),
-                        GenBaseHierarchy<T, TemplateTypeList<Types...>>(elementType, manager)
-                    {}
-            }; 
         protected:
-            UmlPtr<BaseElement> registerPtr(std::shared_ptr<AbstractElement> ptr) {
+            UmlPtr<BaseElement> registerPtr(std::shared_ptr<AbstractElement> ptr) override {
                 // create Node by emplace in graph
                 std::lock_guard<std::mutex> graphLock(this->m_graphMtx);
                 ptr->m_node = m_graph.emplace(ptr->getID(), std::make_shared<ManagerNode>(ptr)).first->second;
@@ -197,28 +82,12 @@ namespace UML {
                 return dynamic_cast<BaseElement*>(ptr.get());
             }
 
-            template <class TypesToPopulate, class Dummy = void>
-            struct PopulateTypes;
-
-            template <template <class> class First, template <class> class ... Rest, class Dummy>
-            struct PopulateTypes<TemplateTypeList<First, Rest ...>, Dummy> {
-                static void populate(Manager& manager) {
-                    manager.m_types.emplace(ElementType<First>::result, std::make_unique<ManagerTypeInfo<First>>());
-                    PopulateTypes<TemplateTypeList<Rest ...>>::populate(manager);
-                }
-            };
-
-            template <class Dummy>
-            struct PopulateTypes<TemplateTypeList<>, Dummy> {
-                static void populate(__attribute__((unused)) Manager& manager) {}
-            };
-
             void reindex(ID oldID, ID newID) override {
                 auto oldNode = m_graph.at(oldID);
                 auto el = oldNode->m_ptr;
 
                 // check valid
-                m_types.at(el->getElementType())->forEachSet(dynamic_cast<BaseElement&>(*el), [](std::string, AbstractSet& set){
+                this->m_types.at(el->getElementType())->forEachSet(dynamic_cast<BaseElement&>(*el), [](std::string, AbstractSet& set){
                     if (set.empty() > 0) {
                         throw ManagerStateException("Bad reindex, element must be newly created to reindex!");
                     }
@@ -333,7 +202,7 @@ namespace UML {
             void restoreEl(BaseElement& el) {
                 // run add policies we skipped over
                 // TODO remake
-                m_types.at(el.getElementType())->forEachSet(el, [](std::string, AbstractSet& set) {
+                this->m_types.at(el.getElementType())->forEachSet(el, [](std::string, AbstractSet& set) {
                     std::vector<AbstractElementPtr> els(set.size());
                     auto i = 0;
                     for (auto itPtr = set.beginPtr(); *itPtr != *set.endPtr(); itPtr->next()) {
@@ -351,25 +220,15 @@ namespace UML {
                 });
             }
         public:
-            // create factory function
-            template <template <class> class T>
-            UmlPtr<T<GenBaseHierarchy<T>>> create() {
-                if constexpr (T<BaseElement>::Info::abstract) {
-                    throw ManagerStateException("Trying to instantiate and abstract type!");
-                }
-                auto ptr = std::make_shared<T<GenBaseHierarchy<T>>>(ElementType<T>::result, *this);
-                return registerPtr(ptr);
+            template <template <class> class Type>
+            UmlPtr<Type<typename TypedManager::template GenBaseHierarchy<Type>>> create() {
+                return TypedManager::template create<Type>();
             }
             // create by type id
             UmlPtr<AbstractElement> create(std::size_t type) override {
-                return m_types.at(type)->create(*this);
+                return this->m_types.at(type)->create(*this);
             }
             
-            // constructor
-            Manager() {
-                PopulateTypes<Types>::populate(*this);
-            }
-
             virtual ~Manager() {
                 m_destructionFlag = true;
             }
@@ -488,7 +347,7 @@ namespace UML {
                 }
                 for (auto referencedEl : elsToDeleteReference) {
                     // TODO
-                    m_types.at(referencedEl->getElementType())->forEachSet(dynamic_cast<BaseElement&>(*referencedEl), [&el](std::string, AbstractSet& set) {
+                    this->m_types.at(referencedEl->getElementType())->forEachSet(dynamic_cast<BaseElement&>(*referencedEl), [&el](std::string, AbstractSet& set) {
                         while (set.contains(&el)) {
                             set.innerRemove(&el);
                         }    

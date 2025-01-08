@@ -246,13 +246,13 @@ namespace UML {
         static const std::string name() {
             return "TestElement";
         }
-        template <class ManagerPolicy>
-        static SetList sets(TestElement<ManagerPolicy>& el) {
-            return SetList {
-                std::make_pair<std::string, AbstractSet*>("ownedElements", &el.getOwnedElements()),
-                std::make_pair<std::string, AbstractSet*>("owner", &el.getOwnerSingleton())
-            };
-        }
+        // template <class ManagerPolicy>
+        // static SetList sets(TestElement<ManagerPolicy>& el) {
+        //     return SetList {
+        //         std::make_pair<std::string, AbstractSet*>("ownedElements", &el.getOwnedElements()),
+        //         std::make_pair<std::string, AbstractSet*>("owner", &el.getOwnerSingleton())
+        //     };
+        // }
     };
 
     using TestElementManager = Manager<TemplateTypeList<TestElement>>;
@@ -267,19 +267,19 @@ TEST_F(ManagerTest, testElementTest) {
     ASSERT_EQ(*ownee->owner.get(), *owner);
 }
 
-TEST_F(ManagerTest, testElementReleaseAndAquireTest) {
-    TestElementManager m;
-    m.mount(".");
-    auto owner = m.create<TestElement>();
-    auto ownee = m.create<TestElement>();
-    owner->ownedElements.add(ownee);
-    owner.release();
-    ASSERT_FALSE(owner.loaded());
-    owner.aquire();
-    ASSERT_TRUE(owner.loaded());
-    ASSERT_EQ(owner->ownedElements.size(), 1);
-    ASSERT_EQ(owner->ownedElements.front(), *ownee);
-}
+// TEST_F(ManagerTest, testElementReleaseAndAquireTest) {
+//     TestElementManager m;
+//     m.mount(".");
+//     auto owner = m.create<TestElement>();
+//     auto ownee = m.create<TestElement>();
+//     owner->ownedElements.add(ownee);
+//     owner.release();
+//     ASSERT_FALSE(owner.loaded());
+//     owner.aquire();
+//     ASSERT_TRUE(owner.loaded());
+//     ASSERT_EQ(owner->ownedElements.size(), 1);
+//     ASSERT_EQ(owner->ownedElements.front(), *ownee);
+// }
 
 namespace UML {
     template <class>

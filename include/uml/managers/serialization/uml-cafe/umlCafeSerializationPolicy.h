@@ -5,13 +5,12 @@
 #include "uml/managers/abstractManager.h"
 #include <memory>
 #include <unordered_map>
-#include <unordered_set>
 #include <yaml-cpp/emittermanip.h>
 #include <yaml-cpp/node/parse.h>
 #include "yaml-cpp/yaml.h"
 #include "uml/set/abstractSet.h"
+#include "uml/managers/managerTypes.h"
 #include "uml/managers/templateTypeList.h"
-#include "uml/managers/typeInfo.h"
 #include "uml/managers/visitor.h"
 
 namespace UML {
@@ -28,7 +27,7 @@ namespace UML {
 
 
     template <class Tlist>
-    class UmlCafeSerializationPolicy : virtual public AbstractManager {
+    class UmlCafeSerializationPolicy : virtual public ManagerTypes<Tlist> {
         // private:
         //     struct AbstractEmitterFunctor;
         //     struct AbstractParserFunctor;
@@ -643,9 +642,11 @@ namespace UML {
         //         return parsedEl;
         //     }
         private:
+            using TypedManager = ManagerTypes<Tlist>;
+            using BaseElement = TypedManager::BaseElement;
             struct AbstractSerializationPolicy {
                 UmlCafeSerializationPolicy& m_manager;
-                AbstractSerializationPolicy(UmlCafeSerializationPolicy* manager) : m_manager(*manager) {}
+                AbstractSerializationPolicy(UmlCafeSerializationPolicy& manager) : m_manager(manager) {}
                 virtual ~AbstractSerializationPolicy() {}
                 virtual AbstractElementPtr create() = 0;
                 virtual void parseBody(YAML::Node, AbstractElementPtr) const = 0;
@@ -655,12 +656,12 @@ namespace UML {
             };
 
             struct EmitVisitor {
-                AbstractElementPtr el;
+                UmlPtr<BaseElement> el;
                 YAML::Emitter& emitter;
                 template <template <class> class Type>
                 void visit() {
                     // emit all data and sets TODO
-                    for (auto& setPair : Type<DummyManager::BaseElement>::Info::sets(*el)) {
+                    for (auto& setPair : Type<BaseElement>::Info::sets(el->template as<Type>())) {
                         auto set = setPair.second;
                         if (/*set->readonly() ||*/ set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
                             continue;
@@ -709,12 +710,12 @@ namespace UML {
             };
 
             struct ParseBodyVisitor {
-                AbstractElementPtr el;
+                UmlPtr<BaseElement> el;
                 YAML::Node node;
                 UmlCafeSerializationPolicy& manager;
                 template <template <class> class Type>
                 void visit() {
-                    for (auto& setPair : Type<DummyManager::BaseElement>::Info::sets(*el)) {
+                    for (auto& setPair : Type<DummyManager::BaseElement>::Info::sets(el->template as<Type>())) {
                         if (!setPair.second->rootSet()) {
                             continue;
                         }
@@ -741,9 +742,9 @@ namespace UML {
             template <template <class> class Type>
             struct SerializationPolicy : public AbstractSerializationPolicy {
                 AbstractElementPtr create() override {
-                    return this->m_manager.create(TemplateTypeListIndex<Type, Tlist>::result);
+                    return this->m_manager.template create<Type>();
                 }
-                SerializationPolicy(UmlCafeSerializationPolicy* manager) : AbstractSerializationPolicy(manager) {}
+                SerializationPolicy(UmlCafeSerializationPolicy& manager) : AbstractSerializationPolicy(manager) {}
                 void parseBody(YAML::Node bodyNode, AbstractElementPtr el) const override {
                     ParseBodyVisitor visitor {el, bodyNode, this->m_manager};
                     visitAllTypesDFS<ParseBodyVisitor, Type, Tlist>(visitor);
@@ -776,21 +777,30 @@ namespace UML {
             };
             std::unordered_map<std::string, std::shared_ptr<AbstractSerializationPolicy>> m_serializationByName;
             std::unordered_map<std::size_t, std::shared_ptr<AbstractSerializationPolicy>> m_serializationByType;
-            template <template <class> class Type>
-            void populatePolicies() {
-                auto serialization_policy = std::make_shared<SerializationPolicy<Type>>(this);
-                if constexpr (!Type<DummyManager::BaseElement>::Info::abstract) {
-                    m_serializationByName.emplace(Type<DummyManager::BaseElement>::Info::name(), serialization_policy);
+
+            template <class TypeList>
+            struct PopulatePolicies;
+
+            template <template <class> class First, template <class> class ... Rest>
+            struct PopulatePolicies<TemplateTypeList<First, Rest...>> {
+                static void populate(UmlCafeSerializationPolicy& manager) {
+                    auto serialization_policy = std::make_shared<SerializationPolicy<First>>(manager);
+                    if constexpr (!First<BaseElement>::Info::abstract) {
+                        manager.m_serializationByName.emplace(First<BaseElement>::Info::name(), serialization_policy);
+                    }
+                    constexpr int type_id = TemplateTypeListIndex<First, Tlist>::result;
+                    manager.m_serializationByType.emplace(type_id, serialization_policy);
+                    PopulatePolicies<TemplateTypeList<Rest...>>::populate(manager); 
                 }
-                constexpr int type_id = TemplateTypeListIndex<Type, Tlist>::result;
-                m_serializationByType.emplace(type_id, serialization_policy);
-                if constexpr (type_id + 1 < TemplateTypeListSize<Tlist>::result) {
-                    populatePolicies<TemplateTypeListType<type_id + 1, Tlist>::template result>();
-                }
-            }
+            };
+
+            template <>
+            struct PopulatePolicies<TemplateTypeList<>> {
+                static void populate(__attribute__((unused)) UmlCafeSerializationPolicy& manager) {}
+            };
         public:
             UmlCafeSerializationPolicy() {
-                populatePolicies<TemplateTypeListType<0, Tlist>::template result>();
+                PopulatePolicies<Tlist>::populate(*this);
             }
         protected:
             AbstractElementPtr parseIndividual(std::string data) {
@@ -856,7 +866,7 @@ namespace UML {
             virtual void primeEmitter(__attribute__((unused)) YAML::Emitter& emitter) {}
         public:
             std::string dump() {
-                return  this->emitWhole(*getAbstractRoot());
+                return  this->emitWhole(*this->getAbstractRoot());
             }
             std::string dump(AbstractElement& el) {
                 return this->emitWhole(el);

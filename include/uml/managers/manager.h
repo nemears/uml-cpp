@@ -57,15 +57,13 @@ namespace UML {
    
     // manager
     template <class TypePolicyList, class StoragePolicy = SerializedStoragePolicy<UmlCafeSerializationPolicy<TypePolicyList>, FilePersistencePolicy>>
-    class Manager : public ManagerTypes<TypePolicyList>, public StoragePolicy {
+    class Manager : virtual public ManagerTypes<TypePolicyList>, public StoragePolicy {
         public:
             using Types = TypePolicyList;
             using TypedManager = ManagerTypes<TypePolicyList>;
             using BaseElement = TypedManager::BaseElement;
             template <template <class> class Type>
             using ElementType = TypedManager::template ElementType<Type>;
-            // template <template <class> class Type>
-            // using GenBaseHierarchy = TypedManager::template GenBaseHierarchy<Type>;
         private:
             // data
             std::unordered_map<ID, std::shared_ptr<ManagerNode>> m_graph;
@@ -88,7 +86,7 @@ namespace UML {
 
                 // check valid
                 this->m_types.at(el->getElementType())->forEachSet(dynamic_cast<BaseElement&>(*el), [](std::string, AbstractSet& set){
-                    if (set.empty() > 0) {
+                    if (!set.empty()) {
                         throw ManagerStateException("Bad reindex, element must be newly created to reindex!");
                     }
                 });

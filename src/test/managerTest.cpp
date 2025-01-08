@@ -403,6 +403,11 @@ TEST_F(ManagerTest, releaseAndAquireTestNamespace) {
     nmspc.aquire();
     ASSERT_TRUE(nmspc.loaded());
     ASSERT_EQ(nmspc->ownedMembers.size(), 1);
+    member.release();
+    ASSERT_FALSE(member.loaded());
+    member.aquire();
+    ASSERT_TRUE(member->_namespace.get());
+    ASSERT_EQ(member->_namespace.get(), nmspc);
 }
 
 namespace UML {

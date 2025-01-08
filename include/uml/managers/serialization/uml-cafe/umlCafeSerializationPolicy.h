@@ -709,6 +709,27 @@ namespace UML {
                 }
             };
 
+            struct FindValidScopeVisitor {
+                UmlPtr<BaseElement> el; 
+                std::unique_ptr<std::pair<std::string, AbstractSet*>> validMatch = 0;
+                bool matchedAndNotReadOnly = false;
+                template <template <class> class Type>
+                void visit() {
+                    if (matchedAndNotReadOnly) {
+                        return;
+                    }
+                    for (auto& setPair : Type<BaseElement>::Info::sets(el->template as<Type>())) {
+                        if (setPair.second->getComposition() == CompositionType::ANTI_COMPOSITE && setPair.second->size() > 0) {
+                            if (validMatch && setPair.second->readonly()) {
+                                continue;
+                            }
+                            validMatch = std::make_unique<std::pair<std::string, AbstractSet*>>(setPair);
+                            matchedAndNotReadOnly = !setPair.second->readonly();
+                        }
+                    } 
+                }
+            };
+
             struct ParseBodyVisitor {
                 UmlPtr<BaseElement> el;
                 YAML::Node node;
@@ -791,11 +812,15 @@ namespace UML {
                     } else {
                         YAML::Emitter emitter;
                         emitter << YAML::BeginMap;
-                        // TODO emit scope
-                        // auto possibleScope = findScope<0, TemplateTypeList<T>>(el);
-                        // if (possibleScope && !possibleScope->second->empty()) {
-                        //     emitter << YAML::Key << possibleScope->first << YAML::Value << possibleScope->second->ids().front().string();
-                        // }
+
+                        // emit scope
+                        FindValidScopeVisitor findValidScopeVisitor {el};
+                        visitBasesBFS<FindValidScopeVisitor, Type, Tlist>(findValidScopeVisitor);
+                        if (findValidScopeVisitor.validMatch) {
+                            emitter << YAML::Key << findValidScopeVisitor.validMatch->first << YAML::Value << findValidScopeVisitor.validMatch->second->ids().front().string();
+                        }
+
+                        // emit body
                         std::string elementName = Type<DummyManager::BaseElement>::Info::name();
                         emitter << YAML::Key << elementName << YAML::Value << YAML::BeginMap;
                         emitter << YAML::Key << "id" << YAML::Value << el.id().string();

@@ -4,6 +4,7 @@
 #include "uml/managers/templateTypeList.h"
 #include "uml/managers/typeInfo.h"
 #include "uml/managers/dummyManager.h"
+#include "uml/set/abstractSet.h"
 #include "uml/set/set.h"
 #include "uml/set/singleton.h"
 
@@ -223,7 +224,9 @@ namespace UML {
             return owner;
         } 
         void init() {
+            ownedElements.setComposition(CompositionType::COMPOSITE);
             ownedElements.opposite(&OwnerSingleton::ManagedType::getOwnerSingleton);
+            owner.setComposition(CompositionType::ANTI_COMPOSITE);
             owner.opposite(&OwnedElementsSet::ManagedType::getOwnedElements);
         }
         TestElement() :
@@ -279,6 +282,11 @@ TEST_F(ManagerTest, testElementReleaseAndAquireTest) {
     ASSERT_TRUE(owner.loaded());
     ASSERT_EQ(owner->ownedElements.size(), 1);
     ASSERT_EQ(owner->ownedElements.front(), *ownee);
+    ownee.release();
+    ASSERT_FALSE(ownee.loaded());
+    ownee.aquire();
+    ASSERT_TRUE(ownee->owner.get());
+    ASSERT_EQ(*ownee->owner.get(), *owner);
 }
 
 namespace UML {

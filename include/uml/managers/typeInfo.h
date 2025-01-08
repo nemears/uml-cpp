@@ -65,7 +65,7 @@ namespace UML {
     }
 }
 
-// macro for setting up monotonous constructor needed for definint compatible policy classes
+// macro for setting up monotonous constructor needed for defining compatible policy classes
 #define MANAGED_ELEMENT_CONSTRUCTOR(ElementTypeName) \
     ElementTypeName () : \
         ManagerPolicy::manager::BaseElement(0, dummyManager), \

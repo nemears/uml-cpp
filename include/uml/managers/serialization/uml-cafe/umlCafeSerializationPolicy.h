@@ -739,6 +739,38 @@ namespace UML {
                 }
             };
 
+            struct ParseScopeVisitor {
+                UmlPtr<BaseElement> el;
+                YAML::Node node;
+                UmlCafeSerializationPolicy& manager;
+                bool found = false;
+                template <template <class> class Type>
+                void visit() {
+                    if (found) {
+                        return;
+                    }
+                    for (auto& setPair : Type<BaseElement>::Info::sets(el->template as<Type>())) {
+                        if (setPair.second->readonly()) {
+                            continue;
+                        }
+                        auto set = dynamic_cast<AbstractReadableSet*>(setPair.second);
+                        if (set->getComposition() != CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
+                            continue;
+                        }
+                        if (node[setPair.first]) {
+                            auto setNode = node[setPair.first];
+                            if (setNode.IsScalar()) {
+                                if (set->setType() != SetType::SINGLETON) {
+                                    throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
+                                }
+                                manager.addToSet(*set, ID::fromString(setNode.template as<std::string>()));
+                                found = true;
+                            }
+                        }
+                    }
+                }
+            };
+
             template <template <class> class Type>
             struct SerializationPolicy : public AbstractSerializationPolicy {
                 AbstractElementPtr create() override {
@@ -747,10 +779,11 @@ namespace UML {
                 SerializationPolicy(UmlCafeSerializationPolicy& manager) : AbstractSerializationPolicy(manager) {}
                 void parseBody(YAML::Node bodyNode, AbstractElementPtr el) const override {
                     ParseBodyVisitor visitor {el, bodyNode, this->m_manager};
-                    visitAllTypesDFS<ParseBodyVisitor, Type, Tlist>(visitor);
+                    visitBasesBFS<ParseBodyVisitor, Type, Tlist>(visitor);
                 }
                 void parseScope(YAML::Node elNode, AbstractElementPtr el) const override {
-                    // TODO
+                    ParseScopeVisitor visitor {el, elNode, this->m_manager};
+                    visitBasesBFS<ParseScopeVisitor, Type, Tlist>(visitor);
                 }
                 std::string emit(AbstractElementPtr el) const override {
                     if constexpr (Type<DummyManager::BaseElement>::Info::abstract) {
@@ -767,7 +800,7 @@ namespace UML {
                         emitter << YAML::Key << elementName << YAML::Value << YAML::BeginMap;
                         emitter << YAML::Key << "id" << YAML::Value << el.id().string();
                         EmitVisitor visitor {el, emitter};
-                        visitAllTypesDFS<EmitVisitor, Type, Tlist>(visitor);
+                        visitBasesDFS<EmitVisitor, Type, Tlist>(visitor);
                         emitter << YAML::EndMap;
                         emitter << YAML::EndMap;
 

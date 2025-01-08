@@ -88,7 +88,7 @@ namespace UML {
                 public:
                     void forEachSet(BaseElement& el, Function f) override {
                         ForEachSetVisitor visitor { el, f };
-                        visitAllTypesDFS<ForEachSetVisitor, Type, Types>(visitor);
+                        visitBasesDFS<ForEachSetVisitor, Type, Types>(visitor);
                     }
                     bool is(std::size_t type) override {
                         return isHelper(type);                        

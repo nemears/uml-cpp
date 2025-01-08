@@ -309,6 +309,11 @@ namespace UML {
         {
             init();
         }
+        static SetList sets(TestNamedElement& el) {
+            return SetList {
+                std::make_pair<std::string, AbstractSet*>("namespace", &el._namespace)
+            };
+        }
     };
 
     template <>
@@ -348,6 +353,12 @@ namespace UML {
         {
             init();
         }
+        static SetList sets(TestNamespace& el) {
+            return SetList {
+                std::make_pair<std::string, AbstractSet*>("members", &el.members),
+                std::make_pair<std::string, AbstractSet*>("ownedMembers", &el.ownedMembers)
+            };
+        }
     };
 
     template <>
@@ -371,6 +382,19 @@ TEST_F(ManagerTest, testNamespaceTest) {
     ASSERT_TRUE(nmspc->ownedElements.contains(member));
     ASSERT_EQ(*member->_namespace.get(), *nmspc);
     ASSERT_EQ(*member->owner.get(), *nmspc);
+}
+
+TEST_F(ManagerTest, releaseAndAquireTestNamespace) {
+    TestNamespaceManager m;
+    m.mount(".");
+    auto nmspc = m.create<TestNamespace>();
+    auto member = m.create<TestNamedElement>();
+    member->_namespace.set(nmspc);
+    nmspc.release();
+    ASSERT_FALSE(nmspc.loaded());
+    nmspc.aquire();
+    ASSERT_TRUE(nmspc.loaded());
+    ASSERT_EQ(nmspc->ownedMembers.size(), 1);
 }
 
 namespace UML {

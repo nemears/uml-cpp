@@ -1,5 +1,6 @@
 #pragma once
 
+#include <type_traits>
 #include <vector>
 #include "uml/managers/abstractElement.h"
 #include "uml/managers/templateTypeList.h"
@@ -14,8 +15,29 @@ namespace UML {
     struct DefaultInfo {
         static const bool abstract = true;
         static const bool extraData = false;
-        static SetList sets(__attribute__((unused)) AbstractElement& el) {
-            return SetList{};
+        
+        // SFINAE helper for HasSets struct
+        template <class>
+        struct TemplateTrue : public std::true_type {};
+        
+        template <class Type>
+        static auto hasSets(int) -> TemplateTrue<decltype(Type::sets(std::declval<Type&>()))>;
+
+        template <class>
+        static auto hasSets(long) -> std::false_type;
+
+        // struct says whether the Type provided has the static function Type::sets(Type&)
+        template <class Type>
+        struct HasSets : decltype(hasSets<Type>(0)) {};
+
+        template <class Type>
+        static SetList sets(Type& el) {
+            if constexpr (HasSets<Type>{}) {
+                return Type::sets(el);
+            } else {
+                // should we warn that they haven't provided correct sets definition or none at all? TODO 
+                return SetList{};
+            }
         }
     };
 

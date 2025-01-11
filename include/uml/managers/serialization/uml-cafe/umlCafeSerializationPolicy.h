@@ -1,5 +1,6 @@
 #pragma once
 #include "uml/managers/abstractElement.h"
+#include "uml/managers/typeInfo.h"
 #include "uml/set/privateSet.h"
 #include "uml/managers/umlPtr.h"
 #include "uml/managers/abstractManager.h"
@@ -655,15 +656,27 @@ namespace UML {
                 // TODO
             };
 
+            template <template <class> class Type>
+            static void emitData(YAML::Emitter& emitter, Type<typename TypedManager::template GenBaseHierarchy<Type>>& el) {
+                if constexpr (HasData<typename Type<BaseElement>::Info>{}) {
+                    for (auto& dataPair : Type<BaseElement>::Info::data(el)) {
+                        std::string data = dataPair.second->getData();
+                        if (!data.empty()) {
+                            emitter << YAML::Key << dataPair.first << YAML::Value << data;
+                        }
+                    }
+                }
+            }
+
             struct EmitVisitor {
                 UmlPtr<BaseElement> el;
                 YAML::Emitter& emitter;
                 template <template <class> class Type>
                 void visit() {
-                    // emit all data and sets TODO
+                    emitData<Type>(emitter, el->template as<Type>());
                     for (auto& setPair : Type<BaseElement>::Info::sets(el->template as<Type>())) {
                         auto set = setPair.second;
-                        if (/*set->readonly() ||*/ set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
+                        if (set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
                             continue;
                         }
 
@@ -671,7 +684,7 @@ namespace UML {
                         std::size_t numElsInSet = set->size();
                         for (auto id : set->ids()) {
                             auto subSetWithEl = set->subSetContains(id);
-                            if (subSetWithEl /*&& !subSetWithEl->readonly()*/) {
+                            if (subSetWithEl) {
                                 numElsInSet--;
                             }
                         }
@@ -730,12 +743,27 @@ namespace UML {
                 }
             };
 
+            template <template <class> class Type>
+            static void parseData(YAML::Node node, Type<typename TypedManager::template GenBaseHierarchy<Type>>& el) {
+                if constexpr (HasData<typename Type<BaseElement>::Info>{}) {
+                    for (auto& dataPair : Type<BaseElement>::Info::data(el)) {
+                        if (node[dataPair.first]) {
+                            auto dataNode = node[dataPair.first];
+                            if (dataNode.IsScalar()) {
+                                dataPair.second->setData(dataNode.template as<std::string>());
+                            }
+                        }
+                    }
+                }
+            }
+
             struct ParseBodyVisitor {
                 UmlPtr<BaseElement> el;
                 YAML::Node node;
                 UmlCafeSerializationPolicy& manager;
                 template <template <class> class Type>
                 void visit() {
+                    parseData<Type>(node, el->template as<Type>());
                     for (auto& setPair : Type<DummyManager::BaseElement>::Info::sets(el->template as<Type>())) {
                         if (!setPair.second->rootSet()) {
                             continue;

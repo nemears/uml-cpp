@@ -11,15 +11,16 @@ namespace UML {
     class AbstractSet;
 
     typedef std::vector<std::pair<std::string, AbstractSet*>> SetList;
+    
+    template <class>
+    struct TemplateTrue : public std::true_type {};
+        
 
     struct DefaultInfo {
         static const bool abstract = true;
         static const bool extraData = false;
         
         // SFINAE helper for HasSets struct
-        template <class>
-        struct TemplateTrue : public std::true_type {};
-        
         template <class Type>
         static auto hasSets(int) -> TemplateTrue<decltype(Type::sets(std::declval<Type&>()))>;
 
@@ -40,6 +41,15 @@ namespace UML {
             }
         }
     };
+
+    template <class Type>
+    static auto hasData(int) -> TemplateTrue<decltype(Type::data(std::declval<Type&>()))>;
+
+    template <class>
+    static auto hasData(long) -> std::false_type;
+
+    template <class Type>
+    struct HasData : decltype(hasData<Type>(0)) {};
 
     template <template <class> class ElWithSets>
     struct ElementInfo;

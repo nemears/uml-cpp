@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include <memory>
 #include "uml/managers/manager.h"
 #include "uml/managers/abstractManager.h"
 #include "uml/managers/templateTypeList.h"
@@ -298,6 +299,7 @@ namespace UML {
         using Info = TypeInfo<TestNamedElement, TemplateTypeList<TestElement>>;
         using NamespaceSingleton = Singleton<TestNamespace, TestNamedElement>;
         NamespaceSingleton _namespace = NamespaceSingleton(this);
+        std::string name;
         NamespaceSingleton& getNamespaceSingleton() {
             return _namespace;
         }
@@ -329,6 +331,25 @@ namespace UML {
         static const bool abstract = false;
         static const std::string name() {
             return "TestNamedElement";
+        }
+        template <class Policy>
+        struct NameDataPolicy : public AbstractDataPolicy {
+            UmlPtr<TestNamedElement<Policy>> el;
+            NameDataPolicy(TestNamedElement<Policy>& ref) {
+                el = UmlPtr<TestNamedElement<Policy>>(ref);
+            }
+            std::string getData() override {
+                return el->name;
+            }
+            void setData(std::string data) override {
+                el->name = data;
+            }
+        };
+        template <class Policy>
+        static DataList data(TestNamedElement<Policy>& el) {
+            return DataList {
+                createDataPair("name", std::make_unique<NameDataPolicy<Policy>>(el))
+            };
         }
     };
 
@@ -397,6 +418,7 @@ TEST_F(ManagerTest, releaseAndAquireTestNamespace) {
     m.mount(".");
     auto nmspc = m.create<TestNamespace>();
     auto member = m.create<TestNamedElement>();
+    member->name = "test";
     member->_namespace.set(nmspc);
     nmspc.release();
     ASSERT_FALSE(nmspc.loaded());
@@ -408,6 +430,7 @@ TEST_F(ManagerTest, releaseAndAquireTestNamespace) {
     member.aquire();
     ASSERT_TRUE(member->_namespace.get());
     ASSERT_EQ(member->_namespace.get(), nmspc);
+    ASSERT_EQ(member->name, "test");
 }
 
 namespace UML {

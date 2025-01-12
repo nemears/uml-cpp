@@ -658,7 +658,7 @@ namespace UML {
 
             template <template <class> class Type>
             static void emitData(YAML::Emitter& emitter, Type<typename TypedManager::template GenBaseHierarchy<Type>>& el) {
-                if constexpr (HasData<typename Type<BaseElement>::Info>{}) {
+                if constexpr (HasData<Type>{}) {
                     for (auto& dataPair : Type<BaseElement>::Info::data(el)) {
                         std::string data = dataPair.second->getData();
                         if (!data.empty()) {
@@ -745,7 +745,7 @@ namespace UML {
 
             template <template <class> class Type>
             static void parseData(YAML::Node node, Type<typename TypedManager::template GenBaseHierarchy<Type>>& el) {
-                if constexpr (HasData<typename Type<BaseElement>::Info>{}) {
+                if constexpr (HasData<Type>{}) {
                     for (auto& dataPair : Type<BaseElement>::Info::data(el)) {
                         if (node[dataPair.first]) {
                             auto dataNode = node[dataPair.first];

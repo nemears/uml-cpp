@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <type_traits>
 #include <vector>
 #include "uml/managers/abstractElement.h"
@@ -41,18 +42,21 @@ namespace UML {
             }
         }
     };
-
-    template <class Type>
-    static auto hasData(int) -> TemplateTrue<decltype(Type::data(std::declval<Type&>()))>;
-
-    template <class>
-    static auto hasData(long) -> std::false_type;
-
-    template <class Type>
-    struct HasData : decltype(hasData<Type>(0)) {};
-
+    
     template <template <class> class ElWithSets>
     struct ElementInfo;
+
+    // template <class Type>
+    // static auto hasData(int) -> TemplateTrue<decltype(Type::data(std::declval<Type&>()))>;
+    
+    template <template <class> class Type>
+    static auto hasData(int) -> TemplateTrue<decltype(ElementInfo<Type>::template data(std::declval<Type<DummyManager::BaseElement>&>()))>;
+
+    template <template <class> class>
+    static auto hasData(...) -> std::false_type;
+
+    template <template <class> class Type>
+    struct HasData : decltype(hasData<Type>(0)) {};
 
     template <template <class> class ElementType, class BaseTList = TemplateTypeList<>>
     struct TypeInfo : public ElementInfo<ElementType> {
@@ -70,8 +74,9 @@ namespace UML {
     typedef std::pair<std::string, std::shared_ptr<AbstractDataPolicy>> DataPair;
     typedef std::vector<DataPair> DataList;
 
-    inline DataPair createDataPair(const char* name, AbstractDataPolicy* policy) {
-        return std::make_pair<std::string, std::shared_ptr<AbstractDataPolicy>>(name, std::shared_ptr<AbstractDataPolicy>(policy));
+    template <class DataPolicy, class ... ConstructorArgs>
+    DataPair createDataPair(const char* name, ConstructorArgs&& ... args) {
+        return std::make_pair<std::string, std::shared_ptr<DataPolicy>>(name, std::make_shared<DataPolicy>(args...));
     }
 }
 

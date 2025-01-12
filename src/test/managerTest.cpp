@@ -336,7 +336,7 @@ namespace UML {
         struct NameDataPolicy : public AbstractDataPolicy {
             UmlPtr<TestNamedElement<Policy>> el;
             NameDataPolicy(TestNamedElement<Policy>& ref) {
-                el = UmlPtr<TestNamedElement<Policy>>(ref);
+                el = UmlPtr<TestNamedElement<Policy>>(&ref);
             }
             std::string getData() override {
                 return el->name;
@@ -348,7 +348,7 @@ namespace UML {
         template <class Policy>
         static DataList data(TestNamedElement<Policy>& el) {
             return DataList {
-                createDataPair("name", std::make_unique<NameDataPolicy<Policy>>(el))
+                createDataPair<NameDataPolicy<Policy>>("name", el)
             };
         }
     };

@@ -16,47 +16,26 @@ namespace UML {
     template <class>
     struct TemplateTrue : public std::true_type {};
         
-
-    struct DefaultInfo {
-        static const bool abstract = true;
-        static const bool extraData = false;
-        
-        // SFINAE helper for HasSets struct
-        template <class Type>
-        static auto hasSets(int) -> TemplateTrue<decltype(Type::sets(std::declval<Type&>()))>;
-
-        template <class>
-        static auto hasSets(long) -> std::false_type;
-
-        // struct says whether the Type provided has the static function Type::sets(Type&)
-        template <class Type>
-        struct HasSets : decltype(hasSets<Type>(0)) {};
-
-        template <class Type>
-        static SetList sets(Type& el) {
-            if constexpr (HasSets<Type>{}) {
-                return Type::sets(el);
-            } else {
-                // should we warn that they haven't provided correct sets definition or none at all? TODO 
-                return SetList{};
-            }
-        }
-    };
-    
     template <template <class> class ElWithSets>
     struct ElementInfo;
 
-    // template <class Type>
-    // static auto hasData(int) -> TemplateTrue<decltype(Type::data(std::declval<Type&>()))>;
-    
     template <template <class> class Type>
-    static auto hasData(int) -> TemplateTrue<decltype(ElementInfo<Type>::template data(std::declval<Type<DummyManager::BaseElement>&>()))>;
+    static auto testSets(int) -> TemplateTrue<decltype(ElementInfo<Type>::sets(std::declval<Type<DummyManager::BaseElement>&>()))>;
 
     template <template <class> class>
-    static auto hasData(...) -> std::false_type;
+    static auto testSets(...) -> std::false_type;
 
     template <template <class> class Type>
-    struct HasData : decltype(hasData<Type>(0)) {};
+    struct HasSets : decltype(testSets<Type>(0)) {};
+
+    template <template <class> class Type>
+    static auto testData(int) -> TemplateTrue<decltype(ElementInfo<Type>::template data(std::declval<Type<DummyManager::BaseElement>&>()))>;
+
+    template <template <class> class>
+    static auto testData(...) -> std::false_type;
+
+    template <template <class> class Type>
+    struct HasData : decltype(testData<Type>(0)) {};
 
     template <template <class> class ElementType, class BaseTList = TemplateTypeList<>>
     struct TypeInfo : public ElementInfo<ElementType> {

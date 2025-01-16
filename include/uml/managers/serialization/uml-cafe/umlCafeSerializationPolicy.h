@@ -871,7 +871,7 @@ namespace UML {
             struct PopulatePolicies<TemplateTypeList<First, Rest...>> {
                 static void populate(UmlCafeSerializationPolicy& manager) {
                     auto serialization_policy = std::make_shared<SerializationPolicy<First>>(manager);
-                    if constexpr (!First<BaseElement>::Info::abstract) {
+                    if constexpr ( !typename TypedManager::template IsAbstract<First> {} ) {
                         manager.m_serializationByName.emplace(First<BaseElement>::Info::name(), serialization_policy);
                     }
                     constexpr int type_id = TemplateTypeListIndex<First, Tlist>::result;

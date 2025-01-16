@@ -54,7 +54,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Base> : public DefaultInfo {};
+    struct ElementInfo<Base> {};
 
     template <class ManagerPolicy>
     struct Right : public ManagerPolicy {
@@ -71,7 +71,7 @@ namespace UML {
     };
     
     template <>
-    struct ElementInfo<Right> : public DefaultInfo {};
+    struct ElementInfo<Right> {};
 
     template <class ManagerPolicy>
     struct Left : public ManagerPolicy {
@@ -88,7 +88,7 @@ namespace UML {
     };
     
     template <>
-    struct ElementInfo<Left> : public DefaultInfo {};
+    struct ElementInfo<Left> {};
 
     template <class ManagerPolicy>
     struct Diamond : public ManagerPolicy {
@@ -105,7 +105,7 @@ namespace UML {
     };
     
     template <>
-    struct ElementInfo<Diamond> : public DefaultInfo {
+    struct ElementInfo<Diamond> {
         static constexpr bool abstract = false;
         static const std::string name() {
             return "Diamond";
@@ -158,7 +158,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<BaseReferencingDerived> : DefaultInfo {
+    struct ElementInfo<BaseReferencingDerived> {
         static const bool abstract = false;
         static const std::string name() {
             return "BaseReferencingDerived";
@@ -191,7 +191,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<DerivedReferencingBase> : DefaultInfo {
+    struct ElementInfo<DerivedReferencingBase> {
         static const bool abstract = false;
         static const std::string name() {
             return "DerivedReferencingBase";
@@ -245,7 +245,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<TestElement> : public DefaultInfo {
+    struct ElementInfo<TestElement> {
         static const bool abstract = false; // for testing
         static const std::string name() {
             return "TestElement";
@@ -327,7 +327,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<TestNamedElement> : public DefaultInfo {
+    struct ElementInfo<TestNamedElement> {
         static const bool abstract = false;
         static const std::string name() {
             return "TestNamedElement";
@@ -391,7 +391,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<TestNamespace> : public DefaultInfo {
+    struct ElementInfo<TestNamespace> {
         static const bool abstract = false;
         static const std::string name() {
             return "TestNamespace";
@@ -464,7 +464,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<TestPackageablElement> : public DefaultInfo {
+    struct ElementInfo<TestPackageablElement> {
         static const bool abstract = false;
         static const std::string name() {
             return "TestPackageableElement";
@@ -498,7 +498,7 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<TestPackage> : public DefaultInfo {
+    struct ElementInfo<TestPackage> {
         static const bool abstract = false;
         static const std::string name() {
             return "TestPackage";

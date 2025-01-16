@@ -4,8 +4,10 @@
 #include <functional>
 #include <string>
 #include <memory>
+#include <type_traits>
 #include "templateTypeList.h"
 #include "abstractElement.h"
+#include "uml/managers/typeInfo.h"
 #include "umlPtr.h"
 
 namespace UML {
@@ -80,8 +82,10 @@ namespace UML {
                         Function f;
                         template <template <class> class Curr>
                         void visit() {
-                            for (auto& setPair : Curr<BaseElement>::Info::sets(dynamic_cast<Curr<GenBaseHierarchy<Curr>>&>(el))) {
-                                f(setPair.first, *setPair.second);
+                            if constexpr (HasSets<Curr>{}) {
+                                for (auto& setPair : Curr<BaseElement>::Info::sets(el->template as<Curr>())) {
+                                    f(setPair.first, *setPair.second);
+                                }
                             }
                         }
                     };
@@ -135,6 +139,29 @@ namespace UML {
             };
         protected:
             virtual UmlPtr<BaseElement> registerPtr(std::shared_ptr<AbstractElement> ptr) = 0;
+
+        private:
+            // IsAbstract Implementation
+            template <template <class> class Type>
+            static auto testName(int) -> TemplateTrue<decltype(ElementInfo<Type>::name())>;
+            template <template <class> class>
+            static auto testName(...) -> std::false_type;
+            template <template <class> class Type>
+            struct HasName : decltype(testName<Type>(0)) {};
+            template <template <class> class Type>
+            static auto testAbstract(int) -> TemplateTrue<decltype(ElementInfo<Type>::abstract)>;
+            template <template <class> class Type>
+            static auto testAbstract(...) -> std::false_type;
+            template <template <class> class Type>
+            struct HasAbstract : decltype(testAbstract<Type>(0)) {};
+        protected:
+            template <template <class> class Type, bool TypeHasAbstract  = HasAbstract<Type>{}>
+            struct IsAbstract;
+
+            template <template <class> class Type>
+            struct IsAbstract<Type, true> : public std::conditional_t<ElementInfo<Type>::abstract || !HasName<Type>{}, std::true_type, std::false_type> {};
+            template <template <class> class Type>
+            struct IsAbstract<Type, false> : public std::conditional_t<!HasName<Type>{}, std::true_type, std::false_type> {};
         public:
             ManagerTypes() {
                 PopulateTypes<Types>::populate(*this);
@@ -142,8 +169,8 @@ namespace UML {
             // create factory function
             template <template <class> class T>
             UmlPtr<T<GenBaseHierarchy<T>>> create() {
-                if constexpr (T<BaseElement>::Info::abstract) {
-                    throw ManagerStateException("Trying to instantiate and abstract type!");
+                if constexpr (IsAbstract<T>{}) {
+                    throw ManagerStateException("Trying to instantiate an abstract type!");
                 }
                 auto ptr = std::make_shared<T<GenBaseHierarchy<T>>>(ElementType<T>::result, *this);
                 return registerPtr(ptr);

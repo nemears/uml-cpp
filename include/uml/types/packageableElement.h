@@ -13,6 +13,7 @@ namespace UML {
 
     template <class ManagerPolicy>
     class PackageableElement : public ManagerPolicy {
+        friend struct ElementInfo<PackageableElement>;
         public:
             using Info = TypeInfo<PackageableElement, TemplateTypeList<NamedElement>>;
         protected:
@@ -44,5 +45,12 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<PackageableElement> : public DefaultInfo {};
+    struct ElementInfo<PackageableElement> {
+        template <class Policy>
+        static SetList sets(PackageableElement<Policy>& el) {
+            return SetList {
+                make_set_pair("owningPackage", el.m_owningPackage)
+            };
+        }
+    };
 }

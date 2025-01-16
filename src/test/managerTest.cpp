@@ -319,11 +319,6 @@ namespace UML {
         {
             init();
         }
-        static SetList sets(TestNamedElement& el) {
-            return SetList {
-                std::make_pair<std::string, AbstractSet*>("namespace", &el._namespace)
-            };
-        }
     };
 
     template <>
@@ -331,6 +326,12 @@ namespace UML {
         static const bool abstract = false;
         static const std::string name() {
             return "TestNamedElement";
+        }
+        template <class Policy>
+        static SetList sets(TestNamedElement<Policy>& el) {
+            return SetList {
+                std::make_pair<std::string, AbstractSet*>("namespace", &el._namespace)
+            };
         }
         template <class Policy>
         struct NameDataPolicy : public AbstractDataPolicy {
@@ -382,12 +383,6 @@ namespace UML {
         {
             init();
         }
-        static SetList sets(TestNamespace& el) {
-            return SetList {
-                std::make_pair<std::string, AbstractSet*>("members", &el.members),
-                std::make_pair<std::string, AbstractSet*>("ownedMembers", &el.ownedMembers)
-            };
-        }
     };
 
     template <>
@@ -395,6 +390,13 @@ namespace UML {
         static const bool abstract = false;
         static const std::string name() {
             return "TestNamespace";
+        }
+        template <class Policy>
+        static SetList sets(TestNamespace<Policy>& el) {
+            return SetList {
+                std::make_pair<std::string, AbstractSet*>("members", &el.members),
+                std::make_pair<std::string, AbstractSet*>("ownedMembers", &el.ownedMembers)
+            };
         }
     };
 

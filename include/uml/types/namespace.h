@@ -10,6 +10,7 @@ namespace UML {
 
     template <class ManagerPolicy>
     class Namespace : public ManagerPolicy {
+        friend struct ElementInfo<Namespace>;
         public:
             using Info = TypeInfo<Namespace, TemplateTypeList<NamedElement>>;
         protected:
@@ -32,5 +33,13 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<Namespace> : public DefaultInfo {};
+    struct ElementInfo<Namespace> {
+        template <class Policy>
+        static SetList sets(Namespace<Policy>& el) {
+            return SetList {
+                make_set_pair("members", el.m_members),
+                make_set_pair("ownedMembers", el.m_ownedMembers)
+            };
+        }
+    };
 }

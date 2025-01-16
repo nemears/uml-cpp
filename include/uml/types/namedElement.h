@@ -14,6 +14,7 @@ namespace UML {
 
     template <class ManagerPolicy>
     class NamedElement : public ManagerPolicy {
+        friend struct ElementInfo<NamedElement>;
         public:
             using Info = TypeInfo<NamedElement, TemplateTypeList<Element>>;
             using NamespaceSingleton = ReadOnlySingleton<Namespace, NamedElement>;
@@ -35,5 +36,12 @@ namespace UML {
     };
 
     template <>
-    struct ElementInfo<NamedElement> : public DefaultInfo {};
+    struct ElementInfo<NamedElement> {
+        template <class Policy>
+        static SetList sets(NamedElement<Policy>& el) {
+            return SetList {
+                make_set_pair("namespace", el.m_namespace)
+            };
+        }
+    };
 }

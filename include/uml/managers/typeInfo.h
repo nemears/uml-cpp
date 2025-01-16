@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <type_traits>
+#include <utility>
 #include <vector>
 #include "uml/managers/abstractElement.h"
 #include "uml/managers/templateTypeList.h"
@@ -11,7 +12,11 @@ namespace UML {
 
     class AbstractSet;
 
-    typedef std::vector<std::pair<std::string, AbstractSet*>> SetList;
+    using SetPair = std::pair<std::string, AbstractSet*>;
+    using SetList = std::vector<SetPair>;
+    inline SetPair make_set_pair(const char* name, AbstractSet& set) {
+        return std::make_pair<std::string, AbstractSet*>(name, &set);
+    }
     
     template <class>
     struct TemplateTrue : public std::true_type {};
@@ -20,7 +25,7 @@ namespace UML {
     struct ElementInfo;
 
     template <template <class> class Type>
-    static auto testSets(int) -> TemplateTrue<decltype(ElementInfo<Type>::sets(std::declval<Type<DummyManager::BaseElement>&>()))>;
+    static auto testSets(int) -> TemplateTrue<decltype(ElementInfo<Type>::template sets(std::declval<Type<DummyManager::BaseElement>&>()))>;
 
     template <template <class> class>
     static auto testSets(...) -> std::false_type;

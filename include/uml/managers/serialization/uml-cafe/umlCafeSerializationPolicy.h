@@ -674,49 +674,51 @@ namespace UML {
                 template <template <class> class Type>
                 void visit() {
                     emitData<Type>(emitter, el->template as<Type>());
-                    for (auto& setPair : Type<BaseElement>::Info::sets(el->template as<Type>())) {
-                        auto set = setPair.second;
-                        if (set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
-                            continue;
-                        }
-
-                        // check if subsets have any of our elements
-                        std::size_t numElsInSet = set->size();
-                        for (auto id : set->ids()) {
-                            auto subSetWithEl = set->subSetContains(id);
-                            if (subSetWithEl) {
-                                numElsInSet--;
+                    if constexpr (HasSets<Type>{}) {
+                        for (auto& setPair : Type<BaseElement>::Info::sets(el->template as<Type>())) {
+                            auto set = setPair.second;
+                            if (set->empty() || set->getComposition() == CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
+                                continue;
                             }
-                        }
 
-                        // all in subsets continue
-                        if (numElsInSet == 0) {
-                            continue;
-                        }
-
-
-                        emitter << YAML::Key << setPair.first;
-                        switch (set->setType()) {
-                            case SetType::SET:
-                            case SetType::ORDERED_SET:
-                            {
-                                emitter << YAML::BeginSeq;
-                                for (auto id : set->ids()) {
-                                    auto subSetWithEl = set->subSetContains(id);
-                                    if (subSetWithEl && !subSetWithEl->readonly()) {
-                                        continue;
-                                    }
-                                    emitter << id.string();
+                            // check if subsets have any of our elements
+                            std::size_t numElsInSet = set->size();
+                            for (auto id : set->ids()) {
+                                auto subSetWithEl = set->subSetContains(id);
+                                if (subSetWithEl) {
+                                    numElsInSet--;
                                 }
-                                emitter << YAML::EndSeq;
-                                break;
                             }
-                            case SetType::SINGLETON : {
-                                emitter << YAML::Value << set->ids().front().string();
-                                break;
+
+                            // all in subsets continue
+                            if (numElsInSet == 0) {
+                                continue;
                             }
-                            default:
-                                throw SerializationError("Could not emit, cannot handle set type!");
+
+
+                            emitter << YAML::Key << setPair.first;
+                            switch (set->setType()) {
+                                case SetType::SET:
+                                case SetType::ORDERED_SET:
+                                {
+                                    emitter << YAML::BeginSeq;
+                                    for (auto id : set->ids()) {
+                                        auto subSetWithEl = set->subSetContains(id);
+                                        if (subSetWithEl && !subSetWithEl->readonly()) {
+                                            continue;
+                                        }
+                                        emitter << id.string();
+                                    }
+                                    emitter << YAML::EndSeq;
+                                    break;
+                                }
+                                case SetType::SINGLETON : {
+                                    emitter << YAML::Value << set->ids().front().string();
+                                    break;
+                                }
+                                default:
+                                    throw SerializationError("Could not emit, cannot handle set type!");
+                            }
                         }
                     }
                 }
@@ -731,15 +733,17 @@ namespace UML {
                     if (matchedAndNotReadOnly) {
                         return;
                     }
-                    for (auto& setPair : Type<BaseElement>::Info::sets(el->template as<Type>())) {
-                        if (setPair.second->getComposition() == CompositionType::ANTI_COMPOSITE && setPair.second->size() > 0) {
-                            if (validMatch && setPair.second->readonly()) {
-                                continue;
+                    if constexpr (HasSets<Type>{}) {
+                        for (auto& setPair : Type<BaseElement>::Info::sets(el->template as<Type>())) {
+                            if (setPair.second->getComposition() == CompositionType::ANTI_COMPOSITE && setPair.second->size() > 0) {
+                                if (validMatch && setPair.second->readonly()) {
+                                    continue;
+                                }
+                                validMatch = std::make_unique<std::pair<std::string, AbstractSet*>>(setPair);
+                                matchedAndNotReadOnly = !setPair.second->readonly();
                             }
-                            validMatch = std::make_unique<std::pair<std::string, AbstractSet*>>(setPair);
-                            matchedAndNotReadOnly = !setPair.second->readonly();
                         }
-                    } 
+                    }
                 }
             };
 
@@ -764,24 +768,26 @@ namespace UML {
                 template <template <class> class Type>
                 void visit() {
                     parseData<Type>(node, el->template as<Type>());
-                    for (auto& setPair : Type<DummyManager::BaseElement>::Info::sets(el->template as<Type>())) {
-                        if (!setPair.second->rootSet()) {
-                            continue;
-                        }
-                        auto set = setPair.second;
-                        if (node[setPair.first]) {
-                            auto setNode = node[setPair.first];
-                            if (setNode.IsScalar()) {
-                                if (set->setType() != SetType::SINGLETON) {
-                                    throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
+                    if constexpr (HasSets<Type>{}) {
+                        for (auto& setPair : Type<DummyManager::BaseElement>::Info::sets(el->template as<Type>())) {
+                            if (!setPair.second->rootSet()) {
+                                continue;
+                            }
+                            auto set = setPair.second;
+                            if (node[setPair.first]) {
+                                auto setNode = node[setPair.first];
+                                if (setNode.IsScalar()) {
+                                    if (set->setType() != SetType::SINGLETON) {
+                                        throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
+                                    }
+                                    manager.addToSet(*set, ID::fromString(setNode.template as<std::string>()));
+                                } else if (setNode.IsSequence()) {
+                                    for (const auto& valNode : setNode) {
+                                        manager.addToSet(*set, ID::fromString(valNode.template as<std::string>()));
+                                    }
+                                } else {
+                                    throw SetStateException("Invalid set formatting for individual parsing! line number " + std::to_string(setNode.Mark().line));
                                 }
-                                manager.addToSet(*set, ID::fromString(setNode.template as<std::string>()));
-                            } else if (setNode.IsSequence()) {
-                                for (const auto& valNode : setNode) {
-                                    manager.addToSet(*set, ID::fromString(valNode.template as<std::string>()));
-                                }
-                            } else {
-                                throw SetStateException("Invalid set formatting for individual parsing! line number " + std::to_string(setNode.Mark().line));
                             }
                         }
                     }
@@ -798,22 +804,24 @@ namespace UML {
                     if (found) {
                         return;
                     }
-                    for (auto& setPair : Type<BaseElement>::Info::sets(el->template as<Type>())) {
-                        if (setPair.second->readonly()) {
-                            continue;
-                        }
-                        auto set = dynamic_cast<AbstractReadableSet*>(setPair.second);
-                        if (set->getComposition() != CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
-                            continue;
-                        }
-                        if (node[setPair.first]) {
-                            auto setNode = node[setPair.first];
-                            if (setNode.IsScalar()) {
-                                if (set->setType() != SetType::SINGLETON) {
-                                    throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
+                    if constexpr (HasSets<Type>{}) {
+                        for (auto& setPair : Type<BaseElement>::Info::sets(el->template as<Type>())) {
+                            if (setPair.second->readonly()) {
+                                continue;
+                            }
+                            auto set = dynamic_cast<AbstractReadableSet*>(setPair.second);
+                            if (set->getComposition() != CompositionType::ANTI_COMPOSITE || !set->rootSet()) {
+                                continue;
+                            }
+                            if (node[setPair.first]) {
+                                auto setNode = node[setPair.first];
+                                if (setNode.IsScalar()) {
+                                    if (set->setType() != SetType::SINGLETON) {
+                                        throw SerializationError("bad format for " + setPair.first + ", line number " + std::to_string(setNode.Mark().line));
+                                    }
+                                    manager.addToSet(*set, ID::fromString(setNode.template as<std::string>()));
+                                    found = true;
                                 }
-                                manager.addToSet(*set, ID::fromString(setNode.template as<std::string>()));
-                                found = true;
                             }
                         }
                     }
@@ -835,7 +843,7 @@ namespace UML {
                     visitBasesBFS<ParseScopeVisitor, Type, Tlist>(visitor);
                 }
                 std::string emit(AbstractElementPtr el) const override {
-                    if constexpr (Type<DummyManager::BaseElement>::Info::abstract) {
+                    if constexpr (typename TypedManager::template IsAbstract<Type>{}) {
                         throw ManagerStateException("Error Tried to emit abstract type!");
                     } else {
                         YAML::Emitter emitter;

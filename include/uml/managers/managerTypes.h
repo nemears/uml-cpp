@@ -83,7 +83,7 @@ namespace UML {
                         template <template <class> class Curr>
                         void visit() {
                             if constexpr (HasSets<Curr>{}) {
-                                for (auto& setPair : Curr<BaseElement>::Info::sets(el->template as<Curr>())) {
+                                for (auto& setPair : Curr<BaseElement>::Info::sets(el.template as<Curr>())) {
                                     f(setPair.first, *setPair.second);
                                 }
                             }

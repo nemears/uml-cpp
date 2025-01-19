@@ -46,6 +46,8 @@ namespace UML {
 
     template <>
     struct ElementInfo<PackageableElement> {
+        static std::string name() { return "PackageableElement"; }
+        static const bool abstract = true;
         template <class Policy>
         static SetList sets(PackageableElement<Policy>& el) {
             return SetList {

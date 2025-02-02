@@ -1,58 +1,43 @@
 #pragma once
 
-#include "uml/managers/abstractManager.h"
-#include "uml/managers/dummyManager.h"
-#include "uml/managers/typeInfo.h"
-#include "uml/set/set.h"
-#include "uml/set/singleton.h"
-#include <cstddef>
+#include "egm/egm-basic.h"
 
 namespace UML {
     template <class ManagerPolicy>
     class Element : public ManagerPolicy {
-        friend struct ElementInfo<Element>;
+        friend struct EGM::ElementInfo<Element>;
         public:
-            using Info = TypeInfo<Element>;
+            using Info = EGM::TypeInfo<Element>;
         protected:
-            ReadOnlySet<Element, Element> m_ownedElements = ReadOnlySet<Element, Element>(this);
-            ReadOnlySingleton<Element, Element> m_owner = ReadOnlySingleton<Element, Element>(this);
+            EGM::ReadOnlySet<Element, Element> m_ownedElements = EGM::ReadOnlySet<Element, Element>(this);
+            EGM::ReadOnlySingleton<Element, Element> m_owner = EGM::ReadOnlySingleton<Element, Element>(this);
+        private:
             void init() {
                 m_ownedElements.opposite(&decltype(m_owner)::ManagedType::getOwnerSingleton);
                 m_owner.opposite(&decltype(m_ownedElements)::ManagedType::getOwnedElements);
             }
-            static constexpr std::size_t elementElementType = ManagerPolicy::manager::template ElementType<Element>::result;
-            Element() :
-                ManagerPolicy::manager::BaseElement(elementElementType, dummyManager),
-                ManagerPolicy(elementElementType, dummyManager)
-            {
-                init();
-            }
         public:
-            // TODO delete when enforce abstract
-            Element(std::size_t elementType, AbstractManager& manager) :
-                ManagerPolicy::manager::BaseElement(elementType, manager),
-                ManagerPolicy(elementType, manager)
-            {
-                init();
-            }
-            ReadOnlySet<Element, Element>& getOwnedElements() {
+            MANAGED_ELEMENT_CONSTRUCTOR(Element);
+            EGM::ReadOnlySet<Element, Element>& getOwnedElements() {
                 return m_ownedElements;
             }
-            ReadOnlySingleton<Element, Element>& getOwnerSingleton() {
+            EGM::ReadOnlySingleton<Element, Element>& getOwnerSingleton() {
                 return m_owner;
             }
-            using ElementPtr = UmlPtr<Element>;
+            using ElementPtr = EGM::ManagedPtr<Element>;
             ElementPtr getOwner() {
                 return m_owner.get();
             }
     };
+}
 
+namespace EGM {
     template <>
-    struct ElementInfo<Element> {
+    struct ElementInfo<UML::Element> {
         static std::string name() { return "Element"; }
         static const bool abstract = true;
         template <class Policy>
-        static SetList sets(Element<Policy>& el) {
+        static SetList sets(UML::Element<Policy>& el) {
             return SetList {
                 make_set_pair("ownedElements", el.m_ownedElements),
                 make_set_pair("owner", el.m_owner)

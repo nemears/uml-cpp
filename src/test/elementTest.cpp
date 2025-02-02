@@ -1,13 +1,7 @@
 #include "gtest/gtest.h"
-#include <type_traits>
 
-#include "uml/managers/abstractManager.h"
-#include "uml/managers/dummyManager.h"
-#include "uml/managers/templateTypeList.h"
-#include "uml/managers/typeInfo.h"
-#include "uml/managers/umlManager.h"
 #include "uml/uml-stable.h"
-// #include "test/umlTestUtil.h"
+#include "egm/egm.h"
 
 using namespace UML;
 
@@ -76,7 +70,7 @@ TEST_F(ElementTest, UmlPtrComparisonTest) {
     ASSERT_TRUE(!pckg->getOwningPackage());
     ASSERT_EQ(child->getOwningPackage(), pckg);
     ASSERT_EQ(*(child->getOwningPackage()), *pckg);
-    ASSERT_EQ(*child->getNamespace(), pckg);
+    ASSERT_EQ(child->getNamespace(), pckg);
     ASSERT_EQ(*(child->getNamespace()), *pckg);
     ASSERT_EQ(child->getOwner(), pckg);
     ASSERT_EQ(*(child->getOwner()), *pckg);
@@ -111,7 +105,7 @@ TEST_F(ElementTest, UmlPtrReleaseTest) {
     m.mount(".");
     auto pckg = m.create<Package>();
     auto child = m.create<Package>();
-    ID pckgID = pckg->getID();
+    EGM::ID pckgID = pckg->getID();
     pckg->getPackagedElements().add(*child);
     ASSERT_TRUE(m.loaded(pckgID));
     pckg.release();
@@ -125,7 +119,7 @@ TEST_F(ElementTest, UmlPtrReleaseAquireTest) {
     m.mount(".");
     auto pckg = m.create<Package>();
     auto child = m.create<Package>();
-    ID pckgID = pckg->getID();
+    EGM::ID pckgID = pckg->getID();
     pckg->getPackagedElements().add(*child);
     ASSERT_TRUE(m.loaded(pckgID));
     pckg.release();
@@ -141,7 +135,7 @@ TEST_F(ElementTest, ReindexTest) {
     UmlManager m;
     auto p = m.create<Package>();
     auto alsoP = p;
-    ID newID = ID::randomID();
+    EGM::ID newID = EGM::ID::randomID();
     p->setID(newID);
     ASSERT_EQ(p->getID(), newID);
     ASSERT_TRUE(p.loaded());
@@ -168,7 +162,7 @@ TEST_F(ElementTest, reassignPtrTest) { // TODO recreate managermountstresstest e
     UmlManager m;
     auto pckg = m.create<Package>();
     auto ogPckg = pckg;
-    ID ogID = pckg.id();    
+    EGM::ID ogID = pckg.id();    
     {
         auto newPckg = m.create<Package>();
         pckg = newPckg;
@@ -190,8 +184,8 @@ TEST_F(ElementTest, reassignPtrTest) { // TODO recreate managermountstresstest e
 TEST_F(ElementTest, OverrideID_Test) {
     UmlManager m;
     auto el = m.create<Package>();
-    el->setID(ID::fromString("7d18ee4282c64f528ec4fab67a75"));
-    ID id = ID::fromString("7d18ee4282c64f528ec4fab67a75");
+    el->setID(EGM::ID::fromString("7d18ee4282c64f528ec4fab67a75"));
+    EGM::ID id = EGM::ID::fromString("7d18ee4282c64f528ec4fab67a75");
     EXPECT_EQ(el->getID(), id);
 }
 
@@ -207,18 +201,18 @@ TEST_F(ElementTest, GetOwnedElementsTest) {
 TEST_F(ElementTest, InvalidID_Test) {
     UmlManager m;
     auto& el3 = *m.create<Package>();
-    EXPECT_THROW(el3.setID(ID::fromString("not a uuid4")), InvalidUmlID_Exception);
-    EXPECT_NO_THROW(el3.setID(ID::fromString("7d18ee4282c64f528ec4fab67a75")));
+    EXPECT_THROW(el3.setID(EGM::ID::fromString("not a uuid4")), EGM::InvalidUmlID_Exception);
+    EXPECT_NO_THROW(el3.setID(EGM::ID::fromString("7d18ee4282c64f528ec4fab67a75")));
 }
 
 TEST_F(ElementTest, getNullOwnerTest) {
     UmlManager m;
     auto e = m.create<Package>();
-    ASSERT_THROW(e->getOwner()->getID(), NullPtrException);
+    ASSERT_THROW(e->getOwner()->getID(), EGM::NullPtrException);
     ASSERT_FALSE(e->getOwner());
-    ASSERT_EQ(e->getOwner().id(), ID::nullID());
+    ASSERT_EQ(e->getOwner().id(), EGM::ID::nullID());
     ASSERT_FALSE(e->getOwner().has());
-    ASSERT_THROW(*e->getOwner(), NullPtrException);
+    ASSERT_THROW(*e->getOwner(), EGM::NullPtrException);
 }
 
 TEST_F(ElementTest, setAndGetOwnerTest) {

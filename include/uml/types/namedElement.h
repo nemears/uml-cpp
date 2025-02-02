@@ -1,9 +1,7 @@
 #pragma once
 
-#include "uml/managers/dummyManager.h"
-#include "uml/managers/templateTypeList.h"
-#include "uml/managers/typeInfo.h"
-#include "uml/set/singleton.h"
+#include "egm/egm-basic.h"
+
 namespace UML {
 
     template <class>
@@ -14,10 +12,10 @@ namespace UML {
 
     template <class ManagerPolicy>
     class NamedElement : public ManagerPolicy {
-        friend struct ElementInfo<NamedElement>;
+        friend struct EGM::ElementInfo<NamedElement>;
         public:
-            using Info = TypeInfo<NamedElement, TemplateTypeList<Element>>;
-            using NamespaceSingleton = ReadOnlySingleton<Namespace, NamedElement>;
+            using Info = EGM::TypeInfo<NamedElement, EGM::TemplateTypeList<Element>>;
+            using NamespaceSingleton = EGM::ReadOnlySingleton<Namespace, NamedElement>;
         protected:
             NamespaceSingleton m_namespace = NamespaceSingleton(this);
             void init() {
@@ -29,18 +27,20 @@ namespace UML {
             NamespaceSingleton& getNamespaceSingleton() {
                 return m_namespace;
             }
-            using NamespacePtr = UmlPtr<typename NamespaceSingleton::ManagedType>;
+            using NamespacePtr = EGM::ManagedPtr<typename NamespaceSingleton::ManagedType>;
             NamespacePtr getNamespace() {
                 return m_namespace.get();
             }
     };
+}
 
+namespace EGM {
     template <>
-    struct ElementInfo<NamedElement> {
+    struct ElementInfo<UML::NamedElement> {
         static std::string name() { return "NamedElement"; }
         static const bool abstract = true;
         template <class Policy>
-        static SetList sets(NamedElement<Policy>& el) {
+        static SetList sets(UML::NamedElement<Policy>& el) {
             return SetList {
                 make_set_pair("namespace", el.m_namespace)
             };

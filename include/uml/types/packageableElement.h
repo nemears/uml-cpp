@@ -1,8 +1,6 @@
 #pragma once
 
-#include "uml/managers/templateTypeList.h"
-#include "uml/managers/typeInfo.h"
-#include "uml/set/singleton.h"
+#include "egm/egm-basic.h"
 
 namespace UML {
     template <class>
@@ -13,11 +11,11 @@ namespace UML {
 
     template <class ManagerPolicy>
     class PackageableElement : public ManagerPolicy {
-        friend struct ElementInfo<PackageableElement>;
+        friend struct EGM::ElementInfo<PackageableElement>;
         public:
-            using Info = TypeInfo<PackageableElement, TemplateTypeList<NamedElement>>;
+            using Info = EGM::TypeInfo<PackageableElement, EGM::TemplateTypeList<NamedElement>>;
         protected:
-            using PackageSingleton = Singleton<Package, PackageableElement>;
+            using PackageSingleton = EGM::Singleton<Package, PackageableElement>;
             PackageSingleton m_owningPackage = PackageSingleton(this);
             void init() {
                 m_owningPackage.subsets(ManagerPolicy::m_namespace);
@@ -28,8 +26,8 @@ namespace UML {
             PackageSingleton& getOwningPackageSingleton() {
                 return m_owningPackage;
             }
-            using PackageImpl = PackageSingleton::ManagedType; 
-            using PackagePtr = UmlPtr<PackageImpl>;
+            using PackageImpl = typename PackageSingleton::ManagedType; 
+            using PackagePtr = EGM::ManagedPtr<PackageImpl>;
             PackagePtr getOwningPackage() {
                 return m_owningPackage.get();
             }
@@ -39,17 +37,19 @@ namespace UML {
             void setOwningPackage(PackagePtr pckg) {
                 m_owningPackage.set(pckg);
             }
-            void setOwningPackage(ID id) {
+            void setOwningPackage(EGM::ID id) {
                 m_owningPackage.set(id);
             }
     };
+}
 
+namespace EGM {
     template <>
-    struct ElementInfo<PackageableElement> {
+    struct ElementInfo<UML::PackageableElement> {
         static std::string name() { return "PackageableElement"; }
         static const bool abstract = true;
         template <class Policy>
-        static SetList sets(PackageableElement<Policy>& el) {
+        static SetList sets(UML::PackageableElement<Policy>& el) {
             return SetList {
                 make_set_pair("owningPackage", el.m_owningPackage)
             };

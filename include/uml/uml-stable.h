@@ -1,5 +1,23 @@
 #pragma once
 
+#include "egm/egm-basic.h"
+#include "uml/types/element.h"
+#include "uml/types/namedElement.h"
+#include "uml/types/namespace.h"
+#include "uml/types/package.h"
+#include "uml/types/packageableElement.h"
+
+namespace UML {
+    using UmlTypes = EGM::TemplateTypeList<
+        Element,
+        NamedElement,
+        Namespace,
+        Package,
+        PackageableElement 
+    >;
+
+    using UmlManager = EGM::Manager<UmlTypes>;
+}
 // #include "uml/types/classifierTemplateParameter.h"
 // #include "uml/types/artifact.h"
 // #include "uml/types/comment.h"
@@ -46,8 +64,6 @@
 // #include "uml/types/usage.h"
 // #include "uml/types/templateParameter.h"
 // #include "uml/types/templateParameterSubstitution.h"
-
-#include "uml/managers/umlManager.h"
 
 // namespace UML {
 //     typedef UmlPtr<ElementImport> ElementImportPtr;

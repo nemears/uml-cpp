@@ -3,8 +3,9 @@
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
   inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.egm.url = "github:nemears/egm";
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, egm }:
     flake-utils.lib.eachDefaultSystem
       (system:
         let 
@@ -15,7 +16,7 @@
             inherit src;
             name = "uml-cpp";
             nativeBuildInputs = with pkgs; [pkg-config];
-            buildInputs = with pkgs; [cmake pkg-config clang gnumake coreutils yaml-cpp];
+            buildInputs = with pkgs; [cmake pkg-config clang gnumake coreutils yaml-cpp egm.outputs.packages.${system}.default ];
             cmakeFlags = [
               "-DUML_BUILD_TESTS=OFF"
               "-DCMAKE_BUILD_TYPE=RELEASE"
@@ -44,10 +45,12 @@
             packages = with pkgs; [ 
               # build dependencies
               clang
-              cmake 
+              meson
+              ninja
               pkg-config
               gtest
               yaml-cpp
+              egm.outputs.packages.${system}.default
 
               # dev dependencies
               websocketpp 

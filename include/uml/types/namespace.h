@@ -1,8 +1,6 @@
 #pragma once
 
-#include "uml/managers/templateTypeList.h"
-#include "uml/managers/typeInfo.h"
-#include "uml/set/set.h"
+#include "egm/egm-basic.h"
 
 namespace UML {
     template <class>
@@ -10,13 +8,14 @@ namespace UML {
 
     template <class ManagerPolicy>
     class Namespace : public ManagerPolicy {
-        friend struct ElementInfo<Namespace>;
+        friend struct EGM::ElementInfo<Namespace>;
         public:
-            using Info = TypeInfo<Namespace, TemplateTypeList<NamedElement>>;
+            using Info = EGM::TypeInfo<Namespace, EGM::TemplateTypeList<NamedElement>>;
         protected:
-            using NamedElementSet = ReadOnlySet<NamedElement, Namespace>;
+            using NamedElementSet = EGM::ReadOnlySet<NamedElement, Namespace>;
             NamedElementSet m_members = NamedElementSet(this);
             NamedElementSet m_ownedMembers = NamedElementSet(this);
+        private:
             void init() {
                 m_ownedMembers.subsets(ManagerPolicy::m_ownedElements);
                 m_ownedMembers.subsets(m_members);
@@ -31,13 +30,15 @@ namespace UML {
                 return m_ownedMembers;
             }
     };
+}
 
+namespace EGM {
     template <>
-    struct ElementInfo<Namespace> {
+    struct ElementInfo<UML::Namespace> {
         static std::string name() { return "Namespace"; }
         static const bool abstract = true;
         template <class Policy>
-        static SetList sets(Namespace<Policy>& el) {
+        static SetList sets(UML::Namespace<Policy>& el) {
             return SetList {
                 make_set_pair("members", el.m_members),
                 make_set_pair("ownedMembers", el.m_ownedMembers)

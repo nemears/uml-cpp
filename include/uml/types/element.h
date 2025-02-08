@@ -3,6 +3,10 @@
 #include "egm/egm-basic.h"
 
 namespace UML {
+
+    template <class>
+    class Comment;
+
     template <class ManagerPolicy>
     class Element : public ManagerPolicy {
         friend struct EGM::ElementInfo<Element>;
@@ -11,10 +15,14 @@ namespace UML {
         protected:
             EGM::ReadOnlySet<Element, Element> m_ownedElements = EGM::ReadOnlySet<Element, Element>(this);
             EGM::ReadOnlySingleton<Element, Element> m_owner = EGM::ReadOnlySingleton<Element, Element>(this);
+            EGM::Set<Comment, Element> m_ownedComments = EGM::Set<Comment, Element>(this);
         private:
             void init() {
                 m_ownedElements.opposite(&decltype(m_owner)::ManagedType::getOwnerSingleton);
+                m_ownedElements.setComposition(EGM::CompositionType::COMPOSITE);
                 m_owner.opposite(&decltype(m_ownedElements)::ManagedType::getOwnedElements);
+                m_owner.setComposition(EGM::CompositionType::ANTI_COMPOSITE);
+                m_ownedComments.subsets(m_ownedElements);
             }
         public:
             MANAGED_ELEMENT_CONSTRUCTOR(Element);
@@ -28,6 +36,9 @@ namespace UML {
             ElementPtr getOwner() {
                 return m_owner.get();
             }
+            EGM::Set<Comment, Element>& getOwnedComments() {
+                return m_ownedComments;
+            }
     };
 }
 
@@ -40,7 +51,8 @@ namespace EGM {
         static SetList sets(UML::Element<Policy>& el) {
             return SetList {
                 make_set_pair("ownedElements", el.m_ownedElements),
-                make_set_pair("owner", el.m_owner)
+                make_set_pair("owner", el.m_owner),
+                make_set_pair("ownedComments", el.m_ownedComments)
             };
         }
     };

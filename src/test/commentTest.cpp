@@ -11,7 +11,7 @@ class CommentTest : public ::testing::Test {
     public:
         std::string ymlPath;
     void SetUp() override {
-        ymlPath = "../../examples/";
+        ymlPath = "../examples/";
     };
 };
 

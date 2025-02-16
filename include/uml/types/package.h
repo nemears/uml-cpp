@@ -1,6 +1,7 @@
 #pragma once
 
 #include "egm/egm-basic.h"
+#include "uml/util/indexableSet.h"
 
 namespace UML {
     template <class>
@@ -15,7 +16,7 @@ namespace UML {
         public:
            using Info = EGM::TypeInfo<Package, EGM::TemplateTypeList<PackageableElement, Namespace>>; 
         protected:
-           using PackageableElementSet = EGM::Set<PackageableElement, Package>;
+           using PackageableElementSet = IndexableSet<PackageableElement, Package>;
            PackageableElementSet m_packagedElements = PackageableElementSet(this);
            void init() {
                 m_packagedElements.subsets(ManagerPolicy::m_ownedMembers);

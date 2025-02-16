@@ -5,7 +5,7 @@ if (get_option('buildTests'))
   gtest = dependency('gtest', main : true, required: false)
   yaml_cpp = dependency('yaml-cpp')
   uml_tests = executable('uml_tests',
-    'src/test/elementTest.cpp', 'src/test/commentTest.cpp',
+    'src/test/elementTest.cpp', 'src/test/commentTest.cpp', 'src/test/dependencyTest.cpp',
     include_directories: include_dir,
     dependencies: [gtest, yaml_cpp, egm],
     link_args : '-fsanitize=address',

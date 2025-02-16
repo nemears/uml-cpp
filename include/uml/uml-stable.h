@@ -1,6 +1,6 @@
 #pragma once
 
-#include "egm/egm-basic.h"
+#include "egm/egm.h"
 #include "uml/types/abstraction.h"
 #include "uml/types/comment.h"
 #include "uml/types/dependency.h"

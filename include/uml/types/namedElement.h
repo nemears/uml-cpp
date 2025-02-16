@@ -52,7 +52,7 @@ namespace UML {
             std::string getName() {
                 return m_name;
             }
-            void setName(std::string& name) {
+            void setName(std::string name) {
                 m_name = name;
             }
             VisibilityKind getVisibility() {
@@ -63,7 +63,13 @@ namespace UML {
                 m_visibility = visibility;
             }
             std::string getQualifiedName() {
-                throw EGM::ManagerStateException("TODO implement qualifiedName");
+                std::string ret = m_name;
+                auto curr =  m_namespace.get();
+                while (curr) {
+                    ret = curr->getName() + "::" + ret;
+                    curr = curr->getNamespace();
+                }
+                return ret;
             }
     };
 }
@@ -115,7 +121,7 @@ namespace EGM {
             }
         };
         template <class Policy>
-        DataList data(UML::NamedElement<Policy>& el) {
+        static DataList data(UML::NamedElement<Policy>& el) {
             return DataList {
                 createDataPair<NamePolicy<Policy>>("name", el),
                 createDataPair<VisibilityPolicy<Policy>>("visibility", el)

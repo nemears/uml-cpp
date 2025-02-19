@@ -11,7 +11,7 @@ namespace UML {
         public:
             using Info = EGM::TypeInfo<Property, EGM::TemplateTypeList<StructuralFeature>>;
         protected:
-            using ClassSingleton = EGM::ReadOnlySingleton<Class, Property>;
+            using ClassSingleton = EGM::Singleton<Class, Property>;
             ClassSingleton m_class = ClassSingleton(this);
         private:
             void init() {

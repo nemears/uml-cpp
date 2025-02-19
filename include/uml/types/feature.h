@@ -16,15 +16,17 @@ namespace UML {
             using Info = EGM::TypeInfo<Feature, EGM::TemplateTypeList<RedefinableElement>>;
         protected:
             using FeaturingClassifierSingleton = EGM::ReadOnlySingleton<Classifier, Feature>;
-            FeaturingClassifierSingleton m_featuringClassifer = FeaturingClassifierSingleton(this);
+            FeaturingClassifierSingleton m_featuringClassifier = FeaturingClassifierSingleton(this);
             bool m_static = false;
         private:
-            void init() {}
+            void init() {
+                m_featuringClassifier.opposite(&FeaturingClassifierSingleton::ManagedType::getFeatures);
+            }
         public:
             MANAGED_ELEMENT_CONSTRUCTOR(Feature);
-            FeaturingClassifierSingleton& getFeaturingClassifierSingleton() { return m_featuringClassifer; }
+            FeaturingClassifierSingleton& getFeaturingClassifierSingleton() { return m_featuringClassifier; }
             using ClassifierPtr = EGM::ManagedPtr<typename FeaturingClassifierSingleton::ManagedType>;
-            ClassifierPtr getFeaturingClassifier() { return m_featuringClassifer.get(); }
+            ClassifierPtr getFeaturingClassifier() { return m_featuringClassifier.get(); }
             bool isStatic() const { return m_static; }
             void setStatic(bool val) { m_static = val; }
     };

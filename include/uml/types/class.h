@@ -21,6 +21,7 @@ namespace UML {
             void init() {
                 m_classOwnedAttributes.subsets(ManagerPolicy::m_attributes);
                 m_classOwnedAttributes.subsets(ManagerPolicy::m_ownedMembers);
+                m_classOwnedAttributes.opposite(&OwnedAttributesSet::ManagedType::getClassSingleton);
             }
         public:
             MANAGED_ELEMENT_CONSTRUCTOR(Class);

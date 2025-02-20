@@ -44,7 +44,31 @@ namespace UML {
                 }
             };
             using GeneralizationsSet = EGM::Set<Generalization, Classifier, GeneralizationsPolicy>;
-            using GeneralsSet = EGM::Set<Classifier, Classifier>;
+            struct GeneralPolicy {
+                void elementAdded(Classifier& el, Classifier& me) {
+                    for (auto& generalization : me.getGeneralizations()) {
+                        if (*generalization.getGeneral() == el) {
+                            return;
+                        }
+                    }
+                    constexpr std::size_t generalization_type = ManagerPolicy::manager::template ElementType<Generalization>::result; 
+                    EGM::ManagedPtr<typename GeneralizationsSet::ManagedType> generalization = me.m_manager.create(generalization_type);
+                    generalization->setGeneral(el);
+                    me.getGeneralizations().add(generalization);
+                }
+                void elementRemoved(Classifier& el, Classifier& me) {
+                    std::vector<EGM::ManagedPtr<typename GeneralizationsSet::ManagedType>> generalizations_to_erase;
+                    for (auto& generalization : me.getGeneralizations()) {
+                        if (generalization.getGeneral() && *generalization.getGeneral() == el) {
+                            generalizations_to_erase.emplace_back(&generalization);
+                        }
+                    }
+                    for (auto generalization : generalizations_to_erase) {
+                        me.m_manager.erase(*generalization);
+                    }
+                }
+            };
+            using GeneralsSet = EGM::Set<Classifier, Classifier, GeneralPolicy>;
             using FeaturesSet = EGM::ReadOnlySet<Feature, Classifier>;
             using AttributesSet = EGM::ReadOnlySet<Property, Classifier>;
             using InheritedMembersSet = EGM::ReadOnlySet<NamedElement, Classifier>;

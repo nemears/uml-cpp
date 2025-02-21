@@ -14,6 +14,9 @@ namespace UML {
     template <class>
     class Dependency;
 
+    template <class>
+    class Classifier;
+
     enum class VisibilityKind {
         NONE,
         PUBLIC,
@@ -59,8 +62,29 @@ namespace UML {
                 return m_visibility;
             }
             void setVisibility(VisibilityKind visibility) {
-                // TODO
-                m_visibility = visibility;
+                using ClassifierPtr = EGM::ManagedPtr<Classifier<typename ManagerPolicy::manager::template GenBaseHierarchy<Classifier>>>;
+                if (m_visibility != visibility) {
+                    if (visibility == VisibilityKind::PRIVATE) {
+                        std::vector<ClassifierPtr> clazzs;
+                        for (auto& referencePair : ManagerPolicy::m_node.lock()->m_references) {
+                            auto& reference = referencePair.second;
+                            if (reference.m_node.lock()->m_ptr) {
+                                EGM::ManagedPtr<typename ManagerPolicy::manager::BaseElement> reference_base = EGM::AbstractElementPtr(reference.m_node.lock()->m_ptr.get());
+                                if(reference_base->template is<Classifier>()) {
+                                    auto& el = reference_base->template as<Classifier>();
+                                    if (el.getInheritedMembers().contains(ManagerPolicy::m_id)) {
+                                        clazzs.emplace_back(&el);
+                                    } 
+                                }
+                            }
+                        }
+
+                        for (auto& clazz : clazzs) {
+                            clazz->getInheritedMembers().innerRemove(this);
+                        }
+                    }
+                    m_visibility = visibility;
+                }
             }
             std::string getQualifiedName() {
                 std::string ret = m_name;

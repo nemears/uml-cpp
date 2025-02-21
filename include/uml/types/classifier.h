@@ -1,6 +1,7 @@
 #pragma once
 
 #include "egm/egm-basic.h"
+#include "uml/types/namedElement.h"
 
 namespace UML {
     template <class>
@@ -46,6 +47,16 @@ namespace UML {
             using GeneralizationsSet = EGM::Set<Generalization, Classifier, GeneralizationsPolicy>;
             struct GeneralPolicy {
                 void elementAdded(Classifier& el, Classifier& me) {
+                    for (auto& member : el.getMembers()) {
+                        switch (member.getVisibility()) {
+                            case VisibilityKind::NONE:
+                            case VisibilityKind::PRIVATE:
+                                continue;
+                            default:
+                                me.getInheritedMembers().innerAdd(&member);
+                                break;
+                        }
+                    }
                     for (auto& generalization : me.getGeneralizations()) {
                         if (*generalization.getGeneral() == el) {
                             return;
@@ -57,6 +68,16 @@ namespace UML {
                     me.getGeneralizations().add(generalization);
                 }
                 void elementRemoved(Classifier& el, Classifier& me) {
+                    for (auto& member : el.getMembers()) {
+                        switch (member.getVisibility()) {
+                            case VisibilityKind::NONE:
+                            case VisibilityKind::PRIVATE:
+                                continue;
+                            default:
+                                me.getInheritedMembers().innerRemove(&member); // not checking might be dangerous
+                                break;
+                        }
+                    }
                     std::vector<EGM::ManagedPtr<typename GeneralizationsSet::ManagedType>> generalizations_to_erase;
                     for (auto& generalization : me.getGeneralizations()) {
                         if (generalization.getGeneral() && *generalization.getGeneral() == el) {
@@ -68,15 +89,51 @@ namespace UML {
                     }
                 }
             };
+            struct MembersPolicy {
+                template <class NamedEl>
+                void elementAdded(NamedEl& el, Classifier& me) {
+                    for (auto& referencePair : me.m_node.lock()->m_references) {
+                        auto& reference = referencePair.second;
+                        if (reference.m_node.lock()->m_ptr) {
+                            EGM::ManagedPtr<typename ManagerPolicy::manager::BaseElement> reference_base = EGM::AbstractElementPtr(reference.m_node.lock()->m_ptr.get());
+                            if(reference_base->template is<Classifier>()) {
+                                auto& clazz = reference_base->template as<Classifier>();
+                                if (clazz.getGenerals().contains(me)) {
+                                    if (!clazz.getInheritedMembers().contains(el))
+                                        clazz.getInheritedMembers().innerAdd(&el);
+                                } 
+                            }
+                        }
+                    } 
+                }
+                template <class NamedEl>
+                void elementRemoved(NamedEl& el, Classifier& me) {
+                    for (auto& referencePair : me.m_node.lock()->m_references) {
+                        auto& reference = referencePair.second;
+                        if (reference.m_node.lock()->m_ptr) {
+                            EGM::ManagedPtr<typename ManagerPolicy::manager::BaseElement> reference_base = EGM::AbstractElementPtr(reference.m_node.lock()->m_ptr.get());
+                            if(reference_base->template is<Classifier>()) {
+                                auto& clazz = reference_base->template as<Classifier>();
+                                if (clazz.getGenerals().contains(me)) {
+                                    if (clazz.getInheritedMembers().contains(el))
+                                        clazz.getInheritedMembers().innerRemove(&el);
+                                } 
+                            }
+                        }
+                    } 
+                }
+            };
             using GeneralsSet = EGM::Set<Classifier, Classifier, GeneralPolicy>;
             using FeaturesSet = EGM::ReadOnlySet<Feature, Classifier>;
             using AttributesSet = EGM::ReadOnlySet<Property, Classifier>;
             using InheritedMembersSet = EGM::ReadOnlySet<NamedElement, Classifier>;
+            using ClassifierMembers = EGM::ReadOnlySet<NamedElement, Classifier, MembersPolicy>;
             GeneralizationsSet m_generalizations = GeneralizationsSet(this);
             GeneralsSet m_generals = GeneralsSet(this);
             FeaturesSet m_features = FeaturesSet(this);
             AttributesSet m_attributes = AttributesSet(this);
             InheritedMembersSet m_inheritedMembers = InheritedMembersSet(this);
+            ClassifierMembers m_classifierMembers = ClassifierMembers(this);
         private:
             void init() {
                 m_generalizations.subsets(ManagerPolicy::m_ownedElements);
@@ -85,6 +142,7 @@ namespace UML {
                 m_features.opposite(&FeaturesSet::ManagedType::getFeaturingClassifierSingleton);
                 m_attributes.subsets(m_features);
                 m_inheritedMembers.subsets(ManagerPolicy::m_members);
+                m_classifierMembers.redefines(ManagerPolicy::m_members);
             }
         public:
             MANAGED_ELEMENT_CONSTRUCTOR(Classifier);

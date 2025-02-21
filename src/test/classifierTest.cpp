@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "uml/types/namedElement.h"
 #include "uml/uml-stable.h"
 
 using namespace UML;
@@ -90,6 +91,7 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   auto& g1 = *m.create<Class>();
   auto& s1 = *m.create<Class>();
   auto& p1 = *m.create<Property>();
+  p1.setVisibility(VisibilityKind::PUBLIC);
   g1.getOwnedAttributes().add(p1);
   auto& gen1 = *m.create<Generalization>();
   gen1.setGeneral(&g1);
@@ -106,6 +108,7 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   auto& g2 = *m.create<Class>();
   auto& s2 = *m.create<Class>();
   auto& p2 = *m.create<Property>();
+  p2.setVisibility(VisibilityKind::PROTECTED);
   g2.getOwnedAttributes().add(p2);
   s2.getGenerals().add(g2);
   ASSERT_TRUE(s2.getInheritedMembers().size() == 1);
@@ -120,6 +123,7 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   auto& g3 = *m.create<Class>();
   auto& s3 = *m.create<Class>();
   auto& p3 = *m.create<Property>();
+  p3.setVisibility(VisibilityKind::PUBLIC);
   g3.getOwnedAttributes().add(p3);
   auto& gen3 = *m.create<Generalization>();
   s3.getGeneralizations().add(gen3);
@@ -135,6 +139,7 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   auto& g4 = *m.create<Class>();
   auto& s4 = *m.create<Class>();
   auto& p4 = *m.create<Property>();
+  p4.setVisibility(VisibilityKind::PROTECTED);
   g4.getOwnedAttributes().add(p4);
   p4.setVisibility(VisibilityKind::PRIVATE);
   s4.getGenerals().add(g4);
@@ -143,6 +148,7 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   auto& g5 = *m.create<Class>();
   auto& s5 = *m.create<Class>();
   auto& p5 = *m.create<Property>();
+  p5.setVisibility(VisibilityKind::PUBLIC);
   g5.getOwnedAttributes().add(p5);
   s5.getGenerals().add(g5);
   p5.setVisibility(VisibilityKind::PRIVATE);
@@ -152,6 +158,7 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   auto& g6 = *m.create<Class>();
   auto& s6 = *m.create<Class>();
   auto& p6 = *m.create<Property>();
+  p6.setVisibility(VisibilityKind::PROTECTED);
   s6.getGenerals().add(g6);
   g6.getOwnedAttributes().add(p6);
   ASSERT_EQ(s6.getInheritedMembers().size(), 1);

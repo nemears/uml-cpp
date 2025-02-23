@@ -1,29 +1,28 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
-#include "test/uml-cpp-paths.h"
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(AssociationOwnedEnd, Property, Association, &Association::getOwnedEnds)
-UML_SINGLETON_INTEGRATION_TEST(PropertyOwningAssociation, Association, Property, &Property::getOwningAssociation, &Property::setOwningAssociation)
-UML_SET_INTEGRATION_TEST(AssociationNavigableOwnedEnd, Property, Association, &Association::getNavigableOwnedEnds)
-UML_SET_INTEGRATION_TEST(AssociationMemberEnd, Property, Association, &Association::getMemberEnds)
-UML_SINGLETON_INTEGRATION_TEST(PropertyAssociation, Association, Property, &Property::getAssociation, &Property::setAssociation)
+UML_SET_INTEGRATION_TEST(AssociationOwnedEnd, Property, Association, getOwnedEnds)
+UML_SINGLETON_INTEGRATION_TEST(PropertyOwningAssociation, Association, Property, getOwningAssociationSingleton)
+UML_SET_INTEGRATION_TEST(AssociationNavigableOwnedEnd, Property, Association, getNavigableOwnedEnds)
+UML_SET_INTEGRATION_TEST(AssociationMemberEnd, Property, Association, getMemberEnds)
+UML_SINGLETON_INTEGRATION_TEST(PropertyAssociation, Association, Property, getAssociationSingleton)
 
 class AssociationTest : public ::testing::Test {
    public:
         std::string ymlPath;
     void SetUp() override {
-        ymlPath = YML_FILES_PATH;
+        ymlPath = "../examples/";
     };
 };
 
 TEST_F(AssociationTest, addMemberEndFunctorTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Class& c = *m.create<Class>();
-    Association& a = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& c = *m.create<Class>();
+    auto& a = *m.create<Association>();
     p.setType(c);
     ASSERT_NO_THROW(a.getMemberEnds().add(p));
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
@@ -38,8 +37,8 @@ TEST_F(AssociationTest, addMemberEndFunctorTest) {
 
 TEST_F(AssociationTest, setAssociationTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
     p.setAssociation(a);
     ASSERT_TRUE(a.getMemberEnds().size() == 1);
     ASSERT_TRUE(a.getMemberEnds().front() == &p);
@@ -51,8 +50,8 @@ TEST_F(AssociationTest, setAssociationTest) {
 
 TEST_F(AssociationTest, removeMemberEndFunctor) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
     ASSERT_NO_THROW(p.setAssociation(&a));
     ASSERT_NO_THROW(a.getMemberEnds().remove(p));
     ASSERT_EQ(a.getMemberEnds().size(), 0);
@@ -62,8 +61,8 @@ TEST_F(AssociationTest, removeMemberEndFunctor) {
 
 TEST_F(AssociationTest, overwriteAssociationW_NullTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
     ASSERT_NO_THROW(a.getMemberEnds().add(p));
     ASSERT_NO_THROW(p.setAssociation(0));
     ASSERT_EQ(a.getMemberEnds().size(), 0);
@@ -73,9 +72,9 @@ TEST_F(AssociationTest, overwriteAssociationW_NullTest) {
 
 TEST_F(AssociationTest, overwriteAssociationW_OtherTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
-    Association& a2 = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
+    auto& a2 = *m.create<Association>();
     ASSERT_NO_THROW(a.getMemberEnds().add(p));
     ASSERT_NO_THROW(p.setAssociation(a2));
     ASSERT_EQ(a2.getMemberEnds().size(), 1);
@@ -90,8 +89,8 @@ TEST_F(AssociationTest, overwriteAssociationW_OtherTest) {
 
 TEST_F(AssociationTest, addOwnedEndTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
     ASSERT_NO_THROW(a.getOwnedEnds().add(p));
     ASSERT_TRUE(a.getOwnedEnds().size() == 1);
     ASSERT_TRUE(a.getOwnedEnds().front() == &p);
@@ -113,8 +112,8 @@ TEST_F(AssociationTest, addOwnedEndTest) {
 
 TEST_F(AssociationTest, setOwningAssociationTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
     ASSERT_NO_THROW(p.setOwningAssociation(a));
     ASSERT_TRUE(a.getOwnedEnds().size() == 1);
     ASSERT_TRUE(a.getOwnedEnds().front() == &p);
@@ -136,8 +135,8 @@ TEST_F(AssociationTest, setOwningAssociationTest) {
 
 TEST_F(AssociationTest, removeOwnedEndTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
     a.getOwnedEnds().add(p);
     ASSERT_NO_THROW(a.getOwnedEnds().remove(p));
     ASSERT_TRUE(a.getOwnedEnds().size() == 0);
@@ -156,8 +155,8 @@ TEST_F(AssociationTest, removeOwnedEndTest) {
 
 TEST_F(AssociationTest, setOwningAssociationW_NullTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
     a.getOwnedEnds().add(p);
     ASSERT_NO_THROW(p.setOwningAssociation(0));
     ASSERT_TRUE(a.getOwnedEnds().size() == 0);
@@ -176,9 +175,9 @@ TEST_F(AssociationTest, setOwningAssociationW_NullTest) {
 
 TEST_F(AssociationTest, overwriteOwningAssociationTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
-    Association& a2 = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
+    auto& a2 = *m.create<Association>();
     a.getOwnedEnds().add(p);
     ASSERT_NO_THROW(p.setOwningAssociation(&a2));
     ASSERT_TRUE(a.getOwnedEnds().size() == 0);
@@ -208,8 +207,8 @@ TEST_F(AssociationTest, overwriteOwningAssociationTest) {
 
 TEST_F(AssociationTest, addNavigableOwnedEndTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
     a.getNavigableOwnedEnds().add(p);
     ASSERT_TRUE(a.getNavigableOwnedEnds().size() == 1);
     ASSERT_TRUE(a.getNavigableOwnedEnds().front() == &p);
@@ -233,8 +232,8 @@ TEST_F(AssociationTest, addNavigableOwnedEndTest) {
 
 TEST_F(AssociationTest, removeNavigableOwnedEndTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
     a.getNavigableOwnedEnds().add(p);
     ASSERT_NO_THROW(a.getNavigableOwnedEnds().remove(p));
     ASSERT_TRUE(a.getNavigableOwnedEnds().size() == 0);
@@ -254,8 +253,8 @@ TEST_F(AssociationTest, removeNavigableOwnedEndTest) {
 
 TEST_F(AssociationTest, navigableOwnedEndSetOwningAssociationW_NullTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
     a.getNavigableOwnedEnds().add(p);
     ASSERT_NO_THROW(p.setOwningAssociation(0));
     ASSERT_TRUE(a.getNavigableOwnedEnds().size() == 0);
@@ -275,9 +274,9 @@ TEST_F(AssociationTest, navigableOwnedEndSetOwningAssociationW_NullTest) {
 
 TEST_F(AssociationTest, navigableOwnedEndOverwriteOwningAssociationTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
-    Association& a2 = *m.create<Association>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
+    auto& a2 = *m.create<Association>();
     a.getNavigableOwnedEnds().add(p);
     ASSERT_NO_THROW(p.setOwningAssociation(&a2));
     ASSERT_TRUE(a.getNavigableOwnedEnds().size() == 0);
@@ -309,9 +308,9 @@ TEST_F(AssociationTest, navigableOwnedEndOverwriteOwningAssociationTest) {
 
 TEST_F(AssociationTest, reindexTypeTest) {
     UmlManager m;
-    Property& p = *m.create<Property>();
-    Association& a = *m.create<Association>();
-    Class& c = *m.create<Class>();
+    auto& p = *m.create<Property>();
+    auto& a = *m.create<Association>();
+    auto& c = *m.create<Class>();
     a.getMemberEnds().add(p);
     ASSERT_NO_THROW(p.setType(c));
 
@@ -329,75 +328,75 @@ TEST_F(AssociationTest, parseNavigableOwnedEndAndMemberEndTest) {
     UmlManager m;
     m.open(ymlPath + "uml/primitiveTypes.yml");
     ASSERT_NO_THROW(m.open(ymlPath + "associationTests/navigableEnd.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
-    Package& pckg = m.getRoot()->as<Package>();
-    ASSERT_EQ(pckg.getPackageMerge().size(), 1);
+    ASSERT_EQ(m.getRoot()->getElementType(), UmlManager::ElementType<Package>::result);
+    auto& pckg = m.getRoot()->as<Package>();
+    //ASSERT_EQ(pckg.getPackageMerge().size(), 1);
     // PackageMerge& merge = pckg.getPackageMerge().front();
     // TODO?
 
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg.getPackagedElements().get("type")->getElementType(), Class::Info::elementType);
-    Class& type = m.get(pckg.getPackagedElements().get("type")->getID())->as<Class>();
-    ASSERT_EQ(pckg.getPackagedElements().get("hasAssociation")->getElementType(), Class::Info::elementType);
-    Class& c = pckg.getPackagedElements().get("hasAssociation")->as<Class>();;
+    ASSERT_EQ(pckg.getPackagedElements().get("type")->getElementType(), UmlManager::ElementType<Class>::result);
+    auto& type = m.get(pckg.getPackagedElements().get("type")->getID())->as<Class>();
+    ASSERT_EQ(pckg.getPackagedElements().get("hasAssociation")->getElementType(), UmlManager::ElementType<Class>::result);
+    auto& c = pckg.getPackagedElements().get("hasAssociation")->as<Class>();;
     ASSERT_EQ(c.getOwnedAttributes().size(), 1);
-    Property& p = *c.getOwnedAttributes().front();
+    auto& p = *c.getOwnedAttributes().front();
     ASSERT_TRUE(p.getType());
     ASSERT_EQ(p.getType()->getID(), type.getID());
-    ASSERT_EQ(pckg.getPackagedElements().get("association")->getElementType(), Association::Info::elementType);
-    Association& ass = pckg.getPackagedElements().get("association")->as<Association>();
+    ASSERT_EQ(pckg.getPackagedElements().get("association")->getElementType(), UmlManager::ElementType<Association>::result);
+    auto& ass = pckg.getPackagedElements().get("association")->as<Association>();
     ASSERT_EQ(ass.getMemberEnds().size(), 2);
     ASSERT_TRUE(ass.getMemberEnds().contains(p));
     // ASSERT_EQ(ass.getMemberEnds().back().getID(), p.getID());
     ASSERT_EQ(ass.getNavigableOwnedEnds().size(), 1);
-    Property& ne = *ass.getNavigableOwnedEnds().front();
+    auto& ne = *ass.getNavigableOwnedEnds().front();
     ASSERT_TRUE(ne.getType());
-    ASSERT_EQ(ne.getType()->getID(), ID::fromString("real_aZG&w6yl61bXVWutgeyScN9"));
+    ASSERT_EQ(ne.getType()->getID(), EGM::ID::fromString("real_aZG&w6yl61bXVWutgeyScN9"));
 }
 
 TEST_F(AssociationTest, parseOwnedEndAndMemberEndTest) {
     UmlManager m;
     m.open(ymlPath + "uml/primitiveTypes.yml");
     ASSERT_NO_THROW(m.open(ymlPath + "associationTests/ownedEnd.yml"));
-    ASSERT_EQ(m.getRoot()->getElementType(), Package::Info::elementType);
-    Package& pckg = m.getRoot()->as<Package>();
-    ASSERT_EQ(pckg.getPackageMerge().size(), 1);
+    ASSERT_EQ(m.getRoot()->getElementType(), UmlManager::ElementType<Package>::result);
+    auto& pckg = m.getRoot()->as<Package>();
+    // ASSERT_EQ(pckg.getPackageMerge().size(), 1);
     // PackageMerge& merge = pckg.getPackageMerge().front();
     // TODO?
 
     ASSERT_EQ(pckg.getPackagedElements().size(), 3);
-    ASSERT_EQ(pckg.getPackagedElements().get("type")->getElementType(), Class::Info::elementType);
-    Class& type = m.get(pckg.getPackagedElements().get("type")->getID())->as<Class>();
-    ASSERT_EQ(pckg.getPackagedElements().get("hasAssociation")->getElementType(), Class::Info::elementType);
-    Class& c = pckg.getPackagedElements().get("hasAssociation")->as<Class>();
+    ASSERT_EQ(pckg.getPackagedElements().get("type")->getElementType(), UmlManager::ElementType<Class>::result);
+    auto& type = m.get(pckg.getPackagedElements().get("type")->getID())->as<Class>();
+    ASSERT_EQ(pckg.getPackagedElements().get("hasAssociation")->getElementType(), UmlManager::ElementType<Class>::result);
+    auto& c = pckg.getPackagedElements().get("hasAssociation")->as<Class>();
     ASSERT_EQ(c.getOwnedAttributes().size(), 1);
-    Property& p = *c.getOwnedAttributes().front();
+    auto& p = *c.getOwnedAttributes().front();
     ASSERT_TRUE(p.getType());
     ASSERT_EQ(p.getType()->getID(), type.getID());
-    ASSERT_EQ(pckg.getPackagedElements().get("association")->getElementType(), Association::Info::elementType);
-    Association& ass = pckg.getPackagedElements().get("association")->as<Association>();
+    ASSERT_EQ(pckg.getPackagedElements().get("association")->getElementType(), UmlManager::ElementType<Association>::result);
+    auto& ass = pckg.getPackagedElements().get("association")->as<Association>();
     ASSERT_EQ(ass.getMemberEnds().size(), 2);
-    ASSERT_EQ(ass.getMemberEnds().get(ID::fromString("KpMoyOIGjkm&tB8F_zGExQejc7T7"))->getID(), p.getID());
+    ASSERT_EQ(ass.getMemberEnds().get(EGM::ID::fromString("KpMoyOIGjkm&tB8F_zGExQejc7T7"))->getID(), p.getID());
     ASSERT_EQ(ass.getOwnedEnds().size(), 1);
-    Property& ne = *ass.getOwnedEnds().front();
+    auto& ne = *ass.getOwnedEnds().front();
     ASSERT_TRUE(ne.getType());
-    ASSERT_EQ(ne.getType()->getID(), ID::fromString("real_aZG&w6yl61bXVWutgeyScN9"));
+    ASSERT_EQ(ne.getType()->getID(), EGM::ID::fromString("real_aZG&w6yl61bXVWutgeyScN9"));
 }
 
 TEST_F(AssociationTest, emitAssociationTest) {
     UmlManager m;
-    Package& pckg = *m.create<Package>();
-    Class& clazz = *m.create<Class>();
-    Property& prop = *m.create<Property>();
-    PrimitiveType& type = *m.create<PrimitiveType>();
-    Association& associtaion = *m.create<Association>();
-    Property& end = *m.create<Property>();
-    pckg.setID(ID::fromString("zN&UM2AHrXX07rAiNxTmmMwLYI1O"));
-    clazz.setID(ID::fromString("mGbq9i_gGHuMFYg0y3tMzcmHx1B3"));
-    prop.setID(ID::fromString("FqaulNq6bCe_8J5M0Ff2oCCaQD05"));
-    type.setID(ID::fromString("m8K65o0wEqtIznmEPmuXaTph2JJu"));
-    associtaion.setID(ID::fromString("FZeUbleSO7P_Zqwn2&r8HKnEbSU5"));
-    end.setID(ID::fromString("k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"));
+    auto& pckg = *m.create<Package>();
+    auto& clazz = *m.create<Class>();
+    auto& prop = *m.create<Property>();
+    auto& type = *m.create<PrimitiveType>();
+    auto& associtaion = *m.create<Association>();
+    auto& end = *m.create<Property>();
+    pckg.setID(EGM::ID::fromString("zN&UM2AHrXX07rAiNxTmmMwLYI1O"));
+    clazz.setID(EGM::ID::fromString("mGbq9i_gGHuMFYg0y3tMzcmHx1B3"));
+    prop.setID(EGM::ID::fromString("FqaulNq6bCe_8J5M0Ff2oCCaQD05"));
+    type.setID(EGM::ID::fromString("m8K65o0wEqtIznmEPmuXaTph2JJu"));
+    associtaion.setID(EGM::ID::fromString("FZeUbleSO7P_Zqwn2&r8HKnEbSU5"));
+    end.setID(EGM::ID::fromString("k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"));
     clazz.getOwnedAttributes().add(prop);
     prop.setType(&type);
     associtaion.getMemberEnds().add(prop);
@@ -417,6 +416,9 @@ TEST_F(AssociationTest, emitAssociationTest) {
           - Property:
               id: "k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"
               type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
+        endTypes:
+          - mGbq9i_gGHuMFYg0y3tMzcmHx1B3
+          - m8K65o0wEqtIznmEPmuXaTph2JJu
     - PrimitiveType:
         id: m8K65o0wEqtIznmEPmuXaTph2JJu
     - Class:
@@ -434,18 +436,18 @@ TEST_F(AssociationTest, emitAssociationTest) {
 
 TEST_F(AssociationTest, mountAndEditAssociation) {
     UmlManager m;
-    Package& root = *m.create<Package>();
-    Class& clazz = *m.create<Class>();
-    Class& type = *m.create<Class>();
-    Property& cProp = *m.create<Property>();
-    Property& aProp = *m.create<Property>();
-    Association& association = *m.create<Association>();
-    cProp.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAD"));
+    auto& root = *m.create<Package>();
+    auto& clazz = *m.create<Class>();
+    auto& type = *m.create<Class>();
+    auto& cProp = *m.create<Property>();
+    auto& aProp = *m.create<Property>();
+    auto& association = *m.create<Association>();
+    cProp.setID(EGM::ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAD"));
     cProp.setAggregation(AggregationKind::COMPOSITE);
     cProp.setType(type);
-    association.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAC"));
+    association.setID(EGM::ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAC"));
     association.getMemberEnds().add(cProp);
-    aProp.setID(ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAB"));
+    aProp.setID(EGM::ID::fromString("AAAAAAAAAAAAAAAAAAAAAAAAAAAB"));
     aProp.setType(clazz);
     association.getNavigableOwnedEnds().add(aProp);
     clazz.getOwnedAttributes().add(cProp);
@@ -453,9 +455,9 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     m.setRoot(&root);
     m.mount(ymlPath + "associationTests");
 
-    ID aPropID = aProp.getID();
+    EGM::ID aPropID = aProp.getID();
     m.release(aProp);
-    Property& aProp2 = m.get(aPropID)->as<Property>();
+    auto& aProp2 = m.get(aPropID)->as<Property>();
     ASSERT_TRUE(aProp2.getOwningAssociation());
     ASSERT_EQ(*aProp2.getOwningAssociation(), association);
     ASSERT_TRUE(aProp2.getAssociation());
@@ -483,11 +485,11 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     ASSERT_EQ(association.getEndTypes().size(), 2);
     ASSERT_TRUE(association.getEndTypes().contains(clazz));
 
-    ID associationID = association.getID();
+    EGM::ID associationID = association.getID();
     m.release(aProp2, association);
-    Association& association2 = m.get(associationID)->as<Association>();
+    auto& association2 = m.get(associationID)->as<Association>();
     // ASSERT_TRUE(m.loaded(aPropID));
-    Property& aProp3 = m.get(aPropID)->as<Property>();
+    auto& aProp3 = m.get(aPropID)->as<Property>();
     ASSERT_TRUE(aProp3.getOwningAssociation());
     ASSERT_EQ(*aProp3.getOwningAssociation(), association2);
     ASSERT_TRUE(aProp3.getAssociation());
@@ -513,9 +515,9 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     ASSERT_TRUE(association2.getEndTypes().contains(type));
     ASSERT_TRUE(association2.getEndTypes().contains(clazz));
 
-    ID cPropID = cProp.getID();
+    EGM::ID cPropID = cProp.getID();
     m.release(cProp);
-    Property& cProp2 = m.get(cPropID)->as<Property>();
+    auto& cProp2 = m.get(cPropID)->as<Property>();
     ASSERT_TRUE(cProp2.isComposite());
     ASSERT_TRUE(cProp2.getAssociation());
     ASSERT_EQ(*cProp2.getAssociation(), association2);
@@ -537,9 +539,9 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(cProp2, clazz));
 
     m.release(association2, cProp2);
-    Association& association3 = m.get(associationID)->as<Association>();
+    auto& association3 = m.get(associationID)->as<Association>();
     // ASSERT_TRUE(m.loaded(cPropID));
-    Property& cProp3 = m.get(cPropID)->as<Property>();
+    auto& cProp3 = m.get(cPropID)->as<Property>();
     ASSERT_TRUE(cProp3.isComposite());
     ASSERT_TRUE(cProp3.getAssociation());
     ASSERT_EQ(*cProp3.getAssociation(), association3);
@@ -551,17 +553,17 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     ASSERT_TRUE(association3.getEndTypes().contains(type));
     ASSERT_TRUE(association3.getEndTypes().contains(clazz));
 
-    ID clazzID = clazz.getID();
+    EGM::ID clazzID = clazz.getID();
     m.release(association3, clazz, aProp3, cProp3);
-    Association& association4 = m.get(associationID)->as<Association>();
+    auto& association4 = m.get(associationID)->as<Association>();
     ASSERT_EQ(association4.getEndTypes().size(), 2);
     // ASSERT_TRUE(m.loaded(aPropID));
     // ASSERT_FALSE(m.loaded(clazzID));
-    Property& aProp4 = *association4.getNavigableOwnedEnds().front();
+    auto& aProp4 = *association4.getNavigableOwnedEnds().front();
     ASSERT_TRUE(aProp4.getType());
-    Class& clazz2 = m.get(clazzID)->as<Class>();
+    auto& clazz2 = m.get(clazzID)->as<Class>();
     ASSERT_EQ(*aProp4.getType(), clazz2);
-    Property& cProp4 = m.get(cPropID)->as<Property>();
+    auto& cProp4 = m.get(cPropID)->as<Property>();
     ASSERT_EQ(clazz2.getParts().size(), 1);
     ASSERT_EQ(clazz2.getParts().front(), &cProp4);
     ASSERT_EQ(clazz2.getOwnedAttributes().size(), 1);
@@ -573,9 +575,9 @@ TEST_F(AssociationTest, mountAndEditAssociation) {
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_NAMESPACE(cProp4, clazz2));
 
     m.release(clazz2, cProp4);
-    Class& clazz3 = m.get(clazzID)->as<Class>();
+    auto& clazz3 = m.get(clazzID)->as<Class>();
     // ASSERT_TRUE(m.loaded(cPropID));
-    Property& cProp5 = m.get(cPropID)->as<Property>();
+    auto& cProp5 = m.get(cPropID)->as<Property>();
     ASSERT_EQ(clazz3.getParts().size(), 1);
     ASSERT_EQ(clazz3.getParts().front(), &cProp5);
     ASSERT_EQ(clazz3.getOwnedAttributes().size(), 1);

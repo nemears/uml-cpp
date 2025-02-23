@@ -5,7 +5,7 @@
 
 namespace UML {
     template <class>
-    class Classifier;
+    class EncapsulatedClassifier;
 
     template <class>
     class Property;
@@ -13,14 +13,13 @@ namespace UML {
     template <class ManagerPolicy>
     class Class : public ManagerPolicy {
         public:
-            using Info = EGM::TypeInfo<Class, EGM::TemplateTypeList<Classifier>>;
+            using Info = EGM::TypeInfo<Class, EGM::TemplateTypeList<EncapsulatedClassifier>>;
         protected:
             using OwnedAttributesSet = IndexableSet<Property, Class>;
             OwnedAttributesSet m_classOwnedAttributes = OwnedAttributesSet(this);
         private:
             void init() {
-                m_classOwnedAttributes.subsets(ManagerPolicy::m_attributes);
-                m_classOwnedAttributes.subsets(ManagerPolicy::m_ownedMembers);
+                m_classOwnedAttributes.redefines(ManagerPolicy::m_ownedAttributes);
                 m_classOwnedAttributes.opposite(&OwnedAttributesSet::ManagedType::getClassSingleton);
             }
         public:

@@ -5,8 +5,8 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1740326967,
-        "narHash": "sha256-NOItGUJa0mmyEs/kZV43EEIGLyrfd8cbbZsvmjEeJWw=",
+        "lastModified": 1740339463,
+        "narHash": "sha256-TrXdYmDoRxP0GbYiYOvHwuoNLjSwNoe3qfirN/7tiPs=",
         "path": "/home/emory/Projects/egm",
         "type": "path"
       },

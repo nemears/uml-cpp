@@ -2,14 +2,17 @@
 
 #include "egm/egm.h"
 #include "uml/types/abstraction.h"
+#include "uml/types/association.h"
 #include "uml/types/behavioralFeature.h"
 #include "uml/types/class.h"
 #include "uml/types/classifier.h"
 #include "uml/types/comment.h"
+#include "uml/types/connectableElement.h"
 #include "uml/types/dataType.h"
 #include "uml/types/dependency.h"
 #include "uml/types/directedRelationship.h"
 #include "uml/types/element.h"
+#include "uml/types/encapsulatedClassifier.h"
 #include "uml/types/feature.h"
 #include "uml/types/generalization.h"
 #include "uml/types/instanceSpecification.h"
@@ -34,6 +37,7 @@
 #include "uml/types/relationship.h"
 #include "uml/types/slot.h"
 #include "uml/types/structuralFeature.h"
+#include "uml/types/structuredClassifier.h"
 #include "uml/types/type.h"
 #include "uml/types/typedElement.h"
 #include "uml/types/usage.h"
@@ -42,14 +46,17 @@
 namespace UML {
     using UmlTypes = EGM::TemplateTypeList<
         Abstraction,
+        Association,
         BehavioralFeature,
         Class,
         Classifier,
         Comment,
+        ConnectableElement,
         DataType,
         Dependency,
         DirectedRelationship,
         Element,
+        EncapsulatedClassifier,
         Feature,
         Generalization,
         InstanceSpecification,
@@ -74,6 +81,7 @@ namespace UML {
         Relationship,
         Slot,
         StructuralFeature,
+        StructuredClassifier,
         Type,
         TypedElement,
         Usage,

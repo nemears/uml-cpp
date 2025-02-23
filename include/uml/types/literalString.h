@@ -17,7 +17,7 @@ namespace UML {
         public:
             MANAGED_ELEMENT_CONSTRUCTOR(LiteralString);
             std::string getValue() { return m_value; }
-            void setValue(std::string& val) { m_value = val; }
+            void setValue(std::string val) { m_value = val; }
     };
 }
 

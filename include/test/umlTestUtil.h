@@ -4,25 +4,25 @@
 
 namespace UML {
 
-    // inline void ASSERT_RESTORED_NAMESPACE(NamedElement& el, Namespace& nmspc) {
-    //     ASSERT_TRUE(el.getNamespace());
-    //     ASSERT_EQ(*el.getNamespace(), nmspc);
-    //     // ASSERT_TRUE(el.getMemberNamespace().count(nmspc.getID()));
-    //     ASSERT_TRUE(el.getOwner());
-    //     ASSERT_EQ(*el.getOwner(), nmspc);
-    //     ASSERT_TRUE(nmspc.getOwnedMembers().contains(el.getID()));
-    //     ASSERT_TRUE(nmspc.getMembers().contains(el.getID()));
-    //     ASSERT_TRUE(nmspc.getOwnedElements().contains(el.getID()));
-    // }
+    inline void ASSERT_RESTORED_NAMESPACE(UmlManager::Implementation<NamedElement>& el, UmlManager::Implementation<Namespace>& nmspc) {
+        ASSERT_TRUE(el.getNamespace());
+        ASSERT_EQ(*el.getNamespace(), nmspc);
+        // ASSERT_TRUE(el.getMemberNamespace().count(nmspc.getID()));
+        ASSERT_TRUE(el.getOwner());
+        ASSERT_EQ(*el.getOwner(), nmspc);
+        ASSERT_TRUE(nmspc.getOwnedMembers().contains(el.getID()));
+        ASSERT_TRUE(nmspc.getMembers().contains(el.getID()));
+        ASSERT_TRUE(nmspc.getOwnedElements().contains(el.getID()));
+    }
 
-    // inline void ASSERT_RESTORED_OWNING_PACKAGE(PackageableElement& el, Package& pckg) {
-    //     ASSERT_TRUE(el.getOwningPackage());
-    //     ASSERT_EQ(*el.getOwningPackage(), pckg);
-    //     ASSERT_TRUE(pckg.getPackagedElements().contains(el.getID()));
-    //     ASSERT_RESTORED_NAMESPACE(el, pckg);
-    // }
+    inline void ASSERT_RESTORED_OWNING_PACKAGE(UmlManager::Implementation<PackageableElement>& el, UmlManager::Implementation<Package>& pckg) {
+        ASSERT_TRUE(el.getOwningPackage());
+        ASSERT_EQ(*el.getOwningPackage(), pckg);
+        ASSERT_TRUE(pckg.getPackagedElements().contains(el.getID()));
+        ASSERT_RESTORED_NAMESPACE(el, pckg);
+    }
 
-    // inline void recursiveSetContains(ID id, AbstractSet* set) {
+    // inline void recursiveSetContains(EGM::ID id, EGM::AbstractSet* set) {
     //     ASSERT_TRUE(set->contains(id));
     //     for (auto& supserSet : set->m_superSets) {
     //         ASSERT_NO_FATAL_FAILURE(recursiveSetContains(id, supserSet));

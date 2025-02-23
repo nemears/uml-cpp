@@ -2,44 +2,43 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
-#include "test/uml-cpp-paths.h"
 
 using namespace UML;
 
-UML_SET_INTEGRATION_TEST(InstanceSpecificationSlots, Slot, InstanceSpecification, &InstanceSpecification::getSlots)
-UML_SINGLETON_INTEGRATION_TEST(InstanceSpecificationSpecification, LiteralUnlimitedNatural, InstanceSpecification, &InstanceSpecification::getSpecification, &InstanceSpecification::setSpecification)
-UML_SET_INTEGRATION_TEST(InstanceSpecificationClassifiers, Class, InstanceSpecification, &InstanceSpecification::getClassifiers)
-UML_SINGLETON_INTEGRATION_TEST(InstanceValueInstance, InstanceSpecification, InstanceValue, &InstanceValue::getInstance, &InstanceValue::setInstance)
+UML_SET_INTEGRATION_TEST(InstanceSpecificationSlots, Slot, InstanceSpecification, getSlots)
+UML_SINGLETON_INTEGRATION_TEST(InstanceSpecificationSpecification, LiteralUnlimitedNatural, InstanceSpecification, getSpecificationSingleton)
+UML_SET_INTEGRATION_TEST(InstanceSpecificationClassifiers, Class, InstanceSpecification, getClassifiers)
+UML_SINGLETON_INTEGRATION_TEST(InstanceValueInstance, InstanceSpecification, InstanceValue, getInstanceSingleton)
 
 class InstanceSpecificationTest : public ::testing::Test {
     public:
         std::string ymlPath;
     void SetUp() override {
-        ymlPath = YML_FILES_PATH;
+        ymlPath = "../examples/";
     };
 };
 
 TEST_F(InstanceSpecificationTest, setClassifierAsClass) {
     UmlManager m;
-    Class& c = *m.create<Class>();
-    InstanceSpecification& i = *m.create<InstanceSpecification>();
+    auto& c = *m.create<Class>();
+    auto& i = *m.create<InstanceSpecification>();
     ASSERT_NO_THROW(i.getClassifiers().add(c));
     EXPECT_TRUE(i.getClassifiers().front()->getID() == c.getID());
 }
 
 TEST_F(InstanceSpecificationTest, setStringValueSlots) {
     UmlManager m;
-    Class& c = *m.create<Class>();
-    Property& stringP = *m.create<Property>();
-    PrimitiveType& stringPrim = *m.create<PrimitiveType>();
+    auto& c = *m.create<Class>();
+    auto& stringP = *m.create<Property>();
+    auto& stringPrim = *m.create<PrimitiveType>();
     stringP.setType(stringPrim);
     c.getOwnedAttributes().add(stringP);
-    LiteralString& ls = *m.create<LiteralString>();
+    auto& ls = *m.create<LiteralString>();
     ls.setValue("test");
-    Slot& stringSlot = *m.create<Slot>();
+    auto& stringSlot = *m.create<Slot>();
     stringSlot.setDefiningFeature(&stringP);
     stringSlot.getValues().add(ls);
-    InstanceSpecification& i = *m.create<InstanceSpecification>();
+    auto& i = *m.create<InstanceSpecification>();
     i.getSlots().add(stringSlot);
     ASSERT_TRUE(i.getSlots().front()->getID() == stringSlot.getID());
     ASSERT_TRUE(i.getSlots().front()->getDefiningFeature()->getID() == stringP.getID());
@@ -48,21 +47,21 @@ TEST_F(InstanceSpecificationTest, setStringValueSlots) {
 
 TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
     UmlManager m;
-    Class& c = *m.create<Class>();
+    auto& c = *m.create<Class>();
     c.setName("typeA");
-    Class& b = *m.create<Class>();
+    auto& b = *m.create<Class>();
     b.setName("typeB");
-    Property& bProp = *m.create<Property>();
+    auto& bProp = *m.create<Property>();
     bProp.setName("b");
     bProp.setType(b);
     c.getOwnedAttributes().add(bProp);
-    InstanceSpecification& bInst = *m.create<InstanceSpecification>();
+    auto& bInst = *m.create<InstanceSpecification>();
     bInst.getClassifiers().add(b);
-    InstanceSpecification& aInst = *m.create<InstanceSpecification>();
+    auto& aInst = *m.create<InstanceSpecification>();
     aInst.getClassifiers().add(c);
-    InstanceValue& bVal = *m.create<InstanceValue>();
+    auto& bVal = *m.create<InstanceValue>();
     bVal.setInstance(&bInst);
-    Slot& aSlot = *m.create<Slot>();
+    auto& aSlot = *m.create<Slot>();
     aSlot.setDefiningFeature(&bProp);
     aSlot.getValues().add(bVal);
     aInst.getSlots().add(aSlot);
@@ -74,8 +73,8 @@ TEST_F(InstanceSpecificationTest, setSlotAsInstanceValue) {
 
 TEST_F(InstanceSpecificationTest, addSlotFunctorTest) {
     UmlManager m;
-    InstanceSpecification& i = *m.create<InstanceSpecification>();
-    Slot& s = *m.create<Slot>();
+    auto& i = *m.create<InstanceSpecification>();
+    auto& s = *m.create<Slot>();
     i.getSlots().add(s);
     ASSERT_EQ(i.getSlots().get(s.getID()), &s);
     ASSERT_EQ(i.getSlots().size(), 1);
@@ -87,8 +86,8 @@ TEST_F(InstanceSpecificationTest, addSlotFunctorTest) {
 
 TEST_F(InstanceSpecificationTest, SetOwningInstanceFunctionalityTest) {
     UmlManager m;
-    InstanceSpecification& i = *m.create<InstanceSpecification>();
-    Slot& s = *m.create<Slot>();
+    auto& i = *m.create<InstanceSpecification>();
+    auto& s = *m.create<Slot>();
     s.setOwningInstance(i);
     ASSERT_EQ(i.getSlots().get(s.getID()), &s);
     ASSERT_EQ(i.getSlots().size(), 1);
@@ -100,8 +99,8 @@ TEST_F(InstanceSpecificationTest, SetOwningInstanceFunctionalityTest) {
 
 TEST_F(InstanceSpecificationTest, removeSlotFunctorTest) {
     UmlManager m;
-    InstanceSpecification& i = *m.create<InstanceSpecification>();
-    Slot& s = *m.create<Slot>();
+    auto& i = *m.create<InstanceSpecification>();
+    auto& s = *m.create<Slot>();
     s.setOwningInstance(&i);
     ASSERT_NO_THROW(i.getSlots().remove(s));
     ASSERT_TRUE(i.getSlots().size() == 0);
@@ -112,8 +111,8 @@ TEST_F(InstanceSpecificationTest, removeSlotFunctorTest) {
 
 TEST_F(InstanceSpecificationTest, setAndRemoveSpecificationTest) {
     UmlManager m;
-    InstanceSpecification& inst = *m.create<InstanceSpecification>();
-    LiteralString& str = *m.create<LiteralString>();
+    auto& inst = *m.create<InstanceSpecification>();
+    auto& str = *m.create<LiteralString>();
     inst.setSpecification(&str);
     ASSERT_TRUE(inst.getSpecification());
     ASSERT_EQ(inst.getSpecification()->getID(), str.getID());
@@ -148,17 +147,17 @@ TEST_F(InstanceSpecificationTest, setAndRemoveSpecificationTest) {
 // }
 
 TEST_F(InstanceSpecificationTest, forwardClassifierTest) {
-    ElementPtr el = 0;
+    UmlManager::Pointer<Element> el = 0;
     UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "instanceSpecificationTests/forwardClassifier.yml"));
     el = m.getRoot();
-    ASSERT_EQ(el->getElementType(), Package::Info::elementType);
-    PackagePtr pckg = el;
+    ASSERT_EQ(el->getElementType(), UmlManager::ElementType<Package>::result);
+    UmlManager::Pointer<Package> pckg = el;
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("W2gUELk0mKh&Kqc5fjFCOuppln2b"))->getElementType() == Class::Info::elementType);
-    ClassPtr c = pckg->getPackagedElements().get(ID::fromString("W2gUELk0mKh&Kqc5fjFCOuppln2b"));
-    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("8SXVdBHWl9N6o6Uut3WImOPk6Ngw"))->getElementType() == InstanceSpecification::Info::elementType);
-    InstanceSpecificationPtr i = pckg->getPackagedElements().get(ID::fromString("8SXVdBHWl9N6o6Uut3WImOPk6Ngw"));
+    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("W2gUELk0mKh&Kqc5fjFCOuppln2b"))->getElementType() == UmlManager::ElementType<Class>::result);
+    auto c = pckg->getPackagedElements().get(EGM::ID::fromString("W2gUELk0mKh&Kqc5fjFCOuppln2b"));
+    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("8SXVdBHWl9N6o6Uut3WImOPk6Ngw"))->getElementType() == UmlManager::ElementType<InstanceSpecification>::result);
+    UmlManager::Pointer<InstanceSpecification> i = pckg->getPackagedElements().get(EGM::ID::fromString("8SXVdBHWl9N6o6Uut3WImOPk6Ngw"));
     ASSERT_EQ(i->getClassifiers().size(), 1);
     ASSERT_EQ(i->getClassifiers().front(), c);
 }
@@ -166,13 +165,13 @@ TEST_F(InstanceSpecificationTest, forwardClassifierTest) {
 TEST_F(InstanceSpecificationTest, backwardsClassifierTest) {
     UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "instanceSpecificationTests/backwardsClassifier.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == Package::Info::elementType);
-    Package* pckg = &m.getRoot()->as<Package>();
+    ASSERT_TRUE(m.getRoot()->getElementType() == UmlManager::ElementType<Package>::result);
+    auto* pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("HQci2EpoewLIakXPsMAjHKpLkByC"))->getElementType() == InstanceSpecification::Info::elementType);
-    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("wkz5zWQPLT7RaxpqT3RDFMeF0bA7"))->getElementType() == Class::Info::elementType);
-    ClassPtr c = pckg->getPackagedElements().get(ID::fromString("wkz5zWQPLT7RaxpqT3RDFMeF0bA7"));
-    InstanceSpecificationPtr i = pckg->getPackagedElements().get(ID::fromString("HQci2EpoewLIakXPsMAjHKpLkByC"));
+    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("HQci2EpoewLIakXPsMAjHKpLkByC"))->getElementType() == UmlManager::ElementType<InstanceSpecification>::result);
+    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("wkz5zWQPLT7RaxpqT3RDFMeF0bA7"))->getElementType() == UmlManager::ElementType<Class>::result);
+    auto c = pckg->getPackagedElements().get(EGM::ID::fromString("wkz5zWQPLT7RaxpqT3RDFMeF0bA7"));
+    UmlManager::Pointer<InstanceSpecification> i = pckg->getPackagedElements().get(EGM::ID::fromString("HQci2EpoewLIakXPsMAjHKpLkByC"));
     ASSERT_EQ(i->getClassifiers().size(), 1);
     ASSERT_EQ(i->getClassifiers().front(), c);
 }
@@ -180,61 +179,61 @@ TEST_F(InstanceSpecificationTest, backwardsClassifierTest) {
 TEST_F(InstanceSpecificationTest, basicSlotTest) {
     UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "instanceSpecificationTests/basicSlot.yml"));
-    ASSERT_TRUE(m.getRoot()->getElementType() == Package::Info::elementType);
-    PackagePtr pckg = &m.getRoot()->as<Package>();
+    ASSERT_TRUE(m.getRoot()->getElementType() == UmlManager::ElementType<Package>::result);
+    auto pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("sQCzPFXcFEeTenYV0l8pGDwWTpo1"))->getElementType() == InstanceSpecification::Info::elementType);
-    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("efp5gW8d2yV5b9bKtY&OmBHJpUYw"))->getElementType() == Class::Info::elementType);
-    ClassPtr c = pckg->getPackagedElements().get(ID::fromString("efp5gW8d2yV5b9bKtY&OmBHJpUYw"));
-    InstanceSpecification& i = pckg->getPackagedElements().get(ID::fromString("sQCzPFXcFEeTenYV0l8pGDwWTpo1"))->as<InstanceSpecification>();
+    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("sQCzPFXcFEeTenYV0l8pGDwWTpo1"))->getElementType() == UmlManager::ElementType<InstanceSpecification>::result);
+    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("efp5gW8d2yV5b9bKtY&OmBHJpUYw"))->getElementType() == UmlManager::ElementType<Class>::result);
+    UmlManager::Pointer<Class> c = pckg->getPackagedElements().get(EGM::ID::fromString("efp5gW8d2yV5b9bKtY&OmBHJpUYw"));
+    auto& i = pckg->getPackagedElements().get(EGM::ID::fromString("sQCzPFXcFEeTenYV0l8pGDwWTpo1"))->as<InstanceSpecification>();
     ASSERT_EQ(i.getClassifiers().size(), 1);
     ASSERT_EQ(i.getClassifiers().front(), c);
     ASSERT_TRUE(i.getSlots().size() == 1);
     ASSERT_TRUE(c->getOwnedAttributes().size() == 1);
-    SlotPtr s = i.getSlots().front();
-    PropertyPtr p = c->getOwnedAttributes().front();
+    auto s = i.getSlots().front();
+    auto p = c->getOwnedAttributes().front();
     ASSERT_TRUE(s->getDefiningFeature() == p);
     ASSERT_TRUE(*s->getOwningInstance() == i);
 }
 
 TEST_F(InstanceSpecificationTest, instanceValueSlot) {
-    ElementPtr el = 0;
+    UmlManager::Pointer<Element> el = 0;
     UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "instanceSpecificationTests/instanceSlot.yml"));
     el = m.getRoot();
-    ASSERT_TRUE(el->getElementType() == Package::Info::elementType);
-    PackagePtr pckg = el;
+    ASSERT_TRUE(el->getElementType() == UmlManager::ElementType<Package>::result);
+    UmlManager::Pointer<Package> pckg = el;
     ASSERT_TRUE(pckg->getPackagedElements().size() == 4);
-    ASSERT_TRUE(pckg->getPackagedElements().get("clazz1")->getElementType() == Class::Info::elementType);
-    ClassPtr c1 = pckg->getPackagedElements().get("clazz1");
+    ASSERT_TRUE(pckg->getPackagedElements().get("clazz1")->getElementType() == UmlManager::ElementType<Class>::result);
+    auto c1 = pckg->getPackagedElements().get("clazz1");
     ASSERT_TRUE(c1->getName().compare("clazz1") == 0);
-    ASSERT_TRUE(pckg->getPackagedElements().get("clazz2")->getElementType() == Class::Info::elementType);
-    ClassPtr c2 = pckg->getPackagedElements().get("clazz2");
+    ASSERT_TRUE(pckg->getPackagedElements().get("clazz2")->getElementType() == UmlManager::ElementType<Class>::result);
+    UmlManager::Pointer<Class> c2 = pckg->getPackagedElements().get("clazz2");
     ASSERT_TRUE(c2->getName().compare("clazz2") == 0);
     ASSERT_TRUE(c2->getOwnedAttributes().size() == 1);
-    PropertyPtr p = c2->getOwnedAttributes().front();
+    auto p = c2->getOwnedAttributes().front();
     ASSERT_TRUE(p->getType() == c1);
-    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("x2zUOks6utCje0z&ID4EOM91HJuj"))->getElementType() == InstanceSpecification::Info::elementType);
-    InstanceSpecificationPtr i1 = pckg->getPackagedElements().get(ID::fromString("x2zUOks6utCje0z&ID4EOM91HJuj"));
+    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("x2zUOks6utCje0z&ID4EOM91HJuj"))->getElementType() == UmlManager::ElementType<InstanceSpecification>::result);
+    UmlManager::Pointer<InstanceSpecification> i1 = pckg->getPackagedElements().get(EGM::ID::fromString("x2zUOks6utCje0z&ID4EOM91HJuj"));
     ASSERT_EQ(i1->getClassifiers().size(), 1);
     ASSERT_EQ(i1->getClassifiers().front(), c1);
-    ASSERT_TRUE(pckg->getPackagedElements().get(ID::fromString("6CB8GbwIp4Ii0rKfx4YSVRoiZvmc"))->getElementType() == InstanceSpecification::Info::elementType);
-    InstanceSpecificationPtr i2 = pckg->getPackagedElements().get(ID::fromString("6CB8GbwIp4Ii0rKfx4YSVRoiZvmc"));
+    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("6CB8GbwIp4Ii0rKfx4YSVRoiZvmc"))->getElementType() == UmlManager::ElementType<InstanceSpecification>::result);
+    UmlManager::Pointer<InstanceSpecification> i2 = pckg->getPackagedElements().get(EGM::ID::fromString("6CB8GbwIp4Ii0rKfx4YSVRoiZvmc"));
     ASSERT_EQ(i2->getClassifiers().size(), 1);
     ASSERT_EQ(i2->getClassifiers().front(), c2);
     ASSERT_TRUE(i2->getSlots().size() == 1);
-    SlotPtr s = i2->getSlots().front();
+    auto s = i2->getSlots().front();
     ASSERT_TRUE(s->getDefiningFeature() == p);
     ASSERT_TRUE(s->getValues().size() == 1);
-    ASSERT_TRUE(s->getValues().front()->getElementType() == InstanceValue::Info::elementType);
-    InstanceValuePtr v = s->getValues().front();
+    ASSERT_TRUE(s->getValues().front()->getElementType() == UmlManager::ElementType<InstanceValue>::result);
+    UmlManager::Pointer<InstanceValue> v = s->getValues().front();
     ASSERT_TRUE(v->getInstance() == i1);
 }
 
 TEST_F(InstanceSpecificationTest, simpleInstanceEmitTest) {
     UmlManager m;
-    InstanceSpecification& inst = *m.create<InstanceSpecification>();
-    inst.setID(ID::fromString("3XvQFHIrqSmU7WAXA7fVzkw1v2U3"));
+    auto& inst = *m.create<InstanceSpecification>();
+    inst.setID(EGM::ID::fromString("3XvQFHIrqSmU7WAXA7fVzkw1v2U3"));
     inst.setName("simple");
     inst.setVisibility(VisibilityKind::PROTECTED);
     std::string expectedEmit = R""""(InstanceSpecification:
@@ -249,12 +248,12 @@ TEST_F(InstanceSpecificationTest, simpleInstanceEmitTest) {
 
 TEST_F(InstanceSpecificationTest, simpleSlotTest) {
     UmlManager m;
-    InstanceSpecification& inst = *m.create<InstanceSpecification>();
-    inst.setID(ID::fromString("yaogA9yjaFoD_RdGQzRrwe1826Aj"));
+    auto& inst = *m.create<InstanceSpecification>();
+    inst.setID(EGM::ID::fromString("yaogA9yjaFoD_RdGQzRrwe1826Aj"));
     inst.setName("slot");
     inst.setVisibility(VisibilityKind::PROTECTED);
-    Slot& s = *m.create<Slot>();
-    s.setID(ID::fromString("w6arMVW4Plw0aLOBWLE9_8Xo_UL&"));
+    auto& s = *m.create<Slot>();
+    s.setID(EGM::ID::fromString("w6arMVW4Plw0aLOBWLE9_8Xo_UL&"));
     inst.getSlots().add(s);
     std::string expectedEmit = R""""(InstanceSpecification:
   id: yaogA9yjaFoD_RdGQzRrwe1826Aj
@@ -270,23 +269,23 @@ TEST_F(InstanceSpecificationTest, simpleSlotTest) {
 }
 
 TEST_F(InstanceSpecificationTest, parseSpecificationTest) {
-    ElementPtr el = 0;
+    UmlManager::Pointer<Element> el = 0;
     UmlManager m;
     ASSERT_NO_THROW(m.open(ymlPath + "instanceSpecificationTests/specification.yml"));
     el = m.getRoot();
-    ASSERT_EQ(el->getElementType(), InstanceSpecification::Info::elementType);
-    InstanceSpecification& inst = el->as<InstanceSpecification>();
+    ASSERT_EQ(el->getElementType(), UmlManager::ElementType<InstanceSpecification>::result);
+    auto& inst = el->as<InstanceSpecification>();
     ASSERT_TRUE(inst.getSpecification());
-    ASSERT_EQ(inst.getSpecification()->getElementType(), LiteralString::Info::elementType);
+    ASSERT_EQ(inst.getSpecification()->getElementType(), UmlManager::ElementType<LiteralString>::result);
     ASSERT_EQ(inst.getSpecification()->as<LiteralString>().getValue(), "booga");
 }
 
 TEST_F(InstanceSpecificationTest, emitSpecificationTest) {
     UmlManager m;
-    InstanceSpecification& inst = *m.create<InstanceSpecification>();
-    LiteralString& str = *m.create<LiteralString>();
-    inst.setID(ID::fromString("fsU5Fw&5REaNv4NCvC0d4qZnXg4C"));
-    str.setID(ID::fromString("nVzJ8mHx1yrRlct0ot34p7uBaVvC"));
+    auto& inst = *m.create<InstanceSpecification>();
+    auto& str = *m.create<LiteralString>();
+    inst.setID(EGM::ID::fromString("fsU5Fw&5REaNv4NCvC0d4qZnXg4C"));
+    str.setID(EGM::ID::fromString("nVzJ8mHx1yrRlct0ot34p7uBaVvC"));
     str.setValue("gatito");
     inst.setSpecification(&str);
     std::string expectedEmit = R""""(InstanceSpecification:
@@ -301,7 +300,7 @@ TEST_F(InstanceSpecificationTest, emitSpecificationTest) {
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
 
-void ASSERT_RESTORE_SLOT_CORRECTLY(InstanceSpecification& inst, Slot& slot, size_t i) {
+void ASSERT_RESTORE_SLOT_CORRECTLY(UmlManager::Implementation<InstanceSpecification>& inst, UmlManager::Implementation<Slot>& slot, size_t i) {
     ASSERT_EQ(inst.getSlots().size(), 1);
     //ASSERT_EQ(i == 0 ? inst.getSlots().front() : inst.getSlots().back(), slot);
     ASSERT_EQ(inst.getOwnedElements().size(), 1);
@@ -310,15 +309,15 @@ void ASSERT_RESTORE_SLOT_CORRECTLY(InstanceSpecification& inst, Slot& slot, size
 
 TEST_F(InstanceSpecificationTest, mountAndEditInstanceTest) {
     UmlManager m;
-    Package& root = *m.create<Package>();
-    Class& classifier = *m.create<Class>();
-    Property& attribute = *m.create<Property>();
-    InstanceSpecification& inst = *m.create<InstanceSpecification>();
-    Slot& slot = *m.create<Slot>();
-    PrimitiveType& type = *m.create<PrimitiveType>();
-    InstanceSpecification& typeInst = *m.create<InstanceSpecification>();
-    LiteralString& typeSpecification = *m.create<LiteralString>();
-    InstanceValue& slotVal = *m.create<InstanceValue>();
+    auto& root = *m.create<Package>();
+    auto& classifier = *m.create<Class>();
+    auto& attribute = *m.create<Property>();
+    auto& inst = *m.create<InstanceSpecification>();
+    auto& slot = *m.create<Slot>();
+    auto& type = *m.create<PrimitiveType>();
+    auto& typeInst = *m.create<InstanceSpecification>();
+    auto& typeSpecification = *m.create<LiteralString>();
+    auto& slotVal = *m.create<InstanceValue>();
     attribute.setType(type);
     classifier.getOwnedAttributes().add(attribute);
     slot.setDefiningFeature(attribute);
@@ -333,9 +332,9 @@ TEST_F(InstanceSpecificationTest, mountAndEditInstanceTest) {
     m.setRoot(&root);
     m.mount(ymlPath + "instanceSpecificationTests");
 
-    ID instID = inst.getID();
+    EGM::ID instID = inst.getID();
     m.release(inst);
-    InstanceSpecification& inst2 = *slot.getOwningInstance();
+    auto& inst2 = *slot.getOwningInstance();
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(inst2, root));
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_SLOT_CORRECTLY(inst2, slot, 0));
     ASSERT_FALSE(inst2.getClassifiers().empty());
@@ -343,23 +342,23 @@ TEST_F(InstanceSpecificationTest, mountAndEditInstanceTest) {
 
     m.release(classifier);
     ASSERT_FALSE(inst2.getClassifiers().empty());
-    Class& classifier2 = inst2.getClassifiers().front()->as<Class>();
+    auto& classifier2 = inst2.getClassifiers().front()->as<Class>();
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(classifier2, root));
 
-    ID classifierID = classifier2.getID();
+    EGM::ID classifierID = classifier2.getID();
     m.release(inst2, classifier2);
-    InstanceSpecification& inst3 = m.get(instID)->as<InstanceSpecification>();
+    auto& inst3 = m.get(instID)->as<InstanceSpecification>();
     ASSERT_FALSE(inst3.getClassifiers().empty());
     // ASSERT_FALSE(m.loaded(classifierID));
-    Class& classifier3 = m.get(classifierID)->as<Class>();
+    auto& classifier3 = m.get(classifierID)->as<Class>();
     ASSERT_EQ(inst3.getClassifiers().front(), &classifier3);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(inst3, root));
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORE_SLOT_CORRECTLY(inst3, slot, 0));
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(classifier3, root));
 
-    ID slotID = slot.getID();
+    EGM::ID slotID = slot.getID();
     m.release(slot);
-    Slot& slot2 = m.get(slotID)->as<Slot>();
+    auto& slot2 = m.get(slotID)->as<Slot>();
     ASSERT_TRUE(slot2.getOwningInstance());
     ASSERT_EQ(*slot2.getOwningInstance(), inst3);
     ASSERT_TRUE(slot2.getOwner());
@@ -369,9 +368,9 @@ TEST_F(InstanceSpecificationTest, mountAndEditInstanceTest) {
     ASSERT_EQ(*slot2.getDefiningFeature(), attribute);
 
     m.release(slot2, inst3);
-    Slot& slot3 = m.get(slotID)->as<Slot>();
+    auto& slot3 = m.get(slotID)->as<Slot>();
     ASSERT_TRUE(slot3.getOwningInstance());
-    InstanceSpecification& inst4 = m.get(instID)->as<InstanceSpecification>();
+    auto& inst4 = m.get(instID)->as<InstanceSpecification>();
     ASSERT_EQ(*slot3.getOwningInstance(), inst4);
     ASSERT_TRUE(slot3.getOwner());
     ASSERT_EQ(*slot3.getOwner(), inst4);
@@ -384,8 +383,8 @@ TEST_F(InstanceSpecificationTest, mountAndEditInstanceTest) {
     ASSERT_EQ(*slot3.getOwnedElements().begin(), slotVal);
 
     m.release(slot3, inst4);
-    InstanceSpecification& inst5 = m.get(instID)->as<InstanceSpecification>();
-    Slot& slot4 = m.get(slotID)->as<Slot>();
+    auto& inst5 = m.get(instID)->as<InstanceSpecification>();
+    auto& slot4 = m.get(slotID)->as<Slot>();
     ASSERT_EQ(*slot4.getOwningInstance(), inst5);
     ASSERT_TRUE(slot4.getOwner());
     ASSERT_EQ(*slot4.getOwner(), inst5);
@@ -395,21 +394,21 @@ TEST_F(InstanceSpecificationTest, mountAndEditInstanceTest) {
     ASSERT_EQ(slot4.getOwnedElements().size(), 1);
     ASSERT_EQ(*slot4.getOwnedElements().begin(), slotVal);
 
-    ID propID = attribute.getID();
+    EGM::ID propID = attribute.getID();
     m.release(slot4, attribute);
-    Slot& slot5 = m.get(slotID)->as<Slot>();
+    auto& slot5 = m.get(slotID)->as<Slot>();
     // ASSERT_FALSE(m.loaded(propID));
-    Property& attribute2 = m.get(propID)->as<Property>();
+    auto& attribute2 = m.get(propID)->as<Property>();
     ASSERT_TRUE(slot5.getDefiningFeature());
     ASSERT_EQ(*slot5.getDefiningFeature(), attribute2);
     ASSERT_EQ(slot5.getOwnedElements().size(), 1);
     ASSERT_EQ(*slot5.getOwnedElements().begin(), slotVal);
 
-    ID valID = slotVal.getID();
+    EGM::ID valID = slotVal.getID();
     m.release(slotVal, slot5);
-    Slot& slot6 = m.get(slotID)->as<Slot>();
+    auto& slot6 = m.get(slotID)->as<Slot>();
     // ASSERT_FALSE(m.loaded(valID));
-    InstanceValue& slotVal2 = m.get(valID)->as<InstanceValue>();
+    auto& slotVal2 = m.get(valID)->as<InstanceValue>();
     ASSERT_EQ(slot6.getOwnedElements().size(), 1);
     ASSERT_EQ(*slot6.getOwnedElements().begin(), slotVal2);
     ASSERT_TRUE(slotVal2.getOwner());
@@ -417,11 +416,11 @@ TEST_F(InstanceSpecificationTest, mountAndEditInstanceTest) {
     ASSERT_TRUE(slotVal2.getInstance());
     ASSERT_EQ(*slotVal2.getInstance(), typeInst);
 
-    ID typeInstID = typeInst.getID();
+    EGM::ID typeInstID = typeInst.getID();
     m.release(slotVal2, typeInst);
-    InstanceValue& slotVal3 = m.get(valID)->as<InstanceValue>();
+    auto& slotVal3 = m.get(valID)->as<InstanceValue>();
     // ASSERT_FALSE(m.loaded(typeInstID));
-    InstanceSpecification& typeInst2 = m.get(typeInstID)->as<InstanceSpecification>();
+    auto& typeInst2 = m.get(typeInstID)->as<InstanceSpecification>();
     ASSERT_TRUE(slotVal3.getInstance());
     ASSERT_EQ(*slotVal3.getInstance(), typeInst2);
     ASSERT_NO_FATAL_FAILURE(ASSERT_RESTORED_OWNING_PACKAGE(typeInst2, root));
@@ -432,11 +431,11 @@ TEST_F(InstanceSpecificationTest, mountAndEditInstanceTest) {
     ASSERT_EQ(typeInst2.getOwnedElements().size(), 1);
     ASSERT_EQ(*typeInst2.getOwnedElements().begin(), typeSpecification);
 
-    ID specID = typeSpecification.getID();
+    EGM::ID specID = typeSpecification.getID();
     m.release(typeInst2, typeSpecification);
-    InstanceSpecification& typeInst3 = m.get(typeInstID)->as<InstanceSpecification>();
+    auto& typeInst3 = m.get(typeInstID)->as<InstanceSpecification>();
     // ASSERT_FALSE(m.loaded(specID));
-    LiteralString& typeSpecification2 = m.get(specID)->as<LiteralString>();
+    auto& typeSpecification2 = m.get(specID)->as<LiteralString>();
     ASSERT_TRUE(typeSpecification2.getOwner());
     ASSERT_EQ(*typeSpecification2.getOwner(), typeInst3);
     ASSERT_TRUE(typeInst3.getSpecification());

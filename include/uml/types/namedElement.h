@@ -124,10 +124,10 @@ namespace EGM {
             std::string getData() override {
                 switch (el->getVisibility()) {
                     case UML::VisibilityKind::NONE: return "";
-                    case UML::VisibilityKind::PACKAGE : return "PACKAGE";
-                    case UML::VisibilityKind::PRIVATE : return "PRIVATE";
-                    case UML::VisibilityKind::PROTECTED : return "PROTECTED";
-                    case UML::VisibilityKind::PUBLIC : return "PUBLIC";
+                    case UML::VisibilityKind::PACKAGE : return "package";
+                    case UML::VisibilityKind::PRIVATE : return "private";
+                    case UML::VisibilityKind::PROTECTED : return "protected";
+                    case UML::VisibilityKind::PUBLIC : return "public";
                 }
             };
             void setData(std::string data) override {

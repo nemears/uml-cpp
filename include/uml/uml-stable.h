@@ -12,6 +12,8 @@
 #include "uml/types/element.h"
 #include "uml/types/feature.h"
 #include "uml/types/generalization.h"
+#include "uml/types/instanceSpecification.h"
+#include "uml/types/instanceValue.h"
 #include "uml/types/literalBoolean.h"
 #include "uml/types/literalInteger.h"
 #include "uml/types/literalNull.h"
@@ -30,6 +32,7 @@
 #include "uml/types/realization.h"
 #include "uml/types/redefinableElement.h"
 #include "uml/types/relationship.h"
+#include "uml/types/slot.h"
 #include "uml/types/structuralFeature.h"
 #include "uml/types/type.h"
 #include "uml/types/typedElement.h"
@@ -49,6 +52,8 @@ namespace UML {
         Element,
         Feature,
         Generalization,
+        InstanceSpecification,
+        InstanceValue,
         LiteralBoolean,
         LiteralInteger,
         LiteralNull,
@@ -67,6 +72,7 @@ namespace UML {
         Realization,
         RedefinableElement,
         Relationship,
+        Slot,
         StructuralFeature,
         Type,
         TypedElement,

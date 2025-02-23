@@ -1,6 +1,7 @@
 #pragma once
 
 #include "egm/egm-basic.h"
+#include "uml/util/indexableSet.h"
 
 namespace UML {
     template <class>
@@ -12,7 +13,7 @@ namespace UML {
         public:
             using Info = EGM::TypeInfo<Namespace, EGM::TemplateTypeList<NamedElement>>;
         protected:
-            using NamedElementSet = EGM::ReadOnlySet<NamedElement, Namespace>;
+            using NamedElementSet = ReadOnlyIndexableSet<NamedElement, Namespace>;
             NamedElementSet m_members = NamedElementSet(this);
             NamedElementSet m_ownedMembers = NamedElementSet(this);
         private:

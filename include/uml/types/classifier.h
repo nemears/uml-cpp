@@ -2,6 +2,7 @@
 
 #include "egm/egm-basic.h"
 #include "uml/types/namedElement.h"
+#include "uml/util/indexableSet.h"
 
 namespace UML {
     template <class>
@@ -99,6 +100,13 @@ namespace UML {
                             if(reference_base->template is<Classifier>()) {
                                 auto& clazz = reference_base->template as<Classifier>();
                                 if (clazz.getGenerals().contains(me)) {
+                                    switch (el.getVisibility()) {
+                                        case VisibilityKind::NONE:
+                                        case VisibilityKind::PRIVATE:
+                                            continue;
+                                        default:
+                                            break;
+                                    }
                                     if (!clazz.getInheritedMembers().contains(el))
                                         clazz.getInheritedMembers().innerAdd(&el);
                                 } 
@@ -123,11 +131,11 @@ namespace UML {
                     } 
                 }
             };
-            using GeneralsSet = EGM::Set<Classifier, Classifier, GeneralPolicy>;
-            using FeaturesSet = EGM::ReadOnlySet<Feature, Classifier>;
-            using AttributesSet = EGM::ReadOnlySet<Property, Classifier>;
-            using InheritedMembersSet = EGM::ReadOnlySet<NamedElement, Classifier>;
-            using ClassifierMembers = EGM::ReadOnlySet<NamedElement, Classifier, MembersPolicy>;
+            using GeneralsSet = IndexableSet<Classifier, Classifier, GeneralPolicy>;
+            using FeaturesSet = ReadOnlyIndexableSet<Feature, Classifier>;
+            using AttributesSet = ReadOnlyIndexableSet<Property, Classifier>;
+            using InheritedMembersSet = ReadOnlyIndexableSet<NamedElement, Classifier>;
+            using ClassifierMembers = ReadOnlyIndexableSet<NamedElement, Classifier, MembersPolicy>;
             GeneralizationsSet m_generalizations = GeneralizationsSet(this);
             GeneralsSet m_generals = GeneralsSet(this);
             FeaturesSet m_features = FeaturesSet(this);

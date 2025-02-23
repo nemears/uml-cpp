@@ -49,6 +49,7 @@ namespace EGM {
             StaticPolicy(UML::Feature<Policy>& ref) : el(&ref) {}
             bool getBool() override { return el->isStatic(); }
             void setBool(bool b) override { el->setStatic(b); }
+            std::optional<bool> defaultBool() override { return false; }
         };
         template <class Policy>
         static DataList data(UML::Feature<Policy>& el) {

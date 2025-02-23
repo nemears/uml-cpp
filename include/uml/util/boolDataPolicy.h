@@ -1,17 +1,21 @@
 #pragma once
 
 #include "egm/egm-basic.h"
+#include "optional"
 
 namespace UML {
     struct BooleanDataPolicy : public EGM::AbstractDataPolicy {
         virtual bool getBool() = 0;
         virtual void setBool(bool b) = 0;
+        virtual std::optional<bool> defaultBool() { return {}; }
         std::string getData() override {
-            if (getBool()) {
+            auto default_val = defaultBool();
+            if ((!default_val.has_value() || !default_val.value()) && getBool()) {
                 return "true";
-            } else {
+            } else if ((!default_val.has_value() || default_val.value()) && !getBool()) {
                 return "false";
             }
+            return "";
         }
         void setData(std::string data) override {
             if (data == "true") {

@@ -5,17 +5,14 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1739716694,
-        "narHash": "sha256-32NrT2ddt9L4f02wXxMqDS2FmJhwrigaYgHthK2DLL4=",
-        "owner": "nemears",
-        "repo": "egm",
-        "rev": "8859488facdff506c981c83606048bd6c239cca4",
-        "type": "github"
+        "lastModified": 1740230327,
+        "narHash": "sha256-UBiepOD6y3TZ9m6TN0feBeSIb3ntXMJT0u1eOH4ECwg=",
+        "path": "/home/emory/Projects/egm",
+        "type": "path"
       },
       "original": {
-        "owner": "nemears",
-        "repo": "egm",
-        "type": "github"
+        "path": "/home/emory/Projects/egm",
+        "type": "path"
       }
     },
     "flake-utils": {

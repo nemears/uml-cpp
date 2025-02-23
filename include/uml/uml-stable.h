@@ -2,9 +2,11 @@
 
 #include "egm/egm.h"
 #include "uml/types/abstraction.h"
+#include "uml/types/behavioralFeature.h"
 #include "uml/types/class.h"
 #include "uml/types/classifier.h"
 #include "uml/types/comment.h"
+#include "uml/types/dataType.h"
 #include "uml/types/dependency.h"
 #include "uml/types/directedRelationship.h"
 #include "uml/types/element.h"
@@ -20,8 +22,10 @@
 #include "uml/types/multiplicityElement.h"
 #include "uml/types/namedElement.h"
 #include "uml/types/namespace.h"
+#include "uml/types/operation.h"
 #include "uml/types/package.h"
 #include "uml/types/packageableElement.h"
+#include "uml/types/primitiveType.h"
 #include "uml/types/property.h"
 #include "uml/types/realization.h"
 #include "uml/types/redefinableElement.h"
@@ -35,9 +39,11 @@
 namespace UML {
     using UmlTypes = EGM::TemplateTypeList<
         Abstraction,
+        BehavioralFeature,
         Class,
         Classifier,
         Comment,
+        DataType,
         Dependency,
         DirectedRelationship,
         Element,
@@ -53,8 +59,10 @@ namespace UML {
         MultiplicityElement,
         NamedElement,
         Namespace,
+        Operation,
         Package,
         PackageableElement,
+        PrimitiveType,
         Property,
         Realization,
         RedefinableElement,

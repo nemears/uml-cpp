@@ -47,7 +47,7 @@ namespace UML {
     template <template <class> class T, class U, class ApiPolicy = IndexablePolicy<U>>
     class ReadOnlyIndexableSet : public EGM::ReadOnlySet<T, U, ApiPolicy> {
         public:
-            using ManagedType = T<typename U::Manager::template GenBaseHierarchy<T>>;
+            using ManagedType = T<typename U::manager::template GenBaseHierarchy<T>>;
             ReadOnlyIndexableSet(U* me) : EGM::ReadOnlySet<T, U, ApiPolicy>(me) {}
             EGM::ManagedPtr<ManagedType> get(EGM::ID id) const {
                 return EGM::SetDataPolicy<T, U>::get(id);

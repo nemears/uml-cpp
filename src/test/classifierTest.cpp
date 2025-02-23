@@ -1,10 +1,11 @@
 #include "gtest/gtest.h"
 #include "uml/types/namedElement.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
 
-// UML_SET_INTEGRATION_TEST(ClassifierGeneralization, Generalization, Class, &Classifier::getGeneralizations)
+UML_SET_INTEGRATION_TEST(ClassifierGeneralization, Generalization, Class, getGeneralizations)
 // UML_SET_INTEGRATION_TEST(ClassifierPowerTypeExtent, GeneralizationSet, Class, &Classifier::getPowerTypeExtent)
 // UML_SINGLETON_INTEGRATION_TEST(ClassifierOwnedTemplateSignature, RedefinableTemplateSignature, OpaqueBehavior, &Classifier::getOwnedTemplateSignature, &Classifier::setOwnedTemplateSignature)
 // UML_SINGLETON_INTEGRATION_TEST(RedefinableTemplateSignatureClassifier, PrimitiveType, RedefinableTemplateSignature, &RedefinableTemplateSignature::getClassifier, &RedefinableTemplateSignature::setClassifier)

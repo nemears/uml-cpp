@@ -2,6 +2,7 @@
 
 #include "uml/uml-stable.h"
 #include "egm/egm.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
 

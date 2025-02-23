@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
 // #include "test/umlTestUtil.h"
-#include "test/uml-cpp-paths.h"
 #include <filesystem>
 
 using namespace UML;
@@ -10,20 +9,20 @@ class NamedElementTest : public ::testing::Test {
 public:
     std::string ymlPath;
     void SetUp() override {
-        ymlPath = YML_FILES_PATH;
+        ymlPath = "../examples/";
     };
 };
 
 TEST_F(NamedElementTest, SetNameTest) {
     UmlManager m;
-    Package& namedEl = *m.create<Package>();
+    auto& namedEl = *m.create<Package>();
     namedEl.setName("test");
     EXPECT_EQ(namedEl.getName(), "test");
 }
 
 TEST_F(NamedElementTest, GetNullNameTest) {
     UmlManager m;
-    Package& ne = *m.create<Package>();
+    auto& ne = *m.create<Package>();
     ASSERT_NO_THROW(ne.getName());
     EXPECT_TRUE(ne.getName().compare("") == 0);
 }
@@ -41,9 +40,9 @@ TEST_F(NamedElementTest, GetNullNameTest) {
 
 TEST_F(NamedElementTest, overwriteNamespaceTest) {
     UmlManager m;
-    Package& p1 = *m.create<Package>();
-    Package& p2 = *m.create<Package>();
-    Package& c = *m.create<Package>();
+    auto& p1 = *m.create<Package>();
+    auto& p2 = *m.create<Package>();
+    auto& c = *m.create<Package>();
     p1.getPackagedElements().add(c);
     c.setOwningPackage(p2);
     ASSERT_EQ(p2.getOwnedMembers().size(), 1);
@@ -54,9 +53,9 @@ TEST_F(NamedElementTest, overwriteNamespaceTest) {
 
 TEST_F(NamedElementTest, overwriteNamespaceByOwnedMemebersAddTest) {
     UmlManager m;
-    Package& p1 = *m.create<Package>();
-    Package& p2 = *m.create<Package>();
-    Package& c = *m.create<Package>();
+    auto& p1 = *m.create<Package>();
+    auto& p2 = *m.create<Package>();
+    auto& c = *m.create<Package>();
     p1.getPackagedElements().add(c);
     p2.getPackagedElements().add(c);
     ASSERT_EQ(p2.getOwnedMembers().size(), 1);
@@ -67,16 +66,16 @@ TEST_F(NamedElementTest, overwriteNamespaceByOwnedMemebersAddTest) {
 
 TEST_F(NamedElementTest, visibilityTest) {
     UmlManager m;
-    Package& n = *m.create<Package>();
-    ASSERT_TRUE(n.getVisibility() == VisibilityKind::PUBLIC);
+    auto& n = *m.create<Package>();
+    ASSERT_TRUE(n.getVisibility() == VisibilityKind::NONE);
     ASSERT_NO_THROW(n.setVisibility(VisibilityKind::PRIVATE));
     ASSERT_TRUE(n.getVisibility() == VisibilityKind::PRIVATE);
 }
 
 TEST_F(NamedElementTest, singletonMethodsTest) {
     UmlManager m;
-    Package& p = *m.create<Package>();
-    Package& c = *m.create<Package>();
+    auto& p = *m.create<Package>();
+    auto& c = *m.create<Package>();
     ASSERT_FALSE(c.getNamespace());
     c.setOwningPackage(p);
     ASSERT_TRUE(c.getNamespace());
@@ -87,12 +86,12 @@ TEST_F(NamedElementTest, singletonMethodsTest) {
 
 TEST_F(NamedElementTest, eraseNamepaceTest) {
     UmlManager m;
-    Package& package = *m.create<Package>();
-    Package& nmspc = *m.create<Package>();
+    auto& package = *m.create<Package>();
+    auto& nmspc = *m.create<Package>();
     nmspc.getPackagedElements().add(package);
     m.setRoot(&nmspc);
     m.mount(ymlPath + "namedElementTests");
-    ID nmspcID = nmspc.getID();
+    EGM::ID nmspcID = nmspc.getID();
     m.erase(nmspc);
     ASSERT_FALSE(std::filesystem::exists((ymlPath + "namedElementTests/" + nmspcID.string() + ".yml")));
     ASSERT_FALSE(m.loaded(nmspcID));
@@ -102,9 +101,9 @@ TEST_F(NamedElementTest, eraseNamepaceTest) {
 
 TEST_F(NamedElementTest, testQualifiedName) {
     UmlManager m;
-    Package& one = *m.create<Package>();
-    Package& two = *m.create<Package>();
-    Package& three = *m.create<Package>();
+    auto& one = *m.create<Package>();
+    auto& two = *m.create<Package>();
+    auto& three = *m.create<Package>();
     one.setName("1");
     two.setName("2");
     one.getPackagedElements().add(two);

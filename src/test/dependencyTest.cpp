@@ -3,12 +3,13 @@
 #include "uml/types/abstraction.h"
 #include "uml/types/realization.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
 
-// UML_SET_INTEGRATION_TEST(DependencySuppliers, Package, Dependency, &Dependency::getSuppliers)
-// UML_SET_INTEGRATION_TEST(DependencyClients, Package, Dependency, &Dependency::getClients)
-// UML_SET_INTEGRATION_TEST(NamedElementClientDependencies, Dependency, Package, &NamedElement::getClientDependencies)
+UML_SET_INTEGRATION_TEST(DependencySuppliers, Package, Dependency, getSuppliers)
+UML_SET_INTEGRATION_TEST(DependencyClients, Package, Dependency, getClients)
+UML_SET_INTEGRATION_TEST(NamedElementClientDependencies, Dependency, Package, getClientDependencies)
 
 class DependencyTest : public ::testing::Test {
     public:

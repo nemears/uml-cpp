@@ -1,10 +1,11 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
 
-// UML_SINGLETON_INTEGRATION_TEST(GeneralizationSpecific, OpaqueBehavior, Generalization, &Generalization::getSpecific, &Generalization::setSpecific)
-// UML_SINGLETON_INTEGRATION_TEST(GeneralizationGeneral, OpaqueBehavior, Generalization, &Generalization::getGeneral, &Generalization::setGeneral)
+UML_SINGLETON_INTEGRATION_TEST(GeneralizationSpecific, DataType, Generalization, getSpecificSingleton)
+UML_SINGLETON_INTEGRATION_TEST(GeneralizationGeneral, Class, Generalization, getGeneralSingleton)
 // 
 // typedef UmlPtr<Generalization> GeneralizationPtr;
 

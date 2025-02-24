@@ -13,6 +13,8 @@
 #include "uml/types/directedRelationship.h"
 #include "uml/types/element.h"
 #include "uml/types/encapsulatedClassifier.h"
+#include "uml/types/enumeration.h"
+#include "uml/types/enumerationLiteral.h"
 #include "uml/types/feature.h"
 #include "uml/types/generalization.h"
 #include "uml/types/instanceSpecification.h"
@@ -57,6 +59,8 @@ namespace UML {
         DirectedRelationship,
         Element,
         EncapsulatedClassifier,
+        Enumeration,
+        EnumerationLiteral,
         Feature,
         Generalization,
         InstanceSpecification,

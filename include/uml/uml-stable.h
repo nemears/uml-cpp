@@ -32,11 +32,14 @@
 #include "uml/types/operation.h"
 #include "uml/types/package.h"
 #include "uml/types/packageableElement.h"
+#include "uml/types/parameter.h"
 #include "uml/types/primitiveType.h"
 #include "uml/types/property.h"
 #include "uml/types/realization.h"
+#include "uml/types/reception.h"
 #include "uml/types/redefinableElement.h"
 #include "uml/types/relationship.h"
+#include "uml/types/signal.h"
 #include "uml/types/slot.h"
 #include "uml/types/structuralFeature.h"
 #include "uml/types/structuredClassifier.h"
@@ -81,8 +84,10 @@ namespace UML {
         PrimitiveType,
         Property,
         Realization,
+        Reception,
         RedefinableElement,
         Relationship,
+        Signal,
         Slot,
         StructuralFeature,
         StructuredClassifier,

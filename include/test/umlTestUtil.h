@@ -1,6 +1,7 @@
 #pragma once
 
 #include "uml/uml-stable.h"
+#define YML_FILES_PATH "../examples/" 
 
 namespace UML {
 

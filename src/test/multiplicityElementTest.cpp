@@ -1,10 +1,11 @@
 #include "gtest/gtest.h"
 #include "uml/uml-stable.h"
+#include "test/umlTestUtil.h"
 
 using namespace UML;
 
-// UML_SINGLETON_INTEGRATION_TEST(MultiplicityElementLowerValue, LiteralReal, Property, &MultiplicityElement::getLowerValue, &MultiplicityElement::setLowerValue)
-// UML_SINGLETON_INTEGRATION_TEST(MultiplicityElementUpperValue, LiteralNull, Port, &MultiplicityElement::getUpperValue, &MultiplicityElement::setUpperValue)
+UML_SINGLETON_INTEGRATION_TEST(MultiplicityElementLowerValue, LiteralReal, Property, getLowerValueSingleton)
+UML_SINGLETON_INTEGRATION_TEST(MultiplicityElementUpperValue, LiteralNull, Property, getUpperValueSingleton)
 
 class MultiplicityElementTest : public ::testing::Test {
    

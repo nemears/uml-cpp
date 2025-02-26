@@ -1,11 +1,15 @@
 #pragma once
 
 #include "egm/egm-basic.h"
+#include "uml/util/indexableSet.h"
 
 namespace UML {
 
     template <class>
     class Comment;
+
+    template <class>
+    class InstanceSpecification;
 
     template <class ManagerPolicy>
     class Element : public ManagerPolicy {
@@ -13,9 +17,11 @@ namespace UML {
         public:
             using Info = EGM::TypeInfo<Element>;
         protected:
+            using AppliedStereotypes = IndexableSet<InstanceSpecification, Element>;
             EGM::ReadOnlySet<Element, Element> m_ownedElements = EGM::ReadOnlySet<Element, Element>(this);
             EGM::ReadOnlySingleton<Element, Element> m_owner = EGM::ReadOnlySingleton<Element, Element>(this);
             EGM::Set<Comment, Element> m_ownedComments = EGM::Set<Comment, Element>(this);
+            AppliedStereotypes m_appliedStereotypes = AppliedStereotypes(this);
         private:
             void init() {
                 m_ownedElements.opposite(&decltype(m_owner)::ManagedType::getOwnerSingleton);
@@ -39,6 +45,7 @@ namespace UML {
             EGM::Set<Comment, Element>& getOwnedComments() {
                 return m_ownedComments;
             }
+            AppliedStereotypes& getAppliedStereotypes() { return m_appliedStereotypes; }
     };
 }
 
@@ -52,7 +59,8 @@ namespace EGM {
             return SetList {
                 make_set_pair("ownedElements", el.m_ownedElements),
                 make_set_pair("owner", el.m_owner),
-                make_set_pair("ownedComments", el.m_ownedComments)
+                make_set_pair("ownedComments", el.m_ownedComments),
+                make_set_pair("appliedStereotypes", el.m_appliedStereotypes)
             };
         }
     };

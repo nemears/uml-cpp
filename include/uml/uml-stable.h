@@ -34,6 +34,7 @@
 #include "uml/types/packageableElement.h"
 #include "uml/types/parameter.h"
 #include "uml/types/primitiveType.h"
+#include "uml/types/profile.h"
 #include "uml/types/property.h"
 #include "uml/types/realization.h"
 #include "uml/types/reception.h"
@@ -41,6 +42,7 @@
 #include "uml/types/relationship.h"
 #include "uml/types/signal.h"
 #include "uml/types/slot.h"
+#include "uml/types/stereotype.h"
 #include "uml/types/structuralFeature.h"
 #include "uml/types/structuredClassifier.h"
 #include "uml/types/type.h"
@@ -82,6 +84,7 @@ namespace UML {
         Package,
         PackageableElement,
         PrimitiveType,
+        Profile,
         Property,
         Realization,
         Reception,
@@ -89,6 +92,7 @@ namespace UML {
         Relationship,
         Signal,
         Slot,
+        Stereotype,
         StructuralFeature,
         StructuredClassifier,
         Type,

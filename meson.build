@@ -1,4 +1,4 @@
-project('uml-cpp', 'cpp', version: '0.4.3')
+project('uml-cpp', 'cpp', version: '0.5.0')
 include_dir = include_directories('include')
 if (get_option('buildTests'))
   egm = dependency('egm')

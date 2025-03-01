@@ -10,9 +10,33 @@
       (system:
         let 
           pkgs = nixpkgs.legacyPackages.${system};
-          
+          mkUmlCpp = { src } : 
+          let
+             # this is how im reading the version from the meson.build might not be most efficient but works 
+             currentVersion = pkgs.runCommandWith {
+               name = "getVersion";
+               derivationArgs.nativBuildInputs = [ src ] ;
+             } "grep -Po  \"(?<=version: ').*(?=')\" ${src}/meson.build > $out";
+             version = builtins.readFile currentVersion;
+           in
+           pkgs.stdenv.mkDerivation {
+            inherit src;
+            name = "uml-cpp";
+            nativeBuildInputs = with pkgs; [ pkg-config ];
+            installPhase = ''
+              mkdir -p $out/lib/pkgconfig $out/include
+              cp -r $src/include/uml $out/include
+              echo "prefix=$out
+              
+              Name: uml
+              Description: uml modeling C++ api
+              Version: ${version}
+              Cflags: -I$out/include" > $out/lib/pkgconfig/uml-cpp.pc                
+            '';
+          };
+ 
           # function to create uml-cpp derivation from certain source
-          mkUmlCpp = { src , version } : pkgs.stdenv.mkDerivation {
+          mkUmlCppPre05 = { src , version } : pkgs.stdenv.mkDerivation {
             inherit src;
             name = "uml-cpp";
             nativeBuildInputs = with pkgs; [pkg-config];
@@ -78,9 +102,8 @@
             };
             uml-cpp = mkUmlCpp {
               src = ./.;
-              version = "0.4.2";
             };
-            uml-cpp_0_3_5 = mkUmlCpp {
+            uml-cpp_0_3_5 = mkUmlCppPre05 {
               src = pkgs.fetchFromGitHub {
                 owner = "nemears";
                 repo = "uml-cpp";

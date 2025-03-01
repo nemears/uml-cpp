@@ -3,8 +3,7 @@
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
   inputs.flake-utils.url = "github:numtide/flake-utils";
-  # inputs.egm.url = "github:nemears/egm";
-  inputs.egm.url = "path:/home/emory/Projects/egm";
+  inputs.egm.url = "github:nemears/egm";
 
   outputs = { self, nixpkgs, flake-utils, egm }:
     flake-utils.lib.eachDefaultSystem

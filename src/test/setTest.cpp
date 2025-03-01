@@ -53,9 +53,9 @@ typedef std::tuple<
         TestDiamondSuperSetElement
     > TestTypes;
 
-class TestPackage : public BaseElement<TestTypes> {
+class TestPackage : public AbstractElement {
     public:
-        TestPackage(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {}
+        TestPackage(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
         typedef TypeInfo<std::tuple<>, TestPackage> Info;
 };
 
@@ -65,11 +65,11 @@ struct ElementInfo<TestPackage> : public DefaultInfo {
     static std::string name(__attribute__((unused)) AbstractElement& el) { return "TestPackage"; }
 };
 
-class TestPackageSetElement : public BaseElement<TestTypes> {
+class TestPackageSetElement : public AbstractElement {
     friend class Creator<TestPackageSetElement>;
     public:
         Set<TestPackage, TestPackageSetElement> set = Set<TestPackage, TestPackageSetElement>(this);
-        TestPackageSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {}
+        TestPackageSetElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {}
         typedef TypeInfo<std::tuple<>, TestPackageSetElement> Info;
 };
 
@@ -417,12 +417,12 @@ TEST_F(SetTest, longerBasicRemoveTest) {
     ASSERT_FALSE(testEl->set.contains(pckg8));
 }
 
-class TestSubsetsElement : public BaseElement<TestTypes> {
+class TestSubsetsElement : public AbstractElement {
     friend class Creator<TestSubsetsElement>;
     public:
         Set<TestPackage, TestSubsetsElement> root = Set<TestPackage, TestSubsetsElement>(this);
         Set<TestPackage, TestSubsetsElement> sub = Set<TestPackage, TestSubsetsElement>(this);
-        TestSubsetsElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
+        TestSubsetsElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {
             sub.subsets(root);
         }
         typedef TypeInfo<std::tuple<>, TestSubsetsElement> Info;
@@ -513,13 +513,13 @@ TEST_F(SetTest, iterateOverSubsettedElement) {
 //     ASSERT_EQ(testEl->sub.getRoot(), testEl->root.getRoot());
 // }
 
-class Test2SubsetsElement : public BaseElement<TestTypes> {
+class Test2SubsetsElement : public AbstractElement {
     friend class Creator<Test2SubsetsElement>;
     public:
         Set<TestPackage, Test2SubsetsElement> set1 = Set<TestPackage, Test2SubsetsElement>(this);
         Set<TestPackage, Test2SubsetsElement> set2 = Set<TestPackage, Test2SubsetsElement>(this);
         Set<TestPackage, Test2SubsetsElement> sub = Set<TestPackage, Test2SubsetsElement>(this);
-        Test2SubsetsElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
+        Test2SubsetsElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {
             sub.subsets(set1);
             sub.subsets(set2);
         }
@@ -572,13 +572,13 @@ TEST_F(SetTest, multiSubsetsTest) {
     ASSERT_TRUE(testEl->sub.contains(pckg.getID()));
 }
 
-class Test3SubsetsElement : public BaseElement<TestTypes> {
+class Test3SubsetsElement : public AbstractElement {
     friend class Creator<Test3SubsetsElement>;
     public:
         Set<TestPackage, Test3SubsetsElement> root = Set<TestPackage, Test3SubsetsElement>(this);
         Set<TestPackage, Test3SubsetsElement> intermediate = Set<TestPackage, Test3SubsetsElement>(this);
         Set<TestPackage, Test3SubsetsElement> sub = Set<TestPackage, Test3SubsetsElement>(this);
-        Test3SubsetsElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
+        Test3SubsetsElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {
             intermediate.subsets(root);
             sub.subsets(intermediate);
         }
@@ -625,14 +625,14 @@ TEST_F(SetTest, addToSetTwice) {
     ASSERT_THROW(testEl->set.add(p), SetStateException);
 }
 
-class TestElement2 : public BaseElement<TestTypes> {
+class TestElement2 : public AbstractElement {
     friend class Creator<TestElement2>;
     private:
         Set<TestElement2, TestElement2> m_others = Set<TestElement2, TestElement2>(this);
     protected:
     public:
         Set<TestElement2, TestElement2>& getOthers() { return m_others; };
-        TestElement2(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
+        TestElement2(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {
             m_others.opposite(&TestElement2::getOthers);
         };
         typedef TypeInfo<std::tuple<>,TestElement2> Info;
@@ -654,12 +654,12 @@ TEST_F(SetTest, oppositeTest) {
     // ASSERT_EQ(*t2.getOthers().get(t1.getID()), t1);
 }
 
-class RedefinedTestElement : public BaseElement<TestTypes> {
+class RedefinedTestElement : public AbstractElement {
     friend class Creator<RedefinedTestElement>;
     public:
         Set<TestPackage, RedefinedTestElement> rootSet = Set<TestPackage, RedefinedTestElement>(this);
         Set<TestPackage, RedefinedTestElement> redefiningSet = Set<TestPackage, RedefinedTestElement>(this);
-        RedefinedTestElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
+        RedefinedTestElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {
             redefiningSet.redefines(rootSet);
         }
         typedef TypeInfo<std::tuple<>, RedefinedTestElement> Info;
@@ -717,12 +717,12 @@ class TestPolicy {
         void elementRemoved(TestPackage& el, PolicyTestElement& me);
 };
 
-class PolicyTestElement : public BaseElement<TestTypes> {
+class PolicyTestElement : public AbstractElement {
     friend class Creator<PolicyTestElement>;
     public:
         Set<TestPackage, PolicyTestElement, TestPolicy> policySet = Set<TestPackage, PolicyTestElement, TestPolicy>(this);
         Set<TestPackage, PolicyTestElement> redefinedSet = Set<TestPackage, PolicyTestElement>(this);
-        PolicyTestElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes> (elementType, manager) {
+        PolicyTestElement(std::size_t elementType, AbstractManager& manager) : AbstractElement (elementType, manager) {
             redefinedSet.redefines(policySet);
         }
         size_t count = 0;
@@ -753,11 +753,11 @@ TEST_F(SetTest, setRedefinedWFunctors) {
     ASSERT_EQ(testEl->count, 0);
 }
 
-class TestOrderedSetElement : public BaseElement<TestTypes> {
+class TestOrderedSetElement : public AbstractElement {
     friend class Creator<TestOrderedSetElement>;    
     public:
         OrderedSet<TestPackage, TestOrderedSetElement> set = OrderedSet<TestPackage, TestOrderedSetElement>(this);
-        TestOrderedSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes> (elementType, manager) {}
+        TestOrderedSetElement(std::size_t elementType, AbstractManager& manager) : AbstractElement (elementType, manager) {}
         typedef TypeInfo<std::tuple<>, TestOrderedSetElement> Info;
 };
 
@@ -805,12 +805,12 @@ TEST_F(SetTest, addToOrderedSetTest) {
     ASSERT_EQ(*testEl->set.get(2), p3);
 }
 
-class TestElementSubsetsOrderedSets : public BaseElement<TestTypes> {
+class TestElementSubsetsOrderedSets : public AbstractElement {
     friend class Creator<TestElementSubsetsOrderedSets>;
     public:
         OrderedSet<TestPackage, TestElementSubsetsOrderedSets> root = OrderedSet<TestPackage, TestElementSubsetsOrderedSets>(this);
         OrderedSet<TestPackage, TestElementSubsetsOrderedSets> sub = OrderedSet<TestPackage, TestElementSubsetsOrderedSets>(this);
-        TestElementSubsetsOrderedSets(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
+        TestElementSubsetsOrderedSets(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {
             sub.subsets(root);
         }
         typedef TypeInfo<std::tuple<>, TestElementSubsetsOrderedSets> Info;
@@ -848,12 +848,12 @@ TEST_F(SetTest, subsetOrderedSets) {
     ASSERT_EQ(i, 2);
 }
 
-class TestElementOrderedSubsetsSet : public BaseElement<TestTypes> {
+class TestElementOrderedSubsetsSet : public AbstractElement {
     friend class Creator<TestElementOrderedSubsetsSet>;
     public:
         Set<TestPackage, TestElementOrderedSubsetsSet> root = Set<TestPackage, TestElementOrderedSubsetsSet>(this);
         OrderedSet<TestPackage, TestElementOrderedSubsetsSet> sub = OrderedSet<TestPackage, TestElementOrderedSubsetsSet>(this);
-        TestElementOrderedSubsetsSet(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
+        TestElementOrderedSubsetsSet(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {
             sub.subsets(root);
         }
         typedef TypeInfo<std::tuple<>, TestElementOrderedSubsetsSet> Info;
@@ -891,12 +891,12 @@ TEST_F(SetTest, orderedSetSubSetsSet) {
     ASSERT_EQ(i, 2);
 }
 
-class TestSingletonElement : public BaseElement<TestTypes> {
+class TestSingletonElement : public AbstractElement {
     friend class Creator<TestSingletonElement>;
     public:
         Set<TestPackage, TestSingletonElement> root = Set<TestPackage, TestSingletonElement>(this);
         Singleton<TestPackage, TestSingletonElement> singleton = Singleton<TestPackage, TestSingletonElement>(this);
-        TestSingletonElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
+        TestSingletonElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {
             singleton.subsets(root);
         }
         typedef TypeInfo<std::tuple<>, TestSingletonElement> Info;
@@ -940,13 +940,13 @@ TEST_F(SetTest, singletonTest) {
     ASSERT_FALSE(testEl->root.contains(p.getID()));
 }
 
-class TestSharedSubsetEvenTreeElement : public BaseElement<TestTypes> {
+class TestSharedSubsetEvenTreeElement : public AbstractElement {
     friend class Creator<TestSharedSubsetEvenTreeElement>;
     public:
         Set<TestPackage, TestSharedSubsetEvenTreeElement> root = Set<TestPackage, TestSharedSubsetEvenTreeElement>(this);
         Set<TestPackage, TestSharedSubsetEvenTreeElement> set1 = Set<TestPackage, TestSharedSubsetEvenTreeElement>(this);
         Set<TestPackage, TestSharedSubsetEvenTreeElement> set2 = Set<TestPackage, TestSharedSubsetEvenTreeElement>(this);
-        TestSharedSubsetEvenTreeElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
+        TestSharedSubsetEvenTreeElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {
             set1.subsets(root);
             set2.subsets(root);
         }
@@ -1007,13 +1007,13 @@ TEST_F(SetTest, sharedSubsetEvenTreeTest) {
     ASSERT_EQ(*testEl->set1.front(), p1);
 }
 
-class TestTwoRootSubSetElement : public BaseElement<TestTypes> {
+class TestTwoRootSubSetElement : public AbstractElement {
     friend class Creator<TestTwoRootSubSetElement>;
     public:
         Set<TestPackage, TestTwoRootSubSetElement> root1 = Set<TestPackage, TestTwoRootSubSetElement>(this);
         Set<TestPackage, TestTwoRootSubSetElement> root2 = Set<TestPackage, TestTwoRootSubSetElement>(this);
         Set<TestPackage, TestTwoRootSubSetElement> sub = Set<TestPackage, TestTwoRootSubSetElement>(this);
-        TestTwoRootSubSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes> (elementType, manager) {
+        TestTwoRootSubSetElement(std::size_t elementType, AbstractManager& manager) : AbstractElement (elementType, manager) {
             sub.subsets(root1);
             sub.subsets(root2);
         }
@@ -1077,7 +1077,7 @@ TEST_F(SetTest, multiRootAddToSubsetTest) {
     ASSERT_TRUE(testEl->root1.contains(pckg.id()));
 }
 
-class TestComplexSubsetElement : public BaseElement<TestTypes> {
+class TestComplexSubsetElement : public AbstractElement {
     friend class Creator<TestComplexSubsetElement>;
     public:
         Set<TestPackage, TestComplexSubsetElement> rootSet = Set<TestPackage, TestComplexSubsetElement>(this);
@@ -1087,7 +1087,7 @@ class TestComplexSubsetElement : public BaseElement<TestTypes> {
         Set<TestPackage, TestComplexSubsetElement> leftSet2 = Set<TestPackage, TestComplexSubsetElement>(this);
         Set<TestPackage, TestComplexSubsetElement> leftSet2a = Set<TestPackage, TestComplexSubsetElement>(this);
         Set<TestPackage, TestComplexSubsetElement> rightSet2a = Set<TestPackage, TestComplexSubsetElement>(this);
-        TestComplexSubsetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
+        TestComplexSubsetElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {
             rightSet1.subsets(rootSet);
             leftSet1.subsets(rootSet);
             rightSet2.subsets(rightSet1);
@@ -1410,14 +1410,14 @@ TEST_F(SetTest, removeMiddleElementFromOrderedSetTest) {
 //     ASSERT_FALSE(testEl->sub.contains(pckg.getID()));
 // }
 
-class TestTripleSuperSetElement : public BaseElement<TestTypes> {
+class TestTripleSuperSetElement : public AbstractElement {
     friend class Creator<TestTripleSuperSetElement>;
     public:
         Set<TestPackage, TestTripleSuperSetElement> root = Set<TestPackage, TestTripleSuperSetElement>(this);
         Set<TestPackage, TestTripleSuperSetElement> set1 = Set<TestPackage, TestTripleSuperSetElement>(this);
         Set<TestPackage, TestTripleSuperSetElement> set2 = Set<TestPackage, TestTripleSuperSetElement>(this);
         Set<TestPackage, TestTripleSuperSetElement> set3 = Set<TestPackage, TestTripleSuperSetElement>(this);
-        TestTripleSuperSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager) {
+        TestTripleSuperSetElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager) {
             set1.subsets(root);
             set2.subsets(root);
             set3.subsets(root);
@@ -1540,7 +1540,7 @@ TEST_F(SetTest, tripleRemovePlacholder) {
     ASSERT_FALSE(testEl->set3.contains(pckg3));
 }
 
-class TestDiamondSuperSetElement : public BaseElement<TestTypes> 
+class TestDiamondSuperSetElement : public AbstractElement 
 {
     friend class Creator<TestDiamondSuperSetElement>;
 public:
@@ -1548,7 +1548,7 @@ public:
     Set<TestPackage, TestDiamondSuperSetElement> left = Set<TestPackage, TestDiamondSuperSetElement>(this);
     Set<TestPackage, TestDiamondSuperSetElement> right = Set<TestPackage, TestDiamondSuperSetElement>(this);
     Set<TestPackage, TestDiamondSuperSetElement> bottom = Set<TestPackage, TestDiamondSuperSetElement>(this);
-    TestDiamondSuperSetElement(std::size_t elementType, AbstractManager& manager) : BaseElement<TestTypes>(elementType, manager)
+    TestDiamondSuperSetElement(std::size_t elementType, AbstractManager& manager) : AbstractElement(elementType, manager)
     {
         left.subsets(root);
         right.subsets(root);

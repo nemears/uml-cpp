@@ -11,13 +11,13 @@ namespace UML {
         public:
             using Info = EGM::TypeInfo<LiteralReal, EGM::TemplateTypeList<LiteralSpecification>>;
         protected:
-            float m_value = 0;
+            double m_value = 0;
         private:
             void init() {}
         public:
             MANAGED_ELEMENT_CONSTRUCTOR(LiteralReal);
-            float getValue() const { return m_value; }
-            void setValue(float value) { m_value = value; }
+            double getValue() const { return m_value; }
+            void setValue(double value) { m_value = value; }
     };
 }
 
@@ -34,7 +34,7 @@ namespace EGM {
             }
             void setData(std::string data) override {
                 char* rest {};
-                el->setValue(std::strtof(data.c_str(), &rest));
+                el->setValue(std::strtod(data.c_str(), &rest));
             }
         };
         template <class Policy>

@@ -15,6 +15,9 @@
 #include "uml/types/encapsulatedClassifier.h"
 #include "uml/types/enumeration.h"
 #include "uml/types/enumerationLiteral.h"
+#include "uml/types/expression.h"
+#include "uml/types/extension.h"
+#include "uml/types/extensionEnd.h"
 #include "uml/types/feature.h"
 #include "uml/types/generalization.h"
 #include "uml/types/instanceSpecification.h"
@@ -66,6 +69,9 @@ namespace UML {
         EncapsulatedClassifier,
         Enumeration,
         EnumerationLiteral,
+        Expression,
+        Extension,
+        ExtensionEnd,
         Feature,
         Generalization,
         InstanceSpecification,

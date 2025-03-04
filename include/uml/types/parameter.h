@@ -36,8 +36,7 @@ namespace UML {
         private:
             void init() {
                 m_defaultValue.subsets(ManagerPolicy::m_ownedElements);
-                m_operation.subsets(ManagerPolicy::m_feature);
-                m_operation.subsets(ManagerPolicy::m_ownedMembers);
+                m_operation.subsets(ManagerPolicy::m_namespace);
             }
         public:
             MANAGED_ELEMENT_CONSTRUCTOR(Parameter);

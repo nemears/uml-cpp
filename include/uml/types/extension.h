@@ -1,7 +1,6 @@
 #pragma once
 
 #include "egm/egm-basic.h"
-#include "uml/util/indexableSet.h"
 
 namespace UML {
     template <class>
@@ -15,8 +14,8 @@ namespace UML {
         public:
             using Info = EGM::TypeInfo<Extension, EGM::TemplateTypeList<Association>>;
         protected:
-            using OwnedEnds = IndexableSet<ExtensionEnd, Extension>;
-            OwnedEnds m_extensionOwnedEnds = OwnedEnds(this);
+            using OwnedEnd = EGM::Singleton<ExtensionEnd, Extension>;
+            OwnedEnd m_extensionOwnedEnds = OwnedEnd(this);
         private:
             void init() {
                 m_extensionOwnedEnds.redefines(this->m_ownedEnds);
@@ -24,7 +23,12 @@ namespace UML {
         public:
             MANAGED_ELEMENT_CONSTRUCTOR(Extension);
 
-            OwnedEnds& getOwnedEnds() { return m_extensionOwnedEnds; }
+            OwnedEnd& getOwnedEndSingleton() { return m_extensionOwnedEnds; }
+            using ExtensionEndImpl = typename OwnedEnd::ManagedType;
+            using ExtensionEndPtr = EGM::ManagedPtr<ExtensionEndImpl>;
+            ExtensionEndPtr getOwnedEnd() { return m_extensionOwnedEnds.get(); }
+            void setOwnedEnd(ExtensionEndImpl& end) { m_extensionOwnedEnds.set(end); }
+            void setOwnedEnd(ExtensionEndPtr end) { m_extensionOwnedEnds.set(end); }
     };
 }
 
@@ -35,7 +39,7 @@ namespace EGM {
         template <class Policy>
         static SetList sets(UML::Extension<Policy>& el) {
             return SetList {
-                make_set_pair("ownedEnds", el.getOwnedEnds())
+                make_set_pair("ownedEnds", el.getOwnedEndSingleton())
             };
         }
     };

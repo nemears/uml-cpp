@@ -351,7 +351,7 @@ TEST_F(AssociationTest, parseNavigableOwnedEndAndMemberEndTest) {
     ASSERT_EQ(ass.getNavigableOwnedEnds().size(), 1);
     auto& ne = *ass.getNavigableOwnedEnds().front();
     ASSERT_TRUE(ne.getType());
-    ASSERT_EQ(ne.getType()->getID(), EGM::ID::fromString("real_aZG&w6yl61bXVWutgeyScN9"));
+    ASSERT_EQ(ne.getType()->getID(), EGM::ID::fromString("real_aZG-w6yl61bXVWutgeyScN9"));
 }
 
 TEST_F(AssociationTest, parseOwnedEndAndMemberEndTest) {
@@ -376,11 +376,11 @@ TEST_F(AssociationTest, parseOwnedEndAndMemberEndTest) {
     ASSERT_EQ(pckg.getPackagedElements().get("association")->getElementType(), UmlManager::ElementType<Association>::result);
     auto& ass = pckg.getPackagedElements().get("association")->as<Association>();
     ASSERT_EQ(ass.getMemberEnds().size(), 2);
-    ASSERT_EQ(ass.getMemberEnds().get(EGM::ID::fromString("KpMoyOIGjkm&tB8F_zGExQejc7T7"))->getID(), p.getID());
+    ASSERT_EQ(ass.getMemberEnds().get(EGM::ID::fromString("KpMoyOIGjkm-tB8F_zGExQejc7T7"))->getID(), p.getID());
     ASSERT_EQ(ass.getOwnedEnds().size(), 1);
     auto& ne = *ass.getOwnedEnds().front();
     ASSERT_TRUE(ne.getType());
-    ASSERT_EQ(ne.getType()->getID(), EGM::ID::fromString("real_aZG&w6yl61bXVWutgeyScN9"));
+    ASSERT_EQ(ne.getType()->getID(), EGM::ID::fromString("real_aZG-w6yl61bXVWutgeyScN9"));
 }
 
 TEST_F(AssociationTest, emitAssociationTest) {
@@ -391,12 +391,12 @@ TEST_F(AssociationTest, emitAssociationTest) {
     auto& type = *m.create<PrimitiveType>();
     auto& associtaion = *m.create<Association>();
     auto& end = *m.create<Property>();
-    pckg.setID(EGM::ID::fromString("zN&UM2AHrXX07rAiNxTmmMwLYI1O"));
+    pckg.setID(EGM::ID::fromString("zN-UM2AHrXX07rAiNxTmmMwLYI1O"));
     clazz.setID(EGM::ID::fromString("mGbq9i_gGHuMFYg0y3tMzcmHx1B3"));
     prop.setID(EGM::ID::fromString("FqaulNq6bCe_8J5M0Ff2oCCaQD05"));
     type.setID(EGM::ID::fromString("m8K65o0wEqtIznmEPmuXaTph2JJu"));
-    associtaion.setID(EGM::ID::fromString("FZeUbleSO7P_Zqwn2&r8HKnEbSU5"));
-    end.setID(EGM::ID::fromString("k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"));
+    associtaion.setID(EGM::ID::fromString("FZeUbleSO7P_Zqwn2-r8HKnEbSU5"));
+    end.setID(EGM::ID::fromString("k-CQ7BNYYbkhtw_g7NaNY8wUHXYs"));
     clazz.getOwnedAttributes().add(prop);
     prop.setType(&type);
     associtaion.getMemberEnds().add(prop);
@@ -406,15 +406,15 @@ TEST_F(AssociationTest, emitAssociationTest) {
     pckg.getPackagedElements().add(type);
     pckg.getPackagedElements().add(associtaion);
     std::string expectedEmit = R""""(Package:
-  id: "zN&UM2AHrXX07rAiNxTmmMwLYI1O"
+  id: zN-UM2AHrXX07rAiNxTmmMwLYI1O
   packagedElements:
     - Association:
-        id: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5"
+        id: FZeUbleSO7P_Zqwn2-r8HKnEbSU5
         memberEnds:
           - FqaulNq6bCe_8J5M0Ff2oCCaQD05
         navigableOwnedEnds:
           - Property:
-              id: "k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"
+              id: k-CQ7BNYYbkhtw_g7NaNY8wUHXYs
               type: mGbq9i_gGHuMFYg0y3tMzcmHx1B3
         endTypes:
           - mGbq9i_gGHuMFYg0y3tMzcmHx1B3
@@ -427,7 +427,7 @@ TEST_F(AssociationTest, emitAssociationTest) {
           - Property:
               id: FqaulNq6bCe_8J5M0Ff2oCCaQD05
               type: m8K65o0wEqtIznmEPmuXaTph2JJu
-              association: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5")"""";
+              association: FZeUbleSO7P_Zqwn2-r8HKnEbSU5)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = m.dump(pckg));
     std::cout << generatedEmit << '\n';

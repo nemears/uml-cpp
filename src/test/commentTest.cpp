@@ -47,11 +47,11 @@ TEST_F(CommentTest, commentEmitTest) {
     UmlManager m;
     auto& pckg = *m.create<Package>();
     auto& comment = *m.create<Comment>();
-    pckg.setID(EGM::ID::fromString("zN&UM2AHrXX07rAiNxTmmMwLYI1O"));
+    pckg.setID(EGM::ID::fromString("zN-UM2AHrXX07rAiNxTmmMwLYI1O"));
     comment.setID(EGM::ID::fromString("FqaulNq6bCe_8J5M0Ff2oCCaQD05"));
     pckg.getOwnedComments().add(comment);
     std::string expectedEmit = R""""(Package:
-  id: "zN&UM2AHrXX07rAiNxTmmMwLYI1O"
+  id: zN-UM2AHrXX07rAiNxTmmMwLYI1O
   ownedComments:
     - Comment:
         id: FqaulNq6bCe_8J5M0Ff2oCCaQD05)"""";

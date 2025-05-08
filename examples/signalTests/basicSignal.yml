@@ -2,7 +2,7 @@
   Package:
     packagedElements:
       - Signal:
-          id: 9cmazxFIXj8T8&3W0B0F1ZPb_B2I
+          id: 9cmazxFIXj8T8-3W0B0F1ZPb_B2I
           name: signal
           ownedAttributes:
             - Property:
@@ -11,5 +11,5 @@
           name: class
           ownedReceptions:
             - Reception:
-                signal: 9cmazxFIXj8T8&3W0B0F1ZPb_B2I
+                signal: 9cmazxFIXj8T8-3W0B0F1ZPb_B2I
 ...

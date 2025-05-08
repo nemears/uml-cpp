@@ -221,7 +221,7 @@ TEST_F(ValueSpecificationTest, testEmitLiteralUnlimitedNatural) {
     p.setID(ID::fromString("e_ob7tgbN16Plhj_sTAOVD5ijLrL"));
     l1.setID(ID::fromString("7bYUY3yFUBrfPmzKKrV2NJmXuECA"));
     l2.setID(ID::fromString("puJaUTZsLPdGJkJSJtdX51MIA2ch"));
-    l3.setID(ID::fromString("8&K_0aLhvQDM12ZeYg9nPiSrexHo"));
+    l3.setID(ID::fromString("8-K_0aLhvQDM12ZeYg9nPiSrexHo"));
     ln.setID(ID::fromString("4gA4RgL9vKTRYd61D99y1d_Yggj6"));
     l2.setInfinite();
     l3.setNumber(9999);
@@ -236,7 +236,7 @@ TEST_F(ValueSpecificationTest, testEmitLiteralUnlimitedNatural) {
     - LiteralNull:
         id: 4gA4RgL9vKTRYd61D99y1d_Yggj6
     - LiteralUnlimitedNatural:
-        id: "8&K_0aLhvQDM12ZeYg9nPiSrexHo"
+        id: 8-K_0aLhvQDM12ZeYg9nPiSrexHo
         value: 9999
     - LiteralUnlimitedNatural:
         id: puJaUTZsLPdGJkJSJtdX51MIA2ch

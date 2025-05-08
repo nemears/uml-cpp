@@ -82,7 +82,7 @@ TEST_F(SignalTest, emitSignalTest) {
     auto& attr = *m.create<Property>();
     auto& clazz = *m.create<Class>();
     auto& reception = *m.create<Reception>();
-    pckg.setID(EGM::ID::fromString("IJabcFrKrE9yxVT&qQUQ2&xzVxpd"));
+    pckg.setID(EGM::ID::fromString("IJabcFrKrE9yxVT-qQUQ2-xzVxpd"));
     signal.setID(EGM::ID::fromString("_sgqzW88lsR9bBTk8GyBRjYujfB5"));
     attr.setID(EGM::ID::fromString("DSV8nQG_4VargpMXqb57S2dACThU"));
     clazz.setID(EGM::ID::fromString("HdQGnHEztfzbMvcBURUAEPRWuw7M"));
@@ -92,7 +92,7 @@ TEST_F(SignalTest, emitSignalTest) {
     clazz.getOwnedReceptions().add(reception);
     reception.setSignal(signal);
     std::string expectedEmit = R""""(Package:
-  id: "IJabcFrKrE9yxVT&qQUQ2&xzVxpd"
+  id: IJabcFrKrE9yxVT-qQUQ2-xzVxpd
   packagedElements:
     - Class:
         id: HdQGnHEztfzbMvcBURUAEPRWuw7M

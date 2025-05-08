@@ -123,7 +123,7 @@ TEST_F(EnumerationTest, emitEnumerationWLiterals) {
     e.setName("enum");
     l1.setID(EGM::ID::fromString("ki59FSBz84bR3hyOjfeHEg9LLtCA"));
     l1.setName("one");
-    l2.setID(EGM::ID::fromString("IFMeIYNqJzfzBIOMdbuxl&rBBLwR"));
+    l2.setID(EGM::ID::fromString("IFMeIYNqJzfzBIOMdbuxl-rBBLwR"));
     l2.setName("two");
     e.getOwnedLiterals().add(l1);
     e.getOwnedLiterals().add(l2);
@@ -135,7 +135,7 @@ TEST_F(EnumerationTest, emitEnumerationWLiterals) {
         id: ki59FSBz84bR3hyOjfeHEg9LLtCA
         name: one
     - EnumerationLiteral:
-        id: "IFMeIYNqJzfzBIOMdbuxl&rBBLwR"
+        id: IFMeIYNqJzfzBIOMdbuxl-rBBLwR
         name: two)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = m.dump(e));

@@ -2,7 +2,7 @@
   Package:
     packagedElements:
       - Class:
-          id: efp5gW8d2yV5b9bKtY&OmBHJpUYw
+          id: efp5gW8d2yV5b9bKtY-OmBHJpUYw
           ownedAttributes:
             - Property:
                 id: 6Mpm2vfQypGQmOQW7RV69iFAsF52
@@ -10,7 +10,7 @@
       - InstanceSpecification:
           id: sQCzPFXcFEeTenYV0l8pGDwWTpo1
           classifiers: 
-            - efp5gW8d2yV5b9bKtY&OmBHJpUYw
+            - efp5gW8d2yV5b9bKtY-OmBHJpUYw
           slots:
             - Slot:
                 definingFeature: 6Mpm2vfQypGQmOQW7RV69iFAsF52

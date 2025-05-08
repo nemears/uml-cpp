@@ -154,8 +154,8 @@ TEST_F(InstanceSpecificationTest, forwardClassifierTest) {
     ASSERT_EQ(el->getElementType(), UmlManager::ElementType<Package>::result);
     UmlManager::Pointer<Package> pckg = el;
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
-    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("W2gUELk0mKh&Kqc5fjFCOuppln2b"))->getElementType() == UmlManager::ElementType<Class>::result);
-    auto c = pckg->getPackagedElements().get(EGM::ID::fromString("W2gUELk0mKh&Kqc5fjFCOuppln2b"));
+    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("W2gUELk0mKh-Kqc5fjFCOuppln2b"))->getElementType() == UmlManager::ElementType<Class>::result);
+    auto c = pckg->getPackagedElements().get(EGM::ID::fromString("W2gUELk0mKh-Kqc5fjFCOuppln2b"));
     ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("8SXVdBHWl9N6o6Uut3WImOPk6Ngw"))->getElementType() == UmlManager::ElementType<InstanceSpecification>::result);
     UmlManager::Pointer<InstanceSpecification> i = pckg->getPackagedElements().get(EGM::ID::fromString("8SXVdBHWl9N6o6Uut3WImOPk6Ngw"));
     ASSERT_EQ(i->getClassifiers().size(), 1);
@@ -183,8 +183,8 @@ TEST_F(InstanceSpecificationTest, basicSlotTest) {
     auto pckg = &m.getRoot()->as<Package>();
     ASSERT_TRUE(pckg->getPackagedElements().size() == 2);
     ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("sQCzPFXcFEeTenYV0l8pGDwWTpo1"))->getElementType() == UmlManager::ElementType<InstanceSpecification>::result);
-    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("efp5gW8d2yV5b9bKtY&OmBHJpUYw"))->getElementType() == UmlManager::ElementType<Class>::result);
-    UmlManager::Pointer<Class> c = pckg->getPackagedElements().get(EGM::ID::fromString("efp5gW8d2yV5b9bKtY&OmBHJpUYw"));
+    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("efp5gW8d2yV5b9bKtY-OmBHJpUYw"))->getElementType() == UmlManager::ElementType<Class>::result);
+    UmlManager::Pointer<Class> c = pckg->getPackagedElements().get(EGM::ID::fromString("efp5gW8d2yV5b9bKtY-OmBHJpUYw"));
     auto& i = pckg->getPackagedElements().get(EGM::ID::fromString("sQCzPFXcFEeTenYV0l8pGDwWTpo1"))->as<InstanceSpecification>();
     ASSERT_EQ(i.getClassifiers().size(), 1);
     ASSERT_EQ(i.getClassifiers().front(), c);
@@ -213,8 +213,8 @@ TEST_F(InstanceSpecificationTest, instanceValueSlot) {
     ASSERT_TRUE(c2->getOwnedAttributes().size() == 1);
     auto p = c2->getOwnedAttributes().front();
     ASSERT_TRUE(p->getType() == c1);
-    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("x2zUOks6utCje0z&ID4EOM91HJuj"))->getElementType() == UmlManager::ElementType<InstanceSpecification>::result);
-    UmlManager::Pointer<InstanceSpecification> i1 = pckg->getPackagedElements().get(EGM::ID::fromString("x2zUOks6utCje0z&ID4EOM91HJuj"));
+    ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("x2zUOks6utCje0z-ID4EOM91HJuj"))->getElementType() == UmlManager::ElementType<InstanceSpecification>::result);
+    UmlManager::Pointer<InstanceSpecification> i1 = pckg->getPackagedElements().get(EGM::ID::fromString("x2zUOks6utCje0z-ID4EOM91HJuj"));
     ASSERT_EQ(i1->getClassifiers().size(), 1);
     ASSERT_EQ(i1->getClassifiers().front(), c1);
     ASSERT_TRUE(pckg->getPackagedElements().get(EGM::ID::fromString("6CB8GbwIp4Ii0rKfx4YSVRoiZvmc"))->getElementType() == UmlManager::ElementType<InstanceSpecification>::result);
@@ -253,7 +253,7 @@ TEST_F(InstanceSpecificationTest, simpleSlotTest) {
     inst.setName("slot");
     inst.setVisibility(VisibilityKind::PROTECTED);
     auto& s = *m.create<Slot>();
-    s.setID(EGM::ID::fromString("w6arMVW4Plw0aLOBWLE9_8Xo_UL&"));
+    s.setID(EGM::ID::fromString("w6arMVW4Plw0aLOBWLE9_8Xo_UL-"));
     inst.getSlots().add(s);
     std::string expectedEmit = R""""(InstanceSpecification:
   id: yaogA9yjaFoD_RdGQzRrwe1826Aj
@@ -261,7 +261,7 @@ TEST_F(InstanceSpecificationTest, simpleSlotTest) {
   visibility: protected
   slots:
     - Slot:
-        id: "w6arMVW4Plw0aLOBWLE9_8Xo_UL&")"""";
+        id: w6arMVW4Plw0aLOBWLE9_8Xo_UL-)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = m.dump(inst));
     std::cout << generatedEmit << '\n';
@@ -284,12 +284,12 @@ TEST_F(InstanceSpecificationTest, emitSpecificationTest) {
     UmlManager m;
     auto& inst = *m.create<InstanceSpecification>();
     auto& str = *m.create<LiteralString>();
-    inst.setID(EGM::ID::fromString("fsU5Fw&5REaNv4NCvC0d4qZnXg4C"));
+    inst.setID(EGM::ID::fromString("fsU5Fw-5REaNv4NCvC0d4qZnXg4C"));
     str.setID(EGM::ID::fromString("nVzJ8mHx1yrRlct0ot34p7uBaVvC"));
     str.setValue("gatito");
     inst.setSpecification(&str);
     std::string expectedEmit = R""""(InstanceSpecification:
-  id: "fsU5Fw&5REaNv4NCvC0d4qZnXg4C"
+  id: fsU5Fw-5REaNv4NCvC0d4qZnXg4C
   specification:
     LiteralString:
       id: nVzJ8mHx1yrRlct0ot34p7uBaVvC

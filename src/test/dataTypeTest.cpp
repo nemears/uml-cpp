@@ -380,15 +380,15 @@ TEST_F(DataTypeTest, emitDataTypeW_GeneralAndAttribute) {
     auto& gen = *m.create<Generalization>();
     auto& s = *m.create<DataType>();
     auto& p = *m.create<Property>();
-    pckg.setID(EGM::ID::fromString("zN&UM2AHrXX07rAiNxTmmMwLYI1O"));
+    pckg.setID(EGM::ID::fromString("zN-UM2AHrXX07rAiNxTmmMwLYI1O"));
     pckg.setName("owningPackage");
     t.setID(EGM::ID::fromString("mGbq9i_gGHuMFYg0y3tMzcmHx1B3"));
     t.setName("type");
     g.setID(EGM::ID::fromString("FqaulNq6bCe_8J5M0Ff2oCCaQD05"));
     g.setName("general");
-    s.setID(EGM::ID::fromString("FZeUbleSO7P_Zqwn2&r8HKnEbSU5"));
+    s.setID(EGM::ID::fromString("FZeUbleSO7P_Zqwn2-r8HKnEbSU5"));
     s.setName("specific");
-    gen.setID(EGM::ID::fromString("k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"));
+    gen.setID(EGM::ID::fromString("k-CQ7BNYYbkhtw_g7NaNY8wUHXYs"));
     gen.setGeneral(&g);
     s.getGeneralizations().add(gen);
     p.setID(EGM::ID::fromString("m8K65o0wEqtIznmEPmuXaTph2JJu"));
@@ -399,15 +399,15 @@ TEST_F(DataTypeTest, emitDataTypeW_GeneralAndAttribute) {
     pckg.getPackagedElements().add(g);
     pckg.getPackagedElements().add(s);
     std::string expectedEmit = R""""(Package:
-  id: "zN&UM2AHrXX07rAiNxTmmMwLYI1O"
+  id: zN-UM2AHrXX07rAiNxTmmMwLYI1O
   name: owningPackage
   packagedElements:
     - DataType:
-        id: "FZeUbleSO7P_Zqwn2&r8HKnEbSU5"
+        id: FZeUbleSO7P_Zqwn2-r8HKnEbSU5
         name: specific
         generalizations:
           - Generalization:
-              id: "k&CQ7BNYYbkhtw_g7NaNY8wUHXYs"
+              id: k-CQ7BNYYbkhtw_g7NaNY8wUHXYs
               general: FqaulNq6bCe_8J5M0Ff2oCCaQD05
         generals:
           - FqaulNq6bCe_8J5M0Ff2oCCaQD05
@@ -564,18 +564,18 @@ TEST_F(DataTypeTest, emitPrimWGeneralAndAttribute) {
     auto& gen = *m.create<Generalization>();
     auto& s = *m.create<PrimitiveType>();
     auto& p = *m.create<Property>();
-    pckg.setID(EGM::ID::fromString("ScxedgF1Ej1JJubABfwVAK1X&_28"));
+    pckg.setID(EGM::ID::fromString("ScxedgF1Ej1JJubABfwVAK1X-_28"));
     pckg.setName("owningPackage");
-    t.setID(EGM::ID::fromString("ufsWC1O42Rz36lNEixxF&gH6SKdj"));
+    t.setID(EGM::ID::fromString("ufsWC1O42Rz36lNEixxF-gH6SKdj"));
     t.setName("type");
     g.setID(EGM::ID::fromString("bD3tGZ_XwovlDpB4NPqiaMl19DUV"));
     g.setName("general");
-    s.setID(EGM::ID::fromString("3di2YkXSv7_2E8yUAdNElvDPCP4&"));
+    s.setID(EGM::ID::fromString("3di2YkXSv7_2E8yUAdNElvDPCP4-"));
     s.setName("specific");
-    gen.setID(EGM::ID::fromString("Fpn&_P3zERcsyDCu8kN837WxY_90"));
+    gen.setID(EGM::ID::fromString("Fpn-_P3zERcsyDCu8kN837WxY_90"));
     gen.setGeneral(&g);
     s.getGeneralizations().add(gen);
-    p.setID(EGM::ID::fromString("yShg7h43ZHm9I2Dqw2RoSXV&Y0PQ"));
+    p.setID(EGM::ID::fromString("yShg7h43ZHm9I2Dqw2RoSXV-Y0PQ"));
     p.setName("generalProp");
     p.setType(&t);
     g.getOwnedAttributes().add(p);
@@ -583,15 +583,15 @@ TEST_F(DataTypeTest, emitPrimWGeneralAndAttribute) {
     pckg.getPackagedElements().add(g);
     pckg.getPackagedElements().add(s);
     std::string expectedEmit = R""""(Package:
-  id: "ScxedgF1Ej1JJubABfwVAK1X&_28"
+  id: ScxedgF1Ej1JJubABfwVAK1X-_28
   name: owningPackage
   packagedElements:
     - PrimitiveType:
-        id: "3di2YkXSv7_2E8yUAdNElvDPCP4&"
+        id: 3di2YkXSv7_2E8yUAdNElvDPCP4-
         name: specific
         generalizations:
           - Generalization:
-              id: "Fpn&_P3zERcsyDCu8kN837WxY_90"
+              id: Fpn-_P3zERcsyDCu8kN837WxY_90
               general: bD3tGZ_XwovlDpB4NPqiaMl19DUV
         generals:
           - bD3tGZ_XwovlDpB4NPqiaMl19DUV
@@ -600,11 +600,11 @@ TEST_F(DataTypeTest, emitPrimWGeneralAndAttribute) {
         name: general
         ownedAttributes:
           - Property:
-              id: "yShg7h43ZHm9I2Dqw2RoSXV&Y0PQ"
+              id: yShg7h43ZHm9I2Dqw2RoSXV-Y0PQ
               name: generalProp
-              type: "ufsWC1O42Rz36lNEixxF&gH6SKdj"
+              type: ufsWC1O42Rz36lNEixxF-gH6SKdj
     - PrimitiveType:
-        id: "ufsWC1O42Rz36lNEixxF&gH6SKdj"
+        id: ufsWC1O42Rz36lNEixxF-gH6SKdj
         name: type)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = m.dump(pckg));

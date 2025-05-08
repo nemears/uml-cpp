@@ -101,9 +101,9 @@ TEST_F(DependencyTest, basicDependencyEmitTest) {
     auto& dependency = *m.create<Dependency>();
     auto& client = *m.create<Package>();
     auto& supplier = *m.create<Package>();
-    pckg.setID(EGM::ID::fromString("oT59r8w9_ZlGzo2NFpN&vJgH_4YJ"));
-    dependency.setID(EGM::ID::fromString("tAps&UBn21dKnQ5z7qaAzKBZqR7S"));
-    client.setID(EGM::ID::fromString("zMVDkDbSoENGrPr&JLyOGzYo&_D0"));
+    pckg.setID(EGM::ID::fromString("oT59r8w9_ZlGzo2NFpN-vJgH_4YJ"));
+    dependency.setID(EGM::ID::fromString("tAps-UBn21dKnQ5z7qaAzKBZqR7S"));
+    client.setID(EGM::ID::fromString("zMVDkDbSoENGrPr-JLyOGzYo-_D0"));
     supplier.setID(EGM::ID::fromString("uONNU0sKPVjLALJuw2pHcNqljgkg"));
     pckg.getPackagedElements().add(dependency);
     pckg.getPackagedElements().add(client);
@@ -112,21 +112,21 @@ TEST_F(DependencyTest, basicDependencyEmitTest) {
     dependency.getClients().add(client);
     dependency.getSuppliers().add(supplier);
     std::string expectedEmit = R""""(Package:
-  id: "oT59r8w9_ZlGzo2NFpN&vJgH_4YJ"
+  id: oT59r8w9_ZlGzo2NFpN-vJgH_4YJ
   packagedElements:
     - Package:
         id: uONNU0sKPVjLALJuw2pHcNqljgkg
     - Package:
-        id: "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
+        id: zMVDkDbSoENGrPr-JLyOGzYo-_D0
         clientDependencies:
-          - "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
+          - tAps-UBn21dKnQ5z7qaAzKBZqR7S
     - Dependency:
-        id: "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
+        id: tAps-UBn21dKnQ5z7qaAzKBZqR7S
         name: test
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
         clients:
-          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0")"""";
+          - zMVDkDbSoENGrPr-JLyOGzYo-_D0)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = m.dump(pckg));
     std::cout << generatedEmit << '\n';
@@ -169,11 +169,11 @@ TEST_F(DependencyTest, emitAllDependencySubClassesTest) {
     auto& usage = *m.create<Usage>();
     auto& client = *m.create<Package>();
     auto& supplier = *m.create<Package>();
-    pckg.setID(EGM::ID::fromString("oT59r8w9_ZlGzo2NFpN&vJgH_4YJ"));
-    abstraction.setID(EGM::ID::fromString("tAps&UBn21dKnQ5z7qaAzKBZqR7S"));
+    pckg.setID(EGM::ID::fromString("oT59r8w9_ZlGzo2NFpN-vJgH_4YJ"));
+    abstraction.setID(EGM::ID::fromString("tAps-UBn21dKnQ5z7qaAzKBZqR7S"));
     realization.setID(EGM::ID::fromString("V5lXdO3DLF2UCpqipGloE976L6QN"));
     usage.setID(EGM::ID::fromString("ouZEty1jCLeAk_tZzWBKblwwBdGm"));
-    client.setID(EGM::ID::fromString("zMVDkDbSoENGrPr&JLyOGzYo&_D0"));
+    client.setID(EGM::ID::fromString("zMVDkDbSoENGrPr-JLyOGzYo-_D0"));
     supplier.setID(EGM::ID::fromString("uONNU0sKPVjLALJuw2pHcNqljgkg"));
     pckg.getPackagedElements().add(abstraction);
     pckg.getPackagedElements().add(realization);
@@ -190,37 +190,37 @@ TEST_F(DependencyTest, emitAllDependencySubClassesTest) {
     usage.getClients().add(client);
     usage.getSuppliers().add(supplier);
     std::string expectedEmit = R""""(Package:
-  id: "oT59r8w9_ZlGzo2NFpN&vJgH_4YJ"
+  id: oT59r8w9_ZlGzo2NFpN-vJgH_4YJ
   packagedElements:
     - Package:
         id: uONNU0sKPVjLALJuw2pHcNqljgkg
     - Package:
-        id: "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
+        id: zMVDkDbSoENGrPr-JLyOGzYo-_D0
         clientDependencies:
           - ouZEty1jCLeAk_tZzWBKblwwBdGm
           - V5lXdO3DLF2UCpqipGloE976L6QN
-          - "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
+          - tAps-UBn21dKnQ5z7qaAzKBZqR7S
     - Usage:
         id: ouZEty1jCLeAk_tZzWBKblwwBdGm
         name: u
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
         clients:
-          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
+          - zMVDkDbSoENGrPr-JLyOGzYo-_D0
     - Realization:
         id: V5lXdO3DLF2UCpqipGloE976L6QN
         name: r
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
         clients:
-          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0"
+          - zMVDkDbSoENGrPr-JLyOGzYo-_D0
     - Abstraction:
-        id: "tAps&UBn21dKnQ5z7qaAzKBZqR7S"
+        id: tAps-UBn21dKnQ5z7qaAzKBZqR7S
         name: test
         suppliers:
           - uONNU0sKPVjLALJuw2pHcNqljgkg
         clients:
-          - "zMVDkDbSoENGrPr&JLyOGzYo&_D0")"""";
+          - zMVDkDbSoENGrPr-JLyOGzYo-_D0)"""";
     std::string generatedEmit;
     ASSERT_NO_THROW(generatedEmit = m.dump(pckg));
     std::cout << generatedEmit << '\n';

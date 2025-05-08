@@ -7,16 +7,16 @@
     name: Primtivie_Types
     packagedElements:
       - PrimitiveType:
-          id: bool_bzkcabSy3CiFd&HmJOtnVRK
+          id: bool_bzkcabSy3CiFd-HmJOtnVRK
           name: bool
           # TODO operations and value?
       - PrimitiveType:
           id: int_r9nNbBukx47IomXrT2raqtc4
           name: int
       - PrimitiveType:
-          id: real_aZG&w6yl61bXVWutgeyScN9
+          id: real_aZG-w6yl61bXVWutgeyScN9
           name: real
       - PrimitiveType:
-          id: string_L&R5eAEq6f3LUNtUmzHzT
+          id: string_L-R5eAEq6f3LUNtUmzHzT
           name: string
 ...

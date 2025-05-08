@@ -8,18 +8,18 @@
           id: m7pAITPBHxM9c1_aPbfnMLUOC5Dc
           name: type
       - Class:
-          id : J&Po&gVCdSwvJrBK5kl4V1Fn5RoH
+          id : J-Po-gVCdSwvJrBK5kl4V1Fn5RoH
           name: hasAssociation
           ownedAttributes:
             - Property:
-                id: KpMoyOIGjkm&tB8F_zGExQejc7T7
+                id: KpMoyOIGjkm-tB8F_zGExQejc7T7
                 name: memberEnd
                 type: m7pAITPBHxM9c1_aPbfnMLUOC5Dc
       - Association:
           name: association
           navigableOwnedEnds:
             - Property:
-                type: real_aZG&w6yl61bXVWutgeyScN9
+                type: real_aZG-w6yl61bXVWutgeyScN9
           memberEnds:
-            - KpMoyOIGjkm&tB8F_zGExQejc7T7
+            - KpMoyOIGjkm-tB8F_zGExQejc7T7
 ...

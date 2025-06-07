@@ -12,6 +12,7 @@ namespace UML {
 
     template <class ManagerPolicy>
     class MultiplicityElement : public ManagerPolicy {
+        friend struct EGM::ElementInfo<MultiplicityElement>;
         public:
             using Info = EGM::TypeInfo<MultiplicityElement, EGM::TemplateTypeList<Element>>;
         protected:
@@ -49,10 +50,10 @@ namespace EGM {
     struct ElementInfo<UML::MultiplicityElement> {
         static const bool abstract = true;
         template <class Policy>
-        SetList sets(UML::MultiplicityElement<Policy>& el) {
+        static SetList sets(UML::MultiplicityElement<Policy>& el) {
             return SetList {
-                make_set_pair("lowerValue", el.m_lowerVal),
-                make_set_pair("upperValue", el.m_upperVal)   
+                make_set_pair("lowerValue", el.m_lowerValue),
+                make_set_pair("upperValue", el.m_upperValue)   
             };
         }
         template <class Policy>
@@ -61,16 +62,18 @@ namespace EGM {
             OrderedPolicy(UML::MultiplicityElement<Policy>& ref) : el(&ref) {}
             bool getBool() override { return el->isOrdered(); }
             void setBool(bool b) override { el->setIsOrdered(b); }
+            std::optional<bool> defaultBool() override { return false; }
         };
         template <class Policy>
         struct UniquePolicy : public UML::BooleanDataPolicy {
             EGM::ManagedPtr<UML::MultiplicityElement<Policy>> el;
             UniquePolicy(UML::MultiplicityElement<Policy>& ref) : el(&ref) {}
-            bool getBool() override { return el->isUniqe(); }
+            bool getBool() override { return el->isUnique(); }
             void setBool(bool b) override { el->setIsUnique(b); }
+            std::optional<bool> defaultBool() override { return true; }
         };
         template <class Policy>
-        DataList data(UML::MultiplicityElement<Policy>& el) {
+        static DataList data(UML::MultiplicityElement<Policy>& el) {
             return DataList {
                 createDataPair<OrderedPolicy<Policy>>("ordered", el),
                 createDataPair<UniquePolicy<Policy>>("unique", el)

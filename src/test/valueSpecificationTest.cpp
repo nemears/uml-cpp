@@ -249,3 +249,21 @@ TEST_F(ValueSpecificationTest, testEmitLiteralUnlimitedNatural) {
     cout << generatedEmit << '\n';
     ASSERT_EQ(expectedEmit, generatedEmit);
 }
+
+TEST_F(ValueSpecificationTest, parseMultiplicityElement) {
+    UmlManager m;
+    UmlManager::Pointer<Property> parsed_property = m.parse(
+R"(Property:
+  upperValue:
+    LiteralInteger:
+      value: 1
+  lowerValue:
+    LiteralInteger:
+      value: 0)"
+    );
+    ASSERT_TRUE(parsed_property);
+    UmlManager::Pointer<LiteralInteger> upper = parsed_property->getUpperValue();
+    ASSERT_TRUE(upper);
+    UmlManager::Pointer<LiteralInteger> lower = parsed_property->getLowerValue();
+    ASSERT_TRUE(lower);
+}

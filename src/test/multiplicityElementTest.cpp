@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "uml/types/literalInteger.h"
 #include "uml/uml-stable.h"
 #include "test/umlTestUtil.h"
 
@@ -59,3 +60,5 @@ TEST_F(MultiplicityElementTest, MultiplicityValueTest) {
     ASSERT_TRUE(p.getUpper() == 10);
     ASSERT_TRUE(p.multiplicitySpecified());
 }
+
+

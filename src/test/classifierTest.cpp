@@ -166,6 +166,26 @@ TEST_F(ClassifierTest, inheritedMembersTest) {
   ASSERT_EQ(s6.getMembers().size(), 1);
 }
 
+TEST_F(ClassifierTest, parseGeneralizationsWithGeneralTest) {
+    UmlManager m;
+    std::string parse_string = R"(Package:
+  id: urWpoxZVhva76RnwyRAhLgduprmm
+  packagedElements:
+    - Class:
+        id: LhAHXAksl7rSYGupT6s7tfl9oDsY
+        generalizations:
+          - Generalization:
+              id: eAbtkIyIE7dTvFqm4hEnEAgB6Fmo
+              general: 5pVpZ7MJzq5mysPkikGPT9kcvE10
+    - Class:
+        id: 5pVpZ7MJzq5mysPkikGPT9kcvE10)";
+    UmlManager::Pointer<Package> package = m.parse(parse_string);
+    UmlManager::Pointer<Classifier> specific = package->getPackagedElements().get(EGM::ID::fromString("LhAHXAksl7rSYGupT6s7tfl9oDsY"));
+    UmlManager::Pointer<Classifier> general = package->getPackagedElements().get(EGM::ID::fromString("5pVpZ7MJzq5mysPkikGPT9kcvE10"));
+    ASSERT_EQ(specific->getGenerals().size(), 1);
+    ASSERT_EQ(specific->getGenerals().front().id(), general.id());
+}
+
 // TEST_F(ClassifierTest, redefinableTemplateSignatureAddAndRemoveParametersWhenExtendedTest) {
 //   UmlManager m;
 //   RedefinableTemplateSignaturePtr extendedSig = m.create<RedefinableTemplateSignature>();
